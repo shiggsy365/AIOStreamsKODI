@@ -519,6 +519,22 @@ _show_progress_cache = {}
 _watchlist_cache = {}
 
 
+def remove_from_playback(playback_id):
+    """Remove item from continue watching (playback progress) without marking as watched."""
+    if not playback_id:
+        return False
+
+    result = call_trakt(f'sync/playback/{playback_id}', method='DELETE')
+
+    if result is not None:  # DELETE returns None on success
+        xbmcgui.Dialog().notification('AIOStreams', 'Removed from Continue Watching', xbmcgui.NOTIFICATION_INFO)
+        xbmc.executebuiltin('Container.Refresh')
+        return True
+    else:
+        xbmcgui.Dialog().notification('AIOStreams', 'Failed to remove from Continue Watching', xbmcgui.NOTIFICATION_ERROR)
+        return False
+
+
 def is_in_watchlist(media_type, imdb_id):
     """Check if item is in Trakt watchlist."""
     # Check cache first
