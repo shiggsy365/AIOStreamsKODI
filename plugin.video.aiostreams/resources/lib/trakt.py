@@ -319,9 +319,10 @@ def get_cast(media_type, item_id):
         # Get thumbnail if available
         thumbnail = ''
         images = person_info.get('images', {})
-        if images:
+        if images and isinstance(images, dict):
             headshot = images.get('headshot', {})
-            if headshot:
+            # headshot can be a dict or list, only process if it's a dict
+            if headshot and isinstance(headshot, dict):
                 thumbnail = headshot.get('full') or headshot.get('medium') or headshot.get('thumb') or ''
 
         # Create xbmc.Actor object
