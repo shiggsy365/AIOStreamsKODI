@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<addon id="plugin.video.aiostreams" name="AIOStreams" version="2.3.0" provider-name="Jon">
+<addon id="plugin.video.aiostreams" name="AIOStreams" version="2.3.1" provider-name="Jon">
     <requires>
         <import addon="xbmc.python" version="3.0.0"/>
         <import addon="script.module.requests" version="2.25.1"/>
@@ -13,7 +13,7 @@
         <platform>all</platform>
         <license>MIT</license>
         <website>https://aiostreams.shiggsy.co.uk</website>
-        <news>v2.3.0: Enhanced search with tabbed interface (Movies/TV/All), proper poster views, and cast/director search from context menu. Click any actor or director to search for their content! | v2.2.0: Fixed cast display error using xbmc.Actor objects. | v2.1.0: Massive performance improvements (95% faster Trakt lists).</news>
+        <news>v2.3.1: Bugfix - Fixed Trakt cast image error and 'Similar to this' content type detection. Removed cast/director search from context menu per user feedback. | v2.3.0: Enhanced search with tabbed interface. | v2.2.0: Fixed cast display error.</news>
         <assets>
             <icon>resources/icon.png</icon>
             <fanart>resources/fanart.jpg</fanart>

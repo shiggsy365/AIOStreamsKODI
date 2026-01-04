@@ -395,33 +395,6 @@ def create_listitem_with_context(meta, content_type, action_url):
             context_menu.append(('[COLOR yellow]Quick Actions[/COLOR]',
                                 f'RunPlugin({get_url(action="quick_actions", content_type=content_type, imdb_id=item_id, title=title)})'))
 
-    # Add cast/director search options
-    cast_names = []
-    director_names = []
-
-    # Get cast from app_extras if available
-    if aio_cast:
-        cast_names = [person.get('name', '') for person in aio_cast[:5] if person.get('name')]  # Limit to first 5
-
-    # Get directors from app_extras or metadata
-    if directors:
-        director_names = [d.get('name', '') for d in directors if d.get('name')]
-    elif meta.get('director'):
-        director_str = meta.get('director', '')
-        director_names = [d.strip() for d in str(director_str).split(',') if d.strip()]
-
-    # Add cast search submenu
-    if cast_names:
-        for actor in cast_names[:3]:  # Limit to top 3 for menu size
-            context_menu.append((f'[COLOR cyan]Search for {actor}[/COLOR]',
-                                f'Container.Update({get_url(action="search", content_type="both", query=actor)})'))
-
-    # Add director search
-    if director_names:
-        for director in director_names[:2]:  # Limit to top 2
-            context_menu.append((f'[COLOR orange]Search for {director}[/COLOR]',
-                                f'Container.Update({get_url(action="search", content_type="both", query=director)})'))
-
     if context_menu:
         list_item.addContextMenuItems(context_menu)
 
@@ -2307,8 +2280,11 @@ def show_related():
         if not item_id:
             continue
 
+        # Use the correct content type for this specific item
+        item_content_type = 'movie' if item_type == 'movie' else 'series'
+
         # Fetch full metadata
-        meta_data = get_meta(content_type, item_id)
+        meta_data = get_meta(item_content_type, item_id)
 
         if meta_data and 'meta' in meta_data:
             meta = meta_data['meta']
@@ -2321,12 +2297,12 @@ def show_related():
                 'genres': []
             }
 
-        if content_type == 'series':
+        if item_content_type == 'series':
             url = get_url(action='show_seasons', meta_id=item_id)
         else:
             url = get_url(action='show_streams', content_type='movie', media_id=item_id, title=meta.get('name', 'Unknown'))
 
-        list_item = create_listitem_with_context(meta, content_type, url)
+        list_item = create_listitem_with_context(meta, item_content_type, url)
         xbmcplugin.addDirectoryItem(HANDLE, url, list_item, True)
 
     xbmcplugin.endOfDirectory(HANDLE)
