@@ -1111,14 +1111,13 @@ def browse_catalog():
         list_item = create_listitem_with_context(meta, content_type, url)
         xbmcplugin.addDirectoryItem(HANDLE, url, list_item, is_folder)
     
-    # Check if next page exists by attempting to fetch it
-    next_skip = skip + 20
-    next_page_data = get_catalog(content_type, catalog_id, genre, next_skip)
-    
-    if next_page_data and 'metas' in next_page_data and len(next_page_data['metas']) > 0:
-        # Next page has items, show "Load More"
+    # Check if next page exists by checking metas count
+    # If we got a full page (20 items), assume there might be more
+    if len(catalog_data['metas']) >= 20:
+        next_skip = skip + 20
+        # Show "Load More" if we got a full page
         list_item = xbmcgui.ListItem(label='[COLOR yellow]» Load More...[/COLOR]')
-        url = get_url(action='browse_catalog', catalog_id=catalog_id, content_type=content_type, 
+        url = get_url(action='browse_catalog', catalog_id=catalog_id, content_type=content_type,
                       genre=genre if genre else '', skip=next_skip)
         xbmcplugin.addDirectoryItem(HANDLE, url, list_item, True)
     
@@ -1642,23 +1641,19 @@ def trakt_watchlist():
         if HAS_MODULES:
             cached_meta = cache.get_cached_meta(content_type, item_id)
             if cached_meta and 'meta' in cached_meta:
+                cached_data = cached_meta['meta']
                 # Enhance with cached artwork and other metadata
-                meta['poster'] = cached_meta['meta'].get('poster', '')
-                meta['background'] = cached_meta['meta'].get('background', '')
-                meta['logo'] = cached_meta['meta'].get('logo', '')
+                meta['poster'] = cached_data.get('poster', '')
+                meta['background'] = cached_data.get('background', '')
+                meta['logo'] = cached_data.get('logo', '')
+                # Get cast from cached AIOStreams data (includes photos)
+                meta['app_extras'] = cached_data.get('app_extras', {})
                 # Keep Trakt data for text fields, only use AIOStreams for what's better
                 if not meta['description']:
-                    meta['description'] = cached_meta['meta'].get('description', '')
+                    meta['description'] = cached_data.get('description', '')
 
-        # If no cached artwork, fetch metadata for artwork only
-        if not meta.get('poster') and not meta.get('background'):
-            meta_data = get_meta(content_type, item_id)
-            if meta_data and 'meta' in meta_data:
-                meta['poster'] = meta_data['meta'].get('poster', '')
-                meta['background'] = meta_data['meta'].get('background', '')
-                meta['logo'] = meta_data['meta'].get('logo', '')
-                if not meta['description']:
-                    meta['description'] = meta_data['meta'].get('description', '')
+        # Note: We don't fetch metadata here to keep lists fast
+        # Cache will populate as users view individual items
 
         if content_type == 'series':
             url = get_url(action='show_seasons', meta_id=item_id)
@@ -1716,25 +1711,21 @@ def trakt_collection():
             'imdbRating': str(item_data.get('rating', '')) if item_data.get('rating') else ''
         }
 
-        # Try to get artwork from cached AIOStreams metadata (fast cache lookup)
+        # Try to get artwork and cast from cached AIOStreams metadata (fast cache lookup)
         if HAS_MODULES:
             cached_meta = cache.get_cached_meta(content_type, item_id)
             if cached_meta and 'meta' in cached_meta:
-                meta['poster'] = cached_meta['meta'].get('poster', '')
-                meta['background'] = cached_meta['meta'].get('background', '')
-                meta['logo'] = cached_meta['meta'].get('logo', '')
+                cached_data = cached_meta['meta']
+                meta['poster'] = cached_data.get('poster', '')
+                meta['background'] = cached_data.get('background', '')
+                meta['logo'] = cached_data.get('logo', '')
+                # Get cast from cached AIOStreams data (includes photos)
+                meta['app_extras'] = cached_data.get('app_extras', {})
                 if not meta['description']:
-                    meta['description'] = cached_meta['meta'].get('description', '')
+                    meta['description'] = cached_data.get('description', '')
 
-        # If no cached artwork, fetch metadata for artwork only
-        if not meta.get('poster') and not meta.get('background'):
-            meta_data = get_meta(content_type, item_id)
-            if meta_data and 'meta' in meta_data:
-                meta['poster'] = meta_data['meta'].get('poster', '')
-                meta['background'] = meta_data['meta'].get('background', '')
-                meta['logo'] = meta_data['meta'].get('logo', '')
-                if not meta['description']:
-                    meta['description'] = meta_data['meta'].get('description', '')
+        # Note: We don't fetch metadata here to keep lists fast
+        # Cache will populate as users view individual items
         
         if content_type == 'series':
             url = get_url(action='show_seasons', meta_id=item_id)
@@ -1792,25 +1783,21 @@ def trakt_trending():
             'imdbRating': str(item_data.get('rating', '')) if item_data.get('rating') else ''
         }
 
-        # Try to get artwork from cached AIOStreams metadata (fast cache lookup)
+        # Try to get artwork and cast from cached AIOStreams metadata (fast cache lookup)
         if HAS_MODULES:
             cached_meta = cache.get_cached_meta(content_type, item_id)
             if cached_meta and 'meta' in cached_meta:
-                meta['poster'] = cached_meta['meta'].get('poster', '')
-                meta['background'] = cached_meta['meta'].get('background', '')
-                meta['logo'] = cached_meta['meta'].get('logo', '')
+                cached_data = cached_meta['meta']
+                meta['poster'] = cached_data.get('poster', '')
+                meta['background'] = cached_data.get('background', '')
+                meta['logo'] = cached_data.get('logo', '')
+                # Get cast from cached AIOStreams data (includes photos)
+                meta['app_extras'] = cached_data.get('app_extras', {})
                 if not meta['description']:
-                    meta['description'] = cached_meta['meta'].get('description', '')
+                    meta['description'] = cached_data.get('description', '')
 
-        # If no cached artwork, fetch metadata for artwork only
-        if not meta.get('poster') and not meta.get('background'):
-            meta_data = get_meta(content_type, item_id)
-            if meta_data and 'meta' in meta_data:
-                meta['poster'] = meta_data['meta'].get('poster', '')
-                meta['background'] = meta_data['meta'].get('background', '')
-                meta['logo'] = meta_data['meta'].get('logo', '')
-                if not meta['description']:
-                    meta['description'] = meta_data['meta'].get('description', '')
+        # Note: We don't fetch metadata here to keep lists fast
+        # Cache will populate as users view individual items
         
         if content_type == 'series':
             url = get_url(action='show_seasons', meta_id=item_id)
