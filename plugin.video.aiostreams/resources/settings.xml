@@ -8,6 +8,15 @@
         <setting id="playback_settings" type="lsep" label="Playback Settings"/>
         <setting id="default_behavior" type="select" label="Default Behavior" values="play_first|show_streams" default="show_streams"/>
         <setting id="fallback_behavior" type="select" label="Fallback on Stream Failure" values="play_next|show_streams" default="show_streams" enable="eq(-1,play_first)"/>
+
+        <setting id="quality_settings" type="lsep" label="Quality Settings"/>
+        <setting id="preferred_quality" type="select" label="Preferred Quality" values="any|4k|1080p|720p|480p" default="any"/>
+        <setting id="min_quality" type="select" label="Minimum Quality" values="240p|360p|480p|720p|1080p" default="480p"/>
+        <setting id="filter_low_quality" type="bool" label="Hide Low Quality Streams" default="false"/>
+
+        <setting id="resume_settings" type="lsep" label="Resume &amp; Progress"/>
+        <setting id="auto_resume" type="bool" label="Auto Resume Playback" default="true"/>
+        <setting id="auto_mark_watched_percent" type="number" label="Mark Watched at %" default="90"/>
     </category>
     
     <!-- Trakt Settings -->
@@ -27,6 +36,33 @@
         <setting id="trakt_expires" type="text" label="Token Expires" default="0" visible="false"/>
     </category>
     
+    <!-- UI Settings -->
+    <category label="User Interface">
+        <setting id="ui_enhancements" type="lsep" label="Display Options"/>
+        <setting id="show_progress_bars" type="bool" label="Show Progress Bars" default="true"/>
+        <setting id="color_code_items" type="bool" label="Color Code by Watch Status" default="true"/>
+        <setting id="show_quality_badges" type="bool" label="Show Quality Badges" default="true"/>
+        <setting id="show_reliability_icons" type="bool" label="Show Reliability Icons" default="true"/>
+        <setting id="learn_preferences" type="bool" label="Learn Stream Preferences" default="true"/>
+    </category>
+
+    <!-- Advanced Settings -->
+    <category label="Advanced">
+        <setting id="performance" type="lsep" label="Performance"/>
+        <setting id="cache_expiry_hours" type="number" label="Cache Expiry (hours)" default="24"/>
+        <setting id="max_streams_to_show" type="number" label="Max Streams to Display" default="20"/>
+        <setting id="stream_test_timeout" type="number" label="Stream Test Timeout (sec)" default="5"/>
+
+        <setting id="debug" type="lsep" label="Debug"/>
+        <setting id="debug_logging" type="bool" label="Enable Debug Logging" default="false"/>
+
+        <setting id="maintenance" type="lsep" label="Maintenance"/>
+        <setting id="clear_cache" type="action" label="Clear Cache" action="RunPlugin(plugin://plugin.video.aiostreams/?action=clear_cache)"/>
+        <setting id="clear_stream_stats" type="action" label="Clear Stream Statistics" action="RunPlugin(plugin://plugin.video.aiostreams/?action=clear_stream_stats)"/>
+        <setting id="clear_preferences" type="action" label="Clear Learned Preferences" action="RunPlugin(plugin://plugin.video.aiostreams/?action=clear_preferences)"/>
+        <setting id="test_connection" type="action" label="Test AIOStreams Connection" action="RunPlugin(plugin://plugin.video.aiostreams/?action=test_connection)"/>
+    </category>
+
     <!-- Filter Settings -->
     <category label="Filters">
         <setting id="filter_genres_enabled" type="bool" label="Enable Genre Filters" default="false"/>

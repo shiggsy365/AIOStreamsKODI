@@ -11,6 +11,7 @@ import json
 try:
     from resources.lib import trakt, filters, cache
     from resources.lib.monitor import PLAYER
+    from resources.lib import streams, ui_helpers, settings_helpers, constants
     HAS_MODULES = True
 except Exception as e:
     HAS_MODULES = False
@@ -988,21 +989,53 @@ def show_streams():
 
 def show_streams_dialog(content_type, media_id, stream_data, title):
     """Show streams in a selection dialog."""
-    # Build stream list for dialog
-    stream_list = []
-    for stream in stream_data['streams']:
-        stream_title = stream.get('name', stream.get('title', 'Unknown Stream'))
-        if stream.get('description'):
-            stream_title = f"{stream_title} - {stream['description']}"
-        stream_list.append(stream_title)
+    if not HAS_MODULES:
+        # Fallback to simple dialog
+        stream_list = []
+        for stream in stream_data['streams']:
+            stream_title = stream.get('name', stream.get('title', 'Unknown Stream'))
+            if stream.get('description'):
+                stream_title = f"{stream_title} - {stream['description']}"
+            stream_list.append(stream_title)
+    else:
+        # Use stream manager for enhanced display
+        stream_mgr = streams.get_stream_manager()
+
+        # Filter streams by quality
+        filtered_streams = stream_mgr.filter_by_quality(stream_data['streams'])
+
+        # Sort streams by reliability and quality
+        sorted_streams = stream_mgr.sort_streams(filtered_streams)
+
+        # Limit number of streams
+        max_streams = settings_helpers.get_max_streams()
+        sorted_streams = sorted_streams[:max_streams]
+
+        # Update stream_data with sorted streams
+        stream_data['streams'] = sorted_streams
+
+        # Build formatted stream list
+        stream_list = []
+        for stream in sorted_streams:
+            formatted_title = stream_mgr.format_stream_title(stream)
+            stream_list.append(formatted_title)
+
+    if not stream_list:
+        xbmcgui.Dialog().notification('AIOStreams', 'No streams match your quality preferences', xbmcgui.NOTIFICATION_ERROR)
+        xbmcplugin.endOfDirectory(HANDLE, succeeded=False)
+        return
 
     # Show selection dialog
-    selected = xbmcgui.Dialog().select(f'Select Stream: {title}', stream_list)
+    selected = xbmcgui.Dialog().select(f'Select Stream: {title} ({len(stream_list)} available)', stream_list)
 
     if selected < 0:
         # User cancelled
         xbmcplugin.endOfDirectory(HANDLE, succeeded=False)
         return
+
+    # Record selection for learning
+    if HAS_MODULES:
+        stream_mgr.record_stream_selection(stream_data['streams'][selected].get('name', ''))
 
     # Play selected stream
     play_stream_by_index(content_type, media_id, stream_data, selected)
@@ -1053,6 +1086,13 @@ def play_stream_by_index(content_type, media_id, stream_data, index):
 
     # Set resolved URL for playback
     xbmcplugin.setResolvedUrl(HANDLE, True, list_item)
+
+    # Record stream attempt (success is assumed initially)
+    # TODO: Track actual playback success via Player monitor events
+    if HAS_MODULES:
+        stream_mgr = streams.get_stream_manager()
+        stream_mgr.record_stream_result(stream_url, True)
+
     return True
 
 
@@ -1936,6 +1976,82 @@ def trakt_mark_unwatched():
         xbmc.executebuiltin('Container.Refresh')
 
 
+# Maintenance Tools
+
+def clear_cache():
+    """Clear all cached data."""
+    if not HAS_MODULES:
+        return
+
+    try:
+        cache.cleanup_expired_cache(force_all=True)
+        xbmcgui.Dialog().notification('AIOStreams', 'Cache cleared successfully', xbmcgui.NOTIFICATION_INFO)
+    except Exception as e:
+        xbmc.log(f'[AIOStreams] Failed to clear cache: {e}', xbmc.LOGERROR)
+        xbmcgui.Dialog().notification('AIOStreams', 'Failed to clear cache', xbmcgui.NOTIFICATION_ERROR)
+
+
+def clear_stream_stats():
+    """Clear stream reliability statistics."""
+    if not HAS_MODULES:
+        return
+
+    try:
+        stream_mgr = streams.get_stream_manager()
+        stream_mgr.clear_stats()
+        xbmcgui.Dialog().notification('AIOStreams', 'Stream statistics cleared', xbmcgui.NOTIFICATION_INFO)
+    except Exception as e:
+        xbmc.log(f'[AIOStreams] Failed to clear stream stats: {e}', xbmc.LOGERROR)
+        xbmcgui.Dialog().notification('AIOStreams', 'Failed to clear statistics', xbmcgui.NOTIFICATION_ERROR)
+
+
+def clear_preferences():
+    """Clear learned stream preferences."""
+    if not HAS_MODULES:
+        return
+
+    try:
+        stream_mgr = streams.get_stream_manager()
+        stream_mgr.clear_preferences()
+        xbmcgui.Dialog().notification('AIOStreams', 'Preferences cleared', xbmcgui.NOTIFICATION_INFO)
+    except Exception as e:
+        xbmc.log(f'[AIOStreams] Failed to clear preferences: {e}', xbmc.LOGERROR)
+        xbmcgui.Dialog().notification('AIOStreams', 'Failed to clear preferences', xbmcgui.NOTIFICATION_ERROR)
+
+
+def test_connection():
+    """Test connection to AIOStreams server."""
+    base_url = get_base_url()
+
+    if not base_url:
+        xbmcgui.Dialog().ok('AIOStreams', 'Please set AIOStreams Base URL in settings first')
+        return
+
+    try:
+        import time
+        start_time = time.time()
+        manifest = get_manifest()
+        elapsed = time.time() - start_time
+
+        if manifest:
+            xbmcgui.Dialog().ok('AIOStreams Connection Test',
+                               f'✓ Connection successful!\n\n'
+                               f'Server: {base_url}\n'
+                               f'Response time: {elapsed:.2f}s\n'
+                               f'Catalogs available: {len(manifest.get("catalogs", []))}')
+        else:
+            xbmcgui.Dialog().ok('AIOStreams Connection Test',
+                               f'✗ Connection failed\n\n'
+                               f'Server: {base_url}\n'
+                               f'Please check your settings and try again.')
+    except Exception as e:
+        xbmc.log(f'[AIOStreams] Connection test failed: {e}', xbmc.LOGERROR)
+        xbmcgui.Dialog().ok('AIOStreams Connection Test',
+                           f'✗ Connection failed\n\n'
+                           f'Error: {str(e)}\n\n'
+                           f'Please check your settings and try again.')
+
+
 def router(params):
     """Route to the appropriate function based on parameters."""
     action = params.get('action', '')
@@ -1994,6 +2110,14 @@ def router(params):
         trakt_mark_watched()
     elif action == 'trakt_mark_unwatched':
         trakt_mark_unwatched()
+    elif action == 'clear_cache':
+        clear_cache()
+    elif action == 'clear_stream_stats':
+        clear_stream_stats()
+    elif action == 'clear_preferences':
+        clear_preferences()
+    elif action == 'test_connection':
+        test_connection()
     elif params:
         index()
     else:
