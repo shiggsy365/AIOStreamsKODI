@@ -225,10 +225,28 @@ def create_listitem_with_context(meta, content_type, action_url):
     if certification:
         info_tag.setMpaa(str(certification))
     
-    # Add cast - try metadata first, then Trakt
-    cast_list = meta.get('cast', [])
+    # Add cast - try AIOStreams metadata first, then Trakt
+    cast_list = []
+
+    # Check if AIOStreams provides cast in app_extras
+    app_extras = meta.get('app_extras', {})
+    aio_cast = app_extras.get('cast', [])
+
+    if aio_cast:
+        # Transform AIOStreams cast format to Kodi format
+        for idx, person in enumerate(aio_cast):
+            cast_member = {
+                'name': person.get('name', ''),
+                'role': person.get('character', ''),  # AIOStreams uses 'character' not 'role'
+                'order': idx
+            }
+            # AIOStreams uses 'photo' not 'thumbnail'
+            if person.get('photo'):
+                cast_member['thumbnail'] = person['photo']
+            cast_list.append(cast_member)
+
+    # Fallback to Trakt if no cast from AIOStreams
     if not cast_list and HAS_MODULES:
-        # Try to get cast from Trakt
         item_id = meta.get('id', '')
         if item_id:
             cast_list = trakt.get_cast(content_type, item_id)
