@@ -1,0 +1,42 @@
+<!--
+  AIOStreams Keyboard Shortcuts Template
+
+  To use these keyboard shortcuts:
+  1. Copy this file to: userdata/keymaps/aiostreams.xml
+  2. Restart Kodi
+  3. Use the shortcuts while browsing AIOStreams content
+
+  Note: These shortcuts only work when browsing within the AIOStreams addon
+-->
+<keymap>
+  <global>
+    <!-- Quick Actions Menu -->
+    <keyboard>
+      <a>RunPlugin(plugin://plugin.video.aiostreams/?action=quick_actions&amp;content_type=$INFO[ListItem.Property(content_type)]&amp;imdb_id=$INFO[ListItem.Property(imdb_id)]&amp;title=$INFO[ListItem.Label])</a>
+    </keyboard>
+  </global>
+
+  <!-- Shortcuts while viewing videos -->
+  <FullscreenVideo>
+    <keyboard>
+      <!-- Add more video playback shortcuts here if needed -->
+    </keyboard>
+  </FullscreenVideo>
+
+  <!-- Shortcuts while browsing video lists -->
+  <MyVideoNav>
+    <keyboard>
+      <!-- Quick toggle watchlist (Q key) -->
+      <q>RunPlugin(plugin://plugin.video.aiostreams/?action=trakt_add_watchlist&amp;media_type=$INFO[ListItem.Property(content_type)]&amp;imdb_id=$INFO[ListItem.Property(imdb_id)])</q>
+
+      <!-- Quick mark as watched (W key) -->
+      <w>RunPlugin(plugin://plugin.video.aiostreams/?action=trakt_mark_watched&amp;media_type=$INFO[ListItem.Property(content_type)]&amp;imdb_id=$INFO[ListItem.Property(imdb_id)])</w>
+
+      <!-- Show item info (I key) -->
+      <i>Action(Info)</i>
+
+      <!-- Show similar content (S key) -->
+      <s>Container.Update(plugin://plugin.video.aiostreams/?action=show_related&amp;content_type=$INFO[ListItem.Property(content_type)]&amp;imdb_id=$INFO[ListItem.Property(imdb_id)]&amp;title=$INFO[ListItem.Label])</s>
+    </keyboard>
+  </MyVideoNav>
+</keymap>
