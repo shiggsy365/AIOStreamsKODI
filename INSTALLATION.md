@@ -135,27 +135,82 @@ If you installed via the repository, updates are automatic:
 
 ---
 
+## Custom Search Integration
+
+For Kodi skins that provide a custom search option, you can use the AIOStreams search directly:
+
+### Custom Search Path
+```
+plugin://plugin.video.aiostreams/?action=search&content_type=both&query=
+```
+
+This allows you to integrate AIOStreams search into your skin's search functionality. The addon will handle the search and display results in a poster view.
+
+### Search Parameters
+- `action=search` - Required
+- `content_type` - Optional: `movie`, `series`, or `both` (default)
+- `query` - The search term (appended to URL)
+
+### Example Usage
+```
+plugin://plugin.video.aiostreams/?action=search&content_type=movie&query=inception
+plugin://plugin.video.aiostreams/?action=search&content_type=series&query=breaking bad
+```
+
+---
+
+## Widget Support
+
+The addon is optimized for use as Kodi widgets. Recommended widget paths:
+
+### Continue Watching
+```
+plugin://plugin.video.aiostreams/?action=trakt_continue_watching  # TV Shows
+plugin://plugin.video.aiostreams/?action=trakt_continue_movies    # Movies
+```
+
+### Next Up
+```
+plugin://plugin.video.aiostreams/?action=trakt_next_up
+```
+
+### Trending & Popular
+```
+plugin://plugin.video.aiostreams/?action=trakt_trending&media_type=movies
+plugin://plugin.video.aiostreams/?action=trakt_trending&media_type=shows
+plugin://plugin.video.aiostreams/?action=trakt_popular&media_type=movies
+plugin://plugin.video.aiostreams/?action=trakt_popular&media_type=shows
+```
+
+---
+
 ## Features Documentation
 
 For complete feature documentation, see:
-- **FEATURES.md** in the addon folder
-- Or online at: [GitHub FEATURES.md](https://github.com/shiggsy365/AIOStreamsKODI/blob/main/plugin.video.aiostreams/FEATURES.md)
+- **README.md** in the repository
+- Or online at: [GitHub README.md](https://github.com/shiggsy365/AIOStreamsKODI/blob/main/README.md)
 
 ---
 
 ## Version Information
 
-**Current Version**: 2.0.0
+**Current Version**: 2.3.2
 
-### What's New in 2.0.0
-- Dynamic context menus (watched/watchlist toggles)
-- Stream quality filtering with color-coded badges
-- Stream reliability tracking with star ratings
-- UI enhancements (color coding, progress bars)
-- Content discovery ("Similar to this..." feature)
-- Keyboard shortcuts support
-- Advanced settings and maintenance tools
-- Comprehensive documentation
+### What's New in 2.3.2
+- **Major performance improvements**: Lists now load instantly (previously 25-38 seconds)
+- **Fixed caching**: Cache now works properly with no sequential API calls
+- **Episode thumbnails**: Continue watching shows episode-specific landscape images
+- **Movie continue watching**: Separate list for movies in progress
+- **Trailer support**: Automatic trailer parsing with YouTube integration
+- **Remove from continue watching**: Context menu option to clear progress
+- **Custom search integration**: URL format for Kodi skin integration
+- **Cast photos**: Now display properly on Trakt lists from cached data
+
+### Previous Versions
+- **v2.3.1**: Bugfix for cast errors and similar content detection
+- **v2.3.0**: Tabbed search interface with Movies/TV Shows/All tabs
+- **v2.2.0**: Fixed cast display using xbmc.Actor objects
+- **v2.0.0**: Dynamic context menus, quality filtering, UI enhancements
 
 ---
 

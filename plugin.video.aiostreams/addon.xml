@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<addon id="plugin.video.aiostreams" name="AIOStreams" version="2.3.2" provider-name="Jon">
+<addon id="plugin.video.aiostreams" name="AIOStreams" version="2.4.0" provider-name="Jon">
     <requires>
         <import addon="xbmc.python" version="3.0.0"/>
         <import addon="script.module.requests" version="2.25.1"/>
@@ -13,7 +13,7 @@
         <platform>all</platform>
         <license>MIT</license>
         <website>https://aiostreams.shiggsy.co.uk</website>
-        <news>v2.3.2: Major performance boost! Lists now load instantly (was 25-38s). Cache works properly, no more sequential API calls. Cast photos now show on Trakt lists from cached data. | v2.3.1: Bugfix for cast errors. | v2.3.0: Tabbed search.</news>
+        <news>v2.4.0: Movie continue watching list added. Episode thumbnails in continue watching. Trailer support with YouTube integration. Remove from continue watching button. Custom search URL for skin integration. Further performance improvements to continue watching and next up lists. | v2.3.2: Major performance improvements. | v2.3.1: Bugfix for cast errors.</news>
         <assets>
             <icon>resources/icon.png</icon>
             <fanart>resources/fanart.jpg</fanart>

@@ -1,286 +1,176 @@
 # AIOStreams Kodi Addon
 
-A comprehensive Kodi addon for streaming movies and TV shows with full Trakt.tv integration.
+A powerful Kodi addon for streaming content from AIOStreams with comprehensive Trakt integration, advanced search capabilities, and smart metadata caching.
 
 ## Features
 
-### 🎬 Content Discovery
-- **Unified Search**: Search both movies and TV shows in one query
-- **Movie & TV Show Catalogs**: Browse trending, popular, and genre-specific content
-- **AIOStreams Integration**: Direct access to your AIOStreams server content
+### Core Features
+- **AIOStreams Integration**: Browse catalogs, search content, and stream from AIOStreams
+- **Trakt Integration**: Full sync with Trakt for watchlists, collections, watch history, and progress tracking
+- **Smart Caching**: Disk-based metadata cache reduces API calls and improves performance
+- **Advanced Search**: Tabbed search interface with separate Movies/TV Shows/All Results views
+- **Episode Thumbnails**: Shows episode-specific landscape thumbnails in continue watching lists
 
-### 📺 Trakt.tv Integration
-- **Continue Watching**: Resume shows where you left off
-- **Next Up**: See what episodes to watch next
-- **Watchlist**: Sync your Trakt watchlist (Movies & Shows)
-- **Collection**: Access your Trakt collection
-- **Trending & Popular**: Discover what's trending on Trakt
-- **Recommended**: Get personalized recommendations
-- **Scrobbling**: Automatic playback tracking
-- **Watched Indicators**: Visual markers for watched content at all levels:
-  - Movies: Shows if watched in Trakt history
-  - Shows: Shows if all episodes are watched
-  - Seasons: Shows if entire season is watched
-  - Episodes: Shows individual episode watched status
+### Trakt Features
+- **Continue Watching**: Separate lists for TV shows and movies with progress indicators
+- **Next Up**: Smart list of next unwatched episodes from your watched shows
+- **Watchlist & Collection**: Full access to your Trakt watchlist and collection
+- **Trending & Popular**: Browse trending and popular content
+- **Progress Tracking**: Automatic scrobbling and progress tracking
+- **Context Menus**: Quick actions for adding to watchlist, marking watched, and more
 
-### 🎯 Smart Features
-- **Disk-Based Metadata Cache**: 30-day cache for faster loading
-- **Genre Filtering**: Filter content by genre (configurable in settings)
-- **Context Menus**: Right-click options for:
-  - Add to Trakt Watchlist
-  - Mark as Watched
-  - Browse Show (for episodes in widgets)
-  - Play Trailer (when available)
+### Performance
+- **Fast List Loading**: Lists load instantly with warm cache (previously 25-38 seconds)
+- **No Sequential API Calls**: Optimized to use cached data only in list views
+- **30-Day Cache**: Metadata cached for 30 days to minimize API requests
 
-### 🔍 Search Capabilities
-- **Unified Search**: One search for both movies and TV shows
-  - Returns first 10 results of each type
-  - "View All" links for comprehensive results
-- **Dedicated Searches**: Separate movie-only or TV-only searches
-- **Paginated Results**: "Load More" for large result sets
+### Content Discovery
+- **Trailers**: Automatic trailer parsing from metadata with YouTube integration
+- **Cast & Crew**: Full cast information with photos
+- **Similar Content**: Browse related movies and shows
+- **Rich Metadata**: Posters, fanart, logos, ratings, genres, and more
 
 ## Installation
 
-### Prerequisites
-1. **Kodi 21 (Omega)** or newer
-2. **AIOStreams Server**: You need access to an AIOStreams server
-   - Self-hosted or third-party
-   - Must have your server URL and credentials
+1. Download the latest release ZIP file
+2. In Kodi, go to Settings > Add-ons > Install from zip file
+3. Select the downloaded ZIP file
+4. Wait for installation confirmation
 
-### Install Addon
-1. Download `aiostreams-kodi-addon.zip`
-2. In Kodi: Settings → Add-ons → Install from zip file
-3. Select the downloaded zip file
-4. Wait for "AIOStreams Add-on enabled" notification
+## Custom Search Integration
 
-### Configure AIOStreams
-1. Open addon settings
-2. Go to "AIOStreams Configuration"
-3. Set your **Base URL** (e.g., `https://your-server.com/stremio/YOUR-ID/YOUR-TOKEN`)
-4. Test connection
-
-### Configure Trakt (Optional)
-1. Open addon settings
-2. Go to "Trakt Configuration"
-3. Click "Authorize Trakt"
-4. Follow on-screen instructions to link your Trakt account
-5. Once authorized, all Trakt features will be available
-
-## Usage
-
-### Main Menu
-When you open AIOStreams, you'll see:
+For Kodi skins that provide a custom search option, use the following URL format:
 
 ```
-🔍 Search (Movies & TV Shows)
-🔍 Search Movies
-🔍 Search TV Shows
-🎬 Movie Lists
-📺 Series Lists
-⭐ Trakt Catalogs (if authorized)
+plugin://plugin.video.aiostreams/?action=search&content_type=both&query=
 ```
 
-### Searching
-1. Click any search option
-2. Type your query in the keyboard dialog
-3. Results display with posters and metadata
-4. Click any item to:
-   - Movies: View available streams
-   - TV Shows: Browse seasons → episodes → streams
+### Search Parameters
 
-### Watching Content
-1. Navigate to a movie or episode
-2. Click to view available streams
-3. Select stream quality/source
-4. Video starts playing
-5. Playback automatically syncs to Trakt (if authorized)
+- `action=search` - Required: Triggers the search function
+- `content_type` - Optional: Filter results by type
+  - `movie` - Movies only
+  - `series` - TV shows only
+  - `both` - All results (default)
+- `query` - The search term (append to the URL)
 
-### Using Trakt Lists
-**Continue Watching:**
-- Shows episodes you're currently watching
-- Displays progress percentage
-- Right-click: Mark as Watched, Browse Show
+### Examples
 
-**Next Up:**
-- Shows next episodes to watch
-- Based on your viewing history
-- Organized by show
-
-**Watchlist:**
-- Items you've saved to watch later
-- Synced from Trakt.tv
-- Separate lists for Movies & Shows
-
-**Collection:**
-- Items you own/collected
-- Synced from Trakt.tv
-
-## Settings
-
-### AIOStreams Configuration
-- **Base URL**: Your AIOStreams server URL (required)
-- **Metadata Cache TTL**: Fixed at 30 days
-
-### Trakt Configuration
-- **Authorize Trakt**: Link your Trakt account
-- **Revoke Authorization**: Unlink Trakt account
-- **Scrobbling**: Enabled by default when authorized
-
-### Filters
-- **Genre Filtering**: Enable/disable genre filters
-- **Select Genres**: Choose which genres to show/hide
-
-## Content Structure
-
-### Movies
+**Search for movies:**
 ```
-Search/Browse → Movie → Stream Selection → Play
+plugin://plugin.video.aiostreams/?action=search&content_type=movie&query=inception
 ```
 
-### TV Shows
+**Search for TV shows:**
 ```
-Search/Browse → Show → Seasons → Episodes → Stream Selection → Play
+plugin://plugin.video.aiostreams/?action=search&content_type=series&query=breaking bad
 ```
 
-## Metadata
+**Search all content:**
+```
+plugin://plugin.video.aiostreams/?action=search&content_type=both&query=matrix
+```
 
-All content includes:
-- **Poster**: High-quality poster image
-- **Fanart**: Background artwork
-- **Plot**: Description/synopsis
-- **Rating**: IMDB rating
-- **Year**: Release year
-- **Runtime**: Duration
-- **Genres**: Categories
-- **Cast**: Actors list
-- **Director**: Director name(s)
-- **Writers**: Writer name(s)
-- **Clearlogo**: Logo overlay (if available)
-- **Trailer**: YouTube trailer link (if available)
+## Trakt Setup
 
-## Caching
+1. Navigate to Settings in the addon
+2. Select "Authorize Trakt"
+3. Visit the provided URL and enter the code
+4. Return to Kodi and confirm authorization
 
-**Metadata Cache:**
-- Location: `userdata/addon_data/plugin.video.aiostreams/cache/`
-- Duration: 30 days
-- Format: JSON files
-- Cleanup: Automatic on addon startup
+## Widget Support
 
-**Watched Status Cache:**
-- In-memory only (session-based)
-- Trakt history: Last 1000 items
-- Show progress: Full show data
-- Refreshes when addon restarts
+The addon is optimized for use as a Kodi widget:
 
-## Keyboard Shortcuts (in addon)
+- All lists support widget integration
+- Fast loading with cached metadata
+- Progress indicators and watched status
+- Episode-specific thumbnails for continue watching
 
-While browsing:
-- **Enter/Select**: Open item
-- **Back**: Return to previous screen
-- **Context Menu**: Right-click or 'C' key
-- **Info**: 'I' key (shows full metadata)
+### Recommended Widgets
+
+- **Continue Watching - TV**: `plugin://plugin.video.aiostreams/?action=trakt_continue_watching`
+- **Continue Watching - Movies**: `plugin://plugin.video.aiostreams/?action=trakt_continue_movies`
+- **Next Up**: `plugin://plugin.video.aiostreams/?action=trakt_next_up`
+- **Trending Movies**: `plugin://plugin.video.aiostreams/?action=trakt_trending&media_type=movies`
+- **Trending Shows**: `plugin://plugin.video.aiostreams/?action=trakt_trending&media_type=shows`
+
+## Context Menu Actions
+
+Right-click on any item for quick actions:
+
+### Continue Watching Lists
+- **Remove from Continue Watching**: Clears progress without marking as watched
+- **Add to Watchlist**: Add to your Trakt watchlist
+- **Mark as Watched**: Mark as watched and remove from continue watching
+- **Browse Show**: View all seasons and episodes (TV shows)
+
+### General Content
+- **Play Trailer**: Watch trailer on YouTube (when available)
+- **Similar to this**: Browse related content
+- **Add/Remove Watchlist**: Toggle watchlist status
+- **Mark Watched/Unwatched**: Toggle watched status
+- **Quick Actions**: Additional content-specific actions
+
+## Performance Tips
+
+1. **Initial Load**: First load of lists may be slow as cache builds
+2. **Subsequent Loads**: Lists load instantly with warm cache
+3. **Cache Cleanup**: Cache automatically cleans expired entries (30+ days)
+4. **Manual Cache Clear**: Use Settings > Clear Cache if needed
 
 ## Troubleshooting
 
-### "No streams found"
-- Check your AIOStreams server is running
-- Verify Base URL in settings is correct
-- Ensure content exists on your server
+### Lists Loading Slowly
+- First load builds cache - this is normal
+- Subsequent loads should be instant
+- If persistently slow, try clearing cache in settings
 
-### "Trakt authorization failed"
-- Check your internet connection
-- Make sure you completed the authorization process
-- Try revoking and re-authorizing
+### Missing Cast Photos
+- Cast photos come from cached AIOStreams metadata
+- View individual items to populate cache
+- Cache persists for 30 days
 
-### Metadata not loading
-- Clear cache: Delete `userdata/addon_data/plugin.video.aiostreams/cache/`
-- Check Base URL is correct
-- Restart Kodi
-
-### Watched indicators not showing
-- Make sure Trakt is authorized
-- Check items are marked watched on Trakt.tv
-- Restart addon to refresh cache
-
-### Search not working
-- Ensure Base URL is set in settings
-- Check AIOStreams server has search enabled
-- Try searching for common titles first
-
-## Technical Details
-
-### Requirements
-- Kodi 21.0 (Omega) or higher
-- Python 3.8+
-- Internet connection
-- AIOStreams server access
-
-### Dependencies
-- script.module.requests (auto-installed)
-- Trakt.tv API (optional, for Trakt features)
-
-### API Endpoints Used
-- **AIOStreams**: `/catalog/`, `/meta/`, `/stream/`
-- **Trakt**: `/sync/`, `/shows/`, `/users/`, `/oauth/`
-
-### Performance
-- Metadata cached for 30 days (zero RAM impact)
-- Parallel search for movies + TV shows
-- Batch API calls where possible
-- Progressive loading for large lists
-
-## Privacy
-
-- **AIOStreams**: Connects to your configured server only
-- **Trakt**: Only if you authorize it
-  - Sends watch history when scrobbling enabled
-  - Syncs watchlist/collection bidirectionally
-- **No Analytics**: No tracking or telemetry
-- **Local Cache**: All cached data stored locally
-
-## Support
-
-For issues or questions:
-1. Check Kodi log file for errors
-2. Verify all settings are correct
-3. Test with simple queries (e.g., "Inception")
-4. Ensure AIOStreams server is accessible
+### Trakt Not Working
+- Verify authorization in settings
+- Check internet connection
+- Re-authorize if needed
 
 ## Version History
 
-### v1.5.3 (Current)
-- Removed rating filters
-- Fixed watched indicators for shows/seasons/episodes
-- Uses Trakt progress API for accurate tracking
+### v2.3.2 (Latest)
+- Major performance improvements (25-38s → <1s list loading)
+- Fixed cache to work properly
+- Added cast photos to Trakt lists from cached data
+- Removed sequential API calls from all list views
 
-### v1.5.2
-- Fixed back button in search results
-- Added Trakt watched indicators
+### v2.3.1
+- Fixed cast display errors
+- Fixed "Similar to this" content type detection
+- Improved error handling for Trakt cast images
 
-### v1.5.0
-- Added unified search (movies + TV shows)
-- Parallel search execution
-- Color-coded result headers
+### v2.3.0
+- Added tabbed search interface
+- Added cast/director search capability
+- Enhanced search with better content type filtering
 
-### v1.4.0
-- Complete metadata display (cast, rating, duration)
-- Clearlogo support
-- Fixed runtime and release date parsing
-
-### v1.3.7
-- Disk-based metadata cache (30-day TTL)
-- Zero RAM impact caching system
-
-### v1.3.6
-- Fixed Continue Watching mark as watched
-- Added Browse Show context menu
-
-## License
-
-This addon is provided as-is for personal use with AIOStreams servers.
+### v2.2.0
+- Fixed cast display using proper xbmc.Actor objects
+- Improved metadata alignment with AIOStreams format
 
 ## Credits
 
-Created by Jon
-Built for Kodi 21 (Omega)
-Trakt.tv integration via Trakt API
+- **Developer**: Jon
+- **AIOStreams**: Content source and metadata
+- **Trakt**: Watch history and recommendations
+- **Kodi Community**: Testing and feedback
+
+## Support
+
+For issues, feature requests, or questions:
+- GitHub Issues: [Report an issue](https://github.com/shiggsy365/AIOStreamsKODI/issues)
+- Kodi Forums: Community support
+
+## License
+
+MIT License - See LICENSE file for details
