@@ -650,12 +650,7 @@ def search_all_results(query):
         if HAS_MODULES and filters:
             movies = filters.filter_items(movies)
 
-        # Section header
-        header_item = xbmcgui.ListItem(label='[B][COLOR blue]🎬 Movies[/COLOR][/B]')
-        header_item.setProperty('IsPlayable', 'false')
-        xbmcplugin.addDirectoryItem(HANDLE, '', header_item, False)
-
-        # Add results (limit to 10)
+        # Add results directly without header
         for meta in movies[:10]:
             item_id = meta.get('id')
             url = get_url(action='show_streams', content_type='movie', media_id=item_id)
@@ -674,12 +669,7 @@ def search_all_results(query):
         if HAS_MODULES and filters:
             shows = filters.filter_items(shows)
 
-        # Section header
-        header_item = xbmcgui.ListItem(label='[B][COLOR green]📺 TV Shows[/COLOR][/B]')
-        header_item.setProperty('IsPlayable', 'false')
-        xbmcplugin.addDirectoryItem(HANDLE, '', header_item, False)
-
-        # Add results (limit to 10)
+        # Add results directly without header
         for meta in shows[:10]:
             item_id = meta.get('id')
             url = get_url(action='show_seasons', meta_id=item_id)
