@@ -279,6 +279,69 @@ def get_related(media_type, item_id, page=1, limit=20):
     return call_trakt(f'{api_type}/{item_id}/related', params={'page': page, 'limit': limit}, with_auth=False)
 
 
+# Cache for cast information
+_cast_cache = {}
+
+def get_cast(media_type, item_id):
+    """
+    Get cast and crew information from Trakt.
+
+    Args:
+        media_type: 'movie' or 'series'
+        item_id: IMDB ID
+
+    Returns:
+        List of cast dictionaries in Kodi format
+    """
+    # Check cache first
+    cache_key = f"{media_type}:{item_id}"
+    if cache_key in _cast_cache:
+        return _cast_cache[cache_key]
+
+    # media_type should be 'movies' or 'shows'
+    api_type = 'movies' if media_type == 'movie' else 'shows'
+
+    result = call_trakt(f'{api_type}/{item_id}/people', with_auth=False)
+
+    if not result:
+        return []
+
+    # Format cast for Kodi - expects list of dicts with 'name', 'role', 'thumbnail' keys
+    cast_list = []
+
+    # Get actors from cast
+    cast_data = result.get('cast', [])
+    for person in cast_data:
+        person_info = person.get('person', {})
+        character = person.get('character', '')
+
+        cast_member = {
+            'name': person_info.get('name', ''),
+            'role': character,
+            'order': len(cast_list)
+        }
+
+        # Add thumbnail if available
+        images = person_info.get('images', {})
+        if images:
+            headshot = images.get('headshot', {})
+            if headshot:
+                thumb = headshot.get('full') or headshot.get('medium') or headshot.get('thumb')
+                if thumb:
+                    cast_member['thumbnail'] = thumb
+
+        cast_list.append(cast_member)
+
+        # Limit to top 20 cast members for performance
+        if len(cast_list) >= 20:
+            break
+
+    # Cache the result
+    _cast_cache[cache_key] = cast_list
+
+    return cast_list
+
+
 def hide_show_from_progress(show_id):
     """Hide a show from progress/recommendations."""
     data = {

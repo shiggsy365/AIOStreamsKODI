@@ -225,11 +225,17 @@ def create_listitem_with_context(meta, content_type, action_url):
     if certification:
         info_tag.setMpaa(str(certification))
     
-    # Add cast
+    # Add cast - try metadata first, then Trakt
     cast_list = meta.get('cast', [])
+    if not cast_list and HAS_MODULES:
+        # Try to get cast from Trakt
+        item_id = meta.get('id', '')
+        if item_id:
+            cast_list = trakt.get_cast(content_type, item_id)
+
     if cast_list:
         info_tag.setCast(cast_list)
-    
+
     # Add director
     directors = meta.get('director', [])
     if directors:
@@ -1150,26 +1156,31 @@ def show_seasons():
             if season not in seasons:
                 seasons[season] = []
             seasons[season].append(video)
-    
+
+    # Get Trakt data once for all seasons (performance optimization)
+    show_progress = None
+    show_in_watchlist = False
+    if HAS_MODULES and trakt.get_access_token():
+        show_progress = trakt.get_show_progress(meta_id)
+        show_in_watchlist = trakt.is_in_watchlist('series', meta_id)
+
     # Display seasons
     for season_num in sorted(seasons.keys()):
         episode_count = len(seasons[season_num])
 
-        # Get season progress from Trakt
+        # Get season progress from cached show progress
         aired = 0
         completed = 0
         is_season_watched = False
 
-        if HAS_MODULES and trakt.get_access_token():
-            progress = trakt.get_show_progress(meta_id)
-            if progress:
-                seasons_data = progress.get('seasons', [])
-                for s in seasons_data:
-                    if s.get('number') == season_num:
-                        aired = s.get('aired', 0)
-                        completed = s.get('completed', 0)
-                        is_season_watched = aired > 0 and aired == completed
-                        break
+        if show_progress:
+            seasons_data = show_progress.get('seasons', [])
+            for s in seasons_data:
+                if s.get('number') == season_num:
+                    aired = s.get('aired', 0)
+                    completed = s.get('completed', 0)
+                    is_season_watched = aired > 0 and aired == completed
+                    break
 
         # Format season label with UI enhancements
         if HAS_MODULES:
@@ -1188,19 +1199,16 @@ def show_seasons():
         if is_season_watched:
             info_tag.setPlaycount(1)
             list_item.setProperty('WatchedOverlay', 'OverlayWatched.png')
-        
+
         if meta.get('poster'):
             list_item.setArt({'poster': meta['poster'], 'thumb': meta['poster']})
         if meta.get('background'):
             list_item.setArt({'fanart': meta['background']})
-        
+
         # Add Trakt context menus
         context_menu = []
         if HAS_MODULES and trakt.get_access_token():
-            # Check if season is watched
-            is_season_watched = trakt.is_season_watched(meta_id, season_num)
-
-            # Mark season as watched/unwatched
+            # Mark season as watched/unwatched (use cached is_season_watched)
             if is_season_watched:
                 context_menu.append(('[COLOR blue][Trakt][/COLOR] Mark Season as Unwatched',
                                     f'RunPlugin({get_url(action="trakt_mark_unwatched", media_type="show", imdb_id=meta_id, season=season_num)})'))
@@ -1208,14 +1216,14 @@ def show_seasons():
                 context_menu.append(('[COLOR blue][Trakt][/COLOR] Mark Season as Watched',
                                     f'RunPlugin({get_url(action="trakt_mark_watched", media_type="show", imdb_id=meta_id, season=season_num)})'))
 
-            # Watchlist - toggle between Add and Remove
-            if trakt.is_in_watchlist('series', meta_id):
+            # Watchlist - toggle between Add and Remove (use cached show_in_watchlist)
+            if show_in_watchlist:
                 context_menu.append(('[COLOR blue][Trakt][/COLOR] Remove Show from Watchlist',
                                     f'RunPlugin({get_url(action="trakt_remove_watchlist", media_type="show", imdb_id=meta_id)})'))
             else:
                 context_menu.append(('[COLOR blue][Trakt][/COLOR] Add Show to Watchlist',
                                     f'RunPlugin({get_url(action="trakt_add_watchlist", media_type="show", imdb_id=meta_id)})'))
-        
+
         if context_menu:
             list_item.addContextMenuItems(context_menu)
         
@@ -1253,22 +1261,40 @@ def show_episodes():
         return
     
     episodes.sort(key=lambda x: x.get('episode', 0))
-    
+
+    # Get Trakt data once for all episodes (performance optimization)
+    watched_episodes = set()
+    show_in_watchlist = False
+    is_season_watched = False
+
+    if HAS_MODULES and trakt.get_access_token():
+        # Get show progress to determine watched episodes
+        show_progress = trakt.get_show_progress(meta_id)
+        if show_progress:
+            seasons_data = show_progress.get('seasons', [])
+            for s in seasons_data:
+                if s.get('number') == season:
+                    # Build set of watched episode numbers for this season
+                    for ep in s.get('episodes', []):
+                        if ep.get('completed', False):
+                            watched_episodes.add(ep.get('number'))
+                    # Check if entire season is watched
+                    aired = s.get('aired', 0)
+                    completed = s.get('completed', 0)
+                    is_season_watched = aired > 0 and aired == completed
+                    break
+
+        # Check if show is in watchlist (once for all episodes)
+        show_in_watchlist = trakt.is_in_watchlist('series', meta_id)
+
     # Display episodes
     for episode in episodes:
         episode_num = episode.get('episode', 0)
         episode_title = episode.get('title', f'Episode {episode_num}')
 
-        # Check watch status and progress
-        is_watched = False
-        progress = 0
-
-        if HAS_MODULES and trakt.get_access_token():
-            is_watched = trakt.is_episode_watched(meta_id, season, episode_num)
-            # TODO: Get actual progress from Trakt playback/progress endpoint
-            # For now, progress is 0 (unwatched) or 100 (watched)
-            if is_watched:
-                progress = 100
+        # Check watch status from cached data
+        is_watched = episode_num in watched_episodes
+        progress = 100 if is_watched else 0
 
         # Format episode label with UI enhancements
         if HAS_MODULES:
@@ -1302,25 +1328,19 @@ def show_episodes():
         if is_watched:
             info_tag.setPlaycount(1)
             list_item.setProperty('WatchedOverlay', 'OverlayWatched.png')
-        
+
         # Add Trakt context menus
         context_menu = []
         if HAS_MODULES and trakt.get_access_token():
-            # Check if episode is watched
-            is_ep_watched = trakt.is_episode_watched(meta_id, season, episode_num)
-
-            # Mark episode as watched/unwatched
-            if is_ep_watched:
+            # Mark episode as watched/unwatched (use cached is_watched)
+            if is_watched:
                 context_menu.append(('[COLOR blue][Trakt][/COLOR] Mark Episode as Unwatched',
                                     f'RunPlugin({get_url(action="trakt_mark_unwatched", media_type="show", imdb_id=meta_id, season=season, episode=episode_num)})'))
             else:
                 context_menu.append(('[COLOR blue][Trakt][/COLOR] Mark Episode as Watched',
                                     f'RunPlugin({get_url(action="trakt_mark_watched", media_type="show", imdb_id=meta_id, season=season, episode=episode_num)})'))
 
-            # Check if season is watched
-            is_season_watched = trakt.is_season_watched(meta_id, season)
-
-            # Mark season as watched/unwatched
+            # Mark season as watched/unwatched (use cached is_season_watched)
             if is_season_watched:
                 context_menu.append(('[COLOR blue][Trakt][/COLOR] Mark Season as Unwatched',
                                     f'RunPlugin({get_url(action="trakt_mark_unwatched", media_type="show", imdb_id=meta_id, season=season)})'))
@@ -1328,14 +1348,14 @@ def show_episodes():
                 context_menu.append(('[COLOR blue][Trakt][/COLOR] Mark Season as Watched',
                                     f'RunPlugin({get_url(action="trakt_mark_watched", media_type="show", imdb_id=meta_id, season=season)})'))
 
-            # Watchlist - toggle between Add and Remove
-            if trakt.is_in_watchlist('series', meta_id):
+            # Watchlist - toggle between Add and Remove (use cached show_in_watchlist)
+            if show_in_watchlist:
                 context_menu.append(('[COLOR blue][Trakt][/COLOR] Remove Show from Watchlist',
                                     f'RunPlugin({get_url(action="trakt_remove_watchlist", media_type="show", imdb_id=meta_id)})'))
             else:
                 context_menu.append(('[COLOR blue][Trakt][/COLOR] Add Show to Watchlist',
                                     f'RunPlugin({get_url(action="trakt_add_watchlist", media_type="show", imdb_id=meta_id)})'))
-        
+
         if context_menu:
             list_item.addContextMenuItems(context_menu)
         
