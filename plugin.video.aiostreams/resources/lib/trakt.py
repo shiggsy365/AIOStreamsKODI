@@ -291,7 +291,7 @@ def get_cast(media_type, item_id):
         item_id: IMDB ID
 
     Returns:
-        List of cast dictionaries in Kodi format
+        List of xbmc.Actor objects
     """
     # Check cache first
     cache_key = f"{media_type}:{item_id}"
@@ -306,7 +306,7 @@ def get_cast(media_type, item_id):
     if not result:
         return []
 
-    # Format cast for Kodi - expects list of dicts with 'name', 'role', 'thumbnail' keys
+    # Format cast for Kodi - expects list of xbmc.Actor objects
     cast_list = []
 
     # Get actors from cast
@@ -314,23 +314,19 @@ def get_cast(media_type, item_id):
     for person in cast_data:
         person_info = person.get('person', {})
         character = person.get('character', '')
+        name = person_info.get('name', '')
 
-        cast_member = {
-            'name': person_info.get('name', ''),
-            'role': character,
-            'order': len(cast_list)
-        }
-
-        # Add thumbnail if available
+        # Get thumbnail if available
+        thumbnail = ''
         images = person_info.get('images', {})
         if images:
             headshot = images.get('headshot', {})
             if headshot:
-                thumb = headshot.get('full') or headshot.get('medium') or headshot.get('thumb')
-                if thumb:
-                    cast_member['thumbnail'] = thumb
+                thumbnail = headshot.get('full') or headshot.get('medium') or headshot.get('thumb') or ''
 
-        cast_list.append(cast_member)
+        # Create xbmc.Actor object
+        actor = xbmc.Actor(name, character, len(cast_list), thumbnail)
+        cast_list.append(actor)
 
         # Limit to top 20 cast members for performance
         if len(cast_list) >= 20:

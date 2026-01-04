@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <addons>
-<addon id="plugin.video.aiostreams" name="AIOStreams" version="2.1.0" provider-name="Jon">
+<addon id="plugin.video.aiostreams" name="AIOStreams" version="2.2.0" provider-name="Jon">
     <requires>
         <import addon="xbmc.python" version="3.0.0"/>
         <import addon="script.module.requests" version="2.25.1"/>
@@ -14,7 +14,7 @@
         <platform>all</platform>
         <license>MIT</license>
         <website>https://aiostreams.shiggsy.co.uk</website>
-        <news>v2.1.0: Massive performance improvements! Optimized all Trakt lists (95% faster with cache), fixed all metadata fields (runtime, release dates, ratings, cast, directors), added episode runtime support. Lists now load near-instantly. Fixed slow loading and missing cast information. All metadata properly aligned with AIOStreams format. | v2.0.0: Major update! Dynamic context menus, stream quality filtering, reliability tracking, UI enhancements, content discovery, keyboard shortcuts, advanced settings, maintenance tools.</news>
+        <news>v2.2.0: Fixed cast display error - Cast information now uses proper xbmc.Actor objects for compatibility with Kodi Matrix/Nexus. | v2.1.0: Massive performance improvements! Optimized all Trakt lists (95% faster), fixed metadata fields (runtime, dates, ratings, cast, directors). | v2.0.0: Dynamic context menus, stream quality filtering, reliability tracking, UI enhancements.</news>
         <assets>
             <icon>resources/icon.png</icon>
             <fanart>resources/fanart.jpg</fanart>

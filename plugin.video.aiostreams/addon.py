@@ -259,17 +259,15 @@ def create_listitem_with_context(meta, content_type, action_url):
     aio_cast = app_extras.get('cast', [])
 
     if aio_cast:
-        # Transform AIOStreams cast format to Kodi format
+        # Transform AIOStreams cast format to Kodi Actor objects
         for idx, person in enumerate(aio_cast):
-            cast_member = {
-                'name': person.get('name', ''),
-                'role': person.get('character', ''),  # AIOStreams uses 'character' not 'role'
-                'order': idx
-            }
-            # AIOStreams uses 'photo' not 'thumbnail'
-            if person.get('photo'):
-                cast_member['thumbnail'] = person['photo']
-            cast_list.append(cast_member)
+            name = person.get('name', '')
+            role = person.get('character', '')  # AIOStreams uses 'character' not 'role'
+            thumbnail = person.get('photo', '')  # AIOStreams uses 'photo' not 'thumbnail'
+
+            # Create xbmc.Actor object
+            actor = xbmc.Actor(name, role, idx, thumbnail)
+            cast_list.append(actor)
 
     # Fallback to Trakt if no cast from AIOStreams
     if not cast_list and HAS_MODULES:
