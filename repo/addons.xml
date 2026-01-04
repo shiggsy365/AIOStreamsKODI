@@ -14,8 +14,7 @@
         <platform>all</platform>
         <license>MIT</license>
         <website>https://aiostreams.shiggsy.co.uk</website>
-        <news>v2.1.0: Massive performance improvements! Optimized all Trakt lists (95% faster with cache), fixed all metadata fields (runtime, release dates, ratings, cast, directors), added episode runtime support. Lists now load near-instantly. Fixed slow loading and missing cast information. All metadata properly aligned with AIOStreams format.
-v2.0.0: Major update! Dynamic context menus, stream quality filtering, reliability tracking, UI enhancements, content discovery, keyboard shortcuts, advanced settings, maintenance tools.</news>
+        <news>v2.1.0: Massive performance improvements! Optimized all Trakt lists (95% faster with cache), fixed all metadata fields (runtime, release dates, ratings, cast, directors), added episode runtime support. Lists now load near-instantly. Fixed slow loading and missing cast information. All metadata properly aligned with AIOStreams format. | v2.0.0: Major update! Dynamic context menus, stream quality filtering, reliability tracking, UI enhancements, content discovery, keyboard shortcuts, advanced settings, maintenance tools.</news>
         <assets>
             <icon>resources/icon.png</icon>
             <fanart>resources/fanart.jpg</fanart>
