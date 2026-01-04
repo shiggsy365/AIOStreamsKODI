@@ -459,17 +459,17 @@ def search():
     """Handle search input."""
     params = dict(parse_qsl(sys.argv[2][1:]))
     content_type = params.get('content_type', 'both')  # Default to both
-    query = params.get('query')
+    query = params.get('query', '').strip()  # Get query and strip whitespace
     skip = int(params.get('skip', 0))
-    
-    # Get search query from user if not provided
+
+    # Get search query from user if not provided or empty
     if not query:
         keyboard = xbmcgui.Dialog().input('Search', type=xbmcgui.INPUT_ALPHANUM)
         if not keyboard:
             # User cancelled - close the directory properly
             xbmcplugin.endOfDirectory(HANDLE, succeeded=False)
             return
-        query = keyboard
+        query = keyboard.strip()
     
     # If content_type is 'both', use unified search directly
     if content_type == 'both':
@@ -574,9 +574,6 @@ def search_by_tab(query, content_type):
     if HAS_MODULES and filters:
         items = filters.filter_items(items)
 
-    # Add tab switcher at top
-    add_tab_switcher(query, content_type)
-
     # Add results
     for meta in items:
         item_id = meta.get('id')
@@ -645,9 +642,6 @@ def search_all_results(query):
     progress.update(50, 'Searching TV shows...')
     series_results = search_catalog(query, 'series', skip=0)
     progress.close()
-
-    # Add tab switcher
-    add_tab_switcher(query, 'both')
 
     # Movies Section
     if movie_results and 'metas' in movie_results and len(movie_results['metas']) > 0:
