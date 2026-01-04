@@ -4,6 +4,10 @@
     <category label="General">
         <setting id="base_url" type="text" label="AIOStreams Base URL" default=""/>
         <setting id="timeout" type="number" label="Request Timeout (seconds)" default="10"/>
+
+        <setting id="playback_settings" type="lsep" label="Playback Settings"/>
+        <setting id="default_behavior" type="select" label="Default Behavior" values="play_first|show_streams" default="show_streams"/>
+        <setting id="fallback_behavior" type="select" label="Fallback on Stream Failure" values="play_next|show_streams" default="show_streams" enable="eq(-1,play_first)"/>
     </category>
     
     <!-- Trakt Settings -->

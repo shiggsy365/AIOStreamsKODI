@@ -324,36 +324,57 @@ def add_to_watchlist(media_type, imdb_id, season=None, episode=None):
     """Add item to watchlist."""
     # For episodes/shows, we use 'shows' in the API
     api_type = 'shows' if media_type in ['episode', 'show'] or season is not None else media_type + 's'
-    
+
     data = {api_type: []}
-    
+
     item = {'ids': {'imdb': imdb_id}}
     if season is not None:
         item['seasons'] = [{'number': season}]
         if episode is not None:
             item['seasons'][0]['episodes'] = [{'number': episode}]
-    
+
     data[api_type].append(item)
-    
+
     result = call_trakt('sync/watchlist', method='POST', data=data)
-    
+
     if result:
+        # Clear watchlist cache
+        cache_key = f"{media_type}:{imdb_id}"
+        if cache_key in _watchlist_cache:
+            del _watchlist_cache[cache_key]
+
         xbmcgui.Dialog().notification('AIOStreams', 'Added to Trakt watchlist', xbmcgui.NOTIFICATION_INFO)
         return True
-    
+
     return False
 
 
-def remove_from_watchlist(media_type, imdb_id):
+def remove_from_watchlist(media_type, imdb_id, season=None, episode=None):
     """Remove item from watchlist."""
-    data = {media_type + 's': [{'ids': {'imdb': imdb_id}}]}
-    
+    # For episodes/shows, we use 'shows' in the API
+    api_type = 'shows' if media_type in ['episode', 'show'] or season is not None else media_type + 's'
+
+    data = {api_type: []}
+
+    item = {'ids': {'imdb': imdb_id}}
+    if season is not None:
+        item['seasons'] = [{'number': season}]
+        if episode is not None:
+            item['seasons'][0]['episodes'] = [{'number': episode}]
+
+    data[api_type].append(item)
+
     result = call_trakt('sync/watchlist/remove', method='POST', data=data)
-    
+
     if result:
+        # Clear watchlist cache
+        cache_key = f"{media_type}:{imdb_id}"
+        if cache_key in _watchlist_cache:
+            del _watchlist_cache[cache_key]
+
         xbmcgui.Dialog().notification('AIOStreams', 'Removed from Trakt watchlist', xbmcgui.NOTIFICATION_INFO)
         return True
-    
+
     return False
 
 
@@ -361,34 +382,103 @@ def mark_watched(media_type, imdb_id, season=None, episode=None, playback_id=Non
     """Mark item as watched and clear any in-progress status."""
     # For episodes, we use 'shows' in the API
     api_type = 'shows' if media_type == 'episode' or season is not None else media_type + 's'
-    
+
     # Add to watch history
     data = {api_type: []}
-    
+
     item = {'ids': {'imdb': imdb_id}}
     if season is not None:
         item['seasons'] = [{'number': season}]
         if episode is not None:
             item['seasons'][0]['episodes'] = [{'number': episode}]
-    
+
     data[api_type].append(item)
-    
+
     result = call_trakt('sync/history', method='POST', data=data)
-    
+
     if result:
         # Remove from playback progress if we have playback_id
         if playback_id:
             call_trakt(f'sync/playback/{playback_id}', method='DELETE')
-        
+
+        # Clear watched cache
+        cache_key = f"{media_type}:{imdb_id}"
+        if cache_key in _watched_cache:
+            del _watched_cache[cache_key]
+        if imdb_id in _show_progress_cache:
+            del _show_progress_cache[imdb_id]
+
         xbmcgui.Dialog().notification('AIOStreams', 'Marked as watched on Trakt', xbmcgui.NOTIFICATION_INFO)
         return True
-    
+
+    return False
+
+
+def mark_unwatched(media_type, imdb_id, season=None, episode=None):
+    """Remove item from watch history."""
+    # For episodes, we use 'shows' in the API
+    api_type = 'shows' if media_type == 'episode' or season is not None else media_type + 's'
+
+    # Remove from watch history
+    data = {api_type: []}
+
+    item = {'ids': {'imdb': imdb_id}}
+    if season is not None:
+        item['seasons'] = [{'number': season}]
+        if episode is not None:
+            item['seasons'][0]['episodes'] = [{'number': episode}]
+
+    data[api_type].append(item)
+
+    result = call_trakt('sync/history/remove', method='POST', data=data)
+
+    if result:
+        # Clear watched cache
+        cache_key = f"{media_type}:{imdb_id}"
+        if cache_key in _watched_cache:
+            del _watched_cache[cache_key]
+        if imdb_id in _show_progress_cache:
+            del _show_progress_cache[imdb_id]
+
+        xbmcgui.Dialog().notification('AIOStreams', 'Marked as unwatched on Trakt', xbmcgui.NOTIFICATION_INFO)
+        return True
+
     return False
 
 
 # Cache for watched status to avoid repeated API calls
 _watched_cache = {}
 _show_progress_cache = {}
+_watchlist_cache = {}
+
+
+def is_in_watchlist(media_type, imdb_id):
+    """Check if item is in Trakt watchlist."""
+    # Check cache first
+    cache_key = f"{media_type}:{imdb_id}"
+    if cache_key in _watchlist_cache:
+        return _watchlist_cache[cache_key]
+
+    # Query Trakt watchlist
+    api_type = 'movies' if media_type == 'movie' else 'shows'
+
+    # Get watchlist
+    result = call_trakt(f'sync/watchlist/{api_type}')
+
+    if not result:
+        _watchlist_cache[cache_key] = False
+        return False
+
+    # Check if our IMDB ID is in the watchlist
+    for item in result:
+        item_data = item.get(media_type, {})
+        item_imdb = item_data.get('ids', {}).get('imdb', '')
+        if item_imdb == imdb_id:
+            _watchlist_cache[cache_key] = True
+            return True
+
+    _watchlist_cache[cache_key] = False
+    return False
 
 
 def is_watched(media_type, imdb_id):
