@@ -272,6 +272,13 @@ def get_recommended(media_type='movies', page=1, limit=20):
     return call_trakt(f'recommendations/{media_type}', params={'page': page, 'limit': limit})
 
 
+def get_related(media_type, item_id, page=1, limit=20):
+    """Get related items (similar shows/movies)."""
+    # media_type should be 'movies' or 'shows'
+    api_type = 'movies' if media_type == 'movie' else 'shows'
+    return call_trakt(f'{api_type}/{item_id}/related', params={'page': page, 'limit': limit}, with_auth=False)
+
+
 def hide_show_from_progress(show_id):
     """Hide a show from progress/recommendations."""
     data = {

@@ -315,7 +315,12 @@ def create_listitem_with_context(meta, content_type, action_url):
             else:
                 context_menu.append(('[COLOR blue][Trakt][/COLOR] Mark as Watched',
                                     f'RunPlugin({get_url(action="trakt_mark_watched", media_type=content_type, imdb_id=item_id)})'))
-    
+
+            # Similar/Related content
+            title = meta.get('name', 'Unknown')
+            context_menu.append(('[COLOR green]Similar to this...[/COLOR]',
+                                f'Container.Update({get_url(action="show_related", content_type=content_type, imdb_id=item_id, title=title)})'))
+
     if context_menu:
         list_item.addContextMenuItems(context_menu)
     
@@ -1145,20 +1150,40 @@ def show_seasons():
     # Display seasons
     for season_num in sorted(seasons.keys()):
         episode_count = len(seasons[season_num])
-        season_label = f'Season {season_num} ({episode_count} episodes)'
-        
+
+        # Get season progress from Trakt
+        aired = 0
+        completed = 0
+        is_season_watched = False
+
+        if HAS_MODULES and trakt.get_access_token():
+            progress = trakt.get_show_progress(meta_id)
+            if progress:
+                seasons_data = progress.get('seasons', [])
+                for s in seasons_data:
+                    if s.get('number') == season_num:
+                        aired = s.get('aired', 0)
+                        completed = s.get('completed', 0)
+                        is_season_watched = aired > 0 and aired == completed
+                        break
+
+        # Format season label with UI enhancements
+        if HAS_MODULES:
+            season_label = ui_helpers.format_season_title(season_num, episode_count, aired, completed)
+        else:
+            season_label = f'Season {season_num} ({episode_count} episodes)'
+
         list_item = xbmcgui.ListItem(label=season_label)
         info_tag = list_item.getVideoInfoTag()
         info_tag.setTitle(season_label)
         info_tag.setSeason(season_num)
         info_tag.setTvShowTitle(series_name)
         info_tag.setMediaType('season')
-        
-        # Check if season is fully watched in Trakt
-        if HAS_MODULES and trakt.get_access_token():
-            if trakt.is_season_watched(meta_id, season_num):
-                info_tag.setPlaycount(1)
-                list_item.setProperty('WatchedOverlay', 'OverlayWatched.png')
+
+        # Set playcount if watched
+        if is_season_watched:
+            info_tag.setPlaycount(1)
+            list_item.setProperty('WatchedOverlay', 'OverlayWatched.png')
         
         if meta.get('poster'):
             list_item.setArt({'poster': meta['poster'], 'thumb': meta['poster']})
@@ -1229,11 +1254,26 @@ def show_episodes():
     for episode in episodes:
         episode_num = episode.get('episode', 0)
         episode_title = episode.get('title', f'Episode {episode_num}')
-        
-        label = f'{episode_num}. {episode_title}'
-        
+
+        # Check watch status and progress
+        is_watched = False
+        progress = 0
+
+        if HAS_MODULES and trakt.get_access_token():
+            is_watched = trakt.is_episode_watched(meta_id, season, episode_num)
+            # TODO: Get actual progress from Trakt playback/progress endpoint
+            # For now, progress is 0 (unwatched) or 100 (watched)
+            if is_watched:
+                progress = 100
+
+        # Format episode label with UI enhancements
+        if HAS_MODULES:
+            label = ui_helpers.format_episode_title(episode_num, episode_title, is_watched, progress)
+        else:
+            label = f'{episode_num}. {episode_title}'
+
         list_item = xbmcgui.ListItem(label=label)
-        
+
         info_tag = list_item.getVideoInfoTag()
         info_tag.setTitle(episode_title)
         info_tag.setEpisode(episode_num)
@@ -1241,24 +1281,23 @@ def show_episodes():
         info_tag.setTvShowTitle(series_name)
         info_tag.setPlot(episode.get('overview', ''))
         info_tag.setMediaType('episode')
-        
+
         premiered = episode.get('released', '')
         if premiered:
             info_tag.setPremiered(premiered)
-        
+
         if episode.get('thumbnail'):
             list_item.setArt({'thumb': episode['thumbnail']})
         elif meta.get('poster'):
             list_item.setArt({'thumb': meta['poster']})
-        
+
         if meta.get('background'):
             list_item.setArt({'fanart': meta['background']})
-        
-        # Check if episode is watched in Trakt
-        if HAS_MODULES and trakt.get_access_token():
-            if trakt.is_episode_watched(meta_id, season, episode_num):
-                info_tag.setPlaycount(1)
-                list_item.setProperty('WatchedOverlay', 'OverlayWatched.png')
+
+        # Set playcount if watched
+        if is_watched:
+            info_tag.setPlaycount(1)
+            list_item.setProperty('WatchedOverlay', 'OverlayWatched.png')
         
         # Add Trakt context menus
         context_menu = []
@@ -1875,6 +1914,66 @@ def trakt_recommended():
     xbmcplugin.endOfDirectory(HANDLE)
 
 
+def show_related():
+    """Show related/similar content."""
+    if not HAS_MODULES:
+        xbmcgui.Dialog().ok('AIOStreams', 'Trakt module not available')
+        return
+
+    params = dict(parse_qsl(sys.argv[2][1:]))
+    content_type = params.get('content_type', 'movie')
+    imdb_id = params.get('imdb_id', '')
+    title = params.get('title', 'Unknown')
+
+    if not imdb_id:
+        xbmcplugin.endOfDirectory(HANDLE, succeeded=False)
+        return
+
+    xbmcplugin.setPluginCategory(HANDLE, f'Similar to {title}')
+    xbmcplugin.setContent(HANDLE, 'movies' if content_type == 'movie' else 'tvshows')
+
+    # Get related items from Trakt
+    items = trakt.get_related(content_type, imdb_id, page=1, limit=20)
+
+    if not items:
+        xbmcgui.Dialog().notification('AIOStreams', 'No related content found', xbmcgui.NOTIFICATION_INFO)
+        xbmcplugin.endOfDirectory(HANDLE)
+        return
+
+    # Display related items
+    for item in items:
+        item_type = 'movie' if 'movie' in item else 'show'
+        item_data = item.get('movie') or item.get('show', {})
+        item_id = item_data.get('ids', {}).get('imdb', '')
+
+        if not item_id:
+            continue
+
+        # Fetch full metadata
+        meta_data = get_meta(content_type, item_id)
+
+        if meta_data and 'meta' in meta_data:
+            meta = meta_data['meta']
+        else:
+            meta = {
+                'id': item_id,
+                'name': item_data.get('title', 'Unknown'),
+                'description': item_data.get('overview', ''),
+                'year': item_data.get('year', 0),
+                'genres': []
+            }
+
+        if content_type == 'series':
+            url = get_url(action='show_seasons', meta_id=item_id)
+        else:
+            url = get_url(action='show_streams', content_type='movie', media_id=item_id, title=meta.get('name', 'Unknown'))
+
+        list_item = create_listitem_with_context(meta, content_type, url)
+        xbmcplugin.addDirectoryItem(HANDLE, url, list_item, True)
+
+    xbmcplugin.endOfDirectory(HANDLE)
+
+
 def trakt_hide_show():
     """Hide a show from progress."""
     if not HAS_MODULES:
@@ -2096,6 +2195,8 @@ def router(params):
         trakt_continue_watching()
     elif action == 'trakt_next_up':
         trakt_next_up()
+    elif action == 'show_related':
+        show_related()
     elif action == 'trakt_hide_show':
         trakt_hide_show()
     elif action == 'trakt_auth':
