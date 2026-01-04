@@ -174,71 +174,143 @@ def create_listitem_with_context(meta, content_type, action_url):
     if genres:
         info_tag.setGenres(genres)
     
-    # Add runtime (handle both "120" and "120 min" formats)
+    # Add runtime (handle "2h16min", "48min", "120" formats)
     runtime = meta.get('runtime', '')
     if runtime:
         try:
-            # Extract just the number
-            runtime_str = str(runtime).replace('min', '').replace('minutes', '').strip()
-            runtime_minutes = int(runtime_str)
-            info_tag.setDuration(runtime_minutes * 60)  # Convert to seconds
+            runtime_str = str(runtime).lower()
+            total_minutes = 0
+
+            # Handle "2h16min" format
+            if 'h' in runtime_str:
+                parts = runtime_str.split('h')
+                hours = int(parts[0].strip())
+                total_minutes = hours * 60
+                if len(parts) > 1 and parts[1]:
+                    mins = parts[1].replace('min', '').replace('minutes', '').strip()
+                    if mins:
+                        total_minutes += int(mins)
+            else:
+                # Handle "48min" or "120" format
+                mins = runtime_str.replace('min', '').replace('minutes', '').strip()
+                total_minutes = int(mins)
+
+            if total_minutes > 0:
+                info_tag.setDuration(total_minutes * 60)  # Convert to seconds
         except:
             pass
-    
-    # Add release date/premiered
-    release_info = meta.get('releaseInfo', '')
-    if release_info:
+
+    # Add release date/premiered - use 'released' field with full ISO date
+    released = meta.get('released', '')
+    if released:
         try:
-            # Handle both "2024" and "2024-01-15" formats
-            if len(str(release_info)) == 4:
-                # Just year
-                info_tag.setYear(int(release_info))
-            else:
-                # Full date
-                info_tag.setPremiered(str(release_info))
-                # Also extract year
-                year = str(release_info)[:4]
+            # Extract date in YYYY-MM-DD format from ISO date
+            premiered_date = released.split('T')[0]  # "2008-01-20T12:00:00.000Z" -> "2008-01-20"
+            info_tag.setPremiered(premiered_date)
+            # Extract year
+            year = premiered_date[:4]
+            info_tag.setYear(int(year))
+        except:
+            pass
+    elif meta.get('releaseInfo'):
+        # Fallback to releaseInfo if released not available
+        release_info = str(meta.get('releaseInfo', ''))
+        try:
+            # Extract first year from "2008-2013" or "2008"
+            year = release_info.split('-')[0].strip()
+            if len(year) == 4:
                 info_tag.setYear(int(year))
         except:
             pass
-    
-    # Add rating (handle multiple rating sources)
-    rating_data = meta.get('rating', {})
-    if isinstance(rating_data, dict):
-        # Try IMDB first
-        imdb_rating = rating_data.get('imdb')
-        if imdb_rating:
-            try:
-                info_tag.setRating(float(imdb_rating), votes=0, defaultt=True)
-                info_tag.setIMDBNumber(meta.get('id', ''))
-            except:
-                pass
-    elif rating_data:
-        # If rating is just a number
+
+    # Add year if provided separately
+    if meta.get('year') and not released:
         try:
-            info_tag.setRating(float(rating_data))
+            info_tag.setYear(int(meta['year']))
         except:
             pass
-    
-    # Add certification/MPAA
-    certification = meta.get('certification', meta.get('mpaa', ''))
+
+    # Add rating - AIOStreams provides imdbRating as string
+    imdb_rating = meta.get('imdbRating', '')
+    if imdb_rating:
+        try:
+            info_tag.setRating(float(imdb_rating), votes=0, defaultt=True)
+            info_tag.setIMDBNumber(meta.get('imdb_id', meta.get('id', '')))
+        except:
+            pass
+
+    # Get app_extras once for multiple uses
+    app_extras = meta.get('app_extras', {})
+
+    # Add certification/MPAA - check app_extras first, then top level
+    certification = app_extras.get('certification', '') or meta.get('certification', '') or meta.get('mpaa', '')
     if certification:
         info_tag.setMpaa(str(certification))
-    
-    # Add cast
-    cast_list = meta.get('cast', [])
+
+    # Add country/studio
+    country = meta.get('country', '')
+    if country:
+        info_tag.setCountries([str(country)])
+        # Also set as studio for lack of better field
+        info_tag.setStudios([str(country).upper()])
+
+    # Add cast - try AIOStreams metadata first, then Trakt
+    cast_list = []
+    aio_cast = app_extras.get('cast', [])
+
+    if aio_cast:
+        # Transform AIOStreams cast format to Kodi format
+        for idx, person in enumerate(aio_cast):
+            cast_member = {
+                'name': person.get('name', ''),
+                'role': person.get('character', ''),  # AIOStreams uses 'character' not 'role'
+                'order': idx
+            }
+            # AIOStreams uses 'photo' not 'thumbnail'
+            if person.get('photo'):
+                cast_member['thumbnail'] = person['photo']
+            cast_list.append(cast_member)
+
+    # Fallback to Trakt if no cast from AIOStreams
+    if not cast_list and HAS_MODULES:
+        item_id = meta.get('id', '')
+        if item_id:
+            cast_list = trakt.get_cast(content_type, item_id)
+
     if cast_list:
         info_tag.setCast(cast_list)
-    
-    # Add director
-    directors = meta.get('director', [])
+
+    # Add directors - try app_extras first (array format), then top level (comma-separated string)
+    directors = app_extras.get('directors', [])
     if directors:
-        info_tag.setDirectors(directors if isinstance(directors, list) else [directors])
-    
-    # Add writers
-    writers = meta.get('writer', [])
+        # app_extras.directors is already a list of dicts with 'name' field
+        director_names = [d.get('name', '') for d in directors if d.get('name')]
+        if director_names:
+            info_tag.setDirectors(director_names)
+    elif meta.get('director'):
+        # Fallback to top-level director field (comma-separated string)
+        director_str = meta.get('director', '')
+        if director_str:
+            # Split comma-separated directors
+            directors_list = [d.strip() for d in str(director_str).split(',') if d.strip()]
+            if directors_list:
+                info_tag.setDirectors(directors_list)
+
+    # Add writers - try app_extras first (array format), then top level (comma-separated string)
+    writers = app_extras.get('writers', [])
     if writers:
-        info_tag.setWriters(writers if isinstance(writers, list) else [writers])
+        # app_extras.writers is already a list of dicts with 'name' field
+        writer_names = [w.get('name', '') for w in writers if w.get('name')]
+        if writer_names:
+            info_tag.setWriters(writer_names)
+    elif meta.get('writer'):
+        # Fallback to top-level writer field (comma-separated string)
+        writer_str = meta.get('writer', '')
+        if writer_str:
+            # Split comma-separated writers
+            writers_list = [w.strip() for w in str(writer_str).split(',') if w.strip()]
+            if writers_list:
+                info_tag.setWriters(writers_list)
     
     # Set media type
     if content_type == 'movie':
@@ -1150,26 +1222,31 @@ def show_seasons():
             if season not in seasons:
                 seasons[season] = []
             seasons[season].append(video)
-    
+
+    # Get Trakt data once for all seasons (performance optimization)
+    show_progress = None
+    show_in_watchlist = False
+    if HAS_MODULES and trakt.get_access_token():
+        show_progress = trakt.get_show_progress(meta_id)
+        show_in_watchlist = trakt.is_in_watchlist('series', meta_id)
+
     # Display seasons
     for season_num in sorted(seasons.keys()):
         episode_count = len(seasons[season_num])
 
-        # Get season progress from Trakt
+        # Get season progress from cached show progress
         aired = 0
         completed = 0
         is_season_watched = False
 
-        if HAS_MODULES and trakt.get_access_token():
-            progress = trakt.get_show_progress(meta_id)
-            if progress:
-                seasons_data = progress.get('seasons', [])
-                for s in seasons_data:
-                    if s.get('number') == season_num:
-                        aired = s.get('aired', 0)
-                        completed = s.get('completed', 0)
-                        is_season_watched = aired > 0 and aired == completed
-                        break
+        if show_progress:
+            seasons_data = show_progress.get('seasons', [])
+            for s in seasons_data:
+                if s.get('number') == season_num:
+                    aired = s.get('aired', 0)
+                    completed = s.get('completed', 0)
+                    is_season_watched = aired > 0 and aired == completed
+                    break
 
         # Format season label with UI enhancements
         if HAS_MODULES:
@@ -1188,19 +1265,16 @@ def show_seasons():
         if is_season_watched:
             info_tag.setPlaycount(1)
             list_item.setProperty('WatchedOverlay', 'OverlayWatched.png')
-        
+
         if meta.get('poster'):
             list_item.setArt({'poster': meta['poster'], 'thumb': meta['poster']})
         if meta.get('background'):
             list_item.setArt({'fanart': meta['background']})
-        
+
         # Add Trakt context menus
         context_menu = []
         if HAS_MODULES and trakt.get_access_token():
-            # Check if season is watched
-            is_season_watched = trakt.is_season_watched(meta_id, season_num)
-
-            # Mark season as watched/unwatched
+            # Mark season as watched/unwatched (use cached is_season_watched)
             if is_season_watched:
                 context_menu.append(('[COLOR blue][Trakt][/COLOR] Mark Season as Unwatched',
                                     f'RunPlugin({get_url(action="trakt_mark_unwatched", media_type="show", imdb_id=meta_id, season=season_num)})'))
@@ -1208,14 +1282,14 @@ def show_seasons():
                 context_menu.append(('[COLOR blue][Trakt][/COLOR] Mark Season as Watched',
                                     f'RunPlugin({get_url(action="trakt_mark_watched", media_type="show", imdb_id=meta_id, season=season_num)})'))
 
-            # Watchlist - toggle between Add and Remove
-            if trakt.is_in_watchlist('series', meta_id):
+            # Watchlist - toggle between Add and Remove (use cached show_in_watchlist)
+            if show_in_watchlist:
                 context_menu.append(('[COLOR blue][Trakt][/COLOR] Remove Show from Watchlist',
                                     f'RunPlugin({get_url(action="trakt_remove_watchlist", media_type="show", imdb_id=meta_id)})'))
             else:
                 context_menu.append(('[COLOR blue][Trakt][/COLOR] Add Show to Watchlist',
                                     f'RunPlugin({get_url(action="trakt_add_watchlist", media_type="show", imdb_id=meta_id)})'))
-        
+
         if context_menu:
             list_item.addContextMenuItems(context_menu)
         
@@ -1253,22 +1327,40 @@ def show_episodes():
         return
     
     episodes.sort(key=lambda x: x.get('episode', 0))
-    
+
+    # Get Trakt data once for all episodes (performance optimization)
+    watched_episodes = set()
+    show_in_watchlist = False
+    is_season_watched = False
+
+    if HAS_MODULES and trakt.get_access_token():
+        # Get show progress to determine watched episodes
+        show_progress = trakt.get_show_progress(meta_id)
+        if show_progress:
+            seasons_data = show_progress.get('seasons', [])
+            for s in seasons_data:
+                if s.get('number') == season:
+                    # Build set of watched episode numbers for this season
+                    for ep in s.get('episodes', []):
+                        if ep.get('completed', False):
+                            watched_episodes.add(ep.get('number'))
+                    # Check if entire season is watched
+                    aired = s.get('aired', 0)
+                    completed = s.get('completed', 0)
+                    is_season_watched = aired > 0 and aired == completed
+                    break
+
+        # Check if show is in watchlist (once for all episodes)
+        show_in_watchlist = trakt.is_in_watchlist('series', meta_id)
+
     # Display episodes
     for episode in episodes:
         episode_num = episode.get('episode', 0)
         episode_title = episode.get('title', f'Episode {episode_num}')
 
-        # Check watch status and progress
-        is_watched = False
-        progress = 0
-
-        if HAS_MODULES and trakt.get_access_token():
-            is_watched = trakt.is_episode_watched(meta_id, season, episode_num)
-            # TODO: Get actual progress from Trakt playback/progress endpoint
-            # For now, progress is 0 (unwatched) or 100 (watched)
-            if is_watched:
-                progress = 100
+        # Check watch status from cached data
+        is_watched = episode_num in watched_episodes
+        progress = 100 if is_watched else 0
 
         # Format episode label with UI enhancements
         if HAS_MODULES:
@@ -1286,9 +1378,41 @@ def show_episodes():
         info_tag.setPlot(episode.get('overview', ''))
         info_tag.setMediaType('episode')
 
-        premiered = episode.get('released', '')
-        if premiered:
-            info_tag.setPremiered(premiered)
+        # Add episode runtime (same parsing logic as movies/shows)
+        episode_runtime = episode.get('runtime', '')
+        if episode_runtime:
+            try:
+                runtime_str = str(episode_runtime).lower()
+                total_minutes = 0
+
+                # Handle "2h16min" format
+                if 'h' in runtime_str:
+                    parts = runtime_str.split('h')
+                    hours = int(parts[0].strip())
+                    total_minutes = hours * 60
+                    if len(parts) > 1 and parts[1]:
+                        mins = parts[1].replace('min', '').replace('minutes', '').strip()
+                        if mins:
+                            total_minutes += int(mins)
+                else:
+                    # Handle "48min" or "58" format
+                    mins = runtime_str.replace('min', '').replace('minutes', '').strip()
+                    total_minutes = int(mins)
+
+                if total_minutes > 0:
+                    info_tag.setDuration(total_minutes * 60)  # Convert to seconds
+            except:
+                pass
+
+        # Add episode premiered date (format properly from ISO date)
+        released = episode.get('released', '')
+        if released:
+            try:
+                # Extract date in YYYY-MM-DD format from ISO date
+                premiered_date = released.split('T')[0]  # "2008-01-20T12:00:00.000Z" -> "2008-01-20"
+                info_tag.setPremiered(premiered_date)
+            except:
+                pass
 
         if episode.get('thumbnail'):
             list_item.setArt({'thumb': episode['thumbnail']})
@@ -1302,25 +1426,19 @@ def show_episodes():
         if is_watched:
             info_tag.setPlaycount(1)
             list_item.setProperty('WatchedOverlay', 'OverlayWatched.png')
-        
+
         # Add Trakt context menus
         context_menu = []
         if HAS_MODULES and trakt.get_access_token():
-            # Check if episode is watched
-            is_ep_watched = trakt.is_episode_watched(meta_id, season, episode_num)
-
-            # Mark episode as watched/unwatched
-            if is_ep_watched:
+            # Mark episode as watched/unwatched (use cached is_watched)
+            if is_watched:
                 context_menu.append(('[COLOR blue][Trakt][/COLOR] Mark Episode as Unwatched',
                                     f'RunPlugin({get_url(action="trakt_mark_unwatched", media_type="show", imdb_id=meta_id, season=season, episode=episode_num)})'))
             else:
                 context_menu.append(('[COLOR blue][Trakt][/COLOR] Mark Episode as Watched',
                                     f'RunPlugin({get_url(action="trakt_mark_watched", media_type="show", imdb_id=meta_id, season=season, episode=episode_num)})'))
 
-            # Check if season is watched
-            is_season_watched = trakt.is_season_watched(meta_id, season)
-
-            # Mark season as watched/unwatched
+            # Mark season as watched/unwatched (use cached is_season_watched)
             if is_season_watched:
                 context_menu.append(('[COLOR blue][Trakt][/COLOR] Mark Season as Unwatched',
                                     f'RunPlugin({get_url(action="trakt_mark_unwatched", media_type="show", imdb_id=meta_id, season=season)})'))
@@ -1328,14 +1446,14 @@ def show_episodes():
                 context_menu.append(('[COLOR blue][Trakt][/COLOR] Mark Season as Watched',
                                     f'RunPlugin({get_url(action="trakt_mark_watched", media_type="show", imdb_id=meta_id, season=season)})'))
 
-            # Watchlist - toggle between Add and Remove
-            if trakt.is_in_watchlist('series', meta_id):
+            # Watchlist - toggle between Add and Remove (use cached show_in_watchlist)
+            if show_in_watchlist:
                 context_menu.append(('[COLOR blue][Trakt][/COLOR] Remove Show from Watchlist',
                                     f'RunPlugin({get_url(action="trakt_remove_watchlist", media_type="show", imdb_id=meta_id)})'))
             else:
                 context_menu.append(('[COLOR blue][Trakt][/COLOR] Add Show to Watchlist',
                                     f'RunPlugin({get_url(action="trakt_add_watchlist", media_type="show", imdb_id=meta_id)})'))
-        
+
         if context_menu:
             list_item.addContextMenuItems(context_menu)
         
@@ -1405,31 +1523,49 @@ def trakt_watchlist():
     for item in items:
         item_data = item.get('movie' if media_type == 'movies' else 'show', {})
         item_id = item_data.get('ids', {}).get('imdb', '')
-        
+
         if not item_id:
             continue
-        
-        # Fetch full metadata from AIOStreams for posters/descriptions
+
         content_type = 'movie' if media_type == 'movies' else 'series'
-        meta_data = get_meta(content_type, item_id)
-        
-        if meta_data and 'meta' in meta_data:
-            meta = meta_data['meta']
-        else:
-            # Fallback to Trakt data
-            meta = {
-                'id': item_id,
-                'name': item_data.get('title', 'Unknown'),
-                'description': item_data.get('overview', ''),
-                'year': item_data.get('year', 0),
-                'genres': item_data.get('genres', [])
-            }
-        
+
+        # Build metadata from Trakt data (no API call needed for text fields)
+        meta = {
+            'id': item_id,
+            'name': item_data.get('title', 'Unknown'),
+            'description': item_data.get('overview', ''),
+            'year': item_data.get('year', 0),
+            'genres': item_data.get('genres', []),
+            'imdbRating': str(item_data.get('rating', '')) if item_data.get('rating') else ''
+        }
+
+        # Try to get artwork from cached AIOStreams metadata (fast cache lookup)
+        if HAS_MODULES:
+            cached_meta = cache.get_cached_meta(content_type, item_id)
+            if cached_meta and 'meta' in cached_meta:
+                # Enhance with cached artwork and other metadata
+                meta['poster'] = cached_meta['meta'].get('poster', '')
+                meta['background'] = cached_meta['meta'].get('background', '')
+                meta['logo'] = cached_meta['meta'].get('logo', '')
+                # Keep Trakt data for text fields, only use AIOStreams for what's better
+                if not meta['description']:
+                    meta['description'] = cached_meta['meta'].get('description', '')
+
+        # If no cached artwork, fetch metadata for artwork only
+        if not meta.get('poster') and not meta.get('background'):
+            meta_data = get_meta(content_type, item_id)
+            if meta_data and 'meta' in meta_data:
+                meta['poster'] = meta_data['meta'].get('poster', '')
+                meta['background'] = meta_data['meta'].get('background', '')
+                meta['logo'] = meta_data['meta'].get('logo', '')
+                if not meta['description']:
+                    meta['description'] = meta_data['meta'].get('description', '')
+
         if content_type == 'series':
             url = get_url(action='show_seasons', meta_id=item_id)
         else:
             url = get_url(action='show_streams', content_type='movie', media_id=item_id)
-        
+
         list_item = create_listitem_with_context(meta, content_type, url)
         xbmcplugin.addDirectoryItem(HANDLE, url, list_item, True)
     
@@ -1469,20 +1605,37 @@ def trakt_collection():
         if not item_id:
             continue
         
-        # Fetch full metadata from AIOStreams
         content_type = 'movie' if media_type == 'movies' else 'series'
-        meta_data = get_meta(content_type, item_id)
-        
-        if meta_data and 'meta' in meta_data:
-            meta = meta_data['meta']
-        else:
-            meta = {
-                'id': item_id,
-                'name': item_data.get('title', 'Unknown'),
-                'description': item_data.get('overview', ''),
-                'year': item_data.get('year', 0),
-                'genres': item_data.get('genres', [])
-            }
+
+        # Build metadata from Trakt data (no API call needed for text fields)
+        meta = {
+            'id': item_id,
+            'name': item_data.get('title', 'Unknown'),
+            'description': item_data.get('overview', ''),
+            'year': item_data.get('year', 0),
+            'genres': item_data.get('genres', []),
+            'imdbRating': str(item_data.get('rating', '')) if item_data.get('rating') else ''
+        }
+
+        # Try to get artwork from cached AIOStreams metadata (fast cache lookup)
+        if HAS_MODULES:
+            cached_meta = cache.get_cached_meta(content_type, item_id)
+            if cached_meta and 'meta' in cached_meta:
+                meta['poster'] = cached_meta['meta'].get('poster', '')
+                meta['background'] = cached_meta['meta'].get('background', '')
+                meta['logo'] = cached_meta['meta'].get('logo', '')
+                if not meta['description']:
+                    meta['description'] = cached_meta['meta'].get('description', '')
+
+        # If no cached artwork, fetch metadata for artwork only
+        if not meta.get('poster') and not meta.get('background'):
+            meta_data = get_meta(content_type, item_id)
+            if meta_data and 'meta' in meta_data:
+                meta['poster'] = meta_data['meta'].get('poster', '')
+                meta['background'] = meta_data['meta'].get('background', '')
+                meta['logo'] = meta_data['meta'].get('logo', '')
+                if not meta['description']:
+                    meta['description'] = meta_data['meta'].get('description', '')
         
         if content_type == 'series':
             url = get_url(action='show_seasons', meta_id=item_id)
@@ -1528,20 +1681,37 @@ def trakt_trending():
         if not item_id:
             continue
         
-        # Fetch full metadata from AIOStreams
         content_type = 'movie' if media_type == 'movies' else 'series'
-        meta_data = get_meta(content_type, item_id)
-        
-        if meta_data and 'meta' in meta_data:
-            meta = meta_data['meta']
-        else:
-            meta = {
-                'id': item_id,
-                'name': item_data.get('title', 'Unknown'),
-                'description': item_data.get('overview', ''),
-                'year': item_data.get('year', 0),
-                'genres': item_data.get('genres', [])
-            }
+
+        # Build metadata from Trakt data (no API call needed for text fields)
+        meta = {
+            'id': item_id,
+            'name': item_data.get('title', 'Unknown'),
+            'description': item_data.get('overview', ''),
+            'year': item_data.get('year', 0),
+            'genres': item_data.get('genres', []),
+            'imdbRating': str(item_data.get('rating', '')) if item_data.get('rating') else ''
+        }
+
+        # Try to get artwork from cached AIOStreams metadata (fast cache lookup)
+        if HAS_MODULES:
+            cached_meta = cache.get_cached_meta(content_type, item_id)
+            if cached_meta and 'meta' in cached_meta:
+                meta['poster'] = cached_meta['meta'].get('poster', '')
+                meta['background'] = cached_meta['meta'].get('background', '')
+                meta['logo'] = cached_meta['meta'].get('logo', '')
+                if not meta['description']:
+                    meta['description'] = cached_meta['meta'].get('description', '')
+
+        # If no cached artwork, fetch metadata for artwork only
+        if not meta.get('poster') and not meta.get('background'):
+            meta_data = get_meta(content_type, item_id)
+            if meta_data and 'meta' in meta_data:
+                meta['poster'] = meta_data['meta'].get('poster', '')
+                meta['background'] = meta_data['meta'].get('background', '')
+                meta['logo'] = meta_data['meta'].get('logo', '')
+                if not meta['description']:
+                    meta['description'] = meta_data['meta'].get('description', '')
         
         if content_type == 'series':
             url = get_url(action='show_seasons', meta_id=item_id)
@@ -1640,54 +1810,85 @@ def trakt_continue_watching():
     for item in items:
         show_data = item.get('show', {})
         episode_data = item.get('episode', {})
-        
+
         show_id = show_data.get('ids', {}).get('imdb', '')
         season = episode_data.get('season', 0)
         episode = episode_data.get('number', 0)
-        
+
         if not show_id:
             continue
-        
-        # Fetch show metadata from AIOStreams for posters
-        meta_data = get_meta('series', show_id)
-        if meta_data and 'meta' in meta_data:
-            poster = meta_data['meta'].get('poster', '')
-            fanart = meta_data['meta'].get('background', '')
-        else:
-            poster = ''
-            fanart = ''
-        
-        # Use Trakt metadata (no AIOStreams call needed)
+
+        # Use Trakt metadata for all text fields (already available, no API call needed)
         show_name = show_data.get('title', 'Unknown')
         show_year = show_data.get('year', '')
         episode_title = episode_data.get('title', f'Episode {episode}')
-        
-        label = f'{show_name} - S{season:02d}E{episode:02d} - {episode_title}'
-        
+        episode_overview = episode_data.get('overview', '')
+
         # Progress percentage
         progress = item.get('progress', 0)
-        
+
+        # Try to get artwork from cached AIOStreams metadata (fast cache lookup)
+        poster = ''
+        fanart = ''
+        logo = ''
+        if HAS_MODULES:
+            cached_meta = cache.get_cached_meta('series', show_id)
+            if cached_meta and 'meta' in cached_meta:
+                poster = cached_meta['meta'].get('poster', '')
+                fanart = cached_meta['meta'].get('background', '')
+                logo = cached_meta['meta'].get('logo', '')
+
+        # If not cached, fetch metadata for artwork (this is the only API call per item)
+        if not poster and not fanart:
+            meta_data = get_meta('series', show_id)
+            if meta_data and 'meta' in meta_data:
+                poster = meta_data['meta'].get('poster', '')
+                fanart = meta_data['meta'].get('background', '')
+                logo = meta_data['meta'].get('logo', '')
+
+        label = f'{show_name} - S{season:02d}E{episode:02d} - {episode_title}'
+
         list_item = xbmcgui.ListItem(label=label)
         info_tag = list_item.getVideoInfoTag()
         info_tag.setTitle(episode_title)
         info_tag.setTvShowTitle(show_name)
         info_tag.setSeason(season)
         info_tag.setEpisode(episode)
-        info_tag.setYear(show_year)
         info_tag.setMediaType('episode')
-        
+
+        # Use Trakt metadata for text fields
+        if show_year:
+            info_tag.setYear(show_year)
+
         # Add progress info to plot
-        plot = f'[B]Progress: {progress}%[/B]\n\n{episode_data.get("overview", "")}'
+        plot = f'[B]Progress: {progress}%[/B]\n\n{episode_overview}'
         info_tag.setPlot(plot)
-        
-        # Use artwork from AIOStreams
+
+        # Add genres from Trakt if available
+        genres = show_data.get('genres', [])
+        if genres:
+            info_tag.setGenres(genres)
+
+        # Add rating from Trakt if available
+        rating = show_data.get('rating')
+        if rating:
+            try:
+                info_tag.setRating(float(rating))
+            except:
+                pass
+
+        # Set artwork
         if poster:
             list_item.setArt({'thumb': poster, 'poster': poster})
         elif episode_data.get('images', {}).get('screenshot', {}).get('thumb'):
+            # Fallback to Trakt episode screenshot
             list_item.setArt({'thumb': episode_data['images']['screenshot']['thumb']})
-        
+
         if fanart:
             list_item.setArt({'fanart': fanart})
+
+        if logo:
+            list_item.setArt({'clearlogo': logo})
         
         # Build context menu
         context_menu = []
@@ -1786,37 +1987,61 @@ def trakt_next_up():
         season = next_ep.get('season', 0) if isinstance(next_ep, dict) else 0
         episode = next_ep.get('number', 0) if isinstance(next_ep, dict) else 0
         episode_title = next_ep.get('title', f'Episode {episode}') if isinstance(next_ep, dict) else f'Episode {episode}'
-        
-        # Fetch show metadata from AIOStreams for posters
-        if show_imdb:
+        episode_overview = next_ep.get('overview', '') if isinstance(next_ep, dict) else ''
+
+        # Use Trakt metadata for all text fields (already available, no API call needed)
+        show_name = show_data.get('title', 'Unknown')
+        show_year = show_data.get('year', '')
+
+        # Try to get artwork from cached AIOStreams metadata (fast cache lookup)
+        poster = ''
+        fanart = ''
+        logo = ''
+        if show_imdb and HAS_MODULES:
+            cached_meta = cache.get_cached_meta('series', show_imdb)
+            if cached_meta and 'meta' in cached_meta:
+                poster = cached_meta['meta'].get('poster', '')
+                fanart = cached_meta['meta'].get('background', '')
+                logo = cached_meta['meta'].get('logo', '')
+
+        # If not cached, fetch metadata for artwork (this is the only API call per item)
+        if show_imdb and not poster and not fanart:
             meta_data = get_meta('series', show_imdb)
             if meta_data and 'meta' in meta_data:
                 poster = meta_data['meta'].get('poster', '')
                 fanart = meta_data['meta'].get('background', '')
-            else:
-                poster = ''
-                fanart = ''
-        else:
-            poster = ''
-            fanart = ''
-        
-        # Use Trakt metadata instead of calling AIOStreams
-        show_name = show_data.get('title', 'Unknown')
-        show_year = show_data.get('year', '')
-        
+                logo = meta_data['meta'].get('logo', '')
+
         label = f'{show_name} - S{season:02d}E{episode:02d} - {episode_title}'
-        
+
         list_item = xbmcgui.ListItem(label=label)
         info_tag = list_item.getVideoInfoTag()
         info_tag.setTitle(episode_title)
         info_tag.setTvShowTitle(show_name)
         info_tag.setSeason(season)
         info_tag.setEpisode(episode)
-        info_tag.setYear(show_year)
-        info_tag.setPlot(next_ep.get('overview', '') if isinstance(next_ep, dict) else '')
         info_tag.setMediaType('episode')
-        
-        # Use artwork from AIOStreams
+
+        # Use Trakt metadata for text fields
+        if show_year:
+            info_tag.setYear(show_year)
+
+        info_tag.setPlot(episode_overview)
+
+        # Add genres from Trakt if available
+        genres = show_data.get('genres', [])
+        if genres:
+            info_tag.setGenres(genres)
+
+        # Add rating from Trakt if available
+        rating = show_data.get('rating')
+        if rating:
+            try:
+                info_tag.setRating(float(rating))
+            except:
+                pass
+
+        # Set artwork
         if poster:
             list_item.setArt({'thumb': poster, 'poster': poster})
         elif isinstance(next_ep, dict):
@@ -1825,9 +2050,12 @@ def trakt_next_up():
                 screenshot = images.get('screenshot', {})
                 if isinstance(screenshot, dict) and screenshot.get('thumb'):
                     list_item.setArt({'thumb': screenshot['thumb']})
-        
+
         if fanart:
             list_item.setArt({'fanart': fanart})
+
+        if logo:
+            list_item.setArt({'clearlogo': logo})
         
         # Build context menu
         context_menu = []
