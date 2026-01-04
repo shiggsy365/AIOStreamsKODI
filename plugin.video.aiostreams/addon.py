@@ -174,62 +174,88 @@ def create_listitem_with_context(meta, content_type, action_url):
     if genres:
         info_tag.setGenres(genres)
     
-    # Add runtime (handle both "120" and "120 min" formats)
+    # Add runtime (handle "2h16min", "48min", "120" formats)
     runtime = meta.get('runtime', '')
     if runtime:
         try:
-            # Extract just the number
-            runtime_str = str(runtime).replace('min', '').replace('minutes', '').strip()
-            runtime_minutes = int(runtime_str)
-            info_tag.setDuration(runtime_minutes * 60)  # Convert to seconds
+            runtime_str = str(runtime).lower()
+            total_minutes = 0
+
+            # Handle "2h16min" format
+            if 'h' in runtime_str:
+                parts = runtime_str.split('h')
+                hours = int(parts[0].strip())
+                total_minutes = hours * 60
+                if len(parts) > 1 and parts[1]:
+                    mins = parts[1].replace('min', '').replace('minutes', '').strip()
+                    if mins:
+                        total_minutes += int(mins)
+            else:
+                # Handle "48min" or "120" format
+                mins = runtime_str.replace('min', '').replace('minutes', '').strip()
+                total_minutes = int(mins)
+
+            if total_minutes > 0:
+                info_tag.setDuration(total_minutes * 60)  # Convert to seconds
         except:
             pass
-    
-    # Add release date/premiered
-    release_info = meta.get('releaseInfo', '')
-    if release_info:
+
+    # Add release date/premiered - use 'released' field with full ISO date
+    released = meta.get('released', '')
+    if released:
         try:
-            # Handle both "2024" and "2024-01-15" formats
-            if len(str(release_info)) == 4:
-                # Just year
-                info_tag.setYear(int(release_info))
-            else:
-                # Full date
-                info_tag.setPremiered(str(release_info))
-                # Also extract year
-                year = str(release_info)[:4]
+            # Extract date in YYYY-MM-DD format from ISO date
+            premiered_date = released.split('T')[0]  # "2008-01-20T12:00:00.000Z" -> "2008-01-20"
+            info_tag.setPremiered(premiered_date)
+            # Extract year
+            year = premiered_date[:4]
+            info_tag.setYear(int(year))
+        except:
+            pass
+    elif meta.get('releaseInfo'):
+        # Fallback to releaseInfo if released not available
+        release_info = str(meta.get('releaseInfo', ''))
+        try:
+            # Extract first year from "2008-2013" or "2008"
+            year = release_info.split('-')[0].strip()
+            if len(year) == 4:
                 info_tag.setYear(int(year))
         except:
             pass
-    
-    # Add rating (handle multiple rating sources)
-    rating_data = meta.get('rating', {})
-    if isinstance(rating_data, dict):
-        # Try IMDB first
-        imdb_rating = rating_data.get('imdb')
-        if imdb_rating:
-            try:
-                info_tag.setRating(float(imdb_rating), votes=0, defaultt=True)
-                info_tag.setIMDBNumber(meta.get('id', ''))
-            except:
-                pass
-    elif rating_data:
-        # If rating is just a number
+
+    # Add year if provided separately
+    if meta.get('year') and not released:
         try:
-            info_tag.setRating(float(rating_data))
+            info_tag.setYear(int(meta['year']))
         except:
             pass
-    
-    # Add certification/MPAA
-    certification = meta.get('certification', meta.get('mpaa', ''))
+
+    # Add rating - AIOStreams provides imdbRating as string
+    imdb_rating = meta.get('imdbRating', '')
+    if imdb_rating:
+        try:
+            info_tag.setRating(float(imdb_rating), votes=0, defaultt=True)
+            info_tag.setIMDBNumber(meta.get('imdb_id', meta.get('id', '')))
+        except:
+            pass
+
+    # Get app_extras once for multiple uses
+    app_extras = meta.get('app_extras', {})
+
+    # Add certification/MPAA - check app_extras first, then top level
+    certification = app_extras.get('certification', '') or meta.get('certification', '') or meta.get('mpaa', '')
     if certification:
         info_tag.setMpaa(str(certification))
-    
+
+    # Add country/studio
+    country = meta.get('country', '')
+    if country:
+        info_tag.setCountries([str(country)])
+        # Also set as studio for lack of better field
+        info_tag.setStudios([str(country).upper()])
+
     # Add cast - try AIOStreams metadata first, then Trakt
     cast_list = []
-
-    # Check if AIOStreams provides cast in app_extras
-    app_extras = meta.get('app_extras', {})
     aio_cast = app_extras.get('cast', [])
 
     if aio_cast:
@@ -254,15 +280,37 @@ def create_listitem_with_context(meta, content_type, action_url):
     if cast_list:
         info_tag.setCast(cast_list)
 
-    # Add director
-    directors = meta.get('director', [])
+    # Add directors - try app_extras first (array format), then top level (comma-separated string)
+    directors = app_extras.get('directors', [])
     if directors:
-        info_tag.setDirectors(directors if isinstance(directors, list) else [directors])
-    
-    # Add writers
-    writers = meta.get('writer', [])
+        # app_extras.directors is already a list of dicts with 'name' field
+        director_names = [d.get('name', '') for d in directors if d.get('name')]
+        if director_names:
+            info_tag.setDirectors(director_names)
+    elif meta.get('director'):
+        # Fallback to top-level director field (comma-separated string)
+        director_str = meta.get('director', '')
+        if director_str:
+            # Split comma-separated directors
+            directors_list = [d.strip() for d in str(director_str).split(',') if d.strip()]
+            if directors_list:
+                info_tag.setDirectors(directors_list)
+
+    # Add writers - try app_extras first (array format), then top level (comma-separated string)
+    writers = app_extras.get('writers', [])
     if writers:
-        info_tag.setWriters(writers if isinstance(writers, list) else [writers])
+        # app_extras.writers is already a list of dicts with 'name' field
+        writer_names = [w.get('name', '') for w in writers if w.get('name')]
+        if writer_names:
+            info_tag.setWriters(writer_names)
+    elif meta.get('writer'):
+        # Fallback to top-level writer field (comma-separated string)
+        writer_str = meta.get('writer', '')
+        if writer_str:
+            # Split comma-separated writers
+            writers_list = [w.strip() for w in str(writer_str).split(',') if w.strip()]
+            if writers_list:
+                info_tag.setWriters(writers_list)
     
     # Set media type
     if content_type == 'movie':
