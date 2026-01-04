@@ -3,7 +3,7 @@
 ## Quick Installation (Recommended)
 
 ### Step 1: Install Repository
-1. Download [repository.aiostreams.zip](https://github.com/shiggsy365/AIOStreamsKODI/raw/claude/kodi-addon-context-menus-2JLML/repository.aiostreams.zip)
+1. Download [repository.aiostreams.zip](https://github.com/shiggsy365/AIOStreamsKODI/raw/main/repository.aiostreams.zip)
 2. In Kodi, go to: **Settings → Add-ons → Install from zip file**
 3. Browse to the downloaded `repository.aiostreams.zip`
 4. Wait for "Add-on enabled" notification
@@ -28,7 +28,7 @@
 
 ### Download Direct
 Download the addon zip directly:
-- **Latest Version**: [plugin.video.aiostreams.zip](https://github.com/shiggsy365/AIOStreamsKODI/raw/claude/kodi-addon-context-menus-2JLML/plugin.video.aiostreams.zip)
+- **Latest Version**: [plugin.video.aiostreams.zip](https://github.com/shiggsy365/AIOStreamsKODI/raw/main/plugin.video.aiostreams.zip)
 
 ### Install in Kodi
 1. In Kodi, go to: **Settings → Add-ons → Install from zip file**
@@ -43,14 +43,14 @@ If you want to set up the repository manually in Kodi's file manager:
 
 ### Repository Files
 ```
-https://raw.githubusercontent.com/shiggsy365/AIOStreamsKODI/claude/kodi-addon-context-menus-2JLML/repo/addons.xml
-https://raw.githubusercontent.com/shiggsy365/AIOStreamsKODI/claude/kodi-addon-context-menus-2JLML/repo/addons.xml.md5
-https://raw.githubusercontent.com/shiggsy365/AIOStreamsKODI/claude/kodi-addon-context-menus-2JLML/repo/plugin.video.aiostreams.zip
+https://raw.githubusercontent.com/shiggsy365/AIOStreamsKODI/main/repo/addons.xml
+https://raw.githubusercontent.com/shiggsy365/AIOStreamsKODI/main/repo/addons.xml.md5
+https://raw.githubusercontent.com/shiggsy365/AIOStreamsKODI/main/repo/plugin.video.aiostreams.zip
 ```
 
 ### Direct Addon Download
 ```
-https://github.com/shiggsy365/AIOStreamsKODI/raw/claude/kodi-addon-context-menus-2JLML/plugin.video.aiostreams.zip
+https://github.com/shiggsy365/AIOStreamsKODI/raw/main/plugin.video.aiostreams.zip
 ```
 
 ---
@@ -139,7 +139,7 @@ If you installed via the repository, updates are automatic:
 
 For complete feature documentation, see:
 - **FEATURES.md** in the addon folder
-- Or online at: [GitHub FEATURES.md](https://github.com/shiggsy365/AIOStreamsKODI/blob/claude/kodi-addon-context-menus-2JLML/plugin.video.aiostreams/FEATURES.md)
+- Or online at: [GitHub FEATURES.md](https://github.com/shiggsy365/AIOStreamsKODI/blob/main/plugin.video.aiostreams/FEATURES.md)
 
 ---
 
