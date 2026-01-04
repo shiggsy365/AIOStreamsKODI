@@ -1924,9 +1924,21 @@ def trakt_continue_watching():
                     if video.get('season') == season and video.get('episode') == episode:
                         episode_thumb = video.get('thumbnail', '')
                         break
+            elif show_id:
+                # Fetch metadata if not cached (needed for widgets)
+                meta_data = get_meta('series', show_id)
+                if meta_data and 'meta' in meta_data:
+                    cached_data = meta_data['meta']
+                    poster = cached_data.get('poster', '')
+                    fanart = cached_data.get('background', '')
+                    logo = cached_data.get('logo', '')
 
-        # Note: We don't fetch metadata here to keep lists fast
-        # Cache will populate as users view individual shows
+                    # Get episode-specific thumbnail
+                    videos = cached_data.get('videos', [])
+                    for video in videos:
+                        if video.get('season') == season and video.get('episode') == episode:
+                            episode_thumb = video.get('thumbnail', '')
+                            break
 
         label = f'{show_name} - S{season:02d}E{episode:02d} - {episode_title}'
 
@@ -2104,9 +2116,21 @@ def trakt_next_up():
                     if video.get('season') == season and video.get('episode') == episode:
                         episode_thumb = video.get('thumbnail', '')
                         break
+            else:
+                # Fetch metadata if not cached (needed for widgets)
+                meta_data = get_meta('series', show_imdb)
+                if meta_data and 'meta' in meta_data:
+                    cached_data = meta_data['meta']
+                    poster = cached_data.get('poster', '')
+                    fanart = cached_data.get('background', '')
+                    logo = cached_data.get('logo', '')
 
-        # Note: We don't fetch metadata here to keep lists fast
-        # Cache will populate as users view individual shows
+                    # Get episode-specific thumbnail
+                    videos = cached_data.get('videos', [])
+                    for video in videos:
+                        if video.get('season') == season and video.get('episode') == episode:
+                            episode_thumb = video.get('thumbnail', '')
+                            break
 
         label = f'{show_name} - S{season:02d}E{episode:02d} - {episode_title}'
 
@@ -2243,9 +2267,15 @@ def trakt_continue_movies():
                 fanart = cached_data.get('background', '')
                 logo = cached_data.get('logo', '')
                 description = cached_data.get('description', '')
-
-        # Note: We don't fetch metadata here to keep lists fast
-        # Cache will populate as users view individual movies
+            elif movie_id:
+                # Fetch metadata if not cached (needed for widgets)
+                meta_data = get_meta('movie', movie_id)
+                if meta_data and 'meta' in meta_data:
+                    cached_data = meta_data['meta']
+                    poster = cached_data.get('poster', '')
+                    fanart = cached_data.get('background', '')
+                    logo = cached_data.get('logo', '')
+                    description = cached_data.get('description', '')
 
         list_item = xbmcgui.ListItem(label=label)
         info_tag = list_item.getVideoInfoTag()
