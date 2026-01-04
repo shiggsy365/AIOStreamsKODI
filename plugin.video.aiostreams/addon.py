@@ -321,6 +321,10 @@ def create_listitem_with_context(meta, content_type, action_url):
             context_menu.append(('[COLOR green]Similar to this...[/COLOR]',
                                 f'Container.Update({get_url(action="show_related", content_type=content_type, imdb_id=item_id, title=title)})'))
 
+            # Quick Actions
+            context_menu.append(('[COLOR yellow]Quick Actions[/COLOR]',
+                                f'RunPlugin({get_url(action="quick_actions", content_type=content_type, imdb_id=item_id, title=title)})'))
+
     if context_menu:
         list_item.addContextMenuItems(context_menu)
     
@@ -2118,6 +2122,47 @@ def clear_preferences():
         xbmcgui.Dialog().notification('AIOStreams', 'Failed to clear preferences', xbmcgui.NOTIFICATION_ERROR)
 
 
+def quick_actions():
+    """Show quick actions menu (for keyboard shortcuts)."""
+    params = dict(parse_qsl(sys.argv[2][1:]))
+    content_type = params.get('content_type', 'movie')
+    imdb_id = params.get('imdb_id', '')
+    title = params.get('title', 'Unknown')
+
+    if not imdb_id:
+        xbmcgui.Dialog().notification('AIOStreams', 'No content selected', xbmcgui.NOTIFICATION_ERROR)
+        return
+
+    # Build quick actions menu
+    actions = [
+        'Add to Watchlist (Q)',
+        'Mark as Watched (W)',
+        'Show Info (I)',
+        'Similar Content (S)',
+        'Play (Enter)'
+    ]
+
+    selected = xbmcgui.Dialog().select(f'Quick Actions: {title}', actions)
+
+    if selected == 0:  # Add to Watchlist
+        if HAS_MODULES:
+            trakt.add_to_watchlist(content_type, imdb_id)
+            xbmc.executebuiltin('Container.Refresh')
+    elif selected == 1:  # Mark as Watched
+        if HAS_MODULES:
+            trakt.mark_watched(content_type, imdb_id)
+            xbmc.executebuiltin('Container.Refresh')
+    elif selected == 2:  # Show Info
+        xbmc.executebuiltin('Action(Info)')
+    elif selected == 3:  # Similar Content
+        xbmc.executebuiltin(f'Container.Update({get_url(action="show_related", content_type=content_type, imdb_id=imdb_id, title=title)})')
+    elif selected == 4:  # Play
+        if content_type == 'movie':
+            xbmc.executebuiltin(f'RunPlugin({get_url(action="show_streams", content_type="movie", media_id=imdb_id, title=title)})')
+        else:
+            xbmc.executebuiltin(f'Container.Update({get_url(action="show_seasons", meta_id=imdb_id)})')
+
+
 def test_connection():
     """Test connection to AIOStreams server."""
     base_url = get_base_url()
@@ -2219,6 +2264,8 @@ def router(params):
         clear_preferences()
     elif action == 'test_connection':
         test_connection()
+    elif action == 'quick_actions':
+        quick_actions()
     elif params:
         index()
     else:
