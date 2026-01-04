@@ -1378,9 +1378,41 @@ def show_episodes():
         info_tag.setPlot(episode.get('overview', ''))
         info_tag.setMediaType('episode')
 
-        premiered = episode.get('released', '')
-        if premiered:
-            info_tag.setPremiered(premiered)
+        # Add episode runtime (same parsing logic as movies/shows)
+        episode_runtime = episode.get('runtime', '')
+        if episode_runtime:
+            try:
+                runtime_str = str(episode_runtime).lower()
+                total_minutes = 0
+
+                # Handle "2h16min" format
+                if 'h' in runtime_str:
+                    parts = runtime_str.split('h')
+                    hours = int(parts[0].strip())
+                    total_minutes = hours * 60
+                    if len(parts) > 1 and parts[1]:
+                        mins = parts[1].replace('min', '').replace('minutes', '').strip()
+                        if mins:
+                            total_minutes += int(mins)
+                else:
+                    # Handle "48min" or "58" format
+                    mins = runtime_str.replace('min', '').replace('minutes', '').strip()
+                    total_minutes = int(mins)
+
+                if total_minutes > 0:
+                    info_tag.setDuration(total_minutes * 60)  # Convert to seconds
+            except:
+                pass
+
+        # Add episode premiered date (format properly from ISO date)
+        released = episode.get('released', '')
+        if released:
+            try:
+                # Extract date in YYYY-MM-DD format from ISO date
+                premiered_date = released.split('T')[0]  # "2008-01-20T12:00:00.000Z" -> "2008-01-20"
+                info_tag.setPremiered(premiered_date)
+            except:
+                pass
 
         if episode.get('thumbnail'):
             list_item.setArt({'thumb': episode['thumbnail']})
