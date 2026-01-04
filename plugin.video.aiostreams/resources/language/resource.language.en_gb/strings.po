@@ -1,0 +1,48 @@
+# Kodi Media Center language file
+# Addon Name: AIOStreams
+# Addon id: plugin.video.aiostreams
+
+msgid ""
+msgstr ""
+"Project-Id-Version: AIOStreams\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-01-03 00:00+0000\n"
+"PO-Revision-Date: 2026-01-03 00:00+0000\n"
+"Language-Team: English\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: en_GB\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+msgctxt "#30000"
+msgid "General"
+msgstr ""
+
+msgctxt "#30001"
+msgid "AIOStreams Base URL"
+msgstr ""
+
+msgctxt "#30002"
+msgid "Request Timeout (seconds)"
+msgstr ""
+
+msgctxt "#30100"
+msgid "Search Movies"
+msgstr ""
+
+msgctxt "#30101"
+msgid "Search TV Shows"
+msgstr ""
+
+msgctxt "#30200"
+msgid "No results found"
+msgstr ""
+
+msgctxt "#30201"
+msgid "No streams available"
+msgstr ""
+
+msgctxt "#30202"
+msgid "Error fetching data"
+msgstr ""

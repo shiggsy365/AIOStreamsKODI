@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<addon id="plugin.video.aiostreams" name="AIOStreams" version="1.5.3" provider-name="Jon">
+    <requires>
+        <import addon="xbmc.python" version="3.0.0"/>
+        <import addon="script.module.requests" version="2.25.1"/>
+    </requires>
+    <extension point="xbmc.python.pluginsource" library="addon.py">
+        <provides>video</provides>
+    </extension>
+    <extension point="xbmc.addon.metadata">
+        <summary lang="en_GB">AIOStreams addon for Kodi</summary>
+        <description lang="en_GB">Search and stream content from AIOStreams with Trakt integration, catalog browsing, genre/rating filtering, and automatic subtitle support. Includes scrobbling, watchlist sync, enhanced metadata (runtime, ratings, trailers), and paginated browsing.</description>
+        <platform>all</platform>
+        <license>MIT</license>
+        <website>https://aiostreams.shiggsy.co.uk</website>
+        <news>v1.5.3: Removed rating filters, fixed watched indicators for shows/seasons/episodes</news>
+        <assets>
+            <icon>resources/icon.png</icon>
+            <fanart>resources/fanart.jpg</fanart>
+        </assets>
+    </extension>
+</addon>

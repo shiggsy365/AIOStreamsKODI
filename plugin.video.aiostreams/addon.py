@@ -1,0 +1,1841 @@
+import sys
+import xbmc
+import xbmcgui
+import xbmcplugin
+import xbmcaddon
+from urllib.parse import urlencode, parse_qsl
+import requests
+import json
+
+# Import new modules
+try:
+    from resources.lib import trakt, filters, cache
+    from resources.lib.monitor import PLAYER
+    HAS_MODULES = True
+except Exception as e:
+    HAS_MODULES = False
+    xbmc.log(f'[AIOStreams] Failed to import modules: {e}', xbmc.LOGERROR)
+
+# Initialize addon
+ADDON = xbmcaddon.Addon()
+HANDLE = int(sys.argv[1])
+
+# Run cache cleanup on startup (async, won't block)
+if HAS_MODULES:
+    try:
+        cache.cleanup_expired_cache()
+    except:
+        pass
+
+
+def get_setting(setting_id, default=None):
+    """Get addon setting."""
+    value = ADDON.getSetting(setting_id)
+    return value if value else default
+
+
+def get_base_url():
+    """Get the base URL from settings."""
+    url = get_setting('base_url', '')
+    
+    # Strip /manifest.json if user pasted full URL
+    if url.endswith('/manifest.json'):
+        url = url[:-14]  # Remove /manifest.json
+    
+    return url
+
+
+def get_timeout():
+    """Get request timeout from settings."""
+    try:
+        return int(get_setting('timeout', '10'))
+    except ValueError:
+        return 10
+
+
+def get_url(**kwargs):
+    """Create a URL for calling the plugin recursively from the given set of keyword arguments."""
+    return '{}?{}'.format(sys.argv[0], urlencode(kwargs))
+
+
+def make_request(url, error_message='Request failed'):
+    """Make HTTP request with error handling."""
+    try:
+        response = requests.get(url, timeout=get_timeout())
+        response.raise_for_status()
+        return response.json()
+    except requests.Timeout:
+        xbmcgui.Dialog().notification('AIOStreams', 'Request timed out', xbmcgui.NOTIFICATION_ERROR)
+        return None
+    except requests.RequestException as e:
+        xbmcgui.Dialog().notification('AIOStreams', f'{error_message}: {str(e)}', xbmcgui.NOTIFICATION_ERROR)
+        return None
+    except ValueError:
+        xbmcgui.Dialog().notification('AIOStreams', 'Invalid JSON response', xbmcgui.NOTIFICATION_ERROR)
+        return None
+
+
+def get_manifest():
+    """Fetch the manifest from AIOStreams."""
+    base_url = get_base_url()
+    return make_request(f"{base_url}/manifest.json", 'Error fetching manifest')
+
+
+def search_catalog(query, content_type='movie', skip=0):
+    """Search the AIOStreams catalog with pagination."""
+    base_url = get_base_url()
+    catalog_id = '39fe3b0.search'
+    url = f"{base_url}/catalog/{content_type}/{catalog_id}/search={query}"
+    
+    # Add skip parameter for pagination
+    if skip > 0:
+        url += f"&skip={skip}"
+    
+    url += ".json"
+    
+    return make_request(url, 'Search error')
+
+
+def get_streams(content_type, media_id):
+    """Fetch streams for a given media ID."""
+    base_url = get_base_url()
+    url = f"{base_url}/stream/{content_type}/{media_id}.json"
+    xbmc.log(f'[AIOStreams] Requesting streams from: {url}', xbmc.LOGINFO)
+    result = make_request(url, 'Stream error')
+    if result:
+        xbmc.log(f'[AIOStreams] Received {len(result.get("streams", []))} streams for {media_id}', xbmc.LOGINFO)
+    return result
+
+
+def get_catalog(content_type, catalog_id, genre=None, skip=0):
+    """Fetch a catalog from AIOStreams with pagination."""
+    base_url = get_base_url()
+    
+    # Build catalog URL with optional filters
+    url_parts = [f"{base_url}/catalog/{content_type}/{catalog_id}"]
+    
+    extras = []
+    if genre:
+        extras.append(f"genre={genre}")
+    if skip > 0:
+        extras.append(f"skip={skip}")
+    
+    if extras:
+        url = f"{url_parts[0]}/{'&'.join(extras)}.json"
+    else:
+        url = f"{url_parts[0]}.json"
+    
+    xbmc.log(f'[AIOStreams] Requesting catalog from: {url}', xbmc.LOGINFO)
+    return make_request(url, 'Catalog error')
+
+
+def get_subtitles(content_type, media_id):
+    """Fetch subtitles for a given media ID."""
+    base_url = get_base_url()
+    url = f"{base_url}/subtitles/{content_type}/{media_id}.json"
+    xbmc.log(f'[AIOStreams] Requesting subtitles from: {url}', xbmc.LOGINFO)
+    return make_request(url, 'Subtitle error')
+
+
+def get_meta(content_type, meta_id):
+    """Fetch metadata for a show or movie with caching."""
+    # Check cache first
+    if HAS_MODULES:
+        cached = cache.get_cached_meta(content_type, meta_id)
+        if cached:
+            return cached
+    
+    # Cache miss, fetch from API
+    base_url = get_base_url()
+    url = f"{base_url}/meta/{content_type}/{meta_id}.json"
+    xbmc.log(f'[AIOStreams] Requesting meta from: {url}', xbmc.LOGINFO)
+    result = make_request(url, 'Meta error')
+    
+    # Store in cache
+    if HAS_MODULES and result:
+        cache.cache_meta(content_type, meta_id, result)
+    
+    return result
+
+
+def create_listitem_with_context(meta, content_type, action_url):
+    """Create ListItem with full metadata, artwork, and context menus."""
+    title = meta.get('name', 'Unknown')
+    list_item = xbmcgui.ListItem(label=title)
+    
+    # Use InfoTagVideo instead of deprecated setInfo
+    info_tag = list_item.getVideoInfoTag()
+    info_tag.setTitle(title)
+    info_tag.setPlot(meta.get('description', ''))
+    
+    # Set genres
+    genres = meta.get('genres', [])
+    if genres:
+        info_tag.setGenres(genres)
+    
+    # Add runtime (handle both "120" and "120 min" formats)
+    runtime = meta.get('runtime', '')
+    if runtime:
+        try:
+            # Extract just the number
+            runtime_str = str(runtime).replace('min', '').replace('minutes', '').strip()
+            runtime_minutes = int(runtime_str)
+            info_tag.setDuration(runtime_minutes * 60)  # Convert to seconds
+        except:
+            pass
+    
+    # Add release date/premiered
+    release_info = meta.get('releaseInfo', '')
+    if release_info:
+        try:
+            # Handle both "2024" and "2024-01-15" formats
+            if len(str(release_info)) == 4:
+                # Just year
+                info_tag.setYear(int(release_info))
+            else:
+                # Full date
+                info_tag.setPremiered(str(release_info))
+                # Also extract year
+                year = str(release_info)[:4]
+                info_tag.setYear(int(year))
+        except:
+            pass
+    
+    # Add rating (handle multiple rating sources)
+    rating_data = meta.get('rating', {})
+    if isinstance(rating_data, dict):
+        # Try IMDB first
+        imdb_rating = rating_data.get('imdb')
+        if imdb_rating:
+            try:
+                info_tag.setRating(float(imdb_rating), votes=0, defaultt=True)
+                info_tag.setIMDBNumber(meta.get('id', ''))
+            except:
+                pass
+    elif rating_data:
+        # If rating is just a number
+        try:
+            info_tag.setRating(float(rating_data))
+        except:
+            pass
+    
+    # Add certification/MPAA
+    certification = meta.get('certification', meta.get('mpaa', ''))
+    if certification:
+        info_tag.setMpaa(str(certification))
+    
+    # Add cast
+    cast_list = meta.get('cast', [])
+    if cast_list:
+        info_tag.setCast(cast_list)
+    
+    # Add director
+    directors = meta.get('director', [])
+    if directors:
+        info_tag.setDirectors(directors if isinstance(directors, list) else [directors])
+    
+    # Add writers
+    writers = meta.get('writer', [])
+    if writers:
+        info_tag.setWriters(writers if isinstance(writers, list) else [writers])
+    
+    # Set media type
+    if content_type == 'movie':
+        info_tag.setMediaType('movie')
+    elif content_type == 'series':
+        info_tag.setMediaType('tvshow')
+    
+    # Check if watched in Trakt and add overlay
+    if HAS_MODULES and trakt.get_access_token():
+        item_id = meta.get('id', '')
+        if item_id:
+            if content_type == 'movie':
+                # For movies, check watched status
+                if trakt.is_watched(content_type, item_id):
+                    info_tag.setPlaycount(1)
+                    list_item.setProperty('WatchedOverlay', 'OverlayWatched.png')
+            elif content_type == 'series':
+                # For shows, check if fully watched
+                progress = trakt.get_show_progress(item_id)
+                if progress:
+                    aired = progress.get('aired', 0)
+                    completed = progress.get('completed', 0)
+                    if aired > 0 and aired == completed:
+                        # All episodes watched
+                        info_tag.setPlaycount(1)
+                        list_item.setProperty('WatchedOverlay', 'OverlayWatched.png')
+    
+    # Set artwork
+    if meta.get('poster'):
+        list_item.setArt({'poster': meta['poster'], 'thumb': meta['poster']})
+    if meta.get('background'):
+        list_item.setArt({'fanart': meta['background']})
+    if meta.get('logo'):
+        list_item.setArt({'clearlogo': meta['logo']})
+    
+    # Build context menu
+    context_menu = []
+    
+    # Add trailer if available
+    trailers = meta.get('trailers', [])
+    if trailers:
+        youtube_id = trailers[0].get('source', '')
+        if youtube_id:
+            trailer_url = f'plugin://plugin.video.youtube/play/?video_id={youtube_id}'
+            context_menu.append(('[B]Play Trailer[/B]', f'PlayMedia({trailer_url})'))
+    
+    # Add Trakt context menus if authorized
+    if HAS_MODULES and trakt.get_access_token():
+        item_id = meta.get('id', '')
+        if item_id:
+            # Add to watchlist
+            context_menu.append(('[COLOR blue][Trakt][/COLOR] Add to Watchlist', 
+                                f'RunPlugin({get_url(action="trakt_add_watchlist", media_type=content_type, imdb_id=item_id)})'))
+            # Mark as watched
+            context_menu.append(('[COLOR blue][Trakt][/COLOR] Mark as Watched',
+                                f'RunPlugin({get_url(action="trakt_mark_watched", media_type=content_type, imdb_id=item_id)})'))
+    
+    if context_menu:
+        list_item.addContextMenuItems(context_menu)
+    
+    return list_item
+
+
+def index():
+    """Main menu."""
+    xbmcplugin.setPluginCategory(HANDLE, 'AIOStreams')
+    xbmcplugin.setContent(HANDLE, 'videos')
+    
+    # Create menu items
+    list_items = [
+        {
+            'label': '[B]Search (Movies & TV Shows)[/B]',
+            'url': get_url(action='search', content_type='both'),
+            'is_folder': True,
+            'icon': 'DefaultAddonsSearch.png'
+        },
+        {
+            'label': '[B]Search Movies[/B]',
+            'url': get_url(action='search', content_type='movie'),
+            'is_folder': True,
+            'icon': 'DefaultMovies.png'
+        },
+        {
+            'label': '[B]Search TV Shows[/B]',
+            'url': get_url(action='search', content_type='series'),
+            'is_folder': True,
+            'icon': 'DefaultTVShows.png'
+        },
+        {
+            'label': 'Movie Lists',
+            'url': get_url(action='movie_lists'),
+            'is_folder': True,
+            'icon': 'DefaultMovies.png'
+        },
+        {
+            'label': 'Series Lists',
+            'url': get_url(action='series_lists'),
+            'is_folder': True,
+            'icon': 'DefaultTVShows.png'
+        }
+    ]
+    
+    for item in list_items:
+        list_item = xbmcgui.ListItem(label=item['label'])
+        info_tag = list_item.getVideoInfoTag()
+        info_tag.setTitle(item['label'])
+        list_item.setArt({'icon': item['icon']})
+        xbmcplugin.addDirectoryItem(HANDLE, item['url'], list_item, item['is_folder'])
+    
+    xbmcplugin.endOfDirectory(HANDLE)
+
+
+def search():
+    """Handle search input."""
+    params = dict(parse_qsl(sys.argv[2][1:]))
+    content_type = params.get('content_type', 'both')  # Default to both
+    query = params.get('query')
+    skip = int(params.get('skip', 0))
+    
+    # Get search query from user if not provided
+    if not query:
+        keyboard = xbmcgui.Dialog().input('Search', type=xbmcgui.INPUT_ALPHANUM)
+        if not keyboard:
+            # User cancelled - close the directory properly
+            xbmcplugin.endOfDirectory(HANDLE, succeeded=False)
+            return
+        query = keyboard
+    
+    # If content_type is 'both', use unified search directly
+    if content_type == 'both':
+        search_unified_internal(query)
+        return
+    
+    # Show progress dialog
+    progress = xbmcgui.DialogProgress()
+    progress.create('AIOStreams', 'Searching...')
+    
+    # Perform search
+    results = search_catalog(query, content_type, skip=skip)
+    progress.close()
+    
+    if not results or 'metas' not in results:
+        xbmcgui.Dialog().notification('AIOStreams', 'No results found', xbmcgui.NOTIFICATION_INFO)
+        xbmcplugin.endOfDirectory(HANDLE, succeeded=False)
+        return
+    
+    # Apply filters
+    if HAS_MODULES and filters:
+        results['metas'] = filters.filter_items(results['metas'])
+    
+    xbmcplugin.setPluginCategory(HANDLE, f'Search: {query}')
+    xbmcplugin.setContent(HANDLE, 'movies' if content_type == 'movie' else 'tvshows')
+    
+    # Display search results
+    for meta in results['metas']:
+        item_id = meta.get('id')
+        item_type = meta.get('type', content_type)
+        
+        # Determine if this is a series or movie
+        if item_type == 'series':
+            # For series, drill down to seasons
+            url = get_url(action='show_seasons', meta_id=item_id)
+            is_folder = True
+        else:
+            # For movies, go directly to streams
+            url = get_url(action='show_streams', content_type='movie', media_id=item_id)
+            is_folder = True
+        
+        list_item = create_listitem_with_context(meta, content_type, url)
+        xbmcplugin.addDirectoryItem(HANDLE, url, list_item, is_folder)
+    
+    # Check if next page exists by attempting to fetch it
+    next_skip = skip + 20
+    next_results = search_catalog(query, content_type, skip=next_skip)
+    
+    if next_results and 'metas' in next_results and len(next_results['metas']) > 0:
+        # Next page has items, show "Load More"
+        list_item = xbmcgui.ListItem(label='[COLOR yellow]» Load More...[/COLOR]')
+        url = get_url(action='search', content_type=content_type, query=query, skip=next_skip)
+        xbmcplugin.addDirectoryItem(HANDLE, url, list_item, True)
+    
+    xbmcplugin.endOfDirectory(HANDLE)
+
+
+def search_unified_internal(query):
+    """Internal unified search (called directly from search function)."""
+    xbmcplugin.setPluginCategory(HANDLE, f'Search: {query}')
+    xbmcplugin.setContent(HANDLE, 'videos')
+    
+    # Show progress dialog
+    progress = xbmcgui.DialogProgress()
+    progress.create('AIOStreams', 'Searching movies and TV shows...')
+    
+    # Search movies
+    progress.update(25, 'Searching movies...')
+    movie_results = search_catalog(query, 'movie', skip=0)
+    
+    # Search TV shows
+    progress.update(50, 'Searching TV shows...')
+    series_results = search_catalog(query, 'series', skip=0)
+    
+    progress.close()
+    
+    # Movies Section Header
+    if movie_results and 'metas' in movie_results and len(movie_results['metas']) > 0:
+        # Apply filters
+        movies = movie_results['metas']
+        if HAS_MODULES and filters:
+            movies = filters.filter_items(movies)
+        
+        # Add "Movies" category header
+        header_item = xbmcgui.ListItem(label='[B][COLOR blue]Movies[/COLOR][/B]')
+        header_item.setProperty('IsPlayable', 'false')
+        xbmcplugin.addDirectoryItem(HANDLE, '', header_item, False)
+        
+        # Add movie results (limit to 10)
+        for meta in movies[:10]:
+            item_id = meta.get('id')
+            url = get_url(action='show_streams', content_type='movie', media_id=item_id)
+            list_item = create_listitem_with_context(meta, 'movie', url)
+            xbmcplugin.addDirectoryItem(HANDLE, url, list_item, True)
+        
+        # More movies link
+        if len(movies) > 10:
+            list_item = xbmcgui.ListItem(label=f'[COLOR yellow]» View All Movies ({len(movies)} results)[/COLOR]')
+            url = get_url(action='search', content_type='movie', query=query)
+            xbmcplugin.addDirectoryItem(HANDLE, url, list_item, True)
+    
+    # TV Shows Section Header
+    if series_results and 'metas' in series_results and len(series_results['metas']) > 0:
+        # Apply filters
+        shows = series_results['metas']
+        if HAS_MODULES and filters:
+            shows = filters.filter_items(shows)
+        
+        # Add "TV Shows" category header
+        header_item = xbmcgui.ListItem(label='[B][COLOR green]TV Shows[/COLOR][/B]')
+        header_item.setProperty('IsPlayable', 'false')
+        xbmcplugin.addDirectoryItem(HANDLE, '', header_item, False)
+        
+        # Add TV show results (limit to 10)
+        for meta in shows[:10]:
+            item_id = meta.get('id')
+            url = get_url(action='show_seasons', meta_id=item_id)
+            list_item = create_listitem_with_context(meta, 'series', url)
+            xbmcplugin.addDirectoryItem(HANDLE, url, list_item, True)
+        
+        # More shows link
+        if len(shows) > 10:
+            list_item = xbmcgui.ListItem(label=f'[COLOR yellow]» View All TV Shows ({len(shows)} results)[/COLOR]')
+            url = get_url(action='search', content_type='series', query=query)
+            xbmcplugin.addDirectoryItem(HANDLE, url, list_item, True)
+    
+    # No results
+    if (not movie_results or 'metas' not in movie_results or len(movie_results['metas']) == 0) and \
+       (not series_results or 'metas' not in series_results or len(series_results['metas']) == 0):
+        xbmcgui.Dialog().notification('AIOStreams', 'No results found', xbmcgui.NOTIFICATION_INFO)
+    
+    xbmcplugin.endOfDirectory(HANDLE)
+
+
+def search_unified():
+    """Unified search showing both movies and TV shows."""
+    params = dict(parse_qsl(sys.argv[2][1:]))
+    query = params.get('query')
+    
+    if not query:
+        keyboard = xbmcgui.Dialog().input('Search', type=xbmcgui.INPUT_ALPHANUM)
+        if not keyboard:
+            return
+        query = keyboard
+    
+    xbmcplugin.setPluginCategory(HANDLE, f'Search: {query}')
+    xbmcplugin.setContent(HANDLE, 'videos')
+    
+    # Show progress dialog
+    progress = xbmcgui.DialogProgress()
+    progress.create('AIOStreams', 'Searching movies and TV shows...')
+    
+    # Search movies
+    progress.update(25, 'Searching movies...')
+    movie_results = search_catalog(query, 'movie', skip=0)
+    
+    # Search TV shows
+    progress.update(50, 'Searching TV shows...')
+    series_results = search_catalog(query, 'series', skip=0)
+    
+    progress.close()
+    
+    # Movies Section Header
+    if movie_results and 'metas' in movie_results and len(movie_results['metas']) > 0:
+        # Apply filters
+        movies = movie_results['metas']
+        if HAS_MODULES and filters:
+            movies = filters.filter_items(movies)
+        
+        # Add "Movies" category header
+        header_item = xbmcgui.ListItem(label='[B][COLOR blue]Movies[/COLOR][/B]')
+        header_item.setProperty('IsPlayable', 'false')
+        xbmcplugin.addDirectoryItem(HANDLE, '', header_item, False)
+        
+        # Add movie results (limit to 10)
+        for meta in movies[:10]:
+            item_id = meta.get('id')
+            url = get_url(action='show_streams', content_type='movie', media_id=item_id)
+            list_item = create_listitem_with_context(meta, 'movie', url)
+            xbmcplugin.addDirectoryItem(HANDLE, url, list_item, True)
+        
+        # More movies link
+        if len(movies) > 10:
+            list_item = xbmcgui.ListItem(label=f'[COLOR yellow]» View All Movies ({len(movies)} results)[/COLOR]')
+            url = get_url(action='search', content_type='movie', query=query)
+            xbmcplugin.addDirectoryItem(HANDLE, url, list_item, True)
+    
+    # TV Shows Section Header
+    if series_results and 'metas' in series_results and len(series_results['metas']) > 0:
+        # Apply filters
+        shows = series_results['metas']
+        if HAS_MODULES and filters:
+            shows = filters.filter_items(shows)
+        
+        # Add "TV Shows" category header
+        header_item = xbmcgui.ListItem(label='[B][COLOR green]TV Shows[/COLOR][/B]')
+        header_item.setProperty('IsPlayable', 'false')
+        xbmcplugin.addDirectoryItem(HANDLE, '', header_item, False)
+        
+        # Add TV show results (limit to 10)
+        for meta in shows[:10]:
+            item_id = meta.get('id')
+            url = get_url(action='show_seasons', meta_id=item_id)
+            list_item = create_listitem_with_context(meta, 'series', url)
+            xbmcplugin.addDirectoryItem(HANDLE, url, list_item, True)
+        
+        # More shows link
+        if len(shows) > 10:
+            list_item = xbmcgui.ListItem(label=f'[COLOR yellow]» View All TV Shows ({len(shows)} results)[/COLOR]')
+            url = get_url(action='search', content_type='series', query=query)
+            xbmcplugin.addDirectoryItem(HANDLE, url, list_item, True)
+    
+    # No results
+    if (not movie_results or 'metas' not in movie_results or len(movie_results['metas']) == 0) and \
+       (not series_results or 'metas' not in series_results or len(series_results['metas']) == 0):
+        xbmcgui.Dialog().notification('AIOStreams', 'No results found', xbmcgui.NOTIFICATION_INFO)
+    
+    xbmcplugin.endOfDirectory(HANDLE)
+
+
+
+
+def streams():
+    """Display available streams for selected content."""
+    params = dict(parse_qsl(sys.argv[2][1:]))
+    content_type = params['content_type']
+    media_id = params['media_id']
+    title = params.get('title', 'Unknown')
+    
+    # Fetch streams
+    stream_data = get_streams(content_type, media_id)
+    
+    if not stream_data or 'streams' not in stream_data:
+        xbmcgui.Dialog().notification('AIOStreams', 'No streams available', xbmcgui.NOTIFICATION_ERROR)
+        xbmcplugin.endOfDirectory(HANDLE)
+        return
+    
+    xbmcplugin.setPluginCategory(HANDLE, title)
+    xbmcplugin.setContent(HANDLE, 'videos')
+    
+    # Display streams
+    for stream in stream_data['streams']:
+        stream_title = stream.get('name', stream.get('title', 'Unknown Stream'))
+        
+        description_parts = []
+        if stream.get('description'):
+            description_parts.append(stream['description'])
+        
+        list_item = xbmcgui.ListItem(label=stream_title)
+        
+        info_tag = list_item.getVideoInfoTag()
+        info_tag.setTitle(stream_title)
+        info_tag.setPlot('\n'.join(description_parts) if description_parts else stream_title)
+        
+        list_item.setProperty('IsPlayable', 'true')
+        
+        stream_url = stream.get('url') or stream.get('externalUrl')
+        
+        if stream_url:
+            if stream.get('behaviorHints', {}).get('notWebReady'):
+                list_item.setLabel(f"[!] {stream_title}")
+            
+            xbmcplugin.addDirectoryItem(HANDLE, stream_url, list_item, False)
+    
+    xbmcplugin.endOfDirectory(HANDLE)
+
+
+def play():
+    """TMDBHelper direct play - automatically play first available stream."""
+    params = dict(parse_qsl(sys.argv[2][1:]))
+    content_type = params['content_type']
+    imdb_id = params['imdb_id']
+    
+    # Format media ID for AIOStreams API
+    if content_type == 'movie':
+        media_id = imdb_id
+        season = None
+        episode = None
+    else:
+        season = params.get('season')
+        episode = params.get('episode')
+        media_id = f"{imdb_id}:{season}:{episode}"
+    
+    # Fetch streams
+    stream_data = get_streams(content_type, media_id)
+    
+    if not stream_data or 'streams' not in stream_data or len(stream_data['streams']) == 0:
+        xbmcgui.Dialog().notification('AIOStreams', 'No streams available', xbmcgui.NOTIFICATION_ERROR)
+        xbmcplugin.setResolvedUrl(HANDLE, False, xbmcgui.ListItem())
+        return
+    
+    # Get first stream
+    stream = stream_data['streams'][0]
+    stream_url = stream.get('url') or stream.get('externalUrl')
+    
+    if not stream_url:
+        xbmcgui.Dialog().notification('AIOStreams', 'No playable URL found', xbmcgui.NOTIFICATION_ERROR)
+        xbmcplugin.setResolvedUrl(HANDLE, False, xbmcgui.ListItem())
+        return
+    
+    # Create list item for playback
+    list_item = xbmcgui.ListItem(path=stream_url)
+    list_item.setProperty('IsPlayable', 'true')
+    
+    # Add subtitles if available
+    subtitle_data = get_subtitles(content_type, media_id)
+    if subtitle_data and 'subtitles' in subtitle_data:
+        subtitle_urls = []
+        for subtitle in subtitle_data['subtitles']:
+            sub_url = subtitle.get('url')
+            if sub_url:
+                subtitle_urls.append(sub_url)
+                xbmc.log(f'[AIOStreams] Added subtitle: {subtitle.get("lang", "unknown")} - {sub_url}', xbmc.LOGINFO)
+        
+        if subtitle_urls:
+            list_item.setSubtitles(subtitle_urls)
+    
+    # Set media info for scrobbling
+    if HAS_MODULES and PLAYER:
+        scrobble_type = 'movie' if content_type == 'movie' else 'episode'
+        PLAYER.set_media_info(scrobble_type, imdb_id, season, episode)
+    
+    # Set resolved URL for playback
+    xbmcplugin.setResolvedUrl(HANDLE, True, list_item)
+
+
+def select_stream():
+    """TMDBHelper select stream - show dialog to select from available streams."""
+    params = dict(parse_qsl(sys.argv[2][1:]))
+    content_type = params['content_type']
+    imdb_id = params['imdb_id']
+    title = params.get('title', 'Unknown')
+    
+    # Format media ID for AIOStreams API
+    if content_type == 'movie':
+        media_id = imdb_id
+        season = None
+        episode = None
+    else:
+        season = params.get('season')
+        episode = params.get('episode')
+        media_id = f"{imdb_id}:{season}:{episode}"
+    
+    # Fetch streams
+    stream_data = get_streams(content_type, media_id)
+    
+    if not stream_data or 'streams' not in stream_data or len(stream_data['streams']) == 0:
+        xbmcgui.Dialog().notification('AIOStreams', 'No streams available', xbmcgui.NOTIFICATION_ERROR)
+        xbmcplugin.setResolvedUrl(HANDLE, False, xbmcgui.ListItem())
+        return
+    
+    # Build stream list for dialog
+    stream_list = []
+    for stream in stream_data['streams']:
+        stream_title = stream.get('name', stream.get('title', 'Unknown Stream'))
+        if stream.get('description'):
+            stream_title = f"{stream_title} - {stream['description']}"
+        stream_list.append(stream_title)
+    
+    # Show selection dialog
+    selected = xbmcgui.Dialog().select(f'Select Stream: {title}', stream_list)
+    
+    if selected < 0:
+        xbmcplugin.setResolvedUrl(HANDLE, False, xbmcgui.ListItem())
+        return
+    
+    # Get selected stream
+    stream = stream_data['streams'][selected]
+    stream_url = stream.get('url') or stream.get('externalUrl')
+    
+    if not stream_url:
+        xbmcgui.Dialog().notification('AIOStreams', 'No playable URL found', xbmcgui.NOTIFICATION_ERROR)
+        xbmcplugin.setResolvedUrl(HANDLE, False, xbmcgui.ListItem())
+        return
+    
+    # Create list item for playback
+    list_item = xbmcgui.ListItem(path=stream_url)
+    list_item.setProperty('IsPlayable', 'true')
+    
+    # Add subtitles if available
+    subtitle_data = get_subtitles(content_type, media_id)
+    if subtitle_data and 'subtitles' in subtitle_data:
+        subtitle_urls = []
+        for subtitle in subtitle_data['subtitles']:
+            sub_url = subtitle.get('url')
+            if sub_url:
+                subtitle_urls.append(sub_url)
+                xbmc.log(f'[AIOStreams] Added subtitle: {subtitle.get("lang", "unknown")} - {sub_url}', xbmc.LOGINFO)
+        
+        if subtitle_urls:
+            list_item.setSubtitles(subtitle_urls)
+    
+    # Set media info for scrobbling
+    if HAS_MODULES and PLAYER:
+        scrobble_type = 'movie' if content_type == 'movie' else 'episode'
+        PLAYER.set_media_info(scrobble_type, imdb_id, season, episode)
+    
+    # Set resolved URL for playback
+    xbmcplugin.setResolvedUrl(HANDLE, True, list_item)
+
+
+def movie_lists():
+    """Movie lists submenu."""
+    xbmcplugin.setPluginCategory(HANDLE, 'Movie Lists')
+    xbmcplugin.setContent(HANDLE, 'videos')
+    
+    menu_items = [
+        {'label': 'AIOStreams Catalogs', 'url': get_url(action='catalogs', content_type='movie'), 'icon': 'DefaultMovies.png'}
+    ]
+    
+    # Add Trakt lists if authorized
+    if HAS_MODULES and trakt.get_access_token():
+        menu_items.extend([
+            {'label': '[COLOR blue][Trakt][/COLOR] Recommended', 'url': get_url(action='trakt_recommended', media_type='movies'), 'icon': 'DefaultMovies.png'},
+            {'label': '[COLOR blue][Trakt][/COLOR] Watchlist', 'url': get_url(action='trakt_watchlist', media_type='movies'), 'icon': 'DefaultMovies.png'},
+            {'label': '[COLOR blue][Trakt][/COLOR] Collection', 'url': get_url(action='trakt_collection', media_type='movies'), 'icon': 'DefaultMovies.png'},
+            {'label': '[COLOR blue][Trakt][/COLOR] Trending', 'url': get_url(action='trakt_trending', media_type='movies'), 'icon': 'DefaultMovies.png'},
+            {'label': '[COLOR blue][Trakt][/COLOR] Popular', 'url': get_url(action='trakt_popular', media_type='movies'), 'icon': 'DefaultMovies.png'}
+        ])
+    
+    for item in menu_items:
+        list_item = xbmcgui.ListItem(label=item['label'])
+        info_tag = list_item.getVideoInfoTag()
+        info_tag.setTitle(item['label'])
+        list_item.setArt({'icon': item['icon']})
+        xbmcplugin.addDirectoryItem(HANDLE, item['url'], list_item, True)
+    
+    xbmcplugin.endOfDirectory(HANDLE)
+
+
+def series_lists():
+    """Series lists submenu."""
+    xbmcplugin.setPluginCategory(HANDLE, 'Series Lists')
+    xbmcplugin.setContent(HANDLE, 'videos')
+    
+    menu_items = [
+        {'label': 'AIOStreams Catalogs', 'url': get_url(action='catalogs', content_type='series'), 'icon': 'DefaultTVShows.png'}
+    ]
+    
+    # Add Trakt lists if authorized
+    if HAS_MODULES and trakt.get_access_token():
+        menu_items.extend([
+            {'label': '[COLOR blue][Trakt][/COLOR] Continue Watching', 'url': get_url(action='trakt_continue_watching'), 'icon': 'DefaultTVShows.png'},
+            {'label': '[COLOR blue][Trakt][/COLOR] Next Up', 'url': get_url(action='trakt_next_up'), 'icon': 'DefaultTVShows.png'},
+            {'label': '[COLOR blue][Trakt][/COLOR] Recommended', 'url': get_url(action='trakt_recommended', media_type='shows'), 'icon': 'DefaultTVShows.png'},
+            {'label': '[COLOR blue][Trakt][/COLOR] Watchlist', 'url': get_url(action='trakt_watchlist', media_type='shows'), 'icon': 'DefaultTVShows.png'},
+            {'label': '[COLOR blue][Trakt][/COLOR] Collection', 'url': get_url(action='trakt_collection', media_type='shows'), 'icon': 'DefaultTVShows.png'},
+            {'label': '[COLOR blue][Trakt][/COLOR] Trending', 'url': get_url(action='trakt_trending', media_type='shows'), 'icon': 'DefaultTVShows.png'},
+            {'label': '[COLOR blue][Trakt][/COLOR] Popular', 'url': get_url(action='trakt_popular', media_type='shows'), 'icon': 'DefaultTVShows.png'}
+        ])
+    
+    for item in menu_items:
+        list_item = xbmcgui.ListItem(label=item['label'])
+        info_tag = list_item.getVideoInfoTag()
+        info_tag.setTitle(item['label'])
+        list_item.setArt({'icon': item['icon']})
+        xbmcplugin.addDirectoryItem(HANDLE, item['url'], list_item, True)
+    
+    xbmcplugin.endOfDirectory(HANDLE)
+
+
+def list_catalogs():
+    """List all available catalogs from manifest."""
+    params = dict(parse_qsl(sys.argv[2][1:]))
+    filter_type = params.get('content_type')  # 'movie' or 'series'
+    
+    manifest = get_manifest()
+    if not manifest or 'catalogs' not in manifest:
+        xbmcgui.Dialog().notification('AIOStreams', 'No catalogs available', xbmcgui.NOTIFICATION_ERROR)
+        xbmcplugin.endOfDirectory(HANDLE)
+        return
+    
+    category_name = 'Movie Catalogs' if filter_type == 'movie' else 'Series Catalogs' if filter_type == 'series' else 'All Catalogs'
+    xbmcplugin.setPluginCategory(HANDLE, category_name)
+    xbmcplugin.setContent(HANDLE, 'videos')
+    
+    for catalog in manifest['catalogs']:
+        catalog_name = catalog.get('name', 'Unknown Catalog')
+        catalog_id = catalog.get('id')
+        content_type = catalog.get('type', 'movie')
+        
+        # Filter by type if specified
+        if filter_type and content_type != filter_type:
+            continue
+        
+        # Skip search catalogs - we have our own search function
+        if 'search' in catalog_name.lower() or 'search' in catalog_id.lower():
+            continue
+        
+        extras = catalog.get('extra', [])
+        genre_extra = next((e for e in extras if e.get('name') == 'genre'), None)
+        
+        if genre_extra and genre_extra.get('options'):
+            url = get_url(action='catalog_genres', catalog_id=catalog_id, content_type=content_type, catalog_name=catalog_name)
+            is_folder = True
+        else:
+            url = get_url(action='browse_catalog', catalog_id=catalog_id, content_type=content_type)
+            is_folder = True
+        
+        list_item = xbmcgui.ListItem(label=catalog_name)
+        info_tag = list_item.getVideoInfoTag()
+        info_tag.setTitle(catalog_name)
+        icon = 'DefaultMovies.png' if content_type == 'movie' else 'DefaultTVShows.png'
+        list_item.setArt({'icon': icon})
+        xbmcplugin.addDirectoryItem(HANDLE, url, list_item, is_folder)
+    
+    xbmcplugin.endOfDirectory(HANDLE)
+
+
+def list_catalog_genres():
+    """List genre options for a catalog."""
+    params = dict(parse_qsl(sys.argv[2][1:]))
+    catalog_id = params['catalog_id']
+    content_type = params['content_type']
+    catalog_name = params.get('catalog_name', 'Catalog')
+    
+    manifest = get_manifest()
+    if not manifest:
+        xbmcplugin.endOfDirectory(HANDLE)
+        return
+    
+    catalog = next((c for c in manifest['catalogs'] if c['id'] == catalog_id and c['type'] == content_type), None)
+    if not catalog:
+        xbmcplugin.endOfDirectory(HANDLE)
+        return
+    
+    xbmcplugin.setPluginCategory(HANDLE, catalog_name)
+    xbmcplugin.setContent(HANDLE, 'videos')
+    
+    # Add "All" option
+    list_item = xbmcgui.ListItem(label='All')
+    info_tag = list_item.getVideoInfoTag()
+    info_tag.setTitle('All')
+    url = get_url(action='browse_catalog', catalog_id=catalog_id, content_type=content_type)
+    xbmcplugin.addDirectoryItem(HANDLE, url, list_item, True)
+    
+    # Add genre options
+    extras = catalog.get('extra', [])
+    genre_extra = next((e for e in extras if e.get('name') == 'genre'), None)
+    
+    if genre_extra and genre_extra.get('options'):
+        for genre in genre_extra['options']:
+            list_item = xbmcgui.ListItem(label=genre)
+            info_tag = list_item.getVideoInfoTag()
+            info_tag.setTitle(genre)
+            url = get_url(action='browse_catalog', catalog_id=catalog_id, content_type=content_type, genre=genre)
+            xbmcplugin.addDirectoryItem(HANDLE, url, list_item, True)
+    
+    xbmcplugin.endOfDirectory(HANDLE)
+
+
+def browse_catalog():
+    """Browse a specific catalog with optional genre filter."""
+    params = dict(parse_qsl(sys.argv[2][1:]))
+    catalog_id = params['catalog_id']
+    content_type = params['content_type']
+    genre = params.get('genre')
+    skip = int(params.get('skip', 0))
+    
+    # Fetch catalog data
+    catalog_data = get_catalog(content_type, catalog_id, genre, skip)
+    
+    if not catalog_data or 'metas' not in catalog_data:
+        xbmcgui.Dialog().notification('AIOStreams', 'No items found', xbmcgui.NOTIFICATION_INFO)
+        xbmcplugin.endOfDirectory(HANDLE)
+        return
+    
+    # Apply filters
+    if HAS_MODULES and filters:
+        catalog_data['metas'] = filters.filter_items(catalog_data['metas'])
+    
+    xbmcplugin.setPluginCategory(HANDLE, f'{catalog_id}')
+    xbmcplugin.setContent(HANDLE, 'movies' if content_type == 'movie' else 'tvshows')
+    
+    # Display catalog items
+    for meta in catalog_data['metas']:
+        item_id = meta.get('id')
+        item_type = meta.get('type', content_type)
+        
+        # Determine if this is a series or movie
+        if item_type == 'series':
+            url = get_url(action='show_seasons', meta_id=item_id)
+            is_folder = True
+        else:
+            url = get_url(action='show_streams', content_type='movie', media_id=item_id)
+            is_folder = True
+        
+        list_item = create_listitem_with_context(meta, content_type, url)
+        xbmcplugin.addDirectoryItem(HANDLE, url, list_item, is_folder)
+    
+    # Check if next page exists by attempting to fetch it
+    next_skip = skip + 20
+    next_page_data = get_catalog(content_type, catalog_id, genre, next_skip)
+    
+    if next_page_data and 'metas' in next_page_data and len(next_page_data['metas']) > 0:
+        # Next page has items, show "Load More"
+        list_item = xbmcgui.ListItem(label='[COLOR yellow]» Load More...[/COLOR]')
+        url = get_url(action='browse_catalog', catalog_id=catalog_id, content_type=content_type, 
+                      genre=genre if genre else '', skip=next_skip)
+        xbmcplugin.addDirectoryItem(HANDLE, url, list_item, True)
+    
+    xbmcplugin.endOfDirectory(HANDLE)
+
+
+def show_streams():
+    """Show streams for a catalog item."""
+    params = dict(parse_qsl(sys.argv[2][1:]))
+    streams()
+
+
+def show_seasons():
+    """Show seasons for a TV series."""
+    params = dict(parse_qsl(sys.argv[2][1:]))
+    meta_id = params['meta_id']
+    
+    meta_data = get_meta('series', meta_id)
+    
+    if not meta_data or 'meta' not in meta_data:
+        xbmcgui.Dialog().notification('AIOStreams', 'Series info not found', xbmcgui.NOTIFICATION_ERROR)
+        xbmcplugin.endOfDirectory(HANDLE)
+        return
+    
+    meta = meta_data['meta']
+    series_name = meta.get('name', 'Unknown Series')
+    
+    xbmcplugin.setPluginCategory(HANDLE, series_name)
+    xbmcplugin.setContent(HANDLE, 'seasons')
+    
+    videos = meta.get('videos', [])
+    
+    if not videos:
+        xbmcgui.Dialog().notification('AIOStreams', 'No seasons found', xbmcgui.NOTIFICATION_INFO)
+        xbmcplugin.endOfDirectory(HANDLE)
+        return
+    
+    # Group episodes by season
+    seasons = {}
+    for video in videos:
+        season = video.get('season')
+        if season is not None:
+            if season not in seasons:
+                seasons[season] = []
+            seasons[season].append(video)
+    
+    # Display seasons
+    for season_num in sorted(seasons.keys()):
+        episode_count = len(seasons[season_num])
+        season_label = f'Season {season_num} ({episode_count} episodes)'
+        
+        list_item = xbmcgui.ListItem(label=season_label)
+        info_tag = list_item.getVideoInfoTag()
+        info_tag.setTitle(season_label)
+        info_tag.setSeason(season_num)
+        info_tag.setTvShowTitle(series_name)
+        info_tag.setMediaType('season')
+        
+        # Check if season is fully watched in Trakt
+        if HAS_MODULES and trakt.get_access_token():
+            if trakt.is_season_watched(meta_id, season_num):
+                info_tag.setPlaycount(1)
+                list_item.setProperty('WatchedOverlay', 'OverlayWatched.png')
+        
+        if meta.get('poster'):
+            list_item.setArt({'poster': meta['poster'], 'thumb': meta['poster']})
+        if meta.get('background'):
+            list_item.setArt({'fanart': meta['background']})
+        
+        # Add Trakt context menus
+        context_menu = []
+        if HAS_MODULES and trakt.get_access_token():
+            # Mark entire season as watched
+            context_menu.append(('[COLOR blue][Trakt][/COLOR] Mark Season as Watched',
+                                f'RunPlugin({get_url(action="trakt_mark_watched", media_type="show", imdb_id=meta_id, season=season_num)})'))
+            # Add show to watchlist
+            context_menu.append(('[COLOR blue][Trakt][/COLOR] Add Show to Watchlist',
+                                f'RunPlugin({get_url(action="trakt_add_watchlist", media_type="show", imdb_id=meta_id)})'))
+        
+        if context_menu:
+            list_item.addContextMenuItems(context_menu)
+        
+        url = get_url(action='show_episodes', meta_id=meta_id, season=season_num)
+        xbmcplugin.addDirectoryItem(HANDLE, url, list_item, True)
+    
+    xbmcplugin.endOfDirectory(HANDLE)
+
+
+def show_episodes():
+    """Show episodes for a specific season."""
+    params = dict(parse_qsl(sys.argv[2][1:]))
+    meta_id = params['meta_id']
+    season = int(params['season'])
+    
+    meta_data = get_meta('series', meta_id)
+    
+    if not meta_data or 'meta' not in meta_data:
+        xbmcgui.Dialog().notification('AIOStreams', 'Series info not found', xbmcgui.NOTIFICATION_ERROR)
+        xbmcplugin.endOfDirectory(HANDLE)
+        return
+    
+    meta = meta_data['meta']
+    series_name = meta.get('name', 'Unknown Series')
+    
+    xbmcplugin.setPluginCategory(HANDLE, f'{series_name} - Season {season}')
+    xbmcplugin.setContent(HANDLE, 'episodes')
+    
+    videos = meta.get('videos', [])
+    episodes = [v for v in videos if v.get('season') == season]
+    
+    if not episodes:
+        xbmcgui.Dialog().notification('AIOStreams', 'No episodes found', xbmcgui.NOTIFICATION_INFO)
+        xbmcplugin.endOfDirectory(HANDLE)
+        return
+    
+    episodes.sort(key=lambda x: x.get('episode', 0))
+    
+    # Display episodes
+    for episode in episodes:
+        episode_num = episode.get('episode', 0)
+        episode_title = episode.get('title', f'Episode {episode_num}')
+        
+        label = f'{episode_num}. {episode_title}'
+        
+        list_item = xbmcgui.ListItem(label=label)
+        
+        info_tag = list_item.getVideoInfoTag()
+        info_tag.setTitle(episode_title)
+        info_tag.setEpisode(episode_num)
+        info_tag.setSeason(season)
+        info_tag.setTvShowTitle(series_name)
+        info_tag.setPlot(episode.get('overview', ''))
+        info_tag.setMediaType('episode')
+        
+        premiered = episode.get('released', '')
+        if premiered:
+            info_tag.setPremiered(premiered)
+        
+        if episode.get('thumbnail'):
+            list_item.setArt({'thumb': episode['thumbnail']})
+        elif meta.get('poster'):
+            list_item.setArt({'thumb': meta['poster']})
+        
+        if meta.get('background'):
+            list_item.setArt({'fanart': meta['background']})
+        
+        # Check if episode is watched in Trakt
+        if HAS_MODULES and trakt.get_access_token():
+            if trakt.is_episode_watched(meta_id, season, episode_num):
+                info_tag.setPlaycount(1)
+                list_item.setProperty('WatchedOverlay', 'OverlayWatched.png')
+        
+        # Add Trakt context menus
+        context_menu = []
+        if HAS_MODULES and trakt.get_access_token():
+            # Mark episode as watched
+            context_menu.append(('[COLOR blue][Trakt][/COLOR] Mark Episode as Watched',
+                                f'RunPlugin({get_url(action="trakt_mark_watched", media_type="show", imdb_id=meta_id, season=season, episode=episode_num)})'))
+            # Mark season as watched
+            context_menu.append(('[COLOR blue][Trakt][/COLOR] Mark Season as Watched',
+                                f'RunPlugin({get_url(action="trakt_mark_watched", media_type="show", imdb_id=meta_id, season=season)})'))
+            # Add show to watchlist
+            context_menu.append(('[COLOR blue][Trakt][/COLOR] Add Show to Watchlist',
+                                f'RunPlugin({get_url(action="trakt_add_watchlist", media_type="show", imdb_id=meta_id)})'))
+        
+        if context_menu:
+            list_item.addContextMenuItems(context_menu)
+        
+        media_id = f"{meta_id}:{season}:{episode_num}"
+        
+        url = get_url(action='show_streams', content_type='series', media_id=media_id)
+        xbmcplugin.addDirectoryItem(HANDLE, url, list_item, True)
+    
+    xbmcplugin.endOfDirectory(HANDLE)
+
+
+# Trakt functions
+def trakt_menu():
+    """Trakt catalogs submenu."""
+    if not HAS_MODULES:
+        xbmcgui.Dialog().ok('AIOStreams', 'Trakt module not available')
+        return
+    
+    xbmcplugin.setPluginCategory(HANDLE, 'Trakt Catalogs')
+    xbmcplugin.setContent(HANDLE, 'videos')
+    
+    menu_items = [
+        {'label': 'Continue Watching', 'url': get_url(action='trakt_continue_watching'), 'icon': 'DefaultTVShows.png'},
+        {'label': 'Next Up', 'url': get_url(action='trakt_next_up'), 'icon': 'DefaultTVShows.png'},
+        {'label': 'Watchlist - Movies', 'url': get_url(action='trakt_watchlist', media_type='movies'), 'icon': 'DefaultMovies.png'},
+        {'label': 'Watchlist - Shows', 'url': get_url(action='trakt_watchlist', media_type='shows'), 'icon': 'DefaultTVShows.png'},
+        {'label': 'Collection - Movies', 'url': get_url(action='trakt_collection', media_type='movies'), 'icon': 'DefaultMovies.png'},
+        {'label': 'Collection - Shows', 'url': get_url(action='trakt_collection', media_type='shows'), 'icon': 'DefaultTVShows.png'},
+        {'label': 'Recommended - Movies', 'url': get_url(action='trakt_recommended', media_type='movies'), 'icon': 'DefaultMovies.png'},
+        {'label': 'Recommended - Shows', 'url': get_url(action='trakt_recommended', media_type='shows'), 'icon': 'DefaultTVShows.png'},
+        {'label': 'Trending - Movies', 'url': get_url(action='trakt_trending', media_type='movies'), 'icon': 'DefaultMovies.png'},
+        {'label': 'Trending - Shows', 'url': get_url(action='trakt_trending', media_type='shows'), 'icon': 'DefaultTVShows.png'},
+        {'label': 'Popular - Movies', 'url': get_url(action='trakt_popular', media_type='movies'), 'icon': 'DefaultMovies.png'},
+        {'label': 'Popular - Shows', 'url': get_url(action='trakt_popular', media_type='shows'), 'icon': 'DefaultTVShows.png'}
+    ]
+    
+    for item in menu_items:
+        list_item = xbmcgui.ListItem(label=item['label'])
+        info_tag = list_item.getVideoInfoTag()
+        info_tag.setTitle(item['label'])
+        list_item.setArt({'icon': item['icon']})
+        xbmcplugin.addDirectoryItem(HANDLE, item['url'], list_item, True)
+    
+    xbmcplugin.endOfDirectory(HANDLE)
+
+
+def trakt_watchlist():
+    """Display Trakt watchlist."""
+    if not HAS_MODULES:
+        xbmcgui.Dialog().ok('AIOStreams', 'Trakt module not available')
+        return
+    
+    params = dict(parse_qsl(sys.argv[2][1:]))
+    media_type = params.get('media_type', 'movies')
+    page = int(params.get('page', 1))
+    
+    items = trakt.get_watchlist(media_type, page, limit=20)
+    
+    if not items:
+        xbmcgui.Dialog().notification('AIOStreams', 'Watchlist is empty', xbmcgui.NOTIFICATION_INFO)
+        xbmcplugin.endOfDirectory(HANDLE)
+        return
+    
+    xbmcplugin.setPluginCategory(HANDLE, f'Trakt Watchlist - {media_type.capitalize()}')
+    xbmcplugin.setContent(HANDLE, 'movies' if media_type == 'movies' else 'tvshows')
+    
+    for item in items:
+        item_data = item.get('movie' if media_type == 'movies' else 'show', {})
+        item_id = item_data.get('ids', {}).get('imdb', '')
+        
+        if not item_id:
+            continue
+        
+        # Fetch full metadata from AIOStreams for posters/descriptions
+        content_type = 'movie' if media_type == 'movies' else 'series'
+        meta_data = get_meta(content_type, item_id)
+        
+        if meta_data and 'meta' in meta_data:
+            meta = meta_data['meta']
+        else:
+            # Fallback to Trakt data
+            meta = {
+                'id': item_id,
+                'name': item_data.get('title', 'Unknown'),
+                'description': item_data.get('overview', ''),
+                'year': item_data.get('year', 0),
+                'genres': item_data.get('genres', [])
+            }
+        
+        if content_type == 'series':
+            url = get_url(action='show_seasons', meta_id=item_id)
+        else:
+            url = get_url(action='show_streams', content_type='movie', media_id=item_id)
+        
+        list_item = create_listitem_with_context(meta, content_type, url)
+        xbmcplugin.addDirectoryItem(HANDLE, url, list_item, True)
+    
+    # Add Load More if we got 20 items
+    if len(items) >= 20:
+        list_item = xbmcgui.ListItem(label='[COLOR yellow]» Load More...[/COLOR]')
+        url = get_url(action='trakt_watchlist', media_type=media_type, page=page + 1)
+        xbmcplugin.addDirectoryItem(HANDLE, url, list_item, True)
+    
+    xbmcplugin.endOfDirectory(HANDLE)
+
+
+def trakt_collection():
+    """Display Trakt collection."""
+    if not HAS_MODULES:
+        xbmcgui.Dialog().ok('AIOStreams', 'Trakt module not available')
+        return
+    
+    params = dict(parse_qsl(sys.argv[2][1:]))
+    media_type = params.get('media_type', 'movies')
+    page = int(params.get('page', 1))
+    
+    items = trakt.get_collection(media_type, page, limit=20)
+    
+    if not items:
+        xbmcgui.Dialog().notification('AIOStreams', 'Collection is empty', xbmcgui.NOTIFICATION_INFO)
+        xbmcplugin.endOfDirectory(HANDLE)
+        return
+    
+    xbmcplugin.setPluginCategory(HANDLE, f'Trakt Collection - {media_type.capitalize()}')
+    xbmcplugin.setContent(HANDLE, 'movies' if media_type == 'movies' else 'tvshows')
+    
+    for item in items:
+        item_data = item.get('movie' if media_type == 'movies' else 'show', {})
+        item_id = item_data.get('ids', {}).get('imdb', '')
+        
+        if not item_id:
+            continue
+        
+        # Fetch full metadata from AIOStreams
+        content_type = 'movie' if media_type == 'movies' else 'series'
+        meta_data = get_meta(content_type, item_id)
+        
+        if meta_data and 'meta' in meta_data:
+            meta = meta_data['meta']
+        else:
+            meta = {
+                'id': item_id,
+                'name': item_data.get('title', 'Unknown'),
+                'description': item_data.get('overview', ''),
+                'year': item_data.get('year', 0),
+                'genres': item_data.get('genres', [])
+            }
+        
+        if content_type == 'series':
+            url = get_url(action='show_seasons', meta_id=item_id)
+        else:
+            url = get_url(action='show_streams', content_type='movie', media_id=item_id)
+        
+        list_item = create_listitem_with_context(meta, content_type, url)
+        xbmcplugin.addDirectoryItem(HANDLE, url, list_item, True)
+    
+    # Add Load More if we got 20 items
+    if len(items) >= 20:
+        list_item = xbmcgui.ListItem(label='[COLOR yellow]» Load More...[/COLOR]')
+        url = get_url(action='trakt_collection', media_type=media_type, page=page + 1)
+        xbmcplugin.addDirectoryItem(HANDLE, url, list_item, True)
+    
+    xbmcplugin.endOfDirectory(HANDLE)
+
+
+def trakt_trending():
+    """Display Trakt trending."""
+    if not HAS_MODULES:
+        xbmcgui.Dialog().ok('AIOStreams', 'Trakt module not available')
+        return
+    
+    params = dict(parse_qsl(sys.argv[2][1:]))
+    media_type = params.get('media_type', 'movies')
+    page = int(params.get('page', 1))
+    
+    items = trakt.get_trending(media_type, page, limit=20)
+    
+    if not items:
+        xbmcgui.Dialog().notification('AIOStreams', 'No trending items', xbmcgui.NOTIFICATION_INFO)
+        xbmcplugin.endOfDirectory(HANDLE)
+        return
+    
+    xbmcplugin.setPluginCategory(HANDLE, f'Trakt Trending - {media_type.capitalize()}')
+    xbmcplugin.setContent(HANDLE, 'movies' if media_type == 'movies' else 'tvshows')
+    
+    for item in items:
+        item_data = item.get('movie' if media_type == 'movies' else 'show', {})
+        item_id = item_data.get('ids', {}).get('imdb', '')
+        
+        if not item_id:
+            continue
+        
+        # Fetch full metadata from AIOStreams
+        content_type = 'movie' if media_type == 'movies' else 'series'
+        meta_data = get_meta(content_type, item_id)
+        
+        if meta_data and 'meta' in meta_data:
+            meta = meta_data['meta']
+        else:
+            meta = {
+                'id': item_id,
+                'name': item_data.get('title', 'Unknown'),
+                'description': item_data.get('overview', ''),
+                'year': item_data.get('year', 0),
+                'genres': item_data.get('genres', [])
+            }
+        
+        if content_type == 'series':
+            url = get_url(action='show_seasons', meta_id=item_id)
+        else:
+            url = get_url(action='show_streams', content_type='movie', media_id=item_id)
+        
+        list_item = create_listitem_with_context(meta, content_type, url)
+        xbmcplugin.addDirectoryItem(HANDLE, url, list_item, True)
+    
+    # Add Load More if we got 20 items
+    if len(items) >= 20:
+        list_item = xbmcgui.ListItem(label='[COLOR yellow]» Load More...[/COLOR]')
+        url = get_url(action='trakt_trending', media_type=media_type, page=page + 1)
+        xbmcplugin.addDirectoryItem(HANDLE, url, list_item, True)
+    
+    xbmcplugin.endOfDirectory(HANDLE)
+
+
+def trakt_popular():
+    """Display Trakt popular."""
+    if not HAS_MODULES:
+        xbmcgui.Dialog().ok('AIOStreams', 'Trakt module not available')
+        return
+    
+    params = dict(parse_qsl(sys.argv[2][1:]))
+    media_type = params.get('media_type', 'movies')
+    page = int(params.get('page', 1))
+    
+    items = trakt.get_popular(media_type, page, limit=20)
+    
+    if not items:
+        xbmcgui.Dialog().notification('AIOStreams', 'No popular items', xbmcgui.NOTIFICATION_INFO)
+        xbmcplugin.endOfDirectory(HANDLE)
+        return
+    
+    xbmcplugin.setPluginCategory(HANDLE, f'Trakt Popular - {media_type.capitalize()}')
+    xbmcplugin.setContent(HANDLE, 'movies' if media_type == 'movies' else 'tvshows')
+    
+    for item in items:
+        item_id = item.get('ids', {}).get('imdb', '')
+        
+        if not item_id:
+            continue
+        
+        # Fetch full metadata from AIOStreams
+        content_type = 'movie' if media_type == 'movies' else 'series'
+        meta_data = get_meta(content_type, item_id)
+        
+        if meta_data and 'meta' in meta_data:
+            meta = meta_data['meta']
+        else:
+            meta = {
+                'id': item_id,
+                'name': item.get('title', 'Unknown'),
+                'description': item.get('overview', ''),
+                'year': item.get('year', 0),
+                'genres': item.get('genres', [])
+            }
+        
+        if content_type == 'series':
+            url = get_url(action='show_seasons', meta_id=item_id)
+        else:
+            url = get_url(action='show_streams', content_type='movie', media_id=item_id)
+        
+        list_item = create_listitem_with_context(meta, content_type, url)
+        xbmcplugin.addDirectoryItem(HANDLE, url, list_item, True)
+    
+    # Add Load More if we got 20 items
+    if len(items) >= 20:
+        list_item = xbmcgui.ListItem(label='[COLOR yellow]» Load More...[/COLOR]')
+        url = get_url(action='trakt_popular', media_type=media_type, page=page + 1)
+        xbmcplugin.addDirectoryItem(HANDLE, url, list_item, True)
+    
+    xbmcplugin.endOfDirectory(HANDLE)
+
+
+def trakt_continue_watching():
+    """Display continue watching (in-progress items)."""
+    if not HAS_MODULES:
+        xbmcgui.Dialog().ok('AIOStreams', 'Trakt module not available')
+        return
+    
+    params = dict(parse_qsl(sys.argv[2][1:]))
+    page = int(params.get('page', 1))
+    
+    items = trakt.get_progress_watching('episodes', page, limit=20)
+    
+    if not items:
+        xbmcgui.Dialog().notification('AIOStreams', 'Nothing in progress', xbmcgui.NOTIFICATION_INFO)
+        xbmcplugin.endOfDirectory(HANDLE)
+        return
+    
+    xbmcplugin.setPluginCategory(HANDLE, 'Continue Watching')
+    xbmcplugin.setContent(HANDLE, 'episodes')
+    
+    for item in items:
+        show_data = item.get('show', {})
+        episode_data = item.get('episode', {})
+        
+        show_id = show_data.get('ids', {}).get('imdb', '')
+        season = episode_data.get('season', 0)
+        episode = episode_data.get('number', 0)
+        
+        if not show_id:
+            continue
+        
+        # Fetch show metadata from AIOStreams for posters
+        meta_data = get_meta('series', show_id)
+        if meta_data and 'meta' in meta_data:
+            poster = meta_data['meta'].get('poster', '')
+            fanart = meta_data['meta'].get('background', '')
+        else:
+            poster = ''
+            fanart = ''
+        
+        # Use Trakt metadata (no AIOStreams call needed)
+        show_name = show_data.get('title', 'Unknown')
+        show_year = show_data.get('year', '')
+        episode_title = episode_data.get('title', f'Episode {episode}')
+        
+        label = f'{show_name} - S{season:02d}E{episode:02d} - {episode_title}'
+        
+        # Progress percentage
+        progress = item.get('progress', 0)
+        
+        list_item = xbmcgui.ListItem(label=label)
+        info_tag = list_item.getVideoInfoTag()
+        info_tag.setTitle(episode_title)
+        info_tag.setTvShowTitle(show_name)
+        info_tag.setSeason(season)
+        info_tag.setEpisode(episode)
+        info_tag.setYear(show_year)
+        info_tag.setMediaType('episode')
+        
+        # Add progress info to plot
+        plot = f'[B]Progress: {progress}%[/B]\n\n{episode_data.get("overview", "")}'
+        info_tag.setPlot(plot)
+        
+        # Use artwork from AIOStreams
+        if poster:
+            list_item.setArt({'thumb': poster, 'poster': poster})
+        elif episode_data.get('images', {}).get('screenshot', {}).get('thumb'):
+            list_item.setArt({'thumb': episode_data['images']['screenshot']['thumb']})
+        
+        if fanart:
+            list_item.setArt({'fanart': fanart})
+        
+        # Build context menu
+        context_menu = []
+        show_trakt_id = show_data.get('ids', {}).get('trakt', '')
+        playback_id = item.get('id', '')  # Get playback ID for removal
+        
+        # Add to watchlist and mark as watched
+        if show_id:
+            context_menu.append(('[COLOR blue][Trakt][/COLOR] Add to Watchlist',
+                                f'RunPlugin({get_url(action="trakt_add_watchlist", media_type="show", imdb_id=show_id)})'))
+            context_menu.append(('[COLOR blue][Trakt][/COLOR] Mark as Watched',
+                                f'RunPlugin({get_url(action="trakt_mark_watched", media_type="show", imdb_id=show_id, season=season, episode=episode, playback_id=playback_id)})'))
+            # Browse full show
+            context_menu.append(('Browse Show',
+                                f'ActivateWindow(videos,{get_url(action="show_seasons", meta_id=show_id)},return)'))
+        
+        if context_menu:
+            list_item.addContextMenuItems(context_menu)
+        
+        # Build stream URL
+        media_id = f"{show_id}:{season}:{episode}"
+        url = get_url(action='show_streams', content_type='series', media_id=media_id)
+        
+        xbmcplugin.addDirectoryItem(HANDLE, url, list_item, True)
+    
+    # Add Load More if we got 20 items
+    if len(items) >= 20:
+        list_item = xbmcgui.ListItem(label='[COLOR yellow]» Load More...[/COLOR]')
+        url = get_url(action='trakt_continue_watching', page=page + 1)
+        xbmcplugin.addDirectoryItem(HANDLE, url, list_item, True)
+    
+    xbmcplugin.endOfDirectory(HANDLE)
+
+
+def trakt_next_up():
+    """Display next episodes to watch using proper Trakt workflow."""
+    if not HAS_MODULES:
+        xbmcgui.Dialog().ok('AIOStreams', 'Trakt module not available')
+        return
+    
+    params = dict(parse_qsl(sys.argv[2][1:]))
+    offset = int(params.get('offset', 0))
+    limit = 20
+    
+    # Get all watched shows
+    all_watched = trakt.get_watched('shows')
+    
+    if not all_watched:
+        xbmcgui.Dialog().notification('AIOStreams', 'No shows watched', xbmcgui.NOTIFICATION_INFO)
+        xbmcplugin.endOfDirectory(HANDLE)
+        return
+    
+    # Get hidden shows
+    hidden_shows = trakt.get_hidden_shows()
+    
+    # Filter out hidden shows and sort by last watched
+    active_shows = [s for s in all_watched if s.get('show', {}).get('ids', {}).get('trakt') not in hidden_shows]
+    active_shows.sort(key=lambda x: x.get('last_watched_at', ''), reverse=True)
+    
+    # Paginate
+    page_shows = active_shows[offset:offset + limit]
+    
+    xbmcplugin.setPluginCategory(HANDLE, 'Next Up')
+    xbmcplugin.setContent(HANDLE, 'episodes')
+    
+    next_episodes = []
+    
+    # Get progress for each show to find next episode
+    for watched_item in page_shows:
+        show_data = watched_item.get('show', {})
+        show_trakt_id = show_data.get('ids', {}).get('trakt')
+        
+        if not show_trakt_id:
+            continue
+        
+        # Get show progress
+        progress = trakt.get_show_progress(show_trakt_id)
+        
+        if not progress:
+            continue
+        
+        next_ep = progress.get('next_episode')
+        
+        if not next_ep:
+            continue  # Show completed or no new episodes
+        
+        # Handle case where next_episode might be a list or dict
+        if isinstance(next_ep, list):
+            if not next_ep:
+                continue
+            next_ep = next_ep[0]
+        
+        # Get IMDB ID and episode details
+        show_imdb = show_data.get('ids', {}).get('imdb', '')
+        show_trakt_id = show_data.get('ids', {}).get('trakt', '')
+        season = next_ep.get('season', 0) if isinstance(next_ep, dict) else 0
+        episode = next_ep.get('number', 0) if isinstance(next_ep, dict) else 0
+        episode_title = next_ep.get('title', f'Episode {episode}') if isinstance(next_ep, dict) else f'Episode {episode}'
+        
+        # Fetch show metadata from AIOStreams for posters
+        if show_imdb:
+            meta_data = get_meta('series', show_imdb)
+            if meta_data and 'meta' in meta_data:
+                poster = meta_data['meta'].get('poster', '')
+                fanart = meta_data['meta'].get('background', '')
+            else:
+                poster = ''
+                fanart = ''
+        else:
+            poster = ''
+            fanart = ''
+        
+        # Use Trakt metadata instead of calling AIOStreams
+        show_name = show_data.get('title', 'Unknown')
+        show_year = show_data.get('year', '')
+        
+        label = f'{show_name} - S{season:02d}E{episode:02d} - {episode_title}'
+        
+        list_item = xbmcgui.ListItem(label=label)
+        info_tag = list_item.getVideoInfoTag()
+        info_tag.setTitle(episode_title)
+        info_tag.setTvShowTitle(show_name)
+        info_tag.setSeason(season)
+        info_tag.setEpisode(episode)
+        info_tag.setYear(show_year)
+        info_tag.setPlot(next_ep.get('overview', '') if isinstance(next_ep, dict) else '')
+        info_tag.setMediaType('episode')
+        
+        # Use artwork from AIOStreams
+        if poster:
+            list_item.setArt({'thumb': poster, 'poster': poster})
+        elif isinstance(next_ep, dict):
+            images = next_ep.get('images', {})
+            if isinstance(images, dict):
+                screenshot = images.get('screenshot', {})
+                if isinstance(screenshot, dict) and screenshot.get('thumb'):
+                    list_item.setArt({'thumb': screenshot['thumb']})
+        
+        if fanart:
+            list_item.setArt({'fanart': fanart})
+        
+        # Build context menu
+        context_menu = []
+        
+        # Add to watchlist and mark as watched
+        if show_imdb:
+            context_menu.append(('[COLOR blue][Trakt][/COLOR] Add to Watchlist',
+                                f'RunPlugin({get_url(action="trakt_add_watchlist", media_type="show", imdb_id=show_imdb)})'))
+            context_menu.append(('[COLOR blue][Trakt][/COLOR] Mark as Watched',
+                                f'RunPlugin({get_url(action="trakt_mark_watched", media_type="show", imdb_id=show_imdb, season=season, episode=episode)})'))
+            # Browse full show
+            context_menu.append(('Browse Show',
+                                f'ActivateWindow(videos,{get_url(action="show_seasons", meta_id=show_imdb)},return)'))
+        
+        if context_menu:
+            list_item.addContextMenuItems(context_menu)
+        
+        # Build stream URL
+        if show_imdb:
+            media_id = f"{show_imdb}:{season}:{episode}"
+            url = get_url(action='show_streams', content_type='series', media_id=media_id)
+            xbmcplugin.addDirectoryItem(HANDLE, url, list_item, True)
+    
+    # Add Load More if there are more shows
+    if len(active_shows) > offset + limit:
+        list_item = xbmcgui.ListItem(label='[COLOR yellow]» Load More...[/COLOR]')
+        url = get_url(action='trakt_next_up', offset=offset + limit)
+        xbmcplugin.addDirectoryItem(HANDLE, url, list_item, True)
+    
+    xbmcplugin.endOfDirectory(HANDLE)
+
+
+def trakt_recommended():
+    """Display Trakt recommended items."""
+    if not HAS_MODULES:
+        xbmcgui.Dialog().ok('AIOStreams', 'Trakt module not available')
+        return
+    
+    params = dict(parse_qsl(sys.argv[2][1:]))
+    media_type = params.get('media_type', 'movies')
+    page = int(params.get('page', 1))
+    
+    items = trakt.get_recommended(media_type, page, limit=20)
+    
+    if not items:
+        xbmcgui.Dialog().notification('AIOStreams', 'No recommendations', xbmcgui.NOTIFICATION_INFO)
+        xbmcplugin.endOfDirectory(HANDLE)
+        return
+    
+    xbmcplugin.setPluginCategory(HANDLE, f'Trakt Recommended - {media_type.capitalize()}')
+    xbmcplugin.setContent(HANDLE, 'movies' if media_type == 'movies' else 'tvshows')
+    
+    for item in items:
+        item_id = item.get('ids', {}).get('imdb', '')
+        
+        if not item_id:
+            continue
+        
+        # Fetch full metadata from AIOStreams
+        content_type = 'movie' if media_type == 'movies' else 'series'
+        meta_data = get_meta(content_type, item_id)
+        
+        if meta_data and 'meta' in meta_data:
+            meta = meta_data['meta']
+        else:
+            meta = {
+                'id': item_id,
+                'name': item.get('title', 'Unknown'),
+                'description': item.get('overview', ''),
+                'year': item.get('year', 0),
+                'genres': item.get('genres', [])
+            }
+        
+        if content_type == 'series':
+            url = get_url(action='show_seasons', meta_id=item_id)
+        else:
+            url = get_url(action='show_streams', content_type='movie', media_id=item_id)
+        
+        list_item = create_listitem_with_context(meta, content_type, url)
+        xbmcplugin.addDirectoryItem(HANDLE, url, list_item, True)
+    
+    # Add Load More if we got 20 items
+    if len(items) >= 20:
+        list_item = xbmcgui.ListItem(label='[COLOR yellow]» Load More...[/COLOR]')
+        url = get_url(action='trakt_recommended', media_type=media_type, page=page + 1)
+        xbmcplugin.addDirectoryItem(HANDLE, url, list_item, True)
+    
+    xbmcplugin.endOfDirectory(HANDLE)
+
+
+def trakt_hide_show():
+    """Hide a show from progress."""
+    if not HAS_MODULES:
+        return
+    
+    params = dict(parse_qsl(sys.argv[2][1:]))
+    show_trakt_id = params.get('show_trakt_id', '')
+    
+    if show_trakt_id:
+        trakt.hide_show_from_progress(int(show_trakt_id))
+        xbmc.executebuiltin('Container.Refresh')
+
+
+def trakt_auth():
+    """Authorize with Trakt."""
+    if not HAS_MODULES:
+        xbmcgui.Dialog().ok('AIOStreams', 'Trakt module not available')
+        return
+    
+    trakt.authorize()
+
+
+def trakt_revoke():
+    """Revoke Trakt authorization."""
+    if not HAS_MODULES:
+        xbmcgui.Dialog().ok('AIOStreams', 'Trakt module not available')
+        return
+    
+    trakt.revoke_authorization()
+
+
+def trakt_add_watchlist():
+    """Add item to Trakt watchlist."""
+    if not HAS_MODULES:
+        return
+    
+    params = dict(parse_qsl(sys.argv[2][1:]))
+    media_type = params.get('media_type', 'movie')
+    imdb_id = params.get('imdb_id', '')
+    
+    if imdb_id:
+        trakt.add_to_watchlist(media_type, imdb_id)
+
+
+def trakt_mark_watched():
+    """Mark item as watched on Trakt."""
+    if not HAS_MODULES:
+        return
+    
+    params = dict(parse_qsl(sys.argv[2][1:]))
+    media_type = params.get('media_type', 'movie')
+    imdb_id = params.get('imdb_id', '')
+    season = params.get('season')
+    episode = params.get('episode')
+    playback_id = params.get('playback_id', '')
+    
+    if imdb_id:
+        season_int = int(season) if season else None
+        episode_int = int(episode) if episode else None
+        playback_id_int = int(playback_id) if playback_id else None
+        trakt.mark_watched(media_type, imdb_id, season_int, episode_int, playback_id_int)
+        xbmc.executebuiltin('Container.Refresh')
+
+
+def router(params):
+    """Route to the appropriate function based on parameters."""
+    action = params.get('action', '')
+    
+    if action == 'search':
+        search()
+    elif action == 'search_unified':
+        search_unified()
+    elif action == 'streams':
+        streams()
+    elif action == 'play':
+        play()
+    elif action == 'select_stream':
+        select_stream()
+    elif action == 'movie_lists':
+        movie_lists()
+    elif action == 'series_lists':
+        series_lists()
+    elif action == 'catalogs':
+        list_catalogs()
+    elif action == 'catalog_genres':
+        list_catalog_genres()
+    elif action == 'browse_catalog':
+        browse_catalog()
+    elif action == 'show_streams':
+        show_streams()
+    elif action == 'show_seasons':
+        show_seasons()
+    elif action == 'show_episodes':
+        show_episodes()
+    elif action == 'trakt_menu':
+        trakt_menu()
+    elif action == 'trakt_watchlist':
+        trakt_watchlist()
+    elif action == 'trakt_collection':
+        trakt_collection()
+    elif action == 'trakt_trending':
+        trakt_trending()
+    elif action == 'trakt_popular':
+        trakt_popular()
+    elif action == 'trakt_recommended':
+        trakt_recommended()
+    elif action == 'trakt_continue_watching':
+        trakt_continue_watching()
+    elif action == 'trakt_next_up':
+        trakt_next_up()
+    elif action == 'trakt_hide_show':
+        trakt_hide_show()
+    elif action == 'trakt_auth':
+        trakt_auth()
+    elif action == 'trakt_revoke':
+        trakt_revoke()
+    elif action == 'trakt_add_watchlist':
+        trakt_add_watchlist()
+    elif action == 'trakt_mark_watched':
+        trakt_mark_watched()
+    elif params:
+        index()
+    else:
+        index()
+
+
+if __name__ == '__main__':
+    params = dict(parse_qsl(sys.argv[2][1:]))
+    router(params)

@@ -1,0 +1,424 @@
+# Changelog
+
+## [1.5.3] - 2026-01-04
+
+### Removed
+- **Rating Filters**: Completely disabled rating filters
+  - `is_rating_filtered()` now always returns False
+  - No more filtering by certification/MPAA rating
+  - All content displays regardless of rating
+
+### Fixed
+- **Watched Indicators for Shows**: Now works at all levels
+  - **Show Level**: Checks if all episodes are watched (uses Trakt progress API)
+  - **Season Level**: Checks if all episodes in season are watched
+  - **Episode Level**: Checks individual episode watched status
+  - Uses Trakt progress endpoint for accurate tracking
+
+### Added
+- **New Trakt Functions**:
+  - `get_show_progress(imdb_id)` - Gets watched progress for entire show
+  - `is_season_watched(imdb_id, season_num)` - Checks if season fully watched
+  - `is_episode_watched(imdb_id, season_num, episode_num)` - Checks episode status
+  - All results cached for performance
+
+### Technical
+- Show progress uses `/shows/{id}/progress/watched` endpoint
+- Compares `aired` vs `completed` counts
+- Season watched: `aired > 0 && aired == completed`
+- Episode watched: checks `completed` flag
+- Cached in `_show_progress_cache` dictionary
+
+## [1.5.2] - 2026-01-03
+
+### Fixed
+- **Back Button in Search Results**: Now returns to home instead of reloading search
+  - Arctic Horizon Custom_1114 window now closes after triggering search
+  - Added `succeeded=False` to endOfDirectory when user cancels
+  - Back button works properly from search results
+
+### Added
+- **Trakt Watched Indicators**: Items watched in Trakt now show watched overlay
+  - Checks Trakt history for each item
+  - Sets playcount=1 for watched items
+  - Displays visual watched indicator in skins
+  - Cached to avoid repeated API calls
+  - Works for both movies and TV shows
+
+### Technical
+- New function: `trakt.is_watched(media_type, imdb_id)`
+- Queries last 1000 items from Trakt history
+- Caches results in memory
+- Integrated into `create_listitem_with_context()`
+
+## [1.5.1] - 2026-01-03
+
+### Fixed
+- **Unified Search Modal Dialog Conflict**: Fixed error when opening search from Arctic Horizon
+  - Error: "Activate of window '10025' refused because there are active modal dialogs"
+  - Root cause: Keyboard dialog blocking window activation
+  - Solution: search() directly calls search_unified_internal() instead of redirecting
+  - No more executebuiltin conflicts
+
+### Changed
+- search_unified_internal() is now the implementation
+- search() routes to it for content_type='both'
+- search_unified() remains for backward compatibility
+
+## [1.5.0] - 2026-01-03
+
+### Added
+- **Unified Search**: One search that returns both movies and TV shows
+  - New action: `search_unified` displays both result types
+  - Movies section (first 10 results) + "View All Movies" link
+  - TV Shows section (first 10 results) + "View All TV Shows" link
+  - Color-coded headers: Blue for Movies, Green for TV Shows
+  - Single keyboard input, comprehensive results
+
+### Changed
+- Main menu now has three search options:
+  - **Search (Movies & TV Shows)** - New unified search (default)
+  - Search Movies - Movie-only search
+  - Search TV Shows - TV show-only search
+- `content_type=both` triggers unified search
+- Search function redirects to unified when content_type is 'both'
+
+### Arctic Horizon Integration
+- **Perfect integration** with Arctic Horizon 2.1 skin
+- Single file: `Custom_1114_Search_UNIFIED.xml`
+- Click search → Keyboard → Both movies and TV shows display
+- Works exactly like native Arctic Horizon search
+- No button selection needed - direct to results
+
+### Technical
+- Parallel search execution for movies and TV shows
+- Progress dialog shows search status
+- Results limited to 10 per category in unified view
+- "View All" links to dedicated movie/TV search pages
+- Maintains backward compatibility with content_type=movie/series
+
+## [1.4.1] - 2026-01-03
+
+### Fixed
+- **Browse Show from Widgets**: Now works properly when used in skin widgets
+  - Changed from `Container.Update()` to `ActivateWindow()`
+  - Works in Continue Watching and Next Up widgets
+  - Opens show seasons in proper window
+
+### Changed
+- Browse Show context menu now opens in new window instead of updating container
+- Better compatibility with skin widgets and home screen integrations
+
+### Documentation
+- Added Arctic Horizon 2.1 search integration guide
+- Explained limitations of interactive search replication
+- Provided practical solutions for Arctic Horizon + AIOStreams
+
+## [1.4.0] - 2026-01-03
+
+### Fixed
+- **Metadata Display**: Now properly shows all metadata fields
+  - **Cast**: Actor lists now visible in info panel
+  - **Director/Writers**: Crew information displayed
+  - **Rating**: IMDB ratings with proper formatting
+  - **Duration**: Runtime parsed from "120 min" format
+  - **Release Date**: Year and premiered date properly set
+  - **IMDB Number**: Linked to IMDB ID
+
+### Added
+- **Clearlogo Support**: Logo artwork now displayed from AIOStreams metadata
+  - Shows in supported skins (e.g., Nimbus)
+  - Fetched from `logo` field in metadata
+
+### Technical
+- Improved metadata parsing for various formats
+- Better handling of runtime strings ("120 min" → 120 minutes)
+- Proper year extraction from full dates (2024-01-15 → 2024)
+- Multiple rating source support
+
+## [1.3.9] - 2026-01-03
+
+### Fixed
+- **Continue Watching Mark as Watched**: Now properly removes items using Trakt playback ID
+  - Captures playback ID from Continue Watching list
+  - Deletes playback progress entry via API
+  - Item immediately disappears from Continue Watching after marking watched
+  - Previous method didn't remove the in-progress entry
+
+### Added
+- **Cast and Director Information**: Now displayed from AIOStreams metadata
+  - Cast list shown in info panel
+  - Director(s) displayed
+  - Writer(s) included
+  - Works for both movies and series
+
+### Technical
+- Mark as Watched now uses DELETE /sync/playback/:id endpoint
+- Proper cleanup of in-progress items from Trakt
+
+## [1.3.8] - 2026-01-03
+
+### Fixed
+- **Continue Watching Mark as Watched**: Now properly removes episode from Continue Watching list
+  - Scrobbles episode at 100% to clear in-progress status
+  - Item disappears from Continue Watching after marking watched
+  - Previously only marked as watched but left in progress list
+
+### Added
+- **Browse Show Context Menu**: New option in Continue Watching and Next Up
+  - Right-click → "Browse Show" 
+  - Opens full show hierarchy (seasons → episodes)
+  - Quick access to other episodes/seasons without searching
+
+### Changed
+- Mark as Watched now performs two actions:
+  1. Adds to watch history
+  2. Clears playback progress (removes from Continue Watching)
+
+## [1.3.7] - 2026-01-03
+
+### Added
+- **Disk-Based Metadata Cache**: Zero RAM impact caching system
+  - Stores metadata on device storage instead of memory
+  - 30-day automatic cache expiration
+  - Automatic cleanup of expired cache on addon startup
+  - Perfect for low-memory devices
+
+### Performance
+- **Massive Speed Improvement**: 
+  - First page load: 20 API calls (unchanged)
+  - Subsequent loads within 30 days: 0 API calls (instant)
+  - Browsing back to same list: Instant (cached)
+  - Example: Watchlist → Collection → Watchlist = 0 extra API calls
+  - Cache persists across Kodi restarts
+- **Reduces AIOStreams server load** significantly
+- **Zero RAM usage**: All cache stored on disk
+
+### Technical
+- Cache stored in addon profile directory
+- Automatic cleanup removes files older than 30 days
+- MD5 hashed filenames for compatibility
+- JSON format for easy debugging
+- Safe error handling for corrupted cache files
+
+## [1.3.6] - 2026-01-03
+
+### Fixed
+- **Next Up Error**: Fixed AttributeError when next_episode structure varies
+  - Added safe type checking for list vs dict responses
+  - Handles all Trakt API response variations
+- **Mark as Watched**: Now works correctly from Continue Watching
+  - Fixed API type mismatch (episodes → shows)
+  - Context menu properly refreshes list
+- **Hidden Shows API**: Fixed 405 error (wrong endpoint)
+- **Posters/Artwork**: Continue Watching and Next Up now fetch show metadata from AIOStreams
+  - Full posters and fanart display
+  - Episode thumbnails as fallback
+
+### Removed
+- **Hide from Progress**: Removed non-functional feature from context menus
+
+### Changed
+- Continue Watching and Next Up now fetch show posters/fanart from AIOStreams
+- All Trakt list metadata still uses AIOStreams (best compatibility)
+
+## [1.3.5] - 2026-01-03
+
+### Fixed
+- **Context Menus Work**: Hide from Progress and Mark as Watched now refresh list properly
+- **Context Menus Everywhere**: Show drilldowns (seasons/episodes) now have full Trakt context menus
+  - Seasons: Mark Season as Watched, Add Show to Watchlist
+  - Episodes: Mark Episode as Watched, Mark Season as Watched, Add Show to Watchlist
+- **Episode Context**: Mark as Watched now correctly handles season/episode parameters
+- **Metadata Display**: Reverted to AIOStreams metadata for movie/show listings (posters, descriptions, runtime)
+  - Continue Watching and Next Up still use Trakt metadata (episodes)
+  - All other lists fetch full AIOStreams metadata for rich display
+
+### Changed
+- **Menu Reorganization**: Removed Trakt folder, integrated into Movie/Series Lists
+  - Movie Lists: AIOStreams Catalogs + Trakt (Recommended, Watchlist, Collection, Trending, Popular)
+  - Series Lists: AIOStreams Catalogs + Trakt (Continue Watching, Next Up, Recommended, Watchlist, Collection, Trending, Popular)
+- Cleaner navigation - all content organized by type
+
+## [1.3.4] - 2026-01-03
+
+### Added
+- **Recommended Lists**: Personalized Trakt recommendations for movies and shows
+- **Hide from Progress**: Context menu option to hide shows from Continue Watching/Next Up
+- **Full Context Menus**: All Trakt lists now have Add to Watchlist and Mark as Watched options
+  - Continue Watching: Watchlist, Mark Watched, Hide from Progress
+  - Next Up: Watchlist, Mark Watched, Hide from Progress
+  - All other lists: Watchlist, Mark Watched
+
+### Optimized
+- **All Trakt Lists Use Trakt Metadata**: Eliminated ALL unnecessary AIOStreams calls
+  - Watchlist: 0 AIOStreams calls (was 20)
+  - Collection: 0 AIOStreams calls (was 20)
+  - Trending: 0 AIOStreams calls (was 20)
+  - Popular: 0 AIOStreams calls (was 20)
+  - **Result**: ~95% faster loading across all Trakt features
+
+### Performance
+- Trakt list loading now instant (no external API calls for metadata)
+- AIOStreams only called when actually playing content (for streams)
+
+## [1.3.3] - 2026-01-03
+
+### Added
+- **Continue Watching**: Shows in-progress episodes with progress percentage
+- **Next Up**: Proper implementation using Trakt's show progress workflow
+  - Fetches all watched shows, gets progress for each
+  - Filters out hidden shows
+  - Sorts by last watched date
+  - Only shows episodes that are actually available
+
+### Changed
+- **Optimized Metadata Loading**: Use Trakt metadata for listings instead of calling AIOStreams
+  - ~90% faster loading for Continue Watching and Next Up
+  - AIOStreams only called when playing content (for streams)
+- **Pagination on All Trakt Lists**: Load 20 items at a time with "Load More"
+- Trakt API limit changed from 50 to 20 items per request
+
+### Performance
+- Eliminated unnecessary AIOStreams metadata calls (20+ per page → 0 per page for listings)
+- Next Up now uses proper Trakt workflow instead of incorrect playback endpoint
+- Faster initial load for all Trakt lists
+
+## [1.3.2] - 2026-01-03
+
+### Added
+- **Full Trakt Lists**: Collection, Trending, and Popular now implemented for both movies and shows
+- **Trakt Catalogs Folder**: All Trakt lists organized in submenu (Watchlist, Collection, Trending, Popular)
+- **Split Catalog Menus**: Separated into "Movie Catalogs" and "Series Catalogs" folders
+- **Manifest URL Support**: Can paste full manifest URL (with /manifest.json) - automatically strips it
+
+### Fixed
+- **Trakt Metadata**: Now fetches full metadata from AIOStreams for all Trakt lists
+- **Episode Descriptions**: Fixed missing metadata on Trakt watchlist/collection items
+
+### Changed
+- Main menu reorganized with clearer folder structure
+- Removed default base URL from settings (must configure first use)
+- All Trakt items now fetch enhanced metadata (runtime, rating, posters, etc.)
+
+## [1.3.1] - 2026-01-03
+
+### Fixed
+- **Trakt Authorization**: Fixed DialogProgress.create() for Kodi 21 compatibility (only takes 2 arguments, not 4)
+- **Pagination Logic**: Now checks if next page actually exists instead of assuming based on item count
+  - Prevents "Load More" appearing when no more items available
+  - Accounts for filtered results reducing item count below 20
+- **Deprecated Warnings**: Replaced all setInfo() calls with InfoTagVideo methods
+  - Eliminates "Setting most video properties through ListItem.setInfo() is deprecated" warnings
+  - Uses proper API: setTitle(), setPlot(), setYear(), setGenres(), etc.
+
+### Changed
+- Pagination now makes a second API call to check for next page existence
+- All metadata now set via InfoTagVideo instead of info dict
+
+## [1.3.0] - 2026-01-03
+
+### Added - Trakt Integration
+- Full Trakt.tv integration with OAuth device flow authorization
+- Trakt Watchlist (Movies and TV Shows)
+- Trakt Collection browsing
+- Trakt Trending content
+- Automatic scrobbling during playback (start, pause, resume, stop)
+- Context menu actions: Add to Watchlist, Mark as Watched
+- Playback monitoring with progress tracking
+
+### Added - Content Filtering
+- Genre filtering with 19 genres (Action, Horror, Romance, etc.)
+- Rating filtering with 11 ratings (G, PG, PG-13, R, NC-17, TV ratings)
+- Filter settings apply globally to catalogs, search, and Trakt lists
+- Enable/disable filters in settings
+
+### Added - Pagination
+- Fixed pagination to 20 items per page (AIOStreams standard)
+- "Load More..." button at end of catalogs and search results
+- Proper skip parameter handling for continuous browsing
+- Works across all content sources
+
+### Added - Enhanced Metadata
+- Runtime display (converted from minutes to seconds)
+- Rating display (IMDB, Trakt scores)
+- MPAA/Certification display (G, PG-13, R, TV-MA, etc.)
+- Trailer support with "Play Trailer" context menu
+- YouTube integration for trailer playback
+- Improved artwork handling (posters, fanart, logos)
+
+### Changed
+- Main menu reorganized with Trakt options when authorized
+- Search and catalog results now show complete metadata
+- Enhanced list item creation with context menus
+- Improved error handling and logging
+
+### Technical
+- New modular structure with /resources/lib/
+- trakt.py - Trakt API integration
+- filters.py - Content filtering logic
+- monitor.py - Playback monitoring for scrobbling
+- Updated settings.xml with Trakt and filter categories
+
+## [1.2.2] - 2026-01-03
+
+### Changed
+- Search now properly handles series drill-down (Show → Seasons → Episodes)
+- Improved main menu organization with search at the top
+- Removed duplicate search catalogs from catalog list (using native AIOStreams search)
+- Search results now show correct content type (movies vs tvshows)
+
+### Fixed
+- Series from search results now drill down properly instead of going directly to streams
+
+## [1.2.1] - 2026-01-03
+
+### Added
+- Proper TV series drill-down navigation
+- Show seasons listing from series metadata
+- Episode listing by season
+- Episode metadata display (title, overview, thumbnail, air date)
+
+### Changed
+- Series catalogs now drill down to Show → Seasons → Episodes → Streams
+- Episodes are sorted by episode number
+- Improved episode information display
+
+## [1.2.0] - 2026-01-03
+
+### Added
+- Catalog browsing from AIOStreams manifest
+- Genre filtering for catalogs (Popular Movies, Netflix Shows, etc.)
+- Pagination support for catalog navigation
+- Automatic subtitle integration from AIOStreams API
+- Full metadata display for catalog items (poster, fanart, description)
+- Debug logging for stream and subtitle requests
+
+### Changed
+- Enhanced main menu with "Browse Catalogs" option
+- Improved subtitle handling in play and select_stream functions
+
+## [1.1.0] - 2026-01-03
+
+### Added
+- TMDBHelper integration with player files
+- Direct play mode for TMDBHelper (auto-play first stream)
+- Stream selection mode for TMDBHelper (manual stream selection)
+- Support for TMDB ID to AIOStreams media ID conversion
+- setResolvedUrl playback for proper TMDBHelper integration
+
+### Changed
+- Enhanced routing to support TMDBHelper actions
+- Improved media ID handling for movies and TV episodes
+
+## [1.0.0] - 2026-01-03
+
+### Added
+- Initial release
+- Movie search via TMDB
+- TV show search via TVDB
+- Stream listing and playback
+- Configurable base URL and timeout settings
+- Progress dialogs for search and stream fetching
+- Enhanced metadata display (ratings, artwork, descriptions)
+- Support for behavior hints from streams
