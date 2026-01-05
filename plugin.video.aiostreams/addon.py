@@ -1979,36 +1979,33 @@ def trakt_next_up():
     if not HAS_MODULES:
         xbmcgui.Dialog().ok('AIOStreams', 'Trakt module not available')
         return
-    
-    params = dict(parse_qsl(sys.argv[2][1:]))
-    offset = int(params.get('offset', 0))
-    limit = 20
-    
+
     # Get all watched shows
     all_watched = trakt.get_watched('shows')
-    
+
     if not all_watched:
         xbmcgui.Dialog().notification('AIOStreams', 'No shows watched', xbmcgui.NOTIFICATION_INFO)
         xbmcplugin.endOfDirectory(HANDLE)
         return
-    
+
     # Get hidden shows
     hidden_shows = trakt.get_hidden_shows()
-    
+
     # Filter out hidden shows and sort by last watched
     active_shows = [s for s in all_watched if s.get('show', {}).get('ids', {}).get('trakt') not in hidden_shows]
     active_shows.sort(key=lambda x: x.get('last_watched_at', ''), reverse=True)
-    
-    # Paginate
-    page_shows = active_shows[offset:offset + limit]
-    
+
     xbmcplugin.setPluginCategory(HANDLE, 'Next Up')
     xbmcplugin.setContent(HANDLE, 'episodes')
-    
+
     next_episodes = []
-    
+
+    # Get current time for filtering unaired episodes
+    from datetime import datetime, timezone
+    now = datetime.now(timezone.utc)
+
     # Get progress for each show to find next episode
-    for watched_item in page_shows:
+    for watched_item in active_shows:
         show_data = watched_item.get('show', {})
         show_trakt_id = show_data.get('ids', {}).get('trakt')
         
@@ -2031,7 +2028,20 @@ def trakt_next_up():
             if not next_ep:
                 continue
             next_ep = next_ep[0]
-        
+
+        # Filter out unaired episodes
+        if isinstance(next_ep, dict):
+            first_aired = next_ep.get('first_aired')
+            if first_aired:
+                try:
+                    # Parse ISO 8601 datetime string (format: 2024-01-05T20:00:00.000Z)
+                    aired_date = datetime.fromisoformat(first_aired.replace('Z', '+00:00'))
+                    if aired_date > now:
+                        xbmc.log(f'[AIOStreams] Skipping unaired episode: {show_data.get("title")} S{next_ep.get("season")}E{next_ep.get("number")} (airs {first_aired})', xbmc.LOGDEBUG)
+                        continue
+                except (ValueError, AttributeError) as e:
+                    xbmc.log(f'[AIOStreams] Error parsing air date: {first_aired} - {e}', xbmc.LOGWARNING)
+
         # Get IMDB ID and episode details
         show_imdb = show_data.get('ids', {}).get('imdb', '')
         show_trakt_id = show_data.get('ids', {}).get('trakt', '')
@@ -2162,13 +2172,7 @@ def trakt_next_up():
             url = get_url(action='play', content_type='series', imdb_id=show_imdb, season=season, episode=episode)
             list_item.setProperty('IsPlayable', 'true')
             xbmcplugin.addDirectoryItem(HANDLE, url, list_item, False)
-    
-    # Add Load More if there are more shows
-    if len(active_shows) > offset + limit:
-        list_item = xbmcgui.ListItem(label='[COLOR yellow]» Load More...[/COLOR]')
-        url = get_url(action='trakt_next_up', offset=offset + limit)
-        xbmcplugin.addDirectoryItem(HANDLE, url, list_item, True)
-    
+
     xbmcplugin.endOfDirectory(HANDLE)
 
 
