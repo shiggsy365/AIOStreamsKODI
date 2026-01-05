@@ -1364,30 +1364,7 @@ def show_streams():
         xbmcplugin.endOfDirectory(HANDLE, succeeded=False)
         return
 
-    # Check default behavior setting
-    default_behavior = get_setting('default_behavior', 'show_streams')
-
-    # If only one stream and default is play first
-    if len(stream_data['streams']) == 1 and default_behavior == 'play_first':
-        play_stream_by_index(content_type, media_id, stream_data, 0)
-        return
-
-    # If default behavior is play first (and we have multiple streams)
-    if default_behavior == 'play_first' and len(stream_data['streams']) > 0:
-        # Try to play first stream
-        success = play_stream_by_index(content_type, media_id, stream_data, 0)
-
-        # If failed and fallback is show streams
-        if not success:
-            fallback = get_setting('fallback_behavior', 'show_streams')
-            if fallback == 'show_streams':
-                show_streams_dialog(content_type, media_id, stream_data, title)
-            else:
-                # Try next stream
-                try_next_streams(content_type, media_id, stream_data, start_index=1)
-        return
-
-    # Default: show streams dialog
+    # Always show streams dialog (ignore default behavior - user explicitly requested stream selection)
     show_streams_dialog(content_type, media_id, stream_data, title)
 
 
@@ -2144,23 +2121,28 @@ def trakt_next_up():
             list_item.setArt({'clearlogo': logo})
         
         # Build context menu
-        context_menu = []
+        episode_media_id = f"{show_imdb}:{season}:{episode}"
+        episode_title_str = f'{show_name} - S{season:02d}E{episode:02d}'
+        context_menu = [
+            ('Scrape Streams', f'RunPlugin({get_url(action="show_streams", content_type="series", media_id=episode_media_id, title=episode_title_str)})'),
+            ('Browse Show', f'Container.Update({get_url(action="show_seasons", meta_id=show_imdb)})')
+        ]
 
-        # Add Scrape Streams for episode
-        if show_imdb:
-            episode_media_id = f"{show_imdb}:{season}:{episode}"
-            episode_title_str = f'{show_name} - S{season:02d}E{episode:02d}'
-            context_menu.append(('Scrape Streams', f'RunPlugin({get_url(action="show_streams", content_type="series", media_id=episode_media_id, title=episode_title_str)})'))
+        # Add Trakt context menu items if authorized
+        if HAS_MODULES and trakt.get_access_token() and show_imdb:
+            # Check if this specific episode is watched
+            is_episode_watched = trakt.is_episode_watched(show_imdb, season, episode)
 
-        # Add to watchlist and mark as watched
-        if show_imdb:
-            context_menu.append(('[COLOR blue][Trakt][/COLOR] Add to Watchlist',
-                                f'RunPlugin({get_url(action="trakt_add_watchlist", media_type="show", imdb_id=show_imdb)})'))
-            context_menu.append(('[COLOR blue][Trakt][/COLOR] Mark as Watched',
-                                f'RunPlugin({get_url(action="trakt_mark_watched", media_type="show", imdb_id=show_imdb, season=season, episode=episode)})'))
-            # Browse full show
-            context_menu.append(('Browse Show',
-                                f'ActivateWindow(videos,{get_url(action="show_seasons", meta_id=show_imdb)},return)'))
+            if is_episode_watched:
+                context_menu.append(('Mark Episode As Unwatched',
+                                    f'RunPlugin({get_url(action="trakt_mark_unwatched", media_type="show", imdb_id=show_imdb, season=season, episode=episode)})'))
+            else:
+                context_menu.append(('Mark Episode As Watched',
+                                    f'RunPlugin({get_url(action="trakt_mark_watched", media_type="show", imdb_id=show_imdb, season=season, episode=episode)})'))
+
+            # Stop Watching (Drop) option
+            context_menu.append(('Stop Watching (Drop) Trakt',
+                                f'RunPlugin({get_url(action="trakt_hide_from_progress", media_type="series", imdb_id=show_imdb)})'))
         
         if context_menu:
             list_item.addContextMenuItems(context_menu)
