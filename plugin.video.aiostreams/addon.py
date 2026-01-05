@@ -1937,7 +1937,7 @@ def trakt_watchlist():
     params = dict(parse_qsl(sys.argv[2][1:]))
     media_type = params.get('media_type', 'movies')
 
-    items = trakt.get_watchlist(media_type, page=1, limit=1000)  # Get all items
+    items = trakt.get_watchlist(media_type)  # Get all items with incremental sync
 
     if not items:
         xbmcgui.Dialog().notification('AIOStreams', 'Watchlist is empty', xbmcgui.NOTIFICATION_INFO)
@@ -2019,7 +2019,7 @@ def trakt_collection():
     params = dict(parse_qsl(sys.argv[2][1:]))
     media_type = params.get('media_type', 'movies')
 
-    items = trakt.get_collection(media_type, page=1, limit=1000)  # Get all items
+    items = trakt.get_collection(media_type)  # Get all items with incremental sync
 
     if not items:
         xbmcgui.Dialog().notification('AIOStreams', 'Collection is empty', xbmcgui.NOTIFICATION_INFO)
