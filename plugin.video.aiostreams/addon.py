@@ -3,6 +3,7 @@ import xbmc
 import xbmcgui
 import xbmcplugin
 import xbmcaddon
+import xbmcvfs
 from urllib.parse import urlencode, parse_qsl
 import requests
 import json
@@ -165,6 +166,97 @@ def get_subtitles(content_type, media_id):
     url = f"{base_url}/subtitles/{content_type}/{media_id}.json"
     xbmc.log(f'[AIOStreams] Requesting subtitles from: {url}', xbmc.LOGINFO)
     return make_request(url, 'Subtitle error')
+
+
+def download_subtitle_with_language(subtitle_url, language, media_id):
+    """
+    Download subtitle to local cache with language-coded filename.
+    This allows Kodi to properly display subtitle language names.
+    """
+    import os
+    import hashlib
+
+    try:
+        # Create subtitles cache directory
+        addon_data_path = xbmcvfs.translatePath(ADDON.getAddonInfo('profile'))
+        subtitle_cache_dir = os.path.join(addon_data_path, 'subtitles')
+
+        if not xbmcvfs.exists(subtitle_cache_dir):
+            xbmcvfs.mkdirs(subtitle_cache_dir)
+
+        # Create unique filename based on media_id and language
+        # Use hash to avoid filesystem issues with special characters
+        media_hash = hashlib.md5(media_id.encode()).hexdigest()[:8]
+
+        # Normalize language code (e.g., "English" -> "en", "Spanish" -> "es")
+        lang_code = normalize_language_code(language)
+
+        # Determine subtitle extension from URL or default to .srt
+        if subtitle_url.endswith('.vtt'):
+            ext = '.vtt'
+        else:
+            ext = '.srt'
+
+        subtitle_filename = f"{media_hash}.{lang_code}{ext}"
+        subtitle_path = os.path.join(subtitle_cache_dir, subtitle_filename)
+
+        # Download subtitle content
+        timeout = get_timeout()
+        response = requests.get(subtitle_url, timeout=timeout)
+        response.raise_for_status()
+
+        # Write to file
+        with open(subtitle_path, 'wb') as f:
+            f.write(response.content)
+
+        xbmc.log(f'[AIOStreams] Downloaded subtitle [{lang_code}] to: {subtitle_path}', xbmc.LOGINFO)
+        return subtitle_path
+
+    except Exception as e:
+        xbmc.log(f'[AIOStreams] Error downloading subtitle: {e}', xbmc.LOGERROR)
+        # Fall back to original URL
+        return subtitle_url
+
+
+def normalize_language_code(language):
+    """Convert language name to ISO 639-1 code."""
+    # Common language mappings
+    lang_map = {
+        'english': 'en',
+        'spanish': 'es',
+        'french': 'fr',
+        'german': 'de',
+        'italian': 'it',
+        'portuguese': 'pt',
+        'russian': 'ru',
+        'chinese': 'zh',
+        'japanese': 'ja',
+        'korean': 'ko',
+        'arabic': 'ar',
+        'hindi': 'hi',
+        'dutch': 'nl',
+        'polish': 'pl',
+        'turkish': 'tr',
+        'swedish': 'sv',
+        'danish': 'da',
+        'norwegian': 'no',
+        'finnish': 'fi',
+        'czech': 'cs',
+        'greek': 'el',
+        'hebrew': 'he',
+        'thai': 'th',
+        'vietnamese': 'vi',
+    }
+
+    # Try to get language code
+    lang_lower = language.lower().strip()
+
+    # If it's already a 2-letter code, return as-is
+    if len(lang_lower) == 2:
+        return lang_lower
+
+    # Try to find in mapping
+    return lang_map.get(lang_lower, lang_lower[:2])
 
 
 def get_meta(content_type, meta_id):
@@ -548,18 +640,23 @@ def search():
     for meta in results['metas']:
         item_id = meta.get('id')
         item_type = meta.get('type', content_type)
-        
+
         # Determine if this is a series or movie
         if item_type == 'series':
             # For series, drill down to seasons
             url = get_url(action='show_seasons', meta_id=item_id)
             is_folder = True
         else:
-            # For movies, go directly to streams
-            url = get_url(action='show_streams', content_type='movie', media_id=item_id)
-            is_folder = True
-        
+            # For movies, make them playable directly
+            url = get_url(action='play', content_type='movie', imdb_id=item_id)
+            is_folder = False
+
         list_item = create_listitem_with_context(meta, content_type, url)
+
+        # Set IsPlayable property for movies
+        if not is_folder:
+            list_item.setProperty('IsPlayable', 'true')
+
         xbmcplugin.addDirectoryItem(HANDLE, url, list_item, is_folder)
     
     # Check if next page exists by attempting to fetch it
@@ -628,11 +725,18 @@ def search_by_tab(query, content_type):
 
         if content_type == 'series':
             url = get_url(action='show_seasons', meta_id=item_id)
+            is_folder = True
         else:
-            url = get_url(action='show_streams', content_type='movie', media_id=item_id)
+            url = get_url(action='play', content_type='movie', imdb_id=item_id)
+            is_folder = False
 
         list_item = create_listitem_with_context(meta, content_type, url)
-        xbmcplugin.addDirectoryItem(HANDLE, url, list_item, True)
+
+        # Set IsPlayable property for movies
+        if not is_folder:
+            list_item.setProperty('IsPlayable', 'true')
+
+        xbmcplugin.addDirectoryItem(HANDLE, url, list_item, is_folder)
 
     # Load more if available
     next_skip = 20
@@ -700,9 +804,10 @@ def search_all_results(query):
         # Add results directly without header
         for meta in movies[:10]:
             item_id = meta.get('id')
-            url = get_url(action='show_streams', content_type='movie', media_id=item_id)
+            url = get_url(action='play', content_type='movie', imdb_id=item_id)
             list_item = create_listitem_with_context(meta, 'movie', url)
-            xbmcplugin.addDirectoryItem(HANDLE, url, list_item, True)
+            list_item.setProperty('IsPlayable', 'true')
+            xbmcplugin.addDirectoryItem(HANDLE, url, list_item, False)
 
         # More link
         if len(movies) > 10:
@@ -780,9 +885,10 @@ def search_unified():
         # Add movie results (limit to 10)
         for meta in movies[:10]:
             item_id = meta.get('id')
-            url = get_url(action='show_streams', content_type='movie', media_id=item_id)
+            url = get_url(action='play', content_type='movie', imdb_id=item_id)
             list_item = create_listitem_with_context(meta, 'movie', url)
-            xbmcplugin.addDirectoryItem(HANDLE, url, list_item, True)
+            list_item.setProperty('IsPlayable', 'true')
+            xbmcplugin.addDirectoryItem(HANDLE, url, list_item, False)
         
         # More movies link
         if len(movies) > 10:
@@ -865,15 +971,18 @@ def play():
     # Add subtitles if available
     subtitle_data = get_subtitles(content_type, media_id)
     if subtitle_data and 'subtitles' in subtitle_data:
-        subtitle_urls = []
+        subtitle_paths = []
         for subtitle in subtitle_data['subtitles']:
             sub_url = subtitle.get('url')
             if sub_url:
-                subtitle_urls.append(sub_url)
-                xbmc.log(f'[AIOStreams] Added subtitle: {subtitle.get("lang", "unknown")} - {sub_url}', xbmc.LOGINFO)
-        
-        if subtitle_urls:
-            list_item.setSubtitles(subtitle_urls)
+                # Download subtitle with language-coded filename for proper Kodi display
+                lang = subtitle.get('lang', 'unknown')
+                sub_path = download_subtitle_with_language(sub_url, lang, media_id)
+                subtitle_paths.append(sub_path)
+                xbmc.log(f'[AIOStreams] Added subtitle [{lang}]: {sub_path}', xbmc.LOGINFO)
+
+        if subtitle_paths:
+            list_item.setSubtitles(subtitle_paths)
     
     # Set media info for scrobbling
     if HAS_MODULES and PLAYER:
@@ -884,12 +993,71 @@ def play():
     xbmcplugin.setResolvedUrl(HANDLE, True, list_item)
 
 
+def format_stream_title(stream):
+    """
+    Format stream title with color-coded service tags and status icons.
+    Expected format: SERVICE|QUALITY|SIZE|SOURCE|CACHED_STATUS
+    Example: RD|4K|10.27 GB|StremThru Torz|Cached
+    """
+    stream_name = stream.get('name', stream.get('title', ''))
+
+    # Try to parse the formatted stream name
+    try:
+        parts = stream_name.split('|')
+        if len(parts) >= 4:
+            service = parts[0].strip()
+            quality = parts[1].strip()
+            size = parts[2].strip()
+            source = parts[3].strip()
+            cached_status = parts[4].strip() if len(parts) > 4 else ''
+
+            # Color code the service tag
+            if service == 'RD':
+                service_colored = f'[COLOR green][{service}][/COLOR]'
+            elif service == 'TB':
+                service_colored = f'[COLOR yellow][{service}][/COLOR]'
+            elif service:
+                service_colored = f'[COLOR blue][{service}][/COLOR]'
+            else:
+                service_colored = ''
+
+            # Add quality tag if present
+            quality_tag = f'[{quality}] ' if quality else ''
+
+            # Add size if present
+            size_text = f'{size} ' if size else ''
+
+            # Add source if present
+            source_text = f'{source} ' if source else ''
+
+            # Add cached status icon
+            if 'cached' in cached_status.lower():
+                cached_icon = '✓'
+            elif 'uncached' in cached_status.lower():
+                cached_icon = '⏳'
+            else:
+                cached_icon = ''
+
+            # Build final formatted title
+            formatted = f'{quality_tag}{size_text}{source_text}{cached_icon} {service_colored}'.strip()
+            return formatted
+        else:
+            # Format doesn't match expected pattern, return original
+            return stream_name
+    except Exception as e:
+        # On any error, return the original stream name with description if available
+        xbmc.log(f'[AIOStreams] Error formatting stream title: {e}', xbmc.LOGDEBUG)
+        if stream.get('description'):
+            return f"{stream_name} - {stream['description']}"
+        return stream_name
+
+
 def select_stream():
     """TMDBHelper select stream - show dialog to select from available streams."""
     params = dict(parse_qsl(sys.argv[2][1:]))
     content_type = params['content_type']
     imdb_id = params['imdb_id']
-    title = params.get('title', 'Unknown')
+    title = params.get('title', '')
     
     # Format media ID for AIOStreams API
     if content_type == 'movie':
@@ -912,13 +1080,16 @@ def select_stream():
     # Build stream list for dialog
     stream_list = []
     for stream in stream_data['streams']:
-        stream_title = stream.get('name', stream.get('title', 'Unknown Stream'))
-        if stream.get('description'):
-            stream_title = f"{stream_title} - {stream['description']}"
+        stream_title = format_stream_title(stream)
         stream_list.append(stream_title)
-    
+
     # Show selection dialog
-    selected = xbmcgui.Dialog().select(f'Select Stream: {title}', stream_list)
+    stream_count = len(stream_list)
+    if title:
+        dialog_title = f'Select Stream: {title} ({stream_count} available)'
+    else:
+        dialog_title = f'Select Stream ({stream_count} available)'
+    selected = xbmcgui.Dialog().select(dialog_title, stream_list)
     
     if selected < 0:
         xbmcplugin.setResolvedUrl(HANDLE, False, xbmcgui.ListItem())
@@ -940,15 +1111,18 @@ def select_stream():
     # Add subtitles if available
     subtitle_data = get_subtitles(content_type, media_id)
     if subtitle_data and 'subtitles' in subtitle_data:
-        subtitle_urls = []
+        subtitle_paths = []
         for subtitle in subtitle_data['subtitles']:
             sub_url = subtitle.get('url')
             if sub_url:
-                subtitle_urls.append(sub_url)
-                xbmc.log(f'[AIOStreams] Added subtitle: {subtitle.get("lang", "unknown")} - {sub_url}', xbmc.LOGINFO)
-        
-        if subtitle_urls:
-            list_item.setSubtitles(subtitle_urls)
+                # Download subtitle with language-coded filename for proper Kodi display
+                lang = subtitle.get('lang', 'unknown')
+                sub_path = download_subtitle_with_language(sub_url, lang, media_id)
+                subtitle_paths.append(sub_path)
+                xbmc.log(f'[AIOStreams] Added subtitle [{lang}]: {sub_path}', xbmc.LOGINFO)
+
+        if subtitle_paths:
+            list_item.setSubtitles(subtitle_paths)
     
     # Set media info for scrobbling
     if HAS_MODULES and PLAYER:
@@ -1140,10 +1314,15 @@ def browse_catalog():
             url = get_url(action='show_seasons', meta_id=item_id)
             is_folder = True
         else:
-            url = get_url(action='show_streams', content_type='movie', media_id=item_id)
-            is_folder = True
-        
+            url = get_url(action='play', content_type='movie', imdb_id=item_id)
+            is_folder = False
+
         list_item = create_listitem_with_context(meta, content_type, url)
+
+        # Set IsPlayable property for movies
+        if not is_folder:
+            list_item.setProperty('IsPlayable', 'true')
+
         xbmcplugin.addDirectoryItem(HANDLE, url, list_item, is_folder)
     
     # Check if next page exists by checking metas count
@@ -1688,11 +1867,18 @@ def trakt_watchlist():
 
         if content_type == 'series':
             url = get_url(action='show_seasons', meta_id=item_id)
+            is_folder = True
         else:
-            url = get_url(action='show_streams', content_type='movie', media_id=item_id)
+            url = get_url(action='play', content_type='movie', imdb_id=item_id)
+            is_folder = False
 
         list_item = create_listitem_with_context(meta, content_type, url)
-        xbmcplugin.addDirectoryItem(HANDLE, url, list_item, True)
+
+        # Set IsPlayable property for movies
+        if not is_folder:
+            list_item.setProperty('IsPlayable', 'true')
+
+        xbmcplugin.addDirectoryItem(HANDLE, url, list_item, is_folder)
     
     # Add Load More if we got 20 items
     if len(items) >= 20:
@@ -1768,11 +1954,18 @@ def trakt_collection():
         
         if content_type == 'series':
             url = get_url(action='show_seasons', meta_id=item_id)
+            is_folder = True
         else:
-            url = get_url(action='show_streams', content_type='movie', media_id=item_id)
-        
+            url = get_url(action='play', content_type='movie', imdb_id=item_id)
+            is_folder = False
+
         list_item = create_listitem_with_context(meta, content_type, url)
-        xbmcplugin.addDirectoryItem(HANDLE, url, list_item, True)
+
+        # Set IsPlayable property for movies
+        if not is_folder:
+            list_item.setProperty('IsPlayable', 'true')
+
+        xbmcplugin.addDirectoryItem(HANDLE, url, list_item, is_folder)
     
     # Add Load More if we got 20 items
     if len(items) >= 20:
@@ -2025,11 +2218,18 @@ def show_related():
 
         if item_content_type == 'series':
             url = get_url(action='show_seasons', meta_id=item_id)
+            is_folder = True
         else:
-            url = get_url(action='show_streams', content_type='movie', media_id=item_id, title=meta.get('name', 'Unknown'))
+            url = get_url(action='play', content_type='movie', imdb_id=item_id, title=meta.get('name', 'Unknown'))
+            is_folder = False
 
         list_item = create_listitem_with_context(meta, item_content_type, url)
-        xbmcplugin.addDirectoryItem(HANDLE, url, list_item, True)
+
+        # Set IsPlayable property for movies
+        if not is_folder:
+            list_item.setProperty('IsPlayable', 'true')
+
+        xbmcplugin.addDirectoryItem(HANDLE, url, list_item, is_folder)
 
     xbmcplugin.endOfDirectory(HANDLE)
 
@@ -2315,10 +2515,17 @@ def router(params):
                     item_id = meta.get('id')
                     if content_type == 'series':
                         url = get_url(action='show_seasons', meta_id=item_id)
+                        is_folder = True
                     else:
-                        url = get_url(action='show_streams', content_type='movie', media_id=item_id)
+                        url = get_url(action='play', content_type='movie', imdb_id=item_id)
+                        is_folder = False
                     list_item = create_listitem_with_context(meta, content_type, url)
-                    xbmcplugin.addDirectoryItem(HANDLE, url, list_item, True)
+
+                    # Set IsPlayable property for movies
+                    if not is_folder:
+                        list_item.setProperty('IsPlayable', 'true')
+
+                    xbmcplugin.addDirectoryItem(HANDLE, url, list_item, is_folder)
 
                 # Check for next page
                 next_skip = skip + 20
