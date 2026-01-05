@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<addon id="plugin.video.aiostreams" name="AIOStreams" version="2.4.5" provider-name="Jon">
+<addon id="plugin.video.aiostreams" name="AIOStreams" version="2.4.6" provider-name="Jon">
     <requires>
         <import addon="xbmc.python" version="3.0.0"/>
         <import addon="script.module.requests" version="2.25.1"/>
@@ -13,7 +13,7 @@
         <platform>all</platform>
         <license>MIT</license>
         <website>https://aiostreams.shiggsy.co.uk</website>
-        <news>v2.4.5: Direct play from widgets/lists, color-coded stream formatting, subtitle language display, Trakt rate limit fix. | v2.4.4: Manifest/catalog caching, Stop Watching (Drop). | v2.4.3: Rate limiting fixes. | v2.4.2: Fixed Trakt metadata.</news>
+        <news>v2.4.6: Bug fixes - All genre now works, Scrape Streams context menu fixed. | v2.4.5: Direct play from widgets/lists, color-coded streams, subtitles, Trakt fix. | v2.4.4: Caching, Stop Watching.</news>
         <assets>
             <icon>resources/icon.png</icon>
             <fanart>resources/fanart.jpg</fanart>

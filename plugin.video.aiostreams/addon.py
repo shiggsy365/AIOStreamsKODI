@@ -468,7 +468,7 @@ def create_listitem_with_context(meta, content_type, action_url):
 
     if content_type == 'movie':
         # Movie context menu: Scrape Streams, View Trailer, Mark as Watched, Watchlist
-        context_menu.append(('Scrape Streams', f'RunPlugin({get_url(action="select_stream", content_type="movie", media_id=item_id)})'))
+        context_menu.append(('Scrape Streams', f'RunPlugin({get_url(action="select_stream", content_type="movie", imdb_id=item_id, title=title)})'))
 
         # Add trailer if available
         trailers = meta.get('trailers', [])
@@ -1283,8 +1283,9 @@ def browse_catalog():
     genre = params.get('genre')
     skip = int(params.get('skip', 0))
 
-    # Fetch catalog data
-    catalog_data = get_catalog(content_type, catalog_id, genre, skip)
+    # Fetch catalog data (treat 'All' as no genre filter)
+    genre_filter = None if genre == 'All' else genre
+    catalog_data = get_catalog(content_type, catalog_id, genre_filter, skip)
 
     if not catalog_data or 'metas' not in catalog_data:
         xbmcgui.Dialog().notification('AIOStreams', 'No items found', xbmcgui.NOTIFICATION_INFO)
@@ -1743,9 +1744,9 @@ def show_episodes():
             list_item.setProperty('WatchedOverlay', 'OverlayWatched.png')
 
         # Add episode context menu
-        media_id = f"{meta_id}:{season}:{episode_num}"
+        episode_title = f'{series_name} - S{season:02d}E{episode_num:02d}'
         context_menu = [
-            ('Scrape Streams', f'RunPlugin({get_url(action="select_stream", content_type="series", media_id=media_id)})'),
+            ('Scrape Streams', f'RunPlugin({get_url(action="select_stream", content_type="series", imdb_id=meta_id, season=season, episode=episode_num, title=episode_title)})'),
             ('Browse Show', f'Container.Update({get_url(action="show_seasons", meta_id=meta_id)})')
         ]
 
