@@ -103,18 +103,26 @@ def clear_token_data():
     ADDON.setSetting('trakt_expires', '0')
 
 
-def call_trakt(path, method='GET', data=None, params=None, with_auth=True):
-    """Make authenticated request to Trakt API."""
+def call_trakt(path, method='GET', data=None, params=None, with_auth=True, extra_headers=None):
+    """Make authenticated request to Trakt API.
+
+    Args:
+        extra_headers: Optional dict of additional headers (e.g., {'X-Start-Date': '2024-01-01T00:00:00Z'})
+    """
     client_id = get_client_id()
     if not client_id:
         xbmcgui.Dialog().notification('AIOStreams', 'Trakt Client ID not set', xbmcgui.NOTIFICATION_WARNING)
         return None
-    
+
     headers = {
         'Content-Type': 'application/json',
         'trakt-api-version': API_VERSION,
         'trakt-api-key': client_id
     }
+
+    # Add any extra headers (like X-Start-Date for delta sync)
+    if extra_headers:
+        headers.update(extra_headers)
     
     # Add authorization if needed
     if with_auth:
@@ -272,19 +280,169 @@ def revoke_authorization():
     xbmcgui.Dialog().notification('AIOStreams', 'Trakt authorization revoked', xbmcgui.NOTIFICATION_INFO)
 
 
-def get_watchlist(list_type='movies', page=1, limit=20):
-    """Get user's watchlist."""
-    return call_trakt(f'sync/watchlist/{list_type}', params={'page': page, 'limit': limit})
+def get_watchlist(list_type='movies', force_refresh=False, check_delta=True):
+    """Get user's watchlist with incremental sync caching."""
+    from datetime import datetime, timezone
+
+    cache_key = f'watchlist_{list_type}'
+    sync_key = f'watchlist_{list_type}_last_sync'
+
+    # Try cache first
+    if not force_refresh and HAS_MODULES:
+        cached = cache.get_cached_data(cache_key, 'trakt')
+        last_sync = cache.get_cached_data(sync_key, 'trakt')
+
+        if cached:
+            # Check for delta updates
+            if check_delta and last_sync:
+                xbmc.log(f'[AIOStreams] Checking for watchlist changes since {last_sync}', xbmc.LOGDEBUG)
+                extra_headers = {'X-Start-Date': last_sync}
+                delta = call_trakt(f'sync/watchlist/{list_type}', params={'limit': 1000}, extra_headers=extra_headers)
+
+                if delta and isinstance(delta, list):
+                    updated = list(cached)
+                    changes = 0
+                    for item in delta:
+                        if item not in updated:
+                            updated.append(item)
+                            changes += 1
+
+                    if changes > 0:
+                        cache.cache_data(cache_key, 'trakt', updated)
+                        cache.cache_data(sync_key, 'trakt', datetime.now(timezone.utc).isoformat())
+                        xbmc.log(f'[AIOStreams] Watchlist delta: +{changes} items', xbmc.LOGINFO)
+                        return updated
+                    cache.cache_data(sync_key, 'trakt', datetime.now(timezone.utc).isoformat())
+                    return cached
+            return cached
+
+    # Full sync
+    xbmc.log(f'[AIOStreams] Full watchlist sync for {list_type}', xbmc.LOGDEBUG)
+    all_items = []
+    page = 1
+    while True:
+        items = call_trakt(f'sync/watchlist/{list_type}', params={'page': page, 'limit': 100})
+        if not items:
+            break
+        all_items.extend(items)
+        if len(items) < 100:
+            break
+        page += 1
+
+    if HAS_MODULES:
+        cache.cache_data(cache_key, 'trakt', all_items)
+        cache.cache_data(sync_key, 'trakt', datetime.now(timezone.utc).isoformat())
+    return all_items
 
 
-def get_collection(list_type='movies', page=1, limit=20):
-    """Get user's collection."""
-    return call_trakt(f'sync/collection/{list_type}', params={'page': page, 'limit': limit})
+def get_collection(list_type='movies', force_refresh=False, check_delta=True):
+    """Get user's collection with incremental sync caching."""
+    from datetime import datetime, timezone
+
+    cache_key = f'collection_{list_type}'
+    sync_key = f'collection_{list_type}_last_sync'
+
+    # Try cache first
+    if not force_refresh and HAS_MODULES:
+        cached = cache.get_cached_data(cache_key, 'trakt')
+        last_sync = cache.get_cached_data(sync_key, 'trakt')
+
+        if cached:
+            # Check for delta updates
+            if check_delta and last_sync:
+                xbmc.log(f'[AIOStreams] Checking for collection changes since {last_sync}', xbmc.LOGDEBUG)
+                extra_headers = {'X-Start-Date': last_sync}
+                delta = call_trakt(f'sync/collection/{list_type}', params={'limit': 1000}, extra_headers=extra_headers)
+
+                if delta and isinstance(delta, list):
+                    updated = list(cached)
+                    changes = 0
+                    for item in delta:
+                        if item not in updated:
+                            updated.append(item)
+                            changes += 1
+
+                    if changes > 0:
+                        cache.cache_data(cache_key, 'trakt', updated)
+                        cache.cache_data(sync_key, 'trakt', datetime.now(timezone.utc).isoformat())
+                        xbmc.log(f'[AIOStreams] Collection delta: +{changes} items', xbmc.LOGINFO)
+                        return updated
+                    cache.cache_data(sync_key, 'trakt', datetime.now(timezone.utc).isoformat())
+                    return cached
+            return cached
+
+    # Full sync
+    xbmc.log(f'[AIOStreams] Full collection sync for {list_type}', xbmc.LOGDEBUG)
+    all_items = []
+    page = 1
+    while True:
+        items = call_trakt(f'sync/collection/{list_type}', params={'page': page, 'limit': 100})
+        if not items:
+            break
+        all_items.extend(items)
+        if len(items) < 100:
+            break
+        page += 1
+
+    if HAS_MODULES:
+        cache.cache_data(cache_key, 'trakt', all_items)
+        cache.cache_data(sync_key, 'trakt', datetime.now(timezone.utc).isoformat())
+    return all_items
 
 
-def get_watched(list_type='movies', page=1, limit=20):
-    """Get user's watched history."""
-    return call_trakt(f'sync/watched/{list_type}', params={'page': page, 'limit': limit})
+def get_watched(list_type='movies', force_refresh=False, check_delta=True):
+    """Get user's watched history with incremental sync caching."""
+    from datetime import datetime, timezone
+
+    cache_key = f'watched_{list_type}'
+    sync_key = f'watched_{list_type}_last_sync'
+
+    # Try cache first
+    if not force_refresh and HAS_MODULES:
+        cached = cache.get_cached_data(cache_key, 'trakt')
+        last_sync = cache.get_cached_data(sync_key, 'trakt')
+
+        if cached:
+            # Check for delta updates
+            if check_delta and last_sync:
+                xbmc.log(f'[AIOStreams] Checking for watched changes since {last_sync}', xbmc.LOGDEBUG)
+                extra_headers = {'X-Start-Date': last_sync}
+                delta = call_trakt(f'sync/watched/{list_type}', params={'limit': 1000}, extra_headers=extra_headers)
+
+                if delta and isinstance(delta, list):
+                    updated = list(cached)
+                    changes = 0
+                    for item in delta:
+                        if item not in updated:
+                            updated.append(item)
+                            changes += 1
+
+                    if changes > 0:
+                        cache.cache_data(cache_key, 'trakt', updated)
+                        cache.cache_data(sync_key, 'trakt', datetime.now(timezone.utc).isoformat())
+                        xbmc.log(f'[AIOStreams] Watched delta: +{changes} items', xbmc.LOGINFO)
+                        return updated
+                    cache.cache_data(sync_key, 'trakt', datetime.now(timezone.utc).isoformat())
+                    return cached
+            return cached
+
+    # Full sync
+    xbmc.log(f'[AIOStreams] Full watched sync for {list_type}', xbmc.LOGDEBUG)
+    all_items = []
+    page = 1
+    while True:
+        items = call_trakt(f'sync/watched/{list_type}', params={'page': page, 'limit': 100})
+        if not items:
+            break
+        all_items.extend(items)
+        if len(items) < 100:
+            break
+        page += 1
+
+    if HAS_MODULES:
+        cache.cache_data(cache_key, 'trakt', all_items)
+        cache.cache_data(sync_key, 'trakt', datetime.now(timezone.utc).isoformat())
+    return all_items
 
 
 def get_trending(media_type='movies', page=1, limit=20):
@@ -340,13 +498,48 @@ def get_hidden_shows(force_refresh=False, check_delta=True):
             # If we have cache and should check for delta updates
             if check_delta and last_sync:
                 xbmc.log(f'[AIOStreams] Checking for external changes to hidden shows since {last_sync}', xbmc.LOGDEBUG)
-                # TODO: Implement delta sync using X-Start-Date header
-                # For now, just return cached data
-                # Delta sync will be implemented in next iteration
-                xbmc.log(f'[AIOStreams] get_hidden_shows() returning {len(cached)} Trakt IDs from cache', xbmc.LOGDEBUG)
-                return cached
+
+                # Use X-Start-Date header to fetch only changes since last sync
+                extra_headers = {'X-Start-Date': last_sync}
+                delta_result = call_trakt('users/hidden/progress_watched', params={'limit': 1000}, extra_headers=extra_headers)
+
+                if delta_result and isinstance(delta_result, list):
+                    # Apply delta changes to cache
+                    updated_cache = list(cached)  # Copy cached list
+                    changes_applied = 0
+
+                    for item in delta_result:
+                        show = item.get('show', {})
+                        trakt_id = show.get('ids', {}).get('trakt')
+                        hidden_at = item.get('hidden_at')  # When it was hidden
+
+                        if trakt_id:
+                            # If hidden_at is after last_sync, it's a new addition
+                            # If it was already in cache, it might have been re-hidden or it's already there
+                            if trakt_id not in updated_cache:
+                                updated_cache.append(trakt_id)
+                                changes_applied += 1
+                                xbmc.log(f'[AIOStreams] Delta sync: Added show {trakt_id} hidden at {hidden_at}', xbmc.LOGDEBUG)
+
+                    if changes_applied > 0:
+                        # Update cache with changes
+                        cache.cache_data('hidden_shows', 'progress_watched', updated_cache)
+                        sync_time = datetime.now(timezone.utc).isoformat()
+                        cache.cache_data('hidden_shows_last_sync', 'progress_watched', sync_time)
+                        xbmc.log(f'[AIOStreams] Delta sync applied {changes_applied} changes, updated cache to {len(updated_cache)} items', xbmc.LOGINFO)
+                        return updated_cache
+                    else:
+                        # No changes, update sync time and return cached
+                        sync_time = datetime.now(timezone.utc).isoformat()
+                        cache.cache_data('hidden_shows_last_sync', 'progress_watched', sync_time)
+                        xbmc.log(f'[AIOStreams] Delta sync: No changes detected, using cache ({len(cached)} items)', xbmc.LOGDEBUG)
+                        return cached
+                else:
+                    # Delta sync failed, return cached data
+                    xbmc.log('[AIOStreams] Delta sync failed, using cached data', xbmc.LOGWARNING)
+                    return cached
             elif cached:
-                xbmc.log(f'[AIOStreams] get_hidden_shows() returning {len(cached)} Trakt IDs from cache', xbmc.LOGDEBUG)
+                xbmc.log(f'[AIOStreams] get_hidden_shows() returning {len(cached)} Trakt IDs from cache (no delta check)', xbmc.LOGDEBUG)
                 return cached
 
     xbmc.log('[AIOStreams] Fetching all hidden shows from Trakt API (full sync)', xbmc.LOGDEBUG)
