@@ -77,9 +77,22 @@ def make_request(url, error_message='Request failed'):
 
 
 def get_manifest():
-    """Fetch the manifest from AIOStreams."""
+    """Fetch the manifest from AIOStreams with 24-hour caching."""
+    # Check cache first (24 hours = 86400 seconds)
+    if HAS_MODULES:
+        cached = cache.get_cached_data('manifest', 'main', 86400)
+        if cached:
+            return cached
+
+    # Cache miss, fetch from API
     base_url = get_base_url()
-    return make_request(f"{base_url}/manifest.json", 'Error fetching manifest')
+    manifest = make_request(f"{base_url}/manifest.json", 'Error fetching manifest')
+
+    # Cache the result
+    if manifest and HAS_MODULES:
+        cache.cache_data('manifest', 'main', manifest)
+
+    return manifest
 
 
 def search_catalog(query, content_type='movie', skip=0):
@@ -109,25 +122,41 @@ def get_streams(content_type, media_id):
 
 
 def get_catalog(content_type, catalog_id, genre=None, skip=0):
-    """Fetch a catalog from AIOStreams with pagination."""
+    """Fetch a catalog from AIOStreams with 6-hour caching."""
+    # Build cache identifier from all parameters
+    cache_id = f"{content_type}:{catalog_id}:{genre or 'none'}:{skip}"
+
+    # Check cache first (6 hours = 21600 seconds)
+    if HAS_MODULES:
+        cached = cache.get_cached_data('catalog', cache_id, 21600)
+        if cached:
+            return cached
+
+    # Cache miss, fetch from API
     base_url = get_base_url()
-    
+
     # Build catalog URL with optional filters
     url_parts = [f"{base_url}/catalog/{content_type}/{catalog_id}"]
-    
+
     extras = []
     if genre:
         extras.append(f"genre={genre}")
     if skip > 0:
         extras.append(f"skip={skip}")
-    
+
     if extras:
         url = f"{url_parts[0]}/{'&'.join(extras)}.json"
     else:
         url = f"{url_parts[0]}.json"
-    
+
     xbmc.log(f'[AIOStreams] Requesting catalog from: {url}', xbmc.LOGINFO)
-    return make_request(url, 'Catalog error')
+    catalog = make_request(url, 'Catalog error')
+
+    # Cache the result
+    if catalog and HAS_MODULES:
+        cache.cache_data('catalog', cache_id, catalog)
+
+    return catalog
 
 
 def get_subtitles(content_type, media_id):
@@ -375,6 +404,10 @@ def create_listitem_with_context(meta, content_type, action_url):
                 context_menu.append(('Mark Movie As Watched',
                                     f'RunPlugin({get_url(action="trakt_mark_watched", media_type=content_type, imdb_id=item_id)})'))
 
+            # Stop Watching (Drop) option
+            context_menu.append(('Stop Watching (Drop) Trakt',
+                                f'RunPlugin({get_url(action="trakt_hide_from_progress", media_type=content_type, imdb_id=item_id)})'))
+
             if trakt.is_in_watchlist(content_type, item_id):
                 context_menu.append(('Remove from Watchlist',
                                     f'RunPlugin({get_url(action="trakt_remove_watchlist", media_type=content_type, imdb_id=item_id)})'))
@@ -414,6 +447,10 @@ def create_listitem_with_context(meta, content_type, action_url):
             else:
                 context_menu.append(('Mark Show As Watched',
                                     f'RunPlugin({get_url(action="trakt_mark_watched", media_type=content_type, imdb_id=item_id)})'))
+
+            # Stop Watching (Drop) option
+            context_menu.append(('Stop Watching (Drop) Trakt',
+                                f'RunPlugin({get_url(action="trakt_hide_from_progress", media_type=content_type, imdb_id=item_id)})'))
 
             if trakt.is_in_watchlist(content_type, item_id):
                 context_menu.append(('Remove from Watchlist',
@@ -1391,6 +1428,10 @@ def show_seasons():
                 context_menu.append(('Mark Series As Watched',
                                     f'RunPlugin({get_url(action="trakt_mark_watched", media_type="series", imdb_id=meta_id)})'))
 
+            # Stop Watching (Drop) option
+            context_menu.append(('Stop Watching (Drop) Trakt',
+                                f'RunPlugin({get_url(action="trakt_hide_from_progress", media_type="series", imdb_id=meta_id)})'))
+
         list_item.addContextMenuItems(context_menu)
         
         url = get_url(action='show_episodes', meta_id=meta_id, season=season_num)
@@ -1542,6 +1583,10 @@ def show_episodes():
             else:
                 context_menu.append(('Mark Episode As Watched',
                                     f'RunPlugin({get_url(action="trakt_mark_watched", media_type="show", imdb_id=meta_id, season=season, episode=episode_num)})'))
+
+            # Stop Watching (Drop) option
+            context_menu.append(('Stop Watching (Drop) Trakt',
+                                f'RunPlugin({get_url(action="trakt_hide_from_progress", media_type="series", imdb_id=meta_id)})'))
 
         list_item.addContextMenuItems(context_menu)
         
@@ -2107,6 +2152,20 @@ def trakt_remove_playback():
         trakt.remove_from_playback(int(playback_id))
 
 
+def trakt_hide_from_progress():
+    """Hide item from Trakt progress (Stop Watching/Drop)."""
+    if not HAS_MODULES:
+        return
+
+    params = dict(parse_qsl(sys.argv[2][1:]))
+    media_type = params.get('media_type', 'movie')
+    imdb_id = params.get('imdb_id', '')
+
+    if imdb_id:
+        trakt.hide_from_progress(media_type, imdb_id)
+        xbmc.executebuiltin('Container.Refresh')
+
+
 # Maintenance Tools
 
 def clear_cache():
@@ -2324,6 +2383,8 @@ def router(params):
         trakt_mark_unwatched()
     elif action == 'trakt_remove_playback':
         trakt_remove_playback()
+    elif action == 'trakt_hide_from_progress':
+        trakt_hide_from_progress()
     elif action == 'clear_cache':
         clear_cache()
     elif action == 'clear_stream_stats':
