@@ -679,7 +679,9 @@ def fetch_all_watchlist(media_type):
         # Build cache: {imdb_id: True}
         watchlist_dict = {}
         for item in result:
-            item_data = item.get(media_type, {})
+            # Use correct Trakt API key: 'movie' or 'show' (not 'series')
+            item_key = 'movie' if media_type == 'movie' else 'show'
+            item_data = item.get(item_key, {})
             item_imdb = item_data.get('ids', {}).get('imdb', '')
             if item_imdb:
                 watchlist_dict[item_imdb] = True
@@ -732,7 +734,9 @@ def fetch_all_watched_history(media_type):
         # Build cache: {imdb_id: True}
         watched_dict = {}
         for item in result:
-            item_data = item.get(media_type, {})
+            # Use correct Trakt API key: 'movie' or 'show' (not 'series')
+            item_key = 'movie' if media_type == 'movie' else 'show'
+            item_data = item.get(item_key, {})
             item_imdb = item_data.get('ids', {}).get('imdb', '')
             if item_imdb:
                 watched_dict[item_imdb] = True

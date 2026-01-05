@@ -1394,13 +1394,11 @@ def show_streams():
 def show_streams_dialog(content_type, media_id, stream_data, title):
     """Show streams in a selection dialog."""
     if not HAS_MODULES:
-        # Fallback to simple dialog
+        # Fallback to simple dialog - use custom formatting
         stream_list = []
         for stream in stream_data['streams']:
-            stream_title = stream.get('name', stream.get('title', 'Unknown Stream'))
-            if stream.get('description'):
-                stream_title = f"{stream_title} - {stream['description']}"
-            stream_list.append(stream_title)
+            formatted_title = format_stream_title(stream)
+            stream_list.append(formatted_title)
     else:
         # Use stream manager for enhanced display
         stream_mgr = streams.get_stream_manager()
@@ -1418,10 +1416,10 @@ def show_streams_dialog(content_type, media_id, stream_data, title):
         # Update stream_data with sorted streams
         stream_data['streams'] = sorted_streams
 
-        # Build formatted stream list
+        # Build formatted stream list using custom formatting
         stream_list = []
         for stream in sorted_streams:
-            formatted_title = stream_mgr.format_stream_title(stream)
+            formatted_title = format_stream_title(stream)
             stream_list.append(formatted_title)
 
     if not stream_list:
@@ -2147,7 +2145,13 @@ def trakt_next_up():
         
         # Build context menu
         context_menu = []
-        
+
+        # Add Scrape Streams for episode
+        if show_imdb:
+            episode_media_id = f"{show_imdb}:{season}:{episode}"
+            episode_title_str = f'{show_name} - S{season:02d}E{episode:02d}'
+            context_menu.append(('Scrape Streams', f'RunPlugin({get_url(action="show_streams", content_type="series", media_id=episode_media_id, title=episode_title_str)})'))
+
         # Add to watchlist and mark as watched
         if show_imdb:
             context_menu.append(('[COLOR blue][Trakt][/COLOR] Add to Watchlist',
