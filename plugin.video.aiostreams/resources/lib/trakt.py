@@ -11,6 +11,54 @@ ADDON = xbmcaddon.Addon()
 API_ENDPOINT = 'https://api.trakt.tv'
 API_VERSION = '2'
 
+# In-memory cache for batch show progress (invalidated on watched status changes)
+_show_progress_batch_cache = {}
+_show_progress_cache_valid = False
+
+# In-memory cache for show progress with next episode (invalidated on watched status changes)
+_show_progress_with_next_cache = {}
+
+
+def invalidate_progress_cache():
+    """Invalidate the batch show progress cache (call when watched status changes)."""
+    global _show_progress_cache_valid, _show_progress_with_next_cache
+    _show_progress_cache_valid = False
+    _show_progress_with_next_cache.clear()
+    xbmc.log('[AIOStreams] Trakt progress cache invalidated', xbmc.LOGDEBUG)
+
+
+def get_all_show_progress():
+    """Fetch progress for ALL shows in one API call and cache in memory."""
+    global _show_progress_batch_cache, _show_progress_cache_valid
+
+    # Return cached data if still valid
+    if _show_progress_cache_valid and _show_progress_batch_cache:
+        xbmc.log(f'[AIOStreams] Using cached show progress ({len(_show_progress_batch_cache)} shows)', xbmc.LOGDEBUG)
+        return _show_progress_batch_cache
+
+    # Fetch all show progress from Trakt
+    try:
+        watched_shows = call_trakt('sync/watched/shows')
+        if not watched_shows:
+            return {}
+
+        # Build cache: {imdb_id: progress_data}
+        _show_progress_batch_cache = {}
+        for show in watched_shows:
+            show_data = show.get('show', {})
+            imdb_id = show_data.get('ids', {}).get('imdb')
+            if imdb_id:
+                # Store the whole show data for progress calculations
+                _show_progress_batch_cache[imdb_id] = show
+
+        _show_progress_cache_valid = True
+        xbmc.log(f'[AIOStreams] Fetched and cached progress for {len(_show_progress_batch_cache)} shows', xbmc.LOGDEBUG)
+        return _show_progress_batch_cache
+
+    except Exception as e:
+        xbmc.log(f'[AIOStreams] Error fetching batch show progress: {e}', xbmc.LOGERROR)
+        return {}
+
 
 def get_client_id():
     """Get Trakt client ID from settings."""
@@ -249,9 +297,22 @@ def get_popular(media_type='movies', page=1, limit=20):
     return call_trakt(f'{media_type}/popular', params={'page': page, 'limit': limit}, with_auth=False)
 
 
-def get_show_progress(show_id):
-    """Get progress for a specific show (includes next episode)."""
-    return call_trakt(f'shows/{show_id}/progress/watched')
+def get_show_progress_by_trakt_id(show_id):
+    """Get progress for a specific show by Trakt ID (includes next episode)."""
+    global _show_progress_with_next_cache
+
+    # Check cache first
+    if show_id in _show_progress_with_next_cache:
+        return _show_progress_with_next_cache[show_id]
+
+    # Fetch from API
+    result = call_trakt(f'shows/{show_id}/progress/watched')
+
+    # Cache the result
+    if result:
+        _show_progress_with_next_cache[show_id] = result
+
+    return result
 
 
 def get_hidden_shows():
@@ -475,6 +536,9 @@ def mark_watched(media_type, imdb_id, season=None, episode=None, playback_id=Non
         if imdb_id in _show_progress_cache:
             del _show_progress_cache[imdb_id]
 
+        # Invalidate batch progress cache
+        invalidate_progress_cache()
+
         xbmcgui.Dialog().notification('AIOStreams', 'Marked as watched on Trakt', xbmcgui.NOTIFICATION_INFO)
         return True
 
@@ -506,6 +570,9 @@ def mark_unwatched(media_type, imdb_id, season=None, episode=None):
             del _watched_cache[cache_key]
         if imdb_id in _show_progress_cache:
             del _show_progress_cache[imdb_id]
+
+        # Invalidate batch progress cache
+        invalidate_progress_cache()
 
         xbmcgui.Dialog().notification('AIOStreams', 'Marked as unwatched on Trakt', xbmcgui.NOTIFICATION_INFO)
         return True
