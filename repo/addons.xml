@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <addons>
-<addon id="plugin.video.aiostreams" name="AIOStreams" version="2.5.7" provider-name="Jon">
+<addon id="plugin.video.aiostreams" name="AIOStreams" version="2.5.8" provider-name="Jon">
     <requires>
         <import addon="xbmc.python" version="3.0.0"/>
         <import addon="script.module.requests" version="2.25.1"/>
@@ -14,7 +14,7 @@
         <platform>all</platform>
         <license>MIT</license>
         <website>https://aiostreams.shiggsy.co.uk</website>
-        <news>v2.5.7: Enhanced Drop validation and debugging. | v2.5.6: Drop hides from all 3 Trakt sections, filters unaired episodes. | v2.5.5: Mark season as watched, multi-user support.</news>
+        <news>v2.5.8: Next Up filtering diagnostics. | v2.5.7: Enhanced Drop validation. | v2.5.6: Drop hides from all 3 Trakt sections, filters unaired episodes.</news>
         <assets>
             <icon>resources/icon.png</icon>
             <fanart>resources/fanart.jpg</fanart>
