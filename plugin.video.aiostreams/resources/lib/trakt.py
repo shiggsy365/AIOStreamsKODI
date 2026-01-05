@@ -316,9 +316,10 @@ def get_show_progress_by_trakt_id(show_id):
 
 
 def get_hidden_shows(force_refresh=False):
-    """Get list of shows user has hidden from progress with caching.
+    """Get list of shows user has hidden from progress with event-driven caching.
 
-    Uses 1-hour cache to reduce API calls. Cache is invalidated when hiding items.
+    Cache is only invalidated when hiding/unhiding items (event-driven), not on a timer.
+    This reduces unnecessary API calls while keeping data fresh.
 
     Args:
         force_refresh: If True, bypass cache and fetch fresh data
@@ -326,9 +327,9 @@ def get_hidden_shows(force_refresh=False):
     import xbmcaddon
     addon = xbmcaddon.Addon()
 
-    # Try cache first (1 hour = 3600 seconds)
+    # Try cache first (no time-based expiry - only invalidated on hide/unhide events)
     if not force_refresh and HAS_MODULES:
-        cached = cache.get_cached_data('hidden_shows', 'progress_watched', 3600)
+        cached = cache.get_cached_data('hidden_shows', 'progress_watched')
         if cached:
             xbmc.log(f'[AIOStreams] get_hidden_shows() returning {len(cached)} Trakt IDs from cache', xbmc.LOGDEBUG)
             return cached
@@ -371,9 +372,9 @@ def get_hidden_shows(force_refresh=False):
             xbmc.log('[AIOStreams] Reached maximum pagination limit (100 pages)', xbmc.LOGWARNING)
             break
 
-    xbmc.log(f'[AIOStreams] get_hidden_shows() fetched {len(hidden_ids)} Trakt IDs from {page} page(s), caching for 1 hour', xbmc.LOGINFO)
+    xbmc.log(f'[AIOStreams] get_hidden_shows() fetched {len(hidden_ids)} Trakt IDs from {page} page(s), caching until next hide/unhide event', xbmc.LOGINFO)
 
-    # Cache the result
+    # Cache the result (no expiry - invalidated on hide/unhide events)
     if HAS_MODULES:
         cache.cache_data('hidden_shows', 'progress_watched', hidden_ids)
 
