@@ -1565,8 +1565,8 @@ def trakt_menu():
     
     menu_items = [
         {'label': 'Continue Watching - TV', 'url': get_url(action='trakt_continue_watching'), 'icon': 'DefaultTVShows.png'},
-        {'label': 'Continue Watching - Movies', 'url': get_url(action='trakt_continue_movies'), 'icon': 'DefaultMovies.png'},
         {'label': 'Next Up', 'url': get_url(action='trakt_next_up'), 'icon': 'DefaultTVShows.png'},
+        {'label': 'Continue Watching - Movies', 'url': get_url(action='trakt_continue_movies'), 'icon': 'DefaultMovies.png'},
         {'label': 'Watchlist - Movies', 'url': get_url(action='trakt_watchlist', media_type='movies'), 'icon': 'DefaultMovies.png'},
         {'label': 'Watchlist - Shows', 'url': get_url(action='trakt_watchlist', media_type='shows'), 'icon': 'DefaultTVShows.png'},
         {'label': 'Collection - Movies', 'url': get_url(action='trakt_collection', media_type='movies'), 'icon': 'DefaultMovies.png'},
@@ -1642,9 +1642,17 @@ def trakt_watchlist():
                 # Keep Trakt data for text fields, only use AIOStreams for what's better
                 if not meta['description']:
                     meta['description'] = cached_data.get('description', '')
-
-        # Note: We don't fetch metadata here to keep lists fast
-        # Cache will populate as users view individual items
+            elif item_id:
+                # Fetch metadata if not cached (needed for widgets)
+                meta_data = get_meta(content_type, item_id)
+                if meta_data and 'meta' in meta_data:
+                    cached_data = meta_data['meta']
+                    meta['poster'] = cached_data.get('poster', '')
+                    meta['background'] = cached_data.get('background', '')
+                    meta['logo'] = cached_data.get('logo', '')
+                    meta['app_extras'] = cached_data.get('app_extras', {})
+                    if not meta['description']:
+                        meta['description'] = cached_data.get('description', '')
 
         if content_type == 'series':
             url = get_url(action='show_seasons', meta_id=item_id)
@@ -1714,9 +1722,17 @@ def trakt_collection():
                 meta['app_extras'] = cached_data.get('app_extras', {})
                 if not meta['description']:
                     meta['description'] = cached_data.get('description', '')
-
-        # Note: We don't fetch metadata here to keep lists fast
-        # Cache will populate as users view individual items
+            elif item_id:
+                # Fetch metadata if not cached (needed for widgets)
+                meta_data = get_meta(content_type, item_id)
+                if meta_data and 'meta' in meta_data:
+                    cached_data = meta_data['meta']
+                    meta['poster'] = cached_data.get('poster', '')
+                    meta['background'] = cached_data.get('background', '')
+                    meta['logo'] = cached_data.get('logo', '')
+                    meta['app_extras'] = cached_data.get('app_extras', {})
+                    if not meta['description']:
+                        meta['description'] = cached_data.get('description', '')
         
         if content_type == 'series':
             url = get_url(action='show_seasons', meta_id=item_id)
@@ -1786,9 +1802,17 @@ def trakt_trending():
                 meta['app_extras'] = cached_data.get('app_extras', {})
                 if not meta['description']:
                     meta['description'] = cached_data.get('description', '')
-
-        # Note: We don't fetch metadata here to keep lists fast
-        # Cache will populate as users view individual items
+            elif item_id:
+                # Fetch metadata if not cached (needed for widgets)
+                meta_data = get_meta(content_type, item_id)
+                if meta_data and 'meta' in meta_data:
+                    cached_data = meta_data['meta']
+                    meta['poster'] = cached_data.get('poster', '')
+                    meta['background'] = cached_data.get('background', '')
+                    meta['logo'] = cached_data.get('logo', '')
+                    meta['app_extras'] = cached_data.get('app_extras', {})
+                    if not meta['description']:
+                        meta['description'] = cached_data.get('description', '')
         
         if content_type == 'series':
             url = get_url(action='show_seasons', meta_id=item_id)
