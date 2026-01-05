@@ -316,24 +316,45 @@ def get_show_progress_by_trakt_id(show_id):
 
 
 def get_hidden_shows():
-    """Get list of shows user has hidden from progress."""
-    result = call_trakt('users/hidden/progress_watched')
-    if result:
-        hidden_ids = []
+    """Get list of shows user has hidden from progress with pagination."""
+    hidden_ids = []
+    page = 1
+    limit = 100  # Fetch 100 per page
+
+    while True:
+        params = {'page': page, 'limit': limit}
+        result = call_trakt('users/hidden/progress_watched', params=params)
+
+        if not result or not isinstance(result, list):
+            break
+
+        # Add all shows from this page
         for item in result:
             show = item.get('show', {})
             ids = show.get('ids', {})
             trakt_id = ids.get('trakt')
             imdb_id = ids.get('imdb')
 
-            # Log for debugging ID mismatches
-            if trakt_id:
-                hidden_ids.append(trakt_id)
+            # Log for debugging ID mismatches (only first page to avoid spam)
+            if page == 1 and trakt_id:
                 xbmc.log(f'[AIOStreams] Hidden show: Trakt={trakt_id}, IMDB={imdb_id}, Title={show.get("title")}', xbmc.LOGDEBUG)
 
-        xbmc.log(f'[AIOStreams] get_hidden_shows() returning {len(hidden_ids)} Trakt IDs', xbmc.LOGDEBUG)
-        return hidden_ids
-    return []
+            if trakt_id:
+                hidden_ids.append(trakt_id)
+
+        # If we got less than the limit, we've reached the end
+        if len(result) < limit:
+            break
+
+        page += 1
+
+        # Safety check to prevent infinite loops
+        if page > 100:
+            xbmc.log('[AIOStreams] Reached maximum pagination limit (100 pages)', xbmc.LOGWARNING)
+            break
+
+    xbmc.log(f'[AIOStreams] get_hidden_shows() returning {len(hidden_ids)} Trakt IDs from {page} page(s)', xbmc.LOGINFO)
+    return hidden_ids
 
 
 def get_progress_watching(type='shows', page=1, limit=20):
