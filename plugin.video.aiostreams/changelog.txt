@@ -1,5 +1,16 @@
 # Changelog
 
+## [2.4.6] - 2026-01-05
+
+### Fixed
+- **'All' Genre Empty Results**: Fixed catalog browser 'All' genre showing no items
+  - 'All' is now properly treated as "no genre filter"
+  - get_catalog() receives None instead of 'All' string
+- **Scrape Streams Context Menu**: Fixed KeyError crashes
+  - Movies: Changed from media_id to imdb_id parameter
+  - Episodes: Pass imdb_id, season, episode separately instead of formatted media_id
+  - Added episode title to stream selector dialog for better context
+
 ## [2.4.5] - 2026-01-05
 
 ### Fixed
