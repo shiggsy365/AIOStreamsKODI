@@ -369,16 +369,14 @@ def create_listitem_with_context(meta, content_type, action_url):
         list_item.setArt({'clearlogo': meta['logo']})
     
     # Build context menu based on content type
-    context_menu = [
-        ('Information', 'Action(Info)')
-    ]
+    context_menu = []
 
     item_id = meta.get('id', '')
     title = meta.get('name', 'Unknown')
 
     if content_type == 'movie':
-        # Movie context menu: Information, Scrape Streams, View Trailer, Find Similar, Mark as Watched, Watchlist
-        context_menu.append(('Scrape Streams', f'Container.Update({get_url(action="show_streams", content_type="movie", media_id=item_id)})'))
+        # Movie context menu: Scrape Streams, View Trailer, Mark as Watched, Watchlist
+        context_menu.append(('Scrape Streams', f'RunPlugin({get_url(action="select_stream", content_type="movie", media_id=item_id)})'))
 
         # Add trailer if available
         trailers = meta.get('trailers', [])
@@ -389,10 +387,6 @@ def create_listitem_with_context(meta, content_type, action_url):
                 info_tag.setTrailer(trailer_url)
                 play_url = f'plugin://plugin.video.youtube/play/?video_id={youtube_id}'
                 context_menu.append(('View Trailer', f'PlayMedia({play_url})'))
-
-        # Find Similar
-        if item_id:
-            context_menu.append(('Find Similar', f'Container.Update({get_url(action="show_related", content_type=content_type, imdb_id=item_id, title=title)})'))
 
         # Trakt context menus if authorized
         if HAS_MODULES and trakt.get_access_token() and item_id:
@@ -416,7 +410,7 @@ def create_listitem_with_context(meta, content_type, action_url):
                                     f'RunPlugin({get_url(action="trakt_add_watchlist", media_type=content_type, imdb_id=item_id)})'))
 
     elif content_type == 'series':
-        # Show context menu: Information, View Trailer, Find Similar, Mark as Watched, Watchlist
+        # Show context menu: View Trailer, Mark as Watched, Watchlist
         # Add trailer if available
         trailers = meta.get('trailerStreams', [])
         if trailers and isinstance(trailers, list) and len(trailers) > 0:
@@ -426,10 +420,6 @@ def create_listitem_with_context(meta, content_type, action_url):
                 info_tag.setTrailer(trailer_url)
                 play_url = f'plugin://plugin.video.youtube/play/?video_id={youtube_id}'
                 context_menu.append(('View Trailer', f'PlayMedia({play_url})'))
-
-        # Find Similar
-        if item_id:
-            context_menu.append(('Find Similar', f'Container.Update({get_url(action="show_related", content_type=content_type, imdb_id=item_id, title=title)})'))
 
         # Trakt context menus if authorized
         if HAS_MODULES and trakt.get_access_token() and item_id:
@@ -1055,7 +1045,7 @@ def list_catalogs():
             url = get_url(action='catalog_genres', catalog_id=catalog_id, content_type=content_type, catalog_name=catalog_name)
             is_folder = True
         else:
-            url = get_url(action='browse_catalog', catalog_id=catalog_id, content_type=content_type)
+            url = get_url(action='browse_catalog', catalog_id=catalog_id, content_type=content_type, catalog_name=catalog_name)
             is_folder = True
         
         list_item = xbmcgui.ListItem(label=catalog_name)
@@ -1092,19 +1082,19 @@ def list_catalog_genres():
     list_item = xbmcgui.ListItem(label='All')
     info_tag = list_item.getVideoInfoTag()
     info_tag.setTitle('All')
-    url = get_url(action='browse_catalog', catalog_id=catalog_id, content_type=content_type)
+    url = get_url(action='browse_catalog', catalog_id=catalog_id, content_type=content_type, catalog_name=catalog_name, genre='All')
     xbmcplugin.addDirectoryItem(HANDLE, url, list_item, True)
-    
+
     # Add genre options
     extras = catalog.get('extra', [])
     genre_extra = next((e for e in extras if e.get('name') == 'genre'), None)
-    
+
     if genre_extra and genre_extra.get('options'):
         for genre in genre_extra['options']:
             list_item = xbmcgui.ListItem(label=genre)
             info_tag = list_item.getVideoInfoTag()
             info_tag.setTitle(genre)
-            url = get_url(action='browse_catalog', catalog_id=catalog_id, content_type=content_type, genre=genre)
+            url = get_url(action='browse_catalog', catalog_id=catalog_id, content_type=content_type, catalog_name=catalog_name, genre=genre)
             xbmcplugin.addDirectoryItem(HANDLE, url, list_item, True)
     
     xbmcplugin.endOfDirectory(HANDLE)
@@ -1115,22 +1105,29 @@ def browse_catalog():
     params = dict(parse_qsl(sys.argv[2][1:]))
     catalog_id = params['catalog_id']
     content_type = params['content_type']
+    catalog_name = params.get('catalog_name', 'Catalog')
     genre = params.get('genre')
     skip = int(params.get('skip', 0))
-    
+
     # Fetch catalog data
     catalog_data = get_catalog(content_type, catalog_id, genre, skip)
-    
+
     if not catalog_data or 'metas' not in catalog_data:
         xbmcgui.Dialog().notification('AIOStreams', 'No items found', xbmcgui.NOTIFICATION_INFO)
         xbmcplugin.endOfDirectory(HANDLE)
         return
-    
+
     # Apply filters
     if HAS_MODULES and filters:
         catalog_data['metas'] = filters.filter_items(catalog_data['metas'])
-    
-    xbmcplugin.setPluginCategory(HANDLE, f'{catalog_id}')
+
+    # Build category name: "Catalog Name > Genre" or just "Catalog Name"
+    if genre and genre != 'All':
+        category_title = f'{catalog_name} > {genre}'
+    else:
+        category_title = catalog_name
+
+    xbmcplugin.setPluginCategory(HANDLE, category_title)
     xbmcplugin.setContent(HANDLE, 'movies' if content_type == 'movie' else 'tvshows')
     
     # Display catalog items
@@ -1408,9 +1405,7 @@ def show_seasons():
             list_item.setArt({'fanart': meta['background']})
 
         # Add season context menu
-        context_menu = [
-            ('Information', 'Action(Info)')
-        ]
+        context_menu = []
 
         # Add Trakt watched toggle for series if authorized
         if HAS_MODULES and trakt.get_access_token():
@@ -1569,9 +1564,9 @@ def show_episodes():
             list_item.setProperty('WatchedOverlay', 'OverlayWatched.png')
 
         # Add episode context menu
+        media_id = f"{meta_id}:{season}:{episode_num}"
         context_menu = [
-            ('Information', 'Action(Info)'),
-            ('Scrape Streams', f'Container.Update({get_url(action="show_streams", content_type="series", media_id=f"{meta_id}:{season}:{episode_num}")})'),
+            ('Scrape Streams', f'RunPlugin({get_url(action="select_stream", content_type="series", media_id=media_id)})'),
             ('Browse Show', f'Container.Update({get_url(action="show_seasons", meta_id=meta_id)})')
         ]
 
