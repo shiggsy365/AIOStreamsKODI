@@ -417,6 +417,11 @@ def hide_from_progress(media_type, imdb_id):
 
     This is the 'Stop Watching' or 'Drop' feature.
     """
+    if not imdb_id:
+        xbmc.log('[AIOStreams] Cannot hide from progress: no IMDB ID provided', xbmc.LOGWARNING)
+        xbmcgui.Dialog().notification('AIOStreams', 'Failed to drop show: Invalid ID', xbmcgui.NOTIFICATION_ERROR)
+        return False
+
     # Determine the section based on media type
     if media_type in ['movie', 'movies']:
         section = 'progress_watched'
@@ -429,14 +434,22 @@ def hide_from_progress(media_type, imdb_id):
         data_key: [{'ids': {'imdb': imdb_id}}]
     }
 
+    xbmc.log(f'[AIOStreams] Hiding {media_type} from progress: {imdb_id}', xbmc.LOGINFO)
+    xbmc.log(f'[AIOStreams] API request: POST users/hidden/{section} - data: {data}', xbmc.LOGDEBUG)
+
     result = call_trakt(f'users/hidden/{section}', method='POST', data=data)
+
     if result:
         item_type = 'Movie' if media_type in ['movie', 'movies'] else 'Show'
+        xbmc.log(f'[AIOStreams] Successfully dropped {item_type} ({imdb_id}) from watching', xbmc.LOGINFO)
         xbmcgui.Dialog().notification('AIOStreams', f'{item_type} dropped from watching', xbmcgui.NOTIFICATION_INFO)
         # Invalidate progress cache since we've hidden an item
         invalidate_progress_cache()
         return True
-    return False
+    else:
+        xbmc.log(f'[AIOStreams] Failed to hide {media_type} ({imdb_id}) from progress', xbmc.LOGERROR)
+        xbmcgui.Dialog().notification('AIOStreams', 'Failed to drop from watching', xbmcgui.NOTIFICATION_ERROR)
+        return False
 
 
 def scrobble(action, media_type, imdb_id, progress=0, season=None, episode=None):

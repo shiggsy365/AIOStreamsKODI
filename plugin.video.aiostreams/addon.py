@@ -1747,7 +1747,7 @@ def show_episodes():
         episode_media_id = f"{meta_id}:{season}:{episode_num}"
         context_menu = [
             ('[COLOR lightcoral]Scrape Streams[/COLOR]', f'RunPlugin({get_url(action="show_streams", content_type="series", media_id=episode_media_id, title=episode_title)})'),
-            ('[COLOR lightcoral]Browse Show[/COLOR]', f'Container.Update({get_url(action="show_seasons", meta_id=meta_id)})')
+            ('[COLOR lightcoral]Browse Show[/COLOR]', f'ActivateWindow(Videos,{sys.argv[0]}?{urlencode({"action": "show_seasons", "meta_id": meta_id})},return)')
         ]
 
         # Add Trakt watched toggle if authorized
@@ -2135,7 +2135,7 @@ def trakt_next_up():
         episode_title_str = f'{show_name} - S{season:02d}E{episode:02d}'
         context_menu = [
             ('[COLOR lightcoral]Scrape Streams[/COLOR]', f'RunPlugin({get_url(action="show_streams", content_type="series", media_id=episode_media_id, title=episode_title_str)})'),
-            ('[COLOR lightcoral]Browse Show[/COLOR]', f'Container.Update({get_url(action="show_seasons", meta_id=show_imdb)})')
+            ('[COLOR lightcoral]Browse Show[/COLOR]', f'ActivateWindow(Videos,{sys.argv[0]}?{urlencode({"action": "show_seasons", "meta_id": show_imdb})},return)')
         ]
 
         # Add Trakt context menu items if authorized
@@ -2365,8 +2365,11 @@ def trakt_hide_from_progress():
     imdb_id = params.get('imdb_id', '')
 
     if imdb_id:
-        trakt.hide_from_progress(media_type, imdb_id)
-        xbmc.executebuiltin('Container.Refresh')
+        success = trakt.hide_from_progress(media_type, imdb_id)
+        if success:
+            # Give Trakt a moment to process the request before refreshing
+            xbmc.sleep(500)  # 500ms delay
+            xbmc.executebuiltin('Container.Refresh')
 
 
 # Maintenance Tools
