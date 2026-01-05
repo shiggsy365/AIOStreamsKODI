@@ -10,6 +10,7 @@ A powerful Kodi addon for streaming content from AIOStreams with comprehensive T
 - **Smart Caching**: Disk-based metadata cache reduces API calls and improves performance
 - **Advanced Search**: Tabbed search interface with separate Movies/TV Shows/All Results views
 - **Metadata, Catalog and Subtitle synchronisation**: Pulls metadata, catalogs and subtitles from AIO manifests
+- **TMDbHelper Compatibility**, TMDbHelper Players are saved in the repo
 
 ### Trakt Features
 - **Next Up**: Smart list of next unwatched episodes from your watched shows
