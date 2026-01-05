@@ -7,6 +7,14 @@ import requests
 import time
 import json
 
+# Import cache module
+try:
+    from resources.lib import cache
+    HAS_MODULES = True
+except:
+    HAS_MODULES = False
+    cache = None
+
 ADDON = xbmcaddon.Addon()
 API_ENDPOINT = 'https://api.trakt.tv'
 API_VERSION = '2'
