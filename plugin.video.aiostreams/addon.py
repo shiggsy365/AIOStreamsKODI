@@ -1763,11 +1763,11 @@ def show_episodes():
                                 f'RunPlugin({get_url(action="trakt_hide_from_progress", media_type="series", imdb_id=meta_id)})'))
 
         list_item.addContextMenuItems(context_menu)
-        
-        media_id = f"{meta_id}:{season}:{episode_num}"
-        
-        url = get_url(action='show_streams', content_type='series', media_id=media_id)
-        xbmcplugin.addDirectoryItem(HANDLE, url, list_item, True)
+
+        # Make episodes directly playable
+        url = get_url(action='play', content_type='series', imdb_id=meta_id, season=season, episode=episode_num)
+        list_item.setProperty('IsPlayable', 'true')
+        xbmcplugin.addDirectoryItem(HANDLE, url, list_item, False)
     
     xbmcplugin.endOfDirectory(HANDLE)
 
@@ -2149,11 +2149,11 @@ def trakt_next_up():
         if context_menu:
             list_item.addContextMenuItems(context_menu)
         
-        # Build stream URL
+        # Make episodes directly playable
         if show_imdb:
-            media_id = f"{show_imdb}:{season}:{episode}"
-            url = get_url(action='show_streams', content_type='series', media_id=media_id)
-            xbmcplugin.addDirectoryItem(HANDLE, url, list_item, True)
+            url = get_url(action='play', content_type='series', imdb_id=show_imdb, season=season, episode=episode)
+            list_item.setProperty('IsPlayable', 'true')
+            xbmcplugin.addDirectoryItem(HANDLE, url, list_item, False)
     
     # Add Load More if there are more shows
     if len(active_shows) > offset + limit:
