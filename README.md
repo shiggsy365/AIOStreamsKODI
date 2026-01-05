@@ -30,6 +30,29 @@ A powerful Kodi addon for streaming content from AIOStreams with comprehensive T
 - **Similar Content**: Browse related movies and shows
 - **Rich Metadata**: Posters, fanart, logos, ratings, genres, and more
 
+## Requirements
+
+AIOStreams is required for this plugin, with at least one scraper configured, a search provider configured, and a metadata source configured. Subtitle scrapers are optional but preferred.
+
+I recommend setting up AIOMetadata within AIOStreams, and letting AIOMetadata provide the search and metadata catalogs from TMDb and TVDb. I also recommend self hosting both services to avoid rate limiting.
+
+The stream scraper will work best using the following pattern within the formatter:
+
+**Name Template:**
+```
+{stream.type::=debrid["{service.shortName}"||""]}{stream.type::=usenet["{service.shortName}"||""]}{stream.type::=p2p["P2P"||""]}{stream.type::=http["Web"||""]}{stream.type::=youtube["YT"||""]}{stream.type::=live["Live"||""]}|{stream.resolution::=2160p["4K"||""]}{stream.resolution::=1440p["2K"||""]}{stream.resolution::=1080p["FHD"||""]}{stream.resolution::=720p["HD"||""]}{stream.resolution::=576p["SD"||""]}{stream.resolution::=480p["SD"||""]}{stream.resolution::=360p["SD"||""]}{stream.resolution::=240p["SD"||""]}{stream.resolution::=144p["LQ"||""]}|{stream.size::>0["{stream.size::bytes}"||""]}|{addon.name}|{service.cached::istrue["Cached "||""]}{service.cached::isfalse["Uncached"||""]}
+```
+
+**Description Template:**
+```
+(Leave blank)
+```
+
+### Credits
+With many thanks to:
+- **Cedya77** for AIOMetadata - [https://github.com/cedya77/aiometadata](https://github.com/cedya77/aiometadata)
+- **Viren070** for AIOStreams - [https://github.com/Viren070/aiostreams](https://github.com/Viren070/aiostreams)
+
 ## Installation
 
 1. Download the latest release ZIP file

@@ -498,6 +498,11 @@ def add_to_watchlist(media_type, imdb_id, season=None, episode=None):
         if cache_key in _watchlist_cache:
             del _watchlist_cache[cache_key]
 
+        # Invalidate batch watchlist cache
+        global _watchlist_valid
+        _watchlist_valid['movies'] = False
+        _watchlist_valid['shows'] = False
+
         xbmcgui.Dialog().notification('AIOStreams', 'Added to Trakt watchlist', xbmcgui.NOTIFICATION_INFO)
         return True
 
@@ -526,6 +531,11 @@ def remove_from_watchlist(media_type, imdb_id, season=None, episode=None):
         cache_key = f"{media_type}:{imdb_id}"
         if cache_key in _watchlist_cache:
             del _watchlist_cache[cache_key]
+
+        # Invalidate batch watchlist cache
+        global _watchlist_valid
+        _watchlist_valid['movies'] = False
+        _watchlist_valid['shows'] = False
 
         xbmcgui.Dialog().notification('AIOStreams', 'Removed from Trakt watchlist', xbmcgui.NOTIFICATION_INFO)
         return True
@@ -566,6 +576,11 @@ def mark_watched(media_type, imdb_id, season=None, episode=None, playback_id=Non
         # Invalidate batch progress cache
         invalidate_progress_cache()
 
+        # Invalidate batch watched history cache
+        global _watched_history_valid
+        _watched_history_valid['movies'] = False
+        _watched_history_valid['shows'] = False
+
         xbmcgui.Dialog().notification('AIOStreams', 'Marked as watched on Trakt', xbmcgui.NOTIFICATION_INFO)
         return True
 
@@ -601,6 +616,11 @@ def mark_unwatched(media_type, imdb_id, season=None, episode=None):
         # Invalidate batch progress cache
         invalidate_progress_cache()
 
+        # Invalidate batch watched history cache
+        global _watched_history_valid
+        _watched_history_valid['movies'] = False
+        _watched_history_valid['shows'] = False
+
         xbmcgui.Dialog().notification('AIOStreams', 'Marked as unwatched on Trakt', xbmcgui.NOTIFICATION_INFO)
         return True
 
@@ -611,6 +631,14 @@ def mark_unwatched(media_type, imdb_id, season=None, episode=None):
 _watched_cache = {}
 _show_progress_cache = {}
 _watchlist_cache = {}
+
+# Batch cache for watched history (invalidated on watched status changes)
+_watched_history_batch = {'movies': {}, 'shows': {}}
+_watched_history_valid = {'movies': False, 'shows': False}
+
+# Batch cache for watchlist (invalidated on watchlist changes)
+_watchlist_batch = {'movies': {}, 'shows': {}}
+_watchlist_valid = {'movies': False, 'shows': False}
 
 
 def remove_from_playback(playback_id):
@@ -629,62 +657,110 @@ def remove_from_playback(playback_id):
         return False
 
 
-def is_in_watchlist(media_type, imdb_id):
-    """Check if item is in Trakt watchlist."""
-    # Check cache first
-    cache_key = f"{media_type}:{imdb_id}"
-    if cache_key in _watchlist_cache:
-        return _watchlist_cache[cache_key]
+def fetch_all_watchlist(media_type):
+    """Batch fetch entire watchlist for a media type."""
+    global _watchlist_batch, _watchlist_valid
 
-    # Query Trakt watchlist
     api_type = 'movies' if media_type == 'movie' else 'shows'
 
-    # Get watchlist
-    result = call_trakt(f'sync/watchlist/{api_type}')
+    # Return cached data if still valid
+    if _watchlist_valid[api_type] and _watchlist_batch[api_type]:
+        xbmc.log(f'[AIOStreams] Using cached watchlist for {api_type} ({len(_watchlist_batch[api_type])} items)', xbmc.LOGDEBUG)
+        return _watchlist_batch[api_type]
 
-    if not result:
-        _watchlist_cache[cache_key] = False
+    # Fetch entire watchlist
+    try:
+        result = call_trakt(f'sync/watchlist/{api_type}')
+        if not result:
+            _watchlist_batch[api_type] = {}
+            _watchlist_valid[api_type] = True
+            return {}
+
+        # Build cache: {imdb_id: True}
+        watchlist_dict = {}
+        for item in result:
+            item_data = item.get(media_type, {})
+            item_imdb = item_data.get('ids', {}).get('imdb', '')
+            if item_imdb:
+                watchlist_dict[item_imdb] = True
+
+        _watchlist_batch[api_type] = watchlist_dict
+        _watchlist_valid[api_type] = True
+        xbmc.log(f'[AIOStreams] Fetched and cached watchlist for {api_type}: {len(watchlist_dict)} items', xbmc.LOGDEBUG)
+        return watchlist_dict
+
+    except Exception as e:
+        xbmc.log(f'[AIOStreams] Error fetching watchlist for {api_type}: {e}', xbmc.LOGERROR)
+        _watchlist_batch[api_type] = {}
+        _watchlist_valid[api_type] = True
+        return {}
+
+
+def is_in_watchlist(media_type, imdb_id):
+    """Check if item is in Trakt watchlist using batch cache."""
+    if not imdb_id:
         return False
 
-    # Check if our IMDB ID is in the watchlist
-    for item in result:
-        item_data = item.get(media_type, {})
-        item_imdb = item_data.get('ids', {}).get('imdb', '')
-        if item_imdb == imdb_id:
-            _watchlist_cache[cache_key] = True
-            return True
+    api_type = 'movies' if media_type == 'movie' else 'shows'
 
-    _watchlist_cache[cache_key] = False
-    return False
+    # Fetch all watchlist items (uses cache if available)
+    watchlist = fetch_all_watchlist(media_type)
+
+    # Check if item is in watchlist
+    return imdb_id in watchlist
+
+
+def fetch_all_watched_history(media_type):
+    """Batch fetch entire watched history for a media type."""
+    global _watched_history_batch, _watched_history_valid
+
+    api_type = 'movies' if media_type == 'movie' else 'shows'
+
+    # Return cached data if still valid
+    if _watched_history_valid[api_type] and _watched_history_batch[api_type]:
+        xbmc.log(f'[AIOStreams] Using cached watched history for {api_type} ({len(_watched_history_batch[api_type])} items)', xbmc.LOGDEBUG)
+        return _watched_history_batch[api_type]
+
+    # Fetch entire watched history
+    try:
+        result = call_trakt(f'sync/history/{api_type}', params={'limit': 1000})
+        if not result:
+            _watched_history_batch[api_type] = {}
+            _watched_history_valid[api_type] = True
+            return {}
+
+        # Build cache: {imdb_id: True}
+        watched_dict = {}
+        for item in result:
+            item_data = item.get(media_type, {})
+            item_imdb = item_data.get('ids', {}).get('imdb', '')
+            if item_imdb:
+                watched_dict[item_imdb] = True
+
+        _watched_history_batch[api_type] = watched_dict
+        _watched_history_valid[api_type] = True
+        xbmc.log(f'[AIOStreams] Fetched and cached watched history for {api_type}: {len(watched_dict)} items', xbmc.LOGDEBUG)
+        return watched_dict
+
+    except Exception as e:
+        xbmc.log(f'[AIOStreams] Error fetching watched history for {api_type}: {e}', xbmc.LOGERROR)
+        _watched_history_batch[api_type] = {}
+        _watched_history_valid[api_type] = True
+        return {}
 
 
 def is_watched(media_type, imdb_id):
-    """Check if item is watched in Trakt history."""
-    # Check cache first
-    cache_key = f"{media_type}:{imdb_id}"
-    if cache_key in _watched_cache:
-        return _watched_cache[cache_key]
-    
-    # Query Trakt history
-    api_type = 'movies' if media_type == 'movie' else 'shows'
-    
-    # Get watched history (last 1000 items should be enough)
-    result = call_trakt(f'sync/history/{api_type}?limit=1000')
-    
-    if not result:
-        _watched_cache[cache_key] = False
+    """Check if item is watched in Trakt history using batch cache."""
+    if not imdb_id:
         return False
-    
-    # Check if our IMDB ID is in the history
-    for item in result:
-        item_data = item.get(media_type, {})
-        item_imdb = item_data.get('ids', {}).get('imdb', '')
-        if item_imdb == imdb_id:
-            _watched_cache[cache_key] = True
-            return True
-    
-    _watched_cache[cache_key] = False
-    return False
+
+    api_type = 'movies' if media_type == 'movie' else 'shows'
+
+    # Fetch all watched history items (uses cache if available)
+    watched_history = fetch_all_watched_history(media_type)
+
+    # Check if item is in watched history
+    return imdb_id in watched_history
 
 
 def get_show_progress(imdb_id):
