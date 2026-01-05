@@ -315,8 +315,26 @@ def get_show_progress_by_trakt_id(show_id):
     return result
 
 
-def get_hidden_shows():
-    """Get list of shows user has hidden from progress with pagination."""
+def get_hidden_shows(force_refresh=False):
+    """Get list of shows user has hidden from progress with caching.
+
+    Uses 1-hour cache to reduce API calls. Cache is invalidated when hiding items.
+
+    Args:
+        force_refresh: If True, bypass cache and fetch fresh data
+    """
+    import xbmcaddon
+    addon = xbmcaddon.Addon()
+
+    # Try cache first (1 hour = 3600 seconds)
+    if not force_refresh and HAS_MODULES:
+        cached = cache.get_cached_data('hidden_shows', 'progress_watched', 3600)
+        if cached:
+            xbmc.log(f'[AIOStreams] get_hidden_shows() returning {len(cached)} Trakt IDs from cache', xbmc.LOGDEBUG)
+            return cached
+
+    xbmc.log('[AIOStreams] Fetching hidden shows from Trakt API (cache miss or forced refresh)', xbmc.LOGDEBUG)
+
     hidden_ids = []
     page = 1
     limit = 100  # Fetch 100 per page
@@ -353,7 +371,12 @@ def get_hidden_shows():
             xbmc.log('[AIOStreams] Reached maximum pagination limit (100 pages)', xbmc.LOGWARNING)
             break
 
-    xbmc.log(f'[AIOStreams] get_hidden_shows() returning {len(hidden_ids)} Trakt IDs from {page} page(s)', xbmc.LOGINFO)
+    xbmc.log(f'[AIOStreams] get_hidden_shows() fetched {len(hidden_ids)} Trakt IDs from {page} page(s), caching for 1 hour', xbmc.LOGINFO)
+
+    # Cache the result
+    if HAS_MODULES:
+        cache.cache_data('hidden_shows', 'progress_watched', hidden_ids)
+
     return hidden_ids
 
 
@@ -529,8 +552,14 @@ def hide_from_progress(media_type, imdb_id):
                 xbmc.log(f'[AIOStreams] ⚠ Validation: Item NOT found in {section} hidden list', xbmc.LOGWARNING)
 
         xbmcgui.Dialog().notification('AIOStreams', f'{item_type} dropped from watching', xbmcgui.NOTIFICATION_INFO)
-        # Invalidate progress cache since we've hidden an item
+        # Invalidate caches since we've hidden an item
         invalidate_progress_cache()
+
+        # Invalidate hidden shows cache so next check fetches fresh data
+        if HAS_MODULES:
+            cache.invalidate('hidden_shows', 'progress_watched')
+            xbmc.log('[AIOStreams] Hidden shows cache invalidated', xbmc.LOGDEBUG)
+
         return True
     else:
         xbmc.log(f'[AIOStreams] Failed to drop {media_type} ({imdb_id}) from all sections', xbmc.LOGERROR)
