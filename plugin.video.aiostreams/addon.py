@@ -1802,21 +1802,20 @@ def trakt_watchlist():
     if not HAS_MODULES:
         xbmcgui.Dialog().ok('AIOStreams', 'Trakt module not available')
         return
-    
+
     params = dict(parse_qsl(sys.argv[2][1:]))
     media_type = params.get('media_type', 'movies')
-    page = int(params.get('page', 1))
-    
-    items = trakt.get_watchlist(media_type, page, limit=20)
-    
+
+    items = trakt.get_watchlist(media_type, page=1, limit=1000)  # Get all items
+
     if not items:
         xbmcgui.Dialog().notification('AIOStreams', 'Watchlist is empty', xbmcgui.NOTIFICATION_INFO)
         xbmcplugin.endOfDirectory(HANDLE)
         return
-    
+
     xbmcplugin.setPluginCategory(HANDLE, f'Trakt Watchlist - {media_type.capitalize()}')
     xbmcplugin.setContent(HANDLE, 'movies' if media_type == 'movies' else 'tvshows')
-    
+
     for item in items:
         item_data = item.get('movie' if media_type == 'movies' else 'show', {})
         item_id = item_data.get('ids', {}).get('imdb', '')
@@ -1876,13 +1875,7 @@ def trakt_watchlist():
             list_item.setProperty('IsPlayable', 'true')
 
         xbmcplugin.addDirectoryItem(HANDLE, url, list_item, is_folder)
-    
-    # Add Load More if we got 20 items
-    if len(items) >= 20:
-        list_item = xbmcgui.ListItem(label='[COLOR yellow]» Load More...[/COLOR]')
-        url = get_url(action='trakt_watchlist', media_type=media_type, page=page + 1)
-        xbmcplugin.addDirectoryItem(HANDLE, url, list_item, True)
-    
+
     xbmcplugin.endOfDirectory(HANDLE)
 
 
@@ -1891,21 +1884,20 @@ def trakt_collection():
     if not HAS_MODULES:
         xbmcgui.Dialog().ok('AIOStreams', 'Trakt module not available')
         return
-    
+
     params = dict(parse_qsl(sys.argv[2][1:]))
     media_type = params.get('media_type', 'movies')
-    page = int(params.get('page', 1))
-    
-    items = trakt.get_collection(media_type, page, limit=20)
-    
+
+    items = trakt.get_collection(media_type, page=1, limit=1000)  # Get all items
+
     if not items:
         xbmcgui.Dialog().notification('AIOStreams', 'Collection is empty', xbmcgui.NOTIFICATION_INFO)
         xbmcplugin.endOfDirectory(HANDLE)
         return
-    
+
     xbmcplugin.setPluginCategory(HANDLE, f'Trakt Collection - {media_type.capitalize()}')
     xbmcplugin.setContent(HANDLE, 'movies' if media_type == 'movies' else 'tvshows')
-    
+
     for item in items:
         item_data = item.get('movie' if media_type == 'movies' else 'show', {})
         item_id = item_data.get('ids', {}).get('imdb', '')
@@ -1963,13 +1955,7 @@ def trakt_collection():
             list_item.setProperty('IsPlayable', 'true')
 
         xbmcplugin.addDirectoryItem(HANDLE, url, list_item, is_folder)
-    
-    # Add Load More if we got 20 items
-    if len(items) >= 20:
-        list_item = xbmcgui.ListItem(label='[COLOR yellow]» Load More...[/COLOR]')
-        url = get_url(action='trakt_collection', media_type=media_type, page=page + 1)
-        xbmcplugin.addDirectoryItem(HANDLE, url, list_item, True)
-    
+
     xbmcplugin.endOfDirectory(HANDLE)
 
 
