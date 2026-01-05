@@ -446,8 +446,33 @@ def hide_from_progress(media_type, imdb_id):
         xbmc.log(f'[AIOStreams] Hiding from section: {section}', xbmc.LOGDEBUG)
         result = call_trakt(f'users/hidden/{section}', method='POST', data=data)
         if result:
-            xbmc.log(f'[AIOStreams] ✓ Successfully hidden from {section}', xbmc.LOGINFO)
-            success_count += 1
+            # Log detailed response for debugging
+            xbmc.log(f'[AIOStreams] API Response for {section}: {result}', xbmc.LOGDEBUG)
+
+            # Check what was actually added
+            if isinstance(result, dict):
+                added = result.get('added', {})
+                existing = result.get('existing', {})
+                not_found = result.get('not_found', {})
+
+                added_count = added.get(data_key, 0) if isinstance(added, dict) else 0
+                existing_count = existing.get(data_key, 0) if isinstance(existing, dict) else 0
+                not_found_count = len(not_found.get(data_key, [])) if isinstance(not_found, dict) else 0
+
+                xbmc.log(f'[AIOStreams] {section} - Added: {added_count}, Already existed: {existing_count}, Not found: {not_found_count}', xbmc.LOGINFO)
+
+                if not_found_count > 0:
+                    xbmc.log(f'[AIOStreams] ⚠ Warning: {data_key} not found in Trakt: {not_found.get(data_key, [])}', xbmc.LOGWARNING)
+
+                if added_count > 0 or existing_count > 0:
+                    xbmc.log(f'[AIOStreams] ✓ Successfully hidden from {section}', xbmc.LOGINFO)
+                    success_count += 1
+                else:
+                    xbmc.log(f'[AIOStreams] ✗ Item not added to {section} (not found by Trakt)', xbmc.LOGWARNING)
+            else:
+                # Simple boolean response
+                xbmc.log(f'[AIOStreams] ✓ Successfully hidden from {section}', xbmc.LOGINFO)
+                success_count += 1
         else:
             xbmc.log(f'[AIOStreams] ✗ Failed to hide from {section}', xbmc.LOGWARNING)
 
@@ -455,6 +480,20 @@ def hide_from_progress(media_type, imdb_id):
     if success_count > 0:
         item_type = 'Movie' if media_type in ['movie', 'movies'] else 'Show'
         xbmc.log(f'[AIOStreams] Successfully dropped {item_type} ({imdb_id}) - hidden from {success_count}/{len(sections)} sections', xbmc.LOGINFO)
+
+        # Validate by checking if item now appears in hidden lists
+        xbmc.log(f'[AIOStreams] Validating drop operation by checking hidden lists...', xbmc.LOGDEBUG)
+        for section in sections:
+            hidden_items = get_hidden_items(section=section, media_type=data_key, limit=1000)
+            is_hidden = any(
+                item.get(data_key[:-1], {}).get('ids', {}).get('imdb') == imdb_id
+                for item in hidden_items
+            )
+            if is_hidden:
+                xbmc.log(f'[AIOStreams] ✓ Validation: Item confirmed hidden in {section}', xbmc.LOGINFO)
+            else:
+                xbmc.log(f'[AIOStreams] ⚠ Validation: Item NOT found in {section} hidden list', xbmc.LOGWARNING)
+
         xbmcgui.Dialog().notification('AIOStreams', f'{item_type} dropped from watching', xbmcgui.NOTIFICATION_INFO)
         # Invalidate progress cache since we've hidden an item
         invalidate_progress_cache()
@@ -463,6 +502,52 @@ def hide_from_progress(media_type, imdb_id):
         xbmc.log(f'[AIOStreams] Failed to drop {media_type} ({imdb_id}) from all sections', xbmc.LOGERROR)
         xbmcgui.Dialog().notification('AIOStreams', 'Failed to drop from watching', xbmcgui.NOTIFICATION_ERROR)
         return False
+
+
+def get_hidden_items(section='progress_watched', media_type='shows', limit=100):
+    """Retrieve currently hidden items from Trakt for validation.
+
+    Args:
+        section: One of 'progress_watched', 'calendar', 'recommendations'
+        media_type: 'shows' or 'movies'
+        limit: Number of items to retrieve (default 100)
+
+    Returns:
+        List of hidden items with their metadata
+
+    API Docs: https://trakt.docs.apiary.io/#reference/users/get-hidden-items
+    """
+    if not get_access_token():
+        xbmc.log('[AIOStreams] Not authorized with Trakt', xbmc.LOGWARNING)
+        return []
+
+    params = {
+        'type': media_type,
+        'limit': limit
+    }
+
+    xbmc.log(f'[AIOStreams] Fetching hidden items from {section} (type: {media_type})', xbmc.LOGDEBUG)
+    result = call_trakt(f'users/hidden/{section}', method='GET', params=params)
+
+    if result and isinstance(result, list):
+        xbmc.log(f'[AIOStreams] Found {len(result)} hidden {media_type} in {section}', xbmc.LOGINFO)
+
+        # Log first few items for debugging
+        for idx, item in enumerate(result[:5]):  # Log first 5 items
+            show_data = item.get('show', {})
+            title = show_data.get('title', 'Unknown')
+            year = show_data.get('year', 'Unknown')
+            ids = show_data.get('ids', {})
+            imdb = ids.get('imdb', 'No IMDB')
+            xbmc.log(f'[AIOStreams]   Hidden item {idx+1}: {title} ({year}) - IMDB: {imdb}', xbmc.LOGDEBUG)
+
+        if len(result) > 5:
+            xbmc.log(f'[AIOStreams]   ... and {len(result) - 5} more', xbmc.LOGDEBUG)
+
+        return result
+    else:
+        xbmc.log(f'[AIOStreams] No hidden {media_type} found in {section}', xbmc.LOGINFO)
+        return []
 
 
 def scrobble(action, media_type, imdb_id, progress=0, season=None, episode=None):
