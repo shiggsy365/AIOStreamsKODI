@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <addons>
-<addon id="plugin.video.aiostreams" name="AIOStreams" version="2.5.1" provider-name="Jon">
+<addon id="plugin.video.aiostreams" name="AIOStreams" version="2.5.2" provider-name="Jon">
     <requires>
         <import addon="xbmc.python" version="3.0.0"/>
         <import addon="script.module.requests" version="2.25.1"/>
@@ -14,7 +14,7 @@
         <platform>all</platform>
         <license>MIT</license>
         <website>https://aiostreams.shiggsy.co.uk</website>
-        <news>v2.5.1: Fixed Trakt API for shows - watchlist add/remove and mark watched/unwatched now work correctly. | v2.5.0: Context menu overhaul. | v2.4.9: Context fixes.</news>
+        <news>v2.5.2: Fixed Browse Show context menu and improved Drop from Next Up reliability with better error handling and logging. | v2.5.1: Fixed Trakt API for shows. | v2.5.0: Context menu overhaul.</news>
         <assets>
             <icon>resources/icon.png</icon>
             <fanart>resources/fanart.jpg</fanart>
