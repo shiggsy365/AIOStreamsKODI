@@ -1975,9 +1975,23 @@ def trakt_next_up():
 
     # Get hidden shows
     hidden_shows = trakt.get_hidden_shows()
+    xbmc.log(f'[AIOStreams] Next Up: Found {len(hidden_shows)} hidden show IDs', xbmc.LOGDEBUG)
 
     # Filter out hidden shows and sort by last watched
-    active_shows = [s for s in all_watched if s.get('show', {}).get('ids', {}).get('trakt') not in hidden_shows]
+    filtered_count = 0
+    active_shows = []
+    for s in all_watched:
+        show_trakt_id = s.get('show', {}).get('ids', {}).get('trakt')
+        show_imdb_id = s.get('show', {}).get('ids', {}).get('imdb')
+        show_title = s.get('show', {}).get('title', 'Unknown')
+
+        if show_trakt_id in hidden_shows:
+            xbmc.log(f'[AIOStreams] Next Up: Filtering out hidden show: {show_title} (Trakt={show_trakt_id}, IMDB={show_imdb_id})', xbmc.LOGDEBUG)
+            filtered_count += 1
+        else:
+            active_shows.append(s)
+
+    xbmc.log(f'[AIOStreams] Next Up: Filtered out {filtered_count} hidden shows, {len(active_shows)} active shows remaining', xbmc.LOGINFO)
     active_shows.sort(key=lambda x: x.get('last_watched_at', ''), reverse=True)
 
     xbmcplugin.setPluginCategory(HANDLE, 'Next Up')
