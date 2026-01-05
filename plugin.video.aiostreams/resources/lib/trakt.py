@@ -319,7 +319,20 @@ def get_hidden_shows():
     """Get list of shows user has hidden from progress."""
     result = call_trakt('users/hidden/progress_watched')
     if result:
-        return [item.get('show', {}).get('ids', {}).get('trakt') for item in result]
+        hidden_ids = []
+        for item in result:
+            show = item.get('show', {})
+            ids = show.get('ids', {})
+            trakt_id = ids.get('trakt')
+            imdb_id = ids.get('imdb')
+
+            # Log for debugging ID mismatches
+            if trakt_id:
+                hidden_ids.append(trakt_id)
+                xbmc.log(f'[AIOStreams] Hidden show: Trakt={trakt_id}, IMDB={imdb_id}, Title={show.get("title")}', xbmc.LOGDEBUG)
+
+        xbmc.log(f'[AIOStreams] get_hidden_shows() returning {len(hidden_ids)} Trakt IDs', xbmc.LOGDEBUG)
+        return hidden_ids
     return []
 
 
