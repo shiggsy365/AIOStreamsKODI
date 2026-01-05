@@ -339,64 +339,90 @@ def create_listitem_with_context(meta, content_type, action_url):
     if meta.get('logo'):
         list_item.setArt({'clearlogo': meta['logo']})
     
-    # Build context menu
-    context_menu = []
+    # Build context menu based on content type
+    context_menu = [
+        ('Information', 'Action(Info)')
+    ]
 
-    # Add trailer if available - check both 'trailers' (movies) and 'trailerStreams' (shows)
-    trailers = meta.get('trailers', []) or meta.get('trailerStreams', [])
-    if trailers and isinstance(trailers, list) and len(trailers) > 0:
-        # Try to extract YouTube ID from ytId or source fields
-        youtube_id = trailers[0].get('ytId', '') or trailers[0].get('source', '')
-        if youtube_id:
-            # Set trailer URL in info tag
-            trailer_url = f'https://www.youtube.com/watch?v={youtube_id}'
-            info_tag.setTrailer(trailer_url)
-            # Also add to context menu
-            play_url = f'plugin://plugin.video.youtube/play/?video_id={youtube_id}'
-            context_menu.append(('[B]Play Trailer[/B]', f'PlayMedia({play_url})'))
-    
-    # Add Trakt context menus if authorized
-    if HAS_MODULES and trakt.get_access_token():
-        item_id = meta.get('id', '')
+    item_id = meta.get('id', '')
+    title = meta.get('name', 'Unknown')
+
+    if content_type == 'movie':
+        # Movie context menu: Information, Scrape Streams, View Trailer, Find Similar, Mark as Watched, Watchlist
+        context_menu.append(('Scrape Streams', f'Container.Update({get_url(action="show_streams", content_type="movie", media_id=item_id)})'))
+
+        # Add trailer if available
+        trailers = meta.get('trailers', [])
+        if trailers and isinstance(trailers, list) and len(trailers) > 0:
+            youtube_id = trailers[0].get('ytId', '') or trailers[0].get('source', '')
+            if youtube_id:
+                trailer_url = f'https://www.youtube.com/watch?v={youtube_id}'
+                info_tag.setTrailer(trailer_url)
+                play_url = f'plugin://plugin.video.youtube/play/?video_id={youtube_id}'
+                context_menu.append(('View Trailer', f'PlayMedia({play_url})'))
+
+        # Find Similar
         if item_id:
-            # Watchlist - toggle between Add and Remove
-            if trakt.is_in_watchlist(content_type, item_id):
-                context_menu.append(('[COLOR blue][Trakt][/COLOR] Remove from Watchlist',
-                                    f'RunPlugin({get_url(action="trakt_remove_watchlist", media_type=content_type, imdb_id=item_id)})'))
-            else:
-                context_menu.append(('[COLOR blue][Trakt][/COLOR] Add to Watchlist',
-                                    f'RunPlugin({get_url(action="trakt_add_watchlist", media_type=content_type, imdb_id=item_id)})'))
+            context_menu.append(('Find Similar', f'Container.Update({get_url(action="show_related", content_type=content_type, imdb_id=item_id, title=title)})'))
 
-            # Watched - toggle between Mark as Watched and Mark as Unwatched
-            is_watched = False
-            if content_type == 'movie':
-                is_watched = trakt.is_watched(content_type, item_id)
-            elif content_type == 'series':
-                # For shows, check if fully watched
-                progress = trakt.get_show_progress(item_id)
-                if progress:
-                    aired = progress.get('aired', 0)
-                    completed = progress.get('completed', 0)
-                    is_watched = aired > 0 and aired == completed
-
+        # Trakt context menus if authorized
+        if HAS_MODULES and trakt.get_access_token() and item_id:
+            is_watched = trakt.is_watched(content_type, item_id)
             if is_watched:
-                context_menu.append(('[COLOR blue][Trakt][/COLOR] Mark as Unwatched',
+                context_menu.append(('Mark Movie As Unwatched',
                                     f'RunPlugin({get_url(action="trakt_mark_unwatched", media_type=content_type, imdb_id=item_id)})'))
             else:
-                context_menu.append(('[COLOR blue][Trakt][/COLOR] Mark as Watched',
+                context_menu.append(('Mark Movie As Watched',
                                     f'RunPlugin({get_url(action="trakt_mark_watched", media_type=content_type, imdb_id=item_id)})'))
 
-            # Similar/Related content
-            title = meta.get('name', 'Unknown')
-            context_menu.append(('[COLOR green]Similar to this...[/COLOR]',
-                                f'Container.Update({get_url(action="show_related", content_type=content_type, imdb_id=item_id, title=title)})'))
+            if trakt.is_in_watchlist(content_type, item_id):
+                context_menu.append(('Remove from Watchlist',
+                                    f'RunPlugin({get_url(action="trakt_remove_watchlist", media_type=content_type, imdb_id=item_id)})'))
+            else:
+                context_menu.append(('Add to Watchlist',
+                                    f'RunPlugin({get_url(action="trakt_add_watchlist", media_type=content_type, imdb_id=item_id)})'))
 
-            # Quick Actions
-            context_menu.append(('[COLOR yellow]Quick Actions[/COLOR]',
-                                f'RunPlugin({get_url(action="quick_actions", content_type=content_type, imdb_id=item_id, title=title)})'))
+    elif content_type == 'series':
+        # Show context menu: Information, View Trailer, Find Similar, Mark as Watched, Watchlist
+        # Add trailer if available
+        trailers = meta.get('trailerStreams', [])
+        if trailers and isinstance(trailers, list) and len(trailers) > 0:
+            youtube_id = trailers[0].get('ytId', '') or trailers[0].get('source', '')
+            if youtube_id:
+                trailer_url = f'https://www.youtube.com/watch?v={youtube_id}'
+                info_tag.setTrailer(trailer_url)
+                play_url = f'plugin://plugin.video.youtube/play/?video_id={youtube_id}'
+                context_menu.append(('View Trailer', f'PlayMedia({play_url})'))
 
-    if context_menu:
-        list_item.addContextMenuItems(context_menu)
+        # Find Similar
+        if item_id:
+            context_menu.append(('Find Similar', f'Container.Update({get_url(action="show_related", content_type=content_type, imdb_id=item_id, title=title)})'))
+
+        # Trakt context menus if authorized
+        if HAS_MODULES and trakt.get_access_token() and item_id:
+            # Check if show is fully watched
+            is_watched = False
+            progress = trakt.get_show_progress(item_id)
+            if progress:
+                aired = progress.get('aired', 0)
+                completed = progress.get('completed', 0)
+                is_watched = aired > 0 and aired == completed
+
+            if is_watched:
+                context_menu.append(('Mark Show As Unwatched',
+                                    f'RunPlugin({get_url(action="trakt_mark_unwatched", media_type=content_type, imdb_id=item_id)})'))
+            else:
+                context_menu.append(('Mark Show As Watched',
+                                    f'RunPlugin({get_url(action="trakt_mark_watched", media_type=content_type, imdb_id=item_id)})'))
+
+            if trakt.is_in_watchlist(content_type, item_id):
+                context_menu.append(('Remove from Watchlist',
+                                    f'RunPlugin({get_url(action="trakt_remove_watchlist", media_type=content_type, imdb_id=item_id)})'))
+            else:
+                context_menu.append(('Add to Watchlist',
+                                    f'RunPlugin({get_url(action="trakt_add_watchlist", media_type=content_type, imdb_id=item_id)})'))
+
+    list_item.addContextMenuItems(context_menu)
 
     return list_item
 
@@ -914,15 +940,11 @@ def movie_lists():
     menu_items = [
         {'label': 'AIOStreams Catalogs', 'url': get_url(action='catalogs', content_type='movie'), 'icon': 'DefaultMovies.png'}
     ]
-    
+
     # Add Trakt lists if authorized
     if HAS_MODULES and trakt.get_access_token():
         menu_items.extend([
-            {'label': '[COLOR blue][Trakt][/COLOR] Recommended', 'url': get_url(action='trakt_recommended', media_type='movies'), 'icon': 'DefaultMovies.png'},
-            {'label': '[COLOR blue][Trakt][/COLOR] Watchlist', 'url': get_url(action='trakt_watchlist', media_type='movies'), 'icon': 'DefaultMovies.png'},
-            {'label': '[COLOR blue][Trakt][/COLOR] Collection', 'url': get_url(action='trakt_collection', media_type='movies'), 'icon': 'DefaultMovies.png'},
-            {'label': '[COLOR blue][Trakt][/COLOR] Trending', 'url': get_url(action='trakt_trending', media_type='movies'), 'icon': 'DefaultMovies.png'},
-            {'label': '[COLOR blue][Trakt][/COLOR] Popular', 'url': get_url(action='trakt_popular', media_type='movies'), 'icon': 'DefaultMovies.png'}
+            {'label': 'Watchlist - Trakt', 'url': get_url(action='trakt_watchlist', media_type='movies'), 'icon': 'DefaultMovies.png'}
         ])
     
     for item in menu_items:
@@ -939,22 +961,16 @@ def series_lists():
     """Series lists submenu."""
     xbmcplugin.setPluginCategory(HANDLE, 'Series Lists')
     xbmcplugin.setContent(HANDLE, 'videos')
-    
+
     menu_items = [
         {'label': 'AIOStreams Catalogs', 'url': get_url(action='catalogs', content_type='series'), 'icon': 'DefaultTVShows.png'}
     ]
-    
+
     # Add Trakt lists if authorized
     if HAS_MODULES and trakt.get_access_token():
         menu_items.extend([
-            {'label': '[COLOR blue][Trakt][/COLOR] Continue Watching - TV', 'url': get_url(action='trakt_continue_watching'), 'icon': 'DefaultTVShows.png'},
-            {'label': '[COLOR blue][Trakt][/COLOR] Continue Watching - Movies', 'url': get_url(action='trakt_continue_movies'), 'icon': 'DefaultMovies.png'},
-            {'label': '[COLOR blue][Trakt][/COLOR] Next Up', 'url': get_url(action='trakt_next_up'), 'icon': 'DefaultTVShows.png'},
-            {'label': '[COLOR blue][Trakt][/COLOR] Recommended', 'url': get_url(action='trakt_recommended', media_type='shows'), 'icon': 'DefaultTVShows.png'},
-            {'label': '[COLOR blue][Trakt][/COLOR] Watchlist', 'url': get_url(action='trakt_watchlist', media_type='shows'), 'icon': 'DefaultTVShows.png'},
-            {'label': '[COLOR blue][Trakt][/COLOR] Collection', 'url': get_url(action='trakt_collection', media_type='shows'), 'icon': 'DefaultTVShows.png'},
-            {'label': '[COLOR blue][Trakt][/COLOR] Trending', 'url': get_url(action='trakt_trending', media_type='shows'), 'icon': 'DefaultTVShows.png'},
-            {'label': '[COLOR blue][Trakt][/COLOR] Popular', 'url': get_url(action='trakt_popular', media_type='shows'), 'icon': 'DefaultTVShows.png'}
+            {'label': 'Next Up - Trakt', 'url': get_url(action='trakt_next_up'), 'icon': 'DefaultTVShows.png'},
+            {'label': 'Watchlist - Trakt', 'url': get_url(action='trakt_watchlist', media_type='shows'), 'icon': 'DefaultTVShows.png'}
         ])
     
     for item in menu_items:
@@ -1354,27 +1370,28 @@ def show_seasons():
         if meta.get('background'):
             list_item.setArt({'fanart': meta['background']})
 
-        # Add Trakt context menus
-        context_menu = []
+        # Add season context menu
+        context_menu = [
+            ('Information', 'Action(Info)')
+        ]
+
+        # Add Trakt watched toggle for series if authorized
         if HAS_MODULES and trakt.get_access_token():
-            # Mark season as watched/unwatched (use cached is_season_watched)
-            if is_season_watched:
-                context_menu.append(('[COLOR blue][Trakt][/COLOR] Mark Season as Unwatched',
-                                    f'RunPlugin({get_url(action="trakt_mark_unwatched", media_type="show", imdb_id=meta_id, season=season_num)})'))
-            else:
-                context_menu.append(('[COLOR blue][Trakt][/COLOR] Mark Season as Watched',
-                                    f'RunPlugin({get_url(action="trakt_mark_watched", media_type="show", imdb_id=meta_id, season=season_num)})'))
+            # Get show progress to check if fully watched
+            is_show_watched = False
+            if show_progress:
+                aired = show_progress.get('aired', 0)
+                completed = show_progress.get('completed', 0)
+                is_show_watched = aired > 0 and aired == completed
 
-            # Watchlist - toggle between Add and Remove (use cached show_in_watchlist)
-            if show_in_watchlist:
-                context_menu.append(('[COLOR blue][Trakt][/COLOR] Remove Show from Watchlist',
-                                    f'RunPlugin({get_url(action="trakt_remove_watchlist", media_type="show", imdb_id=meta_id)})'))
+            if is_show_watched:
+                context_menu.append(('Mark Series As Unwatched',
+                                    f'RunPlugin({get_url(action="trakt_mark_unwatched", media_type="series", imdb_id=meta_id)})'))
             else:
-                context_menu.append(('[COLOR blue][Trakt][/COLOR] Add Show to Watchlist',
-                                    f'RunPlugin({get_url(action="trakt_add_watchlist", media_type="show", imdb_id=meta_id)})'))
+                context_menu.append(('Mark Series As Watched',
+                                    f'RunPlugin({get_url(action="trakt_mark_watched", media_type="series", imdb_id=meta_id)})'))
 
-        if context_menu:
-            list_item.addContextMenuItems(context_menu)
+        list_item.addContextMenuItems(context_menu)
         
         url = get_url(action='show_episodes', meta_id=meta_id, season=season_num)
         xbmcplugin.addDirectoryItem(HANDLE, url, list_item, True)
@@ -1510,35 +1527,23 @@ def show_episodes():
             info_tag.setPlaycount(1)
             list_item.setProperty('WatchedOverlay', 'OverlayWatched.png')
 
-        # Add Trakt context menus
-        context_menu = []
+        # Add episode context menu
+        context_menu = [
+            ('Information', 'Action(Info)'),
+            ('Scrape Streams', f'Container.Update({get_url(action="show_streams", content_type="series", media_id=f"{meta_id}:{season}:{episode_num}")})'),
+            ('Browse Show', f'Container.Update({get_url(action="show_seasons", meta_id=meta_id)})')
+        ]
+
+        # Add Trakt watched toggle if authorized
         if HAS_MODULES and trakt.get_access_token():
-            # Mark episode as watched/unwatched (use cached is_watched)
             if is_watched:
-                context_menu.append(('[COLOR blue][Trakt][/COLOR] Mark Episode as Unwatched',
+                context_menu.append(('Mark Episode As Unwatched',
                                     f'RunPlugin({get_url(action="trakt_mark_unwatched", media_type="show", imdb_id=meta_id, season=season, episode=episode_num)})'))
             else:
-                context_menu.append(('[COLOR blue][Trakt][/COLOR] Mark Episode as Watched',
+                context_menu.append(('Mark Episode As Watched',
                                     f'RunPlugin({get_url(action="trakt_mark_watched", media_type="show", imdb_id=meta_id, season=season, episode=episode_num)})'))
 
-            # Mark season as watched/unwatched (use cached is_season_watched)
-            if is_season_watched:
-                context_menu.append(('[COLOR blue][Trakt][/COLOR] Mark Season as Unwatched',
-                                    f'RunPlugin({get_url(action="trakt_mark_unwatched", media_type="show", imdb_id=meta_id, season=season)})'))
-            else:
-                context_menu.append(('[COLOR blue][Trakt][/COLOR] Mark Season as Watched',
-                                    f'RunPlugin({get_url(action="trakt_mark_watched", media_type="show", imdb_id=meta_id, season=season)})'))
-
-            # Watchlist - toggle between Add and Remove (use cached show_in_watchlist)
-            if show_in_watchlist:
-                context_menu.append(('[COLOR blue][Trakt][/COLOR] Remove Show from Watchlist',
-                                    f'RunPlugin({get_url(action="trakt_remove_watchlist", media_type="show", imdb_id=meta_id)})'))
-            else:
-                context_menu.append(('[COLOR blue][Trakt][/COLOR] Add Show to Watchlist',
-                                    f'RunPlugin({get_url(action="trakt_add_watchlist", media_type="show", imdb_id=meta_id)})'))
-
-        if context_menu:
-            list_item.addContextMenuItems(context_menu)
+        list_item.addContextMenuItems(context_menu)
         
         media_id = f"{meta_id}:{season}:{episode_num}"
         
