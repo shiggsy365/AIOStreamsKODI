@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<addon id="plugin.video.aiostreams" name="AIOStreams" version="2.4.9" provider-name="Jon">
+<addon id="plugin.video.aiostreams" name="AIOStreams" version="2.5.0" provider-name="Jon">
     <requires>
         <import addon="xbmc.python" version="3.0.0"/>
         <import addon="script.module.requests" version="2.25.1"/>
@@ -13,7 +13,7 @@
         <platform>all</platform>
         <license>MIT</license>
         <website>https://aiostreams.shiggsy.co.uk</website>
-        <news>v2.4.9: Fixed context menu stream scraping to ignore default behavior, corrected Next Up episode context menu. | v2.4.8: Stream formatting and watchlist fixes. | v2.4.7: Play behavior settings.</news>
+        <news>v2.5.0: Major context menu overhaul - light red plugin items, proper menu structure, loading dialog, 30s stream timeout. | v2.4.9: Context menu fixes. | v2.4.8: Stream formatting.</news>
         <assets>
             <icon>resources/icon.png</icon>
             <fanart>resources/fanart.jpg</fanart>
