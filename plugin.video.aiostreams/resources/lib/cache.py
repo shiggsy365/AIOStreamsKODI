@@ -34,6 +34,74 @@ def get_cache_key(content_type, item_id):
     return f"{key_hash}.json"
 
 
+def get_generic_cache_key(cache_type, identifier):
+    """Generate cache filename for generic data (manifest, catalogs, etc)."""
+    key_string = f"{cache_type}:{identifier}"
+    key_hash = hashlib.md5(key_string.encode()).hexdigest()
+    return f"{cache_type}_{key_hash}.json"
+
+
+def get_cached_data(cache_type, identifier, ttl_seconds):
+    """Get data from cache if available and not expired.
+
+    Args:
+        cache_type: Type of cache (e.g., 'manifest', 'catalog')
+        identifier: Unique identifier for this cache entry
+        ttl_seconds: Time-to-live in seconds
+    """
+    cache_dir = get_cache_dir()
+    cache_file = os.path.join(cache_dir, get_generic_cache_key(cache_type, identifier))
+
+    if not xbmcvfs.exists(cache_file):
+        return None
+
+    try:
+        with open(cache_file, 'r') as f:
+            cache_data = json.load(f)
+
+        timestamp = cache_data.get('timestamp', 0)
+
+        # Check if cache is still valid
+        if time.time() - timestamp < ttl_seconds:
+            xbmc.log(f'[AIOStreams] Cache HIT: {cache_type}:{identifier}', xbmc.LOGDEBUG)
+            return cache_data.get('data')
+        else:
+            # Expired, delete file
+            xbmcvfs.delete(cache_file)
+            xbmc.log(f'[AIOStreams] Cache EXPIRED: {cache_type}:{identifier}', xbmc.LOGDEBUG)
+    except Exception as e:
+        xbmc.log(f'[AIOStreams] Cache read error: {e}', xbmc.LOGERROR)
+
+    return None
+
+
+def cache_data(cache_type, identifier, data):
+    """Store data in cache.
+
+    Args:
+        cache_type: Type of cache (e.g., 'manifest', 'catalog')
+        identifier: Unique identifier for this cache entry
+        data: Data to cache
+    """
+    cache_dir = get_cache_dir()
+    cache_file = os.path.join(cache_dir, get_generic_cache_key(cache_type, identifier))
+
+    try:
+        cache_data = {
+            'timestamp': time.time(),
+            'cache_type': cache_type,
+            'identifier': identifier,
+            'data': data
+        }
+
+        with open(cache_file, 'w') as f:
+            json.dump(cache_data, f)
+
+        xbmc.log(f'[AIOStreams] Cache SET: {cache_type}:{identifier}', xbmc.LOGDEBUG)
+    except Exception as e:
+        xbmc.log(f'[AIOStreams] Cache write error: {e}', xbmc.LOGERROR)
+
+
 def get_cached_meta(content_type, item_id):
     """Get metadata from disk cache if available and not expired."""
     cache_dir = get_cache_dir()

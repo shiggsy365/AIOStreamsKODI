@@ -334,10 +334,10 @@ def get_recommended(media_type='movies', page=1, limit=20):
 
 
 def get_related(media_type, item_id, page=1, limit=20):
-    """Get related items (similar shows/movies)."""
+    """Get related items (similar shows/movies). Requires authentication."""
     # media_type should be 'movies' or 'shows'
     api_type = 'movies' if media_type == 'movie' else 'shows'
-    return call_trakt(f'{api_type}/{item_id}/related', params={'page': page, 'limit': limit}, with_auth=False)
+    return call_trakt(f'{api_type}/{item_id}/related', params={'page': page, 'limit': limit})
 
 
 # Cache for cast information
@@ -408,6 +408,33 @@ def hide_show_from_progress(show_id):
     result = call_trakt('users/hidden/progress_watched', method='POST', data=data)
     if result:
         xbmcgui.Dialog().notification('AIOStreams', 'Show hidden from progress', xbmcgui.NOTIFICATION_INFO)
+        return True
+    return False
+
+
+def hide_from_progress(media_type, imdb_id):
+    """Hide a movie or show from progress/recommendations using IMDB ID.
+
+    This is the 'Stop Watching' or 'Drop' feature.
+    """
+    # Determine the section based on media type
+    if media_type in ['movie', 'movies']:
+        section = 'progress_watched'
+        data_key = 'movies'
+    else:
+        section = 'progress_watched'
+        data_key = 'shows'
+
+    data = {
+        data_key: [{'ids': {'imdb': imdb_id}}]
+    }
+
+    result = call_trakt(f'users/hidden/{section}', method='POST', data=data)
+    if result:
+        item_type = 'Movie' if media_type in ['movie', 'movies'] else 'Show'
+        xbmcgui.Dialog().notification('AIOStreams', f'{item_type} dropped from watching', xbmcgui.NOTIFICATION_INFO)
+        # Invalidate progress cache since we've hidden an item
+        invalidate_progress_cache()
         return True
     return False
 
