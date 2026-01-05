@@ -84,23 +84,32 @@ def cache_meta(content_type, item_id, metadata):
         xbmc.log(f'[AIOStreams] Cache write error: {e}', xbmc.LOGERROR)
 
 
-def cleanup_expired_cache():
-    """Remove cache files older than 30 days."""
+def cleanup_expired_cache(force_all=False):
+    """Remove cache files older than 30 days, or all files if force_all=True."""
     cache_dir = get_cache_dir()
-    
+
     if not xbmcvfs.exists(cache_dir):
         return
-    
+
     try:
         dirs, files = xbmcvfs.listdir(cache_dir)
         expired_count = 0
-        
+
         for filename in files:
             if not filename.endswith('.json'):
                 continue
-            
+
             file_path = os.path.join(cache_dir, filename)
-            
+
+            if force_all:
+                # Force delete all cache files
+                try:
+                    os.remove(file_path)
+                    expired_count += 1
+                except:
+                    pass
+                continue
+
             try:
                 with open(file_path, 'r') as f:
                     cache_data = json.load(f)

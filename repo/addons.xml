@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <addons>
-<addon id="plugin.video.aiostreams" name="AIOStreams" version="2.4.1" provider-name="Jon">
+<addon id="plugin.video.aiostreams" name="AIOStreams" version="2.4.3" provider-name="Jon">
     <requires>
         <import addon="xbmc.python" version="3.0.0"/>
         <import addon="script.module.requests" version="2.25.1"/>
@@ -14,7 +14,7 @@
         <platform>all</platform>
         <license>MIT</license>
         <website>https://aiostreams.shiggsy.co.uk</website>
-        <news>v2.4.1: Fixed metadata and artwork in Trakt lists for widget support. Restored fallback fetching while keeping cache-first approach. | v2.4.0: Movie continue watching, episode thumbnails, trailer support, remove from continue watching, custom search URL. | v2.3.2: Major performance improvements.</news>
+        <news>v2.4.3: Rate limiting fixes - removed unnecessary Trakt lists, implemented progress caching, removed cast API calls. | v2.4.2: Fixed metadata in all Trakt lists. | v2.4.1: Fixed widget metadata. | v2.4.0: Continue watching, thumbnails, trailers.</news>
         <assets>
             <icon>resources/icon.png</icon>
             <fanart>resources/fanart.jpg</fanart>

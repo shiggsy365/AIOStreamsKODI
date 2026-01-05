@@ -269,12 +269,7 @@ def create_listitem_with_context(meta, content_type, action_url):
             actor = xbmc.Actor(name, role, idx, thumbnail)
             cast_list.append(actor)
 
-    # Fallback to Trakt if no cast from AIOStreams
-    if not cast_list and HAS_MODULES:
-        item_id = meta.get('id', '')
-        if item_id:
-            cast_list = trakt.get_cast(content_type, item_id)
-
+    # Only use cast from AIOStreams (no Trakt API calls to avoid rate limiting)
     if cast_list:
         info_tag.setCast(cast_list)
 
@@ -1564,19 +1559,11 @@ def trakt_menu():
     xbmcplugin.setContent(HANDLE, 'videos')
     
     menu_items = [
-        {'label': 'Continue Watching - TV', 'url': get_url(action='trakt_continue_watching'), 'icon': 'DefaultTVShows.png'},
-        {'label': 'Continue Watching - Movies', 'url': get_url(action='trakt_continue_movies'), 'icon': 'DefaultMovies.png'},
         {'label': 'Next Up', 'url': get_url(action='trakt_next_up'), 'icon': 'DefaultTVShows.png'},
         {'label': 'Watchlist - Movies', 'url': get_url(action='trakt_watchlist', media_type='movies'), 'icon': 'DefaultMovies.png'},
         {'label': 'Watchlist - Shows', 'url': get_url(action='trakt_watchlist', media_type='shows'), 'icon': 'DefaultTVShows.png'},
         {'label': 'Collection - Movies', 'url': get_url(action='trakt_collection', media_type='movies'), 'icon': 'DefaultMovies.png'},
-        {'label': 'Collection - Shows', 'url': get_url(action='trakt_collection', media_type='shows'), 'icon': 'DefaultTVShows.png'},
-        {'label': 'Recommended - Movies', 'url': get_url(action='trakt_recommended', media_type='movies'), 'icon': 'DefaultMovies.png'},
-        {'label': 'Recommended - Shows', 'url': get_url(action='trakt_recommended', media_type='shows'), 'icon': 'DefaultTVShows.png'},
-        {'label': 'Trending - Movies', 'url': get_url(action='trakt_trending', media_type='movies'), 'icon': 'DefaultMovies.png'},
-        {'label': 'Trending - Shows', 'url': get_url(action='trakt_trending', media_type='shows'), 'icon': 'DefaultTVShows.png'},
-        {'label': 'Popular - Movies', 'url': get_url(action='trakt_popular', media_type='movies'), 'icon': 'DefaultMovies.png'},
-        {'label': 'Popular - Shows', 'url': get_url(action='trakt_popular', media_type='shows'), 'icon': 'DefaultTVShows.png'}
+        {'label': 'Collection - Shows', 'url': get_url(action='trakt_collection', media_type='shows'), 'icon': 'DefaultTVShows.png'}
     ]
     
     for item in menu_items:
@@ -1642,9 +1629,17 @@ def trakt_watchlist():
                 # Keep Trakt data for text fields, only use AIOStreams for what's better
                 if not meta['description']:
                     meta['description'] = cached_data.get('description', '')
-
-        # Note: We don't fetch metadata here to keep lists fast
-        # Cache will populate as users view individual items
+            elif item_id:
+                # Fetch metadata if not cached (needed for widgets)
+                meta_data = get_meta(content_type, item_id)
+                if meta_data and 'meta' in meta_data:
+                    cached_data = meta_data['meta']
+                    meta['poster'] = cached_data.get('poster', '')
+                    meta['background'] = cached_data.get('background', '')
+                    meta['logo'] = cached_data.get('logo', '')
+                    meta['app_extras'] = cached_data.get('app_extras', {})
+                    if not meta['description']:
+                        meta['description'] = cached_data.get('description', '')
 
         if content_type == 'series':
             url = get_url(action='show_seasons', meta_id=item_id)
@@ -1714,9 +1709,17 @@ def trakt_collection():
                 meta['app_extras'] = cached_data.get('app_extras', {})
                 if not meta['description']:
                     meta['description'] = cached_data.get('description', '')
-
-        # Note: We don't fetch metadata here to keep lists fast
-        # Cache will populate as users view individual items
+            elif item_id:
+                # Fetch metadata if not cached (needed for widgets)
+                meta_data = get_meta(content_type, item_id)
+                if meta_data and 'meta' in meta_data:
+                    cached_data = meta_data['meta']
+                    meta['poster'] = cached_data.get('poster', '')
+                    meta['background'] = cached_data.get('background', '')
+                    meta['logo'] = cached_data.get('logo', '')
+                    meta['app_extras'] = cached_data.get('app_extras', {})
+                    if not meta['description']:
+                        meta['description'] = cached_data.get('description', '')
         
         if content_type == 'series':
             url = get_url(action='show_seasons', meta_id=item_id)
@@ -1734,296 +1737,6 @@ def trakt_collection():
     
     xbmcplugin.endOfDirectory(HANDLE)
 
-
-def trakt_trending():
-    """Display Trakt trending."""
-    if not HAS_MODULES:
-        xbmcgui.Dialog().ok('AIOStreams', 'Trakt module not available')
-        return
-    
-    params = dict(parse_qsl(sys.argv[2][1:]))
-    media_type = params.get('media_type', 'movies')
-    page = int(params.get('page', 1))
-    
-    items = trakt.get_trending(media_type, page, limit=20)
-    
-    if not items:
-        xbmcgui.Dialog().notification('AIOStreams', 'No trending items', xbmcgui.NOTIFICATION_INFO)
-        xbmcplugin.endOfDirectory(HANDLE)
-        return
-    
-    xbmcplugin.setPluginCategory(HANDLE, f'Trakt Trending - {media_type.capitalize()}')
-    xbmcplugin.setContent(HANDLE, 'movies' if media_type == 'movies' else 'tvshows')
-    
-    for item in items:
-        item_data = item.get('movie' if media_type == 'movies' else 'show', {})
-        item_id = item_data.get('ids', {}).get('imdb', '')
-        
-        if not item_id:
-            continue
-        
-        content_type = 'movie' if media_type == 'movies' else 'series'
-
-        # Build metadata from Trakt data (no API call needed for text fields)
-        meta = {
-            'id': item_id,
-            'name': item_data.get('title', 'Unknown'),
-            'description': item_data.get('overview', ''),
-            'year': item_data.get('year', 0),
-            'genres': item_data.get('genres', []),
-            'imdbRating': str(item_data.get('rating', '')) if item_data.get('rating') else ''
-        }
-
-        # Try to get artwork and cast from cached AIOStreams metadata (fast cache lookup)
-        if HAS_MODULES:
-            cached_meta = cache.get_cached_meta(content_type, item_id)
-            if cached_meta and 'meta' in cached_meta:
-                cached_data = cached_meta['meta']
-                meta['poster'] = cached_data.get('poster', '')
-                meta['background'] = cached_data.get('background', '')
-                meta['logo'] = cached_data.get('logo', '')
-                # Get cast from cached AIOStreams data (includes photos)
-                meta['app_extras'] = cached_data.get('app_extras', {})
-                if not meta['description']:
-                    meta['description'] = cached_data.get('description', '')
-
-        # Note: We don't fetch metadata here to keep lists fast
-        # Cache will populate as users view individual items
-        
-        if content_type == 'series':
-            url = get_url(action='show_seasons', meta_id=item_id)
-        else:
-            url = get_url(action='show_streams', content_type='movie', media_id=item_id)
-        
-        list_item = create_listitem_with_context(meta, content_type, url)
-        xbmcplugin.addDirectoryItem(HANDLE, url, list_item, True)
-    
-    # Add Load More if we got 20 items
-    if len(items) >= 20:
-        list_item = xbmcgui.ListItem(label='[COLOR yellow]» Load More...[/COLOR]')
-        url = get_url(action='trakt_trending', media_type=media_type, page=page + 1)
-        xbmcplugin.addDirectoryItem(HANDLE, url, list_item, True)
-    
-    xbmcplugin.endOfDirectory(HANDLE)
-
-
-def trakt_popular():
-    """Display Trakt popular."""
-    if not HAS_MODULES:
-        xbmcgui.Dialog().ok('AIOStreams', 'Trakt module not available')
-        return
-    
-    params = dict(parse_qsl(sys.argv[2][1:]))
-    media_type = params.get('media_type', 'movies')
-    page = int(params.get('page', 1))
-    
-    items = trakt.get_popular(media_type, page, limit=20)
-    
-    if not items:
-        xbmcgui.Dialog().notification('AIOStreams', 'No popular items', xbmcgui.NOTIFICATION_INFO)
-        xbmcplugin.endOfDirectory(HANDLE)
-        return
-    
-    xbmcplugin.setPluginCategory(HANDLE, f'Trakt Popular - {media_type.capitalize()}')
-    xbmcplugin.setContent(HANDLE, 'movies' if media_type == 'movies' else 'tvshows')
-    
-    for item in items:
-        item_id = item.get('ids', {}).get('imdb', '')
-        
-        if not item_id:
-            continue
-        
-        # Fetch full metadata from AIOStreams
-        content_type = 'movie' if media_type == 'movies' else 'series'
-        meta_data = get_meta(content_type, item_id)
-        
-        if meta_data and 'meta' in meta_data:
-            meta = meta_data['meta']
-        else:
-            meta = {
-                'id': item_id,
-                'name': item.get('title', 'Unknown'),
-                'description': item.get('overview', ''),
-                'year': item.get('year', 0),
-                'genres': item.get('genres', [])
-            }
-        
-        if content_type == 'series':
-            url = get_url(action='show_seasons', meta_id=item_id)
-        else:
-            url = get_url(action='show_streams', content_type='movie', media_id=item_id)
-        
-        list_item = create_listitem_with_context(meta, content_type, url)
-        xbmcplugin.addDirectoryItem(HANDLE, url, list_item, True)
-    
-    # Add Load More if we got 20 items
-    if len(items) >= 20:
-        list_item = xbmcgui.ListItem(label='[COLOR yellow]» Load More...[/COLOR]')
-        url = get_url(action='trakt_popular', media_type=media_type, page=page + 1)
-        xbmcplugin.addDirectoryItem(HANDLE, url, list_item, True)
-    
-    xbmcplugin.endOfDirectory(HANDLE)
-
-
-def trakt_continue_watching():
-    """Display continue watching (in-progress items)."""
-    if not HAS_MODULES:
-        xbmcgui.Dialog().ok('AIOStreams', 'Trakt module not available')
-        return
-    
-    params = dict(parse_qsl(sys.argv[2][1:]))
-    page = int(params.get('page', 1))
-    
-    items = trakt.get_progress_watching('episodes', page, limit=20)
-    
-    if not items:
-        xbmcgui.Dialog().notification('AIOStreams', 'Nothing in progress', xbmcgui.NOTIFICATION_INFO)
-        xbmcplugin.endOfDirectory(HANDLE)
-        return
-    
-    xbmcplugin.setPluginCategory(HANDLE, 'Continue Watching')
-    xbmcplugin.setContent(HANDLE, 'episodes')
-    
-    for item in items:
-        show_data = item.get('show', {})
-        episode_data = item.get('episode', {})
-
-        show_id = show_data.get('ids', {}).get('imdb', '')
-        season = episode_data.get('season', 0)
-        episode = episode_data.get('number', 0)
-
-        if not show_id:
-            continue
-
-        # Use Trakt metadata for all text fields (already available, no API call needed)
-        show_name = show_data.get('title', 'Unknown')
-        show_year = show_data.get('year', '')
-        episode_title = episode_data.get('title', f'Episode {episode}')
-        episode_overview = episode_data.get('overview', '')
-
-        # Progress percentage
-        progress = item.get('progress', 0)
-
-        # Try to get artwork from cached AIOStreams metadata (fast cache lookup)
-        poster = ''
-        fanart = ''
-        logo = ''
-        episode_thumb = ''
-
-        if HAS_MODULES:
-            cached_meta = cache.get_cached_meta('series', show_id)
-            if cached_meta and 'meta' in cached_meta:
-                cached_data = cached_meta['meta']
-                poster = cached_data.get('poster', '')
-                fanart = cached_data.get('background', '')
-                logo = cached_data.get('logo', '')
-
-                # Get episode-specific thumbnail if available
-                videos = cached_data.get('videos', [])
-                for video in videos:
-                    if video.get('season') == season and video.get('episode') == episode:
-                        episode_thumb = video.get('thumbnail', '')
-                        break
-            elif show_id:
-                # Fetch metadata if not cached (needed for widgets)
-                meta_data = get_meta('series', show_id)
-                if meta_data and 'meta' in meta_data:
-                    cached_data = meta_data['meta']
-                    poster = cached_data.get('poster', '')
-                    fanart = cached_data.get('background', '')
-                    logo = cached_data.get('logo', '')
-
-                    # Get episode-specific thumbnail
-                    videos = cached_data.get('videos', [])
-                    for video in videos:
-                        if video.get('season') == season and video.get('episode') == episode:
-                            episode_thumb = video.get('thumbnail', '')
-                            break
-
-        label = f'{show_name} - S{season:02d}E{episode:02d} - {episode_title}'
-
-        list_item = xbmcgui.ListItem(label=label)
-        info_tag = list_item.getVideoInfoTag()
-        info_tag.setTitle(episode_title)
-        info_tag.setTvShowTitle(show_name)
-        info_tag.setSeason(season)
-        info_tag.setEpisode(episode)
-        info_tag.setMediaType('episode')
-
-        # Use Trakt metadata for text fields
-        if show_year:
-            info_tag.setYear(show_year)
-
-        # Add progress info to plot
-        plot = f'[B]Progress: {progress}%[/B]\n\n{episode_overview}'
-        info_tag.setPlot(plot)
-
-        # Add genres from Trakt if available
-        genres = show_data.get('genres', [])
-        if genres:
-            info_tag.setGenres(genres)
-
-        # Add rating from Trakt if available
-        rating = show_data.get('rating')
-        if rating:
-            try:
-                info_tag.setRating(float(rating))
-            except:
-                pass
-
-        # Set artwork - prioritize episode-specific thumbnail
-        if episode_thumb:
-            # Use episode-specific landscape thumbnail from AIOStreams
-            list_item.setArt({'thumb': episode_thumb})
-            if poster:
-                list_item.setArt({'poster': poster})
-        elif poster:
-            list_item.setArt({'thumb': poster, 'poster': poster})
-        elif episode_data.get('images', {}).get('screenshot', {}).get('thumb'):
-            # Fallback to Trakt episode screenshot
-            list_item.setArt({'thumb': episode_data['images']['screenshot']['thumb']})
-
-        if fanart:
-            list_item.setArt({'fanart': fanart})
-
-        if logo:
-            list_item.setArt({'clearlogo': logo})
-        
-        # Build context menu
-        context_menu = []
-        show_trakt_id = show_data.get('ids', {}).get('trakt', '')
-        playback_id = item.get('id', '')  # Get playback ID for removal
-        
-        # Add to watchlist and mark as watched
-        if show_id:
-            # Remove from continue watching
-            if playback_id:
-                context_menu.append(('[COLOR red]Remove from Continue Watching[/COLOR]',
-                                    f'RunPlugin({get_url(action="trakt_remove_playback", playback_id=playback_id)})'))
-            context_menu.append(('[COLOR blue][Trakt][/COLOR] Add to Watchlist',
-                                f'RunPlugin({get_url(action="trakt_add_watchlist", media_type="show", imdb_id=show_id)})'))
-            context_menu.append(('[COLOR blue][Trakt][/COLOR] Mark as Watched',
-                                f'RunPlugin({get_url(action="trakt_mark_watched", media_type="show", imdb_id=show_id, season=season, episode=episode, playback_id=playback_id)})'))
-            # Browse full show
-            context_menu.append(('Browse Show',
-                                f'ActivateWindow(videos,{get_url(action="show_seasons", meta_id=show_id)},return)'))
-        
-        if context_menu:
-            list_item.addContextMenuItems(context_menu)
-        
-        # Build stream URL
-        media_id = f"{show_id}:{season}:{episode}"
-        url = get_url(action='show_streams', content_type='series', media_id=media_id)
-        
-        xbmcplugin.addDirectoryItem(HANDLE, url, list_item, True)
-    
-    # Add Load More if we got 20 items
-    if len(items) >= 20:
-        list_item = xbmcgui.ListItem(label='[COLOR yellow]» Load More...[/COLOR]')
-        url = get_url(action='trakt_continue_watching', page=page + 1)
-        xbmcplugin.addDirectoryItem(HANDLE, url, list_item, True)
-    
-    xbmcplugin.endOfDirectory(HANDLE)
 
 
 def trakt_next_up():
@@ -2066,9 +1779,9 @@ def trakt_next_up():
         
         if not show_trakt_id:
             continue
-        
-        # Get show progress
-        progress = trakt.get_show_progress(show_trakt_id)
+
+        # Get show progress (uses in-memory cache, invalidated on watched changes)
+        progress = trakt.get_show_progress_by_trakt_id(show_trakt_id)
         
         if not progress:
             continue
@@ -2208,191 +1921,6 @@ def trakt_next_up():
     if len(active_shows) > offset + limit:
         list_item = xbmcgui.ListItem(label='[COLOR yellow]» Load More...[/COLOR]')
         url = get_url(action='trakt_next_up', offset=offset + limit)
-        xbmcplugin.addDirectoryItem(HANDLE, url, list_item, True)
-    
-    xbmcplugin.endOfDirectory(HANDLE)
-
-
-def trakt_continue_movies():
-    """Display movies currently watching from Trakt playback progress."""
-    if not HAS_MODULES:
-        xbmcgui.Dialog().ok('AIOStreams', 'Trakt module not available')
-        return
-
-    params = dict(parse_qsl(sys.argv[2][1:]))
-    page = int(params.get('page', 1))
-
-    # Get movies in progress from Trakt
-    items = trakt.get_progress_watching('movies', page, limit=20)
-
-    if not items:
-        xbmcgui.Dialog().notification('AIOStreams', 'No movies in progress', xbmcgui.NOTIFICATION_INFO)
-        xbmcplugin.endOfDirectory(HANDLE)
-        return
-
-    xbmcplugin.setPluginCategory(HANDLE, 'Continue Watching - Movies')
-    xbmcplugin.setContent(HANDLE, 'movies')
-
-    for item in items:
-        # Get progress and movie data
-        progress = item.get('progress', 0)
-        movie_data = item.get('movie', {})
-
-        # Skip if progress >= 95% (essentially finished)
-        if progress >= 95:
-            continue
-
-        # Get IMDB ID and movie details
-        movie_id = movie_data.get('ids', {}).get('imdb', '')
-        movie_title = movie_data.get('title', 'Unknown')
-        movie_year = movie_data.get('year', '')
-
-        if not movie_id:
-            continue
-
-        # Use Trakt metadata for text fields (already available, no API call needed)
-        label = f'{movie_title} ({movie_year})' if movie_year else movie_title
-
-        # Try to get artwork from cached AIOStreams metadata (fast cache lookup)
-        poster = ''
-        fanart = ''
-        logo = ''
-        description = ''
-
-        if HAS_MODULES:
-            cached_meta = cache.get_cached_meta('movie', movie_id)
-            if cached_meta and 'meta' in cached_meta:
-                cached_data = cached_meta['meta']
-                poster = cached_data.get('poster', '')
-                fanart = cached_data.get('background', '')
-                logo = cached_data.get('logo', '')
-                description = cached_data.get('description', '')
-            elif movie_id:
-                # Fetch metadata if not cached (needed for widgets)
-                meta_data = get_meta('movie', movie_id)
-                if meta_data and 'meta' in meta_data:
-                    cached_data = meta_data['meta']
-                    poster = cached_data.get('poster', '')
-                    fanart = cached_data.get('background', '')
-                    logo = cached_data.get('logo', '')
-                    description = cached_data.get('description', '')
-
-        list_item = xbmcgui.ListItem(label=label)
-        info_tag = list_item.getVideoInfoTag()
-        info_tag.setTitle(movie_title)
-        info_tag.setMediaType('movie')
-
-        # Use Trakt metadata for text fields
-        if movie_year:
-            info_tag.setYear(movie_year)
-
-        # Add progress info to plot
-        overview = movie_data.get('overview', '')
-        plot = f'[B]Progress: {progress}%[/B]\n\n{overview or description}'
-        info_tag.setPlot(plot)
-
-        # Add genres from Trakt if available
-        genres = movie_data.get('genres', [])
-        if genres:
-            info_tag.setGenres(genres)
-
-        # Add rating from Trakt if available
-        rating = movie_data.get('rating')
-        if rating:
-            try:
-                info_tag.setRating(float(rating))
-            except:
-                pass
-
-        # Set artwork
-        if poster:
-            list_item.setArt({'thumb': poster, 'poster': poster})
-
-        if fanart:
-            list_item.setArt({'fanart': fanart})
-
-        if logo:
-            list_item.setArt({'clearlogo': logo})
-
-        # Build context menu
-        context_menu = []
-        playback_id = item.get('id', '')  # Get playback ID for removal
-
-        # Add to watchlist and mark as watched
-        if movie_id:
-            # Remove from continue watching
-            if playback_id:
-                context_menu.append(('[COLOR red]Remove from Continue Watching[/COLOR]',
-                                    f'RunPlugin({get_url(action="trakt_remove_playback", playback_id=playback_id)})'))
-            context_menu.append(('[COLOR blue][Trakt][/COLOR] Add to Watchlist',
-                                f'RunPlugin({get_url(action="trakt_add_watchlist", media_type="movie", imdb_id=movie_id)})'))
-            context_menu.append(('[COLOR blue][Trakt][/COLOR] Mark as Watched',
-                                f'RunPlugin({get_url(action="trakt_mark_watched", media_type="movie", imdb_id=movie_id, playback_id=playback_id)})'))
-
-        if context_menu:
-            list_item.addContextMenuItems(context_menu)
-
-        # Build stream URL
-        if movie_id:
-            url = get_url(action='show_streams', content_type='movie', media_id=movie_id)
-            xbmcplugin.addDirectoryItem(HANDLE, url, list_item, True)
-
-    xbmcplugin.endOfDirectory(HANDLE)
-
-
-def trakt_recommended():
-    """Display Trakt recommended items."""
-    if not HAS_MODULES:
-        xbmcgui.Dialog().ok('AIOStreams', 'Trakt module not available')
-        return
-    
-    params = dict(parse_qsl(sys.argv[2][1:]))
-    media_type = params.get('media_type', 'movies')
-    page = int(params.get('page', 1))
-    
-    items = trakt.get_recommended(media_type, page, limit=20)
-    
-    if not items:
-        xbmcgui.Dialog().notification('AIOStreams', 'No recommendations', xbmcgui.NOTIFICATION_INFO)
-        xbmcplugin.endOfDirectory(HANDLE)
-        return
-    
-    xbmcplugin.setPluginCategory(HANDLE, f'Trakt Recommended - {media_type.capitalize()}')
-    xbmcplugin.setContent(HANDLE, 'movies' if media_type == 'movies' else 'tvshows')
-    
-    for item in items:
-        item_id = item.get('ids', {}).get('imdb', '')
-        
-        if not item_id:
-            continue
-        
-        # Fetch full metadata from AIOStreams
-        content_type = 'movie' if media_type == 'movies' else 'series'
-        meta_data = get_meta(content_type, item_id)
-        
-        if meta_data and 'meta' in meta_data:
-            meta = meta_data['meta']
-        else:
-            meta = {
-                'id': item_id,
-                'name': item.get('title', 'Unknown'),
-                'description': item.get('overview', ''),
-                'year': item.get('year', 0),
-                'genres': item.get('genres', [])
-            }
-        
-        if content_type == 'series':
-            url = get_url(action='show_seasons', meta_id=item_id)
-        else:
-            url = get_url(action='show_streams', content_type='movie', media_id=item_id)
-        
-        list_item = create_listitem_with_context(meta, content_type, url)
-        xbmcplugin.addDirectoryItem(HANDLE, url, list_item, True)
-    
-    # Add Load More if we got 20 items
-    if len(items) >= 20:
-        list_item = xbmcgui.ListItem(label='[COLOR yellow]» Load More...[/COLOR]')
-        url = get_url(action='trakt_recommended', media_type=media_type, page=page + 1)
         xbmcplugin.addDirectoryItem(HANDLE, url, list_item, True)
     
     xbmcplugin.endOfDirectory(HANDLE)
@@ -2771,16 +2299,6 @@ def router(params):
         trakt_watchlist()
     elif action == 'trakt_collection':
         trakt_collection()
-    elif action == 'trakt_trending':
-        trakt_trending()
-    elif action == 'trakt_popular':
-        trakt_popular()
-    elif action == 'trakt_recommended':
-        trakt_recommended()
-    elif action == 'trakt_continue_watching':
-        trakt_continue_watching()
-    elif action == 'trakt_continue_movies':
-        trakt_continue_movies()
     elif action == 'trakt_next_up':
         trakt_next_up()
     elif action == 'show_related':
