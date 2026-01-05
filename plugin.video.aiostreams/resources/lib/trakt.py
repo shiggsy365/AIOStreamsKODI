@@ -558,6 +558,11 @@ def remove_from_watchlist(media_type, imdb_id, season=None, episode=None):
 
 def mark_watched(media_type, imdb_id, season=None, episode=None, playback_id=None):
     """Mark item as watched and clear any in-progress status."""
+    if not imdb_id:
+        xbmc.log('[AIOStreams] Cannot mark as watched: no IMDB ID provided', xbmc.LOGWARNING)
+        xbmcgui.Dialog().notification('AIOStreams', 'Failed to mark as watched: Invalid ID', xbmcgui.NOTIFICATION_ERROR)
+        return False
+
     # For episodes/shows/series, we use 'shows' in the API
     api_type = 'shows' if media_type in ['episode', 'show', 'series'] or season is not None else media_type + 's'
 
@@ -571,6 +576,9 @@ def mark_watched(media_type, imdb_id, season=None, episode=None, playback_id=Non
             item['seasons'][0]['episodes'] = [{'number': episode}]
 
     data[api_type].append(item)
+
+    xbmc.log(f'[AIOStreams] Marking as watched: media_type={media_type}, imdb_id={imdb_id}, season={season}, episode={episode}', xbmc.LOGINFO)
+    xbmc.log(f'[AIOStreams] API request: POST sync/history - data: {data}', xbmc.LOGDEBUG)
 
     result = call_trakt('sync/history', method='POST', data=data)
 
@@ -602,6 +610,11 @@ def mark_watched(media_type, imdb_id, season=None, episode=None, playback_id=Non
 
 def mark_unwatched(media_type, imdb_id, season=None, episode=None):
     """Remove item from watch history."""
+    if not imdb_id:
+        xbmc.log('[AIOStreams] Cannot mark as unwatched: no IMDB ID provided', xbmc.LOGWARNING)
+        xbmcgui.Dialog().notification('AIOStreams', 'Failed to mark as unwatched: Invalid ID', xbmcgui.NOTIFICATION_ERROR)
+        return False
+
     # For episodes/shows/series, we use 'shows' in the API
     api_type = 'shows' if media_type in ['episode', 'show', 'series'] or season is not None else media_type + 's'
 
@@ -615,6 +628,9 @@ def mark_unwatched(media_type, imdb_id, season=None, episode=None):
             item['seasons'][0]['episodes'] = [{'number': episode}]
 
     data[api_type].append(item)
+
+    xbmc.log(f'[AIOStreams] Marking as unwatched: media_type={media_type}, imdb_id={imdb_id}, season={season}, episode={episode}', xbmc.LOGINFO)
+    xbmc.log(f'[AIOStreams] API request: POST sync/history/remove - data: {data}', xbmc.LOGDEBUG)
 
     result = call_trakt('sync/history/remove', method='POST', data=data)
 
