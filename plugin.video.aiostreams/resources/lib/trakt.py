@@ -416,7 +416,8 @@ def hide_from_progress(media_type, imdb_id):
     """Hide a movie or show from progress/recommendations using IMDB ID.
 
     This is the 'Stop Watching' or 'Drop' feature.
-    Per Trakt's March 2025 'Drop' feature, this hides from both progress and calendar.
+    Per Trakt's March 2025 'Drop' feature, this hides from progress, calendar, and recommendations.
+    API Docs: https://trakt.docs.apiary.io/#reference/users/add-hidden-items
     """
     if not imdb_id:
         xbmc.log('[AIOStreams] Cannot hide from progress: no IMDB ID provided', xbmc.LOGWARNING)
@@ -433,32 +434,33 @@ def hide_from_progress(media_type, imdb_id):
         data_key: [{'ids': {'imdb': imdb_id}}]
     }
 
-    xbmc.log(f'[AIOStreams] Dropping {media_type} from progress and calendar: {imdb_id}', xbmc.LOGINFO)
+    xbmc.log(f'[AIOStreams] Dropping {media_type} ({imdb_id}) from all sections', xbmc.LOGINFO)
+    xbmc.log(f'[AIOStreams] API data: {data}', xbmc.LOGDEBUG)
 
-    # Drop from progress (hides from Up Next and Progress)
-    result_progress = call_trakt(f'users/hidden/progress_watched', method='POST', data=data)
-    if result_progress:
-        xbmc.log(f'[AIOStreams] Successfully hidden from progress_watched: {imdb_id}', xbmc.LOGDEBUG)
-    else:
-        xbmc.log(f'[AIOStreams] Failed to hide from progress_watched: {imdb_id}', xbmc.LOGWARNING)
+    success_count = 0
 
-    # Drop from calendar (hides from Calendar view)
-    result_calendar = call_trakt(f'users/hidden/calendar', method='POST', data=data)
-    if result_calendar:
-        xbmc.log(f'[AIOStreams] Successfully hidden from calendar: {imdb_id}', xbmc.LOGDEBUG)
-    else:
-        xbmc.log(f'[AIOStreams] Failed to hide from calendar: {imdb_id}', xbmc.LOGWARNING)
+    # Hide from all relevant sections for complete "Drop" functionality
+    sections = ['progress_watched', 'calendar', 'recommendations']
 
-    # Success if at least one succeeded
-    if result_progress or result_calendar:
+    for section in sections:
+        xbmc.log(f'[AIOStreams] Hiding from section: {section}', xbmc.LOGDEBUG)
+        result = call_trakt(f'users/hidden/{section}', method='POST', data=data)
+        if result:
+            xbmc.log(f'[AIOStreams] ✓ Successfully hidden from {section}', xbmc.LOGINFO)
+            success_count += 1
+        else:
+            xbmc.log(f'[AIOStreams] ✗ Failed to hide from {section}', xbmc.LOGWARNING)
+
+    # Success if at least one section succeeded
+    if success_count > 0:
         item_type = 'Movie' if media_type in ['movie', 'movies'] else 'Show'
-        xbmc.log(f'[AIOStreams] Successfully dropped {item_type} ({imdb_id}) from watching', xbmc.LOGINFO)
+        xbmc.log(f'[AIOStreams] Successfully dropped {item_type} ({imdb_id}) - hidden from {success_count}/{len(sections)} sections', xbmc.LOGINFO)
         xbmcgui.Dialog().notification('AIOStreams', f'{item_type} dropped from watching', xbmcgui.NOTIFICATION_INFO)
         # Invalidate progress cache since we've hidden an item
         invalidate_progress_cache()
         return True
     else:
-        xbmc.log(f'[AIOStreams] Failed to drop {media_type} ({imdb_id})', xbmc.LOGERROR)
+        xbmc.log(f'[AIOStreams] Failed to drop {media_type} ({imdb_id}) from all sections', xbmc.LOGERROR)
         xbmcgui.Dialog().notification('AIOStreams', 'Failed to drop from watching', xbmcgui.NOTIFICATION_ERROR)
         return False
 

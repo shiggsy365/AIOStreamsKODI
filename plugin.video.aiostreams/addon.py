@@ -2017,15 +2017,19 @@ def trakt_next_up():
         # Filter out unaired episodes
         if isinstance(next_ep, dict):
             first_aired = next_ep.get('first_aired')
-            if first_aired:
-                try:
-                    # Parse ISO 8601 datetime string (format: 2024-01-05T20:00:00.000Z)
-                    aired_date = datetime.fromisoformat(first_aired.replace('Z', '+00:00'))
-                    if aired_date > now:
-                        xbmc.log(f'[AIOStreams] Skipping unaired episode: {show_data.get("title")} S{next_ep.get("season")}E{next_ep.get("number")} (airs {first_aired})', xbmc.LOGDEBUG)
-                        continue
-                except (ValueError, AttributeError) as e:
-                    xbmc.log(f'[AIOStreams] Error parsing air date: {first_aired} - {e}', xbmc.LOGWARNING)
+            # Skip episodes without air date or that haven't aired yet
+            if not first_aired:
+                xbmc.log(f'[AIOStreams] Skipping episode without air date: {show_data.get("title")} S{next_ep.get("season")}E{next_ep.get("number")}', xbmc.LOGDEBUG)
+                continue
+            try:
+                # Parse ISO 8601 datetime string (format: 2024-01-05T20:00:00.000Z)
+                aired_date = datetime.fromisoformat(first_aired.replace('Z', '+00:00'))
+                if aired_date > now:
+                    xbmc.log(f'[AIOStreams] Skipping unaired episode: {show_data.get("title")} S{next_ep.get("season")}E{next_ep.get("number")} (airs {first_aired})', xbmc.LOGDEBUG)
+                    continue
+            except (ValueError, AttributeError) as e:
+                xbmc.log(f'[AIOStreams] Error parsing air date: {first_aired} - {e}, skipping episode', xbmc.LOGWARNING)
+                continue
 
         # Get IMDB ID and episode details
         show_imdb = show_data.get('ids', {}).get('imdb', '')
