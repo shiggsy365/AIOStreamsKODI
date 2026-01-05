@@ -102,32 +102,38 @@ def cache_data(cache_type, identifier, data):
         xbmc.log(f'[AIOStreams] Cache write error: {e}', xbmc.LOGERROR)
 
 
-def get_cached_meta(content_type, item_id):
-    """Get metadata from disk cache if available and not expired."""
+def get_cached_meta(content_type, item_id, ttl_seconds=2592000):
+    """Get metadata from disk cache if available and not expired.
+
+    Args:
+        content_type: Type of content ('movie' or 'series')
+        item_id: Unique identifier for the content
+        ttl_seconds: Time-to-live in seconds (default: 30 days)
+    """
     cache_dir = get_cache_dir()
     cache_file = os.path.join(cache_dir, get_cache_key(content_type, item_id))
-    
+
     if not xbmcvfs.exists(cache_file):
         return None
-    
+
     try:
         # Read cache file
         with open(cache_file, 'r') as f:
             cache_data = json.load(f)
-        
+
         timestamp = cache_data.get('timestamp', 0)
-        
-        # Check if cache is still valid (30 days = 2592000 seconds)
-        if time.time() - timestamp < 2592000:
+
+        # Check if cache is still valid
+        if time.time() - timestamp < ttl_seconds:
             xbmc.log(f'[AIOStreams] Cache HIT: {content_type}:{item_id}', xbmc.LOGDEBUG)
             return cache_data.get('data')
         else:
             # Expired, delete file
             xbmcvfs.delete(cache_file)
-            xbmc.log(f'[AIOStreams] Cache EXPIRED: {content_type}:{item_id}', xbmc.LOGDEBUG)
+            xbmc.log(f'[AIOStreams] Cache EXPIRED: {content_type}:{item_id} (age: {int(time.time() - timestamp)}s, TTL: {ttl_seconds}s)', xbmc.LOGDEBUG)
     except Exception as e:
         xbmc.log(f'[AIOStreams] Cache read error: {e}', xbmc.LOGERROR)
-    
+
     return None
 
 
@@ -150,6 +156,31 @@ def cache_meta(content_type, item_id, metadata):
         xbmc.log(f'[AIOStreams] Cache SET: {content_type}:{item_id}', xbmc.LOGDEBUG)
     except Exception as e:
         xbmc.log(f'[AIOStreams] Cache write error: {e}', xbmc.LOGERROR)
+
+
+def get_cache_age(cache_type, identifier):
+    """Get age of cached data in seconds, or None if not cached.
+
+    Args:
+        cache_type: Type of cache (e.g., 'manifest', 'catalog')
+        identifier: Unique identifier for this cache entry
+
+    Returns:
+        Age in seconds, or None if not cached
+    """
+    cache_dir = get_cache_dir()
+    cache_file = os.path.join(cache_dir, get_generic_cache_key(cache_type, identifier))
+
+    if not xbmcvfs.exists(cache_file):
+        return None
+
+    try:
+        with open(cache_file, 'r') as f:
+            cache_data = json.load(f)
+        timestamp = cache_data.get('timestamp', 0)
+        return time.time() - timestamp
+    except:
+        return None
 
 
 def cleanup_expired_cache(force_all=False):
@@ -181,9 +212,9 @@ def cleanup_expired_cache(force_all=False):
             try:
                 with open(file_path, 'r') as f:
                     cache_data = json.load(f)
-                
+
                 timestamp = cache_data.get('timestamp', 0)
-                
+
                 # Delete if older than 30 days
                 if time.time() - timestamp >= 2592000:
                     xbmcvfs.delete(file_path)
@@ -191,7 +222,7 @@ def cleanup_expired_cache(force_all=False):
             except:
                 # Delete corrupted cache files
                 xbmcvfs.delete(file_path)
-        
+
         if expired_count > 0:
             xbmc.log(f'[AIOStreams] Cleaned up {expired_count} expired cache files', xbmc.LOGINFO)
     except Exception as e:

@@ -60,17 +60,68 @@ def get_url(**kwargs):
     return '{}?{}'.format(sys.argv[0], urlencode(kwargs))
 
 
-def make_request(url, error_message='Request failed'):
-    """Make HTTP request with error handling."""
+def make_request(url, error_message='Request failed', cache_key=None):
+    """Make HTTP request with conditional caching support (ETag/If-None-Match).
+
+    Args:
+        url: URL to fetch
+        error_message: Error message to display on failure
+        cache_key: Optional cache key for conditional requests (format: "type:identifier")
+
+    Returns:
+        JSON response data, or cached data on 304, or None on error
+    """
+    headers = {}
+
+    # Check for cached ETag/Last-Modified headers to enable conditional requests
+    if cache_key and HAS_MODULES:
+        cached_headers = cache.get_cached_data('http_headers', cache_key, 86400*365)  # 1 year TTL
+        if cached_headers:
+            if 'etag' in cached_headers:
+                headers['If-None-Match'] = cached_headers['etag']
+                xbmc.log(f'[AIOStreams] Conditional request with ETag for {cache_key}', xbmc.LOGDEBUG)
+            if 'last-modified' in cached_headers:
+                headers['If-Modified-Since'] = cached_headers['last-modified']
+                xbmc.log(f'[AIOStreams] Conditional request with Last-Modified for {cache_key}', xbmc.LOGDEBUG)
+
     try:
-        response = requests.get(url, timeout=get_timeout())
+        response = requests.get(url, headers=headers, timeout=get_timeout())
+
+        # 304 Not Modified - content hasn't changed, use cached data
+        if response.status_code == 304:
+            xbmc.log(f'[AIOStreams] HTTP 304 Not Modified: Using cached data for {cache_key}', xbmc.LOGINFO)
+            if cache_key and HAS_MODULES:
+                parts = cache_key.split(':', 1)
+                if len(parts) == 2:
+                    cached_data = cache.get_cached_data(parts[0], parts[1], 86400*365)
+                    if cached_data:
+                        return cached_data
+            # Fallback if cache lookup fails
+            xbmc.log(f'[AIOStreams] Warning: 304 received but no cached data found', xbmc.LOGWARNING)
+            return None
+
         response.raise_for_status()
-        return response.json()
+        data = response.json()
+
+        # Cache response headers (ETag/Last-Modified) for future conditional requests
+        if cache_key and HAS_MODULES:
+            cache_headers = {}
+            if 'etag' in response.headers:
+                cache_headers['etag'] = response.headers['etag']
+                xbmc.log(f'[AIOStreams] Cached ETag for {cache_key}: {response.headers["etag"]}', xbmc.LOGDEBUG)
+            if 'last-modified' in response.headers:
+                cache_headers['last-modified'] = response.headers['last-modified']
+                xbmc.log(f'[AIOStreams] Cached Last-Modified for {cache_key}', xbmc.LOGDEBUG)
+            if cache_headers:
+                cache.cache_data('http_headers', cache_key, cache_headers)
+
+        return data
     except requests.Timeout:
         xbmcgui.Dialog().notification('AIOStreams', 'Request timed out', xbmcgui.NOTIFICATION_ERROR)
         return None
     except requests.RequestException as e:
         xbmcgui.Dialog().notification('AIOStreams', f'{error_message}: {str(e)}', xbmcgui.NOTIFICATION_ERROR)
+        xbmc.log(f'[AIOStreams] Request error: {str(e)}', xbmc.LOGERROR)
         return None
     except ValueError:
         xbmcgui.Dialog().notification('AIOStreams', 'Invalid JSON response', xbmcgui.NOTIFICATION_ERROR)
@@ -78,23 +129,55 @@ def make_request(url, error_message='Request failed'):
 
 
 def get_manifest():
-    """Fetch the manifest from AIOStreams with 24-hour caching."""
+    """Fetch the manifest from AIOStreams with stale-while-revalidate caching.
+
+    Uses HTTP conditional requests (ETag/If-None-Match) to minimize bandwidth:
+    - Serves cached data immediately if < 24 hours old
+    - For older cache, checks server with If-None-Match (gets 304 if unchanged)
+    - Only downloads full manifest if actually changed on server
+    """
     base_url = get_base_url()
 
     # Use base_url as cache key to support multiple user profiles with different manifests
     import hashlib
     cache_key = hashlib.md5(base_url.encode()).hexdigest()[:16]
+    full_cache_key = f'manifest:{cache_key}'
 
-    # Check cache first (24 hours = 86400 seconds)
+    # Check cache first (never expire - rely on conditional requests)
     if HAS_MODULES:
-        cached = cache.get_cached_data('manifest', cache_key, 86400)
+        cached = cache.get_cached_data('manifest', cache_key, 86400*365)  # 1 year
+        cache_age = cache.get_cache_age('manifest', cache_key)
+
         if cached:
-            return cached
+            # Fresh cache (< 24 hours) - serve immediately
+            if cache_age is not None and cache_age < 86400:
+                xbmc.log(f'[AIOStreams] Serving fresh manifest from cache (age: {int(cache_age)}s)', xbmc.LOGDEBUG)
+                return cached
 
-    # Cache miss, fetch from API
-    manifest = make_request(f"{base_url}/manifest.json", 'Error fetching manifest')
+            # Stale cache - check server with conditional request
+            xbmc.log(f'[AIOStreams] Cache stale (age: {int(cache_age)}s), checking server with conditional request', xbmc.LOGDEBUG)
+            manifest = make_request(f"{base_url}/manifest.json",
+                                   'Error fetching manifest',
+                                   cache_key=full_cache_key)
 
-    # Cache the result
+            if manifest:
+                # Server returned new data (200 OK) - cache it
+                cache.cache_data('manifest', cache_key, manifest)
+                xbmc.log('[AIOStreams] Manifest updated from server', xbmc.LOGINFO)
+                return manifest
+            else:
+                # Request failed or 304 (already handled in make_request)
+                # If it was 304, make_request returned cached data
+                # If it failed, return stale cache as fallback
+                xbmc.log('[AIOStreams] Using stale manifest as fallback', xbmc.LOGDEBUG)
+                return cached
+
+    # No cache - fetch fresh
+    xbmc.log('[AIOStreams] No cached manifest, fetching fresh', xbmc.LOGDEBUG)
+    manifest = make_request(f"{base_url}/manifest.json",
+                           'Error fetching manifest',
+                           cache_key=full_cache_key)
+
     if manifest and HAS_MODULES:
         cache.cache_data('manifest', cache_key, manifest)
 
@@ -264,24 +347,73 @@ def normalize_language_code(language):
     return lang_map.get(lang_lower, lang_lower[:2])
 
 
+def get_metadata_ttl(meta_data):
+    """Determine appropriate cache TTL based on content age.
+
+    Args:
+        meta_data: Metadata dict from API (must contain 'meta' key)
+
+    Returns:
+        TTL in seconds
+    """
+    from datetime import datetime
+
+    try:
+        meta = meta_data.get('meta', {})
+        year = meta.get('year')
+
+        if year:
+            current_year = datetime.now().year
+
+            # Recent/current year content may get metadata updates (cast, artwork, etc.)
+            if year >= current_year:
+                return 86400 * 7  # 7 days
+
+            # Last year's content - moderate refresh
+            elif year >= current_year - 1:
+                return 86400 * 30  # 30 days
+
+        # Older content is stable - extended cache
+        return 86400 * 90  # 90 days
+
+    except:
+        # Default to 30 days on any error
+        return 86400 * 30
+
+
 def get_meta(content_type, meta_id):
-    """Fetch metadata for a show or movie with caching."""
-    # Check cache first
+    """Fetch metadata for a show or movie with optimized TTL caching.
+
+    Cache TTL varies based on content age:
+    - Current year: 7 days (metadata may be updated)
+    - Last year: 30 days
+    - Older: 90 days (metadata is stable)
+    """
+    # Initial check with long TTL to see if we have any cache
     if HAS_MODULES:
-        cached = cache.get_cached_meta(content_type, meta_id)
+        cached = cache.get_cached_meta(content_type, meta_id, ttl_seconds=86400*365)
         if cached:
-            return cached
-    
+            # Calculate appropriate TTL based on content
+            ttl = get_metadata_ttl(cached)
+
+            # Re-check cache with calculated TTL
+            cached = cache.get_cached_meta(content_type, meta_id, ttl_seconds=ttl)
+            if cached:
+                xbmc.log(f'[AIOStreams] Metadata cache hit for {meta_id} (TTL: {ttl//86400} days)', xbmc.LOGDEBUG)
+                return cached
+
     # Cache miss, fetch from API
     base_url = get_base_url()
     url = f"{base_url}/meta/{content_type}/{meta_id}.json"
     xbmc.log(f'[AIOStreams] Requesting meta from: {url}', xbmc.LOGINFO)
     result = make_request(url, 'Meta error')
-    
+
     # Store in cache
     if HAS_MODULES and result:
+        ttl = get_metadata_ttl(result)
         cache.cache_meta(content_type, meta_id, result)
-    
+        xbmc.log(f'[AIOStreams] Cached metadata for {meta_id} (TTL: {ttl//86400} days)', xbmc.LOGDEBUG)
+
     return result
 
 
