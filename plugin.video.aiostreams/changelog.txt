@@ -1,5 +1,40 @@
 # Changelog
 
+## [2.4.5] - 2026-01-05
+
+### Fixed
+- **Direct Play from Widgets/Lists**: Movies and episodes now play immediately
+  - Changed from folder navigation to direct playback
+  - Set IsPlayable='true' on all movie and episode items
+  - No more blank pages when pressing play
+  - Works in all list views: catalogs, search, Trakt lists, widgets
+
+### Added
+- **Color-Coded Stream Formatting**: Enhanced stream selector display
+  - Service tags: [RD] green, [TB] yellow, others blue
+  - Status icons: ✓ for cached, ⏳ for uncached
+  - Format: `[4K] 1.34 GB TorBox Search ✓ [RD]`
+  - Stream count in header: 'Select Stream (20 available)'
+
+- **Subtitle Language Display**: Proper language names in subtitle selector
+  - Downloads subtitles with language-coded filenames (en.srt, es.srt, etc.)
+  - Kodi now shows language instead of 'Unknown - 1961911296 (External)'
+  - Supports 24 languages with ISO 639-1 codes
+  - Subtitles cached locally for better performance
+
+- **Requirements Documentation**: Added comprehensive setup guide in README
+  - AIOStreams setup requirements
+  - AIOMetadata recommendations
+  - Recommended formatter templates
+  - Credits to Cedya77 and Viren070
+
+### Performance
+- **Trakt Rate Limiting Fix**: Eliminated 429 errors
+  - Batch fetching for watchlists and watch history
+  - Reduced API calls from O(n) to O(1) per list
+  - For 20-item list: 40+ calls reduced to 2 calls
+  - Cache invalidation on status changes
+
 ## [1.5.3] - 2026-01-04
 
 ### Removed
