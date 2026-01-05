@@ -79,19 +79,24 @@ def make_request(url, error_message='Request failed'):
 
 def get_manifest():
     """Fetch the manifest from AIOStreams with 24-hour caching."""
+    base_url = get_base_url()
+
+    # Use base_url as cache key to support multiple user profiles with different manifests
+    import hashlib
+    cache_key = hashlib.md5(base_url.encode()).hexdigest()[:16]
+
     # Check cache first (24 hours = 86400 seconds)
     if HAS_MODULES:
-        cached = cache.get_cached_data('manifest', 'main', 86400)
+        cached = cache.get_cached_data('manifest', cache_key, 86400)
         if cached:
             return cached
 
     # Cache miss, fetch from API
-    base_url = get_base_url()
     manifest = make_request(f"{base_url}/manifest.json", 'Error fetching manifest')
 
     # Cache the result
     if manifest and HAS_MODULES:
-        cache.cache_data('manifest', 'main', manifest)
+        cache.cache_data('manifest', cache_key, manifest)
 
     return manifest
 
@@ -1590,21 +1595,15 @@ def show_seasons():
         # Add season context menu
         context_menu = []
 
-        # Add Trakt watched toggle for series if authorized
+        # Add Trakt watched toggle for season if authorized
         if HAS_MODULES and trakt.get_access_token():
-            # Get show progress to check if fully watched
-            is_show_watched = False
-            if show_progress:
-                aired = show_progress.get('aired', 0)
-                completed = show_progress.get('completed', 0)
-                is_show_watched = aired > 0 and aired == completed
-
-            if is_show_watched:
-                context_menu.append(('[COLOR lightcoral]Mark Series As Unwatched[/COLOR]',
-                                    f'RunPlugin({get_url(action="trakt_mark_unwatched", media_type="series", imdb_id=meta_id)})'))
+            # Use season watched status (already calculated above)
+            if is_season_watched:
+                context_menu.append(('[COLOR lightcoral]Mark Season As Unwatched[/COLOR]',
+                                    f'RunPlugin({get_url(action="trakt_mark_unwatched", media_type="show", imdb_id=meta_id, season=season_num)})'))
             else:
-                context_menu.append(('[COLOR lightcoral]Mark Series As Watched[/COLOR]',
-                                    f'RunPlugin({get_url(action="trakt_mark_watched", media_type="series", imdb_id=meta_id)})'))
+                context_menu.append(('[COLOR lightcoral]Mark Season As Watched[/COLOR]',
+                                    f'RunPlugin({get_url(action="trakt_mark_watched", media_type="show", imdb_id=meta_id, season=season_num)})'))
 
         list_item.addContextMenuItems(context_menu)
         
