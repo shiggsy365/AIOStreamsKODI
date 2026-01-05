@@ -477,8 +477,8 @@ def scrobble(action, media_type, imdb_id, progress=0, season=None, episode=None)
 
 def add_to_watchlist(media_type, imdb_id, season=None, episode=None):
     """Add item to watchlist."""
-    # For episodes/shows, we use 'shows' in the API
-    api_type = 'shows' if media_type in ['episode', 'show'] or season is not None else media_type + 's'
+    # For episodes/shows/series, we use 'shows' in the API
+    api_type = 'shows' if media_type in ['episode', 'show', 'series'] or season is not None else media_type + 's'
 
     data = {api_type: []}
 
@@ -511,8 +511,8 @@ def add_to_watchlist(media_type, imdb_id, season=None, episode=None):
 
 def remove_from_watchlist(media_type, imdb_id, season=None, episode=None):
     """Remove item from watchlist."""
-    # For episodes/shows, we use 'shows' in the API
-    api_type = 'shows' if media_type in ['episode', 'show'] or season is not None else media_type + 's'
+    # For episodes/shows/series, we use 'shows' in the API
+    api_type = 'shows' if media_type in ['episode', 'show', 'series'] or season is not None else media_type + 's'
 
     data = {api_type: []}
 
@@ -545,8 +545,8 @@ def remove_from_watchlist(media_type, imdb_id, season=None, episode=None):
 
 def mark_watched(media_type, imdb_id, season=None, episode=None, playback_id=None):
     """Mark item as watched and clear any in-progress status."""
-    # For episodes, we use 'shows' in the API
-    api_type = 'shows' if media_type == 'episode' or season is not None else media_type + 's'
+    # For episodes/shows/series, we use 'shows' in the API
+    api_type = 'shows' if media_type in ['episode', 'show', 'series'] or season is not None else media_type + 's'
 
     # Add to watch history
     data = {api_type: []}
@@ -589,8 +589,8 @@ def mark_watched(media_type, imdb_id, season=None, episode=None, playback_id=Non
 
 def mark_unwatched(media_type, imdb_id, season=None, episode=None):
     """Remove item from watch history."""
-    # For episodes, we use 'shows' in the API
-    api_type = 'shows' if media_type == 'episode' or season is not None else media_type + 's'
+    # For episodes/shows/series, we use 'shows' in the API
+    api_type = 'shows' if media_type in ['episode', 'show', 'series'] or season is not None else media_type + 's'
 
     # Remove from watch history
     data = {api_type: []}

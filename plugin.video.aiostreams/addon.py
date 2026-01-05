@@ -1600,15 +1600,11 @@ def show_seasons():
                 is_show_watched = aired > 0 and aired == completed
 
             if is_show_watched:
-                context_menu.append(('Mark Series As Unwatched',
+                context_menu.append(('[COLOR lightcoral]Mark Series As Unwatched[/COLOR]',
                                     f'RunPlugin({get_url(action="trakt_mark_unwatched", media_type="series", imdb_id=meta_id)})'))
             else:
-                context_menu.append(('Mark Series As Watched',
+                context_menu.append(('[COLOR lightcoral]Mark Series As Watched[/COLOR]',
                                     f'RunPlugin({get_url(action="trakt_mark_watched", media_type="series", imdb_id=meta_id)})'))
-
-            # Stop Watching (Drop) option
-            context_menu.append(('Stop Watching (Drop) Trakt',
-                                f'RunPlugin({get_url(action="trakt_hide_from_progress", media_type="series", imdb_id=meta_id)})'))
 
         list_item.addContextMenuItems(context_menu)
         
