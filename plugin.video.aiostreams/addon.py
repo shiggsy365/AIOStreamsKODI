@@ -468,7 +468,7 @@ def create_listitem_with_context(meta, content_type, action_url):
 
     if content_type == 'movie':
         # Movie context menu: Scrape Streams, View Trailer, Mark as Watched, Watchlist
-        context_menu.append(('Scrape Streams', f'RunPlugin({get_url(action="select_stream", content_type="movie", imdb_id=item_id, title=title)})'))
+        context_menu.append(('Scrape Streams', f'RunPlugin({get_url(action="show_streams", content_type="movie", media_id=item_id, title=title)})'))
 
         # Add trailer if available
         trailers = meta.get('trailers', [])
@@ -932,42 +932,52 @@ def search_unified():
 
 
 def play():
-    """TMDBHelper direct play - automatically play first available stream."""
+    """Play content - behavior depends on settings (show streams or auto-play first)."""
     params = dict(parse_qsl(sys.argv[2][1:]))
     content_type = params['content_type']
     imdb_id = params['imdb_id']
-    
+
     # Format media ID for AIOStreams API
     if content_type == 'movie':
         media_id = imdb_id
         season = None
         episode = None
+        title = params.get('title', 'Unknown')
     else:
         season = params.get('season')
         episode = params.get('episode')
         media_id = f"{imdb_id}:{season}:{episode}"
-    
+        title = params.get('title', f'S{season}E{episode}')
+
     # Fetch streams
     stream_data = get_streams(content_type, media_id)
-    
+
     if not stream_data or 'streams' not in stream_data or len(stream_data['streams']) == 0:
         xbmcgui.Dialog().notification('AIOStreams', 'No streams available', xbmcgui.NOTIFICATION_ERROR)
         xbmcplugin.setResolvedUrl(HANDLE, False, xbmcgui.ListItem())
         return
-    
-    # Get first stream
+
+    # Check default_behavior setting
+    default_behavior = get_setting('default_behavior', 'show_streams')
+
+    # If set to show streams, show dialog instead of auto-playing
+    if default_behavior == 'show_streams':
+        show_streams_dialog(content_type, media_id, stream_data, title)
+        return
+
+    # Otherwise, auto-play first stream
     stream = stream_data['streams'][0]
     stream_url = stream.get('url') or stream.get('externalUrl')
-    
+
     if not stream_url:
         xbmcgui.Dialog().notification('AIOStreams', 'No playable URL found', xbmcgui.NOTIFICATION_ERROR)
         xbmcplugin.setResolvedUrl(HANDLE, False, xbmcgui.ListItem())
         return
-    
+
     # Create list item for playback
     list_item = xbmcgui.ListItem(path=stream_url)
     list_item.setProperty('IsPlayable', 'true')
-    
+
     # Add subtitles if available
     subtitle_data = get_subtitles(content_type, media_id)
     if subtitle_data and 'subtitles' in subtitle_data:
@@ -983,12 +993,12 @@ def play():
 
         if subtitle_paths:
             list_item.setSubtitles(subtitle_paths)
-    
+
     # Set media info for scrobbling
     if HAS_MODULES and PLAYER:
         scrobble_type = 'movie' if content_type == 'movie' else 'episode'
         PLAYER.set_media_info(scrobble_type, imdb_id, season, episode)
-    
+
     # Set resolved URL for playback
     xbmcplugin.setResolvedUrl(HANDLE, True, list_item)
 
@@ -1745,8 +1755,9 @@ def show_episodes():
 
         # Add episode context menu
         episode_title = f'{series_name} - S{season:02d}E{episode_num:02d}'
+        episode_media_id = f"{meta_id}:{season}:{episode_num}"
         context_menu = [
-            ('Scrape Streams', f'RunPlugin({get_url(action="select_stream", content_type="series", imdb_id=meta_id, season=season, episode=episode_num, title=episode_title)})'),
+            ('Scrape Streams', f'RunPlugin({get_url(action="show_streams", content_type="series", media_id=episode_media_id, title=episode_title)})'),
             ('Browse Show', f'Container.Update({get_url(action="show_seasons", meta_id=meta_id)})')
         ]
 
