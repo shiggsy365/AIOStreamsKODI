@@ -588,12 +588,12 @@ def get_show_progress_by_trakt_id(show_id):
     """
     global _show_progress_with_next_cache, _pending_show_updates
 
-    # Check if this show was recently updated (within last 3 seconds)
+    # Check if this show was recently updated (within last 10 seconds)
     recently_updated = False
     if show_id in _pending_show_updates:
         update_time = _pending_show_updates[show_id]
         age = time.time() - update_time
-        if age < 3:  # 3 second grace period for Trakt to process
+        if age < 10:  # 10 second grace period for Trakt to process
             recently_updated = True
             xbmc.log(f'[AIOStreams] Show {show_id} was recently updated ({age:.1f}s ago), skipping cache', xbmc.LOGDEBUG)
         else:
@@ -1107,9 +1107,12 @@ def remove_from_watchlist(media_type, imdb_id, season=None, episode=None):
 
 
 def _add_show_to_pending_updates(imdb_id):
-    """Add show to pending updates list after marking watched/unwatched.
+    """Add show to pending updates list and refresh Kodi widgets.
     
     Helper function to track recently updated shows to handle Trakt's eventual consistency.
+    
+    Args:
+        imdb_id: IMDB ID of the show that was updated
     """
     global _pending_show_updates
     
@@ -1120,6 +1123,13 @@ def _add_show_to_pending_updates(imdb_id):
         if show_trakt_id:
             _pending_show_updates[show_trakt_id] = time.time()
             xbmc.log(f'[AIOStreams] Added show {show_trakt_id} to pending updates (10s grace period)', xbmc.LOGDEBUG)
+            
+            # Refresh Kodi widgets to show updated data
+            try:
+                xbmc.executebuiltin('Container.Refresh')
+            except Exception as e:
+                xbmc.log(f'[AIOStreams] Failed to refresh container: {e}', xbmc.LOGWARNING)
+            
             return show_trakt_id
     return None
 
@@ -1169,9 +1179,9 @@ def mark_watched(media_type, imdb_id, season=None, episode=None, playback_id=Non
             show_trakt_id = _get_trakt_id_from_imdb(imdb_id)
             if show_trakt_id:
                 update_show_progress_incrementally(imdb_id, show_trakt_id)
-                # Add to pending updates with 3-second grace period
+                # Add to pending updates with 10-second grace period
                 _pending_show_updates[show_trakt_id] = time.time()
-                xbmc.log(f'[AIOStreams] Added show {show_trakt_id} to pending updates (3s grace period)', xbmc.LOGDEBUG)
+                xbmc.log(f'[AIOStreams] Added show {show_trakt_id} to pending updates (10s grace period)', xbmc.LOGDEBUG)
             else:
                 # Fallback to full invalidation if we can't get Trakt ID
                 invalidate_progress_cache()
@@ -1232,9 +1242,9 @@ def mark_unwatched(media_type, imdb_id, season=None, episode=None):
             show_trakt_id = _get_trakt_id_from_imdb(imdb_id)
             if show_trakt_id:
                 update_show_progress_incrementally(imdb_id, show_trakt_id)
-                # Add to pending updates with 3-second grace period
+                # Add to pending updates with 10-second grace period
                 _pending_show_updates[show_trakt_id] = time.time()
-                xbmc.log(f'[AIOStreams] Added show {show_trakt_id} to pending updates (3s grace period)', xbmc.LOGDEBUG)
+                xbmc.log(f'[AIOStreams] Added show {show_trakt_id} to pending updates (10s grace period)', xbmc.LOGDEBUG)
             else:
                 # Fallback to full invalidation if we can't get Trakt ID
                 invalidate_progress_cache()
