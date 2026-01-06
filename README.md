@@ -31,16 +31,16 @@ AIOStreams is required for this plugin, with at least one scraper configured, a 
 
 I recommend setting up AIOMetadata within AIOStreams, and letting AIOMetadata provide the search and metadata catalogs from TMDb and TVDb. I also recommend self hosting both services to avoid rate limiting.
 
-The stream scraper will work best using the following pattern within the formatter:
+The stream scraper will work best using the following pattern within the formatter. The plugin can only display 2 rows, and no emojis:
 
 **Name Template:**
 ```
-{stream.type::=debrid["{service.shortName}"||""]}{stream.type::=usenet["{service.shortName}"||""]}{stream.type::=p2p["P2P"||""]}{stream.type::=http["Web"||""]}{stream.type::=youtube["YT"||""]}{stream.type::=live["Live"||""]}|{stream.resolution::=2160p["4K"||""]}{stream.resolution::=1440p["2K"||""]}{stream.resolution::=1080p["FHD"||""]}{stream.resolution::=720p["HD"||""]}{stream.resolution::=576p["SD"||""]}{stream.resolution::=480p["SD"||""]}{stream.resolution::=360p["SD"||""]}{stream.resolution::=240p["SD"||""]}{stream.resolution::=144p["LQ"||""]}|{stream.size::>0["{stream.size::bytes}"||""]}|{addon.name}|{service.cached::istrue["Cached "||""]}{service.cached::isfalse["Uncached"||""]}
+{stream.resolution::exists["[{stream.resolution}]"||""]}{stream.regexMatched::exists[" ({[stream.regexMatched]})"||""]} {stream.size::>0["[{stream.size::bytes}]"||""]}{stream.folderSize::>0["/[{stream.folderSize::bytes}]"||""]} {stream.proxied::istrue["[#]"||""]} {stream.type::=p2p["[P2P] "||""]}{service.shortName::exists["[{service.shortName}"||""]}{service.cached::istrue[" Cached] "||""]}{service.cached::isfalse[" NoCache] "||""]}[{addon.name}]{stream.library::istrue[" [Library]"||""]}  {stream.duration::>0["{stream.duration::time} "||""]}- {stream.languages::exists["{stream.languages::join(' | ')}"||""]}
 ```
 
 **Description Template:**
 ```
-(Leave blank)
+[{stream.quality::exists["{stream.quality}"||""]}{stream.encode::exists[" {stream.encode} "||""]}{stream.visualTags::exists["{stream.visualTags::join(' | ')} "||""]}{stream.audioTags::exists["{stream.audioTags::join(' ')}"||""]} {stream.audioChannels::exists["{stream.audioChannels::join(' | ')}"||""]}] [{stream.seeders::>0["Seed-{stream.seeders} "||""]}{stream.age::exists["Age-{stream.age} "||""]}{stream.indexer::exists[" {stream.indexer}"||""]}] {stream.filename::exists["{stream.filename}"||""]}
 ```
 
 ### Credits
