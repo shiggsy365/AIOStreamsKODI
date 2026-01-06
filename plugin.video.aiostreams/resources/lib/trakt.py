@@ -1465,20 +1465,56 @@ def mark_watched(media_type, imdb_id, season=None, episode=None, playback_id=Non
                 # Ensure show exists
                 _ensure_show_exists(db, show_trakt_id, show_data)
 
+                # Ensure ALL episodes exist in database for accurate progress tracking
+                # Check if we already have episodes for this show
+                existing_count = db.fetchone(
+                    "SELECT COUNT(*) as count FROM episodes WHERE show_trakt_id=?",
+                    (show_trakt_id,)
+                )
+
+                if not existing_count or existing_count.get('count', 0) == 0:
+                    # No episodes in database yet - fetch all episodes like sync does
+                    xbmc.log(f'[AIOStreams] Fetching all episodes for show {show_trakt_id} to populate database', xbmc.LOGINFO)
+                    seasons_data = call_trakt(f'shows/{show_trakt_id}/seasons?extended=episodes')
+
+                    if seasons_data:
+                        for season_obj in seasons_data:
+                            season_num = season_obj.get('number', 0)
+                            for ep in season_obj.get('episodes', []):
+                                ep_num = ep.get('number')
+                                if ep_num:
+                                    # Insert all episodes with watched=0 initially
+                                    db.execute_sql("""
+                                        INSERT OR IGNORE INTO episodes (
+                                            show_trakt_id, season, episode, trakt_id, imdb_id, tmdb_id, tvdb_id,
+                                            air_date, watched, last_updated
+                                        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, 0, datetime('now'))
+                                    """, (
+                                        show_trakt_id,
+                                        season_num,
+                                        ep_num,
+                                        ep.get('ids', {}).get('trakt'),
+                                        ep.get('ids', {}).get('imdb'),
+                                        ep.get('ids', {}).get('tmdb'),
+                                        ep.get('ids', {}).get('tvdb'),
+                                        ep.get('first_aired')
+                                    ))
+                        xbmc.log(f'[AIOStreams] Populated database with all episodes for show {show_trakt_id}', xbmc.LOGINFO)
+
                 # Store original state
                 original_states.append(db.fetchone(
                     "SELECT * FROM episodes WHERE show_trakt_id=? AND season=? AND episode=?",
                     (show_trakt_id, season, episode)
                 ))
 
-                # Update episode
+                # Now mark the specific episode as watched
                 db.execute_sql("""
-                    INSERT OR REPLACE INTO episodes (
-                        show_trakt_id, season, episode, watched, last_watched_at
-                    ) VALUES (?, ?, ?, 1, ?)
-                """, (show_trakt_id, season, episode, watched_at))
+                    UPDATE episodes
+                    SET watched=1, last_watched_at=?, last_updated=datetime('now')
+                    WHERE show_trakt_id=? AND season=? AND episode=?
+                """, (watched_at, show_trakt_id, season, episode))
 
-                xbmc.log(f'[AIOStreams] ✓ Marked ONLY episode S{season}E{episode} as watched', xbmc.LOGINFO)
+                xbmc.log(f'[AIOStreams] ✓ Marked episode S{season}E{episode} as watched', xbmc.LOGINFO)
 
                 # Unhide show if it was dropped
                 _unhide_show_if_needed(db, show_trakt_id)
@@ -2278,10 +2314,10 @@ def is_watched(media_type, imdb_id):
 
 
 def get_show_progress(imdb_id):
-    """Get show progress (which seasons/episodes are watched) using Trakt API.
+    """Get show progress (which seasons/episodes are watched).
 
-    Uses Trakt API as primary source to ensure accurate episode counts.
-    Database is used as fallback only when API is unavailable.
+    Uses database as primary source (populated by sync with ALL episodes).
+    Falls back to Trakt API if database is empty or unavailable.
     Uses event-driven caching that persists until watched status changes.
     """
     # Check in-memory cache first (fastest)
@@ -2289,17 +2325,8 @@ def get_show_progress(imdb_id):
         xbmc.log(f'[AIOStreams] Cache HIT (memory): show_progress_{imdb_id}', xbmc.LOGDEBUG)
         return _show_progress_cache[imdb_id]
 
-    # Primary: Fetch from Trakt API (has accurate episode counts)
-    xbmc.log(f'[AIOStreams] Fetching show progress from Trakt API for {imdb_id}', xbmc.LOGDEBUG)
-    result = call_trakt(f'shows/{imdb_id}/progress/watched')
-
-    if result:
-        _show_progress_cache[imdb_id] = result
-        xbmc.log(f'[AIOStreams] Successfully fetched show progress from API for {imdb_id}', xbmc.LOGDEBUG)
-        return result
-
-    # Fallback: Try database if API fails
-    xbmc.log(f'[AIOStreams] API unavailable, trying database for {imdb_id}', xbmc.LOGDEBUG)
+    # Primary: Try database first (should have complete episode data from sync)
+    xbmc.log(f'[AIOStreams] Fetching show progress from database for {imdb_id}', xbmc.LOGDEBUG)
     db = get_trakt_db()
     if db and db.connect():
         try:
@@ -2362,15 +2389,25 @@ def get_show_progress(imdb_id):
                 if next_episode:
                     progress['next_episode'] = next_episode
 
-                # Cache the result in memory only
-                _show_progress_cache[imdb_id] = progress
-
-                xbmc.log(f'[AIOStreams] Built show progress from database for {imdb_id} (fallback)', xbmc.LOGDEBUG)
-                return progress
+                # Only use database result if we have episodes
+                if progress['aired'] > 0:
+                    # Cache the result in memory only
+                    _show_progress_cache[imdb_id] = progress
+                    xbmc.log(f'[AIOStreams] Built show progress from database for {imdb_id}', xbmc.LOGDEBUG)
+                    return progress
         except Exception as e:
             xbmc.log(f'[AIOStreams] Database error getting show progress: {e}', xbmc.LOGWARNING)
         finally:
             db.disconnect()
+
+    # Fallback: Try Trakt API if database is empty or unavailable
+    xbmc.log(f'[AIOStreams] Database empty, fetching from Trakt API for {imdb_id}', xbmc.LOGDEBUG)
+    result = call_trakt(f'shows/{imdb_id}/progress/watched')
+
+    if result:
+        _show_progress_cache[imdb_id] = result
+        xbmc.log(f'[AIOStreams] Fetched show progress from API for {imdb_id}', xbmc.LOGDEBUG)
+        return result
 
     return None
 
