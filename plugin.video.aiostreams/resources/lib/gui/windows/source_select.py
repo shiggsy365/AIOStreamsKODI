@@ -50,8 +50,8 @@ class SourceSelect(xbmcgui.WindowXMLDialog):
             # Get the list control
             try:
                 list_control = self.getControl(self.CONTROL_LIST)
-            except:
-                xbmc.log('[AIOStreams] Could not get list control', xbmc.LOGERROR)
+            except Exception as e:
+                xbmc.log(f'[AIOStreams] Could not get list control: {e}', xbmc.LOGERROR)
                 return
             
             # Clear any existing items
