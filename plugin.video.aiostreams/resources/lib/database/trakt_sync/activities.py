@@ -357,7 +357,7 @@ class TraktSyncDatabase(BaseTraktDB):
                     # Insert/update episode
                     self.execute_sql("""
                         INSERT OR REPLACE INTO episodes (
-                            trakt_show_id, season, episode, watched, 
+                            show_trakt_id, season, episode, watched,
                             last_watched_at, last_updated
                         ) VALUES (?, ?, ?, 1, ?, datetime('now'))
                     """, (
@@ -394,10 +394,10 @@ class TraktSyncDatabase(BaseTraktDB):
                 
                 for episode in season.get('episodes', []):
                     episode_num = episode.get('number')
-                    
+
                     self.execute_sql("""
                         INSERT OR REPLACE INTO episodes (
-                            trakt_show_id, season, episode, collected,
+                            show_trakt_id, season, episode, collected,
                             collected_at, last_updated
                         ) VALUES (?, ?, ?, 1, ?, datetime('now'))
                     """, (
@@ -514,22 +514,22 @@ class TraktSyncDatabase(BaseTraktDB):
     def _update_all_show_statistics(self):
         """Recalculate watched/unwatched episode counts for all shows."""
         xbmc.log('[AIOStreams] Updating show statistics...', xbmc.LOGDEBUG)
-        
+
         # Get all shows
-        shows = self.fetchall("SELECT DISTINCT trakt_show_id FROM episodes")
-        
+        shows = self.fetchall("SELECT DISTINCT show_trakt_id FROM episodes")
+
         for show in shows:
-            show_id = show['trakt_show_id']
-            
+            show_id = show['show_trakt_id']
+
             # Count watched episodes
             watched_count = self.fetchone(
-                "SELECT COUNT(*) as count FROM episodes WHERE trakt_show_id=? AND watched=1",
+                "SELECT COUNT(*) as count FROM episodes WHERE show_trakt_id=? AND watched=1",
                 (show_id,)
             )['count']
-            
+
             # Count total episodes
             total_count = self.fetchone(
-                "SELECT COUNT(*) as count FROM episodes WHERE trakt_show_id=?",
+                "SELECT COUNT(*) as count FROM episodes WHERE show_trakt_id=?",
                 (show_id,)
             )['count']
             
