@@ -2817,25 +2817,46 @@ def rebuild_trakt_database():
 
 
 def show_database_info():
-    """Show information about the Trakt database."""
+    """Show information about all database tables."""
     if not HAS_MODULES:
         return
-    
+
     try:
         from resources.lib.database.trakt_sync import TraktSyncDatabase
-        
+
         db = TraktSyncDatabase()
         if not db.connect():
             xbmcgui.Dialog().notification('AIOStreams', 'Failed to connect to database', xbmcgui.NOTIFICATION_ERROR)
             return
-        
+
         try:
             # Get counts from each table
             show_count = db.execute('SELECT COUNT(*) as count FROM shows').fetchone()['count']
             episode_count = db.execute('SELECT COUNT(*) as count FROM episodes').fetchone()['count']
             movie_count = db.execute('SELECT COUNT(*) as count FROM movies').fetchone()['count']
             watchlist_count = db.execute('SELECT COUNT(*) as count FROM watchlist').fetchone()['count']
-            
+
+            # Get hidden shows count
+            hidden_shows_count = 0
+            try:
+                hidden_shows_count = db.execute('SELECT COUNT(*) as count FROM hidden_shows').fetchone()['count']
+            except:
+                pass
+
+            # Get stream stats count
+            stream_stats_count = 0
+            try:
+                stream_stats_count = db.execute('SELECT COUNT(*) as count FROM stream_stats').fetchone()['count']
+            except:
+                pass
+
+            # Get stream preferences count
+            stream_prefs_count = 0
+            try:
+                stream_prefs_count = db.execute('SELECT COUNT(*) as count FROM stream_preferences').fetchone()['count']
+            except:
+                pass
+
             # Get last sync time
             activities = db.fetchone('SELECT last_activities_call FROM activities WHERE sync_id=1')
             if activities and activities.get('last_activities_call'):
@@ -2844,31 +2865,139 @@ def show_database_info():
                 last_sync_str = last_sync.strftime('%Y-%m-%d %H:%M:%S')
             else:
                 last_sync_str = 'Never'
-            
+
             # Get database file size
             import os
             db_size = 0
             if os.path.exists(db.db_path):
                 db_size = os.path.getsize(db.db_path) / 1024  # KB
-            
+
             info_text = (
                 f'Database Statistics:\n\n'
-                f'Shows: {show_count}\n'
-                f'Episodes: {episode_count}\n'
-                f'Movies: {movie_count}\n'
-                f'Watchlist: {watchlist_count}\n\n'
+                f'Trakt Data:\n'
+                f'  Shows: {show_count}\n'
+                f'  Episodes: {episode_count}\n'
+                f'  Movies: {movie_count}\n'
+                f'  Watchlist: {watchlist_count}\n'
+                f'  Hidden Shows: {hidden_shows_count}\n\n'
+                f'Stream Data:\n'
+                f'  Statistics: {stream_stats_count}\n'
+                f'  Preferences: {stream_prefs_count}\n\n'
                 f'Last Sync: {last_sync_str}\n'
                 f'Database Size: {db_size:.1f} KB'
             )
-            
-            xbmcgui.Dialog().ok('Trakt Database Info', info_text)
-            
+
+            xbmcgui.Dialog().ok('Database Info', info_text)
+
         finally:
             db.disconnect()
-            
+
     except Exception as e:
         xbmc.log(f'[AIOStreams] Failed to get database info: {e}', xbmc.LOGERROR)
         xbmcgui.Dialog().notification('AIOStreams', 'Failed to get database info', xbmcgui.NOTIFICATION_ERROR)
+
+
+def database_reset():
+    """Complete database reset: clear all tables, caches, and resync Trakt."""
+    if not HAS_MODULES:
+        return
+
+    # Confirm with user (strong warning)
+    confirm = xbmcgui.Dialog().yesno(
+        'Database Reset',
+        'This will:\n'
+        '• Clear ALL database tables\n'
+        '• Delete ALL caches\n'
+        '• Resync Trakt from scratch\n\n'
+        'This action CANNOT be undone!\n\n'
+        'Are you sure?'
+    )
+
+    if not confirm:
+        return
+
+    # Double confirmation
+    confirm2 = xbmcgui.Dialog().yesno(
+        'Final Confirmation',
+        'This will delete all your local data.\n\n'
+        'Continue with database reset?'
+    )
+
+    if not confirm2:
+        return
+
+    try:
+        from resources.lib.database.trakt_sync import TraktSyncDatabase
+        from resources.lib import cache
+
+        xbmc.log('[AIOStreams] Starting database reset...', xbmc.LOGINFO)
+
+        # Connect to database
+        db = TraktSyncDatabase()
+        if not db.connect():
+            xbmcgui.Dialog().notification('AIOStreams', 'Failed to connect to database', xbmcgui.NOTIFICATION_ERROR)
+            return
+
+        try:
+            # Clear all tables
+            xbmc.log('[AIOStreams] Clearing all database tables...', xbmc.LOGINFO)
+            db.execute('DELETE FROM shows')
+            db.execute('DELETE FROM episodes')
+            db.execute('DELETE FROM movies')
+            db.execute('DELETE FROM watchlist')
+            db.execute('DELETE FROM activities')
+
+            # Clear hidden shows if it exists
+            try:
+                db.execute('DELETE FROM hidden_shows')
+            except:
+                pass
+
+            # Clear stream stats and preferences if they exist
+            try:
+                db.execute('DELETE FROM stream_stats')
+            except:
+                pass
+
+            try:
+                db.execute('DELETE FROM stream_preferences')
+            except:
+                pass
+
+            db.commit()
+            xbmc.log('[AIOStreams] Database tables cleared', xbmc.LOGINFO)
+
+        finally:
+            db.disconnect()
+
+        # Clear all caches
+        xbmc.log('[AIOStreams] Clearing all caches...', xbmc.LOGINFO)
+        cache.clear_all_cache()
+
+        # Show progress dialog for Trakt sync
+        progress = xbmcgui.DialogProgress()
+        progress.create('Database Reset', 'Syncing Trakt data...')
+
+        # Sync Trakt (this will recreate all the data)
+        xbmc.log('[AIOStreams] Starting Trakt sync...', xbmc.LOGINFO)
+        try:
+            from resources.lib import trakt
+            trakt.sync_trakt(force=True, progress_callback=lambda msg: progress.update(50, msg))
+        except Exception as e:
+            xbmc.log(f'[AIOStreams] Trakt sync failed during reset: {e}', xbmc.LOGERROR)
+
+        progress.close()
+
+        xbmc.log('[AIOStreams] Database reset complete', xbmc.LOGINFO)
+        xbmcgui.Dialog().ok(
+            'Database Reset Complete',
+            'All data has been cleared and Trakt has been resynced.\n\n'
+            'Your addon is now in a fresh state.'
+        )
+
+    except Exception as e:
+        xbmc.log(f'[AIOStreams] Failed to reset database: {e}', xbmc.LOGERROR)
+        xbmcgui.Dialog().notification('AIOStreams', f'Database reset failed: {str(e)}', xbmcgui.NOTIFICATION_ERROR)
 
 
 def vacuum_database():
@@ -3055,8 +3184,6 @@ def router(params):
         show_episodes()
     elif action == 'trakt_menu':
         trakt_menu()
-    elif action == 'force_trakt_sync':
-        force_trakt_sync()
     elif action == 'trakt_watchlist':
         trakt_watchlist()
     elif action == 'trakt_collection':
@@ -3085,20 +3212,14 @@ def router(params):
         trakt_hide_from_progress()
     elif action == 'trakt_unhide_from_progress':
         trakt_unhide_from_progress()
-    elif action == 'clear_cache':
-        clear_cache()
     elif action == 'clear_stream_stats':
         clear_stream_stats()
     elif action == 'clear_preferences':
         clear_preferences()
-    elif action == 'clear_trakt_database':
-        clear_trakt_database()
-    elif action == 'rebuild_trakt_database':
-        rebuild_trakt_database()
+    elif action == 'database_reset':
+        database_reset()
     elif action == 'show_database_info':
         show_database_info()
-    elif action == 'vacuum_database':
-        vacuum_database()
     elif action == 'test_connection':
         test_connection()
     elif action == 'quick_actions':

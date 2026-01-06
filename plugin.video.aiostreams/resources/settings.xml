@@ -17,9 +17,6 @@
         <setting id="resume_settings" type="lsep" label="Resume &amp; Progress"/>
         <setting id="auto_resume" type="bool" label="Auto Resume Playback" default="true"/>
         <setting id="auto_mark_watched_percent" type="number" label="Mark Watched at %" default="90"/>
-        
-        <setting id="stream_display" type="lsep" label="Stream Display"/>
-        <setting id="stream_formatter" type="select" label="Stream Name Format" values="torrentio|torbox|gdrive|gdrive_light|prism|gdrive_minimal" default="torrentio"/>
     </category>
     
     <!-- Trakt Settings -->
@@ -32,14 +29,7 @@
         
         <setting id="trakt_sync" type="lsep" label="Sync Settings"/>
         <setting id="trakt_sync_auto" type="bool" label="Enable Auto-Sync (Background Service)" default="true"/>
-        <setting id="trakt_sync_manual" type="action" label="Force Sync Now" action="RunPlugin(plugin://plugin.video.aiostreams/?action=force_trakt_sync)"/>
-        
-        <setting id="trakt_database" type="lsep" label="Database Maintenance"/>
-        <setting id="trakt_database_info" type="action" label="Show Database Info" action="RunPlugin(plugin://plugin.video.aiostreams/?action=show_database_info)"/>
-        <setting id="trakt_database_clear" type="action" label="Clear Trakt Database" action="RunPlugin(plugin://plugin.video.aiostreams/?action=clear_trakt_database)"/>
-        <setting id="trakt_database_rebuild" type="action" label="Rebuild Trakt Database" action="RunPlugin(plugin://plugin.video.aiostreams/?action=rebuild_trakt_database)"/>
-        <setting id="trakt_database_vacuum" type="action" label="Optimize Database (Vacuum)" action="RunPlugin(plugin://plugin.video.aiostreams/?action=vacuum_database)"/>
-        
+
         <setting id="trakt_features" type="lsep" label="Trakt Features"/>
         <setting id="trakt_scrobble" type="bool" label="Enable Scrobbling" default="true"/>
         
@@ -71,7 +61,8 @@
         <setting id="debug_logging" type="bool" label="Enable Debug Logging" default="false"/>
 
         <setting id="maintenance" type="lsep" label="Maintenance"/>
-        <setting id="clear_cache" type="action" label="Clear Cache" action="RunPlugin(plugin://plugin.video.aiostreams/?action=clear_cache)"/>
+        <setting id="database_reset" type="action" label="Database Reset" action="RunPlugin(plugin://plugin.video.aiostreams/?action=database_reset)"/>
+        <setting id="show_database_info" type="action" label="Show Database Info" action="RunPlugin(plugin://plugin.video.aiostreams/?action=show_database_info)"/>
         <setting id="clear_stream_stats" type="action" label="Clear Stream Statistics" action="RunPlugin(plugin://plugin.video.aiostreams/?action=clear_stream_stats)"/>
         <setting id="clear_preferences" type="action" label="Clear Learned Preferences" action="RunPlugin(plugin://plugin.video.aiostreams/?action=clear_preferences)"/>
         <setting id="test_connection" type="action" label="Test AIOStreams Connection" action="RunPlugin(plugin://plugin.video.aiostreams/?action=test_connection)"/>
@@ -79,28 +70,6 @@
 
     <!-- Filter Settings -->
     <category label="Filters">
-        <setting id="filter_genres_enabled" type="bool" label="Enable Genre Filters" default="false"/>
-        <setting id="filter_genres" type="lsep" label="Hide Genres"/>
-        <setting id="filter_genre_action" type="bool" label="Action" default="false" enable="eq(-2,true)"/>
-        <setting id="filter_genre_adventure" type="bool" label="Adventure" default="false" enable="eq(-3,true)"/>
-        <setting id="filter_genre_animation" type="bool" label="Animation" default="false" enable="eq(-4,true)"/>
-        <setting id="filter_genre_anime" type="bool" label="Anime" default="false" enable="eq(-5,true)"/>
-        <setting id="filter_genre_comedy" type="bool" label="Comedy" default="false" enable="eq(-6,true)"/>
-        <setting id="filter_genre_crime" type="bool" label="Crime" default="false" enable="eq(-7,true)"/>
-        <setting id="filter_genre_documentary" type="bool" label="Documentary" default="false" enable="eq(-8,true)"/>
-        <setting id="filter_genre_drama" type="bool" label="Drama" default="false" enable="eq(-9,true)"/>
-        <setting id="filter_genre_family" type="bool" label="Family" default="false" enable="eq(-10,true)"/>
-        <setting id="filter_genre_fantasy" type="bool" label="Fantasy" default="false" enable="eq(-11,true)"/>
-        <setting id="filter_genre_history" type="bool" label="History" default="false" enable="eq(-12,true)"/>
-        <setting id="filter_genre_horror" type="bool" label="Horror" default="false" enable="eq(-13,true)"/>
-        <setting id="filter_genre_music" type="bool" label="Music" default="false" enable="eq(-14,true)"/>
-        <setting id="filter_genre_mystery" type="bool" label="Mystery" default="false" enable="eq(-15,true)"/>
-        <setting id="filter_genre_romance" type="bool" label="Romance" default="false" enable="eq(-16,true)"/>
-        <setting id="filter_genre_science_fiction" type="bool" label="Science Fiction" default="false" enable="eq(-17,true)"/>
-        <setting id="filter_genre_thriller" type="bool" label="Thriller" default="false" enable="eq(-18,true)"/>
-        <setting id="filter_genre_war" type="bool" label="War" default="false" enable="eq(-19,true)"/>
-        <setting id="filter_genre_western" type="bool" label="Western" default="false" enable="eq(-20,true)"/>
-        
         <setting id="filter_rating_enabled" type="bool" label="Enable Rating Filters" default="false"/>
         <setting id="filter_ratings" type="lsep" label="Hide Ratings"/>
         <setting id="filter_rating_g" type="bool" label="G" default="false" enable="eq(-2,true)"/>
