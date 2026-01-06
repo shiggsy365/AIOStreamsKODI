@@ -1,5 +1,18 @@
 # Changelog
 
+## [3.0.8] - 2026-01-06
+
+### Fixed
+- **Next Up Now Working**: Fixed get_show_progress_by_trakt_id() to use API instead of database
+- **Database Limitation**: Database only stores watched episodes, but Next Up needs all aired episodes to determine next unwatched
+- **Progress Calculation**: API endpoint /shows/{id}/progress/watched provides complete progress with next_episode field
+
+### Technical
+- Simplified get_show_progress_by_trakt_id() to always use Trakt API
+- Removed database-based progress building that couldn't determine next episode
+- Database sync stores watched episodes for statistics but API used for Next Up feature
+- This fixes the issue where 69 shows were found but none displayed (all filtered due to missing next_episode)
+
 ## [3.0.7] - 2026-01-06
 
 ### Fixed

@@ -628,83 +628,20 @@ def get_popular(media_type='movies', page=1, limit=20):
 
 
 def get_show_progress_by_trakt_id(show_id):
-    """Get progress for a specific show by Trakt ID using SQLite database.
-    Falls back to API if database is unavailable.
+    """Get progress for a specific show by Trakt ID.
+
+    Uses Trakt API to get complete progress including next episode information.
+    The database only stores watched episodes, but we need all aired episodes
+    to determine the next unwatched episode.
 
     Returns progress data with next episode information.
     """
     if not show_id:
         return None
 
-    # Try database first
-    db = get_trakt_db()
-    if db and db.connect():
-        try:
-            # Get show info
-            show = db.fetchone("SELECT * FROM shows WHERE trakt_id=?", (show_id,))
-            if show:
-                # Get all episodes for this show
-                episodes = db.fetchall(
-                    "SELECT season, episode, watched FROM episodes WHERE show_trakt_id=? ORDER BY season, episode",
-                    (show_id,)
-                )
-
-                # Build progress structure compatible with Trakt API format
-                progress = {
-                    'aired': 0,
-                    'completed': 0,
-                    'seasons': []
-                }
-
-                # Group by season
-                seasons_dict = {}
-                next_episode = None
-
-                for ep in episodes:
-                    season_num = ep.get('season', 0)
-                    episode_num = ep.get('episode', 0)
-                    is_watched = ep.get('watched', 0) == 1
-
-                    if season_num not in seasons_dict:
-                        seasons_dict[season_num] = {
-                            'number': season_num,
-                            'aired': 0,
-                            'completed': 0,
-                            'episodes': []
-                        }
-
-                    seasons_dict[season_num]['aired'] += 1
-                    progress['aired'] += 1
-
-                    if is_watched:
-                        seasons_dict[season_num]['completed'] += 1
-                        progress['completed'] += 1
-                    else:
-                        # Track first unwatched episode as next episode
-                        if next_episode is None and season_num > 0:  # Ignore specials (season 0)
-                            next_episode = {
-                                'season': season_num,
-                                'number': episode_num
-                            }
-
-                    seasons_dict[season_num]['episodes'].append({
-                        'number': episode_num,
-                        'completed': is_watched
-                    })
-
-                progress['seasons'] = list(seasons_dict.values())
-                if next_episode:
-                    progress['next_episode'] = next_episode
-
-                xbmc.log(f'[AIOStreams] Built show progress from database for Trakt ID {show_id}', xbmc.LOGDEBUG)
-                return progress
-        except Exception as e:
-            xbmc.log(f'[AIOStreams] Database error getting show progress: {e}', xbmc.LOGWARNING)
-        finally:
-            db.disconnect()
-
-    # Fallback to API call
-    xbmc.log(f'[AIOStreams] Database unavailable, fetching show progress from API for {show_id}', xbmc.LOGDEBUG)
+    # Use API for complete progress with next_episode
+    # The database doesn't have unwatched episodes, so it can't determine next episode
+    xbmc.log(f'[AIOStreams] Fetching show progress from API for {show_id}', xbmc.LOGDEBUG)
     result = call_trakt(f'shows/{show_id}/progress/watched')
     return result
 
