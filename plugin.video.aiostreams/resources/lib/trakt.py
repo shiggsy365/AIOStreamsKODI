@@ -1013,10 +1013,26 @@ def remove_from_watchlist(media_type, imdb_id, season=None, episode=None):
     return False
 
 
-def mark_watched(media_type, imdb_id, season=None, episode=None, playback_id=None):
-    """Mark item as watched and clear any in-progress status."""
+def _add_show_to_pending_updates(imdb_id):
+    """Add show to pending updates list after marking watched/unwatched.
+    
+    Helper function to track recently updated shows to handle Trakt's eventual consistency.
+    """
     global _pending_show_updates
     
+    # Fetch show data to get Trakt ID
+    show_data = call_trakt(f'search/imdb/{imdb_id}', with_auth=False)
+    if show_data and isinstance(show_data, list) and len(show_data) > 0:
+        show_trakt_id = show_data[0].get('show', {}).get('ids', {}).get('trakt')
+        if show_trakt_id:
+            _pending_show_updates[show_trakt_id] = time.time()
+            xbmc.log(f'[AIOStreams] Added show {show_trakt_id} to pending updates (10s grace period)', xbmc.LOGDEBUG)
+            return show_trakt_id
+    return None
+
+
+def mark_watched(media_type, imdb_id, season=None, episode=None, playback_id=None):
+    """Mark item as watched and clear any in-progress status."""
     if not imdb_id:
         xbmc.log('[AIOStreams] Cannot mark as watched: no IMDB ID provided', xbmc.LOGWARNING)
         xbmcgui.Dialog().notification('AIOStreams', 'Failed to mark as watched: Invalid ID', xbmcgui.NOTIFICATION_ERROR)
@@ -1058,13 +1074,7 @@ def mark_watched(media_type, imdb_id, season=None, episode=None, playback_id=Non
 
         # Get Trakt ID for this show to track pending update (AFTER invalidation)
         if api_type == 'shows':
-            # Fetch show data to get Trakt ID
-            show_data = call_trakt(f'search/imdb/{imdb_id}', with_auth=False)
-            if show_data and isinstance(show_data, list) and len(show_data) > 0:
-                show_trakt_id = show_data[0].get('show', {}).get('ids', {}).get('trakt')
-                if show_trakt_id:
-                    _pending_show_updates[show_trakt_id] = time.time()
-                    xbmc.log(f'[AIOStreams] Added show {show_trakt_id} to pending updates (10s grace period)', xbmc.LOGDEBUG)
+            _add_show_to_pending_updates(imdb_id)
 
         # Invalidate batch watched history cache
         global _watched_history_valid
@@ -1079,8 +1089,6 @@ def mark_watched(media_type, imdb_id, season=None, episode=None, playback_id=Non
 
 def mark_unwatched(media_type, imdb_id, season=None, episode=None):
     """Remove item from watch history."""
-    global _pending_show_updates
-    
     if not imdb_id:
         xbmc.log('[AIOStreams] Cannot mark as unwatched: no IMDB ID provided', xbmc.LOGWARNING)
         xbmcgui.Dialog().notification('AIOStreams', 'Failed to mark as unwatched: Invalid ID', xbmcgui.NOTIFICATION_ERROR)
@@ -1118,13 +1126,7 @@ def mark_unwatched(media_type, imdb_id, season=None, episode=None):
 
         # Get Trakt ID for this show to track pending update (AFTER invalidation)
         if api_type == 'shows':
-            # Fetch show data to get Trakt ID
-            show_data = call_trakt(f'search/imdb/{imdb_id}', with_auth=False)
-            if show_data and isinstance(show_data, list) and len(show_data) > 0:
-                show_trakt_id = show_data[0].get('show', {}).get('ids', {}).get('trakt')
-                if show_trakt_id:
-                    _pending_show_updates[show_trakt_id] = time.time()
-                    xbmc.log(f'[AIOStreams] Added show {show_trakt_id} to pending updates (10s grace period)', xbmc.LOGDEBUG)
+            _add_show_to_pending_updates(imdb_id)
 
         # Invalidate batch watched history cache
         global _watched_history_valid
