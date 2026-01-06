@@ -2125,6 +2125,12 @@ def trakt_next_up():
 
     xbmc.log(f'[AIOStreams] Next Up: Filtered out {filtered_count} hidden shows, {len(active_shows)} active shows remaining', xbmc.LOGINFO)
     active_shows.sort(key=lambda x: x.get('last_watched_at', ''), reverse=True)
+    
+    # Limit to most recent 100 shows to avoid rate limiting (user likely only cares about recently watched shows)
+    MAX_SHOWS_TO_CHECK = 100
+    if len(active_shows) > MAX_SHOWS_TO_CHECK:
+        xbmc.log(f'[AIOStreams] Next Up: Limiting to {MAX_SHOWS_TO_CHECK} most recently watched shows (out of {len(active_shows)} total)', xbmc.LOGINFO)
+        active_shows = active_shows[:MAX_SHOWS_TO_CHECK]
 
     xbmcplugin.setPluginCategory(HANDLE, 'Next Up')
     xbmcplugin.setContent(HANDLE, 'episodes')
