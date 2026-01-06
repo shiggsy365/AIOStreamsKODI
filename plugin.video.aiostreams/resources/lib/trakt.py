@@ -28,11 +28,37 @@ _show_progress_with_next_cache = {}
 
 
 def invalidate_progress_cache():
-    """Invalidate the batch show progress cache (call when watched status changes)."""
-    global _show_progress_cache_valid, _show_progress_with_next_cache
+    """Invalidate the batch show progress cache (call when watched status changes).
+    
+    Clears both in-memory and disk caches for show progress.
+    """
+    global _show_progress_cache_valid, _show_progress_with_next_cache, _show_progress_cache
     _show_progress_cache_valid = False
     _show_progress_with_next_cache.clear()
-    xbmc.log('[AIOStreams] Trakt progress cache invalidated', xbmc.LOGDEBUG)
+    _show_progress_cache.clear()
+    
+    # Clear all disk-cached show progress (both Trakt ID and IMDB ID based)
+    if HAS_MODULES:
+        import os
+        cache_dir = cache.get_cache_dir()
+        try:
+            dirs, files = xbmcvfs.listdir(cache_dir)
+            cleared_count = 0
+            for filename in files:
+                # Clear files matching show_progress_* pattern
+                if filename.startswith('show_progress_') and filename.endswith('.json'):
+                    file_path = os.path.join(cache_dir, filename)
+                    try:
+                        os.remove(file_path)
+                        cleared_count += 1
+                    except:
+                        pass
+            if cleared_count > 0:
+                xbmc.log(f'[AIOStreams] Cleared {cleared_count} show progress cache files from disk', xbmc.LOGDEBUG)
+        except Exception as e:
+            xbmc.log(f'[AIOStreams] Error clearing show progress cache: {e}', xbmc.LOGERROR)
+    
+    xbmc.log('[AIOStreams] Trakt progress cache invalidated (memory + disk)', xbmc.LOGDEBUG)
 
 
 def get_all_show_progress():
@@ -464,19 +490,36 @@ def get_popular(media_type='movies', page=1, limit=20):
 
 
 def get_show_progress_by_trakt_id(show_id):
-    """Get progress for a specific show by Trakt ID (includes next episode)."""
+    """Get progress for a specific show by Trakt ID (includes next episode).
+    
+    Uses event-driven caching that persists until watched status changes.
+    """
     global _show_progress_with_next_cache
 
-    # Check cache first
+    # Check in-memory cache first (fastest)
     if show_id in _show_progress_with_next_cache:
+        xbmc.log(f'[AIOStreams] Cache HIT (memory): show_progress_trakt_{show_id}', xbmc.LOGDEBUG)
         return _show_progress_with_next_cache[show_id]
 
+    # Check disk cache (persists until invalidated by watched status change)
+    if HAS_MODULES:
+        # Use 1 year TTL (event-driven cache, only cleared on watched changes)
+        cached = cache.get_cached_data(f'show_progress_trakt_{show_id}', 'trakt', ttl_seconds=31536000)
+        if cached:
+            xbmc.log(f'[AIOStreams] Cache HIT (disk): show_progress_trakt_{show_id}', xbmc.LOGDEBUG)
+            _show_progress_with_next_cache[show_id] = cached
+            return cached
+
     # Fetch from API
+    xbmc.log(f'[AIOStreams] Cache MISS: Fetching show_progress_trakt_{show_id} from API', xbmc.LOGDEBUG)
     result = call_trakt(f'shows/{show_id}/progress/watched')
 
-    # Cache the result
+    # Cache the result (both in-memory and on disk)
     if result:
         _show_progress_with_next_cache[show_id] = result
+        if HAS_MODULES:
+            cache.cache_data(f'show_progress_trakt_{show_id}', 'trakt', result)
+            xbmc.log(f'[AIOStreams] Cached show_progress_trakt_{show_id} to disk', xbmc.LOGDEBUG)
 
     return result
 
@@ -987,7 +1030,7 @@ def mark_watched(media_type, imdb_id, season=None, episode=None, playback_id=Non
         if imdb_id in _show_progress_cache:
             del _show_progress_cache[imdb_id]
 
-        # Invalidate batch progress cache
+        # Invalidate batch progress cache (also clears disk cache)
         invalidate_progress_cache()
 
         # Invalidate batch watched history cache
@@ -1035,7 +1078,7 @@ def mark_unwatched(media_type, imdb_id, season=None, episode=None):
         if imdb_id in _show_progress_cache:
             del _show_progress_cache[imdb_id]
 
-        # Invalidate batch progress cache
+        # Invalidate batch progress cache (also clears disk cache)
         invalidate_progress_cache()
 
         # Invalidate batch watched history cache
@@ -1190,16 +1233,34 @@ def is_watched(media_type, imdb_id):
 
 
 def get_show_progress(imdb_id):
-    """Get show progress from Trakt (which seasons/episodes are watched)."""
-    # Check cache first
+    """Get show progress from Trakt (which seasons/episodes are watched).
+    
+    Uses event-driven caching that persists until watched status changes.
+    """
+    # Check in-memory cache first (fastest)
     if imdb_id in _show_progress_cache:
+        xbmc.log(f'[AIOStreams] Cache HIT (memory): show_progress_{imdb_id}', xbmc.LOGDEBUG)
         return _show_progress_cache[imdb_id]
     
+    # Check disk cache (persists until invalidated by watched status change)
+    if HAS_MODULES:
+        # Use 1 year TTL (event-driven cache, only cleared on watched changes)
+        cached = cache.get_cached_data(f'show_progress_{imdb_id}', 'trakt', ttl_seconds=31536000)
+        if cached:
+            xbmc.log(f'[AIOStreams] Cache HIT (disk): show_progress_{imdb_id}', xbmc.LOGDEBUG)
+            _show_progress_cache[imdb_id] = cached
+            return cached
+    
     # Get show progress from Trakt
+    xbmc.log(f'[AIOStreams] Cache MISS: Fetching show_progress_{imdb_id} from API', xbmc.LOGDEBUG)
     result = call_trakt(f'shows/{imdb_id}/progress/watched')
     
     if result:
         _show_progress_cache[imdb_id] = result
+        # Cache to disk as well
+        if HAS_MODULES:
+            cache.cache_data(f'show_progress_{imdb_id}', 'trakt', result)
+            xbmc.log(f'[AIOStreams] Cached show_progress_{imdb_id} to disk', xbmc.LOGDEBUG)
         return result
     
     return None
