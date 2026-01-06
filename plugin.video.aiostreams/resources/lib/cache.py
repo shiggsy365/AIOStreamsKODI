@@ -41,13 +41,13 @@ def get_generic_cache_key(cache_type, identifier):
     return f"{cache_type}_{key_hash}.json"
 
 
-def get_cached_data(cache_type, identifier, ttl_seconds):
+def get_cached_data(cache_type, identifier, ttl_seconds=86400*365):
     """Get data from cache if available and not expired.
 
     Args:
         cache_type: Type of cache (e.g., 'manifest', 'catalog')
         identifier: Unique identifier for this cache entry
-        ttl_seconds: Time-to-live in seconds
+        ttl_seconds: Time-to-live in seconds (default: 1 year for event-driven caches)
     """
     cache_dir = get_cache_dir()
     cache_file = os.path.join(cache_dir, get_generic_cache_key(cache_type, identifier))
