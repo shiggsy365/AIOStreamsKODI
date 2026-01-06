@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <addons>
-<addon id="plugin.video.aiostreams" name="AIOStreams" version="3.3.3" provider-name="Jon">
+<addon id="plugin.video.aiostreams" name="AIOStreams" version="3.3.4" provider-name="Jon">
     <requires>
         <import addon="xbmc.python" version="3.0.0"/>
         <import addon="script.module.requests" version="2.25.1"/>
@@ -15,7 +15,7 @@
         <platform>all</platform>
         <license>MIT</license>
         <website>https://aiostreams.shiggsy.co.uk</website>
-        <news>v3.3.3: Reverted to built-in 2-line Kodi selector with server-side formatting (simpler, cleaner). | v3.3.2: Custom dialog improvements. | v3.3.0: Custom multi-line dialog.</news>
+        <news>v3.3.4: Settings overhaul - removed unused options, added Database Reset and improved Show Database Info. | v3.3.3: Reverted to 2-line selector. | v3.3.0: Custom dialog.</news>
         <assets>
             <icon>resources/icon.png</icon>
             <fanart>resources/fanart.jpg</fanart>
