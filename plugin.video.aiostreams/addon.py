@@ -1253,16 +1253,17 @@ def select_stream():
         xbmcplugin.setResolvedUrl(HANDLE, False, xbmcgui.ListItem())
         return
     
-    # Use Dialog().select() with 2 lines - server formats the data
+    # Use Dialog().select() - server formats the data
     xbmc.log(f'[AIOStreams] Showing stream selection dialog with {len(stream_data["streams"])} streams', xbmc.LOGDEBUG)
 
-    # Create stream list - server provides pre-formatted name and description
+    # Create stream list - concatenate name and description on one line
     stream_list = []
     for stream in stream_data['streams']:
         stream_name = stream.get('name', 'Unknown Stream')
         stream_desc = stream.get('description', '')
-        # Create ListItem with label and label2, no art (to avoid puzzle pieces)
-        list_item = xbmcgui.ListItem(label=stream_name, label2=stream_desc)
+        # Concatenate name and description with space separator
+        full_label = f"{stream_name} {stream_desc}" if stream_desc else stream_name
+        list_item = xbmcgui.ListItem(label=full_label)
         stream_list.append(list_item)
 
     # Show dialog
@@ -1579,16 +1580,17 @@ def show_streams_dialog(content_type, media_id, stream_data, title, poster='', f
         xbmcplugin.endOfDirectory(HANDLE, succeeded=False)
         return
 
-    # Use Dialog().select() with 2 lines - server formats the data
+    # Use Dialog().select() - server formats the data
     xbmc.log(f'[AIOStreams] Showing stream selection dialog with {len(stream_data["streams"])} streams', xbmc.LOGDEBUG)
 
-    # Create stream list - server provides pre-formatted name and description
+    # Create stream list - concatenate name and description on one line
     stream_list = []
     for stream in stream_data['streams']:
         stream_name = stream.get('name', 'Unknown Stream')
         stream_desc = stream.get('description', '')
-        # Create ListItem with label and label2, no art (to avoid puzzle pieces)
-        list_item = xbmcgui.ListItem(label=stream_name, label2=stream_desc)
+        # Concatenate name and description with space separator
+        full_label = f"{stream_name} {stream_desc}" if stream_desc else stream_name
+        list_item = xbmcgui.ListItem(label=full_label)
         stream_list.append(list_item)
 
     # Show dialog
@@ -2834,32 +2836,25 @@ def show_database_info():
             return
 
         try:
+            # Get list of tables that exist
+            cursor = db.execute("SELECT name FROM sqlite_master WHERE type='table'")
+            existing_tables = [row[0] for row in cursor.fetchall()] if cursor else []
+
+            # Helper function to safely get count
+            def get_table_count(table_name):
+                if table_name in existing_tables:
+                    result = db.execute(f'SELECT COUNT(*) as count FROM {table_name}').fetchone()
+                    return result['count'] if result else 0
+                return 0
+
             # Get counts from each table
-            show_count = db.execute('SELECT COUNT(*) as count FROM shows').fetchone()['count']
-            episode_count = db.execute('SELECT COUNT(*) as count FROM episodes').fetchone()['count']
-            movie_count = db.execute('SELECT COUNT(*) as count FROM movies').fetchone()['count']
-            watchlist_count = db.execute('SELECT COUNT(*) as count FROM watchlist').fetchone()['count']
-
-            # Get hidden shows count
-            hidden_shows_count = 0
-            try:
-                hidden_shows_count = db.execute('SELECT COUNT(*) as count FROM hidden_shows').fetchone()['count']
-            except:
-                pass
-
-            # Get stream stats count
-            stream_stats_count = 0
-            try:
-                stream_stats_count = db.execute('SELECT COUNT(*) as count FROM stream_stats').fetchone()['count']
-            except:
-                pass
-
-            # Get stream preferences count
-            stream_prefs_count = 0
-            try:
-                stream_prefs_count = db.execute('SELECT COUNT(*) as count FROM stream_preferences').fetchone()['count']
-            except:
-                pass
+            show_count = get_table_count('shows')
+            episode_count = get_table_count('episodes')
+            movie_count = get_table_count('movies')
+            watchlist_count = get_table_count('watchlist')
+            hidden_shows_count = get_table_count('hidden_shows')
+            stream_stats_count = get_table_count('stream_stats')
+            stream_prefs_count = get_table_count('stream_preferences')
 
             # Get last sync time
             activities = db.fetchone('SELECT last_activities_call FROM activities WHERE sync_id=1')
@@ -2945,28 +2940,18 @@ def database_reset():
         try:
             # Clear all tables
             xbmc.log('[AIOStreams] Clearing all database tables...', xbmc.LOGINFO)
-            db.execute('DELETE FROM shows')
-            db.execute('DELETE FROM episodes')
-            db.execute('DELETE FROM movies')
-            db.execute('DELETE FROM watchlist')
-            db.execute('DELETE FROM activities')
 
-            # Clear hidden shows if it exists
-            try:
-                db.execute('DELETE FROM hidden_shows')
-            except:
-                pass
+            # Get list of tables that exist
+            cursor = db.execute("SELECT name FROM sqlite_master WHERE type='table'")
+            existing_tables = [row[0] for row in cursor.fetchall()] if cursor else []
 
-            # Clear stream stats and preferences if they exist
-            try:
-                db.execute('DELETE FROM stream_stats')
-            except:
-                pass
+            # Clear each table if it exists
+            tables_to_clear = ['shows', 'episodes', 'movies', 'watchlist', 'activities',
+                              'hidden_shows', 'stream_stats', 'stream_preferences']
 
-            try:
-                db.execute('DELETE FROM stream_preferences')
-            except:
-                pass
+            for table in tables_to_clear:
+                if table in existing_tables:
+                    db.execute(f'DELETE FROM {table}')
 
             db.commit()
             xbmc.log('[AIOStreams] Database tables cleared', xbmc.LOGINFO)
@@ -2978,25 +2963,11 @@ def database_reset():
         xbmc.log('[AIOStreams] Clearing all caches...', xbmc.LOGINFO)
         cache.cleanup_expired_cache(force_all=True)
 
-        # Show progress dialog for Trakt sync
-        progress = xbmcgui.DialogProgress()
-        progress.create('Database Reset', 'Syncing Trakt data...')
-
-        # Sync Trakt (this will recreate all the data)
-        xbmc.log('[AIOStreams] Starting Trakt sync...', xbmc.LOGINFO)
-        try:
-            from resources.lib import trakt
-            trakt.sync_trakt(force=True, progress_callback=lambda msg: progress.update(50, msg))
-        except Exception as e:
-            xbmc.log(f'[AIOStreams] Trakt sync failed during reset: {e}', xbmc.LOGERROR)
-
-        progress.close()
-
         xbmc.log('[AIOStreams] Database reset complete', xbmc.LOGINFO)
         xbmcgui.Dialog().ok(
             'Database Reset Complete',
-            'All data has been cleared and Trakt has been resynced.\n\n'
-            'Your addon is now in a fresh state.'
+            'All data has been cleared.\n\n'
+            'Trakt data will be resynced automatically on next access.'
         )
 
     except Exception as e:
