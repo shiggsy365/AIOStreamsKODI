@@ -67,6 +67,91 @@ def invalidate_progress_cache():
     xbmc.log('[AIOStreams] Trakt progress cache invalidated (memory + disk)', xbmc.LOGDEBUG)
 
 
+def update_show_progress_incrementally(imdb_id, show_trakt_id):
+    """Update progress cache for a single show without invalidating everything.
+    
+    This allows other shows' cached data to remain valid while we refresh just 
+    the updated show. Much faster than full cache invalidation.
+    
+    Args:
+        imdb_id: IMDB ID of the show (for batch cache)
+        show_trakt_id: Trakt ID of the show (for individual progress cache)
+    """
+    global _show_progress_batch_cache, _show_progress_with_next_cache, _show_progress_cache
+    
+    # Remove this show from in-memory caches (will be refetched on next access)
+    if imdb_id and imdb_id in _show_progress_batch_cache:
+        del _show_progress_batch_cache[imdb_id]
+        xbmc.log(f'[AIOStreams] Removed {imdb_id} from batch cache', xbmc.LOGDEBUG)
+    
+    if show_trakt_id and show_trakt_id in _show_progress_with_next_cache:
+        del _show_progress_with_next_cache[show_trakt_id]
+        xbmc.log(f'[AIOStreams] Removed {show_trakt_id} from progress cache', xbmc.LOGDEBUG)
+    
+    if imdb_id and imdb_id in _show_progress_cache:
+        del _show_progress_cache[imdb_id]
+        xbmc.log(f'[AIOStreams] Removed {imdb_id} from show progress cache', xbmc.LOGDEBUG)
+    
+    # Clear disk cache for this show only
+    if HAS_MODULES:
+        import os
+        cache_dir = cache.get_cache_dir()
+        try:
+            # Clear both IMDB-based and Trakt-based cache files for this show
+            patterns = []
+            if imdb_id:
+                patterns.append(f'show_progress_{imdb_id}.json')
+            if show_trakt_id:
+                patterns.append(f'show_progress_trakt_{show_trakt_id}.json')
+            
+            for pattern in patterns:
+                file_path = os.path.join(cache_dir, pattern)
+                if xbmcvfs.exists(file_path):
+                    try:
+                        os.remove(file_path)
+                        xbmc.log(f'[AIOStreams] Cleared disk cache: {pattern}', xbmc.LOGDEBUG)
+                    except:
+                        pass
+        except Exception as e:
+            xbmc.log(f'[AIOStreams] Error clearing show disk cache: {e}', xbmc.LOGERROR)
+    
+    xbmc.log(f'[AIOStreams] Incrementally updated cache for show {imdb_id}/{show_trakt_id}', xbmc.LOGDEBUG)
+
+
+def _get_trakt_id_from_imdb(imdb_id):
+    """Get Trakt ID for a show from its IMDB ID.
+    
+    Checks batch cache first for performance, falls back to API if needed.
+    
+    Args:
+        imdb_id: IMDB ID (e.g., 'tt1234567')
+    
+    Returns:
+        Trakt ID (int) or None if not found
+    """
+    # Check batch cache first (fastest)
+    global _show_progress_batch_cache
+    if imdb_id in _show_progress_batch_cache:
+        show_data = _show_progress_batch_cache[imdb_id].get('show', {})
+        trakt_id = show_data.get('ids', {}).get('trakt')
+        if trakt_id:
+            return trakt_id
+    
+    # Fallback: Query Trakt API
+    try:
+        search_result = call_trakt(f'search/imdb/{imdb_id}', with_auth=False)
+        if search_result and isinstance(search_result, list) and len(search_result) > 0:
+            show_data = search_result[0].get('show', {})
+            trakt_id = show_data.get('ids', {}).get('trakt')
+            if trakt_id:
+                xbmc.log(f'[AIOStreams] Found Trakt ID {trakt_id} for IMDB {imdb_id}', xbmc.LOGDEBUG)
+                return trakt_id
+    except Exception as e:
+        xbmc.log(f'[AIOStreams] Error getting Trakt ID for {imdb_id}: {e}', xbmc.LOGERROR)
+    
+    return None
+
+
 def get_all_show_progress():
     """Fetch progress for ALL shows in one API call and cache in memory."""
     global _show_progress_batch_cache, _show_progress_cache_valid
@@ -503,12 +588,12 @@ def get_show_progress_by_trakt_id(show_id):
     """
     global _show_progress_with_next_cache, _pending_show_updates
 
-    # Check if this show was recently updated (within last 10 seconds)
+    # Check if this show was recently updated (within last 3 seconds)
     recently_updated = False
     if show_id in _pending_show_updates:
         update_time = _pending_show_updates[show_id]
         age = time.time() - update_time
-        if age < 10:  # 10 second grace period for Trakt to process
+        if age < 3:  # 3 second grace period for Trakt to process
             recently_updated = True
             xbmc.log(f'[AIOStreams] Show {show_id} was recently updated ({age:.1f}s ago), skipping cache', xbmc.LOGDEBUG)
         else:
@@ -963,17 +1048,21 @@ def add_to_watchlist(media_type, imdb_id, season=None, episode=None):
     result = call_trakt('sync/watchlist', method='POST', data=data)
 
     if result:
-        # Clear watchlist cache
+        # ✨ NEW: Incremental cache update - just remove this item from cache
         cache_key = f"{media_type}:{imdb_id}"
         if cache_key in _watchlist_cache:
             del _watchlist_cache[cache_key]
 
-        # Invalidate batch watchlist cache
+        # Invalidate batch watchlist cache for this type only
         global _watchlist_valid
-        _watchlist_valid['movies'] = False
-        _watchlist_valid['shows'] = False
+        api_type_key = 'movies' if media_type == 'movie' else 'shows'
+        _watchlist_valid[api_type_key] = False
 
         xbmcgui.Dialog().notification('AIOStreams', 'Added to Trakt watchlist', xbmcgui.NOTIFICATION_INFO)
+        
+        # ✨ NEW: Refresh widgets
+        xbmc.executebuiltin('Container.Refresh')
+        
         return True
 
     return False
@@ -997,17 +1086,21 @@ def remove_from_watchlist(media_type, imdb_id, season=None, episode=None):
     result = call_trakt('sync/watchlist/remove', method='POST', data=data)
 
     if result:
-        # Clear watchlist cache
+        # ✨ NEW: Incremental cache update - just remove this item from cache
         cache_key = f"{media_type}:{imdb_id}"
         if cache_key in _watchlist_cache:
             del _watchlist_cache[cache_key]
 
-        # Invalidate batch watchlist cache
+        # Invalidate batch watchlist cache for this type only
         global _watchlist_valid
-        _watchlist_valid['movies'] = False
-        _watchlist_valid['shows'] = False
+        api_type_key = 'movies' if media_type == 'movie' else 'shows'
+        _watchlist_valid[api_type_key] = False
 
         xbmcgui.Dialog().notification('AIOStreams', 'Removed from Trakt watchlist', xbmcgui.NOTIFICATION_INFO)
+        
+        # ✨ NEW: Refresh widgets
+        xbmc.executebuiltin('Container.Refresh')
+        
         return True
 
     return False
@@ -1033,6 +1126,9 @@ def _add_show_to_pending_updates(imdb_id):
 
 def mark_watched(media_type, imdb_id, season=None, episode=None, playback_id=None):
     """Mark item as watched and clear any in-progress status."""
+    global _pending_show_updates
+    import time
+    
     if not imdb_id:
         xbmc.log('[AIOStreams] Cannot mark as watched: no IMDB ID provided', xbmc.LOGWARNING)
         xbmcgui.Dialog().notification('AIOStreams', 'Failed to mark as watched: Invalid ID', xbmcgui.NOTIFICATION_ERROR)
@@ -1062,26 +1158,34 @@ def mark_watched(media_type, imdb_id, season=None, episode=None, playback_id=Non
         if playback_id:
             call_trakt(f'sync/playback/{playback_id}', method='DELETE')
 
-        # Clear watched cache
+        # Clear watched cache for this item only
         cache_key = f"{media_type}:{imdb_id}"
         if cache_key in _watched_cache:
             del _watched_cache[cache_key]
-        if imdb_id in _show_progress_cache:
-            del _show_progress_cache[imdb_id]
 
-        # Invalidate batch progress cache (also clears disk cache)
-        invalidate_progress_cache()
-
-        # Get Trakt ID for this show to track pending update (AFTER invalidation)
+        # ✨ NEW: Incremental cache update instead of full invalidation
         if api_type == 'shows':
-            _add_show_to_pending_updates(imdb_id)
-
+            # Get Trakt ID and do incremental update
+            show_trakt_id = _get_trakt_id_from_imdb(imdb_id)
+            if show_trakt_id:
+                update_show_progress_incrementally(imdb_id, show_trakt_id)
+                # Add to pending updates with 3-second grace period
+                _pending_show_updates[show_trakt_id] = time.time()
+                xbmc.log(f'[AIOStreams] Added show {show_trakt_id} to pending updates (3s grace period)', xbmc.LOGDEBUG)
+            else:
+                # Fallback to full invalidation if we can't get Trakt ID
+                invalidate_progress_cache()
+        
         # Invalidate batch watched history cache
         global _watched_history_valid
         _watched_history_valid['movies'] = False
         _watched_history_valid['shows'] = False
 
         xbmcgui.Dialog().notification('AIOStreams', 'Marked as watched on Trakt', xbmcgui.NOTIFICATION_INFO)
+        
+        # ✨ NEW: Refresh widgets/containers
+        xbmc.executebuiltin('Container.Refresh')
+        
         return True
 
     return False
@@ -1089,6 +1193,9 @@ def mark_watched(media_type, imdb_id, season=None, episode=None, playback_id=Non
 
 def mark_unwatched(media_type, imdb_id, season=None, episode=None):
     """Remove item from watch history."""
+    global _pending_show_updates
+    import time
+    
     if not imdb_id:
         xbmc.log('[AIOStreams] Cannot mark as unwatched: no IMDB ID provided', xbmc.LOGWARNING)
         xbmcgui.Dialog().notification('AIOStreams', 'Failed to mark as unwatched: Invalid ID', xbmcgui.NOTIFICATION_ERROR)
@@ -1118,15 +1225,19 @@ def mark_unwatched(media_type, imdb_id, season=None, episode=None):
         cache_key = f"{media_type}:{imdb_id}"
         if cache_key in _watched_cache:
             del _watched_cache[cache_key]
-        if imdb_id in _show_progress_cache:
-            del _show_progress_cache[imdb_id]
 
-        # Invalidate batch progress cache (also clears disk cache)
-        invalidate_progress_cache()
-
-        # Get Trakt ID for this show to track pending update (AFTER invalidation)
+        # ✨ NEW: Incremental cache update instead of full invalidation
         if api_type == 'shows':
-            _add_show_to_pending_updates(imdb_id)
+            # Get Trakt ID and do incremental update
+            show_trakt_id = _get_trakt_id_from_imdb(imdb_id)
+            if show_trakt_id:
+                update_show_progress_incrementally(imdb_id, show_trakt_id)
+                # Add to pending updates with 3-second grace period
+                _pending_show_updates[show_trakt_id] = time.time()
+                xbmc.log(f'[AIOStreams] Added show {show_trakt_id} to pending updates (3s grace period)', xbmc.LOGDEBUG)
+            else:
+                # Fallback to full invalidation if we can't get Trakt ID
+                invalidate_progress_cache()
 
         # Invalidate batch watched history cache
         global _watched_history_valid
@@ -1134,6 +1245,10 @@ def mark_unwatched(media_type, imdb_id, season=None, episode=None):
         _watched_history_valid['shows'] = False
 
         xbmcgui.Dialog().notification('AIOStreams', 'Marked as unwatched on Trakt', xbmcgui.NOTIFICATION_INFO)
+        
+        # ✨ NEW: Refresh widgets
+        xbmc.executebuiltin('Container.Refresh')
+        
         return True
 
     return False
