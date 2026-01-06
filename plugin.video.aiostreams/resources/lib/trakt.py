@@ -1391,6 +1391,11 @@ def _add_show_to_pending_updates(imdb_id):
 def mark_watched(media_type, imdb_id, season=None, episode=None, playback_id=None):
     """Mark item as watched with optimistic database update.
 
+    Handles three scenarios for shows:
+    1. Episode: season + episode provided → Mark single episode
+    2. Season: season provided, episode is None → Mark all episodes in season
+    3. Show: neither season nor episode → Mark all episodes in all seasons
+
     Updates database first for instant UI response, then syncs to Trakt in background.
     Rollback on Trakt API failure.
     """
@@ -1404,144 +1409,229 @@ def mark_watched(media_type, imdb_id, season=None, episode=None, playback_id=Non
         xbmcgui.Dialog().notification('AIOStreams', 'Failed to mark as watched: Invalid ID', xbmcgui.NOTIFICATION_ERROR)
         return False
 
-    # For episodes/shows/series, we use 'shows' in the API
-    api_type = 'shows' if media_type in ['episode', 'show', 'series'] or season is not None else media_type + 's'
-    xbmc.log(f'[AIOStreams] Determined api_type: {api_type}', xbmc.LOGINFO)
+    # Determine operation type
+    is_show_operation = media_type in ['episode', 'show', 'series'] or season is not None
+    api_type = 'shows' if is_show_operation else media_type + 's'
+    xbmc.log(f'[AIOStreams] Operation type: api_type={api_type}, is_show={is_show_operation}', xbmc.LOGINFO)
 
-    # Get Trakt ID and full show data for database operations
+    # Determine scenario
+    if is_show_operation:
+        if season is not None and episode is not None:
+            scenario = 'episode'
+            xbmc.log(f'[AIOStreams] Scenario: Mark EPISODE S{season}E{episode}', xbmc.LOGINFO)
+        elif season is not None:
+            scenario = 'season'
+            xbmc.log(f'[AIOStreams] Scenario: Mark SEASON {season} (all episodes)', xbmc.LOGINFO)
+        else:
+            scenario = 'show'
+            xbmc.log(f'[AIOStreams] Scenario: Mark SHOW (all seasons and episodes)', xbmc.LOGINFO)
+    else:
+        scenario = 'movie'
+        xbmc.log(f'[AIOStreams] Scenario: Mark MOVIE', xbmc.LOGINFO)
+
+    # Get Trakt ID and full show data
     trakt_id = None
     show_trakt_id = None
     show_data = None
     try:
         search_result = call_trakt(f'search/imdb/{imdb_id}', with_auth=False)
         if search_result and isinstance(search_result, list) and len(search_result) > 0:
-            if api_type == 'shows':
+            if is_show_operation:
                 show_data = search_result[0].get('show', {})
                 show_trakt_id = show_data.get('ids', {}).get('trakt')
                 trakt_id = show_trakt_id
             else:
                 movie_data = search_result[0].get('movie', {})
                 trakt_id = movie_data.get('ids', {}).get('trakt')
-    except:
-        pass
+    except Exception as e:
+        xbmc.log(f'[AIOStreams] Failed to get Trakt ID: {e}', xbmc.LOGERROR)
 
-    # Store original state for potential rollback
-    original_state = None
+    if not trakt_id:
+        xbmc.log(f'[AIOStreams] Could not find Trakt ID for {imdb_id}', xbmc.LOGWARNING)
+        xbmcgui.Dialog().notification('AIOStreams', 'Could not find item on Trakt', xbmcgui.NOTIFICATION_ERROR)
+        return False
+
     db = get_trakt_db()
+    watched_at = datetime.now(timezone.utc).isoformat()
+    original_states = []  # For rollback
 
     # 1. Optimistic database update (instant UI response)
-    watched_at = datetime.now(timezone.utc).isoformat()
-
-    if db and trakt_id:
+    if db:
         try:
-            if api_type == 'shows' and season is not None and episode is not None:
-                # Ensure show exists in database first
-                if show_trakt_id and show_data:
-                    show_exists = db.fetchone(
-                        "SELECT 1 FROM shows WHERE trakt_id=?",
-                        (show_trakt_id,)
-                    )
-                    if not show_exists:
-                        # Insert show entry
-                        db.execute_sql("""
-                            INSERT OR IGNORE INTO shows (trakt_id, imdb_id, tvdb_id, tmdb_id, slug, title)
-                            VALUES (?, ?, ?, ?, ?, ?)
-                        """, (
-                            show_trakt_id,
-                            show_data.get('ids', {}).get('imdb'),
-                            show_data.get('ids', {}).get('tvdb'),
-                            show_data.get('ids', {}).get('tmdb'),
-                            show_data.get('ids', {}).get('slug'),
-                            show_data.get('title', 'Unknown')
-                        ))
-                        xbmc.log(f'[AIOStreams] Created show entry for {show_trakt_id}', xbmc.LOGDEBUG)
+            if scenario == 'episode':
+                # Mark single episode
+                xbmc.log(f'[AIOStreams] Database: Marking episode S{season}E{episode}', xbmc.LOGINFO)
 
-                # Episode watched - check original state for rollback
-                original_state = db.fetchone(
+                # Ensure show exists
+                _ensure_show_exists(db, show_trakt_id, show_data)
+
+                # Store original state
+                original_states.append(db.fetchone(
                     "SELECT * FROM episodes WHERE show_trakt_id=? AND season=? AND episode=?",
                     (show_trakt_id, season, episode)
-                )
+                ))
 
-                # Update episode as watched
+                # Update episode
                 db.execute_sql("""
                     INSERT OR REPLACE INTO episodes (
                         show_trakt_id, season, episode, watched, last_watched_at
                     ) VALUES (?, ?, ?, 1, ?)
                 """, (show_trakt_id, season, episode, watched_at))
 
-                xbmc.log(f'[AIOStreams] ✓ Database updated: Marked ONLY episode {imdb_id} S{season}E{episode} as watched (show_trakt_id={show_trakt_id})', xbmc.LOGINFO)
-                xbmc.log(f'[AIOStreams] ✓ Database update: This should NOT affect the show or other episodes', xbmc.LOGINFO)
+                xbmc.log(f'[AIOStreams] ✓ Marked ONLY episode S{season}E{episode} as watched', xbmc.LOGINFO)
 
-                # Clear in-memory caches for this show
-                if imdb_id in _show_progress_cache:
-                    del _show_progress_cache[imdb_id]
-                if imdb_id in _show_progress_batch_cache:
-                    del _show_progress_batch_cache[imdb_id]
+                # Unhide show if it was dropped
+                _unhide_show_if_needed(db, show_trakt_id)
 
-                # Clear disk cache for show progress (used by Next Up)
-                if HAS_MODULES:
-                    cache.delete_cached_data(f'show_progress_{show_trakt_id}', 'trakt')
+            elif scenario == 'season':
+                # Mark all episodes in season
+                xbmc.log(f'[AIOStreams] Database: Fetching all episodes for season {season}', xbmc.LOGINFO)
 
-                # Unhide show if it was dropped - user is watching again!
-                try:
-                    hidden_check = db.fetchone(
-                        "SELECT 1 FROM hidden WHERE trakt_id=? AND mediatype='show' AND section='progress_watched'",
-                        (show_trakt_id,)
-                    )
-                    if hidden_check:
-                        db.execute_sql(
-                            "DELETE FROM hidden WHERE trakt_id=? AND mediatype='show'",
-                            (show_trakt_id,)
-                        )
-                        xbmc.log(f'[AIOStreams] Unhid show {show_trakt_id} - user is watching again!', xbmc.LOGINFO)
-                except Exception as e:
-                    xbmc.log(f'[AIOStreams] Failed to unhide show: {e}', xbmc.LOGERROR)
-            else:
-                # Movie watched - check original state for rollback
-                original_state = db.fetchone(
+                # Ensure show exists
+                _ensure_show_exists(db, show_trakt_id, show_data)
+
+                # Get all episodes in this season from Trakt
+                season_data = call_trakt(f'shows/{show_trakt_id}/seasons/{season}?extended=episodes')
+                if season_data and isinstance(season_data, list):
+                    xbmc.log(f'[AIOStreams] Found {len(season_data)} episodes in season {season}', xbmc.LOGINFO)
+
+                    for ep in season_data:
+                        ep_num = ep.get('number')
+                        if ep_num:
+                            # Store original state
+                            original_states.append(db.fetchone(
+                                "SELECT * FROM episodes WHERE show_trakt_id=? AND season=? AND episode=?",
+                                (show_trakt_id, season, ep_num)
+                            ))
+
+                            # Mark episode as watched
+                            db.execute_sql("""
+                                INSERT OR REPLACE INTO episodes (
+                                    show_trakt_id, season, episode, watched, last_watched_at
+                                ) VALUES (?, ?, ?, 1, ?)
+                            """, (show_trakt_id, season, ep_num, watched_at))
+
+                    xbmc.log(f'[AIOStreams] ✓ Marked {len(season_data)} episodes in season {season} as watched', xbmc.LOGINFO)
+                else:
+                    xbmc.log(f'[AIOStreams] Warning: Could not fetch episodes for season {season}', xbmc.LOGWARNING)
+
+                # Unhide show if it was dropped
+                _unhide_show_if_needed(db, show_trakt_id)
+
+            elif scenario == 'show':
+                # Mark all episodes in all seasons
+                xbmc.log(f'[AIOStreams] Database: Fetching all seasons and episodes', xbmc.LOGINFO)
+
+                # Ensure show exists
+                _ensure_show_exists(db, show_trakt_id, show_data)
+
+                # Get all seasons from Trakt
+                seasons_data = call_trakt(f'shows/{show_trakt_id}/seasons?extended=episodes')
+                if seasons_data and isinstance(seasons_data, list):
+                    total_episodes = 0
+                    for season_obj in seasons_data:
+                        season_num = season_obj.get('number')
+                        if season_num == 0:  # Skip specials
+                            continue
+
+                        episodes = season_obj.get('episodes', [])
+                        xbmc.log(f'[AIOStreams] Season {season_num}: {len(episodes)} episodes', xbmc.LOGINFO)
+
+                        for ep in episodes:
+                            ep_num = ep.get('number')
+                            if ep_num:
+                                # Store original state
+                                original_states.append(db.fetchone(
+                                    "SELECT * FROM episodes WHERE show_trakt_id=? AND season=? AND episode=?",
+                                    (show_trakt_id, season_num, ep_num)
+                                ))
+
+                                # Mark episode as watched
+                                db.execute_sql("""
+                                    INSERT OR REPLACE INTO episodes (
+                                        show_trakt_id, season, episode, watched, last_watched_at
+                                    ) VALUES (?, ?, ?, 1, ?)
+                                """, (show_trakt_id, season_num, ep_num, watched_at))
+                                total_episodes += 1
+
+                    xbmc.log(f'[AIOStreams] ✓ Marked {total_episodes} episodes across all seasons as watched', xbmc.LOGINFO)
+                else:
+                    xbmc.log(f'[AIOStreams] Warning: Could not fetch seasons/episodes', xbmc.LOGWARNING)
+
+                # Unhide show if it was dropped
+                _unhide_show_if_needed(db, show_trakt_id)
+
+            elif scenario == 'movie':
+                # Mark movie as watched
+                xbmc.log(f'[AIOStreams] Database: Marking movie as watched', xbmc.LOGINFO)
+
+                # Store original state
+                original_states.append(db.fetchone(
                     "SELECT * FROM movies WHERE trakt_id=?",
                     (trakt_id,)
-                )
+                ))
 
-                # Update movie as watched
+                # Update movie
                 db.execute_sql("""
                     INSERT OR REPLACE INTO movies (
                         trakt_id, imdb_id, watched, last_watched_at
                     ) VALUES (?, ?, 1, ?)
                 """, (trakt_id, imdb_id, watched_at))
 
-                xbmc.log(f'[AIOStreams] Optimistically marked movie {imdb_id} as watched', xbmc.LOGDEBUG)
+                xbmc.log(f'[AIOStreams] ✓ Marked movie as watched', xbmc.LOGINFO)
+
+            # Clear caches
+            if is_show_operation:
+                xbmc.log(f'[AIOStreams] Clearing caches for show', xbmc.LOGINFO)
+                if imdb_id in _show_progress_cache:
+                    del _show_progress_cache[imdb_id]
+                if imdb_id in _show_progress_batch_cache:
+                    del _show_progress_batch_cache[imdb_id]
+                if HAS_MODULES:
+                    cache.delete_cached_data(f'show_progress_{show_trakt_id}', 'trakt')
+                invalidate_progress_cache()
+
         except Exception as e:
             xbmc.log(f'[AIOStreams] Database update failed: {e}', xbmc.LOGERROR)
+            import traceback
+            xbmc.log(f'[AIOStreams] Traceback: {traceback.format_exc()}', xbmc.LOGERROR)
 
     # Show instant feedback
-    xbmcgui.Dialog().notification('AIOStreams', 'Marked as watched on Trakt', xbmcgui.NOTIFICATION_INFO)
+    if scenario == 'episode':
+        xbmcgui.Dialog().notification('AIOStreams', f'Episode S{season}E{episode} marked as watched', xbmcgui.NOTIFICATION_INFO)
+    elif scenario == 'season':
+        xbmcgui.Dialog().notification('AIOStreams', f'Season {season} marked as watched', xbmcgui.NOTIFICATION_INFO)
+    elif scenario == 'show':
+        xbmcgui.Dialog().notification('AIOStreams', 'Show marked as watched', xbmcgui.NOTIFICATION_INFO)
+    else:
+        xbmcgui.Dialog().notification('AIOStreams', 'Marked as watched on Trakt', xbmcgui.NOTIFICATION_INFO)
 
     # Refresh container immediately for instant UI update
     if utils:
         utils.refresh_container()
-    
+
     # 2. Background sync to Trakt API with rollback on failure
     def sync_to_trakt():
         """Background thread to sync to Trakt with rollback on failure."""
-        # Add to watch history
+        # Build Trakt API request
         data = {api_type: []}
         item = {'ids': {'imdb': imdb_id}}
-        if season is not None:
-            item['seasons'] = [{'number': season}]
-            if episode is not None:
-                item['seasons'][0]['episodes'] = [{'number': episode}]
+
+        if scenario == 'episode':
+            item['seasons'] = [{'number': season, 'episodes': [{'number': episode}]}]
+        elif scenario == 'season':
+            item['seasons'] = [{'number': season}]  # No episodes array = marks all episodes in season
+        # elif scenario == 'show': item has no seasons array = marks all episodes in all seasons
+
         data[api_type].append(item)
 
         import json
         xbmc.log(f'[AIOStreams] ====== TRAKT API REQUEST ======', xbmc.LOGINFO)
+        xbmc.log(f'[AIOStreams] Scenario: {scenario.upper()}', xbmc.LOGINFO)
         xbmc.log(f'[AIOStreams] Endpoint: sync/history (POST)', xbmc.LOGINFO)
-        xbmc.log(f'[AIOStreams] Parameters: media_type={media_type}, imdb_id={imdb_id}, season={season}, episode={episode}', xbmc.LOGINFO)
-        xbmc.log(f'[AIOStreams] Request data being sent:', xbmc.LOGINFO)
+        xbmc.log(f'[AIOStreams] Request data:', xbmc.LOGINFO)
         xbmc.log(f'{json.dumps(data, indent=2)}', xbmc.LOGINFO)
-        if season is not None and episode is not None:
-            xbmc.log(f'[AIOStreams] ✓ This should mark ONLY S{season}E{episode}, NOT the entire show', xbmc.LOGINFO)
-        xbmc.log(f'[AIOStreams] ==============================', xbmc.LOGINFO)
+        xbmc.log(f'[AIOStreams] ===============================', xbmc.LOGINFO)
 
         result = call_trakt('sync/history', method='POST', data=data)
 
@@ -1551,65 +1641,25 @@ def mark_watched(media_type, imdb_id, season=None, episode=None, playback_id=Non
         else:
             xbmc.log(f'[AIOStreams] No response received from Trakt', xbmc.LOGWARNING)
         xbmc.log(f'[AIOStreams] ================================', xbmc.LOGINFO)
-        
+
         if not result:
             # Rollback database on API failure
-            xbmc.log(f'[AIOStreams] Trakt API failed, rolling back watched status for {imdb_id}', xbmc.LOGWARNING)
-            if db and trakt_id:
-                try:
-                    if api_type == 'shows' and season is not None and episode is not None:
-                        # Rollback episode
-                        if original_state:
-                            # Restore original state
-                            db.execute_sql("""
-                                INSERT OR REPLACE INTO episodes (
-                                    show_trakt_id, season, episode, watched, last_watched_at
-                                ) VALUES (?, ?, ?, ?, ?)
-                            """, (
-                                original_state['show_trakt_id'],
-                                original_state['season'],
-                                original_state['episode'],
-                                original_state.get('watched', 0),
-                                original_state.get('last_watched_at')
-                            ))
-                        else:
-                            # Delete if it didn't exist before
-                            db.execute_sql(
-                                "DELETE FROM episodes WHERE show_trakt_id=? AND season=? AND episode=?",
-                                (show_trakt_id, season, episode)
-                            )
-                    else:
-                        # Rollback movie
-                        if original_state:
-                            db.execute_sql("""
-                                INSERT OR REPLACE INTO movies (
-                                    trakt_id, imdb_id, watched, last_watched_at
-                                ) VALUES (?, ?, ?, ?)
-                            """, (
-                                original_state['trakt_id'],
-                                original_state['imdb_id'],
-                                original_state.get('watched', 0),
-                                original_state.get('last_watched_at')
-                            ))
-                        else:
-                            db.execute_sql(
-                                "DELETE FROM movies WHERE trakt_id=?",
-                                (trakt_id,)
-                            )
-                except Exception as e:
-                    xbmc.log(f'[AIOStreams] Rollback failed: {e}', xbmc.LOGERROR)
+            xbmc.log(f'[AIOStreams] Trakt API failed, rolling back watched status', xbmc.LOGWARNING)
+            if db:
+                _rollback_watched_changes(db, scenario, show_trakt_id, trakt_id, season, episode, original_states)
             xbmcgui.Dialog().notification('AIOStreams', 'Failed to sync to Trakt', xbmcgui.NOTIFICATION_ERROR)
         else:
             # Success - remove from playback progress if we have playback_id
             if playback_id:
                 call_trakt(f'sync/playback/{playback_id}', method='DELETE')
-            
-            xbmc.log(f'[AIOStreams] Successfully marked {imdb_id} as watched on Trakt', xbmc.LOGINFO)
-        
+
+            xbmc.log(f'[AIOStreams] ✓ Successfully synced to Trakt', xbmc.LOGINFO)
+
         # Trigger smart widget refresh after sync
         if utils:
+            xbmc.log(f'[AIOStreams] Triggering background widget refresh', xbmc.LOGINFO)
             utils.trigger_background_refresh(delay=0.5)
-    
+
     # Start background sync thread
     try:
         sync_thread = threading.Thread(target=sync_to_trakt)
@@ -1619,77 +1669,192 @@ def mark_watched(media_type, imdb_id, season=None, episode=None, playback_id=Non
         xbmc.log(f'[AIOStreams] Failed to start background sync: {e}', xbmc.LOGERROR)
         # Fallback to synchronous sync
         sync_to_trakt()
-    
+
     return True
 
 
+def _ensure_show_exists(db, show_trakt_id, show_data):
+    """Ensure show entry exists in database."""
+    if not show_trakt_id or not show_data:
+        return
+
+    show_exists = db.fetchone(
+        "SELECT 1 FROM shows WHERE trakt_id=?",
+        (show_trakt_id,)
+    )
+    if not show_exists:
+        db.execute_sql("""
+            INSERT OR IGNORE INTO shows (trakt_id, imdb_id, tvdb_id, tmdb_id, slug, title)
+            VALUES (?, ?, ?, ?, ?, ?)
+        """, (
+            show_trakt_id,
+            show_data.get('ids', {}).get('imdb'),
+            show_data.get('ids', {}).get('tvdb'),
+            show_data.get('ids', {}).get('tmdb'),
+            show_data.get('ids', {}).get('slug'),
+            show_data.get('title', 'Unknown')
+        ))
+        xbmc.log(f'[AIOStreams] Created show entry for {show_trakt_id}', xbmc.LOGDEBUG)
+
+
+def _unhide_show_if_needed(db, show_trakt_id):
+    """Unhide show if it was dropped - user is watching again!"""
+    try:
+        hidden_check = db.fetchone(
+            "SELECT 1 FROM hidden WHERE trakt_id=? AND mediatype='show' AND section='progress_watched'",
+            (show_trakt_id,)
+        )
+        if hidden_check:
+            db.execute_sql(
+                "DELETE FROM hidden WHERE trakt_id=? AND mediatype='show'",
+                (show_trakt_id,)
+            )
+            xbmc.log(f'[AIOStreams] Unhid show {show_trakt_id} - user is watching again!', xbmc.LOGINFO)
+    except Exception as e:
+        xbmc.log(f'[AIOStreams] Failed to unhide show: {e}', xbmc.LOGERROR)
+
+
+def _rollback_watched_changes(db, scenario, show_trakt_id, trakt_id, season, episode, original_states):
+    """Rollback database changes on Trakt API failure."""
+    try:
+        if scenario == 'episode':
+            if original_states and original_states[0]:
+                # Restore original state
+                orig = original_states[0]
+                db.execute_sql("""
+                    INSERT OR REPLACE INTO episodes (
+                        show_trakt_id, season, episode, watched, last_watched_at
+                    ) VALUES (?, ?, ?, ?, ?)
+                """, (
+                    orig['show_trakt_id'],
+                    orig['season'],
+                    orig['episode'],
+                    orig.get('watched', 0),
+                    orig.get('last_watched_at')
+                ))
+            else:
+                # Delete if it didn't exist before
+                db.execute_sql(
+                    "DELETE FROM episodes WHERE show_trakt_id=? AND season=? AND episode=?",
+                    (show_trakt_id, season, episode)
+                )
+        elif scenario in ['season', 'show']:
+            # Rollback multiple episodes
+            for orig in original_states:
+                if orig:
+                    db.execute_sql("""
+                        INSERT OR REPLACE INTO episodes (
+                            show_trakt_id, season, episode, watched, last_watched_at
+                        ) VALUES (?, ?, ?, ?, ?)
+                    """, (
+                        orig['show_trakt_id'],
+                        orig['season'],
+                        orig['episode'],
+                        orig.get('watched', 0),
+                        orig.get('last_watched_at')
+                    ))
+        elif scenario == 'movie':
+            if original_states and original_states[0]:
+                orig = original_states[0]
+                db.execute_sql("""
+                    INSERT OR REPLACE INTO movies (
+                        trakt_id, imdb_id, watched, last_watched_at
+                    ) VALUES (?, ?, ?, ?)
+                """, (
+                    orig['trakt_id'],
+                    orig['imdb_id'],
+                    orig.get('watched', 0),
+                    orig.get('last_watched_at')
+                ))
+            else:
+                db.execute_sql(
+                    "DELETE FROM movies WHERE trakt_id=?",
+                    (trakt_id,)
+                )
+        xbmc.log(f'[AIOStreams] Rollback completed', xbmc.LOGINFO)
+    except Exception as e:
+        xbmc.log(f'[AIOStreams] Rollback failed: {e}', xbmc.LOGERROR)
+
 def mark_unwatched(media_type, imdb_id, season=None, episode=None):
     """Mark item as unwatched with optimistic database update.
+
+    Handles three scenarios for shows:
+    1. Episode: season + episode provided → Mark single episode as unwatched
+    2. Season: season provided, episode is None → Mark all episodes in season as unwatched
+    3. Show: neither season nor episode → Mark all episodes in all seasons as unwatched
 
     Updates database first for instant UI response, then syncs to Trakt in background.
     Rollback on Trakt API failure.
     """
     import threading
 
+    xbmc.log(f'[AIOStreams] mark_unwatched() called with: media_type={media_type}, imdb_id={imdb_id}, season={season}, episode={episode}', xbmc.LOGINFO)
+
     if not imdb_id:
         xbmc.log('[AIOStreams] Cannot mark as unwatched: no IMDB ID provided', xbmc.LOGWARNING)
         xbmcgui.Dialog().notification('AIOStreams', 'Failed to mark as unwatched: Invalid ID', xbmcgui.NOTIFICATION_ERROR)
         return False
 
-    # For episodes/shows/series, we use 'shows' in the API
-    api_type = 'shows' if media_type in ['episode', 'show', 'series'] or season is not None else media_type + 's'
+    # Determine operation type
+    is_show_operation = media_type in ['episode', 'show', 'series'] or season is not None
+    api_type = 'shows' if is_show_operation else media_type + 's'
+    xbmc.log(f'[AIOStreams] Operation type: api_type={api_type}, is_show={is_show_operation}', xbmc.LOGINFO)
 
-    # Get Trakt ID and full show data for database operations
+    # Determine scenario
+    if is_show_operation:
+        if season is not None and episode is not None:
+            scenario = 'episode'
+            xbmc.log(f'[AIOStreams] Scenario: Mark EPISODE S{season}E{episode} as UNWATCHED', xbmc.LOGINFO)
+        elif season is not None:
+            scenario = 'season'
+            xbmc.log(f'[AIOStreams] Scenario: Mark SEASON {season} as UNWATCHED (all episodes)', xbmc.LOGINFO)
+        else:
+            scenario = 'show'
+            xbmc.log(f'[AIOStreams] Scenario: Mark SHOW as UNWATCHED (all seasons and episodes)', xbmc.LOGINFO)
+    else:
+        scenario = 'movie'
+        xbmc.log(f'[AIOStreams] Scenario: Mark MOVIE as UNWATCHED', xbmc.LOGINFO)
+
+    # Get Trakt ID and full show data
     trakt_id = None
     show_trakt_id = None
     show_data = None
     try:
         search_result = call_trakt(f'search/imdb/{imdb_id}', with_auth=False)
         if search_result and isinstance(search_result, list) and len(search_result) > 0:
-            if api_type == 'shows':
+            if is_show_operation:
                 show_data = search_result[0].get('show', {})
                 show_trakt_id = show_data.get('ids', {}).get('trakt')
                 trakt_id = show_trakt_id
             else:
                 movie_data = search_result[0].get('movie', {})
                 trakt_id = movie_data.get('ids', {}).get('trakt')
-    except:
-        pass
+    except Exception as e:
+        xbmc.log(f'[AIOStreams] Failed to get Trakt ID: {e}', xbmc.LOGERROR)
 
-    # Store original state for potential rollback
-    original_state = None
+    if not trakt_id:
+        xbmc.log(f'[AIOStreams] Could not find Trakt ID for {imdb_id}', xbmc.LOGWARNING)
+        xbmcgui.Dialog().notification('AIOStreams', 'Could not find item on Trakt', xbmcgui.NOTIFICATION_ERROR)
+        return False
+
     db = get_trakt_db()
+    original_states = []  # For rollback
 
     # 1. Optimistic database update (instant UI response)
-    if db and trakt_id:
+    if db:
         try:
-            if api_type == 'shows' and season is not None and episode is not None:
-                # Ensure show exists in database first
-                if show_trakt_id and show_data:
-                    show_exists = db.fetchone(
-                        "SELECT 1 FROM shows WHERE trakt_id=?",
-                        (show_trakt_id,)
-                    )
-                    if not show_exists:
-                        # Insert show entry
-                        db.execute_sql("""
-                            INSERT OR IGNORE INTO shows (trakt_id, imdb_id, tvdb_id, tmdb_id, slug, title)
-                            VALUES (?, ?, ?, ?, ?, ?)
-                        """, (
-                            show_trakt_id,
-                            show_data.get('ids', {}).get('imdb'),
-                            show_data.get('ids', {}).get('tvdb'),
-                            show_data.get('ids', {}).get('tmdb'),
-                            show_data.get('ids', {}).get('slug'),
-                            show_data.get('title', 'Unknown')
-                        ))
-                        xbmc.log(f'[AIOStreams] Created show entry for {show_trakt_id}', xbmc.LOGDEBUG)
+            if scenario == 'episode':
+                # Mark single episode as unwatched
+                xbmc.log(f'[AIOStreams] Database: Marking episode S{season}E{episode} as unwatched', xbmc.LOGINFO)
 
-                # Get original episode state for rollback
-                original_state = db.fetchone(
+                # Ensure show exists
+                _ensure_show_exists(db, show_trakt_id, show_data)
+
+                # Store original state
+                original_states.append(db.fetchone(
                     "SELECT * FROM episodes WHERE show_trakt_id=? AND season=? AND episode=?",
                     (show_trakt_id, season, episode)
-                )
+                ))
 
                 # Mark episode as unwatched
                 db.execute_sql("""
@@ -1698,23 +1863,89 @@ def mark_unwatched(media_type, imdb_id, season=None, episode=None):
                     WHERE show_trakt_id=? AND season=? AND episode=?
                 """, (show_trakt_id, season, episode))
 
-                xbmc.log(f'[AIOStreams] Optimistically marked episode {imdb_id} S{season}E{episode} as unwatched', xbmc.LOGDEBUG)
+                xbmc.log(f'[AIOStreams] ✓ Marked ONLY episode S{season}E{episode} as unwatched', xbmc.LOGINFO)
 
-                # Clear in-memory caches for this show
-                if imdb_id in _show_progress_cache:
-                    del _show_progress_cache[imdb_id]
-                if imdb_id in _show_progress_batch_cache:
-                    del _show_progress_batch_cache[imdb_id]
+            elif scenario == 'season':
+                # Mark all episodes in season as unwatched
+                xbmc.log(f'[AIOStreams] Database: Fetching all episodes for season {season}', xbmc.LOGINFO)
 
-                # Clear disk cache for show progress (used by Next Up)
-                if HAS_MODULES:
-                    cache.delete_cached_data(f'show_progress_{show_trakt_id}', 'trakt')
-            else:
-                # Get original movie state for rollback
-                original_state = db.fetchone(
+                # Ensure show exists
+                _ensure_show_exists(db, show_trakt_id, show_data)
+
+                # Get all episodes in this season from Trakt
+                season_data = call_trakt(f'shows/{show_trakt_id}/seasons/{season}?extended=episodes')
+                if season_data and isinstance(season_data, list):
+                    xbmc.log(f'[AIOStreams] Found {len(season_data)} episodes in season {season}', xbmc.LOGINFO)
+
+                    for ep in season_data:
+                        ep_num = ep.get('number')
+                        if ep_num:
+                            # Store original state
+                            original_states.append(db.fetchone(
+                                "SELECT * FROM episodes WHERE show_trakt_id=? AND season=? AND episode=?",
+                                (show_trakt_id, season, ep_num)
+                            ))
+
+                            # Mark episode as unwatched
+                            db.execute_sql("""
+                                UPDATE episodes
+                                SET watched=0, last_watched_at=NULL
+                                WHERE show_trakt_id=? AND season=? AND episode=?
+                            """, (show_trakt_id, season, ep_num))
+
+                    xbmc.log(f'[AIOStreams] ✓ Marked {len(season_data)} episodes in season {season} as unwatched', xbmc.LOGINFO)
+                else:
+                    xbmc.log(f'[AIOStreams] Warning: Could not fetch episodes for season {season}', xbmc.LOGWARNING)
+
+            elif scenario == 'show':
+                # Mark all episodes in all seasons as unwatched
+                xbmc.log(f'[AIOStreams] Database: Fetching all seasons and episodes', xbmc.LOGINFO)
+
+                # Ensure show exists
+                _ensure_show_exists(db, show_trakt_id, show_data)
+
+                # Get all seasons from Trakt
+                seasons_data = call_trakt(f'shows/{show_trakt_id}/seasons?extended=episodes')
+                if seasons_data and isinstance(seasons_data, list):
+                    total_episodes = 0
+                    for season_obj in seasons_data:
+                        season_num = season_obj.get('number')
+                        if season_num == 0:  # Skip specials
+                            continue
+
+                        episodes = season_obj.get('episodes', [])
+                        xbmc.log(f'[AIOStreams] Season {season_num}: {len(episodes)} episodes', xbmc.LOGINFO)
+
+                        for ep in episodes:
+                            ep_num = ep.get('number')
+                            if ep_num:
+                                # Store original state
+                                original_states.append(db.fetchone(
+                                    "SELECT * FROM episodes WHERE show_trakt_id=? AND season=? AND episode=?",
+                                    (show_trakt_id, season_num, ep_num)
+                                ))
+
+                                # Mark episode as unwatched
+                                db.execute_sql("""
+                                    UPDATE episodes
+                                    SET watched=0, last_watched_at=NULL
+                                    WHERE show_trakt_id=? AND season=? AND episode=?
+                                """, (show_trakt_id, season_num, ep_num))
+                                total_episodes += 1
+
+                    xbmc.log(f'[AIOStreams] ✓ Marked {total_episodes} episodes across all seasons as unwatched', xbmc.LOGINFO)
+                else:
+                    xbmc.log(f'[AIOStreams] Warning: Could not fetch seasons/episodes', xbmc.LOGWARNING)
+
+            elif scenario == 'movie':
+                # Mark movie as unwatched
+                xbmc.log(f'[AIOStreams] Database: Marking movie as unwatched', xbmc.LOGINFO)
+
+                # Store original state
+                original_states.append(db.fetchone(
                     "SELECT * FROM movies WHERE trakt_id=?",
                     (trakt_id,)
-                )
+                ))
 
                 # Mark movie as unwatched
                 db.execute_sql("""
@@ -1723,72 +1954,84 @@ def mark_unwatched(media_type, imdb_id, season=None, episode=None):
                     WHERE trakt_id=?
                 """, (trakt_id,))
 
-                xbmc.log(f'[AIOStreams] Optimistically marked movie {imdb_id} as unwatched', xbmc.LOGDEBUG)
+                xbmc.log(f'[AIOStreams] ✓ Marked movie as unwatched', xbmc.LOGINFO)
+
+            # Clear caches
+            if is_show_operation:
+                xbmc.log(f'[AIOStreams] Clearing caches for show', xbmc.LOGINFO)
+                if imdb_id in _show_progress_cache:
+                    del _show_progress_cache[imdb_id]
+                if imdb_id in _show_progress_batch_cache:
+                    del _show_progress_batch_cache[imdb_id]
+                if HAS_MODULES:
+                    cache.delete_cached_data(f'show_progress_{show_trakt_id}', 'trakt')
+                invalidate_progress_cache()
+
         except Exception as e:
             xbmc.log(f'[AIOStreams] Database update failed: {e}', xbmc.LOGERROR)
+            import traceback
+            xbmc.log(f'[AIOStreams] Traceback: {traceback.format_exc()}', xbmc.LOGERROR)
 
     # Show instant feedback
-    xbmcgui.Dialog().notification('AIOStreams', 'Marked as unwatched on Trakt', xbmcgui.NOTIFICATION_INFO)
+    if scenario == 'episode':
+        xbmcgui.Dialog().notification('AIOStreams', f'Episode S{season}E{episode} marked as unwatched', xbmcgui.NOTIFICATION_INFO)
+    elif scenario == 'season':
+        xbmcgui.Dialog().notification('AIOStreams', f'Season {season} marked as unwatched', xbmcgui.NOTIFICATION_INFO)
+    elif scenario == 'show':
+        xbmcgui.Dialog().notification('AIOStreams', 'Show marked as unwatched', xbmcgui.NOTIFICATION_INFO)
+    else:
+        xbmcgui.Dialog().notification('AIOStreams', 'Marked as unwatched on Trakt', xbmcgui.NOTIFICATION_INFO)
 
     # Refresh container immediately for instant UI update
     if utils:
         utils.refresh_container()
-    
+
     # 2. Background sync to Trakt API with rollback on failure
     def sync_to_trakt():
         """Background thread to sync to Trakt with rollback on failure."""
-        # Remove from watch history
+        # Build Trakt API request
         data = {api_type: []}
         item = {'ids': {'imdb': imdb_id}}
-        if season is not None:
-            item['seasons'] = [{'number': season}]
-            if episode is not None:
-                item['seasons'][0]['episodes'] = [{'number': episode}]
+
+        if scenario == 'episode':
+            item['seasons'] = [{'number': season, 'episodes': [{'number': episode}]}]
+        elif scenario == 'season':
+            item['seasons'] = [{'number': season}]  # No episodes array = marks all episodes in season
+        # elif scenario == 'show': item has no seasons array = marks all episodes in all seasons
+
         data[api_type].append(item)
-        
-        xbmc.log(f'[AIOStreams] Background sync: marking as unwatched: media_type={media_type}, imdb_id={imdb_id}, season={season}, episode={episode}', xbmc.LOGINFO)
-        
+
+        import json
+        xbmc.log(f'[AIOStreams] ====== TRAKT API REQUEST ======', xbmc.LOGINFO)
+        xbmc.log(f'[AIOStreams] Scenario: {scenario.upper()} UNWATCHED', xbmc.LOGINFO)
+        xbmc.log(f'[AIOStreams] Endpoint: sync/history/remove (POST)', xbmc.LOGINFO)
+        xbmc.log(f'[AIOStreams] Request data:', xbmc.LOGINFO)
+        xbmc.log(f'{json.dumps(data, indent=2)}', xbmc.LOGINFO)
+        xbmc.log(f'[AIOStreams] ===============================', xbmc.LOGINFO)
+
         result = call_trakt('sync/history/remove', method='POST', data=data)
-        
+
+        xbmc.log(f'[AIOStreams] ====== TRAKT API RESPONSE ======', xbmc.LOGINFO)
+        if result:
+            xbmc.log(f'{json.dumps(result, indent=2)}', xbmc.LOGINFO)
+        else:
+            xbmc.log(f'[AIOStreams] No response received from Trakt', xbmc.LOGWARNING)
+        xbmc.log(f'[AIOStreams] ================================', xbmc.LOGINFO)
+
         if not result:
             # Rollback database on API failure
-            xbmc.log(f'[AIOStreams] Trakt API failed, rolling back unwatched status for {imdb_id}', xbmc.LOGWARNING)
-            if db and trakt_id and original_state:
-                try:
-                    if api_type == 'shows' and season is not None and episode is not None:
-                        # Restore episode state
-                        db.execute_sql("""
-                            UPDATE episodes
-                            SET watched=?, last_watched_at=?
-                            WHERE show_trakt_id=? AND season=? AND episode=?
-                        """, (
-                            original_state.get('watched', 0),
-                            original_state.get('last_watched_at'),
-                            show_trakt_id,
-                            season,
-                            episode
-                        ))
-                    else:
-                        # Restore movie state
-                        db.execute_sql("""
-                            UPDATE movies 
-                            SET watched=?, last_watched_at=? 
-                            WHERE trakt_id=?
-                        """, (
-                            original_state.get('watched', 0),
-                            original_state.get('last_watched_at'),
-                            trakt_id
-                        ))
-                except Exception as e:
-                    xbmc.log(f'[AIOStreams] Rollback failed: {e}', xbmc.LOGERROR)
+            xbmc.log(f'[AIOStreams] Trakt API failed, rolling back unwatched status', xbmc.LOGWARNING)
+            if db:
+                _rollback_unwatched_changes(db, scenario, show_trakt_id, trakt_id, season, episode, original_states)
             xbmcgui.Dialog().notification('AIOStreams', 'Failed to sync to Trakt', xbmcgui.NOTIFICATION_ERROR)
         else:
-            xbmc.log(f'[AIOStreams] Successfully marked {imdb_id} as unwatched on Trakt', xbmc.LOGINFO)
-        
+            xbmc.log(f'[AIOStreams] ✓ Successfully synced to Trakt', xbmc.LOGINFO)
+
         # Trigger smart widget refresh after sync
         if utils:
+            xbmc.log(f'[AIOStreams] Triggering background widget refresh', xbmc.LOGINFO)
             utils.trigger_background_refresh(delay=0.5)
-    
+
     # Start background sync thread
     try:
         sync_thread = threading.Thread(target=sync_to_trakt)
@@ -1798,8 +2041,59 @@ def mark_unwatched(media_type, imdb_id, season=None, episode=None):
         xbmc.log(f'[AIOStreams] Failed to start background sync: {e}', xbmc.LOGERROR)
         # Fallback to synchronous sync
         sync_to_trakt()
-    
+
     return True
+
+
+def _rollback_unwatched_changes(db, scenario, show_trakt_id, trakt_id, season, episode, original_states):
+    """Rollback database changes on Trakt API failure."""
+    try:
+        if scenario == 'episode':
+            if original_states and original_states[0]:
+                # Restore original state
+                orig = original_states[0]
+                db.execute_sql("""
+                    UPDATE episodes
+                    SET watched=?, last_watched_at=?
+                    WHERE show_trakt_id=? AND season=? AND episode=?
+                """, (
+                    orig.get('watched', 0),
+                    orig.get('last_watched_at'),
+                    show_trakt_id,
+                    season,
+                    episode
+                ))
+        elif scenario in ['season', 'show']:
+            # Rollback multiple episodes
+            for orig in original_states:
+                if orig:
+                    db.execute_sql("""
+                        UPDATE episodes
+                        SET watched=?, last_watched_at=?
+                        WHERE show_trakt_id=? AND season=? AND episode=?
+                    """, (
+                        orig.get('watched', 0),
+                        orig.get('last_watched_at'),
+                        orig['show_trakt_id'],
+                        orig['season'],
+                        orig['episode']
+                    ))
+        elif scenario == 'movie':
+            if original_states and original_states[0]:
+                orig = original_states[0]
+                db.execute_sql("""
+                    UPDATE movies
+                    SET watched=?, last_watched_at=?
+                    WHERE trakt_id=?
+                """, (
+                    orig.get('watched', 0),
+                    orig.get('last_watched_at'),
+                    trakt_id
+                ))
+        xbmc.log(f'[AIOStreams] Rollback completed', xbmc.LOGINFO)
+    except Exception as e:
+        xbmc.log(f'[AIOStreams] Rollback failed: {e}', xbmc.LOGERROR)
+
 
 
 # Cache for watched status to avoid repeated API calls
