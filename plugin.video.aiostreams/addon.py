@@ -1243,23 +1243,15 @@ def select_stream():
         'clearlogo': ''  # Could be populated from API if available
     }
 
-    # Show custom source select dialog (programmatic WindowDialog - works with all skins)
-    try:
-        xbmc.log(f'[AIOStreams] Showing SourceSelect dialog with {len(stream_data["streams"])} streams', xbmc.LOGDEBUG)
-        dialog = SourceSelect(streams=stream_data['streams'], metadata=metadata)
-        dialog.doModal()
-        selected = dialog.selected_index
-        del dialog
-    except Exception as e:
-        import traceback
-        xbmc.log(f'[AIOStreams] Error showing custom dialog, using fallback: {e}\n{traceback.format_exc()}', xbmc.LOGWARNING)
-        # Fallback to Kodi's built-in select dialog
-        stream_count = len(stream_data['streams'])
-        if title:
-            dialog_title = f'Select Stream: {title} ({stream_count} available)'
-        else:
-            dialog_title = f'Select Stream ({stream_count} available)'
-        selected = xbmcgui.Dialog().select(dialog_title, [format_stream_title(s) for s in stream_data['streams']])
+    # Use Kodi's built-in select dialog (works reliably with all skins)
+    stream_count = len(stream_data['streams'])
+    if title:
+        dialog_title = f'Select Stream: {title} ({stream_count} available)'
+    else:
+        dialog_title = f'Select Stream ({stream_count} available)'
+
+    xbmc.log(f'[AIOStreams] Showing stream selection dialog with {stream_count} streams', xbmc.LOGDEBUG)
+    selected = xbmcgui.Dialog().select(dialog_title, [format_stream_title(s) for s in stream_data['streams']])
 
     if selected is None or selected < 0:
         xbmcplugin.setResolvedUrl(HANDLE, False, xbmcgui.ListItem())
@@ -1578,18 +1570,9 @@ def show_streams_dialog(content_type, media_id, stream_data, title):
         'clearlogo': ''  # Could be populated from API if available
     }
 
-    # Show custom source select dialog (programmatic WindowDialog - works with all skins)
-    try:
-        xbmc.log(f'[AIOStreams] Showing SourceSelect dialog with {len(stream_data["streams"])} streams', xbmc.LOGDEBUG)
-        dialog = SourceSelect(streams=stream_data['streams'], metadata=metadata)
-        dialog.doModal()
-        selected = dialog.selected_index
-        del dialog
-    except Exception as e:
-        import traceback
-        xbmc.log(f'[AIOStreams] Error showing custom dialog, using fallback: {e}\n{traceback.format_exc()}', xbmc.LOGWARNING)
-        # Fallback to Kodi's built-in select dialog
-        selected = xbmcgui.Dialog().select(f'Select Stream: {title} ({len(stream_list)} available)', stream_list)
+    # Use Kodi's built-in select dialog (works reliably with all skins)
+    xbmc.log(f'[AIOStreams] Showing stream selection dialog with {len(stream_data["streams"])} streams', xbmc.LOGDEBUG)
+    selected = xbmcgui.Dialog().select(f'Select Stream: {title} ({len(stream_list)} available)', stream_list)
 
     if selected is None or selected < 0:
         # User cancelled

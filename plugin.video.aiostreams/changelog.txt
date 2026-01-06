@@ -1,5 +1,16 @@
 # Changelog
 
+## [3.0.6] - 2026-01-06
+
+### Fixed
+- **Source Select Dialog**: Reverted to Kodi's built-in `Dialog().select()` for reliable display across all skins
+- **Visual Bug**: Fixed issue where only title and labels were visible, but background and stream list weren't rendering
+
+### Technical
+- Removed custom WindowDialog implementation that wasn't rendering properly
+- WindowDialog controls were partially visible but background ControlImage with empty texture failed to render
+- Built-in Dialog().select() is simpler, more reliable, and works with all skins including Bingie
+
 ## [3.0.5] - 2026-01-06
 
 ### Fixed
