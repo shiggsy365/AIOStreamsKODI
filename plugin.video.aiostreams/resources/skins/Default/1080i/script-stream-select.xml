@@ -66,60 +66,88 @@
                 <pagecontrol>-</pagecontrol>
                 <scrolltime>200</scrolltime>
 
-                <!-- Item layout (unfocused) - increased height for 6 lines -->
-                <itemlayout height="140">
+                <!-- Item layout (unfocused) - 2 lines with different sizes -->
+                <itemlayout height="80">
                     <!-- Background -->
                     <control type="image">
                         <posx>0</posx>
                         <posy>0</posy>
                         <width>1600</width>
-                        <height>138</height>
+                        <height>78</height>
                         <texture colordiffuse="22FFFFFF">white.png</texture>
                     </control>
 
                     <!-- Separator line -->
                     <control type="image">
                         <posx>0</posx>
-                        <posy>137</posy>
+                        <posy>77</posy>
                         <width>1600</width>
                         <height>1</height>
                         <texture colordiffuse="44FFFFFF">white.png</texture>
                     </control>
 
-                    <!-- Multi-line text -->
-                    <control type="textbox">
+                    <!-- Line 1: Stream name (normal size) -->
+                    <control type="label">
                         <posx>15</posx>
                         <posy>8</posy>
                         <width>1570</width>
-                        <height>122</height>
-                        <font>font12</font>
+                        <height>35</height>
+                        <font>font13</font>
                         <label>$INFO[ListItem.Label]</label>
                         <textcolor>FFE0E0E0</textcolor>
                         <align>left</align>
+                        <aligny>top</aligny>
+                    </control>
+
+                    <!-- Line 2: Stream details (25% smaller) -->
+                    <control type="label">
+                        <posx>15</posx>
+                        <posy>43</posy>
+                        <width>1570</width>
+                        <height>30</height>
+                        <font>font10</font>
+                        <label>$INFO[ListItem.Label2]</label>
+                        <textcolor>FFC0C0C0</textcolor>
+                        <align>left</align>
+                        <aligny>top</aligny>
                     </control>
                 </itemlayout>
 
-                <!-- Focused item layout - increased height for 6 lines -->
-                <focusedlayout height="140">
+                <!-- Focused item layout - 2 lines with different sizes -->
+                <focusedlayout height="80">
                     <!-- Focused background -->
                     <control type="image">
                         <posx>0</posx>
                         <posy>0</posy>
                         <width>1600</width>
-                        <height>138</height>
+                        <height>78</height>
                         <texture colordiffuse="FF0099FF">white.png</texture>
                     </control>
 
-                    <!-- Multi-line text (black on blue) -->
-                    <control type="textbox">
+                    <!-- Line 1: Stream name (normal size, black on blue) -->
+                    <control type="label">
                         <posx>15</posx>
                         <posy>8</posy>
                         <width>1570</width>
-                        <height>122</height>
-                        <font>font12</font>
+                        <height>35</height>
+                        <font>font13</font>
                         <label>$INFO[ListItem.Label]</label>
                         <textcolor>FF000000</textcolor>
                         <align>left</align>
+                        <aligny>top</aligny>
+                    </control>
+
+                    <!-- Line 2: Stream details (25% smaller, dark gray on blue) -->
+                    <control type="label">
+                        <posx>15</posx>
+                        <posy>43</posy>
+                        <width>1570</width>
+                        <height>30</height>
+                        <font>font10</font>
+                        <label>$INFO[ListItem.Label2]</label>
+                        <textcolor>FF222222</textcolor>
+                        <align>left</align>
+                        <aligny>top</aligny>
                     </control>
                 </focusedlayout>
             </control>
