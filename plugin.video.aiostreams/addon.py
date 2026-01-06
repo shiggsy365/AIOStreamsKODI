@@ -1224,7 +1224,8 @@ def format_stream_title(stream, for_dialog=False):
 
 def create_stream_list_items(streams):
     """
-    Create ListItem objects for stream selection dialog with emoji support.
+    Create ListItem objects for stream selection dialog.
+    Uses ASCII-safe symbols for maximum compatibility across all skins.
 
     Args:
         streams: List of stream dictionaries
@@ -1248,19 +1249,22 @@ def create_stream_list_items(streams):
                 source = parts[3].strip()
                 cached_status = parts[4].strip() if len(parts) > 4 else ''
 
-                # Add quality symbol for 4K
-                quality_symbol = '★ ' if '4K' in quality or '2160' in quality else ''
-
-                # Add cached status symbol
-                if 'cached' in cached_status.lower():
-                    cached_symbol = ' ✓'
-                elif 'uncached' in cached_status.lower():
-                    cached_symbol = ' ⏳'
+                # Add quality indicator for 4K/2160p (ASCII-safe)
+                if '4K' in quality or '2160' in quality:
+                    quality_text = f'{quality} [4K]'
                 else:
-                    cached_symbol = ''
+                    quality_text = quality
 
-                # Format main label: [SERVICE] Quality • Size • Source Status
-                label = f'[{service}] {quality_symbol}{quality} • {size} • {source}{cached_symbol}'
+                # Add cached status indicator (ASCII-safe)
+                if 'cached' in cached_status.lower():
+                    cached_text = ' [CACHED]'
+                elif 'uncached' in cached_status.lower():
+                    cached_text = ' [UNCACHED]'
+                else:
+                    cached_text = ''
+
+                # Format main label: [SERVICE] Quality | Size | Source [STATUS]
+                label = f'[{service}] {quality_text} | {size} | {source}{cached_text}'
             else:
                 # Format doesn't match, use original name
                 label = stream_name
