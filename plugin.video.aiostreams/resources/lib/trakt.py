@@ -3,6 +3,7 @@
 import xbmc
 import xbmcgui
 import xbmcaddon
+import xbmcvfs
 import requests
 import time
 import json
@@ -26,17 +27,21 @@ _show_progress_cache_valid = False
 # In-memory cache for show progress with next episode (invalidated on watched status changes)
 _show_progress_with_next_cache = {}
 
+# Track recently updated shows to handle Trakt's eventual consistency
+_pending_show_updates = {}  # {show_trakt_id: timestamp}
+
 
 def invalidate_progress_cache():
     """Invalidate the batch show progress cache (call when watched status changes).
     
     Clears both in-memory and disk caches for show progress.
     """
-    global _show_progress_cache_valid, _show_progress_with_next_cache, _show_progress_batch_cache, _show_progress_cache
+    global _show_progress_cache_valid, _show_progress_with_next_cache, _show_progress_batch_cache, _show_progress_cache, _pending_show_updates
     _show_progress_cache_valid = False
     _show_progress_with_next_cache.clear()
     _show_progress_batch_cache.clear()
     _show_progress_cache.clear()
+    _pending_show_updates.clear()  # Clear pending updates when full invalidation
     
     # Clear all disk-cached show progress (both Trakt ID and IMDB ID based)
     if HAS_MODULES:
@@ -494,16 +499,29 @@ def get_show_progress_by_trakt_id(show_id):
     """Get progress for a specific show by Trakt ID (includes next episode).
     
     Uses event-driven caching that persists until watched status changes.
+    Handles Trakt's eventual consistency by not caching recently updated shows.
     """
-    global _show_progress_with_next_cache
+    global _show_progress_with_next_cache, _pending_show_updates
 
-    # Check in-memory cache first (fastest)
-    if show_id in _show_progress_with_next_cache:
+    # Check if this show was recently updated (within last 10 seconds)
+    recently_updated = False
+    if show_id in _pending_show_updates:
+        update_time = _pending_show_updates[show_id]
+        age = time.time() - update_time
+        if age < 10:  # 10 second grace period for Trakt to process
+            recently_updated = True
+            xbmc.log(f'[AIOStreams] Show {show_id} was recently updated ({age:.1f}s ago), skipping cache', xbmc.LOGDEBUG)
+        else:
+            # Update is old enough, remove from pending
+            del _pending_show_updates[show_id]
+
+    # Check in-memory cache first (fastest) - but not if recently updated
+    if not recently_updated and show_id in _show_progress_with_next_cache:
         xbmc.log(f'[AIOStreams] Cache HIT (memory): show_progress_trakt_{show_id}', xbmc.LOGDEBUG)
         return _show_progress_with_next_cache[show_id]
 
-    # Check disk cache (persists until invalidated by watched status change)
-    if HAS_MODULES:
+    # Check disk cache - but not if recently updated
+    if not recently_updated and HAS_MODULES:
         # Use 1 year TTL (event-driven cache, only cleared on watched changes)
         cached = cache.get_cached_data(f'show_progress_trakt_{show_id}', 'trakt', ttl_seconds=31536000)
         if cached:
@@ -515,12 +533,14 @@ def get_show_progress_by_trakt_id(show_id):
     xbmc.log(f'[AIOStreams] Cache MISS: Fetching show_progress_trakt_{show_id} from API', xbmc.LOGDEBUG)
     result = call_trakt(f'shows/{show_id}/progress/watched')
 
-    # Cache the result (both in-memory and on disk)
-    if result:
+    # Only cache if not recently updated
+    if result and not recently_updated:
         _show_progress_with_next_cache[show_id] = result
         if HAS_MODULES:
             cache.cache_data(f'show_progress_trakt_{show_id}', 'trakt', result)
             xbmc.log(f'[AIOStreams] Cached show_progress_trakt_{show_id} to disk', xbmc.LOGDEBUG)
+    elif result and recently_updated:
+        xbmc.log(f'[AIOStreams] Fetched show_progress_trakt_{show_id} but NOT caching (recently updated)', xbmc.LOGDEBUG)
 
     return result
 
@@ -993,6 +1013,24 @@ def remove_from_watchlist(media_type, imdb_id, season=None, episode=None):
     return False
 
 
+def _add_show_to_pending_updates(imdb_id):
+    """Add show to pending updates list after marking watched/unwatched.
+    
+    Helper function to track recently updated shows to handle Trakt's eventual consistency.
+    """
+    global _pending_show_updates
+    
+    # Fetch show data to get Trakt ID
+    show_data = call_trakt(f'search/imdb/{imdb_id}', with_auth=False)
+    if show_data and isinstance(show_data, list) and len(show_data) > 0:
+        show_trakt_id = show_data[0].get('show', {}).get('ids', {}).get('trakt')
+        if show_trakt_id:
+            _pending_show_updates[show_trakt_id] = time.time()
+            xbmc.log(f'[AIOStreams] Added show {show_trakt_id} to pending updates (10s grace period)', xbmc.LOGDEBUG)
+            return show_trakt_id
+    return None
+
+
 def mark_watched(media_type, imdb_id, season=None, episode=None, playback_id=None):
     """Mark item as watched and clear any in-progress status."""
     if not imdb_id:
@@ -1033,6 +1071,10 @@ def mark_watched(media_type, imdb_id, season=None, episode=None, playback_id=Non
 
         # Invalidate batch progress cache (also clears disk cache)
         invalidate_progress_cache()
+
+        # Get Trakt ID for this show to track pending update (AFTER invalidation)
+        if api_type == 'shows':
+            _add_show_to_pending_updates(imdb_id)
 
         # Invalidate batch watched history cache
         global _watched_history_valid
@@ -1081,6 +1123,10 @@ def mark_unwatched(media_type, imdb_id, season=None, episode=None):
 
         # Invalidate batch progress cache (also clears disk cache)
         invalidate_progress_cache()
+
+        # Get Trakt ID for this show to track pending update (AFTER invalidation)
+        if api_type == 'shows':
+            _add_show_to_pending_updates(imdb_id)
 
         # Invalidate batch watched history cache
         global _watched_history_valid
