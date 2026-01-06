@@ -2836,6 +2836,13 @@ def show_database_info():
             movie_count = db.execute('SELECT COUNT(*) as count FROM movies').fetchone()['count']
             watchlist_count = db.execute('SELECT COUNT(*) as count FROM watchlist').fetchone()['count']
 
+            # Get hidden shows count
+            hidden_shows_count = 0
+            try:
+                hidden_shows_count = db.execute('SELECT COUNT(*) as count FROM hidden_shows').fetchone()['count']
+            except:
+                pass
+
             # Get stream stats count
             stream_stats_count = 0
             try:
@@ -2871,7 +2878,8 @@ def show_database_info():
                 f'  Shows: {show_count}\n'
                 f'  Episodes: {episode_count}\n'
                 f'  Movies: {movie_count}\n'
-                f'  Watchlist: {watchlist_count}\n\n'
+                f'  Watchlist: {watchlist_count}\n'
+                f'  Hidden Shows: {hidden_shows_count}\n\n'
                 f'Stream Data:\n'
                 f'  Statistics: {stream_stats_count}\n'
                 f'  Preferences: {stream_prefs_count}\n\n'
@@ -2938,6 +2946,12 @@ def database_reset():
             db.execute('DELETE FROM movies')
             db.execute('DELETE FROM watchlist')
             db.execute('DELETE FROM activities')
+
+            # Clear hidden shows if it exists
+            try:
+                db.execute('DELETE FROM hidden_shows')
+            except:
+                pass
 
             # Clear stream stats and preferences if they exist
             try:
