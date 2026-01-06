@@ -1141,6 +1141,7 @@ def format_stream_title(stream):
     Example: RD|4K|10.27 GB|StremThru Torz|Cached
     """
     stream_name = stream.get('name', stream.get('title', ''))
+    description = stream.get('description', '')
 
     # Try to parse the formatted stream name
     try:
@@ -1181,15 +1182,22 @@ def format_stream_title(stream):
 
             # Build final formatted title
             formatted = f'{quality_tag}{size_text}{source_text}{cached_icon} {service_colored}'.strip()
+            
+            # Append description if available
+            if description:
+                formatted = f'{formatted}\n[COLOR gray]{description}[/COLOR]'
+            
             return formatted
         else:
-            # Format doesn't match expected pattern, return original
+            # Format doesn't match expected pattern, return original with description
+            if description:
+                return f"{stream_name}\n[COLOR gray]{description}[/COLOR]"
             return stream_name
     except Exception as e:
         # On any error, return the original stream name with description if available
         xbmc.log(f'[AIOStreams] Error formatting stream title: {e}', xbmc.LOGDEBUG)
-        if stream.get('description'):
-            return f"{stream_name} - {stream['description']}"
+        if description:
+            return f"{stream_name}\n[COLOR gray]{description}[/COLOR]"
         return stream_name
 
 
