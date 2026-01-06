@@ -2278,17 +2278,28 @@ def is_watched(media_type, imdb_id):
 
 
 def get_show_progress(imdb_id):
-    """Get show progress (which seasons/episodes are watched) using SQLite database.
-    Falls back to API if database is unavailable.
-    
+    """Get show progress (which seasons/episodes are watched) using Trakt API.
+
+    Uses Trakt API as primary source to ensure accurate episode counts.
+    Database is used as fallback only when API is unavailable.
     Uses event-driven caching that persists until watched status changes.
     """
     # Check in-memory cache first (fastest)
     if imdb_id in _show_progress_cache:
         xbmc.log(f'[AIOStreams] Cache HIT (memory): show_progress_{imdb_id}', xbmc.LOGDEBUG)
         return _show_progress_cache[imdb_id]
-    
-    # Try database
+
+    # Primary: Fetch from Trakt API (has accurate episode counts)
+    xbmc.log(f'[AIOStreams] Fetching show progress from Trakt API for {imdb_id}', xbmc.LOGDEBUG)
+    result = call_trakt(f'shows/{imdb_id}/progress/watched')
+
+    if result:
+        _show_progress_cache[imdb_id] = result
+        xbmc.log(f'[AIOStreams] Successfully fetched show progress from API for {imdb_id}', xbmc.LOGDEBUG)
+        return result
+
+    # Fallback: Try database if API fails
+    xbmc.log(f'[AIOStreams] API unavailable, trying database for {imdb_id}', xbmc.LOGDEBUG)
     db = get_trakt_db()
     if db and db.connect():
         try:
@@ -2296,29 +2307,30 @@ def get_show_progress(imdb_id):
             show = db.fetchone("SELECT trakt_id FROM shows WHERE imdb_id=?", (imdb_id,))
             if show:
                 show_trakt_id = show.get('trakt_id')
-                
+
                 # Get all episodes for this show
                 episodes = db.fetchall(
                     "SELECT season, episode, watched FROM episodes WHERE show_trakt_id=? ORDER BY season, episode",
                     (show_trakt_id,)
                 )
-                
+
                 # Build progress structure compatible with Trakt API format
+                # NOTE: This will only have accurate counts if ALL episodes were synced from Trakt
                 progress = {
                     'aired': 0,
                     'completed': 0,
                     'seasons': []
                 }
-                
+
                 # Group by season
                 seasons_dict = {}
                 next_episode = None
-                
+
                 for ep in episodes:
                     season_num = ep.get('season', 0)
                     episode_num = ep.get('episode', 0)
                     is_watched = ep.get('watched', 0) == 1
-                    
+
                     if season_num not in seasons_dict:
                         seasons_dict[season_num] = {
                             'number': season_num,
@@ -2326,10 +2338,10 @@ def get_show_progress(imdb_id):
                             'completed': 0,
                             'episodes': []
                         }
-                    
+
                     seasons_dict[season_num]['aired'] += 1
                     progress['aired'] += 1
-                    
+
                     if is_watched:
                         seasons_dict[season_num]['completed'] += 1
                         progress['completed'] += 1
@@ -2340,12 +2352,12 @@ def get_show_progress(imdb_id):
                                 'season': season_num,
                                 'number': episode_num
                             }
-                    
+
                     seasons_dict[season_num]['episodes'].append({
                         'number': episode_num,
                         'completed': is_watched
                     })
-                
+
                 progress['seasons'] = list(seasons_dict.values())
                 if next_episode:
                     progress['next_episode'] = next_episode
@@ -2353,20 +2365,12 @@ def get_show_progress(imdb_id):
                 # Cache the result in memory only
                 _show_progress_cache[imdb_id] = progress
 
-                xbmc.log(f'[AIOStreams] Built show progress from database for {imdb_id}', xbmc.LOGDEBUG)
+                xbmc.log(f'[AIOStreams] Built show progress from database for {imdb_id} (fallback)', xbmc.LOGDEBUG)
                 return progress
         except Exception as e:
             xbmc.log(f'[AIOStreams] Database error getting show progress: {e}', xbmc.LOGWARNING)
         finally:
             db.disconnect()
-
-    # Fallback to API call
-    xbmc.log(f'[AIOStreams] Database unavailable, fetching show progress from API for {imdb_id}', xbmc.LOGDEBUG)
-    result = call_trakt(f'shows/{imdb_id}/progress/watched')
-
-    if result:
-        _show_progress_cache[imdb_id] = result
-        return result
 
     return None
 
