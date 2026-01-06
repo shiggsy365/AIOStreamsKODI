@@ -1231,7 +1231,7 @@ def format_stream_title(stream, for_dialog=False):
 def create_stream_list_items(streams):
     """
     Create ListItem objects for stream selection dialog with multi-line formatting.
-    Format matches user's requested layout with left/right aligned text.
+    Formats stream names and descriptions into readable multi-line text.
 
     Args:
         streams: List of stream dictionaries
@@ -1239,65 +1239,48 @@ def create_stream_list_items(streams):
     Returns:
         List of xbmcgui.ListItem objects with formatted multi-line labels
     """
+    import re
+
+    def strip_emojis(text):
+        """Remove emoji characters that don't render properly in Kodi."""
+        # Remove emoji ranges and other problematic Unicode characters
+        emoji_pattern = re.compile(
+            "["
+            "\U0001F600-\U0001F64F"  # emoticons
+            "\U0001F300-\U0001F5FF"  # symbols & pictographs
+            "\U0001F680-\U0001F6FF"  # transport & map symbols
+            "\U0001F1E0-\U0001F1FF"  # flags
+            "\U00002702-\U000027B0"  # dingbats
+            "\U000024C2-\U0001F251"
+            "]+",
+            flags=re.UNICODE
+        )
+        return emoji_pattern.sub('', text)
+
     list_items = []
-    width = 70  # Character width for alignment
 
     for stream in streams:
-        stream_name = stream.get('name', stream.get('title', ''))
+        stream_name = stream.get('name', stream.get('title', 'Unknown Stream'))
         description = stream.get('description', '')
 
-        # Parse stream name format: SERVICE|QUALITY|SIZE|SOURCE|CACHED_STATUS
-        try:
-            parts = stream_name.split('|')
-            if len(parts) >= 4:
-                service = parts[0].strip()
-                quality = parts[1].strip()
-                size = parts[2].strip()
-                source = parts[3].strip()
-                cached_status = parts[4].strip() if len(parts) > 4 else 'Unknown'
+        # Strip emojis from both name and description
+        stream_name = strip_emojis(stream_name).strip()
+        description = strip_emojis(description).strip() if description else ''
 
-                # Parse description for additional details
-                desc_lines = description.split('\n') if description else []
+        # Build multi-line display
+        # Line 1: Stream name (main title)
+        # Line 2+: Description split across lines
+        lines = [stream_name] if stream_name else ['Unknown Stream']
 
-                # Build multi-line formatted display
-                # Line 1: Service Quality (left) | Size (right)
-                line1_left = f'{service} {source} {quality}'
-                line1 = line1_left.ljust(width) + size.rjust(20)
+        if description:
+            # Split description by newlines if present
+            desc_lines = description.split('\n')
+            lines.extend([line.strip() for line in desc_lines[:3] if line.strip()])
 
-                # Line 2: Codec/Group (left) | Cached status (right)
-                cached_text = 'Cached: Y' if 'cached' in cached_status.lower() else 'Cached: N'
-                line2_left = desc_lines[0][:width] if desc_lines else quality
-                line2 = line2_left.ljust(width) + cached_text.rjust(20)
+        label = '\n'.join(lines)
 
-                # Line 3: Additional metadata if available
-                line3 = ''
-                if len(desc_lines) > 1:
-                    line3 = desc_lines[1][:width].ljust(width)
-                    if len(desc_lines) > 2:
-                        line3 += desc_lines[2][:20].rjust(20)
-
-                # Build main label (lines 1-2, line 3 optional)
-                label_parts = [line1, line2]
-                if line3.strip():
-                    label_parts.append(line3)
-                label = '\n'.join(label_parts)
-
-                # Additional details in label2 (remaining description lines)
-                label2 = ''
-                if len(desc_lines) > 3:
-                    label2 = '\n'.join(desc_lines[3:])[:200]  # Truncate to reasonable length
-
-            else:
-                # Format doesn't match, use original name
-                label = stream_name
-                label2 = description[:100] if description else ''
-        except Exception as e:
-            xbmc.log(f'[AIOStreams] Error parsing stream: {e}', xbmc.LOGDEBUG)
-            label = stream_name
-            label2 = description[:100] if description else ''
-
-        # Create ListItem with multi-line label and label2
-        list_item = xbmcgui.ListItem(label=label, label2=label2)
+        # Create ListItem - don't set icon/thumb to avoid placeholder images
+        list_item = xbmcgui.ListItem(label=label)
         list_items.append(list_item)
 
     return list_items
@@ -1340,7 +1323,7 @@ def select_stream():
 
     # Create ListItems for display with description support
     list_items = create_stream_list_items(stream_data['streams'])
-    selected = xbmcgui.Dialog().select(f'Select Stream ({len(list_items)} available)', list_items, useDetails=True)
+    selected = xbmcgui.Dialog().select(f'Select Stream ({len(list_items)} available)', list_items)
 
     if selected is None or selected < 0:
         xbmcplugin.setResolvedUrl(HANDLE, False, xbmcgui.ListItem())
@@ -1659,7 +1642,7 @@ def show_streams_dialog(content_type, media_id, stream_data, title):
 
     # Create ListItems for display with description support
     list_items = create_stream_list_items(stream_data['streams'])
-    selected = xbmcgui.Dialog().select(f'Select Stream ({len(list_items)} available)', list_items, useDetails=True)
+    selected = xbmcgui.Dialog().select(f'Select Stream ({len(list_items)} available)', list_items)
 
     if selected is None or selected < 0:
         # User cancelled
