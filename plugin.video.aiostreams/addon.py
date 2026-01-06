@@ -1230,16 +1230,17 @@ def format_stream_title(stream, for_dialog=False):
 
 def create_stream_list_items(streams):
     """
-    Create ListItem objects for stream selection dialog.
-    Uses ASCII-safe symbols for maximum compatibility across all skins.
+    Create ListItem objects for stream selection dialog with multi-line formatting.
+    Format matches user's requested layout with left/right aligned text.
 
     Args:
         streams: List of stream dictionaries
 
     Returns:
-        List of xbmcgui.ListItem objects with label and label2 set
+        List of xbmcgui.ListItem objects with formatted multi-line labels
     """
     list_items = []
+    width = 70  # Character width for alignment
 
     for stream in streams:
         stream_name = stream.get('name', stream.get('title', ''))
@@ -1253,33 +1254,50 @@ def create_stream_list_items(streams):
                 quality = parts[1].strip()
                 size = parts[2].strip()
                 source = parts[3].strip()
-                cached_status = parts[4].strip() if len(parts) > 4 else ''
+                cached_status = parts[4].strip() if len(parts) > 4 else 'Unknown'
 
-                # Add quality indicator for 4K/2160p (ASCII-safe)
-                if '4K' in quality or '2160' in quality:
-                    quality_text = f'{quality} [4K]'
-                else:
-                    quality_text = quality
+                # Parse description for additional details
+                desc_lines = description.split('\n') if description else []
 
-                # Add cached status indicator (ASCII-safe)
-                if 'cached' in cached_status.lower():
-                    cached_text = ' [CACHED]'
-                elif 'uncached' in cached_status.lower():
-                    cached_text = ' [UNCACHED]'
-                else:
-                    cached_text = ''
+                # Build multi-line formatted display
+                # Line 1: Service Quality (left) | Size (right)
+                line1_left = f'{service} {source} {quality}'
+                line1 = line1_left.ljust(width) + size.rjust(20)
 
-                # Format main label: [SERVICE] Quality | Size | Source [STATUS]
-                label = f'[{service}] {quality_text} | {size} | {source}{cached_text}'
+                # Line 2: Codec/Group (left) | Cached status (right)
+                cached_text = 'Cached: Y' if 'cached' in cached_status.lower() else 'Cached: N'
+                line2_left = desc_lines[0][:width] if desc_lines else quality
+                line2 = line2_left.ljust(width) + cached_text.rjust(20)
+
+                # Line 3: Additional metadata if available
+                line3 = ''
+                if len(desc_lines) > 1:
+                    line3 = desc_lines[1][:width].ljust(width)
+                    if len(desc_lines) > 2:
+                        line3 += desc_lines[2][:20].rjust(20)
+
+                # Build main label (lines 1-2, line 3 optional)
+                label_parts = [line1, line2]
+                if line3.strip():
+                    label_parts.append(line3)
+                label = '\n'.join(label_parts)
+
+                # Additional details in label2 (remaining description lines)
+                label2 = ''
+                if len(desc_lines) > 3:
+                    label2 = '\n'.join(desc_lines[3:])[:200]  # Truncate to reasonable length
+
             else:
                 # Format doesn't match, use original name
                 label = stream_name
+                label2 = description[:100] if description else ''
         except Exception as e:
-            xbmc.log(f'[AIOStreams] Error parsing stream name: {e}', xbmc.LOGDEBUG)
+            xbmc.log(f'[AIOStreams] Error parsing stream: {e}', xbmc.LOGDEBUG)
             label = stream_name
+            label2 = description[:100] if description else ''
 
-        # Create ListItem with label and description (label2)
-        list_item = xbmcgui.ListItem(label=label, label2=description if description else '')
+        # Create ListItem with multi-line label and label2
+        list_item = xbmcgui.ListItem(label=label, label2=label2)
         list_items.append(list_item)
 
     return list_items
