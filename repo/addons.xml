@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <addons>
-<addon id="plugin.video.aiostreams" name="AIOStreams" version="3.0.1" provider-name="Jon">
+<addon id="plugin.video.aiostreams" name="AIOStreams" version="3.0.2" provider-name="Jon">
     <requires>
         <import addon="xbmc.python" version="3.0.0"/>
         <import addon="script.module.requests" version="2.25.1"/>
@@ -14,7 +14,7 @@
         <platform>all</platform>
         <license>MIT</license>
         <website>https://aiostreams.shiggsy.co.uk</website>
-        <news>v3.0.1: Bug fixes - Fixed TV show watched/unwatched functionality and indicators. Removed legacy disk caching for cleaner architecture. | v3.0.0: Major release - Complete SQLite database integration for all Trakt catalogs with optimistic updates, smart widget refresh, and graceful API fallback. | v2.8.0: Added background service for automatic Trakt sync (5 min intervals), database migration, and database maintenance tools.</news>
+        <news>v3.0.2: CRITICAL FIX - Fixed Next Up list being cleared when marking episodes as watched. Added seasons data to database queries. | v3.0.1: Bug fixes for TV show watched/unwatched functionality. | v3.0.0: Major release with complete SQLite database integration.</news>
         <assets>
             <icon>resources/icon.png</icon>
             <fanart>resources/fanart.jpg</fanart>
