@@ -187,23 +187,31 @@ class TraktSyncDatabase(Database):
             ),
             next_episode_candidate AS (
                 -- Find the next unwatched episode after the last watched one
+                -- Uses ROW_NUMBER to correctly get the first episode by season+episode order
                 SELECT
-                    e.show_trakt_id,
-                    MIN(e.season) as next_season,
-                    MIN(e.episode) as next_episode
-                FROM episodes e
-                INNER JOIN max_watched mw ON e.show_trakt_id = mw.show_trakt_id
-                WHERE e.season > 0
-                    AND e.watched = 0
-                    AND (
-                        -- Next episode in the same season
-                        (e.season = mw.max_season AND e.episode > mw.max_episode)
-                        -- OR first episode of next season
-                        OR (e.season > mw.max_season)
-                    )
-                    -- Only aired episodes
-                    AND datetime(e.air_date) < datetime('{now}')
-                GROUP BY e.show_trakt_id
+                    show_trakt_id,
+                    season as next_season,
+                    episode as next_episode
+                FROM (
+                    SELECT
+                        e.show_trakt_id,
+                        e.season,
+                        e.episode,
+                        ROW_NUMBER() OVER (PARTITION BY e.show_trakt_id ORDER BY e.season, e.episode) as rn
+                    FROM episodes e
+                    INNER JOIN max_watched mw ON e.show_trakt_id = mw.show_trakt_id
+                    WHERE e.season > 0
+                        AND e.watched = 0
+                        AND (
+                            -- Next episode in the same season
+                            (e.season = mw.max_season AND e.episode > mw.max_episode)
+                            -- OR first episode of next season
+                            OR (e.season > mw.max_season)
+                        )
+                        -- Only aired episodes
+                        AND datetime(e.air_date) < datetime('{now}')
+                )
+                WHERE rn = 1
             )
             SELECT
                 s.trakt_id as show_trakt_id,
