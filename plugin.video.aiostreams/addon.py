@@ -1227,12 +1227,14 @@ def select_stream():
 
     # Show custom source select dialog
     try:
-        dialog = SourceSelect('source_select.xml', ADDON_PATH, streams=stream_data['streams'], metadata=metadata)
+        dialog = SourceSelect('source_select.xml', ADDON_PATH, 'default', '1080i', streams=stream_data['streams'], metadata=metadata)
         dialog.doModal()
         selected = dialog.selected_index
         del dialog
     except Exception as e:
-        xbmc.log(f'[AIOStreams] Error showing custom dialog, falling back to simple dialog: {e}', xbmc.LOGWARNING)
+        import traceback
+        xbmc.log(f'[AIOStreams] Error showing custom dialog: {e}\n{traceback.format_exc()}', xbmc.LOGWARNING)
+        xbmc.log('[AIOStreams] Falling back to simple dialog', xbmc.LOGWARNING)
         # Fallback to simple dialog
         stream_count = len(stream_data['streams'])
         if title:
@@ -1560,12 +1562,14 @@ def show_streams_dialog(content_type, media_id, stream_data, title):
 
     # Show custom source select dialog
     try:
-        dialog = SourceSelect('source_select.xml', ADDON_PATH, streams=stream_data['streams'], metadata=metadata)
+        dialog = SourceSelect('source_select.xml', ADDON_PATH, 'default', '1080i', streams=stream_data['streams'], metadata=metadata)
         dialog.doModal()
         selected = dialog.selected_index
         del dialog
     except Exception as e:
-        xbmc.log(f'[AIOStreams] Error showing custom dialog, falling back to simple dialog: {e}', xbmc.LOGWARNING)
+        import traceback
+        xbmc.log(f'[AIOStreams] Error showing custom dialog: {e}\n{traceback.format_exc()}', xbmc.LOGWARNING)
+        xbmc.log('[AIOStreams] Falling back to simple dialog', xbmc.LOGWARNING)
         # Fallback to simple dialog
         selected = xbmcgui.Dialog().select(f'Select Stream: {title} ({len(stream_list)} available)', stream_list)
 
@@ -2551,13 +2555,18 @@ def trakt_hide_from_progress():
 # Maintenance Tools
 
 def clear_cache():
-    """Clear all cached data."""
+    """Clear all cached data including Trakt progress cache and manifest."""
     if not HAS_MODULES:
         return
 
     try:
+        # Clear generic caches (manifest, metadata, catalogs)
         cache.cleanup_expired_cache(force_all=True)
-        xbmcgui.Dialog().notification('AIOStreams', 'Cache cleared successfully', xbmcgui.NOTIFICATION_INFO)
+        
+        # Also clear Trakt progress caches (memory + disk)
+        trakt.invalidate_progress_cache()
+        
+        xbmcgui.Dialog().notification('AIOStreams', 'All caches cleared successfully', xbmcgui.NOTIFICATION_INFO)
     except Exception as e:
         xbmc.log(f'[AIOStreams] Failed to clear cache: {e}', xbmc.LOGERROR)
         xbmcgui.Dialog().notification('AIOStreams', 'Failed to clear cache', xbmcgui.NOTIFICATION_ERROR)
