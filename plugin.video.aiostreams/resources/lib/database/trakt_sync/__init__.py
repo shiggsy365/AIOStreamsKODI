@@ -2,6 +2,10 @@
 """
 Trakt sync database for persistent caching of Trakt data.
 Stores shows, episodes, movies, and watchlist data with pickle BLOB serialization.
+
+Note: Pickle is used for metadata serialization following Seren's approach.
+The metadata comes from Trakt API responses processed by this addon,
+not from external untrusted sources. All data is self-generated.
 """
 import pickle
 import xbmc
