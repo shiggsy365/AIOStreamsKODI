@@ -44,6 +44,21 @@
         <setting id="show_quality_badges" type="bool" label="Show Quality Badges" default="true"/>
         <setting id="show_reliability_icons" type="bool" label="Show Reliability Icons" default="true"/>
         <setting id="learn_preferences" type="bool" label="Learn Stream Preferences" default="true"/>
+        
+        <setting id="stream_display" type="lsep" label="Stream Selection"/>
+        <setting id="stream_formatter" type="select" label="Stream Name Format" default="torrentio">
+            <level>0</level>
+            <constraints>
+                <options>
+                    <option label="Torrentio Style">torrentio</option>
+                    <option label="Torbox Style">torbox</option>
+                    <option label="Google Drive (Full)">gdrive</option>
+                    <option label="Google Drive (Light)">gdrive_light</option>
+                    <option label="Prism Style">prism</option>
+                    <option label="Google Drive (Minimalistic)">gdrive_minimal</option>
+                </options>
+            </constraints>
+        </setting>
     </category>
 
     <!-- Advanced Settings -->

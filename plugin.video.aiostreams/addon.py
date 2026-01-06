@@ -13,6 +13,7 @@ try:
     from resources.lib import trakt, filters, cache
     from resources.lib.monitor import PLAYER
     from resources.lib import streams, ui_helpers, settings_helpers, constants
+    from resources.lib.gui.windows.source_select import SourceSelect
     HAS_MODULES = True
 except Exception as e:
     HAS_MODULES = False
@@ -20,6 +21,7 @@ except Exception as e:
 
 # Initialize addon
 ADDON = xbmcaddon.Addon()
+ADDON_PATH = xbmcvfs.translatePath(ADDON.getAddonInfo('path'))
 HANDLE = int(sys.argv[1])
 
 # Run cache cleanup on startup (async, won't block)
@@ -1216,21 +1218,30 @@ def select_stream():
         xbmcplugin.setResolvedUrl(HANDLE, False, xbmcgui.ListItem())
         return
     
-    # Build stream list for dialog
-    stream_list = []
-    for stream in stream_data['streams']:
-        stream_title = format_stream_title(stream)
-        stream_list.append(stream_title)
+    # Prepare metadata for custom source select dialog
+    metadata = {
+        'title': title or 'Select Stream',
+        'fanart': '',  # Could be populated from API if available
+        'clearlogo': ''  # Could be populated from API if available
+    }
 
-    # Show selection dialog
-    stream_count = len(stream_list)
-    if title:
-        dialog_title = f'Select Stream: {title} ({stream_count} available)'
-    else:
-        dialog_title = f'Select Stream ({stream_count} available)'
-    selected = xbmcgui.Dialog().select(dialog_title, stream_list)
+    # Show custom source select dialog
+    try:
+        dialog = SourceSelect('source_select.xml', ADDON_PATH, streams=stream_data['streams'], metadata=metadata)
+        dialog.doModal()
+        selected = dialog.selected_index
+        del dialog
+    except Exception as e:
+        xbmc.log(f'[AIOStreams] Error showing custom dialog, falling back to simple dialog: {e}', xbmc.LOGWARNING)
+        # Fallback to simple dialog
+        stream_count = len(stream_data['streams'])
+        if title:
+            dialog_title = f'Select Stream: {title} ({stream_count} available)'
+        else:
+            dialog_title = f'Select Stream ({stream_count} available)'
+        selected = xbmcgui.Dialog().select(dialog_title, [format_stream_title(s) for s in stream_data['streams']])
     
-    if selected < 0:
+    if selected is None or selected < 0:
         xbmcplugin.setResolvedUrl(HANDLE, False, xbmcgui.ListItem())
         return
     
@@ -1540,10 +1551,25 @@ def show_streams_dialog(content_type, media_id, stream_data, title):
         xbmcplugin.endOfDirectory(HANDLE, succeeded=False)
         return
 
-    # Show selection dialog
-    selected = xbmcgui.Dialog().select(f'Select Stream: {title} ({len(stream_list)} available)', stream_list)
+    # Prepare metadata for custom source select dialog
+    metadata = {
+        'title': title,
+        'fanart': '',  # Could be populated from API if available
+        'clearlogo': ''  # Could be populated from API if available
+    }
 
-    if selected < 0:
+    # Show custom source select dialog
+    try:
+        dialog = SourceSelect('source_select.xml', ADDON_PATH, streams=stream_data['streams'], metadata=metadata)
+        dialog.doModal()
+        selected = dialog.selected_index
+        del dialog
+    except Exception as e:
+        xbmc.log(f'[AIOStreams] Error showing custom dialog, falling back to simple dialog: {e}', xbmc.LOGWARNING)
+        # Fallback to simple dialog
+        selected = xbmcgui.Dialog().select(f'Select Stream: {title} ({len(stream_list)} available)', stream_list)
+
+    if selected is None or selected < 0:
         # User cancelled
         xbmcplugin.endOfDirectory(HANDLE, succeeded=False)
         return
