@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <addons>
-<addon id="plugin.video.aiostreams" name="AIOStreams" version="3.1.4" provider-name="Jon">
+<addon id="plugin.video.aiostreams" name="AIOStreams" version="3.1.5" provider-name="Jon">
     <requires>
         <import addon="xbmc.python" version="3.0.0"/>
         <import addon="script.module.requests" version="2.25.1"/>
@@ -14,7 +14,7 @@
         <platform>all</platform>
         <license>MIT</license>
         <website>https://aiostreams.shiggsy.co.uk</website>
-        <news>v3.1.4: Fixed widget refresh on drop, Trakt dropped list sync (added progress_collected section), fixed SQL UNIQUE constraint errors. | v3.1.3: Auto-unhide dropped shows. | v3.1.2: Fixed titles and dialog. | v3.1.0: Seren architecture!</news>
+        <news>v3.1.5: Enhanced Trakt API logging, widget refresh for all Trakt actions. | v3.1.4: Fixed widget refresh on drop, Trakt dropped list sync. | v3.1.3: Auto-unhide dropped shows. | v3.1.2: Fixed titles and dialog.</news>
         <assets>
             <icon>resources/icon.png</icon>
             <fanart>resources/fanart.jpg</fanart>
