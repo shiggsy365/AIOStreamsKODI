@@ -119,9 +119,9 @@ def update_show_progress_incrementally(imdb_id, show_trakt_id):
 
 
 def _get_trakt_id_from_imdb(imdb_id):
-    """Get Trakt ID for a show from its IMDB ID.
+    """Get Trakt ID for a show from IMDB ID, with API fallback.
     
-    Checks batch cache first for performance, falls back to API if needed.
+    Checks batch cache first, then falls back to Trakt search API if needed.
     
     Args:
         imdb_id: IMDB ID (e.g., 'tt1234567')
@@ -129,26 +129,31 @@ def _get_trakt_id_from_imdb(imdb_id):
     Returns:
         Trakt ID (int) or None if not found
     """
-    # Check batch cache first (fastest)
     global _show_progress_batch_cache
+    
+    # Fast path: Check batch cache first
     if imdb_id in _show_progress_batch_cache:
         show_data = _show_progress_batch_cache[imdb_id].get('show', {})
         trakt_id = show_data.get('ids', {}).get('trakt')
         if trakt_id:
+            xbmc.log(f'[AIOStreams] Found Trakt ID {trakt_id} for {imdb_id} in batch cache', xbmc.LOGDEBUG)
             return trakt_id
     
-    # Fallback: Query Trakt API
+    # Fallback: Query Trakt API to get Trakt ID from IMDB ID
+    xbmc.log(f'[AIOStreams] Trakt ID not in cache for {imdb_id}, querying API', xbmc.LOGDEBUG)
     try:
-        search_result = call_trakt(f'search/imdb/{imdb_id}', with_auth=False)
-        if search_result and isinstance(search_result, list) and len(search_result) > 0:
-            show_data = search_result[0].get('show', {})
+        # Use Trakt search API: /search/imdb/{id}?type=show
+        result = call_trakt(f'search/imdb/{imdb_id}?type=show', with_auth=False)
+        if result and isinstance(result, list) and len(result) > 0:
+            show_data = result[0].get('show', {})
             trakt_id = show_data.get('ids', {}).get('trakt')
             if trakt_id:
-                xbmc.log(f'[AIOStreams] Found Trakt ID {trakt_id} for IMDB {imdb_id}', xbmc.LOGDEBUG)
+                xbmc.log(f'[AIOStreams] Found Trakt ID {trakt_id} for {imdb_id} via API', xbmc.LOGDEBUG)
                 return trakt_id
     except Exception as e:
         xbmc.log(f'[AIOStreams] Error getting Trakt ID for {imdb_id}: {e}', xbmc.LOGERROR)
     
+    xbmc.log(f'[AIOStreams] Could not find Trakt ID for {imdb_id}', xbmc.LOGWARNING)
     return None
 
 
