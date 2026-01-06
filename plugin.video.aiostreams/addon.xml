@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<addon id="plugin.video.aiostreams" name="AIOStreams" version="3.1.9" provider-name="Jon">
+<addon id="plugin.video.aiostreams" name="AIOStreams" version="3.2.0" provider-name="Jon">
     <requires>
         <import addon="xbmc.python" version="3.0.0"/>
         <import addon="script.module.requests" version="2.25.1"/>
@@ -14,7 +14,7 @@
         <platform>all</platform>
         <license>MIT</license>
         <website>https://aiostreams.shiggsy.co.uk</website>
-        <news>v3.1.9: Re-enabled SourceSelect with plain text layout, added unhide functionality. | v3.1.8: Dialog().select() stream selector. | v3.1.7: Custom stream selector. | v3.1.6: Fixed dropped shows sync.</news>
+        <news>v3.2.0: Fixed stream selector to use Dialog().select() with plain text, added unhide to show context menus, enhanced episode marking logging. | v3.1.9: Re-enabled SourceSelect with plain text layout, added unhide functionality. | v3.1.8: Dialog().select() stream selector.</news>
         <assets>
             <icon>resources/icon.png</icon>
             <fanart>resources/fanart.jpg</fanart>
