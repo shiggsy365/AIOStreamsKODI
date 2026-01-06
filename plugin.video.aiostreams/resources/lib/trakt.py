@@ -971,6 +971,17 @@ def hide_from_progress(media_type, imdb_id):
             else:
                 xbmc.log('[AIOStreams] No hidden shows cache found, will be populated on next fetch', xbmc.LOGDEBUG)
 
+            # Also add to local database so Next Up list updates immediately
+            try:
+                from resources.lib.database.trakt_sync import TraktSyncDatabase
+                db = TraktSyncDatabase()
+                # Add to all sections that were hidden
+                for section in sections:
+                    db.add_hidden_item(trakt_id_to_cache, data_key[:-1], section)  # data_key[:-1] converts 'shows' -> 'show'
+                xbmc.log(f'[AIOStreams] Added Trakt ID {trakt_id_to_cache} to local database hidden table', xbmc.LOGINFO)
+            except Exception as e:
+                xbmc.log(f'[AIOStreams] Failed to add to local database hidden table: {e}', xbmc.LOGERROR)
+
         return True
     else:
         xbmc.log(f'[AIOStreams] Failed to drop {media_type} ({imdb_id}) from all sections', xbmc.LOGERROR)

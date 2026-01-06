@@ -1144,9 +1144,15 @@ def play():
     xbmcplugin.setResolvedUrl(HANDLE, True, list_item)
 
 
-def format_stream_title(stream):
+def format_stream_title(stream, for_dialog=False):
     """
-    Format stream title with color-coded service tags and status icons.
+    Format stream title for display.
+
+    Args:
+        stream: Stream data dictionary
+        for_dialog: If True, format for Dialog().select() (plain text, no color codes)
+                    If False, format for ListItems (with color codes)
+
     Expected format: SERVICE|QUALITY|SIZE|SOURCE|CACHED_STATUS
     Example: RD|4K|10.27 GB|StremThru Torz|Cached
     """
@@ -1163,51 +1169,56 @@ def format_stream_title(stream):
             source = parts[3].strip()
             cached_status = parts[4].strip() if len(parts) > 4 else ''
 
-            # Color code the service tag
-            if service == 'RD':
-                service_colored = f'[COLOR green][{service}][/COLOR]'
-            elif service == 'TB':
-                service_colored = f'[COLOR yellow][{service}][/COLOR]'
-            elif service:
-                service_colored = f'[COLOR blue][{service}][/COLOR]'
+            if for_dialog:
+                # Plain text formatting for Dialog().select()
+                # Use symbols for visual appeal: ✓ for cached, ⏳ for uncached, ★ for 4K
+                quality_symbol = '★ ' if '4K' in quality or '2160' in quality else ''
+
+                # Cached status symbol
+                if 'cached' in cached_status.lower():
+                    cached_symbol = '✓'
+                elif 'uncached' in cached_status.lower():
+                    cached_symbol = '⏳'
+                else:
+                    cached_symbol = '?'
+
+                # Format: [SERVICE] Quality • Size • Source • Status
+                formatted = f'[{service}] {quality_symbol}{quality} • {size} • {source} {cached_symbol}'
             else:
-                service_colored = ''
+                # Color-coded formatting for ListItems
+                if service == 'RD':
+                    service_colored = f'[COLOR green][{service}][/COLOR]'
+                elif service == 'TB':
+                    service_colored = f'[COLOR yellow][{service}][/COLOR]'
+                elif service:
+                    service_colored = f'[COLOR blue][{service}][/COLOR]'
+                else:
+                    service_colored = ''
 
-            # Add quality tag if present
-            quality_tag = f'[{quality}] ' if quality else ''
+                quality_tag = f'[{quality}] ' if quality else ''
+                size_text = f'{size} ' if size else ''
+                source_text = f'{source} ' if source else ''
 
-            # Add size if present
-            size_text = f'{size} ' if size else ''
+                if 'cached' in cached_status.lower():
+                    cached_icon = '✓'
+                elif 'uncached' in cached_status.lower():
+                    cached_icon = '⏳'
+                else:
+                    cached_icon = ''
 
-            # Add source if present
-            source_text = f'{source} ' if source else ''
+                formatted = f'{quality_tag}{size_text}{source_text}{cached_icon} {service_colored}'.strip()
 
-            # Add cached status icon (ASCII-safe)
-            if 'cached' in cached_status.lower():
-                cached_icon = '*'
-            elif 'uncached' in cached_status.lower():
-                cached_icon = '...'
-            else:
-                cached_icon = ''
-
-            # Build final formatted title
-            formatted = f'{quality_tag}{size_text}{source_text}{cached_icon} {service_colored}'.strip()
-            
-            # Append description if available
-            if description:
+            # Append description if available (only for ListItems)
+            if description and not for_dialog:
                 formatted = f'{formatted}\n[COLOR gray]{description}[/COLOR]'
-            
+
             return formatted
         else:
-            # Format doesn't match expected pattern, return original with description
-            if description:
-                return f"{stream_name}\n[COLOR gray]{description}[/COLOR]"
+            # Format doesn't match expected pattern, return original
             return stream_name
     except Exception as e:
-        # On any error, return the original stream name with description if available
+        # On any error, return the original stream name
         xbmc.log(f'[AIOStreams] Error formatting stream title: {e}', xbmc.LOGDEBUG)
-        if description:
-            return f"{stream_name}\n[COLOR gray]{description}[/COLOR]"
         return stream_name
 
 
@@ -1251,7 +1262,7 @@ def select_stream():
         dialog_title = f'Select Stream ({stream_count} available)'
 
     xbmc.log(f'[AIOStreams] Showing stream selection dialog with {stream_count} streams', xbmc.LOGDEBUG)
-    selected = xbmcgui.Dialog().select(dialog_title, [format_stream_title(s) for s in stream_data['streams']])
+    selected = xbmcgui.Dialog().select(dialog_title, [format_stream_title(s, for_dialog=True) for s in stream_data['streams']])
 
     if selected is None or selected < 0:
         xbmcplugin.setResolvedUrl(HANDLE, False, xbmcgui.ListItem())
@@ -2300,6 +2311,8 @@ def trakt_next_up():
             # Extract metadata
             if meta_result and 'meta' in meta_result:
                 meta_data = meta_result['meta']
+                # Get show title from metadata if available
+                show_title = meta_data.get('name', show_title)
                 poster = meta_data.get('poster', '')
                 fanart = meta_data.get('background', '')
                 logo = meta_data.get('logo', '')
@@ -2313,7 +2326,7 @@ def trakt_next_up():
                         episode_overview = video.get('description', '')
                         break
 
-        label = f'{show_title} - S{season:02d}E{episode:02d} - {episode_title}'
+        label = f'{show_title} S{season:02d}E{episode:02d}'
 
         list_item = xbmcgui.ListItem(label=label)
         info_tag = list_item.getVideoInfoTag()

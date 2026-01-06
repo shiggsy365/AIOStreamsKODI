@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<addon id="plugin.video.aiostreams" name="AIOStreams" version="3.1.1" provider-name="Jon">
+<addon id="plugin.video.aiostreams" name="AIOStreams" version="3.1.2" provider-name="Jon">
     <requires>
         <import addon="xbmc.python" version="3.0.0"/>
         <import addon="script.module.requests" version="2.25.1"/>
@@ -14,7 +14,7 @@
         <platform>all</platform>
         <license>MIT</license>
         <website>https://aiostreams.shiggsy.co.uk</website>
-        <news>v3.1.1: Fixed Next Up sorting (now sorted by last watched date descending), fixed duplicate column migration error, added automatic metadata fetching for Next Up items. | v3.1.0: MAJOR PERFORMANCE UPDATE - Adopted Seren's architecture for Next Up. ZERO API calls! Instant loading with pure SQL. | v3.0.9: Added caching.</news>
+        <news>v3.1.2: Fixed Next Up titles showing 'None', fixed Drop show not removing from Next Up, enhanced stream selection dialog with symbols and better formatting. | v3.1.1: Fixed Next Up sorting and metadata. | v3.1.0: Adopted Seren's architecture - ZERO API calls!</news>
         <assets>
             <icon>resources/icon.png</icon>
             <fanart>resources/fanart.jpg</fanart>
