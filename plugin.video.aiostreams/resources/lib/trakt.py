@@ -11,14 +11,39 @@ import json
 # Import cache module
 try:
     from resources.lib import cache
+    from resources.lib import utils
     HAS_MODULES = True
 except:
     HAS_MODULES = False
     cache = None
+    utils = None
 
 ADDON = xbmcaddon.Addon()
 API_ENDPOINT = 'https://api.trakt.tv'
 API_VERSION = '2'
+
+# Database instance (lazy loaded)
+_trakt_db = None
+
+
+def get_trakt_db():
+    """Get or create Trakt sync database instance.
+    
+    Returns:
+        TraktSyncDatabase instance or None if database module unavailable
+    """
+    global _trakt_db
+    
+    if _trakt_db is None:
+        try:
+            from resources.lib.database.trakt_sync.activities import TraktSyncDatabase
+            _trakt_db = TraktSyncDatabase()
+            xbmc.log('[AIOStreams] Trakt database initialized', xbmc.LOGDEBUG)
+        except Exception as e:
+            xbmc.log(f'[AIOStreams] Failed to initialize Trakt database: {e}', xbmc.LOGERROR)
+            return None
+    
+    return _trakt_db
 
 # In-memory cache for batch show progress (invalidated on watched status changes)
 _show_progress_batch_cache = {}
@@ -1058,79 +1083,197 @@ def scrobble(action, media_type, imdb_id, progress=0, season=None, episode=None)
 
 
 def add_to_watchlist(media_type, imdb_id, season=None, episode=None):
-    """Add item to watchlist."""
+    """Add item to watchlist with optimistic database update.
+    
+    Updates database first for instant UI response, then syncs to Trakt in background.
+    Rollback on Trakt API failure.
+    """
+    import threading
+    from datetime import datetime, timezone
+    
+    if not imdb_id:
+        xbmc.log('[AIOStreams] Cannot add to watchlist: no IMDB ID', xbmc.LOGWARNING)
+        return False
+    
     # For episodes/shows/series, we use 'shows' in the API
     api_type = 'shows' if media_type in ['episode', 'show', 'series'] or season is not None else media_type + 's'
-
-    data = {api_type: []}
-
-    item = {'ids': {'imdb': imdb_id}}
-    if season is not None:
-        item['seasons'] = [{'number': season}]
-        if episode is not None:
-            item['seasons'][0]['episodes'] = [{'number': episode}]
-
-    data[api_type].append(item)
-
-    result = call_trakt('sync/watchlist', method='POST', data=data)
-
-    if result:
-        # ✨ NEW: Incremental cache update - just remove this item from cache
-        cache_key = f"{media_type}:{imdb_id}"
-        if cache_key in _watchlist_cache:
-            del _watchlist_cache[cache_key]
-
-        # Invalidate batch watchlist cache for this type only
-        global _watchlist_valid
-        api_type_key = 'movies' if media_type == 'movie' else 'shows'
-        _watchlist_valid[api_type_key] = False
-
-        xbmcgui.Dialog().notification('AIOStreams', 'Added to Trakt watchlist', xbmcgui.NOTIFICATION_INFO)
+    mediatype_db = 'show' if api_type == 'shows' else 'movie'
+    
+    # 1. Optimistic database update (instant UI response)
+    # Use IMDB ID directly for now, Trakt ID will be updated in background
+    db = get_trakt_db()
+    if db:
+        try:
+            listed_at = datetime.now(timezone.utc).isoformat()
+            # Use 0 as temporary Trakt ID, will be updated by background thread
+            db.execute_sql("""
+                INSERT OR IGNORE INTO watchlist (trakt_id, mediatype, imdb_id, listed_at)
+                VALUES (0, ?, ?, ?)
+            """, (mediatype_db, imdb_id, listed_at))
+            xbmc.log(f'[AIOStreams] Optimistically added {imdb_id} to watchlist database', xbmc.LOGDEBUG)
+        except Exception as e:
+            xbmc.log(f'[AIOStreams] Database update failed: {e}', xbmc.LOGERROR)
+    
+    # Show instant feedback
+    xbmcgui.Dialog().notification('AIOStreams', 'Added to Trakt watchlist', xbmcgui.NOTIFICATION_INFO)
+    
+    # Refresh container immediately for instant UI update
+    if utils:
+        utils.refresh_container()
+    
+    # 2. Background sync to Trakt API with rollback on failure
+    def sync_to_trakt():
+        """Background thread to sync to Trakt with rollback on failure."""
+        # Get Trakt ID in background (non-blocking)
+        trakt_id = None
+        try:
+            search_result = call_trakt(f'search/imdb/{imdb_id}', with_auth=False)
+            if search_result and isinstance(search_result, list) and len(search_result) > 0:
+                item_data = search_result[0].get(mediatype_db, {})
+                trakt_id = item_data.get('ids', {}).get('trakt')
+        except Exception as e:
+            xbmc.log(f'[AIOStreams] Failed to get Trakt ID: {e}', xbmc.LOGDEBUG)
         
-        # ✨ NEW: Refresh widgets
-        xbmc.executebuiltin('Container.Refresh')
+        # Sync to Trakt API
+        data = {api_type: []}
+        item = {'ids': {'imdb': imdb_id}}
+        if season is not None:
+            item['seasons'] = [{'number': season}]
+            if episode is not None:
+                item['seasons'][0]['episodes'] = [{'number': episode}]
+        data[api_type].append(item)
         
-        return True
-
-    return False
+        result = call_trakt('sync/watchlist', method='POST', data=data)
+        
+        if not result:
+            # Rollback database on API failure
+            xbmc.log(f'[AIOStreams] Trakt API failed, rolling back watchlist add for {imdb_id}', xbmc.LOGWARNING)
+            if db:
+                db.execute_sql(
+                    "DELETE FROM watchlist WHERE imdb_id=? AND mediatype=?",
+                    (imdb_id, mediatype_db)
+                )
+            xbmcgui.Dialog().notification('AIOStreams', 'Failed to sync to Trakt', xbmcgui.NOTIFICATION_ERROR)
+        else:
+            xbmc.log(f'[AIOStreams] Successfully synced {imdb_id} to Trakt watchlist', xbmc.LOGINFO)
+            # Update database with real Trakt ID now that we have it
+            if db and trakt_id:
+                db.execute_sql(
+                    "UPDATE watchlist SET trakt_id=? WHERE imdb_id=? AND mediatype=?",
+                    (trakt_id, imdb_id, mediatype_db)
+                )
+        
+        # Trigger smart widget refresh after sync
+        if utils:
+            utils.trigger_background_refresh(delay=0.5)
+    
+    # Start background sync thread
+    try:
+        sync_thread = threading.Thread(target=sync_to_trakt)
+        sync_thread.daemon = True
+        sync_thread.start()
+    except Exception as e:
+        xbmc.log(f'[AIOStreams] Failed to start background sync: {e}', xbmc.LOGERROR)
+        # Fallback to synchronous sync
+        sync_to_trakt()
+    
+    return True
 
 
 def remove_from_watchlist(media_type, imdb_id, season=None, episode=None):
-    """Remove item from watchlist."""
+    """Remove item from watchlist with optimistic database update.
+    
+    Updates database first for instant UI response, then syncs to Trakt in background.
+    Rollback on Trakt API failure.
+    """
+    import threading
+    
+    if not imdb_id:
+        xbmc.log('[AIOStreams] Cannot remove from watchlist: no IMDB ID', xbmc.LOGWARNING)
+        return False
+    
     # For episodes/shows/series, we use 'shows' in the API
     api_type = 'shows' if media_type in ['episode', 'show', 'series'] or season is not None else media_type + 's'
-
-    data = {api_type: []}
-
-    item = {'ids': {'imdb': imdb_id}}
-    if season is not None:
-        item['seasons'] = [{'number': season}]
-        if episode is not None:
-            item['seasons'][0]['episodes'] = [{'number': episode}]
-
-    data[api_type].append(item)
-
-    result = call_trakt('sync/watchlist/remove', method='POST', data=data)
-
-    if result:
-        # ✨ NEW: Incremental cache update - just remove this item from cache
-        cache_key = f"{media_type}:{imdb_id}"
-        if cache_key in _watchlist_cache:
-            del _watchlist_cache[cache_key]
-
-        # Invalidate batch watchlist cache for this type only
-        global _watchlist_valid
-        api_type_key = 'movies' if media_type == 'movie' else 'shows'
-        _watchlist_valid[api_type_key] = False
-
-        xbmcgui.Dialog().notification('AIOStreams', 'Removed from Trakt watchlist', xbmcgui.NOTIFICATION_INFO)
+    mediatype_db = 'show' if api_type == 'shows' else 'movie'
+    
+    # Store original state for potential rollback (using IMDB ID for lookup)
+    original_state = None
+    db = get_trakt_db()
+    if db:
+        try:
+            original_state = db.fetchone(
+                "SELECT * FROM watchlist WHERE imdb_id=? AND mediatype=?",
+                (imdb_id, mediatype_db)
+            )
+        except Exception as e:
+            xbmc.log(f'[AIOStreams] Failed to get original state: {e}', xbmc.LOGDEBUG)
+    
+    # 1. Optimistic database update (instant UI response)
+    if db:
+        try:
+            db.execute_sql(
+                "DELETE FROM watchlist WHERE imdb_id=? AND mediatype=?",
+                (imdb_id, mediatype_db)
+            )
+            xbmc.log(f'[AIOStreams] Optimistically removed {imdb_id} from watchlist database', xbmc.LOGDEBUG)
+        except Exception as e:
+            xbmc.log(f'[AIOStreams] Database update failed: {e}', xbmc.LOGERROR)
+    
+    # Show instant feedback
+    xbmcgui.Dialog().notification('AIOStreams', 'Removed from Trakt watchlist', xbmcgui.NOTIFICATION_INFO)
+    
+    # Refresh container immediately for instant UI update
+    if utils:
+        utils.refresh_container()
+    
+    # 2. Background sync to Trakt API with rollback on failure
+    def sync_to_trakt():
+        """Background thread to sync to Trakt with rollback on failure."""
+        data = {api_type: []}
+        item = {'ids': {'imdb': imdb_id}}
+        if season is not None:
+            item['seasons'] = [{'number': season}]
+            if episode is not None:
+                item['seasons'][0]['episodes'] = [{'number': episode}]
+        data[api_type].append(item)
         
-        # ✨ NEW: Refresh widgets
-        xbmc.executebuiltin('Container.Refresh')
+        result = call_trakt('sync/watchlist/remove', method='POST', data=data)
         
-        return True
-
-    return False
+        if not result:
+            # Rollback database on API failure
+            xbmc.log(f'[AIOStreams] Trakt API failed, rolling back watchlist removal for {imdb_id}', xbmc.LOGWARNING)
+            if db and original_state:
+                try:
+                    db.execute_sql("""
+                        INSERT INTO watchlist (trakt_id, mediatype, imdb_id, listed_at)
+                        VALUES (?, ?, ?, ?)
+                    """, (
+                        original_state['trakt_id'],
+                        original_state['mediatype'],
+                        original_state['imdb_id'],
+                        original_state['listed_at']
+                    ))
+                except Exception as e:
+                    xbmc.log(f'[AIOStreams] Rollback failed: {e}', xbmc.LOGERROR)
+            xbmcgui.Dialog().notification('AIOStreams', 'Failed to sync to Trakt', xbmcgui.NOTIFICATION_ERROR)
+        else:
+            xbmc.log(f'[AIOStreams] Successfully removed {imdb_id} from Trakt watchlist', xbmc.LOGINFO)
+        
+        # Trigger smart widget refresh after sync
+        if utils:
+            utils.trigger_background_refresh(delay=0.5)
+    
+    # Start background sync thread
+    try:
+        sync_thread = threading.Thread(target=sync_to_trakt)
+        sync_thread.daemon = True
+        sync_thread.start()
+    except Exception as e:
+        xbmc.log(f'[AIOStreams] Failed to start background sync: {e}', xbmc.LOGERROR)
+        # Fallback to synchronous sync
+        sync_to_trakt()
+    
+    return True
 
 
 def _add_show_to_pending_updates(imdb_id):
@@ -1162,9 +1305,13 @@ def _add_show_to_pending_updates(imdb_id):
 
 
 def mark_watched(media_type, imdb_id, season=None, episode=None, playback_id=None):
-    """Mark item as watched and clear any in-progress status."""
-    global _pending_show_updates
-    import time
+    """Mark item as watched with optimistic database update.
+    
+    Updates database first for instant UI response, then syncs to Trakt in background.
+    Rollback on Trakt API failure.
+    """
+    import threading
+    from datetime import datetime, timezone
     
     if not imdb_id:
         xbmc.log('[AIOStreams] Cannot mark as watched: no IMDB ID provided', xbmc.LOGWARNING)
@@ -1173,65 +1320,166 @@ def mark_watched(media_type, imdb_id, season=None, episode=None, playback_id=Non
 
     # For episodes/shows/series, we use 'shows' in the API
     api_type = 'shows' if media_type in ['episode', 'show', 'series'] or season is not None else media_type + 's'
-
-    # Add to watch history
-    data = {api_type: []}
-
-    item = {'ids': {'imdb': imdb_id}}
-    if season is not None:
-        item['seasons'] = [{'number': season}]
-        if episode is not None:
-            item['seasons'][0]['episodes'] = [{'number': episode}]
-
-    data[api_type].append(item)
-
-    xbmc.log(f'[AIOStreams] Marking as watched: media_type={media_type}, imdb_id={imdb_id}, season={season}, episode={episode}', xbmc.LOGINFO)
-    xbmc.log(f'[AIOStreams] API request: POST sync/history - data: {data}', xbmc.LOGDEBUG)
-
-    result = call_trakt('sync/history', method='POST', data=data)
-
-    if result:
-        # Remove from playback progress if we have playback_id
-        if playback_id:
-            call_trakt(f'sync/playback/{playback_id}', method='DELETE')
-
-        # Clear watched cache for this item only
-        cache_key = f"{media_type}:{imdb_id}"
-        if cache_key in _watched_cache:
-            del _watched_cache[cache_key]
-
-        # ✨ NEW: Incremental cache update instead of full invalidation
-        if api_type == 'shows':
-            # Get Trakt ID and do incremental update
-            show_trakt_id = _get_trakt_id_from_imdb(imdb_id)
-            if show_trakt_id:
-                update_show_progress_incrementally(imdb_id, show_trakt_id)
-                # Add to pending updates with 10-second grace period
-                _pending_show_updates[show_trakt_id] = time.time()
-                xbmc.log(f'[AIOStreams] Added show {show_trakt_id} to pending updates (10s grace period)', xbmc.LOGDEBUG)
+    
+    # Get Trakt ID for database operations
+    trakt_id = None
+    show_trakt_id = None
+    try:
+        search_result = call_trakt(f'search/imdb/{imdb_id}', with_auth=False)
+        if search_result and isinstance(search_result, list) and len(search_result) > 0:
+            if api_type == 'shows':
+                show_data = search_result[0].get('show', {})
+                show_trakt_id = show_data.get('ids', {}).get('trakt')
+                trakt_id = show_trakt_id
             else:
-                # Fallback to full invalidation if we can't get Trakt ID
-                invalidate_progress_cache()
+                movie_data = search_result[0].get('movie', {})
+                trakt_id = movie_data.get('ids', {}).get('trakt')
+    except:
+        pass
+    
+    # Store original state for potential rollback
+    original_state = None
+    db = get_trakt_db()
+    
+    # 1. Optimistic database update (instant UI response)
+    watched_at = datetime.now(timezone.utc).isoformat()
+    
+    if db and trakt_id:
+        try:
+            if api_type == 'shows' and season is not None and episode is not None:
+                # Episode watched - check original state for rollback
+                original_state = db.fetchone(
+                    "SELECT * FROM episodes WHERE trakt_show_id=? AND season=? AND episode=?",
+                    (show_trakt_id, season, episode)
+                )
+                
+                # Update episode as watched
+                db.execute_sql("""
+                    INSERT OR REPLACE INTO episodes (
+                        trakt_show_id, season, episode, watched, last_watched_at
+                    ) VALUES (?, ?, ?, 1, ?)
+                """, (show_trakt_id, season, episode, watched_at))
+                
+                xbmc.log(f'[AIOStreams] Optimistically marked episode {imdb_id} S{season}E{episode} as watched', xbmc.LOGDEBUG)
+            else:
+                # Movie watched - check original state for rollback
+                original_state = db.fetchone(
+                    "SELECT * FROM movies WHERE trakt_id=?",
+                    (trakt_id,)
+                )
+                
+                # Update movie as watched
+                db.execute_sql("""
+                    INSERT OR REPLACE INTO movies (
+                        trakt_id, imdb_id, watched, last_watched_at
+                    ) VALUES (?, ?, 1, ?)
+                """, (trakt_id, imdb_id, watched_at))
+                
+                xbmc.log(f'[AIOStreams] Optimistically marked movie {imdb_id} as watched', xbmc.LOGDEBUG)
+        except Exception as e:
+            xbmc.log(f'[AIOStreams] Database update failed: {e}', xbmc.LOGERROR)
+    
+    # Show instant feedback
+    xbmcgui.Dialog().notification('AIOStreams', 'Marked as watched on Trakt', xbmcgui.NOTIFICATION_INFO)
+    
+    # Refresh container immediately for instant UI update
+    if utils:
+        utils.refresh_container()
+    
+    # 2. Background sync to Trakt API with rollback on failure
+    def sync_to_trakt():
+        """Background thread to sync to Trakt with rollback on failure."""
+        # Add to watch history
+        data = {api_type: []}
+        item = {'ids': {'imdb': imdb_id}}
+        if season is not None:
+            item['seasons'] = [{'number': season}]
+            if episode is not None:
+                item['seasons'][0]['episodes'] = [{'number': episode}]
+        data[api_type].append(item)
         
-        # Invalidate batch watched history cache
-        global _watched_history_valid
-        _watched_history_valid['movies'] = False
-        _watched_history_valid['shows'] = False
-
-        xbmcgui.Dialog().notification('AIOStreams', 'Marked as watched on Trakt', xbmcgui.NOTIFICATION_INFO)
+        xbmc.log(f'[AIOStreams] Background sync: marking as watched: media_type={media_type}, imdb_id={imdb_id}, season={season}, episode={episode}', xbmc.LOGINFO)
         
-        # ✨ NEW: Refresh widgets/containers
-        xbmc.executebuiltin('Container.Refresh')
+        result = call_trakt('sync/history', method='POST', data=data)
         
-        return True
-
-    return False
+        if not result:
+            # Rollback database on API failure
+            xbmc.log(f'[AIOStreams] Trakt API failed, rolling back watched status for {imdb_id}', xbmc.LOGWARNING)
+            if db and trakt_id:
+                try:
+                    if api_type == 'shows' and season is not None and episode is not None:
+                        # Rollback episode
+                        if original_state:
+                            # Restore original state
+                            db.execute_sql("""
+                                INSERT OR REPLACE INTO episodes (
+                                    trakt_show_id, season, episode, watched, last_watched_at
+                                ) VALUES (?, ?, ?, ?, ?)
+                            """, (
+                                original_state['trakt_show_id'],
+                                original_state['season'],
+                                original_state['episode'],
+                                original_state.get('watched', 0),
+                                original_state.get('last_watched_at')
+                            ))
+                        else:
+                            # Delete if it didn't exist before
+                            db.execute_sql(
+                                "DELETE FROM episodes WHERE trakt_show_id=? AND season=? AND episode=?",
+                                (show_trakt_id, season, episode)
+                            )
+                    else:
+                        # Rollback movie
+                        if original_state:
+                            db.execute_sql("""
+                                INSERT OR REPLACE INTO movies (
+                                    trakt_id, imdb_id, watched, last_watched_at
+                                ) VALUES (?, ?, ?, ?)
+                            """, (
+                                original_state['trakt_id'],
+                                original_state['imdb_id'],
+                                original_state.get('watched', 0),
+                                original_state.get('last_watched_at')
+                            ))
+                        else:
+                            db.execute_sql(
+                                "DELETE FROM movies WHERE trakt_id=?",
+                                (trakt_id,)
+                            )
+                except Exception as e:
+                    xbmc.log(f'[AIOStreams] Rollback failed: {e}', xbmc.LOGERROR)
+            xbmcgui.Dialog().notification('AIOStreams', 'Failed to sync to Trakt', xbmcgui.NOTIFICATION_ERROR)
+        else:
+            # Success - remove from playback progress if we have playback_id
+            if playback_id:
+                call_trakt(f'sync/playback/{playback_id}', method='DELETE')
+            
+            xbmc.log(f'[AIOStreams] Successfully marked {imdb_id} as watched on Trakt', xbmc.LOGINFO)
+        
+        # Trigger smart widget refresh after sync
+        if utils:
+            utils.trigger_background_refresh(delay=0.5)
+    
+    # Start background sync thread
+    try:
+        sync_thread = threading.Thread(target=sync_to_trakt)
+        sync_thread.daemon = True
+        sync_thread.start()
+    except Exception as e:
+        xbmc.log(f'[AIOStreams] Failed to start background sync: {e}', xbmc.LOGERROR)
+        # Fallback to synchronous sync
+        sync_to_trakt()
+    
+    return True
 
 
 def mark_unwatched(media_type, imdb_id, season=None, episode=None):
-    """Remove item from watch history."""
-    global _pending_show_updates
-    import time
+    """Mark item as unwatched with optimistic database update.
+    
+    Updates database first for instant UI response, then syncs to Trakt in background.
+    Rollback on Trakt API failure.
+    """
+    import threading
     
     if not imdb_id:
         xbmc.log('[AIOStreams] Cannot mark as unwatched: no IMDB ID provided', xbmc.LOGWARNING)
@@ -1240,55 +1488,136 @@ def mark_unwatched(media_type, imdb_id, season=None, episode=None):
 
     # For episodes/shows/series, we use 'shows' in the API
     api_type = 'shows' if media_type in ['episode', 'show', 'series'] or season is not None else media_type + 's'
-
-    # Remove from watch history
-    data = {api_type: []}
-
-    item = {'ids': {'imdb': imdb_id}}
-    if season is not None:
-        item['seasons'] = [{'number': season}]
-        if episode is not None:
-            item['seasons'][0]['episodes'] = [{'number': episode}]
-
-    data[api_type].append(item)
-
-    xbmc.log(f'[AIOStreams] Marking as unwatched: media_type={media_type}, imdb_id={imdb_id}, season={season}, episode={episode}', xbmc.LOGINFO)
-    xbmc.log(f'[AIOStreams] API request: POST sync/history/remove - data: {data}', xbmc.LOGDEBUG)
-
-    result = call_trakt('sync/history/remove', method='POST', data=data)
-
-    if result:
-        # Clear watched cache
-        cache_key = f"{media_type}:{imdb_id}"
-        if cache_key in _watched_cache:
-            del _watched_cache[cache_key]
-
-        # ✨ NEW: Incremental cache update instead of full invalidation
-        if api_type == 'shows':
-            # Get Trakt ID and do incremental update
-            show_trakt_id = _get_trakt_id_from_imdb(imdb_id)
-            if show_trakt_id:
-                update_show_progress_incrementally(imdb_id, show_trakt_id)
-                # Add to pending updates with 10-second grace period
-                _pending_show_updates[show_trakt_id] = time.time()
-                xbmc.log(f'[AIOStreams] Added show {show_trakt_id} to pending updates (10s grace period)', xbmc.LOGDEBUG)
+    
+    # Get Trakt ID for database operations
+    trakt_id = None
+    show_trakt_id = None
+    try:
+        search_result = call_trakt(f'search/imdb/{imdb_id}', with_auth=False)
+        if search_result and isinstance(search_result, list) and len(search_result) > 0:
+            if api_type == 'shows':
+                show_data = search_result[0].get('show', {})
+                show_trakt_id = show_data.get('ids', {}).get('trakt')
+                trakt_id = show_trakt_id
             else:
-                # Fallback to full invalidation if we can't get Trakt ID
-                invalidate_progress_cache()
-
-        # Invalidate batch watched history cache
-        global _watched_history_valid
-        _watched_history_valid['movies'] = False
-        _watched_history_valid['shows'] = False
-
-        xbmcgui.Dialog().notification('AIOStreams', 'Marked as unwatched on Trakt', xbmcgui.NOTIFICATION_INFO)
+                movie_data = search_result[0].get('movie', {})
+                trakt_id = movie_data.get('ids', {}).get('trakt')
+    except:
+        pass
+    
+    # Store original state for potential rollback
+    original_state = None
+    db = get_trakt_db()
+    
+    # 1. Optimistic database update (instant UI response)
+    if db and trakt_id:
+        try:
+            if api_type == 'shows' and season is not None and episode is not None:
+                # Get original episode state for rollback
+                original_state = db.fetchone(
+                    "SELECT * FROM episodes WHERE trakt_show_id=? AND season=? AND episode=?",
+                    (show_trakt_id, season, episode)
+                )
+                
+                # Mark episode as unwatched
+                db.execute_sql("""
+                    UPDATE episodes 
+                    SET watched=0, last_watched_at=NULL 
+                    WHERE trakt_show_id=? AND season=? AND episode=?
+                """, (show_trakt_id, season, episode))
+                
+                xbmc.log(f'[AIOStreams] Optimistically marked episode {imdb_id} S{season}E{episode} as unwatched', xbmc.LOGDEBUG)
+            else:
+                # Get original movie state for rollback
+                original_state = db.fetchone(
+                    "SELECT * FROM movies WHERE trakt_id=?",
+                    (trakt_id,)
+                )
+                
+                # Mark movie as unwatched
+                db.execute_sql("""
+                    UPDATE movies 
+                    SET watched=0, last_watched_at=NULL 
+                    WHERE trakt_id=?
+                """, (trakt_id,))
+                
+                xbmc.log(f'[AIOStreams] Optimistically marked movie {imdb_id} as unwatched', xbmc.LOGDEBUG)
+        except Exception as e:
+            xbmc.log(f'[AIOStreams] Database update failed: {e}', xbmc.LOGERROR)
+    
+    # Show instant feedback
+    xbmcgui.Dialog().notification('AIOStreams', 'Marked as unwatched on Trakt', xbmcgui.NOTIFICATION_INFO)
+    
+    # Refresh container immediately for instant UI update
+    if utils:
+        utils.refresh_container()
+    
+    # 2. Background sync to Trakt API with rollback on failure
+    def sync_to_trakt():
+        """Background thread to sync to Trakt with rollback on failure."""
+        # Remove from watch history
+        data = {api_type: []}
+        item = {'ids': {'imdb': imdb_id}}
+        if season is not None:
+            item['seasons'] = [{'number': season}]
+            if episode is not None:
+                item['seasons'][0]['episodes'] = [{'number': episode}]
+        data[api_type].append(item)
         
-        # ✨ NEW: Refresh widgets
-        xbmc.executebuiltin('Container.Refresh')
+        xbmc.log(f'[AIOStreams] Background sync: marking as unwatched: media_type={media_type}, imdb_id={imdb_id}, season={season}, episode={episode}', xbmc.LOGINFO)
         
-        return True
-
-    return False
+        result = call_trakt('sync/history/remove', method='POST', data=data)
+        
+        if not result:
+            # Rollback database on API failure
+            xbmc.log(f'[AIOStreams] Trakt API failed, rolling back unwatched status for {imdb_id}', xbmc.LOGWARNING)
+            if db and trakt_id and original_state:
+                try:
+                    if api_type == 'shows' and season is not None and episode is not None:
+                        # Restore episode state
+                        db.execute_sql("""
+                            UPDATE episodes 
+                            SET watched=?, last_watched_at=? 
+                            WHERE trakt_show_id=? AND season=? AND episode=?
+                        """, (
+                            original_state.get('watched', 0),
+                            original_state.get('last_watched_at'),
+                            show_trakt_id,
+                            season,
+                            episode
+                        ))
+                    else:
+                        # Restore movie state
+                        db.execute_sql("""
+                            UPDATE movies 
+                            SET watched=?, last_watched_at=? 
+                            WHERE trakt_id=?
+                        """, (
+                            original_state.get('watched', 0),
+                            original_state.get('last_watched_at'),
+                            trakt_id
+                        ))
+                except Exception as e:
+                    xbmc.log(f'[AIOStreams] Rollback failed: {e}', xbmc.LOGERROR)
+            xbmcgui.Dialog().notification('AIOStreams', 'Failed to sync to Trakt', xbmcgui.NOTIFICATION_ERROR)
+        else:
+            xbmc.log(f'[AIOStreams] Successfully marked {imdb_id} as unwatched on Trakt', xbmc.LOGINFO)
+        
+        # Trigger smart widget refresh after sync
+        if utils:
+            utils.trigger_background_refresh(delay=0.5)
+    
+    # Start background sync thread
+    try:
+        sync_thread = threading.Thread(target=sync_to_trakt)
+        sync_thread.daemon = True
+        sync_thread.start()
+    except Exception as e:
+        xbmc.log(f'[AIOStreams] Failed to start background sync: {e}', xbmc.LOGERROR)
+        # Fallback to synchronous sync
+        sync_to_trakt()
+    
+    return True
 
 
 # Cache for watched status to avoid repeated API calls
