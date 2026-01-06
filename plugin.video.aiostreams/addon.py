@@ -1141,6 +1141,7 @@ def format_stream_title(stream):
     Example: RD|4K|10.27 GB|StremThru Torz|Cached
     """
     stream_name = stream.get('name', stream.get('title', ''))
+    description = stream.get('description', '')
 
     # Try to parse the formatted stream name
     try:
@@ -1171,25 +1172,32 @@ def format_stream_title(stream):
             # Add source if present
             source_text = f'{source} ' if source else ''
 
-            # Add cached status icon
+            # Add cached status icon (ASCII-safe)
             if 'cached' in cached_status.lower():
-                cached_icon = '✓'
+                cached_icon = '*'
             elif 'uncached' in cached_status.lower():
-                cached_icon = '⏳'
+                cached_icon = '...'
             else:
                 cached_icon = ''
 
             # Build final formatted title
             formatted = f'{quality_tag}{size_text}{source_text}{cached_icon} {service_colored}'.strip()
+            
+            # Append description if available
+            if description:
+                formatted = f'{formatted}\n[COLOR gray]{description}[/COLOR]'
+            
             return formatted
         else:
-            # Format doesn't match expected pattern, return original
+            # Format doesn't match expected pattern, return original with description
+            if description:
+                return f"{stream_name}\n[COLOR gray]{description}[/COLOR]"
             return stream_name
     except Exception as e:
         # On any error, return the original stream name with description if available
         xbmc.log(f'[AIOStreams] Error formatting stream title: {e}', xbmc.LOGDEBUG)
-        if stream.get('description'):
-            return f"{stream_name} - {stream['description']}"
+        if description:
+            return f"{stream_name}\n[COLOR gray]{description}[/COLOR]"
         return stream_name
 
 
@@ -1227,6 +1235,19 @@ def select_stream():
 
     # Show custom source select dialog
     try:
+        # Log debug information
+        xbmc.log(f'[AIOStreams] Attempting to show SourceSelect dialog', xbmc.LOGDEBUG)
+        xbmc.log(f'[AIOStreams] ADDON_PATH: {ADDON_PATH}', xbmc.LOGDEBUG)
+        xbmc.log(f'[AIOStreams] Stream count: {len(stream_data["streams"])}', xbmc.LOGDEBUG)
+        
+        # Check if skin file exists
+        import os
+        skin_file = os.path.join(ADDON_PATH, 'resources', 'skins', 'Default', '1080i', 'source_select.xml')
+        if not xbmcvfs.exists(skin_file):
+            xbmc.log(f'[AIOStreams] Warning: Skin file not found at {skin_file}', xbmc.LOGWARNING)
+        else:
+            xbmc.log(f'[AIOStreams] Skin file found: {skin_file}', xbmc.LOGDEBUG)
+        
         dialog = SourceSelect('source_select.xml', ADDON_PATH, 'default', '1080i', streams=stream_data['streams'], metadata=metadata)
         dialog.doModal()
         selected = dialog.selected_index
@@ -1562,6 +1583,19 @@ def show_streams_dialog(content_type, media_id, stream_data, title):
 
     # Show custom source select dialog
     try:
+        # Log debug information
+        xbmc.log(f'[AIOStreams] Attempting to show SourceSelect dialog', xbmc.LOGDEBUG)
+        xbmc.log(f'[AIOStreams] ADDON_PATH: {ADDON_PATH}', xbmc.LOGDEBUG)
+        xbmc.log(f'[AIOStreams] Stream count: {len(stream_data["streams"])}', xbmc.LOGDEBUG)
+        
+        # Check if skin file exists
+        import os
+        skin_file = os.path.join(ADDON_PATH, 'resources', 'skins', 'Default', '1080i', 'source_select.xml')
+        if not xbmcvfs.exists(skin_file):
+            xbmc.log(f'[AIOStreams] Warning: Skin file not found at {skin_file}', xbmc.LOGWARNING)
+        else:
+            xbmc.log(f'[AIOStreams] Skin file found: {skin_file}', xbmc.LOGDEBUG)
+        
         dialog = SourceSelect('source_select.xml', ADDON_PATH, 'default', '1080i', streams=stream_data['streams'], metadata=metadata)
         dialog.doModal()
         selected = dialog.selected_index
@@ -2569,6 +2603,23 @@ def clear_cache():
         # Also clear Trakt progress caches (memory + disk)
         xbmc.log('[AIOStreams] Clearing Trakt progress caches', xbmc.LOGINFO)
         trakt.invalidate_progress_cache()
+        
+        # Verify manifest cache was cleared by checking for manifest files
+        cache_dir = cache.get_cache_dir()
+        remaining_manifests = []
+        try:
+            import os
+            dirs, files = xbmcvfs.listdir(cache_dir)
+            for filename in files:
+                if filename.startswith('manifest_') and filename.endswith('.json'):
+                    remaining_manifests.append(filename)
+            
+            if remaining_manifests:
+                xbmc.log(f'[AIOStreams] Warning: {len(remaining_manifests)} manifest files still present after cleanup', xbmc.LOGWARNING)
+            else:
+                xbmc.log('[AIOStreams] Manifest cache successfully cleared', xbmc.LOGINFO)
+        except Exception as e:
+            xbmc.log(f'[AIOStreams] Could not verify manifest cache clear: {e}', xbmc.LOGDEBUG)
         
         xbmc.log('[AIOStreams] Cache clear completed successfully', xbmc.LOGINFO)
         xbmcgui.Dialog().notification('AIOStreams', 'All caches cleared successfully', xbmcgui.NOTIFICATION_INFO)

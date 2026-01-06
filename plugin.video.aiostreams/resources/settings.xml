@@ -17,6 +17,9 @@
         <setting id="resume_settings" type="lsep" label="Resume &amp; Progress"/>
         <setting id="auto_resume" type="bool" label="Auto Resume Playback" default="true"/>
         <setting id="auto_mark_watched_percent" type="number" label="Mark Watched at %" default="90"/>
+        
+        <setting id="stream_display" type="lsep" label="Stream Display"/>
+        <setting id="stream_formatter" type="select" label="Stream Name Format" values="torrentio|torbox|gdrive|gdrive_light|prism|gdrive_minimal" default="torrentio"/>
     </category>
     
     <!-- Trakt Settings -->
@@ -44,21 +47,6 @@
         <setting id="show_quality_badges" type="bool" label="Show Quality Badges" default="true"/>
         <setting id="show_reliability_icons" type="bool" label="Show Reliability Icons" default="true"/>
         <setting id="learn_preferences" type="bool" label="Learn Stream Preferences" default="true"/>
-        
-        <setting id="stream_display" type="lsep" label="Stream Selection"/>
-        <setting id="stream_formatter" type="select" label="Stream Name Format" default="torrentio">
-            <level>0</level>
-            <constraints>
-                <options>
-                    <option label="Torrentio Style">torrentio</option>
-                    <option label="Torbox Style">torbox</option>
-                    <option label="GDrive Full">gdrive</option>
-                    <option label="GDrive Light">gdrive_light</option>
-                    <option label="Prism Style">prism</option>
-                    <option label="Minimalistic">gdrive_minimal</option>
-                </options>
-            </constraints>
-        </setting>
     </category>
 
     <!-- Advanced Settings -->

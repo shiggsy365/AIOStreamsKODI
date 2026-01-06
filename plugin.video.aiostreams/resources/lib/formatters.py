@@ -112,17 +112,17 @@ class TorboxFormatter(BaseFormatter):
 
 
 class GDriveFormatter(BaseFormatter):
-    """Google Drive (Full) formatter: [Provider⚡/⏳] Quality (Indexer) - 📦 Size - 🔍 Source"""
+    """Google Drive (Full) formatter: [Provider*] Quality (Indexer) - Size - Source"""
     
     def format_parsed(self, provider, quality, size, indexer, cache_status):
         # Check if cached
         is_cached = cache_status.lower() == 'cached'
         
-        # Provider with cache icon
+        # Provider with cache indicator
         if is_cached:
-            provider_part = f"[COLOR cyan][{provider}⚡][/COLOR]"
+            provider_part = f"[COLOR cyan][{provider}*][/COLOR]"
         else:
-            provider_part = f"[COLOR orange][{provider}⏳][/COLOR]"
+            provider_part = f"[COLOR orange][{provider}][/COLOR]"
         
         # Quality
         quality_part = f" {quality}" if quality else ""
@@ -130,11 +130,11 @@ class GDriveFormatter(BaseFormatter):
         # Indexer in parentheses
         indexer_part = f" ({indexer})" if indexer else ""
         
-        # Size with emoji
-        size_part = f"📦 [COLOR lime]{size}[/COLOR]" if size else ""
+        # Size with label
+        size_part = f"[COLOR lime]{size}[/COLOR]" if size else ""
         
-        # Source with emoji
-        source_part = f"🔍 {indexer}" if indexer else ""
+        # Source with label
+        source_part = indexer if indexer else ""
         
         # Combine
         line1 = f"{provider_part}{quality_part}{indexer_part}"
@@ -146,23 +146,23 @@ class GDriveFormatter(BaseFormatter):
 
 
 class LightGDriveFormatter(BaseFormatter):
-    """Google Drive (Light) formatter: [Provider⚡/⏳] Quality - 📦 Size - Source"""
+    """Google Drive (Light) formatter: [Provider*] Quality - Size - Source"""
     
     def format_parsed(self, provider, quality, size, indexer, cache_status):
         # Check if cached
         is_cached = cache_status.lower() == 'cached'
         
-        # Provider with cache icon
+        # Provider with cache indicator
         if is_cached:
-            provider_part = f"[COLOR cyan][{provider}⚡][/COLOR]"
+            provider_part = f"[COLOR cyan][{provider}*][/COLOR]"
         else:
-            provider_part = f"[COLOR orange][{provider}⏳][/COLOR]"
+            provider_part = f"[COLOR orange][{provider}][/COLOR]"
         
         # Quality
         quality_part = f" {quality}" if quality else ""
         
-        # Size with emoji
-        size_part = f"📦 {size}" if size else ""
+        # Size
+        size_part = size if size else ""
         
         # Source
         source_part = indexer if indexer else ""
@@ -178,22 +178,22 @@ class LightGDriveFormatter(BaseFormatter):
 
 
 class PrismFormatter(BaseFormatter):
-    """Prism-style formatter with quality emojis: Quality Icon (Size, Source) [Provider⚡/❌]"""
+    """Prism-style formatter with quality indicators: Quality (Size, Source) [Provider*]"""
     
     def format_parsed(self, provider, quality, size, indexer, cache_status):
-        # Map quality to emoji
+        # Map quality to display with indicator
         quality_map = {
-            '4K': '🔥4K UHD',
-            '2160p': '🔥4K UHD',
-            'QHD': '✨QHD',
-            '1440p': '✨QHD',
-            'FHD': '🚀FHD',
-            '1080p': '🚀FHD',
-            'HD': '💿HD',
-            '720p': '💿HD',
+            '4K': '4K UHD',
+            '2160p': '4K UHD',
+            'QHD': 'QHD',
+            '1440p': 'QHD',
+            'FHD': 'FHD',
+            '1080p': 'FHD',
+            'HD': 'HD',
+            '720p': 'HD',
         }
         
-        # Get quality with emoji
+        # Get quality display
         quality_display = quality_map.get(quality, quality)
         
         # Check if cached
@@ -201,9 +201,9 @@ class PrismFormatter(BaseFormatter):
         
         # Cache status
         if is_cached:
-            cache_icon = "⚡Ready"
+            cache_icon = "*Ready"
         else:
-            cache_icon = "❌Not Ready"
+            cache_icon = "Not Ready"
         
         # Provider
         provider_part = f"({provider})"
@@ -214,9 +214,9 @@ class PrismFormatter(BaseFormatter):
         # Add size and source
         details = []
         if size:
-            details.append(f"📦{size}")
+            details.append(size)
         if indexer:
-            details.append(f"📡{indexer}")
+            details.append(indexer)
         
         if details:
             parts.append(" ".join(details))
