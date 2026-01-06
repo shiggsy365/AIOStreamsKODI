@@ -25,7 +25,8 @@ def wait_for_home_window(timeout=10):
     
     while not monitor.abortRequested():
         # Check if we're on the home window (ID 10000)
-        if xbmc.getCondVisibility('Window.IsActive(home)'):
+        # Using numeric ID is more reliable than string condition
+        if xbmc.getCondVisibility('Window.IsActive(10000)'):
             xbmc.log('[AIOStreams] Home window is active, ready for widget refresh', xbmc.LOGDEBUG)
             return True
         

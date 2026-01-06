@@ -1099,25 +1099,17 @@ def add_to_watchlist(media_type, imdb_id, season=None, episode=None):
     api_type = 'shows' if media_type in ['episode', 'show', 'series'] or season is not None else media_type + 's'
     mediatype_db = 'show' if api_type == 'shows' else 'movie'
     
-    # Get Trakt ID from search if needed for database
-    trakt_id = None
-    try:
-        search_result = call_trakt(f'search/imdb/{imdb_id}', with_auth=False)
-        if search_result and isinstance(search_result, list) and len(search_result) > 0:
-            item_data = search_result[0].get(mediatype_db, {})
-            trakt_id = item_data.get('ids', {}).get('trakt')
-    except:
-        pass
-    
     # 1. Optimistic database update (instant UI response)
+    # Use IMDB ID directly for now, Trakt ID will be updated in background
     db = get_trakt_db()
-    if db and trakt_id:
+    if db:
         try:
             listed_at = datetime.now(timezone.utc).isoformat()
+            # Use 0 as temporary Trakt ID, will be updated by background thread
             db.execute_sql("""
                 INSERT OR IGNORE INTO watchlist (trakt_id, mediatype, imdb_id, listed_at)
-                VALUES (?, ?, ?, ?)
-            """, (trakt_id, mediatype_db, imdb_id, listed_at))
+                VALUES (0, ?, ?, ?)
+            """, (mediatype_db, imdb_id, listed_at))
             xbmc.log(f'[AIOStreams] Optimistically added {imdb_id} to watchlist database', xbmc.LOGDEBUG)
         except Exception as e:
             xbmc.log(f'[AIOStreams] Database update failed: {e}', xbmc.LOGERROR)
@@ -1132,6 +1124,17 @@ def add_to_watchlist(media_type, imdb_id, season=None, episode=None):
     # 2. Background sync to Trakt API with rollback on failure
     def sync_to_trakt():
         """Background thread to sync to Trakt with rollback on failure."""
+        # Get Trakt ID in background (non-blocking)
+        trakt_id = None
+        try:
+            search_result = call_trakt(f'search/imdb/{imdb_id}', with_auth=False)
+            if search_result and isinstance(search_result, list) and len(search_result) > 0:
+                item_data = search_result[0].get(mediatype_db, {})
+                trakt_id = item_data.get('ids', {}).get('trakt')
+        except Exception as e:
+            xbmc.log(f'[AIOStreams] Failed to get Trakt ID: {e}', xbmc.LOGDEBUG)
+        
+        # Sync to Trakt API
         data = {api_type: []}
         item = {'ids': {'imdb': imdb_id}}
         if season is not None:
@@ -1145,14 +1148,20 @@ def add_to_watchlist(media_type, imdb_id, season=None, episode=None):
         if not result:
             # Rollback database on API failure
             xbmc.log(f'[AIOStreams] Trakt API failed, rolling back watchlist add for {imdb_id}', xbmc.LOGWARNING)
-            if db and trakt_id:
+            if db:
                 db.execute_sql(
-                    "DELETE FROM watchlist WHERE trakt_id=? AND mediatype=?",
-                    (trakt_id, mediatype_db)
+                    "DELETE FROM watchlist WHERE imdb_id=? AND mediatype=?",
+                    (imdb_id, mediatype_db)
                 )
             xbmcgui.Dialog().notification('AIOStreams', 'Failed to sync to Trakt', xbmcgui.NOTIFICATION_ERROR)
         else:
             xbmc.log(f'[AIOStreams] Successfully synced {imdb_id} to Trakt watchlist', xbmc.LOGINFO)
+            # Update database with real Trakt ID now that we have it
+            if db and trakt_id:
+                db.execute_sql(
+                    "UPDATE watchlist SET trakt_id=? WHERE imdb_id=? AND mediatype=?",
+                    (trakt_id, imdb_id, mediatype_db)
+                )
         
         # Trigger smart widget refresh after sync
         if utils:
@@ -1187,34 +1196,24 @@ def remove_from_watchlist(media_type, imdb_id, season=None, episode=None):
     api_type = 'shows' if media_type in ['episode', 'show', 'series'] or season is not None else media_type + 's'
     mediatype_db = 'show' if api_type == 'shows' else 'movie'
     
-    # Get Trakt ID from search if needed for database
-    trakt_id = None
-    try:
-        search_result = call_trakt(f'search/imdb/{imdb_id}', with_auth=False)
-        if search_result and isinstance(search_result, list) and len(search_result) > 0:
-            item_data = search_result[0].get(mediatype_db, {})
-            trakt_id = item_data.get('ids', {}).get('trakt')
-    except:
-        pass
-    
-    # Store original state for potential rollback
+    # Store original state for potential rollback (using IMDB ID for lookup)
     original_state = None
     db = get_trakt_db()
-    if db and trakt_id:
+    if db:
         try:
             original_state = db.fetchone(
-                "SELECT * FROM watchlist WHERE trakt_id=? AND mediatype=?",
-                (trakt_id, mediatype_db)
+                "SELECT * FROM watchlist WHERE imdb_id=? AND mediatype=?",
+                (imdb_id, mediatype_db)
             )
-        except:
-            pass
+        except Exception as e:
+            xbmc.log(f'[AIOStreams] Failed to get original state: {e}', xbmc.LOGDEBUG)
     
     # 1. Optimistic database update (instant UI response)
-    if db and trakt_id:
+    if db:
         try:
             db.execute_sql(
-                "DELETE FROM watchlist WHERE trakt_id=? AND mediatype=?",
-                (trakt_id, mediatype_db)
+                "DELETE FROM watchlist WHERE imdb_id=? AND mediatype=?",
+                (imdb_id, mediatype_db)
             )
             xbmc.log(f'[AIOStreams] Optimistically removed {imdb_id} from watchlist database', xbmc.LOGDEBUG)
         except Exception as e:
@@ -1357,8 +1356,8 @@ def mark_watched(media_type, imdb_id, season=None, episode=None, playback_id=Non
                 # Update episode as watched
                 db.execute_sql("""
                     INSERT OR REPLACE INTO episodes (
-                        trakt_show_id, season, episode, watched, last_watched_at, last_updated
-                    ) VALUES (?, ?, ?, 1, ?, datetime('now'))
+                        trakt_show_id, season, episode, watched, last_watched_at
+                    ) VALUES (?, ?, ?, 1, ?)
                 """, (show_trakt_id, season, episode, watched_at))
                 
                 xbmc.log(f'[AIOStreams] Optimistically marked episode {imdb_id} S{season}E{episode} as watched', xbmc.LOGDEBUG)
@@ -1372,8 +1371,8 @@ def mark_watched(media_type, imdb_id, season=None, episode=None, playback_id=Non
                 # Update movie as watched
                 db.execute_sql("""
                     INSERT OR REPLACE INTO movies (
-                        trakt_id, imdb_id, watched, last_watched_at, last_updated
-                    ) VALUES (?, ?, 1, ?, datetime('now'))
+                        trakt_id, imdb_id, watched, last_watched_at
+                    ) VALUES (?, ?, 1, ?)
                 """, (trakt_id, imdb_id, watched_at))
                 
                 xbmc.log(f'[AIOStreams] Optimistically marked movie {imdb_id} as watched', xbmc.LOGDEBUG)
@@ -1414,15 +1413,14 @@ def mark_watched(media_type, imdb_id, season=None, episode=None, playback_id=Non
                             # Restore original state
                             db.execute_sql("""
                                 INSERT OR REPLACE INTO episodes (
-                                    trakt_show_id, season, episode, watched, last_watched_at, last_updated
-                                ) VALUES (?, ?, ?, ?, ?, ?)
+                                    trakt_show_id, season, episode, watched, last_watched_at
+                                ) VALUES (?, ?, ?, ?, ?)
                             """, (
                                 original_state['trakt_show_id'],
                                 original_state['season'],
                                 original_state['episode'],
                                 original_state.get('watched', 0),
-                                original_state.get('last_watched_at'),
-                                original_state.get('last_updated')
+                                original_state.get('last_watched_at')
                             ))
                         else:
                             # Delete if it didn't exist before
@@ -1435,14 +1433,13 @@ def mark_watched(media_type, imdb_id, season=None, episode=None, playback_id=Non
                         if original_state:
                             db.execute_sql("""
                                 INSERT OR REPLACE INTO movies (
-                                    trakt_id, imdb_id, watched, last_watched_at, last_updated
-                                ) VALUES (?, ?, ?, ?, ?)
+                                    trakt_id, imdb_id, watched, last_watched_at
+                                ) VALUES (?, ?, ?, ?)
                             """, (
                                 original_state['trakt_id'],
                                 original_state['imdb_id'],
                                 original_state.get('watched', 0),
-                                original_state.get('last_watched_at'),
-                                original_state.get('last_updated')
+                                original_state.get('last_watched_at')
                             ))
                         else:
                             db.execute_sql(
@@ -1474,8 +1471,6 @@ def mark_watched(media_type, imdb_id, season=None, episode=None, playback_id=Non
         sync_to_trakt()
     
     return True
-
-    return False
 
 
 def mark_unwatched(media_type, imdb_id, season=None, episode=None):
@@ -1623,8 +1618,6 @@ def mark_unwatched(media_type, imdb_id, season=None, episode=None):
         sync_to_trakt()
     
     return True
-
-    return False
 
 
 # Cache for watched status to avoid repeated API calls
