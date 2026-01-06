@@ -2150,7 +2150,7 @@ def trakt_next_up():
     # Sort by last watched date (most recent first)
     shows_in_progress.sort(reverse=True)
     
-    xbmc.log(f'[AIOStreams] Next Up: Filtered {filtered_count} hidden shows, found {len(shows_in_progress)} shows in progress (incomplete)', xbmc.LOGINFO)
+    xbmc.log(f'[AIOStreams] Next Up: Filtered {filtered_count} hidden shows, found {len(shows_in_progress)} shows with watch history', xbmc.LOGINFO)
     
     # Process shows to get their next episode
     for last_watched, show_trakt_id, show_data in shows_in_progress:
