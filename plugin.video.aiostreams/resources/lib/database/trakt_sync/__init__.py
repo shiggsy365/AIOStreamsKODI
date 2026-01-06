@@ -556,6 +556,42 @@ class TraktSyncDatabase(Database):
             xbmc.log(f'[AIOStreams] Error retrieving watchlist items: {e}', xbmc.LOGERROR)
             return []
 
+    def add_hidden_item(self, trakt_id, mediatype, section):
+        """
+        Add an item to the hidden table.
+
+        Args:
+            trakt_id: Trakt ID of the item to hide
+            mediatype: Media type ('movie', 'show', 'series')
+            section: Hidden section ('progress_watched', 'calendar', 'recommendations')
+
+        Returns:
+            bool: True if successful, False otherwise
+        """
+        # Normalize mediatype
+        if mediatype in ['series', 'shows']:
+            mediatype = 'show'
+        elif mediatype == 'movies':
+            mediatype = 'movie'
+
+        if not self.connect():
+            return False
+
+        try:
+            sql = """
+                INSERT OR IGNORE INTO hidden (trakt_id, mediatype, section)
+                VALUES (?, ?, ?)
+            """
+            self.execute(sql, (trakt_id, mediatype, section))
+            self.commit()
+            xbmc.log(f'[AIOStreams] Added {mediatype} {trakt_id} to hidden/{section}', xbmc.LOGDEBUG)
+            return True
+        except Exception as e:
+            xbmc.log(f'[AIOStreams] Error adding hidden item {trakt_id}: {e}', xbmc.LOGERROR)
+            return False
+        finally:
+            self.disconnect()
+
     def _unpack_show_row(self, row):
         """Unpack a show database row, deserializing the metadata BLOB."""
         try:
