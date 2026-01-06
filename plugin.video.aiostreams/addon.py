@@ -30,6 +30,16 @@ if HAS_MODULES:
         cache.cleanup_expired_cache()
     except:
         pass
+    
+    # Run migration check on addon startup (once per install)
+    try:
+        from resources.lib.database.migration import DatabaseMigration
+        migration = DatabaseMigration()
+        if migration.is_migration_needed():
+            xbmc.log('[AIOStreams] Running database migration on startup...', xbmc.LOGINFO)
+            migration.migrate()
+    except Exception as e:
+        xbmc.log(f'[AIOStreams] Migration check failed: {e}', xbmc.LOGERROR)
 
 
 def get_setting(setting_id, default=None):
@@ -2769,6 +2779,175 @@ def clear_preferences():
         xbmcgui.Dialog().notification('AIOStreams', 'Failed to clear preferences', xbmcgui.NOTIFICATION_ERROR)
 
 
+def clear_trakt_database():
+    """Clear all Trakt database data."""
+    if not HAS_MODULES:
+        return
+    
+    try:
+        from resources.lib.database.trakt_sync import TraktSyncDatabase
+        
+        # Confirm with user
+        if not xbmcgui.Dialog().yesno(
+            'Clear Trakt Database',
+            'This will clear all Trakt data from the local database.',
+            'Data will be re-synced on next access.',
+            'Continue?'
+        ):
+            return
+        
+        db = TraktSyncDatabase()
+        if not db.connect():
+            xbmcgui.Dialog().notification('AIOStreams', 'Failed to connect to database', xbmcgui.NOTIFICATION_ERROR)
+            return
+        
+        try:
+            # Clear all tables
+            db.execute('DELETE FROM shows')
+            db.execute('DELETE FROM episodes')
+            db.execute('DELETE FROM movies')
+            db.execute('DELETE FROM watchlist')
+            db.execute('DELETE FROM bookmarks')
+            db.execute('DELETE FROM hidden')
+            db.commit()
+            
+            xbmc.log('[AIOStreams] Trakt database cleared successfully', xbmc.LOGINFO)
+            xbmcgui.Dialog().notification('AIOStreams', 'Trakt database cleared', xbmcgui.NOTIFICATION_INFO)
+        finally:
+            db.disconnect()
+            
+    except Exception as e:
+        xbmc.log(f'[AIOStreams] Failed to clear Trakt database: {e}', xbmc.LOGERROR)
+        xbmcgui.Dialog().notification('AIOStreams', 'Failed to clear database', xbmcgui.NOTIFICATION_ERROR)
+
+
+def rebuild_trakt_database():
+    """Rebuild Trakt database by clearing and forcing a fresh sync."""
+    if not HAS_MODULES:
+        return
+    
+    try:
+        # Confirm with user
+        if not xbmcgui.Dialog().yesno(
+            'Rebuild Trakt Database',
+            'This will clear the database and perform a full sync.',
+            'This may take a few moments.',
+            'Continue?'
+        ):
+            return
+        
+        # Clear database
+        from resources.lib.database.trakt_sync import TraktSyncDatabase
+        db = TraktSyncDatabase()
+        if not db.connect():
+            xbmcgui.Dialog().notification('AIOStreams', 'Failed to connect to database', xbmcgui.NOTIFICATION_ERROR)
+            return
+        
+        try:
+            # Clear all tables
+            db.execute('DELETE FROM shows')
+            db.execute('DELETE FROM episodes')
+            db.execute('DELETE FROM movies')
+            db.execute('DELETE FROM watchlist')
+            db.execute('DELETE FROM bookmarks')
+            db.execute('DELETE FROM hidden')
+            db.execute('DELETE FROM activities')
+            db.commit()
+            xbmc.log('[AIOStreams] Database cleared for rebuild', xbmc.LOGINFO)
+        finally:
+            db.disconnect()
+        
+        # Force sync
+        xbmc.log('[AIOStreams] Starting forced sync after database clear', xbmc.LOGINFO)
+        force_trakt_sync()
+        
+    except Exception as e:
+        xbmc.log(f'[AIOStreams] Failed to rebuild Trakt database: {e}', xbmc.LOGERROR)
+        xbmcgui.Dialog().notification('AIOStreams', 'Failed to rebuild database', xbmcgui.NOTIFICATION_ERROR)
+
+
+def show_database_info():
+    """Show information about the Trakt database."""
+    if not HAS_MODULES:
+        return
+    
+    try:
+        from resources.lib.database.trakt_sync import TraktSyncDatabase
+        
+        db = TraktSyncDatabase()
+        if not db.connect():
+            xbmcgui.Dialog().notification('AIOStreams', 'Failed to connect to database', xbmcgui.NOTIFICATION_ERROR)
+            return
+        
+        try:
+            # Get counts from each table
+            show_count = db.execute('SELECT COUNT(*) as count FROM shows').fetchone()['count']
+            episode_count = db.execute('SELECT COUNT(*) as count FROM episodes').fetchone()['count']
+            movie_count = db.execute('SELECT COUNT(*) as count FROM movies').fetchone()['count']
+            watchlist_count = db.execute('SELECT COUNT(*) as count FROM watchlist').fetchone()['count']
+            
+            # Get last sync time
+            activities = db.fetchone('SELECT last_activities_call FROM activities WHERE sync_id=1')
+            if activities and activities.get('last_activities_call'):
+                import datetime
+                last_sync = datetime.datetime.fromtimestamp(activities['last_activities_call'])
+                last_sync_str = last_sync.strftime('%Y-%m-%d %H:%M:%S')
+            else:
+                last_sync_str = 'Never'
+            
+            # Get database file size
+            import os
+            db_size = 0
+            if os.path.exists(db.db_path):
+                db_size = os.path.getsize(db.db_path) / 1024  # KB
+            
+            info_text = (
+                f'Database Statistics:\n\n'
+                f'Shows: {show_count}\n'
+                f'Episodes: {episode_count}\n'
+                f'Movies: {movie_count}\n'
+                f'Watchlist: {watchlist_count}\n\n'
+                f'Last Sync: {last_sync_str}\n'
+                f'Database Size: {db_size:.1f} KB'
+            )
+            
+            xbmcgui.Dialog().ok('Trakt Database Info', info_text)
+            
+        finally:
+            db.disconnect()
+            
+    except Exception as e:
+        xbmc.log(f'[AIOStreams] Failed to get database info: {e}', xbmc.LOGERROR)
+        xbmcgui.Dialog().notification('AIOStreams', 'Failed to get database info', xbmcgui.NOTIFICATION_ERROR)
+
+
+def vacuum_database():
+    """Vacuum the Trakt database to optimize and reclaim space."""
+    if not HAS_MODULES:
+        return
+    
+    try:
+        from resources.lib.database.trakt_sync import TraktSyncDatabase
+        
+        db = TraktSyncDatabase()
+        if not db.connect():
+            xbmcgui.Dialog().notification('AIOStreams', 'Failed to connect to database', xbmcgui.NOTIFICATION_ERROR)
+            return
+        
+        try:
+            xbmc.log('[AIOStreams] Vacuuming database...', xbmc.LOGINFO)
+            db.execute('VACUUM')
+            db.commit()
+            xbmc.log('[AIOStreams] Database vacuumed successfully', xbmc.LOGINFO)
+            xbmcgui.Dialog().notification('AIOStreams', 'Database optimized', xbmcgui.NOTIFICATION_INFO)
+        finally:
+            db.disconnect()
+            
+    except Exception as e:
+        xbmc.log(f'[AIOStreams] Failed to vacuum database: {e}', xbmc.LOGERROR)
+        xbmcgui.Dialog().notification('AIOStreams', 'Failed to optimize database', xbmcgui.NOTIFICATION_ERROR)
+
+
 def quick_actions():
     """Show quick actions menu (for keyboard shortcuts)."""
     params = dict(parse_qsl(sys.argv[2][1:]))
@@ -2960,6 +3139,14 @@ def router(params):
         clear_stream_stats()
     elif action == 'clear_preferences':
         clear_preferences()
+    elif action == 'clear_trakt_database':
+        clear_trakt_database()
+    elif action == 'rebuild_trakt_database':
+        rebuild_trakt_database()
+    elif action == 'show_database_info':
+        show_database_info()
+    elif action == 'vacuum_database':
+        vacuum_database()
     elif action == 'test_connection':
         test_connection()
     elif action == 'quick_actions':
