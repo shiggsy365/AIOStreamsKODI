@@ -1222,6 +1222,59 @@ def format_stream_title(stream, for_dialog=False):
         return stream_name
 
 
+def create_stream_list_items(streams):
+    """
+    Create ListItem objects for stream selection dialog with emoji support.
+
+    Args:
+        streams: List of stream dictionaries
+
+    Returns:
+        List of xbmcgui.ListItem objects with label and label2 set
+    """
+    list_items = []
+
+    for stream in streams:
+        stream_name = stream.get('name', stream.get('title', ''))
+        description = stream.get('description', '')
+
+        # Parse stream name format: SERVICE|QUALITY|SIZE|SOURCE|CACHED_STATUS
+        try:
+            parts = stream_name.split('|')
+            if len(parts) >= 4:
+                service = parts[0].strip()
+                quality = parts[1].strip()
+                size = parts[2].strip()
+                source = parts[3].strip()
+                cached_status = parts[4].strip() if len(parts) > 4 else ''
+
+                # Add quality symbol for 4K
+                quality_symbol = '★ ' if '4K' in quality or '2160' in quality else ''
+
+                # Add cached status symbol
+                if 'cached' in cached_status.lower():
+                    cached_symbol = ' ✓'
+                elif 'uncached' in cached_status.lower():
+                    cached_symbol = ' ⏳'
+                else:
+                    cached_symbol = ''
+
+                # Format main label: [SERVICE] Quality • Size • Source Status
+                label = f'[{service}] {quality_symbol}{quality} • {size} • {source}{cached_symbol}'
+            else:
+                # Format doesn't match, use original name
+                label = stream_name
+        except Exception as e:
+            xbmc.log(f'[AIOStreams] Error parsing stream name: {e}', xbmc.LOGDEBUG)
+            label = stream_name
+
+        # Create ListItem with label and description (label2)
+        list_item = xbmcgui.ListItem(label=label, label2=description if description else '')
+        list_items.append(list_item)
+
+    return list_items
+
+
 def select_stream():
     """TMDBHelper select stream - show dialog to select from available streams."""
     params = dict(parse_qsl(sys.argv[2][1:]))
@@ -1254,7 +1307,7 @@ def select_stream():
         'clearlogo': ''  # Could be populated from API if available
     }
 
-    # Use Kodi's built-in select dialog (works reliably with all skins)
+    # Use Kodi's built-in select dialog with ListItems for emoji support
     stream_count = len(stream_data['streams'])
     if title:
         dialog_title = f'Select Stream: {title} ({stream_count} available)'
@@ -1262,7 +1315,10 @@ def select_stream():
         dialog_title = f'Select Stream ({stream_count} available)'
 
     xbmc.log(f'[AIOStreams] Showing stream selection dialog with {stream_count} streams', xbmc.LOGDEBUG)
-    selected = xbmcgui.Dialog().select(dialog_title, [format_stream_title(s, for_dialog=True) for s in stream_data['streams']])
+
+    # Create ListItems for emoji and description support
+    list_items = create_stream_list_items(stream_data['streams'])
+    selected = xbmcgui.Dialog().select(dialog_title, list_items, useDetails=True)
 
     if selected is None or selected < 0:
         xbmcplugin.setResolvedUrl(HANDLE, False, xbmcgui.ListItem())
@@ -1563,13 +1619,8 @@ def show_streams_dialog(content_type, media_id, stream_data, title):
         # Update stream_data with sorted streams
         stream_data['streams'] = sorted_streams
 
-        # Build formatted stream list using custom formatting
-        stream_list = []
-        for stream in sorted_streams:
-            formatted_title = format_stream_title(stream)
-            stream_list.append(formatted_title)
-
-    if not stream_list:
+    # Check if we have any streams
+    if not stream_data['streams']:
         xbmcgui.Dialog().notification('AIOStreams', 'No streams match your quality preferences', xbmcgui.NOTIFICATION_ERROR)
         xbmcplugin.endOfDirectory(HANDLE, succeeded=False)
         return
@@ -1581,9 +1632,12 @@ def show_streams_dialog(content_type, media_id, stream_data, title):
         'clearlogo': ''  # Could be populated from API if available
     }
 
-    # Use Kodi's built-in select dialog (works reliably with all skins)
+    # Use Kodi's built-in select dialog with ListItems for emoji support
     xbmc.log(f'[AIOStreams] Showing stream selection dialog with {len(stream_data["streams"])} streams', xbmc.LOGDEBUG)
-    selected = xbmcgui.Dialog().select(f'Select Stream: {title} ({len(stream_list)} available)', stream_list)
+
+    # Create ListItems for emoji and description support
+    list_items = create_stream_list_items(stream_data['streams'])
+    selected = xbmcgui.Dialog().select(f'Select Stream: {title} ({len(list_items)} available)', list_items, useDetails=True)
 
     if selected is None or selected < 0:
         # User cancelled
