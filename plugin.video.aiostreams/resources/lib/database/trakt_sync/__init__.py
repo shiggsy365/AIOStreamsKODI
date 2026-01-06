@@ -142,14 +142,17 @@ class TraktSyncDatabase(Database):
 
         try:
             # Migration: Add air_date column to episodes table (v3.1.0)
-            # SQLite will ignore if column already exists
-            try:
-                self.execute("ALTER TABLE episodes ADD COLUMN air_date TEXT")
-                self.commit()
-                xbmc.log('[AIOStreams] Added air_date column to episodes table', xbmc.LOGINFO)
-            except Exception:
-                # Column already exists, which is fine
-                pass
+            # Check if column exists first to avoid error logging
+            cursor = self.execute("PRAGMA table_info(episodes)")
+            if cursor:
+                columns = [row[1] for row in cursor.fetchall()]
+
+                if 'air_date' not in columns:
+                    self.execute("ALTER TABLE episodes ADD COLUMN air_date TEXT")
+                    self.commit()
+                    xbmc.log('[AIOStreams] Added air_date column to episodes table', xbmc.LOGINFO)
+                else:
+                    xbmc.log('[AIOStreams] air_date column already exists, skipping migration', xbmc.LOGDEBUG)
 
         except Exception as e:
             xbmc.log(f'[AIOStreams] Error running migrations: {e}', xbmc.LOGERROR)
@@ -176,7 +179,8 @@ class TraktSyncDatabase(Database):
                     show_trakt_id,
                     MAX(season) as max_season,
                     MAX(CASE WHEN season = (SELECT MAX(season) FROM episodes e2 WHERE e2.show_trakt_id = e.show_trakt_id AND e2.watched = 1)
-                        THEN episode ELSE 0 END) as max_episode
+                        THEN episode ELSE 0 END) as max_episode,
+                    MAX(last_watched_at) as last_watched_at
                 FROM episodes e
                 WHERE watched = 1 AND season > 0
                 GROUP BY show_trakt_id
@@ -209,17 +213,19 @@ class TraktSyncDatabase(Database):
                 e.season,
                 e.episode,
                 e.air_date,
-                e.imdb_id as episode_imdb_id
+                e.imdb_id as episode_imdb_id,
+                mw.last_watched_at
             FROM next_episode_candidate nec
             INNER JOIN episodes e
                 ON e.show_trakt_id = nec.show_trakt_id
                 AND e.season = nec.next_season
                 AND e.episode = nec.next_episode
             INNER JOIN shows s ON s.trakt_id = e.show_trakt_id
+            INNER JOIN max_watched mw ON mw.show_trakt_id = e.show_trakt_id
             WHERE e.show_trakt_id NOT IN (
                 SELECT trakt_id FROM hidden WHERE section = 'progress_watched'
             )
-            ORDER BY s.title ASC
+            ORDER BY mw.last_watched_at DESC
         """
 
         try:
