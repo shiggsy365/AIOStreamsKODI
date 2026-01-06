@@ -1269,13 +1269,14 @@ def format_stream_title(stream, for_dialog=False):
         return stream_name
 
 
-def create_stream_list_items(streams):
+def create_stream_list_items(streams, strip_emojis_flag=False):
     """
     Create formatted labels for stream selection dialog with full multi-line display.
-    Shows all 5 lines: name, codec, audio, size, language, filename.
+    Shows all 5+ lines: name, codec, audio, size, language, filename.
 
     Args:
         streams: List of stream dictionaries
+        strip_emojis_flag: If True, remove emojis. Default False (keep emojis - textbox can render them)
 
     Returns:
         List of formatted label strings for custom dialog
@@ -1304,11 +1305,15 @@ def create_stream_list_items(streams):
         stream_name = stream.get('name', stream.get('title', 'Unknown Stream'))
         description = stream.get('description', '')
 
-        # Strip emojis from both name and description
-        stream_name = strip_emojis(stream_name).strip()
-        description = strip_emojis(description).strip() if description else ''
+        # Optionally strip emojis (custom textbox controls can usually render them)
+        if strip_emojis_flag:
+            stream_name = strip_emojis(stream_name).strip()
+            description = strip_emojis(description).strip() if description else ''
+        else:
+            stream_name = stream_name.strip()
+            description = description.strip() if description else ''
 
-        # Build multi-line label with all 5 lines from description
+        # Build multi-line label with all lines from description
         # Line 0: Stream name (service, source, quality)
         # Line 1: Codec info (BluRay, HEVC, etc.)
         # Line 2: Audio info (DTS, Atmos, etc.)
