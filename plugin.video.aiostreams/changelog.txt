@@ -1,5 +1,19 @@
 # Changelog
 
+## [3.0.4] - 2026-01-06
+
+### Changed
+- **Source Select Dialog**: Converted from WindowXMLDialog to programmatic WindowDialog
+- **Universal Skin Compatibility**: Now works with ALL Kodi skins including Bingie and others
+- **Simplified Architecture**: No longer requires skin-specific XML files or texture resources
+
+### Technical
+- Changed `SourceSelect` from `xbmcgui.WindowXMLDialog` to `xbmcgui.WindowDialog`
+- All dialog controls (background, labels, list) now created programmatically in Python
+- Removed dependency on `source_select.xml` skin file and `white.png` texture
+- Simplified instantiation - no longer requires xml_file or resource_path parameters
+- Cleaner fallback logic with improved error handling
+
 ## [3.0.3] - 2026-01-06
 
 ### Fixed
