@@ -2500,6 +2500,12 @@ def trakt_add_watchlist():
     if imdb_id:
         trakt.add_to_watchlist(media_type, imdb_id)
         xbmc.executebuiltin('Container.Refresh')
+        # Trigger widget refresh in background
+        try:
+            from resources.lib import utils
+            utils.trigger_background_refresh(delay=0.5)
+        except Exception as e:
+            xbmc.log(f'[AIOStreams] Failed to trigger widget refresh: {e}', xbmc.LOGDEBUG)
 
 
 def trakt_remove_watchlist():
@@ -2518,6 +2524,12 @@ def trakt_remove_watchlist():
         episode_int = int(episode) if episode else None
         trakt.remove_from_watchlist(media_type, imdb_id, season_int, episode_int)
         xbmc.executebuiltin('Container.Refresh')
+        # Trigger widget refresh in background
+        try:
+            from resources.lib import utils
+            utils.trigger_background_refresh(delay=0.5)
+        except Exception as e:
+            xbmc.log(f'[AIOStreams] Failed to trigger widget refresh: {e}', xbmc.LOGDEBUG)
 
 
 def trakt_mark_watched():
@@ -2538,6 +2550,12 @@ def trakt_mark_watched():
         playback_id_int = int(playback_id) if playback_id else None
         trakt.mark_watched(media_type, imdb_id, season_int, episode_int, playback_id_int)
         xbmc.executebuiltin('Container.Refresh')
+        # Trigger widget refresh in background
+        try:
+            from resources.lib import utils
+            utils.trigger_background_refresh(delay=0.5)
+        except Exception as e:
+            xbmc.log(f'[AIOStreams] Failed to trigger widget refresh: {e}', xbmc.LOGDEBUG)
 
 
 def trakt_mark_unwatched():
@@ -2556,6 +2574,12 @@ def trakt_mark_unwatched():
         episode_int = int(episode) if episode else None
         trakt.mark_unwatched(media_type, imdb_id, season_int, episode_int)
         xbmc.executebuiltin('Container.Refresh')
+        # Trigger widget refresh in background
+        try:
+            from resources.lib import utils
+            utils.trigger_background_refresh(delay=0.5)
+        except Exception as e:
+            xbmc.log(f'[AIOStreams] Failed to trigger widget refresh: {e}', xbmc.LOGDEBUG)
 
 
 def trakt_remove_playback():
