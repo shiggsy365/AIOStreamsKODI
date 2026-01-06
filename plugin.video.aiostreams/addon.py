@@ -1258,11 +1258,25 @@ def select_stream():
     # Use Kodi's built-in 2-line select dialog with ListItems (server formats the data)
     xbmc.log(f'[AIOStreams] Showing stream selection dialog with {len(stream_data["streams"])} streams', xbmc.LOGDEBUG)
 
+    # Get poster from params if available (passed by TMDBHelper)
+    poster = params.get('poster', '')
+    fanart = params.get('fanart', '')
+
     # Create ListItems with name (label) and description (label2) - server-formatted
     list_items = []
     for stream in stream_data['streams']:
         list_item = xbmcgui.ListItem(label=stream.get('name', 'Unknown Stream'))
         list_item.setLabel2(stream.get('description', ''))
+
+        # Set poster art to remove placeholder icon and fill empty box on right
+        if poster or fanart:
+            list_item.setArt({
+                'thumb': poster or fanart,
+                'poster': poster or fanart,
+                'icon': poster or fanart,
+                'fanart': fanart or poster
+            })
+
         list_items.append(list_item)
 
     # Show 2-line selection dialog
@@ -1526,6 +1540,8 @@ def show_streams():
     content_type = params['content_type']
     media_id = params['media_id']
     title = params.get('title', 'Unknown')
+    poster = params.get('poster', '')
+    fanart = params.get('fanart', '')
 
     # Show loading dialog while fetching streams
     progress = xbmcgui.DialogProgress()
@@ -1543,10 +1559,10 @@ def show_streams():
         return
 
     # Always show streams dialog (ignore default behavior - user explicitly requested stream selection)
-    show_streams_dialog(content_type, media_id, stream_data, title)
+    show_streams_dialog(content_type, media_id, stream_data, title, poster, fanart)
 
 
-def show_streams_dialog(content_type, media_id, stream_data, title):
+def show_streams_dialog(content_type, media_id, stream_data, title, poster='', fanart=''):
     """Show streams in a selection dialog."""
     if not HAS_MODULES:
         # Fallback to simple dialog - use custom formatting
@@ -1585,6 +1601,16 @@ def show_streams_dialog(content_type, media_id, stream_data, title):
     for stream in stream_data['streams']:
         list_item = xbmcgui.ListItem(label=stream.get('name', 'Unknown Stream'))
         list_item.setLabel2(stream.get('description', ''))
+
+        # Set poster art to remove placeholder icon and fill empty box on right
+        if poster or fanart:
+            list_item.setArt({
+                'thumb': poster or fanart,
+                'poster': poster or fanart,
+                'icon': poster or fanart,
+                'fanart': fanart or poster
+            })
+
         list_items.append(list_item)
 
     # Show 2-line selection dialog
@@ -2972,7 +2998,7 @@ def database_reset():
 
         # Clear all caches
         xbmc.log('[AIOStreams] Clearing all caches...', xbmc.LOGINFO)
-        cache.clear_all_cache()
+        cache.cleanup_expired_cache(force_all=True)
 
         # Show progress dialog for Trakt sync
         progress = xbmcgui.DialogProgress()
