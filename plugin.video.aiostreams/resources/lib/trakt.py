@@ -145,7 +145,7 @@ def _get_trakt_id_from_imdb(imdb_id):
     try:
         # Use Trakt search API: /search/imdb/{id}?type=show
         result = call_trakt(f'search/imdb/{imdb_id}?type=show', with_auth=False)
-        if result and len(result) > 0:
+        if result and isinstance(result, list) and len(result) > 0:
             show_data = result[0].get('show', {})
             trakt_id = show_data.get('ids', {}).get('trakt')
             if trakt_id:
