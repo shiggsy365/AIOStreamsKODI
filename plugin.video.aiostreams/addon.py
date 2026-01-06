@@ -13,7 +13,6 @@ try:
     from resources.lib import trakt, filters, cache
     from resources.lib.monitor import PLAYER
     from resources.lib import streams, ui_helpers, settings_helpers, constants
-    from resources.lib.gui.windows.source_select import SourceSelect
     HAS_MODULES = True
 except Exception as e:
     HAS_MODULES = False
@@ -1311,14 +1310,18 @@ def select_stream():
         'clearlogo': ''  # Could be populated from API if available
     }
 
-    # Use custom SourceSelect window for detailed stream display
-    xbmc.log(f'[AIOStreams] Showing stream selection dialog with {len(stream_data["streams"])} streams', xbmc.LOGDEBUG)
+    # Use Kodi's built-in select dialog with ListItems for multi-line display
+    stream_count = len(stream_data['streams'])
+    if title:
+        dialog_title = f'Select Stream: {title} ({stream_count} available)'
+    else:
+        dialog_title = f'Select Stream ({stream_count} available)'
 
-    # Create and show custom source select dialog
-    dialog = SourceSelect(streams=stream_data['streams'], metadata=metadata)
-    dialog.doModal()
-    selected = dialog.selected_index
-    del dialog
+    xbmc.log(f'[AIOStreams] Showing stream selection dialog with {stream_count} streams', xbmc.LOGDEBUG)
+
+    # Create ListItems for multi-line display with description support
+    list_items = create_stream_list_items(stream_data['streams'])
+    selected = xbmcgui.Dialog().select(dialog_title, list_items, useDetails=True)
 
     if selected is None or selected < 0:
         xbmcplugin.setResolvedUrl(HANDLE, False, xbmcgui.ListItem())
@@ -1632,14 +1635,12 @@ def show_streams_dialog(content_type, media_id, stream_data, title):
         'clearlogo': ''  # Could be populated from API if available
     }
 
-    # Use custom SourceSelect window for detailed stream display
+    # Use Kodi's built-in select dialog with ListItems for multi-line display
     xbmc.log(f'[AIOStreams] Showing stream selection dialog with {len(stream_data["streams"])} streams', xbmc.LOGDEBUG)
 
-    # Create and show custom source select dialog
-    dialog = SourceSelect(streams=stream_data['streams'], metadata=metadata)
-    dialog.doModal()
-    selected = dialog.selected_index
-    del dialog
+    # Create ListItems for multi-line display with description support
+    list_items = create_stream_list_items(stream_data['streams'])
+    selected = xbmcgui.Dialog().select(f'Select Stream: {title} ({len(list_items)} available)', list_items, useDetails=True)
 
     if selected is None or selected < 0:
         # User cancelled
