@@ -1,5 +1,19 @@
 # Changelog
 
+## [3.0.7] - 2026-01-06
+
+### Fixed
+- **CRITICAL DATABASE BUG**: Fixed column name mismatch in Trakt sync preventing episodes from being synced
+- **Next Up Empty**: Episodes weren't being inserted into database due to wrong column name (trakt_show_id vs show_trakt_id)
+- **Schema Mismatch**: Sync code used `trakt_show_id` but database schema defined `show_trakt_id`
+
+### Technical
+- Fixed column names in `_sync_watched_episodes()` - changed `trakt_show_id` to `show_trakt_id`
+- Fixed column names in `_sync_collected_episodes()` - changed `trakt_show_id` to `show_trakt_id`
+- Fixed column names in `_update_all_show_statistics()` - changed all `trakt_show_id` references to `show_trakt_id`
+- This was causing SQL errors: "table episodes has no column named trakt_show_id"
+- After this fix, episodes will properly sync and Next Up will populate
+
 ## [3.0.6] - 2026-01-06
 
 ### Fixed
