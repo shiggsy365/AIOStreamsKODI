@@ -1311,18 +1311,14 @@ def select_stream():
         'clearlogo': ''  # Could be populated from API if available
     }
 
-    # Use Kodi's built-in select dialog with ListItems for emoji support
-    stream_count = len(stream_data['streams'])
-    if title:
-        dialog_title = f'Select Stream: {title} ({stream_count} available)'
-    else:
-        dialog_title = f'Select Stream ({stream_count} available)'
+    # Use custom SourceSelect window for detailed stream display
+    xbmc.log(f'[AIOStreams] Showing stream selection dialog with {len(stream_data["streams"])} streams', xbmc.LOGDEBUG)
 
-    xbmc.log(f'[AIOStreams] Showing stream selection dialog with {stream_count} streams', xbmc.LOGDEBUG)
-
-    # Create ListItems for emoji and description support
-    list_items = create_stream_list_items(stream_data['streams'])
-    selected = xbmcgui.Dialog().select(dialog_title, list_items, useDetails=True)
+    # Create and show custom source select dialog
+    dialog = SourceSelect(streams=stream_data['streams'], metadata=metadata)
+    dialog.doModal()
+    selected = dialog.selected_index
+    del dialog
 
     if selected is None or selected < 0:
         xbmcplugin.setResolvedUrl(HANDLE, False, xbmcgui.ListItem())
@@ -1636,12 +1632,14 @@ def show_streams_dialog(content_type, media_id, stream_data, title):
         'clearlogo': ''  # Could be populated from API if available
     }
 
-    # Use Kodi's built-in select dialog with ListItems for emoji support
+    # Use custom SourceSelect window for detailed stream display
     xbmc.log(f'[AIOStreams] Showing stream selection dialog with {len(stream_data["streams"])} streams', xbmc.LOGDEBUG)
 
-    # Create ListItems for emoji and description support
-    list_items = create_stream_list_items(stream_data['streams'])
-    selected = xbmcgui.Dialog().select(f'Select Stream: {title} ({len(list_items)} available)', list_items, useDetails=True)
+    # Create and show custom source select dialog
+    dialog = SourceSelect(streams=stream_data['streams'], metadata=metadata)
+    dialog.doModal()
+    selected = dialog.selected_index
+    del dialog
 
     if selected is None or selected < 0:
         # User cancelled

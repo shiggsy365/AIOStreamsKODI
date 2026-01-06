@@ -8,6 +8,63 @@ import xbmcgui
 from resources.lib.formatters import get_formatter_from_settings
 
 
+def format_stream_detail(stream):
+    """
+    Format stream data into detailed multi-line display.
+
+    Args:
+        stream: Stream dictionary with name and description
+
+    Returns:
+        Tuple of (main_label, detail_label) for display
+    """
+    stream_name = stream.get('name', stream.get('title', ''))
+    description = stream.get('description', '')
+
+    # Parse the name format: SERVICE|QUALITY|SIZE|SOURCE|CACHED_STATUS
+    try:
+        parts = stream_name.split('|')
+        if len(parts) >= 4:
+            service = parts[0].strip()
+            quality = parts[1].strip()
+            size = parts[2].strip()
+            source = parts[3].strip()
+            cached_status = parts[4].strip() if len(parts) > 4 else 'Unknown'
+
+            # Parse description for additional details
+            desc_lines = description.split('\n') if description else []
+
+            # Build formatted display
+            # Line 1: Service/Source + Size
+            line1 = f'{service} {source} {quality}'.ljust(60) + size.rjust(20)
+
+            # Line 2: Quality details + Cached status
+            cached_text = 'Cached: Y' if 'cached' in cached_status.lower() else 'Cached: N'
+            line2_left = ' '.join([p.strip() for p in desc_lines[:3] if p.strip()]) if desc_lines else quality
+            line2 = line2_left[:60].ljust(60) + cached_text.rjust(20)
+
+            # Line 3: Additional metadata if available
+            line3 = ''
+            if len(desc_lines) > 3:
+                line3 = ' '.join(desc_lines[3:5])[:80]
+
+            # Main label (lines 1-2)
+            main_label = f'{line1}\n{line2}'
+
+            # Detail label (line 3+ and filename)
+            detail_label = line3
+            if len(desc_lines) > 5:
+                detail_label += '\n' + desc_lines[-1][:80]  # Filename usually last
+
+            return (main_label, detail_label)
+        else:
+            # Fallback to simple format
+            return (stream_name, description[:100] if description else '')
+    except Exception as e:
+        xbmc.log(f'[AIOStreams] Error formatting stream detail: {e}', xbmc.LOGWARNING)
+        return (stream_name, description[:100] if description else '')
+
+
 class SourceSelect(xbmcgui.WindowDialog):
     """
     Custom dialog window for stream selection.
@@ -90,19 +147,18 @@ class SourceSelect(xbmcgui.WindowDialog):
             )
             self.addControl(self.list_control)
 
-            # Populate the list with formatted stream names
+            # Populate the list with formatted stream details
             for idx, stream in enumerate(self.streams):
-                stream_name = stream.get('name', stream.get('title', ''))
-
-                # Format the stream name using selected formatter
+                # Format stream into detailed multi-line display
                 try:
-                    formatted_name = self.formatter.format(stream_name)
+                    main_label, detail_label = format_stream_detail(stream)
                 except Exception as e:
                     xbmc.log(f'[AIOStreams] Error formatting stream: {e}', xbmc.LOGWARNING)
-                    formatted_name = stream_name
+                    main_label = stream.get('name', stream.get('title', ''))
+                    detail_label = stream.get('description', '')[:100]
 
-                # Create list item
-                list_item = xbmcgui.ListItem(label=formatted_name)
+                # Create list item with main label and detail label2
+                list_item = xbmcgui.ListItem(label=main_label, label2=detail_label)
                 self.list_control.addItem(list_item)
 
             # Instructions label at bottom
