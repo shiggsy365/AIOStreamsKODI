@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <addons>
-<addon id="plugin.video.aiostreams" name="AIOStreams" version="3.1.2" provider-name="Jon">
+<addon id="plugin.video.aiostreams" name="AIOStreams" version="3.1.3" provider-name="Jon">
     <requires>
         <import addon="xbmc.python" version="3.0.0"/>
         <import addon="script.module.requests" version="2.25.1"/>
@@ -14,7 +14,7 @@
         <platform>all</platform>
         <license>MIT</license>
         <website>https://aiostreams.shiggsy.co.uk</website>
-        <news>v3.1.2: Fixed Next Up titles showing 'None', fixed Drop show not removing from Next Up, enhanced stream selection dialog with symbols and better formatting. | v3.1.1: Fixed Next Up sorting and metadata. | v3.1.0: Adopted Seren's architecture - ZERO API calls!</news>
+        <news>v3.1.3: Dropped shows now automatically reappear in Next Up when you start watching them again! | v3.1.2: Fixed Next Up titles, Drop show, enhanced stream dialog. | v3.1.1: Fixed Next Up sorting and metadata. | v3.1.0: Adopted Seren's architecture!</news>
         <assets>
             <icon>resources/icon.png</icon>
             <fanart>resources/fanart.jpg</fanart>
