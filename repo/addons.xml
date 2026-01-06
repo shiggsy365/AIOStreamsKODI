@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <addons>
-<addon id="plugin.video.aiostreams" name="AIOStreams" version="3.2.7" provider-name="Jon">
+<addon id="plugin.video.aiostreams" name="AIOStreams" version="3.3.0" provider-name="Jon">
     <requires>
         <import addon="xbmc.python" version="3.0.0"/>
         <import addon="script.module.requests" version="2.25.1"/>
@@ -14,7 +14,7 @@
         <platform>all</platform>
         <license>MIT</license>
         <website>https://aiostreams.shiggsy.co.uk</website>
-        <news>v3.2.7: Debug logging added to stream selector to diagnose info extraction. | v3.2.6: Enhanced stream selector extraction. | v3.2.5: Fixed stream selector icons and emoji display.</news>
+        <news>v3.3.0: NEW custom stream selector dialog showing all 5+ lines (name, codec, audio, size, language, filename). | v3.2.7: Debug logging. | v3.2.6: Enhanced extraction.</news>
         <assets>
             <icon>resources/icon.png</icon>
             <fanart>resources/fanart.jpg</fanart>

@@ -23,6 +23,47 @@ ADDON = xbmcaddon.Addon()
 ADDON_PATH = xbmcvfs.translatePath(ADDON.getAddonInfo('path'))
 HANDLE = int(sys.argv[1])
 
+
+class StreamSelectDialog(xbmcgui.WindowXMLDialog):
+    """Custom dialog for multi-line stream selection."""
+
+    def __init__(self, *args, **kwargs):
+        self.streams = kwargs.get("streams", [])
+        self.selected_index = None
+        self.title = kwargs.get("title", "Select Stream")
+
+    def onInit(self):
+        # Set dialog title
+        self.setProperty("dialog_title", self.title)
+
+        # Get the list control from XML
+        try:
+            list_control = self.getControl(1000)
+            list_control.reset()
+
+            # Add items with multi-line labels
+            for stream_label in self.streams:
+                list_item = xbmcgui.ListItem(label=stream_label)
+                list_control.addItem(list_item)
+        except Exception as e:
+            xbmc.log(f'[AIOStreams] Error initializing stream dialog: {e}', xbmc.LOGERROR)
+
+    def onClick(self, controlId):
+        if controlId == 1000:  # List clicked
+            try:
+                list_control = self.getControl(1000)
+                self.selected_index = list_control.getSelectedPosition()
+                self.close()
+            except Exception as e:
+                xbmc.log(f'[AIOStreams] Error on list click: {e}', xbmc.LOGERROR)
+        elif controlId == 2000:  # Cancel button
+            self.close()
+
+    def onAction(self, action):
+        if action.getId() in (xbmcgui.ACTION_PREVIOUS_MENU, xbmcgui.ACTION_NAV_BACK):
+            self.close()
+
+
 # Run cache cleanup on startup (async, won't block)
 if HAS_MODULES:
     try:
@@ -1230,14 +1271,14 @@ def format_stream_title(stream, for_dialog=False):
 
 def create_stream_list_items(streams):
     """
-    Create ListItem objects for stream selection dialog with 2-line formatting.
-    Extracts and formats key information from stream name and description.
+    Create formatted labels for stream selection dialog with full multi-line display.
+    Shows all 5 lines: name, codec, audio, size, language, filename.
 
     Args:
         streams: List of stream dictionaries
 
     Returns:
-        List of xbmcgui.ListItem objects with formatted labels
+        List of formatted label strings for custom dialog
     """
     import re
 
@@ -1257,91 +1298,37 @@ def create_stream_list_items(streams):
         )
         return emoji_pattern.sub('', text)
 
-    list_items = []
+    labels = []
 
     for stream in streams:
         stream_name = stream.get('name', stream.get('title', 'Unknown Stream'))
         description = stream.get('description', '')
 
-        # Log raw stream data for first stream to debug
-        if len(list_items) == 0:
-            xbmc.log(f'[AIOStreams] Stream selector DEBUG - First stream:', xbmc.LOGINFO)
-            xbmc.log(f'[AIOStreams]   name: {stream_name}', xbmc.LOGINFO)
-            xbmc.log(f'[AIOStreams]   description: {description}', xbmc.LOGINFO)
-
         # Strip emojis from both name and description
         stream_name = strip_emojis(stream_name).strip()
         description = strip_emojis(description).strip() if description else ''
 
-        # Log after emoji stripping
-        if len(list_items) == 0:
-            xbmc.log(f'[AIOStreams]   After emoji strip - name: {stream_name}', xbmc.LOGINFO)
-            xbmc.log(f'[AIOStreams]   After emoji strip - desc: {description}', xbmc.LOGINFO)
+        # Build multi-line label with all 5 lines from description
+        # Line 0: Stream name (service, source, quality)
+        # Line 1: Codec info (BluRay, HEVC, etc.)
+        # Line 2: Audio info (DTS, Atmos, etc.)
+        # Line 3: Size info (GB/MB)
+        # Line 4: Language info (Multi, French, etc.)
+        # Line 5: Filename (optional)
 
-        # Parse the description lines for useful info
-        # After emoji removal, format is typically:
-        # Line 0: BluRay  AV1  R&H (video codec/quality info)
-        # Line 1: DTS  5.1 (audio info)
-        # Line 2: 3.45 GB /  20.4 GB (size info)
-        # Line 3: filename
+        lines = [stream_name]
 
-        desc_lines = [line.strip() for line in description.split('\n') if line.strip()]
+        if description:
+            # Split description by newlines
+            desc_lines = [line.strip() for line in description.split('\n') if line.strip()]
+            # Add all description lines (typically 4-5 lines)
+            lines.extend(desc_lines)
 
-        # Log parsed lines
-        if len(list_items) == 0:
-            xbmc.log(f'[AIOStreams]   Parsed {len(desc_lines)} description lines:', xbmc.LOGINFO)
-            for i, line in enumerate(desc_lines):
-                xbmc.log(f'[AIOStreams]     Line {i}: {line}', xbmc.LOGINFO)
+        # Join all lines with newline
+        label = '\n'.join(lines)
+        labels.append(label)
 
-        # Build 2-line display (Kodi Dialog().select() shows max 2 lines)
-        # Line 1: Stream name + size
-        # Line 2: Codec/video info + audio info
-
-        line1 = stream_name
-        line2_parts = []
-
-        # Extract size from description (usually line with "GB" or "MB")
-        size_info = ''
-        for line in desc_lines:
-            if 'GB' in line or 'MB' in line:
-                # Clean up size line (format: "3.45 GB /  20.4 GB")
-                size_info = line.replace('/', '|').strip()
-                # Take first size only if there are two
-                if '|' in size_info:
-                    size_parts = size_info.split('|')
-                    size_info = size_parts[0].strip()
-                break
-
-        # Append size to line 1
-        if size_info:
-            line1 = f"{stream_name}  [{size_info}]"
-
-        # Build line 2 from codec and audio info (first 2 description lines)
-        if len(desc_lines) >= 1:
-            # First line: video codec info (BluRay, HEVC, AV1, etc.)
-            line2_parts.append(desc_lines[0])
-        if len(desc_lines) >= 2:
-            # Second line: audio info (DTS, Atmos, 5.1, etc.)
-            line2_parts.append(desc_lines[1])
-
-        line2 = '  |  '.join(line2_parts) if line2_parts else ''
-
-        # Build final label
-        if line2:
-            label = f"{line1}\n{line2}"
-        else:
-            label = line1
-
-        # Log final label for first stream
-        if len(list_items) == 0:
-            xbmc.log(f'[AIOStreams]   Final label (with \\n for newline):', xbmc.LOGINFO)
-            xbmc.log(f'[AIOStreams]   {repr(label)}', xbmc.LOGINFO)
-
-        # Create ListItem
-        list_item = xbmcgui.ListItem(label=label)
-        list_items.append(list_item)
-
-    return list_items
+    return labels
 
 
 def select_stream():
@@ -1379,9 +1366,21 @@ def select_stream():
     # Use Kodi's built-in select dialog with ListItems
     xbmc.log(f'[AIOStreams] Showing stream selection dialog with {len(stream_data["streams"])} streams', xbmc.LOGDEBUG)
 
-    # Create ListItems for display with description support
-    list_items = create_stream_list_items(stream_data['streams'])
-    selected = xbmcgui.Dialog().select(f'Select Stream ({len(list_items)} available)', list_items)
+    # Create formatted labels for custom dialog
+    stream_labels = create_stream_list_items(stream_data['streams'])
+
+    # Show custom multi-line dialog
+    dialog = StreamSelectDialog(
+        "script-stream-select.xml",
+        ADDON_PATH,
+        "default",
+        "1080i",
+        streams=stream_labels,
+        title=f"Select Stream ({len(stream_labels)} available)"
+    )
+    dialog.doModal()
+    selected = dialog.selected_index
+    del dialog
 
     if selected is None or selected < 0:
         xbmcplugin.setResolvedUrl(HANDLE, False, xbmcgui.ListItem())
@@ -1698,9 +1697,21 @@ def show_streams_dialog(content_type, media_id, stream_data, title):
     # Use Kodi's built-in select dialog with ListItems
     xbmc.log(f'[AIOStreams] Showing stream selection dialog with {len(stream_data["streams"])} streams', xbmc.LOGDEBUG)
 
-    # Create ListItems for display with description support
-    list_items = create_stream_list_items(stream_data['streams'])
-    selected = xbmcgui.Dialog().select(f'Select Stream ({len(list_items)} available)', list_items)
+    # Create formatted labels for custom dialog
+    stream_labels = create_stream_list_items(stream_data['streams'])
+
+    # Show custom multi-line dialog
+    dialog = StreamSelectDialog(
+        "script-stream-select.xml",
+        ADDON_PATH,
+        "default",
+        "1080i",
+        streams=stream_labels,
+        title=f"Select Stream ({len(stream_labels)} available)"
+    )
+    dialog.doModal()
+    selected = dialog.selected_index
+    del dialog
 
     if selected is None or selected < 0:
         # User cancelled
