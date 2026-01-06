@@ -1,5 +1,36 @@
 # Changelog
 
+## [3.0.0] - 2026-01-06
+
+### Added
+- **Complete SQLite Database Integration**: All Trakt catalogs (Watchlist, Continue Watching, Next Up, Progress, History, Collection) now use local SQLite database
+- **Optimistic Database Updates**: UI updates immediately when marking episodes watched, with graceful API fallback
+- **Smart Widget Refresh**: New `smart_refresh()` utility efficiently refreshes only affected catalogs
+- **Database Utilities**: Smart refresh and optimistic update helpers in `resources/lib/utils.py`
+
+### Changed
+- **Major Architecture Change**: All AIOStreams catalogs now powered by local database instead of API calls
+- **Improved Responsiveness**: Instant UI feedback for all Trakt operations with background API sync
+- **Enhanced Reliability**: Graceful degradation when API is slow or unavailable
+
+### Technical Details
+- Updated all Trakt catalog functions to query SQLite database
+- Added optimistic database updates for watched status changes
+- Implemented smart widget refresh to update only modified catalogs
+- Maintained API fallback for missing database entries
+
+## [2.8.0] - 2026-01-06
+
+### Added
+- **Background Service**: Automatic Trakt sync every 5 minutes (configurable in settings)
+- **Database Migration**: Automated migration from JSON cache to SQLite database
+- **Database Maintenance Tools**: Clear, rebuild, info, and vacuum operations
+- **Service Registration**: Background service runs on Kodi startup
+
+### Changed
+- Trakt data now persistently cached in SQLite database
+- Improved sync reliability with automatic background updates
+
 ## [2.7.0] - 2026-01-06
 
 ### Fixed
