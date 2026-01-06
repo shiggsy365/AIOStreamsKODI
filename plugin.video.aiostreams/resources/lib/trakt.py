@@ -1587,8 +1587,6 @@ def mark_watched(media_type, imdb_id, season=None, episode=None, playback_id=Non
                     del _show_progress_cache[imdb_id]
                 if imdb_id in _show_progress_batch_cache:
                     del _show_progress_batch_cache[imdb_id]
-                if HAS_MODULES:
-                    cache.delete_cached_data(f'show_progress_{show_trakt_id}', 'trakt')
                 invalidate_progress_cache()
 
         except Exception as e:
@@ -1963,8 +1961,6 @@ def mark_unwatched(media_type, imdb_id, season=None, episode=None):
                     del _show_progress_cache[imdb_id]
                 if imdb_id in _show_progress_batch_cache:
                     del _show_progress_batch_cache[imdb_id]
-                if HAS_MODULES:
-                    cache.delete_cached_data(f'show_progress_{show_trakt_id}', 'trakt')
                 invalidate_progress_cache()
 
         except Exception as e:
