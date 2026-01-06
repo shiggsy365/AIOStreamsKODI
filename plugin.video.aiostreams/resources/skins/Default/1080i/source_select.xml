@@ -146,9 +146,9 @@
                         <font>font12</font>
                         <textcolor>DD000000</textcolor>
                         <align>left</align>
-                        <label>$INFO[ListItem.Label2]</label>
+                        <label>$INFO[ListItem.Property(description)]</label>
                         <autoscroll>false</autoscroll>
-                        <visible>!String.IsEmpty(ListItem.Label2)</visible>
+                        <visible>!String.IsEmpty(ListItem.Property(description))</visible>
                     </control>
                 </control>
             </focusedlayout>

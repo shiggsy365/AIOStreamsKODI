@@ -74,7 +74,7 @@ class SourceSelect(xbmcgui.WindowXMLDialog):
                 # Add description if available for additional context
                 description = stream.get('description', '')
                 if description:
-                    list_item.setLabel2(description)
+                    list_item.setProperty('description', description)
                 
                 # Add to list
                 list_control.addItem(list_item)
