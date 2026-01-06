@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <addons>
-<addon id="plugin.video.aiostreams" name="AIOStreams" version="3.0.7" provider-name="Jon">
+<addon id="plugin.video.aiostreams" name="AIOStreams" version="3.0.8" provider-name="Jon">
     <requires>
         <import addon="xbmc.python" version="3.0.0"/>
         <import addon="script.module.requests" version="2.25.1"/>
@@ -14,7 +14,7 @@
         <platform>all</platform>
         <license>MIT</license>
         <website>https://aiostreams.shiggsy.co.uk</website>
-        <news>v3.0.7: CRITICAL DATABASE FIX - Fixed column name mismatch preventing episodes from syncing (trakt_show_id vs show_trakt_id). This was preventing Next Up from loading. | v3.0.6: Fixed source select dialog display. | v3.0.5: Fixed stale cache issue.</news>
+        <news>v3.0.8: Fixed Next Up by using API for show progress - database only has watched episodes but we need all aired episodes to find next unwatched. | v3.0.7: Fixed database schema mismatch. | v3.0.6: Fixed source select dialog.</news>
         <assets>
             <icon>resources/icon.png</icon>
             <fanart>resources/fanart.jpg</fanart>
