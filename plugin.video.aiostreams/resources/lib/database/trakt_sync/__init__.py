@@ -23,8 +23,11 @@ class TraktSyncDatabase(Database):
         tmdb_id INTEGER,
         slug TEXT,
         title TEXT,
+        watched_episodes INTEGER DEFAULT 0,
+        unwatched_episodes INTEGER DEFAULT 0,
+        episode_count INTEGER DEFAULT 0,
         metadata BLOB,
-        last_updated INTEGER
+        last_updated TEXT DEFAULT (datetime('now'))
     """
 
     EPISODES_SCHEMA = """
@@ -36,8 +39,12 @@ class TraktSyncDatabase(Database):
         imdb_id TEXT,
         tmdb_id INTEGER,
         tvdb_id INTEGER,
+        watched INTEGER DEFAULT 0,
+        collected INTEGER DEFAULT 0,
+        last_watched_at TEXT,
+        collected_at TEXT,
         metadata BLOB,
-        last_updated INTEGER,
+        last_updated TEXT DEFAULT (datetime('now')),
         UNIQUE(show_trakt_id, season, episode)
     """
 
@@ -47,18 +54,56 @@ class TraktSyncDatabase(Database):
         tmdb_id INTEGER,
         slug TEXT,
         title TEXT,
+        watched INTEGER DEFAULT 0,
+        collected INTEGER DEFAULT 0,
+        last_watched_at TEXT,
+        collected_at TEXT,
         metadata BLOB,
-        last_updated INTEGER
+        last_updated TEXT DEFAULT (datetime('now'))
     """
 
     WATCHLIST_SCHEMA = """
         id INTEGER PRIMARY KEY AUTOINCREMENT,
-        content_type TEXT,
         trakt_id INTEGER,
-        listed_at INTEGER,
-        metadata BLOB,
-        last_updated INTEGER,
-        UNIQUE(content_type, trakt_id)
+        mediatype TEXT,
+        imdb_id TEXT,
+        listed_at TEXT,
+        last_updated TEXT DEFAULT (datetime('now')),
+        UNIQUE(trakt_id, mediatype)
+    """
+
+    ACTIVITIES_SCHEMA = """
+        sync_id INTEGER PRIMARY KEY DEFAULT 1,
+        trakt_username TEXT,
+        movies_watched_at TEXT,
+        movies_collected_at TEXT,
+        movies_watchlist_at TEXT,
+        episodes_watched_at TEXT,
+        episodes_collected_at TEXT,
+        shows_watchlist_at TEXT,
+        last_activities_call INTEGER DEFAULT 0,
+        all_activities TEXT,
+        CHECK (sync_id = 1)
+    """
+
+    BOOKMARKS_SCHEMA = """
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        trakt_id INTEGER,
+        type TEXT,
+        resume_time REAL,
+        percent_played REAL,
+        paused_at TEXT,
+        last_updated TEXT DEFAULT (datetime('now')),
+        UNIQUE(trakt_id, type)
+    """
+
+    HIDDEN_SCHEMA = """
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        trakt_id INTEGER,
+        mediatype TEXT,
+        section TEXT,
+        last_updated TEXT DEFAULT (datetime('now')),
+        UNIQUE(trakt_id, mediatype, section)
     """
 
     def __init__(self):
@@ -77,6 +122,9 @@ class TraktSyncDatabase(Database):
             self.create_table('episodes', self.EPISODES_SCHEMA)
             self.create_table('movies', self.MOVIES_SCHEMA)
             self.create_table('watchlist', self.WATCHLIST_SCHEMA)
+            self.create_table('activities', self.ACTIVITIES_SCHEMA)
+            self.create_table('bookmarks', self.BOOKMARKS_SCHEMA)
+            self.create_table('hidden', self.HIDDEN_SCHEMA)
             self.commit()
             xbmc.log('[AIOStreams] Trakt sync database tables initialized', xbmc.LOGDEBUG)
         except Exception as e:
@@ -449,12 +497,92 @@ class TraktSyncDatabase(Database):
         try:
             return {
                 'id': row['id'],
-                'content_type': row['content_type'],
                 'trakt_id': row['trakt_id'],
+                'mediatype': row['mediatype'],
+                'imdb_id': row['imdb_id'],
                 'listed_at': row['listed_at'],
-                'metadata': pickle.loads(row['metadata']),
                 'last_updated': row['last_updated']
             }
         except Exception as e:
             xbmc.log(f'[AIOStreams] Error unpacking watchlist row: {e}', xbmc.LOGERROR)
             return None
+
+    def execute_sql(self, sql, params=None):
+        """Execute SQL with connection management for activities sync.
+        
+        Args:
+            sql: SQL statement to execute
+            params: Optional tuple of parameters
+        
+        Returns:
+            bool: True if successful, False otherwise
+        """
+        connected = False
+        if not self.connection:
+            if not self.connect():
+                return False
+            connected = True
+        
+        try:
+            cursor = self.execute(sql, params)
+            if cursor is not None:
+                self.commit()
+                return True
+            return False
+        except Exception as e:
+            xbmc.log(f'[AIOStreams] Error executing SQL: {e}', xbmc.LOGERROR)
+            self.rollback()
+            return False
+        finally:
+            if connected:
+                self.disconnect()
+
+    def fetchone(self, sql, params=None):
+        """Fetch one row with connection management.
+        
+        Args:
+            sql: SQL query
+            params: Optional tuple of parameters
+        
+        Returns:
+            dict: Row as dictionary, or None
+        """
+        connected = False
+        if not self.connection:
+            if not self.connect():
+                return None
+            connected = True
+        
+        try:
+            row = self.fetch_one(sql, params)
+            if row:
+                # Convert sqlite3.Row to dict
+                return dict(row)
+            return None
+        finally:
+            if connected:
+                self.disconnect()
+
+    def fetchall(self, sql, params=None):
+        """Fetch all rows with connection management.
+        
+        Args:
+            sql: SQL query
+            params: Optional tuple of parameters
+        
+        Returns:
+            list: List of rows as dictionaries
+        """
+        connected = False
+        if not self.connection:
+            if not self.connect():
+                return []
+            connected = True
+        
+        try:
+            rows = self.fetch_all(sql, params)
+            # Convert sqlite3.Row objects to dicts
+            return [dict(row) for row in rows]
+        finally:
+            if connected:
+                self.disconnect()

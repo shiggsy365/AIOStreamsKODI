@@ -1,14 +1,71 @@
 # AIOStreams Kodi Addon - Features Guide
 
 ## Table of Contents
-1. [Dynamic Context Menus](#dynamic-context-menus)
-2. [Stream Quality Filtering](#stream-quality-filtering)
-3. [Stream Reliability Tracking](#stream-reliability-tracking)
-4. [UI Enhancements](#ui-enhancements)
-5. [Content Discovery](#content-discovery)
-6. [Keyboard Shortcuts](#keyboard-shortcuts)
-7. [Maintenance Tools](#maintenance-tools)
-8. [Settings Reference](#settings-reference)
+1. [Trakt Delta Sync](#trakt-delta-sync)
+2. [Dynamic Context Menus](#dynamic-context-menus)
+3. [Stream Quality Filtering](#stream-quality-filtering)
+4. [Stream Reliability Tracking](#stream-reliability-tracking)
+5. [UI Enhancements](#ui-enhancements)
+6. [Content Discovery](#content-discovery)
+7. [Keyboard Shortcuts](#keyboard-shortcuts)
+8. [Maintenance Tools](#maintenance-tools)
+9. [Settings Reference](#settings-reference)
+
+---
+
+## Trakt Delta Sync
+
+**NEW in Phase 2**: Intelligent timestamp-based synchronization reduces Trakt API calls by 90%+.
+
+### How It Works
+
+The addon uses Trakt's `/sync/last_activities` endpoint to detect changes:
+
+1. **First Load**: Full sync of all categories (~10 API calls one-time)
+2. **Subsequent Loads (< 5 min)**: No API calls (throttled)
+3. **Subsequent Loads (> 5 min, no changes)**: 1 API call (activities check only)
+4. **Subsequent Loads (> 5 min, with changes)**: 2-3 API calls (activities + changed categories)
+
+### Features
+
+**Automatic Sync:**
+- Triggered when opening Trakt lists (watchlist, collection)
+- Runs silently in background
+- 5-minute throttle prevents excessive API calls
+- Can be disabled in settings
+
+**Manual Sync:**
+- Settings → Trakt → "Force Sync Now"
+- Shows progress dialog
+- Useful after making changes on other devices
+
+**Database Caching:**
+- All Trakt data stored in local SQLite database
+- Lists load instantly from database
+- Syncs only changed data from Trakt
+
+### Synced Categories
+
+- **Movies**: Watched, Collected, Watchlist
+- **Episodes**: Watched, Collected
+- **Shows**: Watchlist
+- **Playback Progress**: Resume points (bookmarks)
+- **Hidden Items**: Items hidden from progress/calendar/recommendations
+
+### Performance Benefits
+
+| Scenario | Before | After | Reduction |
+|----------|--------|-------|-----------|
+| First sync | 20+ calls | ~10 calls | 50% |
+| No changes (< 5 min) | 20+ calls | 0 calls | 100% |
+| No changes (> 5 min) | 20+ calls | 1 call | 95% |
+| With changes | 20+ calls | 2-3 calls | 85-90% |
+
+### Settings
+
+- **Force Sync Now**: Manual sync with progress dialog
+- **Auto-sync on list load**: Toggle automatic sync (default: enabled)
+- Throttle period: 5 minutes (hardcoded)
 
 ---
 

@@ -1992,8 +1992,31 @@ def trakt_menu():
     xbmcplugin.endOfDirectory(HANDLE)
 
 
+def force_trakt_sync():
+    """Force immediate Trakt sync with progress dialog."""
+    if not HAS_MODULES:
+        xbmcgui.Dialog().ok('AIOStreams', 'Trakt module not available')
+        return
+    
+    from resources.lib.database.trakt_sync.activities import TraktSyncDatabase
+    
+    db = TraktSyncDatabase()
+    result = db.sync_activities(silent=False)  # Show progress dialog
+    
+    if result is None:
+        xbmcgui.Dialog().notification(
+            'AIOStreams',
+            'Sync throttled (wait 5 minutes)',
+            xbmcgui.NOTIFICATION_INFO
+        )
+    elif result:
+        xbmc.log('[AIOStreams] Force sync completed successfully', xbmc.LOGINFO)
+    else:
+        xbmc.log('[AIOStreams] Force sync completed with errors', xbmc.LOGWARNING)
+
+
 def trakt_watchlist():
-    """Display Trakt watchlist."""
+    """Display Trakt watchlist with auto-sync."""
     if not HAS_MODULES:
         xbmcgui.Dialog().ok('AIOStreams', 'Trakt module not available')
         return
@@ -2001,7 +2024,50 @@ def trakt_watchlist():
     params = dict(parse_qsl(sys.argv[2][1:]))
     media_type = params.get('media_type', 'movies')
 
-    items = trakt.get_watchlist(media_type)  # Get all items with incremental sync
+    # Auto-sync if enabled (throttled to 5 minutes)
+    auto_sync_enabled = get_setting('trakt_sync_auto', 'true') == 'true'
+    if auto_sync_enabled:
+        try:
+            from resources.lib.database.trakt_sync.activities import TraktSyncDatabase
+            db = TraktSyncDatabase()
+            db.sync_activities(silent=True)  # Silent auto-sync
+        except Exception as e:
+            xbmc.log(f'[AIOStreams] Auto-sync failed: {e}', xbmc.LOGWARNING)
+    
+    # Fetch from database (instant) - use activities sync database
+    try:
+        from resources.lib.database.trakt_sync.activities import TraktSyncDatabase
+        db = TraktSyncDatabase()
+        
+        # Query watchlist from database
+        mediatype_filter = 'movie' if media_type == 'movies' else 'show'
+        items_raw = db.fetchall(
+            "SELECT * FROM watchlist WHERE mediatype=? ORDER BY listed_at DESC",
+            (mediatype_filter,)
+        )
+        
+        if not items_raw:
+            # Fallback to old Trakt API method if database is empty
+            xbmc.log('[AIOStreams] Watchlist database empty, using Trakt API fallback', xbmc.LOGDEBUG)
+            items = trakt.get_watchlist(media_type)
+        else:
+            # Convert database format to Trakt API format for compatibility
+            items = []
+            for row in items_raw:
+                item_wrapper = {
+                    'listed_at': row.get('listed_at'),
+                    media_type[:-1] if media_type.endswith('s') else media_type: {
+                        'ids': {
+                            'trakt': row.get('trakt_id'),
+                            'imdb': row.get('imdb_id')
+                        }
+                    }
+                }
+                items.append(item_wrapper)
+    except Exception as e:
+        xbmc.log(f'[AIOStreams] Error accessing watchlist database: {e}', xbmc.LOGWARNING)
+        # Fallback to old method
+        items = trakt.get_watchlist(media_type)
 
     if not items:
         xbmcgui.Dialog().notification('AIOStreams', 'Watchlist is empty', xbmcgui.NOTIFICATION_INFO)
@@ -2075,7 +2141,7 @@ def trakt_watchlist():
 
 
 def trakt_collection():
-    """Display Trakt collection."""
+    """Display Trakt collection with auto-sync."""
     if not HAS_MODULES:
         xbmcgui.Dialog().ok('AIOStreams', 'Trakt module not available')
         return
@@ -2083,7 +2149,54 @@ def trakt_collection():
     params = dict(parse_qsl(sys.argv[2][1:]))
     media_type = params.get('media_type', 'movies')
 
-    items = trakt.get_collection(media_type)  # Get all items with incremental sync
+    # Auto-sync if enabled (throttled to 5 minutes)
+    auto_sync_enabled = get_setting('trakt_sync_auto', 'true') == 'true'
+    if auto_sync_enabled:
+        try:
+            from resources.lib.database.trakt_sync.activities import TraktSyncDatabase
+            db = TraktSyncDatabase()
+            db.sync_activities(silent=True)  # Silent auto-sync
+        except Exception as e:
+            xbmc.log(f'[AIOStreams] Auto-sync failed: {e}', xbmc.LOGWARNING)
+    
+    # Fetch from database (instant) - use activities sync database
+    try:
+        from resources.lib.database.trakt_sync.activities import TraktSyncDatabase
+        db = TraktSyncDatabase()
+        
+        # Query collection from database based on media type
+        if media_type == 'movies':
+            items_raw = db.fetchall(
+                "SELECT * FROM movies WHERE collected=1 ORDER BY collected_at DESC"
+            )
+        else:  # shows
+            # Get all shows that have collected episodes
+            items_raw = db.fetchall(
+                "SELECT DISTINCT s.* FROM shows s JOIN episodes e ON s.trakt_id = e.trakt_show_id WHERE e.collected=1"
+            )
+        
+        if not items_raw:
+            # Fallback to old Trakt API method if database is empty
+            xbmc.log('[AIOStreams] Collection database empty, using Trakt API fallback', xbmc.LOGDEBUG)
+            items = trakt.get_collection(media_type)
+        else:
+            # Convert database format to Trakt API format for compatibility
+            items = []
+            for row in items_raw:
+                item_wrapper = {
+                    'collected_at': row.get('collected_at') if media_type == 'movies' else row.get('last_updated'),
+                    media_type[:-1] if media_type.endswith('s') else media_type: {
+                        'ids': {
+                            'trakt': row.get('trakt_id'),
+                            'imdb': row.get('imdb_id')
+                        }
+                    }
+                }
+                items.append(item_wrapper)
+    except Exception as e:
+        xbmc.log(f'[AIOStreams] Error accessing collection database: {e}', xbmc.LOGWARNING)
+        # Fallback to old method
+        items = trakt.get_collection(media_type)
 
     if not items:
         xbmcgui.Dialog().notification('AIOStreams', 'Collection is empty', xbmcgui.NOTIFICATION_INFO)
@@ -2813,6 +2926,8 @@ def router(params):
         show_episodes()
     elif action == 'trakt_menu':
         trakt_menu()
+    elif action == 'force_trakt_sync':
+        force_trakt_sync()
     elif action == 'trakt_watchlist':
         trakt_watchlist()
     elif action == 'trakt_collection':
