@@ -1,5 +1,15 @@
 # Changelog
 
+## [2.6.9] - 2026-01-06
+
+### Fixed
+- Stream selector display: Reverted changes that affected stream selection UI
+- Cache management: Enhanced cache clearing to include AIOStreams manifest cache
+- Settings UI: Ensured formatter selection option is properly displayed in plugin settings
+
+### Notes
+- Maintenance release addressing user interface and cache management issues
+
 ## [2.6.8] - 2026-01-06
 
 ### Maintenance

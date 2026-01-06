@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <addons>
-<addon id="plugin.video.aiostreams" name="AIOStreams" version="2.6.8" provider-name="Jon">
+<addon id="plugin.video.aiostreams" name="AIOStreams" version="2.6.9" provider-name="Jon">
     <requires>
         <import addon="xbmc.python" version="3.0.0"/>
         <import addon="script.module.requests" version="2.25.1"/>
@@ -14,7 +14,7 @@
         <platform>all</platform>
         <license>MIT</license>
         <website>https://aiostreams.shiggsy.co.uk</website>
-        <news>v2.6.8: Maintenance release with stability improvements | v2.6.7: Incremental cache optimization - Widget refresh is now faster with per-show cache updates instead of full invalidation. | v2.6.6: Handle Trakt eventual consistency - Next Up shows correct episode after 10s grace period.</news>
+        <news>v2.6.9: Fixed stream selector display, cache clearing, and settings UI. | v2.6.8: Maintenance release with stability improvements | v2.6.7: Incremental cache optimization - Widget refresh faster with per-show cache updates.</news>
         <assets>
             <icon>resources/icon.png</icon>
             <fanart>resources/fanart.jpg</fanart>
