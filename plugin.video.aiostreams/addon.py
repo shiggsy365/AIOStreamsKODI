@@ -2585,8 +2585,11 @@ def trakt_hide_from_progress():
             # Refresh current container immediately
             xbmc.executebuiltin('Container.Refresh')
             # Trigger widget refresh in background
-            if utils:
+            try:
+                from resources.lib import utils
                 utils.trigger_background_refresh(delay=0.5)
+            except Exception as e:
+                xbmc.log(f'[AIOStreams] Failed to trigger widget refresh: {e}', xbmc.LOGDEBUG)
 
 
 # Maintenance Tools

@@ -892,8 +892,10 @@ def hide_from_progress(media_type, imdb_id):
         data_key: [{'ids': {'imdb': imdb_id}}]
     }
 
+    import json
     xbmc.log(f'[AIOStreams] Dropping {media_type} ({imdb_id}) from all sections', xbmc.LOGINFO)
-    xbmc.log(f'[AIOStreams] API data: {data}', xbmc.LOGDEBUG)
+    xbmc.log(f'[AIOStreams] Request data being sent to Trakt:', xbmc.LOGINFO)
+    xbmc.log(f'{json.dumps(data, indent=2)}', xbmc.LOGINFO)
 
     success_count = 0
 
@@ -902,12 +904,18 @@ def hide_from_progress(media_type, imdb_id):
     sections = ['progress_watched', 'progress_collected', 'calendar', 'recommendations']
 
     for section in sections:
-        xbmc.log(f'[AIOStreams] Hiding from section: {section}', xbmc.LOGDEBUG)
+        xbmc.log(f'[AIOStreams] Hiding from section: {section}', xbmc.LOGINFO)
         result = call_trakt(f'users/hidden/{section}', method='POST', data=data)
-        if result:
-            # Log detailed response for debugging
-            xbmc.log(f'[AIOStreams] API Response for {section}: {result}', xbmc.LOGDEBUG)
 
+        # Log full API response for debugging
+        if result:
+            import json
+            xbmc.log(f'[AIOStreams] Trakt API Response for {section}:', xbmc.LOGINFO)
+            xbmc.log(f'{json.dumps(result, indent=2)}', xbmc.LOGINFO)
+        else:
+            xbmc.log(f'[AIOStreams] Trakt API returned no data for {section}', xbmc.LOGWARNING)
+
+        if result:
             # Check what was actually added
             if isinstance(result, dict):
                 added = result.get('added', {})
