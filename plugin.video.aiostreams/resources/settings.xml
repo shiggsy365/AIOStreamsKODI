@@ -52,10 +52,10 @@
                 <options>
                     <option label="Torrentio Style">torrentio</option>
                     <option label="Torbox Style">torbox</option>
-                    <option label="Google Drive (Full)">gdrive</option>
-                    <option label="Google Drive (Light)">gdrive_light</option>
+                    <option label="GDrive Full">gdrive</option>
+                    <option label="GDrive Light">gdrive_light</option>
                     <option label="Prism Style">prism</option>
-                    <option label="Google Drive (Minimalistic)">gdrive_minimal</option>
+                    <option label="Minimalistic">gdrive_minimal</option>
                 </options>
             </constraints>
         </setting>

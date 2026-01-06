@@ -193,6 +193,7 @@ def cleanup_expired_cache(force_all=False):
     try:
         dirs, files = xbmcvfs.listdir(cache_dir)
         expired_count = 0
+        cache_types = {}  # Track what types of cache we're clearing
 
         for filename in files:
             if not filename.endswith('.json'):
@@ -203,6 +204,15 @@ def cleanup_expired_cache(force_all=False):
             if force_all:
                 # Force delete all cache files
                 try:
+                    # Try to log what we're deleting
+                    try:
+                        with open(file_path, 'r') as f:
+                            cache_data = json.load(f)
+                            cache_type = cache_data.get('cache_type', 'unknown')
+                            cache_types[cache_type] = cache_types.get(cache_type, 0) + 1
+                    except:
+                        cache_types['unknown'] = cache_types.get('unknown', 0) + 1
+                    
                     os.remove(file_path)
                     expired_count += 1
                 except:
@@ -224,6 +234,11 @@ def cleanup_expired_cache(force_all=False):
                 xbmcvfs.delete(file_path)
 
         if expired_count > 0:
-            xbmc.log(f'[AIOStreams] Cleaned up {expired_count} expired cache files', xbmc.LOGINFO)
+            if force_all:
+                # Log detailed breakdown of what was cleared
+                type_summary = ', '.join([f'{count} {ctype}' for ctype, count in cache_types.items()])
+                xbmc.log(f'[AIOStreams] Cleared {expired_count} cache files ({type_summary})', xbmc.LOGINFO)
+            else:
+                xbmc.log(f'[AIOStreams] Cleaned up {expired_count} expired cache files', xbmc.LOGINFO)
     except Exception as e:
         xbmc.log(f'[AIOStreams] Cache cleanup error: {e}', xbmc.LOGERROR)

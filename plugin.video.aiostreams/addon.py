@@ -2560,12 +2560,17 @@ def clear_cache():
         return
 
     try:
-        # Clear generic caches (manifest, metadata, catalogs)
+        xbmc.log('[AIOStreams] Starting cache clear operation', xbmc.LOGINFO)
+        
+        # Clear generic caches (manifest, metadata, catalogs, HTTP headers)
+        xbmc.log('[AIOStreams] Clearing manifest, metadata, catalog, and HTTP header caches', xbmc.LOGINFO)
         cache.cleanup_expired_cache(force_all=True)
         
         # Also clear Trakt progress caches (memory + disk)
+        xbmc.log('[AIOStreams] Clearing Trakt progress caches', xbmc.LOGINFO)
         trakt.invalidate_progress_cache()
         
+        xbmc.log('[AIOStreams] Cache clear completed successfully', xbmc.LOGINFO)
         xbmcgui.Dialog().notification('AIOStreams', 'All caches cleared successfully', xbmcgui.NOTIFICATION_INFO)
     except Exception as e:
         xbmc.log(f'[AIOStreams] Failed to clear cache: {e}', xbmc.LOGERROR)
