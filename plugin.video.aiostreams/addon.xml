@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<addon id="plugin.video.aiostreams" name="AIOStreams" version="2.8.0" provider-name="Jon">
+<addon id="plugin.video.aiostreams" name="AIOStreams" version="3.0.0" provider-name="Jon">
     <requires>
         <import addon="xbmc.python" version="3.0.0"/>
         <import addon="script.module.requests" version="2.25.1"/>
@@ -14,7 +14,7 @@
         <platform>all</platform>
         <license>MIT</license>
         <website>https://aiostreams.shiggsy.co.uk</website>
-        <news>v2.8.0: Phase 4 - Added background service for automatic Trakt sync (5 min intervals), database migration from JSON cache to SQLite, and database maintenance tools (clear, rebuild, info, vacuum). | v2.7.0: Fixed stream selector visual display, added formatter settings dropdown, and improved cache clearing to include manifest. | v2.6.9: Fixed stream selector display, cache clearing, and settings UI.</news>
+        <news>v3.0.0: Major release - Complete SQLite database integration for all Trakt catalogs with optimistic updates, smart widget refresh, and graceful API fallback. All AIOStreams catalogs now powered by local database. | v2.8.0: Phase 4 - Added background service for automatic Trakt sync (5 min intervals), database migration from JSON cache to SQLite, and database maintenance tools (clear, rebuild, info, vacuum). | v2.7.0: Fixed stream selector visual display, added formatter settings dropdown.</news>
         <assets>
             <icon>resources/icon.png</icon>
             <fanart>resources/fanart.jpg</fanart>
