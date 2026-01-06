@@ -1692,16 +1692,30 @@ def fetch_all_watchlist(media_type):
 
 
 def is_in_watchlist(media_type, imdb_id):
-    """Check if item is in Trakt watchlist using batch cache."""
+    """Check if item is in Trakt watchlist using SQLite database.
+    Falls back to API if database is unavailable.
+    """
     if not imdb_id:
         return False
-
+    
+    # Try database first
+    db = get_trakt_db()
+    if db and db.connect():
+        try:
+            mediatype_filter = 'movie' if media_type == 'movie' else 'show'
+            result = db.fetchone(
+                "SELECT 1 FROM watchlist WHERE imdb_id=? AND mediatype=?",
+                (imdb_id, mediatype_filter)
+            )
+            return result is not None
+        except Exception as e:
+            xbmc.log(f'[AIOStreams] Database error checking watchlist: {e}', xbmc.LOGWARNING)
+        finally:
+            db.disconnect()
+    
+    # Fallback to API cache
     api_type = 'movies' if media_type == 'movie' else 'shows'
-
-    # Fetch all watchlist items (uses cache if available)
     watchlist = fetch_all_watchlist(media_type)
-
-    # Check if item is in watchlist
     return imdb_id in watchlist
 
 
@@ -1747,21 +1761,53 @@ def fetch_all_watched_history(media_type):
 
 
 def is_watched(media_type, imdb_id):
-    """Check if item is watched in Trakt history using batch cache."""
+    """Check if item is watched using SQLite database.
+    Falls back to API if database is unavailable.
+    """
     if not imdb_id:
         return False
-
+    
+    # Try database first
+    db = get_trakt_db()
+    if db and db.connect():
+        try:
+            if media_type == 'movie':
+                result = db.fetchone(
+                    "SELECT watched FROM movies WHERE imdb_id=?",
+                    (imdb_id,)
+                )
+                if result:
+                    return result.get('watched', 0) == 1
+            else:  # series/show
+                # For shows, check if any episodes are watched
+                result = db.fetchone(
+                    "SELECT trakt_id FROM shows WHERE imdb_id=?",
+                    (imdb_id,)
+                )
+                if result:
+                    show_trakt_id = result.get('trakt_id')
+                    # Check if there are any watched episodes
+                    episode_result = db.fetchone(
+                        "SELECT COUNT(*) as count FROM episodes WHERE show_trakt_id=? AND watched=1",
+                        (show_trakt_id,)
+                    )
+                    if episode_result:
+                        return episode_result.get('count', 0) > 0
+            return False
+        except Exception as e:
+            xbmc.log(f'[AIOStreams] Database error checking watched status: {e}', xbmc.LOGWARNING)
+        finally:
+            db.disconnect()
+    
+    # Fallback to API cache
     api_type = 'movies' if media_type == 'movie' else 'shows'
-
-    # Fetch all watched history items (uses cache if available)
     watched_history = fetch_all_watched_history(media_type)
-
-    # Check if item is in watched history
     return imdb_id in watched_history
 
 
 def get_show_progress(imdb_id):
-    """Get show progress from Trakt (which seasons/episodes are watched).
+    """Get show progress (which seasons/episodes are watched) using SQLite database.
+    Falls back to API if database is unavailable.
     
     Uses event-driven caching that persists until watched status changes.
     """
@@ -1770,7 +1816,83 @@ def get_show_progress(imdb_id):
         xbmc.log(f'[AIOStreams] Cache HIT (memory): show_progress_{imdb_id}', xbmc.LOGDEBUG)
         return _show_progress_cache[imdb_id]
     
-    # Check disk cache (persists until invalidated by watched status change)
+    # Try database
+    db = get_trakt_db()
+    if db and db.connect():
+        try:
+            # Get show info
+            show = db.fetchone("SELECT trakt_id FROM shows WHERE imdb_id=?", (imdb_id,))
+            if show:
+                show_trakt_id = show.get('trakt_id')
+                
+                # Get all episodes for this show
+                episodes = db.fetchall(
+                    "SELECT season, episode, watched FROM episodes WHERE show_trakt_id=? ORDER BY season, episode",
+                    (show_trakt_id,)
+                )
+                
+                # Build progress structure compatible with Trakt API format
+                progress = {
+                    'aired': 0,
+                    'completed': 0,
+                    'seasons': []
+                }
+                
+                # Group by season
+                seasons_dict = {}
+                next_episode = None
+                
+                for ep in episodes:
+                    season_num = ep.get('season', 0)
+                    episode_num = ep.get('episode', 0)
+                    is_watched = ep.get('watched', 0) == 1
+                    
+                    if season_num not in seasons_dict:
+                        seasons_dict[season_num] = {
+                            'number': season_num,
+                            'aired': 0,
+                            'completed': 0,
+                            'episodes': []
+                        }
+                    
+                    seasons_dict[season_num]['aired'] += 1
+                    progress['aired'] += 1
+                    
+                    if is_watched:
+                        seasons_dict[season_num]['completed'] += 1
+                        progress['completed'] += 1
+                    else:
+                        # Track first unwatched episode as next episode
+                        if next_episode is None and season_num > 0:  # Ignore specials (season 0)
+                            next_episode = {
+                                'season': season_num,
+                                'number': episode_num
+                            }
+                    
+                    seasons_dict[season_num]['episodes'].append({
+                        'number': episode_num,
+                        'completed': is_watched
+                    })
+                
+                progress['seasons'] = list(seasons_dict.values())
+                if next_episode:
+                    progress['next_episode'] = next_episode
+                
+                # Cache the result
+                _show_progress_cache[imdb_id] = progress
+                
+                # Also cache to disk
+                if HAS_MODULES:
+                    cache.cache_data(f'show_progress_{imdb_id}', 'trakt', progress)
+                
+                xbmc.log(f'[AIOStreams] Built show progress from database for {imdb_id}', xbmc.LOGDEBUG)
+                return progress
+        except Exception as e:
+            xbmc.log(f'[AIOStreams] Database error getting show progress: {e}', xbmc.LOGWARNING)
+        finally:
+            db.disconnect()
+    
+    # Fallback to disk cache
     if HAS_MODULES:
         # Use 1 year TTL (event-driven cache, only cleared on watched changes)
         cached = cache.get_cached_data(f'show_progress_{imdb_id}', 'trakt', ttl_seconds=31536000)
@@ -1779,7 +1901,7 @@ def get_show_progress(imdb_id):
             _show_progress_cache[imdb_id] = cached
             return cached
     
-    # Get show progress from Trakt
+    # Fallback to API call
     xbmc.log(f'[AIOStreams] Cache MISS: Fetching show_progress_{imdb_id} from API', xbmc.LOGDEBUG)
     result = call_trakt(f'shows/{imdb_id}/progress/watched')
     

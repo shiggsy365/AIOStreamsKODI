@@ -31,8 +31,14 @@
         <setting id="trakt_revoke" type="action" label="Revoke Authorization" action="RunPlugin(plugin://plugin.video.aiostreams/?action=trakt_revoke)"/>
         
         <setting id="trakt_sync" type="lsep" label="Sync Settings"/>
+        <setting id="trakt_sync_auto" type="bool" label="Enable Auto-Sync (Background Service)" default="true"/>
         <setting id="trakt_sync_manual" type="action" label="Force Sync Now" action="RunPlugin(plugin://plugin.video.aiostreams/?action=force_trakt_sync)"/>
-        <setting id="trakt_sync_auto" type="bool" label="Auto-sync on list load (5 min throttle)" default="true"/>
+        
+        <setting id="trakt_database" type="lsep" label="Database Maintenance"/>
+        <setting id="trakt_database_info" type="action" label="Show Database Info" action="RunPlugin(plugin://plugin.video.aiostreams/?action=show_database_info)"/>
+        <setting id="trakt_database_clear" type="action" label="Clear Trakt Database" action="RunPlugin(plugin://plugin.video.aiostreams/?action=clear_trakt_database)"/>
+        <setting id="trakt_database_rebuild" type="action" label="Rebuild Trakt Database" action="RunPlugin(plugin://plugin.video.aiostreams/?action=rebuild_trakt_database)"/>
+        <setting id="trakt_database_vacuum" type="action" label="Optimize Database (Vacuum)" action="RunPlugin(plugin://plugin.video.aiostreams/?action=vacuum_database)"/>
         
         <setting id="trakt_features" type="lsep" label="Trakt Features"/>
         <setting id="trakt_scrobble" type="bool" label="Enable Scrobbling" default="true"/>
