@@ -1230,14 +1230,14 @@ def format_stream_title(stream, for_dialog=False):
 
 def create_stream_list_items(streams):
     """
-    Create ListItem objects for stream selection dialog with multi-line formatting.
-    Formats stream names and descriptions into readable multi-line text.
+    Create ListItem objects for stream selection dialog with 2-line formatting.
+    Extracts and formats key information from stream name and description.
 
     Args:
         streams: List of stream dictionaries
 
     Returns:
-        List of xbmcgui.ListItem objects with formatted multi-line labels
+        List of xbmcgui.ListItem objects with formatted labels
     """
     import re
 
@@ -1267,19 +1267,55 @@ def create_stream_list_items(streams):
         stream_name = strip_emojis(stream_name).strip()
         description = strip_emojis(description).strip() if description else ''
 
-        # Build multi-line display
-        # Line 1: Stream name (main title)
-        # Line 2+: Description split across lines
-        lines = [stream_name] if stream_name else ['Unknown Stream']
+        # Parse the description lines for useful info
+        # After emoji removal, format is typically:
+        # Line 1: BluRay  AV1  R&H (video codec/quality info)
+        # Line 2: DTS  5.1 (audio info)
+        # Line 3: 3.45 GB /  20.4 GB (size info)
+        # Line 4: filename
 
-        if description:
-            # Split description by newlines if present
-            desc_lines = description.split('\n')
-            lines.extend([line.strip() for line in desc_lines[:3] if line.strip()])
+        desc_lines = [line.strip() for line in description.split('\n') if line.strip()]
 
-        label = '\n'.join(lines)
+        # Build 2-line display (Kodi Dialog().select() shows max 2 lines)
+        # Line 1: Stream name + size
+        # Line 2: Codec/video info + audio info
 
-        # Create ListItem - don't set icon/thumb to avoid placeholder images
+        line1 = stream_name
+        line2_parts = []
+
+        # Extract size from description (usually line with "GB" or "MB")
+        size_info = ''
+        for line in desc_lines:
+            if 'GB' in line or 'MB' in line:
+                # Clean up size line (format: "3.45 GB /  20.4 GB")
+                size_info = line.replace('/', '|').strip()
+                # Take first size only if there are two
+                if '|' in size_info:
+                    size_parts = size_info.split('|')
+                    size_info = size_parts[0].strip()
+                break
+
+        # Append size to line 1
+        if size_info:
+            line1 = f"{stream_name}  [{size_info}]"
+
+        # Build line 2 from codec and audio info (first 2 description lines)
+        if len(desc_lines) >= 1:
+            # First line: video codec info (BluRay, HEVC, AV1, etc.)
+            line2_parts.append(desc_lines[0])
+        if len(desc_lines) >= 2:
+            # Second line: audio info (DTS, Atmos, 5.1, etc.)
+            line2_parts.append(desc_lines[1])
+
+        line2 = '  |  '.join(line2_parts) if line2_parts else ''
+
+        # Build final label
+        if line2:
+            label = f"{line1}\n{line2}"
+        else:
+            label = line1
+
+        # Create ListItem
         list_item = xbmcgui.ListItem(label=label)
         list_items.append(list_item)
 
