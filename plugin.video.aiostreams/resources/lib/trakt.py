@@ -124,7 +124,7 @@ def _get_trakt_id_from_imdb(imdb_id):
     Checks batch cache first, then falls back to Trakt search API if needed.
     
     Args:
-        imdb_id: IMDB ID (e.g., 'tt0903747')
+        imdb_id: IMDB ID (e.g., 'tt1234567')
     
     Returns:
         Trakt ID (int) or None if not found
@@ -133,8 +133,7 @@ def _get_trakt_id_from_imdb(imdb_id):
     
     # Fast path: Check batch cache first
     if imdb_id in _show_progress_batch_cache:
-        progress = _show_progress_batch_cache[imdb_id]
-        show_data = progress.get('show', {})
+        show_data = _show_progress_batch_cache[imdb_id].get('show', {})
         trakt_id = show_data.get('ids', {}).get('trakt')
         if trakt_id:
             xbmc.log(f'[AIOStreams] Found Trakt ID {trakt_id} for {imdb_id} in batch cache', xbmc.LOGDEBUG)
