@@ -20,8 +20,7 @@ class TraktSyncDatabase(Database):
         slug TEXT,
         title TEXT,
         metadata BLOB,
-        last_updated INTEGER,
-        UNIQUE(trakt_id)
+        last_updated INTEGER
     """
 
     EPISODES_SCHEMA = """
@@ -45,8 +44,7 @@ class TraktSyncDatabase(Database):
         slug TEXT,
         title TEXT,
         metadata BLOB,
-        last_updated INTEGER,
-        UNIQUE(trakt_id)
+        last_updated INTEGER
     """
 
     WATCHLIST_SCHEMA = """
@@ -157,9 +155,11 @@ class TraktSyncDatabase(Database):
 
         try:
             sql = "SELECT * FROM shows ORDER BY last_updated DESC"
+            params = None
             if limit:
-                sql += f" LIMIT {limit}"
-            rows = self.fetch_all(sql)
+                sql += " LIMIT ?"
+                params = (limit,)
+            rows = self.fetch_all(sql, params)
             return [self._unpack_show_row(row) for row in rows]
         except Exception as e:
             xbmc.log(f'[AIOStreams] Error retrieving shows: {e}', xbmc.LOGERROR)
@@ -321,9 +321,11 @@ class TraktSyncDatabase(Database):
 
         try:
             sql = "SELECT * FROM movies ORDER BY last_updated DESC"
+            params = None
             if limit:
-                sql += f" LIMIT {limit}"
-            rows = self.fetch_all(sql)
+                sql += " LIMIT ?"
+                params = (limit,)
+            rows = self.fetch_all(sql, params)
             return [self._unpack_movie_row(row) for row in rows]
         except Exception as e:
             xbmc.log(f'[AIOStreams] Error retrieving movies: {e}', xbmc.LOGERROR)

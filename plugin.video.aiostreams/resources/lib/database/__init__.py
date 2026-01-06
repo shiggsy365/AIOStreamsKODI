@@ -6,7 +6,6 @@ Provides SQLite connection management, schema-based table creation, and transact
 import os
 import sqlite3
 import xbmc
-import xbmcaddon
 import xbmcvfs
 
 
@@ -83,7 +82,6 @@ class Database:
         try:
             sql = f"CREATE TABLE IF NOT EXISTS {table_name} ({schema})"
             self.connection.execute(sql)
-            self.connection.commit()
             xbmc.log(f'[AIOStreams] Table created/verified: {table_name}', xbmc.LOGDEBUG)
             return True
         except sqlite3.Error as e:
