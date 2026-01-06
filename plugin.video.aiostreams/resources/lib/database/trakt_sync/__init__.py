@@ -43,6 +43,7 @@ class TraktSyncDatabase(Database):
         collected INTEGER DEFAULT 0,
         last_watched_at TEXT,
         collected_at TEXT,
+        air_date TEXT,
         metadata BLOB,
         last_updated TEXT DEFAULT (datetime('now')),
         UNIQUE(show_trakt_id, season, episode)
@@ -110,6 +111,7 @@ class TraktSyncDatabase(Database):
         """Initialize Trakt sync database."""
         super().__init__('trakt_sync.db')
         self._initialize_tables()
+        self._run_migrations()
 
     def _initialize_tables(self):
         """Create all required tables if they don't exist."""
@@ -132,6 +134,114 @@ class TraktSyncDatabase(Database):
             self.rollback()
         finally:
             self.disconnect()
+
+    def _run_migrations(self):
+        """Run database schema migrations for existing databases."""
+        if not self.connect():
+            return
+
+        try:
+            # Migration: Add air_date column to episodes table (v3.1.0)
+            # SQLite will ignore if column already exists
+            try:
+                self.execute("ALTER TABLE episodes ADD COLUMN air_date TEXT")
+                self.commit()
+                xbmc.log('[AIOStreams] Added air_date column to episodes table', xbmc.LOGINFO)
+            except Exception:
+                # Column already exists, which is fine
+                pass
+
+        except Exception as e:
+            xbmc.log(f'[AIOStreams] Error running migrations: {e}', xbmc.LOGERROR)
+        finally:
+            self.disconnect()
+
+    def get_next_up_episodes(self):
+        """Get next unwatched episode for each show with watch history.
+
+        Pure SQL calculation inspired by Seren - no API calls needed.
+        Returns one episode per show that should be watched next.
+
+        Returns:
+            list: List of dicts with show and episode data
+        """
+        import datetime
+
+        now = datetime.datetime.utcnow().isoformat()
+
+        query = f"""
+            WITH max_watched AS (
+                -- Find the maximum watched season and episode number for each show
+                SELECT
+                    show_trakt_id,
+                    MAX(season) as max_season,
+                    MAX(CASE WHEN season = (SELECT MAX(season) FROM episodes e2 WHERE e2.show_trakt_id = e.show_trakt_id AND e2.watched = 1)
+                        THEN episode ELSE 0 END) as max_episode
+                FROM episodes e
+                WHERE watched = 1 AND season > 0
+                GROUP BY show_trakt_id
+            ),
+            next_episode_candidate AS (
+                -- Find the next unwatched episode after the last watched one
+                SELECT
+                    e.show_trakt_id,
+                    MIN(e.season) as next_season,
+                    MIN(e.episode) as next_episode
+                FROM episodes e
+                INNER JOIN max_watched mw ON e.show_trakt_id = mw.show_trakt_id
+                WHERE e.season > 0
+                    AND e.watched = 0
+                    AND (
+                        -- Next episode in the same season
+                        (e.season = mw.max_season AND e.episode > mw.max_episode)
+                        -- OR first episode of next season
+                        OR (e.season > mw.max_season)
+                    )
+                    -- Only aired episodes
+                    AND datetime(e.air_date) < datetime('{now}')
+                GROUP BY e.show_trakt_id
+            )
+            SELECT
+                s.trakt_id as show_trakt_id,
+                s.imdb_id as show_imdb_id,
+                s.title as show_title,
+                e.trakt_id as episode_trakt_id,
+                e.season,
+                e.episode,
+                e.air_date,
+                e.imdb_id as episode_imdb_id
+            FROM next_episode_candidate nec
+            INNER JOIN episodes e
+                ON e.show_trakt_id = nec.show_trakt_id
+                AND e.season = nec.next_season
+                AND e.episode = nec.next_episode
+            INNER JOIN shows s ON s.trakt_id = e.show_trakt_id
+            WHERE e.show_trakt_id NOT IN (
+                SELECT trakt_id FROM hidden WHERE section = 'progress_watched'
+            )
+            ORDER BY s.title ASC
+        """
+
+        try:
+            if not self.connect():
+                return []
+
+            cursor = self.execute(query)
+            if not cursor:
+                return []
+
+            results = []
+            for row in cursor.fetchall():
+                results.append(dict(row))
+
+            self.disconnect()
+            return results
+
+        except Exception as e:
+            xbmc.log(f'[AIOStreams] Error getting next up episodes: {e}', xbmc.LOGERROR)
+            if self.connection:
+                self.disconnect()
+            return []
 
     def insert_show(self, trakt_id, imdb_id, tvdb_id, tmdb_id, slug, title, metadata, last_updated):
         """

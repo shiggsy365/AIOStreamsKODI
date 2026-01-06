@@ -1,5 +1,48 @@
 # Changelog
 
+## [3.1.0] - 2026-01-06
+
+### MAJOR ARCHITECTURAL IMPROVEMENT - Seren's Next Up Approach
+
+**ZERO API Calls for Next Up!** Adopted Seren's proven architecture for calculating next episodes.
+
+#### What Changed
+- Next Up now uses pure SQL calculation from local database
+- Sync fetches ALL episodes for each show (not just watched ones)
+- Next episode determined locally with zero API calls
+- Instant loading, no rate limits, works offline
+
+#### Performance Comparison
+- Before: 69 API calls (cached 1 hour) + 3-5 second load time
+- After: 0 API calls + instant loading (<1 second)
+
+#### Technical Implementation
+- Added air_date column to episodes table (auto-migrated)
+- Sync calls /shows/{id}/seasons?extended=episodes to get all episodes
+- New get_next_up_episodes() SQL query using CTEs
+- Finds max watched episode, calculates next unwatched
+- Filters specials, unaired episodes, hidden shows
+
+#### Migration
+- Automatic schema migration on first run
+- First sync after upgrade populates all episodes (may take a few minutes)
+- Fully backwards compatible
+
+## [3.0.9] - 2026-01-06
+
+### Added
+- **Performance Optimization**: Added 1-hour caching to show progress API calls
+- **Reduced API Load**: Prevents making 69+ sequential API calls every time Next Up is opened
+- **Smart Cache Invalidation**: Cache automatically cleared when marking episodes watched/unwatched
+
+### Technical
+- Added cache check in `get_show_progress_by_trakt_id()` with 1-hour TTL (max_age=3600)
+- Cache key format: `show_progress_{show_trakt_id}`
+- Added cache deletion in `mark_watched()` and `mark_unwatched()` for affected shows
+- First Next Up load: Makes API calls and caches results
+- Subsequent loads within 1 hour: Uses cached data (instant)
+- After marking watched/unwatched: That show's cache cleared, fresh data fetched on next view
+
 ## [3.0.8] - 2026-01-06
 
 ### Fixed

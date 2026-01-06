@@ -321,21 +321,57 @@ class TraktSyncDatabase(BaseTraktDB):
         
         xbmc.log(f'[AIOStreams] Synced {len(watchlist_movies)} watchlist movies', xbmc.LOGDEBUG)
     
+    def _fetch_all_episodes_for_show(self, show_trakt_id):
+        """Fetch all episodes for a show from Trakt API.
+
+        Args:
+            show_trakt_id: Trakt ID of the show
+
+        Returns:
+            list: List of all episodes with metadata
+        """
+        # Fetch all seasons with episodes and extended info (includes air dates)
+        seasons = trakt.call_trakt(f'shows/{show_trakt_id}/seasons?extended=episodes', with_auth=False)
+
+        if not seasons:
+            return []
+
+        all_episodes = []
+        for season in seasons:
+            season_num = season.get('number', 0)
+            for episode in season.get('episodes', []):
+                all_episodes.append({
+                    'season': season_num,
+                    'number': episode.get('number'),
+                    'trakt_id': episode.get('ids', {}).get('trakt'),
+                    'imdb_id': episode.get('ids', {}).get('imdb'),
+                    'tmdb_id': episode.get('ids', {}).get('tmdb'),
+                    'tvdb_id': episode.get('ids', {}).get('tvdb'),
+                    'air_date': episode.get('first_aired'),
+                })
+
+        return all_episodes
+
     def _sync_watched_episodes(self):
-        """Sync watched episodes from Trakt."""
+        """Sync watched episodes from Trakt.
+
+        Now also fetches ALL episodes for each show to enable Next Up calculation
+        without API calls.
+        """
         xbmc.log('[AIOStreams] Syncing watched episodes...', xbmc.LOGDEBUG)
-        
+
         watched_shows = trakt.call_trakt('sync/watched/shows', with_auth=True)
-        
+
         if not watched_shows:
             return
-        
+
         episode_count = 0
-        
+        show_count = 0
+
         for item in watched_shows:
             show = item.get('show', {})
             show_trakt_id = show.get('ids', {}).get('trakt')
-            
+
             # Insert/update show
             self.execute_sql("""
                 INSERT OR IGNORE INTO shows (trakt_id, imdb_id, tmdb_id, tvdb_id, last_updated)
@@ -346,33 +382,56 @@ class TraktSyncDatabase(BaseTraktDB):
                 show.get('ids', {}).get('tmdb'),
                 show.get('ids', {}).get('tvdb')
             ))
-            
-            # Process seasons and episodes
+
+            # Fetch ALL episodes for this show (needed for Next Up calculation)
+            xbmc.log(f'[AIOStreams] Fetching all episodes for show {show_trakt_id}', xbmc.LOGDEBUG)
+            all_episodes = self._fetch_all_episodes_for_show(show_trakt_id)
+
+            # Insert all episodes with watched=0 initially
+            for ep in all_episodes:
+                self.execute_sql("""
+                    INSERT OR IGNORE INTO episodes (
+                        show_trakt_id, season, episode, trakt_id, imdb_id, tmdb_id, tvdb_id,
+                        air_date, watched, last_updated
+                    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, 0, datetime('now'))
+                """, (
+                    show_trakt_id,
+                    ep['season'],
+                    ep['number'],
+                    ep['trakt_id'],
+                    ep['imdb_id'],
+                    ep['tmdb_id'],
+                    ep['tvdb_id'],
+                    ep['air_date']
+                ))
+
+            # Now mark watched episodes
             for season in item.get('seasons', []):
                 season_num = season.get('number')
-                
+
                 for episode in season.get('episodes', []):
                     episode_num = episode.get('number')
-                    
-                    # Insert/update episode
+
+                    # Update episode as watched
                     self.execute_sql("""
-                        INSERT OR REPLACE INTO episodes (
-                            show_trakt_id, season, episode, watched,
-                            last_watched_at, last_updated
-                        ) VALUES (?, ?, ?, 1, ?, datetime('now'))
+                        UPDATE episodes
+                        SET watched=1, last_watched_at=?, last_updated=datetime('now')
+                        WHERE show_trakt_id=? AND season=? AND episode=?
                     """, (
+                        item.get('last_watched_at'),
                         show_trakt_id,
                         season_num,
-                        episode_num,
-                        item.get('last_watched_at')
+                        episode_num
                     ))
-                    
+
                     episode_count += 1
-        
+
+            show_count += 1
+
         # Update show statistics (watched/unwatched episode counts)
         self._update_all_show_statistics()
-        
-        xbmc.log(f'[AIOStreams] Synced {episode_count} watched episodes', xbmc.LOGDEBUG)
+
+        xbmc.log(f'[AIOStreams] Synced {episode_count} watched episodes across {show_count} shows', xbmc.LOGINFO)
     
     def _sync_collected_episodes(self):
         """Sync collected episodes from Trakt."""

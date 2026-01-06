@@ -634,15 +634,29 @@ def get_show_progress_by_trakt_id(show_id):
     The database only stores watched episodes, but we need all aired episodes
     to determine the next unwatched episode.
 
+    Cached for 1 hour to reduce API calls (especially for Next Up with many shows).
+
     Returns progress data with next episode information.
     """
     if not show_id:
         return None
 
-    # Use API for complete progress with next_episode
-    # The database doesn't have unwatched episodes, so it can't determine next episode
+    # Check cache first (1 hour TTL)
+    if HAS_MODULES:
+        cache_key = f'show_progress_{show_id}'
+        cached = cache.get_cached_data(cache_key, 'trakt', max_age=3600)  # 1 hour cache
+        if cached:
+            xbmc.log(f'[AIOStreams] Using cached show progress for {show_id}', xbmc.LOGDEBUG)
+            return cached
+
+    # Fetch from API
     xbmc.log(f'[AIOStreams] Fetching show progress from API for {show_id}', xbmc.LOGDEBUG)
     result = call_trakt(f'shows/{show_id}/progress/watched')
+
+    # Cache the result
+    if result and HAS_MODULES:
+        cache.cache_data(cache_key, 'trakt', result)
+
     return result
 
 
@@ -1353,6 +1367,10 @@ def mark_watched(media_type, imdb_id, season=None, episode=None, playback_id=Non
                     del _show_progress_cache[imdb_id]
                 if imdb_id in _show_progress_batch_cache:
                     del _show_progress_batch_cache[imdb_id]
+
+                # Clear disk cache for show progress (used by Next Up)
+                if HAS_MODULES:
+                    cache.delete_cached_data(f'show_progress_{show_trakt_id}', 'trakt')
             else:
                 # Movie watched - check original state for rollback
                 original_state = db.fetchone(
@@ -1547,6 +1565,10 @@ def mark_unwatched(media_type, imdb_id, season=None, episode=None):
                     del _show_progress_cache[imdb_id]
                 if imdb_id in _show_progress_batch_cache:
                     del _show_progress_batch_cache[imdb_id]
+
+                # Clear disk cache for show progress (used by Next Up)
+                if HAS_MODULES:
+                    cache.delete_cached_data(f'show_progress_{show_trakt_id}', 'trakt')
             else:
                 # Get original movie state for rollback
                 original_state = db.fetchone(

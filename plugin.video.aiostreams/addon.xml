@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<addon id="plugin.video.aiostreams" name="AIOStreams" version="3.0.8" provider-name="Jon">
+<addon id="plugin.video.aiostreams" name="AIOStreams" version="3.1.0" provider-name="Jon">
     <requires>
         <import addon="xbmc.python" version="3.0.0"/>
         <import addon="script.module.requests" version="2.25.1"/>
@@ -14,7 +14,7 @@
         <platform>all</platform>
         <license>MIT</license>
         <website>https://aiostreams.shiggsy.co.uk</website>
-        <news>v3.0.8: Fixed Next Up by using API for show progress - database only has watched episodes but we need all aired episodes to find next unwatched. | v3.0.7: Fixed database schema mismatch. | v3.0.6: Fixed source select dialog.</news>
+        <news>v3.1.0: MAJOR PERFORMANCE UPDATE - Adopted Seren's architecture for Next Up. ZERO API calls when opening Next Up! Stores all episodes in database during sync and calculates next episode with pure SQL. Instant loading, no rate limits. | v3.0.9: Added caching. | v3.0.8: Fixed Next Up.</news>
         <assets>
             <icon>resources/icon.png</icon>
             <fanart>resources/fanart.jpg</fanart>
