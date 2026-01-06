@@ -1,5 +1,24 @@
 # Changelog
 
+## [3.0.1] - 2026-01-06
+
+### Fixed
+- **TV Show Watched/Unwatched**: Fixed episodes not showing watched indicators when browsing TV shows
+- **Next Up List**: Fixed episodes not updating in Next Up list after marking as watched
+- **Database Integration**: Ensured show entries exist in database before updating episodes (prevents lookup failures)
+- **Cache Invalidation**: Simplified cache clearing - now just clears in-memory cache after watched status changes
+
+### Changed
+- **Removed Legacy Code**: Eliminated all legacy disk caching for show progress (~160 lines removed)
+- **Database Queries**: All show progress functions now query SQLite database directly instead of making API calls
+- **Simpler Architecture**: Database is now the single source of truth - no redundant caching layers
+
+### Technical
+- Refactored `get_show_progress_by_trakt_id()` to use database instead of API
+- Refactored `get_all_show_progress()` to build from database query
+- Removed `update_show_progress_incrementally()` function entirely
+- Simplified `invalidate_progress_cache()` to only clear in-memory dicts
+
 ## [3.0.0] - 2026-01-06
 
 ### Added
