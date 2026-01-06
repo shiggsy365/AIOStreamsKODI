@@ -2582,9 +2582,11 @@ def trakt_hide_from_progress():
     if imdb_id:
         success = trakt.hide_from_progress(media_type, imdb_id)
         if success:
-            # Give Trakt a moment to process the request before refreshing
-            xbmc.sleep(500)  # 500ms delay
+            # Refresh current container immediately
             xbmc.executebuiltin('Container.Refresh')
+            # Trigger widget refresh in background
+            if utils:
+                utils.trigger_background_refresh(delay=0.5)
 
 
 # Maintenance Tools
