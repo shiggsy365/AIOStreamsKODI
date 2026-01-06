@@ -32,9 +32,10 @@ def invalidate_progress_cache():
     
     Clears both in-memory and disk caches for show progress.
     """
-    global _show_progress_cache_valid, _show_progress_with_next_cache, _show_progress_cache
+    global _show_progress_cache_valid, _show_progress_with_next_cache, _show_progress_batch_cache, _show_progress_cache
     _show_progress_cache_valid = False
     _show_progress_with_next_cache.clear()
+    _show_progress_batch_cache.clear()
     _show_progress_cache.clear()
     
     # Clear all disk-cached show progress (both Trakt ID and IMDB ID based)
