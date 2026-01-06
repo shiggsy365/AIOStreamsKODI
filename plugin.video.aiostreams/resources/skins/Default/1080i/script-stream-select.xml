@@ -3,32 +3,50 @@
     <defaultcontrol always="true">1000</defaultcontrol>
     <coordinates>
         <system>1</system>
-        <posx>240</posx>
-        <posy>120</posy>
+        <posx>140</posx>
+        <posy>80</posy>
     </coordinates>
 
     <!-- Background -->
     <controls>
         <control type="group">
-            <width>1440</width>
-            <height>840</height>
+            <width>1640</width>
+            <height>920</height>
 
-            <!-- Dark background with border -->
+            <!-- Dark semi-transparent background -->
             <control type="image">
                 <posx>0</posx>
                 <posy>0</posy>
-                <width>1440</width>
-                <height>840</height>
-                <texture border="20" colordiffuse="DD000000">dialogs/dialog-bg.png</texture>
+                <width>1640</width>
+                <height>920</height>
+                <texture colordiffuse="E6000000">white.png</texture>
+            </control>
+
+            <!-- Border -->
+            <control type="image">
+                <posx>0</posx>
+                <posy>0</posy>
+                <width>1640</width>
+                <height>920</height>
+                <texture border="2" colordiffuse="FF0099FF">white.png</texture>
+            </control>
+
+            <!-- Title background -->
+            <control type="image">
+                <posx>0</posx>
+                <posy>0</posy>
+                <width>1640</width>
+                <height>80</height>
+                <texture colordiffuse="FF0099FF">white.png</texture>
             </control>
 
             <!-- Title -->
             <control type="label">
-                <posx>40</posx>
-                <posy>30</posy>
-                <width>1360</width>
-                <height>60</height>
-                <font>font30_title</font>
+                <posx>30</posx>
+                <posy>20</posy>
+                <width>1580</width>
+                <height>40</height>
+                <font>font13_title</font>
                 <label>$INFO[Window.Property(dialog_title)]</label>
                 <align>center</align>
                 <aligny>center</aligny>
@@ -37,10 +55,10 @@
 
             <!-- Stream list -->
             <control type="list" id="1000">
-                <posx>40</posx>
-                <posy>120</posy>
-                <width>1360</width>
-                <height>600</height>
+                <posx>20</posx>
+                <posy>100</posy>
+                <width>1600</width>
+                <height>720</height>
                 <onup>1000</onup>
                 <ondown>1000</ondown>
                 <onleft>2000</onleft>
@@ -48,46 +66,57 @@
                 <pagecontrol>-</pagecontrol>
                 <scrolltime>200</scrolltime>
 
-                <!-- Item layout -->
+                <!-- Item layout (unfocused) -->
                 <itemlayout height="120">
+                    <!-- Background -->
                     <control type="image">
                         <posx>0</posx>
                         <posy>0</posy>
-                        <width>1360</width>
+                        <width>1600</width>
                         <height>118</height>
-                        <texture border="5" colordiffuse="33FFFFFF">lists/separator.png</texture>
+                        <texture colordiffuse="22FFFFFF">white.png</texture>
+                    </control>
+
+                    <!-- Separator line -->
+                    <control type="image">
+                        <posx>0</posx>
+                        <posy>117</posy>
+                        <width>1600</width>
+                        <height>1</height>
+                        <texture colordiffuse="44FFFFFF">white.png</texture>
                     </control>
 
                     <!-- Multi-line text -->
                     <control type="textbox">
-                        <posx>20</posx>
-                        <posy>10</posy>
-                        <width>1320</width>
-                        <height>98</height>
-                        <font>font13</font>
+                        <posx>15</posx>
+                        <posy>8</posy>
+                        <width>1570</width>
+                        <height>102</height>
+                        <font>font12</font>
                         <label>$INFO[ListItem.Label]</label>
-                        <textcolor>FFFFFFFF</textcolor>
+                        <textcolor>FFE0E0E0</textcolor>
                         <align>left</align>
                     </control>
                 </itemlayout>
 
                 <!-- Focused item layout -->
                 <focusedlayout height="120">
+                    <!-- Focused background -->
                     <control type="image">
                         <posx>0</posx>
                         <posy>0</posy>
-                        <width>1360</width>
+                        <width>1600</width>
                         <height>118</height>
-                        <texture border="5" colordiffuse="FF0099FF">lists/focus.png</texture>
+                        <texture colordiffuse="FF0099FF">white.png</texture>
                     </control>
 
-                    <!-- Multi-line text -->
+                    <!-- Multi-line text (black on blue) -->
                     <control type="textbox">
-                        <posx>20</posx>
-                        <posy>10</posy>
-                        <width>1320</width>
-                        <height>98</height>
-                        <font>font13</font>
+                        <posx>15</posx>
+                        <posy>8</posy>
+                        <width>1570</width>
+                        <height>102</height>
+                        <font>font12</font>
                         <label>$INFO[ListItem.Label]</label>
                         <textcolor>FF000000</textcolor>
                         <align>left</align>
@@ -97,18 +126,22 @@
 
             <!-- Cancel button -->
             <control type="button" id="2000">
-                <posx>520</posx>
-                <posy>740</posy>
+                <posx>620</posx>
+                <posy>835</posy>
                 <width>400</width>
-                <height>60</height>
+                <height>50</height>
                 <font>font13</font>
                 <label>Cancel</label>
                 <align>center</align>
                 <aligny>center</aligny>
+                <textcolor>FFFFFFFF</textcolor>
+                <focusedcolor>FF000000</focusedcolor>
                 <onup>1000</onup>
                 <ondown>1000</ondown>
                 <onleft>1000</onleft>
                 <onright>1000</onright>
+                <texturefocus colordiffuse="FF0099FF">white.png</texturefocus>
+                <texturenofocus colordiffuse="44FFFFFF">white.png</texturenofocus>
             </control>
         </control>
     </controls>
