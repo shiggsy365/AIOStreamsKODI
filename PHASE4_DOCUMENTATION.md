@@ -106,6 +106,49 @@ Service is registered to start on Kodi login:
 
 ## Data Flow
 
+### AIOStreams Catalogs with SQLite Integration:
+
+AIOStreams catalogs are now fully integrated with the SQLite database for watched/watchlist status:
+
+**Catalog Display Flow:**
+```
+User Opens Catalog
+    ↓
+Fetch Catalog Items from AIOStreams API
+    ↓
+For Each Item:
+    Check Watched Status (SQLite → API fallback)
+    Check Watchlist Status (SQLite → API fallback)
+    Apply Watched Overlay
+    ↓
+Display Catalog with Current Status
+```
+
+**Key Features:**
+- **Variable Manifests**: Supports per-user manifests that can change
+- **Database-First**: Checks SQLite before making API calls
+- **Graceful Fallback**: Falls back to API if database not populated
+- **Automatic Sync**: Background service keeps database current
+- **Fast Loading**: No API calls needed for status checks after initial sync
+
+**Watched Status Check (is_watched):**
+1. Check SQLite database for watched status
+2. For movies: Query `movies` table by IMDB ID
+3. For shows: Query `episodes` table for any watched episodes
+4. Fallback to API cache if database unavailable
+
+**Watchlist Status Check (is_in_watchlist):**
+1. Check SQLite database `watchlist` table
+2. Query by IMDB ID and media type
+3. Fallback to API cache if database unavailable
+
+**Show Progress (get_show_progress):**
+1. Query all episodes for show from database
+2. Build progress structure with seasons/episodes
+3. Calculate aired/completed counts
+4. Determine next unwatched episode
+5. Fallback to API if database unavailable
+
 ### Auto-Sync Flow:
 ```
 Kodi Startup
@@ -229,6 +272,42 @@ Potential improvements for future versions:
 5. Conflict resolution for concurrent changes
 6. Background notification for sync completion
 7. Scheduled sync (e.g., daily at specific time)
+8. Optimize database queries with additional indexes
+9. Add database migration for future schema changes
+
+## Implementation Notes
+
+### Variable Manifests Support
+
+The implementation is designed to work seamlessly with variable manifests:
+
+- **No Manifest Dependencies**: Database stores data by IMDB ID, independent of manifest structure
+- **Per-User Support**: Each user can have different manifests, database handles all
+- **Dynamic Catalogs**: New catalogs added to manifest work immediately with existing database
+- **Catalog Changes**: Removing catalogs from manifest doesn't affect database integrity
+
+### Database-First Architecture
+
+The new architecture prioritizes database lookups:
+
+1. **Primary Source**: SQLite database for watched/watchlist status
+2. **Fallback**: API calls only when database empty or unavailable
+3. **Auto-Population**: Background service syncs database every 5 minutes
+4. **Immediate Availability**: First-time users get API fallback until first sync
+
+### Graceful Degradation
+
+Multiple fallback layers ensure reliability:
+
+- Database unavailable → Use API cache
+- API cache unavailable → Make API call
+- API call fails → Return no data (don't crash)
+
+This ensures catalogs always work even during:
+- Database initialization
+- Sync failures
+- Network issues
+- First-time addon use
 
 ## Testing
 
@@ -241,7 +320,30 @@ To test the implementation:
 5. **Test wake sync** - Activate/deactivate screensaver
 6. **Test maintenance** - Use each database maintenance button
 7. **Verify data** - Check Show Database Info for counts
+8. **Test catalogs** - Browse AIOStreams catalogs, verify watched overlays appear
+9. **Test watchlist** - Add items to watchlist, verify they show in catalog
+10. **Test variable manifests** - Change manifest URL, verify catalogs still work
+11. **Test fallback** - Clear database, verify API fallback works
+12. **Mark watched** - Mark items watched, verify database updates
+
+### Catalog Testing Checklist:
+
+- [ ] Browse movie catalog - watched movies show overlay
+- [ ] Browse series catalog - watched shows show overlay  
+- [ ] Add movie to watchlist - context menu works
+- [ ] Add show to watchlist - context menu works
+- [ ] Mark movie watched - overlay appears after refresh
+- [ ] Mark episode watched - show progress updates
+- [ ] Change manifest - catalogs continue working
+- [ ] Clear database - fallback to API works
+- [ ] Force sync - database repopulates correctly
 
 ## Version History
 
-- **v2.8.0** - Initial Phase 4 implementation with background service, migration, and maintenance tools
+- **v2.8.0** - Initial Phase 4 implementation:
+  - Background service for automatic Trakt sync
+  - Database migration from JSON to SQLite
+  - Database maintenance tools (clear, rebuild, info, vacuum)
+  - Updated Trakt functions to use SQLite for catalogs
+  - Graceful API fallback when database unavailable
+  - Support for variable per-user manifests
