@@ -17,17 +17,19 @@ class SourceSelect(xbmcgui.WindowXMLDialog):
     # Control IDs
     CONTROL_LIST = 2000
     
-    def __init__(self, xml_file, resource_path, **kwargs):
+    def __init__(self, xml_file, resource_path, default_skin='Default', default_res='1080i', **kwargs):
         """
         Initialize the source select window.
         
         Args:
             xml_file: Name of the XML skin file
             resource_path: Path to the addon resources
+            default_skin: Default skin name
+            default_res: Default resolution
             streams: List of stream dictionaries
             metadata: Dict with title, fanart, clearlogo
         """
-        super(SourceSelect, self).__init__(xml_file, resource_path)
+        super(SourceSelect, self).__init__(xml_file, resource_path, default_skin, default_res)
         
         self.streams = kwargs.get('streams', [])
         self.metadata = kwargs.get('metadata', {})
@@ -74,7 +76,7 @@ class SourceSelect(xbmcgui.WindowXMLDialog):
                 # Add description if available for additional context
                 description = stream.get('description', '')
                 if description:
-                    list_item.setLabel2(description)
+                    list_item.setProperty('description', description)
                 
                 # Add to list
                 list_control.addItem(list_item)
