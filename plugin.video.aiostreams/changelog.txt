@@ -1,5 +1,15 @@
 # Changelog
 
+## [2.6.7] - 2026-01-06
+
+### Performance
+- **Incremental Cache Optimization**: Widget refresh is now significantly faster
+  - New `update_show_progress_incrementally()` function updates cache for single shows
+  - Marking episodes as watched no longer invalidates entire progress cache
+  - Only the affected show's cache is updated, preserving other cached data
+  - Widget/container refresh happens immediately after cache update
+  - Result: Much faster response when marking episodes as watched
+
 ## [2.6.6] - 2026-01-06
 
 ### Fixed
