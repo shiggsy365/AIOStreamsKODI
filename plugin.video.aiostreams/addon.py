@@ -2236,119 +2236,52 @@ def trakt_collection():
 
 
 def trakt_next_up():
-    """Display next episodes to watch using batch Trakt API."""
+    """Display next episodes to watch using pure SQL - ZERO API calls!
+
+    Uses Seren's approach: calculates next episode from local database.
+    All episodes are stored during sync, so we can find the next unwatched
+    episode purely from SQL without calling the API.
+    """
     if not HAS_MODULES:
         xbmcgui.Dialog().ok('AIOStreams', 'Trakt module not available')
         return
 
-    # Get hidden shows
-    hidden_shows = trakt.get_hidden_shows()
-    xbmc.log(f'[AIOStreams] Next Up: Found {len(hidden_shows)} hidden show IDs', xbmc.LOGDEBUG)
-
-    # Use batch API to get ALL show progress in ONE call
-    # This calls sync/watched/shows which returns all shows with watch history
-    all_show_progress = trakt.get_all_show_progress()
-    
-    if not all_show_progress:
-        xbmcgui.Dialog().notification('AIOStreams', 'No shows watched', xbmcgui.NOTIFICATION_INFO)
-        xbmcplugin.endOfDirectory(HANDLE)
-        return
-    
-    xbmc.log(f'[AIOStreams] Next Up: Got {len(all_show_progress)} shows from batch API', xbmc.LOGDEBUG)
-
     xbmcplugin.setPluginCategory(HANDLE, 'Next Up')
     xbmcplugin.setContent(HANDLE, 'episodes')
 
-    next_episodes = []
+    # Get next episodes from database - ONE SQL query, ZERO API calls!
+    try:
+        from resources.lib.database.trakt_sync import TraktSyncDatabase
+        db = TraktSyncDatabase()
+        next_episodes = db.get_next_up_episodes()
+    except Exception as e:
+        xbmc.log(f'[AIOStreams] Error getting next up from database: {e}', xbmc.LOGERROR)
+        xbmcgui.Dialog().notification('AIOStreams', 'Error loading Next Up', xbmcgui.NOTIFICATION_ERROR)
+        xbmcplugin.endOfDirectory(HANDLE)
+        return
 
-    # Get current time for filtering unaired episodes
-    from datetime import datetime, timezone
-    now = datetime.now(timezone.utc)
+    if not next_episodes:
+        xbmcgui.Dialog().notification('AIOStreams', 'No shows in progress', xbmcgui.NOTIFICATION_INFO)
+        xbmcplugin.endOfDirectory(HANDLE)
+        return
 
-    # Filter to shows that are "in progress" (not fully watched)
-    # A show is in progress if it has watched episodes but isn't 100% complete
-    filtered_count = 0
-    shows_in_progress = []
-    
-    for imdb_id, watched_item in all_show_progress.items():
-        show_data = watched_item.get('show', {})
-        show_trakt_id = show_data.get('ids', {}).get('trakt')
-        
-        if not show_trakt_id:
-            continue
-        
-        # Filter out hidden shows
-        if show_trakt_id in hidden_shows:
-            filtered_count += 1
-            continue
-        
-        # Don't pre-filter based on aired/completed counts from batch API
-        # The batch API's 'aired' count only includes episodes where at least one was watched,
-        # not ALL aired episodes, making it unreliable for determining if a show is complete.
-        # Instead, let get_show_progress_by_trakt_id() handle filtering via next_episode field.
-        seasons = watched_item.get('seasons', [])
-        if seasons:
-            last_watched = watched_item.get('last_watched_at', '')
-            shows_in_progress.append((last_watched, show_trakt_id, show_data))
-    
-    # Sort by last watched date (most recent first)
-    shows_in_progress.sort(reverse=True)
-    
-    xbmc.log(f'[AIOStreams] Next Up: Filtered {filtered_count} hidden shows, found {len(shows_in_progress)} shows with watch history', xbmc.LOGINFO)
-    
-    # Process shows to get their next episode
-    for last_watched, show_trakt_id, show_data in shows_in_progress:
-        # Get detailed show progress to find next episode (uses disk cache)
-        progress = trakt.get_show_progress_by_trakt_id(show_trakt_id)
-        
-        if not progress:
-            continue
-        
-        next_ep = progress.get('next_episode')
-        
-        if not next_ep:
-            continue  # Show completed or no new episodes
-        
-        # Handle case where next_episode might be a list or dict
-        if isinstance(next_ep, list):
-            if not next_ep:
-                continue
-            next_ep = next_ep[0]
+    xbmc.log(f'[AIOStreams] Next Up: Found {len(next_episodes)} shows with next episodes', xbmc.LOGINFO)
 
-        # Filter out unaired episodes
-        if isinstance(next_ep, dict):
-            first_aired = next_ep.get('first_aired')
-            # Skip episodes without air date or that haven't aired yet
-            if not first_aired:
-                xbmc.log(f'[AIOStreams] Skipping episode without air date: {show_data.get("title")} S{next_ep.get("season")}E{next_ep.get("number")}', xbmc.LOGDEBUG)
-                continue
-            try:
-                # Parse ISO 8601 datetime string (format: 2024-01-05T20:00:00.000Z)
-                aired_date = datetime.fromisoformat(first_aired.replace('Z', '+00:00'))
-                if aired_date > now:
-                    xbmc.log(f'[AIOStreams] Skipping unaired episode: {show_data.get("title")} S{next_ep.get("season")}E{next_ep.get("number")} (airs {first_aired})', xbmc.LOGDEBUG)
-                    continue
-            except (ValueError, AttributeError) as e:
-                xbmc.log(f'[AIOStreams] Error parsing air date: {first_aired} - {e}, skipping episode', xbmc.LOGWARNING)
-                continue
+    # Process each episode
+    for ep_data in next_episodes:
+        show_imdb = ep_data.get('show_imdb_id', '')
+        show_title = ep_data.get('show_title', 'Unknown')
+        season = ep_data.get('season', 0)
+        episode = ep_data.get('episode', 0)
+        episode_imdb = ep_data.get('episode_imdb_id', '')
 
-        # Get IMDB ID and episode details
-        show_imdb = show_data.get('ids', {}).get('imdb', '')
-        show_trakt_id = show_data.get('ids', {}).get('trakt', '')
-        season = next_ep.get('season', 0) if isinstance(next_ep, dict) else 0
-        episode = next_ep.get('number', 0) if isinstance(next_ep, dict) else 0
-        episode_title = next_ep.get('title', f'Episode {episode}') if isinstance(next_ep, dict) else f'Episode {episode}'
-        episode_overview = next_ep.get('overview', '') if isinstance(next_ep, dict) else ''
-
-        # Use Trakt metadata for all text fields (already available, no API call needed)
-        show_name = show_data.get('title', 'Unknown')
-        show_year = show_data.get('year', '')
-
-        # Try to get artwork from cached AIOStreams metadata (fast cache lookup)
+        # Try to get cached AIOStreams metadata for artwork
         poster = ''
         fanart = ''
         logo = ''
         episode_thumb = ''
+        episode_title = f'Episode {episode}'
+        episode_overview = ''
 
         if show_imdb and HAS_MODULES:
             cached_meta = cache.get_cached_meta('series', show_imdb)
@@ -2358,81 +2291,43 @@ def trakt_next_up():
                 fanart = cached_data.get('background', '')
                 logo = cached_data.get('logo', '')
 
-                # Get episode-specific thumbnail if available
+                # Get episode-specific data
                 videos = cached_data.get('videos', [])
                 for video in videos:
                     if video.get('season') == season and video.get('episode') == episode:
                         episode_thumb = video.get('thumbnail', '')
+                        episode_title = video.get('title', episode_title)
+                        episode_overview = video.get('description', '')
                         break
-            else:
-                # Fetch metadata if not cached (needed for widgets)
-                meta_data = get_meta('series', show_imdb)
-                if meta_data and 'meta' in meta_data:
-                    cached_data = meta_data['meta']
-                    poster = cached_data.get('poster', '')
-                    fanart = cached_data.get('background', '')
-                    logo = cached_data.get('logo', '')
 
-                    # Get episode-specific thumbnail
-                    videos = cached_data.get('videos', [])
-                    for video in videos:
-                        if video.get('season') == season and video.get('episode') == episode:
-                            episode_thumb = video.get('thumbnail', '')
-                            break
-
-        label = f'{show_name} - S{season:02d}E{episode:02d} - {episode_title}'
+        label = f'{show_title} - S{season:02d}E{episode:02d} - {episode_title}'
 
         list_item = xbmcgui.ListItem(label=label)
         info_tag = list_item.getVideoInfoTag()
         info_tag.setTitle(episode_title)
-        info_tag.setTvShowTitle(show_name)
+        info_tag.setTvShowTitle(show_title)
         info_tag.setSeason(season)
         info_tag.setEpisode(episode)
         info_tag.setMediaType('episode')
-
-        # Use Trakt metadata for text fields
-        if show_year:
-            info_tag.setYear(show_year)
-
         info_tag.setPlot(episode_overview)
 
-        # Add genres from Trakt if available
-        genres = show_data.get('genres', [])
-        if genres:
-            info_tag.setGenres(genres)
-
-        # Add rating from Trakt if available
-        rating = show_data.get('rating')
-        if rating:
-            try:
-                info_tag.setRating(float(rating))
-            except:
-                pass
-
-        # Set artwork - prioritize episode-specific thumbnail
+        # Set artwork
         if episode_thumb:
-            # Use episode-specific landscape thumbnail from AIOStreams
             list_item.setArt({'thumb': episode_thumb})
             if poster:
                 list_item.setArt({'poster': poster})
         elif poster:
             list_item.setArt({'thumb': poster, 'poster': poster})
-        elif isinstance(next_ep, dict):
-            images = next_ep.get('images', {})
-            if isinstance(images, dict):
-                screenshot = images.get('screenshot', {})
-                if isinstance(screenshot, dict) and screenshot.get('thumb'):
-                    list_item.setArt({'thumb': screenshot['thumb']})
 
         if fanart:
             list_item.setArt({'fanart': fanart})
 
         if logo:
             list_item.setArt({'clearlogo': logo})
-        
+
         # Build context menu
         episode_media_id = f"{show_imdb}:{season}:{episode}"
-        episode_title_str = f'{show_name} - S{season:02d}E{episode:02d}'
+        episode_title_str = f'{show_title} - S{season:02d}E{episode:02d}'
         context_menu = [
             ('[COLOR lightcoral]Scrape Streams[/COLOR]', f'RunPlugin({get_url(action="show_streams", content_type="series", media_id=episode_media_id, title=episode_title_str)})'),
             ('[COLOR lightcoral]Browse Show[/COLOR]', f'ActivateWindow(Videos,{sys.argv[0]}?{urlencode({"action": "show_seasons", "meta_id": show_imdb})},return)')
@@ -2440,7 +2335,7 @@ def trakt_next_up():
 
         # Add Trakt context menu items if authorized
         if HAS_MODULES and trakt.get_access_token() and show_imdb:
-            # Check if this specific episode is watched
+            # Check if this specific episode is watched from database
             is_episode_watched = trakt.is_episode_watched(show_imdb, season, episode)
 
             if is_episode_watched:
@@ -2450,13 +2345,13 @@ def trakt_next_up():
                 context_menu.append(('[COLOR lightcoral]Mark Episode As Watched[/COLOR]',
                                     f'RunPlugin({get_url(action="trakt_mark_watched", media_type="show", imdb_id=show_imdb, season=season, episode=episode)})'))
 
-            # Stop Watching (Drop) option - only shown in Next Up list
+            # Stop Watching (Drop) option
             context_menu.append(('[COLOR lightcoral]Stop Watching (Drop) Trakt[/COLOR]',
                                 f'RunPlugin({get_url(action="trakt_hide_from_progress", media_type="series", imdb_id=show_imdb)})'))
-        
+
         if context_menu:
             list_item.addContextMenuItems(context_menu)
-        
+
         # Make episodes directly playable
         if show_imdb:
             url = get_url(action='play', content_type='series', imdb_id=show_imdb, season=season, episode=episode)
