@@ -1125,7 +1125,10 @@ def _add_show_to_pending_updates(imdb_id):
             xbmc.log(f'[AIOStreams] Added show {show_trakt_id} to pending updates (grace period: 10s)', xbmc.LOGDEBUG)
             
             # Refresh Kodi widgets to show updated data
-            xbmc.executebuiltin('Container.Refresh')
+            try:
+                xbmc.executebuiltin('Container.Refresh')
+            except Exception as e:
+                xbmc.log(f'[AIOStreams] Failed to refresh container: {e}', xbmc.LOGWARNING)
             
             return show_trakt_id
     return None
