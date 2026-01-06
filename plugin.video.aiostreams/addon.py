@@ -2092,39 +2092,25 @@ def trakt_collection():
 
 
 def trakt_next_up():
-    """Display next episodes to watch using proper Trakt workflow."""
+    """Display next episodes to watch using batch Trakt API."""
     if not HAS_MODULES:
         xbmcgui.Dialog().ok('AIOStreams', 'Trakt module not available')
-        return
-
-    # Get all watched shows
-    all_watched = trakt.get_watched('shows')
-
-    if not all_watched:
-        xbmcgui.Dialog().notification('AIOStreams', 'No shows watched', xbmcgui.NOTIFICATION_INFO)
-        xbmcplugin.endOfDirectory(HANDLE)
         return
 
     # Get hidden shows
     hidden_shows = trakt.get_hidden_shows()
     xbmc.log(f'[AIOStreams] Next Up: Found {len(hidden_shows)} hidden show IDs', xbmc.LOGDEBUG)
 
-    # Filter out hidden shows and sort by last watched
-    filtered_count = 0
-    active_shows = []
-    for s in all_watched:
-        show_trakt_id = s.get('show', {}).get('ids', {}).get('trakt')
-        show_imdb_id = s.get('show', {}).get('ids', {}).get('imdb')
-        show_title = s.get('show', {}).get('title', 'Unknown')
-
-        if show_trakt_id in hidden_shows:
-            xbmc.log(f'[AIOStreams] Next Up: Filtering out hidden show: {show_title} (Trakt={show_trakt_id}, IMDB={show_imdb_id})', xbmc.LOGDEBUG)
-            filtered_count += 1
-        else:
-            active_shows.append(s)
-
-    xbmc.log(f'[AIOStreams] Next Up: Filtered out {filtered_count} hidden shows, {len(active_shows)} active shows remaining', xbmc.LOGINFO)
-    active_shows.sort(key=lambda x: x.get('last_watched_at', ''), reverse=True)
+    # Use batch API to get ALL show progress in ONE call
+    # This calls sync/watched/shows which returns all shows with watch history
+    all_show_progress = trakt.get_all_show_progress()
+    
+    if not all_show_progress:
+        xbmcgui.Dialog().notification('AIOStreams', 'No shows watched', xbmcgui.NOTIFICATION_INFO)
+        xbmcplugin.endOfDirectory(HANDLE)
+        return
+    
+    xbmc.log(f'[AIOStreams] Next Up: Got {len(all_show_progress)} shows from batch API', xbmc.LOGDEBUG)
 
     xbmcplugin.setPluginCategory(HANDLE, 'Next Up')
     xbmcplugin.setContent(HANDLE, 'episodes')
@@ -2135,15 +2121,54 @@ def trakt_next_up():
     from datetime import datetime, timezone
     now = datetime.now(timezone.utc)
 
-    # Get progress for each show to find next episode
-    for watched_item in active_shows:
+    # Filter to shows that are "in progress" (not fully watched)
+    # A show is in progress if it has watched episodes but isn't 100% complete
+    filtered_count = 0
+    shows_in_progress = []
+    
+    for imdb_id, watched_item in all_show_progress.items():
         show_data = watched_item.get('show', {})
         show_trakt_id = show_data.get('ids', {}).get('trakt')
         
         if not show_trakt_id:
             continue
-
-        # Get show progress (uses in-memory cache, invalidated on watched changes)
+        
+        # Filter out hidden shows
+        if show_trakt_id in hidden_shows:
+            filtered_count += 1
+            continue
+        
+        # Check completion status from batch data
+        # Each show in sync/watched/shows has seasons with episode counts
+        seasons = watched_item.get('seasons', [])
+        if not seasons:
+            continue
+            
+        # Check if show is incomplete (has unwatched episodes)
+        # by comparing aired vs completed episodes
+        is_incomplete = False
+        for season in seasons:
+            aired = season.get('aired', 0)
+            completed = season.get('completed', 0)
+            if aired > 0 and completed < aired:
+                is_incomplete = True
+                break
+        
+        if not is_incomplete:
+            continue  # Show is fully watched, skip it
+        
+        # Add to list with last watched timestamp for sorting
+        last_watched = watched_item.get('last_watched_at', '')
+        shows_in_progress.append((last_watched, show_trakt_id, show_data))
+    
+    # Sort by last watched date (most recent first)
+    shows_in_progress.sort(reverse=True)
+    
+    xbmc.log(f'[AIOStreams] Next Up: Filtered {filtered_count} hidden shows, found {len(shows_in_progress)} shows in progress (incomplete)', xbmc.LOGINFO)
+    
+    # Process shows to get their next episode
+    for last_watched, show_trakt_id, show_data in shows_in_progress:
+        # Get detailed show progress to find next episode (uses disk cache)
         progress = trakt.get_show_progress_by_trakt_id(show_trakt_id)
         
         if not progress:
