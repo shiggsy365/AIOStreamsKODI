@@ -1,5 +1,14 @@
 # Changelog
 
+## [2.6.6] - 2026-01-06
+
+### Fixed
+- **Trakt Eventual Consistency**: Next Up now handles Trakt API eventual consistency
+  - Shows recently marked as watched get a 10-second grace period
+  - Progress cache skipped for recently updated shows
+  - Next Up displays correct next episode after marking current episode as watched
+  - Eliminates stale episode display due to Trakt's processing delay
+
 ## [2.4.6] - 2026-01-05
 
 ### Fixed
