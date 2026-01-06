@@ -2138,28 +2138,14 @@ def trakt_next_up():
             filtered_count += 1
             continue
         
-        # Check completion status from batch data
-        # Each show in sync/watched/shows has seasons with episode counts
+        # Don't pre-filter based on aired/completed counts from batch API
+        # The batch API's 'aired' count only includes episodes where at least one was watched,
+        # not ALL aired episodes, making it unreliable for determining if a show is complete.
+        # Instead, let get_show_progress_by_trakt_id() handle filtering via next_episode field.
         seasons = watched_item.get('seasons', [])
-        if not seasons:
-            continue
-            
-        # Check if show is incomplete (has unwatched episodes)
-        # by comparing aired vs completed episodes
-        is_incomplete = False
-        for season in seasons:
-            aired = season.get('aired', 0)
-            completed = season.get('completed', 0)
-            if aired > 0 and completed < aired:
-                is_incomplete = True
-                break
-        
-        if not is_incomplete:
-            continue  # Show is fully watched, skip it
-        
-        # Add to list with last watched timestamp for sorting
-        last_watched = watched_item.get('last_watched_at', '')
-        shows_in_progress.append((last_watched, show_trakt_id, show_data))
+        if seasons:
+            last_watched = watched_item.get('last_watched_at', '')
+            shows_in_progress.append((last_watched, show_trakt_id, show_data))
     
     # Sort by last watched date (most recent first)
     shows_in_progress.sort(reverse=True)
