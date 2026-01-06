@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <addons>
-<addon id="plugin.video.aiostreams" name="AIOStreams" version="3.3.1" provider-name="Jon">
+<addon id="plugin.video.aiostreams" name="AIOStreams" version="3.3.2" provider-name="Jon">
     <requires>
         <import addon="xbmc.python" version="3.0.0"/>
         <import addon="script.module.requests" version="2.25.1"/>
@@ -14,7 +14,7 @@
         <platform>all</platform>
         <license>MIT</license>
         <website>https://aiostreams.shiggsy.co.uk</website>
-        <news>v3.3.1: Improved stream selector styling with proper backgrounds, larger size, better contrast. Emojis now enabled (textbox can render them). | v3.3.0: NEW custom multi-line dialog. | v3.2.7: Debug logging.</news>
+        <news>v3.3.2: Fix emoji rendering (strip emojis by default), increase item heights for 6 lines, better background opacity. | v3.3.1: Improved stream selector styling. | v3.3.0: NEW custom multi-line dialog.</news>
         <assets>
             <icon>resources/icon.png</icon>
             <fanart>resources/fanart.jpg</fanart>

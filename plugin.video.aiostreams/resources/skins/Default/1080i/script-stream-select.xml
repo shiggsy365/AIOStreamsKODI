@@ -13,13 +13,13 @@
             <width>1640</width>
             <height>920</height>
 
-            <!-- Dark semi-transparent background -->
+            <!-- Dark opaque background for better readability -->
             <control type="image">
                 <posx>0</posx>
                 <posy>0</posy>
                 <width>1640</width>
                 <height>920</height>
-                <texture colordiffuse="E6000000">white.png</texture>
+                <texture colordiffuse="F5000000">white.png</texture>
             </control>
 
             <!-- Border -->
@@ -58,7 +58,7 @@
                 <posx>20</posx>
                 <posy>100</posy>
                 <width>1600</width>
-                <height>720</height>
+                <height>700</height>
                 <onup>1000</onup>
                 <ondown>1000</ondown>
                 <onleft>2000</onleft>
@@ -66,21 +66,21 @@
                 <pagecontrol>-</pagecontrol>
                 <scrolltime>200</scrolltime>
 
-                <!-- Item layout (unfocused) -->
-                <itemlayout height="120">
+                <!-- Item layout (unfocused) - increased height for 6 lines -->
+                <itemlayout height="140">
                     <!-- Background -->
                     <control type="image">
                         <posx>0</posx>
                         <posy>0</posy>
                         <width>1600</width>
-                        <height>118</height>
+                        <height>138</height>
                         <texture colordiffuse="22FFFFFF">white.png</texture>
                     </control>
 
                     <!-- Separator line -->
                     <control type="image">
                         <posx>0</posx>
-                        <posy>117</posy>
+                        <posy>137</posy>
                         <width>1600</width>
                         <height>1</height>
                         <texture colordiffuse="44FFFFFF">white.png</texture>
@@ -91,7 +91,7 @@
                         <posx>15</posx>
                         <posy>8</posy>
                         <width>1570</width>
-                        <height>102</height>
+                        <height>122</height>
                         <font>font12</font>
                         <label>$INFO[ListItem.Label]</label>
                         <textcolor>FFE0E0E0</textcolor>
@@ -99,14 +99,14 @@
                     </control>
                 </itemlayout>
 
-                <!-- Focused item layout -->
-                <focusedlayout height="120">
+                <!-- Focused item layout - increased height for 6 lines -->
+                <focusedlayout height="140">
                     <!-- Focused background -->
                     <control type="image">
                         <posx>0</posx>
                         <posy>0</posy>
                         <width>1600</width>
-                        <height>118</height>
+                        <height>138</height>
                         <texture colordiffuse="FF0099FF">white.png</texture>
                     </control>
 
@@ -115,7 +115,7 @@
                         <posx>15</posx>
                         <posy>8</posy>
                         <width>1570</width>
-                        <height>102</height>
+                        <height>122</height>
                         <font>font12</font>
                         <label>$INFO[ListItem.Label]</label>
                         <textcolor>FF000000</textcolor>
@@ -127,7 +127,7 @@
             <!-- Cancel button -->
             <control type="button" id="2000">
                 <posx>620</posx>
-                <posy>835</posy>
+                <posy>820</posy>
                 <width>400</width>
                 <height>50</height>
                 <font>font13</font>
