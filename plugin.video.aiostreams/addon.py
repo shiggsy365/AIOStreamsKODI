@@ -1243,37 +1243,16 @@ def select_stream():
         'clearlogo': ''  # Could be populated from API if available
     }
 
-    # Show custom source select dialog
-    custom_dialog_failed = False
+    # Show custom source select dialog (programmatic WindowDialog - works with all skins)
     try:
-        # Log debug information
-        xbmc.log(f'[AIOStreams] Attempting to show SourceSelect dialog', xbmc.LOGDEBUG)
-        xbmc.log(f'[AIOStreams] ADDON_PATH: {ADDON_PATH}', xbmc.LOGDEBUG)
-        xbmc.log(f'[AIOStreams] Stream count: {len(stream_data["streams"])}', xbmc.LOGDEBUG)
-
-        # Check if skin file exists
-        import os
-        skin_file = os.path.join(ADDON_PATH, 'resources', 'skins', 'Default', '1080i', 'source_select.xml')
-        if not xbmcvfs.exists(skin_file):
-            xbmc.log(f'[AIOStreams] Warning: Skin file not found at {skin_file}', xbmc.LOGWARNING)
-            custom_dialog_failed = True
-        else:
-            xbmc.log(f'[AIOStreams] Skin file found: {skin_file}', xbmc.LOGDEBUG)
-
-        # Try custom dialog only if file exists
-        if not custom_dialog_failed:
-            dialog = SourceSelect('source_select.xml', ADDON_PATH, 'default', '1080i', streams=stream_data['streams'], metadata=metadata)
-            dialog.doModal()
-            selected = dialog.selected_index
-            del dialog
+        xbmc.log(f'[AIOStreams] Showing SourceSelect dialog with {len(stream_data["streams"])} streams', xbmc.LOGDEBUG)
+        dialog = SourceSelect(streams=stream_data['streams'], metadata=metadata)
+        dialog.doModal()
+        selected = dialog.selected_index
+        del dialog
     except Exception as e:
         import traceback
-        xbmc.log(f'[AIOStreams] Error showing custom dialog: {e}\n{traceback.format_exc()}', xbmc.LOGWARNING)
-        custom_dialog_failed = True
-
-    # Use fallback if custom dialog failed or was cancelled
-    if custom_dialog_failed or selected is None or selected < 0:
-        xbmc.log('[AIOStreams] Using fallback select dialog', xbmc.LOGINFO)
+        xbmc.log(f'[AIOStreams] Error showing custom dialog, using fallback: {e}\n{traceback.format_exc()}', xbmc.LOGWARNING)
         # Fallback to Kodi's built-in select dialog
         stream_count = len(stream_data['streams'])
         if title:
@@ -1599,37 +1578,16 @@ def show_streams_dialog(content_type, media_id, stream_data, title):
         'clearlogo': ''  # Could be populated from API if available
     }
 
-    # Show custom source select dialog
-    custom_dialog_failed = False
+    # Show custom source select dialog (programmatic WindowDialog - works with all skins)
     try:
-        # Log debug information
-        xbmc.log(f'[AIOStreams] Attempting to show SourceSelect dialog', xbmc.LOGDEBUG)
-        xbmc.log(f'[AIOStreams] ADDON_PATH: {ADDON_PATH}', xbmc.LOGDEBUG)
-        xbmc.log(f'[AIOStreams] Stream count: {len(stream_data["streams"])}', xbmc.LOGDEBUG)
-
-        # Check if skin file exists
-        import os
-        skin_file = os.path.join(ADDON_PATH, 'resources', 'skins', 'Default', '1080i', 'source_select.xml')
-        if not xbmcvfs.exists(skin_file):
-            xbmc.log(f'[AIOStreams] Warning: Skin file not found at {skin_file}', xbmc.LOGWARNING)
-            custom_dialog_failed = True
-        else:
-            xbmc.log(f'[AIOStreams] Skin file found: {skin_file}', xbmc.LOGDEBUG)
-
-        # Try custom dialog only if file exists
-        if not custom_dialog_failed:
-            dialog = SourceSelect('source_select.xml', ADDON_PATH, 'default', '1080i', streams=stream_data['streams'], metadata=metadata)
-            dialog.doModal()
-            selected = dialog.selected_index
-            del dialog
+        xbmc.log(f'[AIOStreams] Showing SourceSelect dialog with {len(stream_data["streams"])} streams', xbmc.LOGDEBUG)
+        dialog = SourceSelect(streams=stream_data['streams'], metadata=metadata)
+        dialog.doModal()
+        selected = dialog.selected_index
+        del dialog
     except Exception as e:
         import traceback
-        xbmc.log(f'[AIOStreams] Error showing custom dialog: {e}\n{traceback.format_exc()}', xbmc.LOGWARNING)
-        custom_dialog_failed = True
-
-    # Use fallback if custom dialog failed or was cancelled
-    if custom_dialog_failed or selected is None or selected < 0:
-        xbmc.log('[AIOStreams] Using fallback select dialog', xbmc.LOGINFO)
+        xbmc.log(f'[AIOStreams] Error showing custom dialog, using fallback: {e}\n{traceback.format_exc()}', xbmc.LOGWARNING)
         # Fallback to Kodi's built-in select dialog
         selected = xbmcgui.Dialog().select(f'Select Stream: {title} ({len(stream_list)} available)', stream_list)
 
