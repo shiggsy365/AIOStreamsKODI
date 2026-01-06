@@ -1382,6 +1382,21 @@ def mark_watched(media_type, imdb_id, season=None, episode=None, playback_id=Non
                 # Clear disk cache for show progress (used by Next Up)
                 if HAS_MODULES:
                     cache.delete_cached_data(f'show_progress_{show_trakt_id}', 'trakt')
+
+                # Unhide show if it was dropped - user is watching again!
+                try:
+                    hidden_check = db.fetchone(
+                        "SELECT 1 FROM hidden WHERE trakt_id=? AND mediatype='show' AND section='progress_watched'",
+                        (show_trakt_id,)
+                    )
+                    if hidden_check:
+                        db.execute_sql(
+                            "DELETE FROM hidden WHERE trakt_id=? AND mediatype='show'",
+                            (show_trakt_id,)
+                        )
+                        xbmc.log(f'[AIOStreams] Unhid show {show_trakt_id} - user is watching again!', xbmc.LOGINFO)
+                except Exception as e:
+                    xbmc.log(f'[AIOStreams] Failed to unhide show: {e}', xbmc.LOGERROR)
             else:
                 # Movie watched - check original state for rollback
                 original_state = db.fetchone(

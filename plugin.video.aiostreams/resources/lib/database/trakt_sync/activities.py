@@ -428,6 +428,27 @@ class TraktSyncDatabase(BaseTraktDB):
 
             show_count += 1
 
+        # Unhide shows that have watched episodes (user is watching again!)
+        try:
+            unhidden_shows = self.execute("DELETE FROM hidden WHERE mediatype='show' AND trakt_id IN (SELECT DISTINCT show_trakt_id FROM episodes WHERE watched=1) RETURNING trakt_id")
+            if unhidden_shows:
+                unhidden_count = len(unhidden_shows.fetchall())
+                if unhidden_count > 0:
+                    xbmc.log(f'[AIOStreams] Unhid {unhidden_count} shows - user is watching again!', xbmc.LOGINFO)
+        except Exception as e:
+            # RETURNING clause may not be supported in older SQLite, try without it
+            try:
+                result = self.execute("SELECT COUNT(*) FROM hidden WHERE mediatype='show' AND trakt_id IN (SELECT DISTINCT show_trakt_id FROM episodes WHERE watched=1)")
+                count_row = result.fetchone() if result else None
+                unhidden_count = count_row[0] if count_row else 0
+
+                self.execute_sql("DELETE FROM hidden WHERE mediatype='show' AND trakt_id IN (SELECT DISTINCT show_trakt_id FROM episodes WHERE watched=1)")
+
+                if unhidden_count > 0:
+                    xbmc.log(f'[AIOStreams] Unhid {unhidden_count} shows - user is watching again!', xbmc.LOGINFO)
+            except Exception as e2:
+                xbmc.log(f'[AIOStreams] Failed to unhide shows during sync: {e2}', xbmc.LOGERROR)
+
         # Update show statistics (watched/unwatched episode counts)
         self._update_all_show_statistics()
 
