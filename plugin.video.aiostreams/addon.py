@@ -1263,18 +1263,35 @@ def create_stream_list_items(streams):
         stream_name = stream.get('name', stream.get('title', 'Unknown Stream'))
         description = stream.get('description', '')
 
+        # Log raw stream data for first stream to debug
+        if len(list_items) == 0:
+            xbmc.log(f'[AIOStreams] Stream selector DEBUG - First stream:', xbmc.LOGINFO)
+            xbmc.log(f'[AIOStreams]   name: {stream_name}', xbmc.LOGINFO)
+            xbmc.log(f'[AIOStreams]   description: {description}', xbmc.LOGINFO)
+
         # Strip emojis from both name and description
         stream_name = strip_emojis(stream_name).strip()
         description = strip_emojis(description).strip() if description else ''
 
+        # Log after emoji stripping
+        if len(list_items) == 0:
+            xbmc.log(f'[AIOStreams]   After emoji strip - name: {stream_name}', xbmc.LOGINFO)
+            xbmc.log(f'[AIOStreams]   After emoji strip - desc: {description}', xbmc.LOGINFO)
+
         # Parse the description lines for useful info
         # After emoji removal, format is typically:
-        # Line 1: BluRay  AV1  R&H (video codec/quality info)
-        # Line 2: DTS  5.1 (audio info)
-        # Line 3: 3.45 GB /  20.4 GB (size info)
-        # Line 4: filename
+        # Line 0: BluRay  AV1  R&H (video codec/quality info)
+        # Line 1: DTS  5.1 (audio info)
+        # Line 2: 3.45 GB /  20.4 GB (size info)
+        # Line 3: filename
 
         desc_lines = [line.strip() for line in description.split('\n') if line.strip()]
+
+        # Log parsed lines
+        if len(list_items) == 0:
+            xbmc.log(f'[AIOStreams]   Parsed {len(desc_lines)} description lines:', xbmc.LOGINFO)
+            for i, line in enumerate(desc_lines):
+                xbmc.log(f'[AIOStreams]     Line {i}: {line}', xbmc.LOGINFO)
 
         # Build 2-line display (Kodi Dialog().select() shows max 2 lines)
         # Line 1: Stream name + size
@@ -1314,6 +1331,11 @@ def create_stream_list_items(streams):
             label = f"{line1}\n{line2}"
         else:
             label = line1
+
+        # Log final label for first stream
+        if len(list_items) == 0:
+            xbmc.log(f'[AIOStreams]   Final label (with \\n for newline):', xbmc.LOGINFO)
+            xbmc.log(f'[AIOStreams]   {repr(label)}', xbmc.LOGINFO)
 
         # Create ListItem
         list_item = xbmcgui.ListItem(label=label)
