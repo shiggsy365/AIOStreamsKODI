@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <addons>
-<addon id="plugin.video.aiostreams" name="AIOStreams" version="3.0.2" provider-name="Jon">
+<addon id="plugin.video.aiostreams" name="AIOStreams" version="3.0.3" provider-name="Jon">
     <requires>
         <import addon="xbmc.python" version="3.0.0"/>
         <import addon="script.module.requests" version="2.25.1"/>
@@ -14,7 +14,7 @@
         <platform>all</platform>
         <license>MIT</license>
         <website>https://aiostreams.shiggsy.co.uk</website>
-        <news>v3.0.2: CRITICAL FIX - Fixed Next Up list being cleared when marking episodes as watched. Added seasons data to database queries. | v3.0.1: Bug fixes for TV show watched/unwatched functionality. | v3.0.0: Major release with complete SQLite database integration.</news>
+        <news>v3.0.3: Fixed source select dialog displaying white text with no background. Now properly falls back to built-in dialog when custom window fails. | v3.0.2: CRITICAL FIX - Fixed Next Up list being cleared when marking episodes as watched. | v3.0.1: Bug fixes for TV show watched/unwatched functionality.</news>
         <assets>
             <icon>resources/icon.png</icon>
             <fanart>resources/fanart.jpg</fanart>

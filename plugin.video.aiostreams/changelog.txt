@@ -1,5 +1,17 @@
 # Changelog
 
+## [3.0.3] - 2026-01-06
+
+### Fixed
+- **Source Select Dialog**: Fixed white text with no background when custom window fails to load
+- **Skin Compatibility**: Improved fallback detection for incompatible skins (e.g., Bingie)
+- **User Experience**: Now properly uses Kodi's built-in select dialog when custom window unavailable
+
+### Technical
+- Added pre-check for skin file existence before attempting custom dialog
+- Improved error handling to detect when custom window fails to render
+- Better fallback logic that activates when dialog is cancelled or fails
+
 ## [3.0.2] - 2026-01-06
 
 ### Fixed
