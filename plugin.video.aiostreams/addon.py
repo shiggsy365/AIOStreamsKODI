@@ -13,7 +13,6 @@ try:
     from resources.lib import trakt, filters, cache
     from resources.lib.monitor import PLAYER
     from resources.lib import streams, ui_helpers, settings_helpers, constants
-    from resources.lib.gui.windows.source_select import SourceSelect
     HAS_MODULES = True
 except Exception as e:
     HAS_MODULES = False
@@ -675,6 +674,13 @@ def create_listitem_with_context(meta, content_type, action_url):
                 context_menu.append(('[COLOR lightcoral]Mark Show As Watched[/COLOR]',
                                     f'RunPlugin({get_url(action="trakt_mark_watched", media_type=content_type, imdb_id=item_id)})'))
 
+            # Stop Watching (Drop) and Unhide options for shows
+            if content_type in ['show', 'series', 'tvshow']:
+                context_menu.append(('[COLOR lightcoral]Stop Watching (Drop) Trakt[/COLOR]',
+                                    f'RunPlugin({get_url(action="trakt_hide_from_progress", media_type="series", imdb_id=item_id)})'))
+                context_menu.append(('[COLOR lightgreen]Resume Watching (Unhide) Trakt[/COLOR]',
+                                    f'RunPlugin({get_url(action="trakt_unhide_from_progress", media_type="series", imdb_id=item_id)})'))
+
             if trakt.is_in_watchlist(content_type, item_id):
                 context_menu.append(('[COLOR lightcoral]Remove from Watchlist[/COLOR]',
                                     f'RunPlugin({get_url(action="trakt_remove_watchlist", media_type=content_type, imdb_id=item_id)})'))
@@ -1311,14 +1317,12 @@ def select_stream():
         'clearlogo': ''  # Could be populated from API if available
     }
 
-    # Use custom SourceSelect window for detailed plain text stream display
+    # Use Kodi's built-in select dialog with ListItems
     xbmc.log(f'[AIOStreams] Showing stream selection dialog with {len(stream_data["streams"])} streams', xbmc.LOGDEBUG)
 
-    # Create and show custom source select dialog
-    dialog = SourceSelect(streams=stream_data['streams'], metadata=metadata)
-    dialog.doModal()
-    selected = dialog.selected_index
-    del dialog
+    # Create ListItems for display with description support
+    list_items = create_stream_list_items(stream_data['streams'])
+    selected = xbmcgui.Dialog().select(f'Select Stream ({len(list_items)} available)', list_items, useDetails=True)
 
     if selected is None or selected < 0:
         xbmcplugin.setResolvedUrl(HANDLE, False, xbmcgui.ListItem())
@@ -1632,14 +1636,12 @@ def show_streams_dialog(content_type, media_id, stream_data, title):
         'clearlogo': ''  # Could be populated from API if available
     }
 
-    # Use custom SourceSelect window for detailed plain text stream display
+    # Use Kodi's built-in select dialog with ListItems
     xbmc.log(f'[AIOStreams] Showing stream selection dialog with {len(stream_data["streams"])} streams', xbmc.LOGDEBUG)
 
-    # Create and show custom source select dialog
-    dialog = SourceSelect(streams=stream_data['streams'], metadata=metadata)
-    dialog.doModal()
-    selected = dialog.selected_index
-    del dialog
+    # Create ListItems for display with description support
+    list_items = create_stream_list_items(stream_data['streams'])
+    selected = xbmcgui.Dialog().select(f'Select Stream ({len(list_items)} available)', list_items, useDetails=True)
 
     if selected is None or selected < 0:
         # User cancelled

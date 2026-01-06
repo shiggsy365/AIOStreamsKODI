@@ -1397,6 +1397,8 @@ def mark_watched(media_type, imdb_id, season=None, episode=None, playback_id=Non
     import threading
     from datetime import datetime, timezone
 
+    xbmc.log(f'[AIOStreams] mark_watched() called with: media_type={media_type}, imdb_id={imdb_id}, season={season}, episode={episode}', xbmc.LOGINFO)
+
     if not imdb_id:
         xbmc.log('[AIOStreams] Cannot mark as watched: no IMDB ID provided', xbmc.LOGWARNING)
         xbmcgui.Dialog().notification('AIOStreams', 'Failed to mark as watched: Invalid ID', xbmcgui.NOTIFICATION_ERROR)
@@ -1404,6 +1406,7 @@ def mark_watched(media_type, imdb_id, season=None, episode=None, playback_id=Non
 
     # For episodes/shows/series, we use 'shows' in the API
     api_type = 'shows' if media_type in ['episode', 'show', 'series'] or season is not None else media_type + 's'
+    xbmc.log(f'[AIOStreams] Determined api_type: {api_type}', xbmc.LOGINFO)
 
     # Get Trakt ID and full show data for database operations
     trakt_id = None
@@ -1466,7 +1469,8 @@ def mark_watched(media_type, imdb_id, season=None, episode=None, playback_id=Non
                     ) VALUES (?, ?, ?, 1, ?)
                 """, (show_trakt_id, season, episode, watched_at))
 
-                xbmc.log(f'[AIOStreams] Optimistically marked episode {imdb_id} S{season}E{episode} as watched', xbmc.LOGDEBUG)
+                xbmc.log(f'[AIOStreams] ✓ Database updated: Marked ONLY episode {imdb_id} S{season}E{episode} as watched (show_trakt_id={show_trakt_id})', xbmc.LOGINFO)
+                xbmc.log(f'[AIOStreams] ✓ Database update: This should NOT affect the show or other episodes', xbmc.LOGINFO)
 
                 # Clear in-memory caches for this show
                 if imdb_id in _show_progress_cache:
@@ -1528,10 +1532,25 @@ def mark_watched(media_type, imdb_id, season=None, episode=None, playback_id=Non
             if episode is not None:
                 item['seasons'][0]['episodes'] = [{'number': episode}]
         data[api_type].append(item)
-        
-        xbmc.log(f'[AIOStreams] Background sync: marking as watched: media_type={media_type}, imdb_id={imdb_id}, season={season}, episode={episode}', xbmc.LOGINFO)
-        
+
+        import json
+        xbmc.log(f'[AIOStreams] ====== TRAKT API REQUEST ======', xbmc.LOGINFO)
+        xbmc.log(f'[AIOStreams] Endpoint: sync/history (POST)', xbmc.LOGINFO)
+        xbmc.log(f'[AIOStreams] Parameters: media_type={media_type}, imdb_id={imdb_id}, season={season}, episode={episode}', xbmc.LOGINFO)
+        xbmc.log(f'[AIOStreams] Request data being sent:', xbmc.LOGINFO)
+        xbmc.log(f'{json.dumps(data, indent=2)}', xbmc.LOGINFO)
+        if season is not None and episode is not None:
+            xbmc.log(f'[AIOStreams] ✓ This should mark ONLY S{season}E{episode}, NOT the entire show', xbmc.LOGINFO)
+        xbmc.log(f'[AIOStreams] ==============================', xbmc.LOGINFO)
+
         result = call_trakt('sync/history', method='POST', data=data)
+
+        xbmc.log(f'[AIOStreams] ====== TRAKT API RESPONSE ======', xbmc.LOGINFO)
+        if result:
+            xbmc.log(f'{json.dumps(result, indent=2)}', xbmc.LOGINFO)
+        else:
+            xbmc.log(f'[AIOStreams] No response received from Trakt', xbmc.LOGWARNING)
+        xbmc.log(f'[AIOStreams] ================================', xbmc.LOGINFO)
         
         if not result:
             # Rollback database on API failure
