@@ -1,5 +1,18 @@
 # Changelog
 
+## [3.0.2] - 2026-01-06
+
+### Fixed
+- **CRITICAL**: Fixed Next Up list being completely cleared when marking any episode as watched
+- **Database Queries**: Added seasons data to `get_all_show_progress()` database query
+- **Cache Invalidation**: Now properly clears both progress caches when marking episodes watched/unwatched
+- **Rollback Code**: Fixed incorrect column names in database rollback operations
+
+### Technical
+- `get_all_show_progress()` now includes seasons structure from database
+- Mark watched/unwatched now invalidates batch cache in addition to individual cache
+- Fixed `trakt_show_id` → `show_trakt_id` in rollback SQL statements
+
 ## [3.0.1] - 2026-01-06
 
 ### Fixed

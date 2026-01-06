@@ -131,23 +131,51 @@ def get_all_show_progress():
             _show_progress_batch_cache = {}
             for show in shows:
                 imdb_id = show.get('imdb_id')
-                if imdb_id:
-                    # Build show data structure compatible with API format
-                    show_data = {
-                        'show': {
-                            'title': show.get('title', 'Unknown'),
-                            'year': None,  # Not stored in database
-                            'ids': {
-                                'trakt': show.get('trakt_id'),
-                                'imdb': imdb_id,
-                                'tvdb': show.get('tvdb_id'),
-                                'tmdb': show.get('tmdb_id'),
-                                'slug': show.get('slug')
-                            }
-                        },
-                        'last_watched_at': show.get('last_watched_at', '')
-                    }
-                    _show_progress_batch_cache[imdb_id] = show_data
+                if not imdb_id:
+                    continue
+
+                show_trakt_id = show.get('trakt_id')
+
+                # Get watched episodes for this show to build seasons data
+                episodes = db.fetchall("""
+                    SELECT season, episode, watched, last_watched_at
+                    FROM episodes
+                    WHERE show_trakt_id = ? AND watched = 1
+                    ORDER BY season, episode
+                """, (show_trakt_id,))
+
+                # Build seasons structure (similar to Trakt API format)
+                seasons_dict = {}
+                for ep in episodes:
+                    season_num = ep.get('season', 0)
+                    if season_num not in seasons_dict:
+                        seasons_dict[season_num] = {
+                            'number': season_num,
+                            'episodes': []
+                        }
+                    seasons_dict[season_num]['episodes'].append({
+                        'number': ep.get('episode', 0),
+                        'plays': 1,
+                        'last_watched_at': ep.get('last_watched_at', '')
+                    })
+
+                # Build show data structure compatible with API format
+                show_data = {
+                    'show': {
+                        'title': show.get('title', 'Unknown'),
+                        'year': None,  # Not stored in database
+                        'ids': {
+                            'trakt': show_trakt_id,
+                            'imdb': imdb_id,
+                            'tvdb': show.get('tvdb_id'),
+                            'tmdb': show.get('tmdb_id'),
+                            'slug': show.get('slug')
+                        }
+                    },
+                    'seasons': list(seasons_dict.values()),
+                    'last_watched_at': show.get('last_watched_at', '')
+                }
+                _show_progress_batch_cache[imdb_id] = show_data
 
             _show_progress_cache_valid = True
             xbmc.log(f'[AIOStreams] Built show progress from database for {len(_show_progress_batch_cache)} shows', xbmc.LOGDEBUG)
@@ -1383,9 +1411,11 @@ def mark_watched(media_type, imdb_id, season=None, episode=None, playback_id=Non
 
                 xbmc.log(f'[AIOStreams] Optimistically marked episode {imdb_id} S{season}E{episode} as watched', xbmc.LOGDEBUG)
 
-                # Clear in-memory cache for this show
+                # Clear in-memory caches for this show
                 if imdb_id in _show_progress_cache:
                     del _show_progress_cache[imdb_id]
+                if imdb_id in _show_progress_batch_cache:
+                    del _show_progress_batch_cache[imdb_id]
             else:
                 # Movie watched - check original state for rollback
                 original_state = db.fetchone(
@@ -1438,10 +1468,10 @@ def mark_watched(media_type, imdb_id, season=None, episode=None, playback_id=Non
                             # Restore original state
                             db.execute_sql("""
                                 INSERT OR REPLACE INTO episodes (
-                                    trakt_show_id, season, episode, watched, last_watched_at
+                                    show_trakt_id, season, episode, watched, last_watched_at
                                 ) VALUES (?, ?, ?, ?, ?)
                             """, (
-                                original_state['trakt_show_id'],
+                                original_state['show_trakt_id'],
                                 original_state['season'],
                                 original_state['episode'],
                                 original_state.get('watched', 0),
@@ -1450,7 +1480,7 @@ def mark_watched(media_type, imdb_id, season=None, episode=None, playback_id=Non
                         else:
                             # Delete if it didn't exist before
                             db.execute_sql(
-                                "DELETE FROM episodes WHERE trakt_show_id=? AND season=? AND episode=?",
+                                "DELETE FROM episodes WHERE show_trakt_id=? AND season=? AND episode=?",
                                 (show_trakt_id, season, episode)
                             )
                     else:
@@ -1575,9 +1605,11 @@ def mark_unwatched(media_type, imdb_id, season=None, episode=None):
 
                 xbmc.log(f'[AIOStreams] Optimistically marked episode {imdb_id} S{season}E{episode} as unwatched', xbmc.LOGDEBUG)
 
-                # Clear in-memory cache for this show
+                # Clear in-memory caches for this show
                 if imdb_id in _show_progress_cache:
                     del _show_progress_cache[imdb_id]
+                if imdb_id in _show_progress_batch_cache:
+                    del _show_progress_batch_cache[imdb_id]
             else:
                 # Get original movie state for rollback
                 original_state = db.fetchone(
@@ -1627,9 +1659,9 @@ def mark_unwatched(media_type, imdb_id, season=None, episode=None):
                     if api_type == 'shows' and season is not None and episode is not None:
                         # Restore episode state
                         db.execute_sql("""
-                            UPDATE episodes 
-                            SET watched=?, last_watched_at=? 
-                            WHERE trakt_show_id=? AND season=? AND episode=?
+                            UPDATE episodes
+                            SET watched=?, last_watched_at=?
+                            WHERE show_trakt_id=? AND season=? AND episode=?
                         """, (
                             original_state.get('watched', 0),
                             original_state.get('last_watched_at'),
