@@ -1122,7 +1122,7 @@ def _add_show_to_pending_updates(imdb_id):
         show_trakt_id = show_data[0].get('show', {}).get('ids', {}).get('trakt')
         if show_trakt_id:
             _pending_show_updates[show_trakt_id] = time.time()
-            xbmc.log(f'[AIOStreams] Added show {show_trakt_id} to pending updates (grace period: 10s)', xbmc.LOGDEBUG)
+            xbmc.log(f'[AIOStreams] Added show {show_trakt_id} to pending updates (10s grace period)', xbmc.LOGDEBUG)
             
             # Refresh Kodi widgets to show updated data
             try:
