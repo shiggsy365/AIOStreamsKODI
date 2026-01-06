@@ -30,6 +30,10 @@
         <setting id="trakt_authorize" type="action" label="Authorize Trakt" action="RunPlugin(plugin://plugin.video.aiostreams/?action=trakt_auth)"/>
         <setting id="trakt_revoke" type="action" label="Revoke Authorization" action="RunPlugin(plugin://plugin.video.aiostreams/?action=trakt_revoke)"/>
         
+        <setting id="trakt_sync" type="lsep" label="Sync Settings"/>
+        <setting id="trakt_sync_manual" type="action" label="Force Sync Now" action="RunPlugin(plugin://plugin.video.aiostreams/?action=force_trakt_sync)"/>
+        <setting id="trakt_sync_auto" type="bool" label="Auto-sync on list load (5 min throttle)" default="true"/>
+        
         <setting id="trakt_features" type="lsep" label="Trakt Features"/>
         <setting id="trakt_scrobble" type="bool" label="Enable Scrobbling" default="true"/>
         
@@ -37,6 +41,7 @@
         <setting id="trakt_token" type="text" label="Access Token" default="" visible="false"/>
         <setting id="trakt_refresh" type="text" label="Refresh Token" default="" visible="false"/>
         <setting id="trakt_expires" type="text" label="Token Expires" default="0" visible="false"/>
+        <setting id="trakt.username" type="text" label="Username" default="" visible="false"/>
     </category>
     
     <!-- UI Settings -->

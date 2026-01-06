@@ -190,6 +190,28 @@ def get_all_show_progress():
         return {}
 
 
+def get_trakt_username():
+    """Get current Trakt username from settings or API."""
+    # Try to get from settings first
+    username = ADDON.getSetting('trakt.username')
+    if username:
+        return username
+    
+    # If not in settings, fetch from Trakt API and cache it
+    if get_access_token():
+        try:
+            user_settings = call_trakt('users/settings', with_auth=True)
+            if user_settings and 'user' in user_settings:
+                username = user_settings['user'].get('username', '')
+                if username:
+                    ADDON.setSetting('trakt.username', username)
+                    return username
+        except Exception as e:
+            xbmc.log(f'[AIOStreams] Failed to get Trakt username: {e}', xbmc.LOGERROR)
+    
+    return ''
+
+
 def get_client_id():
     """Get Trakt client ID from settings."""
     return ADDON.getSetting('trakt_client_id')

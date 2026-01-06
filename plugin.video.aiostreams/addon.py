@@ -1992,6 +1992,29 @@ def trakt_menu():
     xbmcplugin.endOfDirectory(HANDLE)
 
 
+def force_trakt_sync():
+    """Force immediate Trakt sync with progress dialog."""
+    if not HAS_MODULES:
+        xbmcgui.Dialog().ok('AIOStreams', 'Trakt module not available')
+        return
+    
+    from resources.lib.database.trakt_sync.activities import TraktSyncDatabase
+    
+    db = TraktSyncDatabase()
+    result = db.sync_activities(silent=False)  # Show progress dialog
+    
+    if result is None:
+        xbmcgui.Dialog().notification(
+            'AIOStreams',
+            'Sync throttled (wait 5 minutes)',
+            xbmcgui.NOTIFICATION_INFO
+        )
+    elif result:
+        xbmc.log('[AIOStreams] Force sync completed successfully', xbmc.LOGINFO)
+    else:
+        xbmc.log('[AIOStreams] Force sync completed with errors', xbmc.LOGWARNING)
+
+
 def trakt_watchlist():
     """Display Trakt watchlist."""
     if not HAS_MODULES:
@@ -2813,6 +2836,8 @@ def router(params):
         show_episodes()
     elif action == 'trakt_menu':
         trakt_menu()
+    elif action == 'force_trakt_sync':
+        force_trakt_sync()
     elif action == 'trakt_watchlist':
         trakt_watchlist()
     elif action == 'trakt_collection':
