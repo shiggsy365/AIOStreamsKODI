@@ -998,6 +998,92 @@ def hide_from_progress(media_type, imdb_id):
         return False
 
 
+def unhide_from_progress(media_type, imdb_id):
+    """Remove a movie or show from hidden lists (unhide/undrop).
+
+    This reverses the 'Stop Watching' or 'Drop' action by removing from all hidden sections.
+    API Docs: https://trakt.docs.apiary.io/#reference/users/remove-hidden-items
+    """
+    if not imdb_id:
+        xbmc.log('[AIOStreams] Cannot unhide: no IMDB ID provided', xbmc.LOGWARNING)
+        xbmcgui.Dialog().notification('AIOStreams', 'Failed to unhide show: Invalid ID', xbmcgui.NOTIFICATION_ERROR)
+        return False
+
+    # Determine the data key based on media type
+    if media_type in ['movie', 'movies']:
+        data_key = 'movies'
+    else:
+        data_key = 'shows'
+
+    data = {
+        data_key: [{'ids': {'imdb': imdb_id}}]
+    }
+
+    import json
+    xbmc.log(f'[AIOStreams] Unhiding {media_type} ({imdb_id}) from all sections', xbmc.LOGINFO)
+    xbmc.log(f'[AIOStreams] Request data being sent to Trakt:', xbmc.LOGINFO)
+    xbmc.log(f'{json.dumps(data, indent=2)}', xbmc.LOGINFO)
+
+    success_count = 0
+
+    # Remove from all hidden sections
+    sections = ['progress_watched', 'progress_collected', 'calendar', 'recommendations']
+
+    for section in sections:
+        xbmc.log(f'[AIOStreams] Removing from hidden section: {section}', xbmc.LOGINFO)
+        result = call_trakt(f'users/hidden/{section}/remove', method='POST', data=data)
+
+        # Log full API response for debugging
+        if result:
+            xbmc.log(f'[AIOStreams] Trakt API Response for {section}:', xbmc.LOGINFO)
+            xbmc.log(f'{json.dumps(result, indent=2)}', xbmc.LOGINFO)
+        else:
+            xbmc.log(f'[AIOStreams] Trakt API returned no data for {section}', xbmc.LOGWARNING)
+
+        if result:
+            # Check what was actually removed
+            if isinstance(result, dict):
+                deleted = result.get('deleted', {})
+                not_found = result.get('not_found', {})
+
+                deleted_count = deleted.get(data_key, 0) if isinstance(deleted, dict) else 0
+                not_found_count = len(not_found.get(data_key, [])) if isinstance(not_found, dict) else 0
+
+                xbmc.log(f'[AIOStreams] {section} - Deleted: {deleted_count}, Not found: {not_found_count}', xbmc.LOGINFO)
+
+                if deleted_count > 0:
+                    xbmc.log(f'[AIOStreams] ✓ Successfully removed from {section}', xbmc.LOGINFO)
+                    success_count += 1
+                elif not_found_count > 0:
+                    xbmc.log(f'[AIOStreams] Item not found in {section} (may not have been hidden there)', xbmc.LOGDEBUG)
+            else:
+                xbmc.log(f'[AIOStreams] Unexpected response format from {section}', xbmc.LOGWARNING)
+        else:
+            xbmc.log(f'[AIOStreams] No response from Trakt for {section}', xbmc.LOGWARNING)
+
+    if success_count > 0:
+        xbmc.log(f'[AIOStreams] Successfully unhid {media_type} ({imdb_id}) from {success_count} sections', xbmc.LOGINFO)
+        xbmcgui.Dialog().notification('AIOStreams', 'Show unhidden successfully', xbmcgui.NOTIFICATION_INFO)
+
+        # Remove from local database hidden table
+        try:
+            from resources.lib.database.trakt_sync import TraktSyncDatabase
+            db = TraktSyncDatabase()
+            db.execute_sql("DELETE FROM hidden WHERE trakt_id IN (SELECT trakt_id FROM shows WHERE imdb_id=?)", (imdb_id,))
+            xbmc.log(f'[AIOStreams] Removed {imdb_id} from local database hidden table', xbmc.LOGINFO)
+        except Exception as e:
+            xbmc.log(f'[AIOStreams] Failed to remove from local database hidden table: {e}', xbmc.LOGERROR)
+
+        # Invalidate progress cache to force refresh
+        invalidate_progress_cache()
+
+        return True
+    else:
+        xbmc.log(f'[AIOStreams] {media_type} ({imdb_id}) may not have been hidden on Trakt', xbmc.LOGINFO)
+        xbmcgui.Dialog().notification('AIOStreams', 'Show was not hidden on Trakt', xbmcgui.NOTIFICATION_INFO)
+        return True  # Still return True since it's technically successful (show isn't hidden)
+
+
 def get_hidden_items(section='progress_watched', media_type='shows', limit=100):
     """Retrieve currently hidden items from Trakt for validation.
 
