@@ -14,7 +14,7 @@
         <platform>all</platform>
         <license>MIT</license>
         <website>https://aiostreams.shiggsy.co.uk</website>
-        <news>v2.6.8: Maintenance release - Code improvements and stability enhancements. | v2.6.7: Incremental cache optimization - Widget refresh is now faster with per-show cache updates instead of full invalidation. | v2.6.6: Handle Trakt eventual consistency - Next Up shows correct episode after 10s grace period.</news>
+        <news>v2.6.8: Maintenance release with stability improvements | v2.6.7: Incremental cache optimization - Widget refresh is now faster with per-show cache updates instead of full invalidation. | v2.6.6: Handle Trakt eventual consistency - Next Up shows correct episode after 10s grace period.</news>
         <assets>
             <icon>resources/icon.png</icon>
             <fanart>resources/fanart.jpg</fanart>
