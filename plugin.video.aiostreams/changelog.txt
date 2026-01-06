@@ -1,5 +1,16 @@
 # Changelog
 
+## [2.7.0] - 2026-01-06
+
+### Fixed
+- **Stream Selector Display**: Fixed WindowXMLDialog not loading - streams now display with visual formatting instead of plain text
+- **Settings Page**: Added missing "Stream Name Format" dropdown to User Interface settings category with 6 formatter options (Torrentio, Torbox, GDrive Full, GDrive Light, Prism, Minimalistic)
+- **Cache Clearing**: Clear Cache now properly removes AIOStreams manifest cache in addition to Trakt caches
+
+### Added
+- Error logging for stream selector dialog initialization to aid troubleshooting
+- Fallback to simple text dialog when WindowXMLDialog fails to load
+
 ## [2.6.9] - 2026-01-06
 
 ### Fixed
