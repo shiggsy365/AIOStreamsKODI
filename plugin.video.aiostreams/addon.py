@@ -2275,7 +2275,7 @@ def trakt_next_up():
         episode = ep_data.get('episode', 0)
         episode_imdb = ep_data.get('episode_imdb_id', '')
 
-        # Try to get cached AIOStreams metadata for artwork
+        # Get AIOStreams metadata for artwork (fetch from API if not cached)
         poster = ''
         fanart = ''
         logo = ''
@@ -2283,16 +2283,29 @@ def trakt_next_up():
         episode_title = f'Episode {episode}'
         episode_overview = ''
 
-        if show_imdb and HAS_MODULES:
-            cached_meta = cache.get_cached_meta('series', show_imdb)
-            if cached_meta and 'meta' in cached_meta:
-                cached_data = cached_meta['meta']
-                poster = cached_data.get('poster', '')
-                fanart = cached_data.get('background', '')
-                logo = cached_data.get('logo', '')
+        if show_imdb:
+            # First try cache, then fetch from API if needed
+            meta_result = None
+            if HAS_MODULES:
+                cached_meta = cache.get_cached_meta('series', show_imdb)
+                if cached_meta and 'meta' in cached_meta:
+                    meta_result = cached_meta
+                    xbmc.log(f'[AIOStreams] Next Up: Using cached metadata for {show_title}', xbmc.LOGDEBUG)
+
+            # If not cached, fetch from API
+            if not meta_result:
+                meta_result = get_meta('series', show_imdb)
+                xbmc.log(f'[AIOStreams] Next Up: Fetched metadata from API for {show_title}', xbmc.LOGDEBUG)
+
+            # Extract metadata
+            if meta_result and 'meta' in meta_result:
+                meta_data = meta_result['meta']
+                poster = meta_data.get('poster', '')
+                fanart = meta_data.get('background', '')
+                logo = meta_data.get('logo', '')
 
                 # Get episode-specific data
-                videos = cached_data.get('videos', [])
+                videos = meta_data.get('videos', [])
                 for video in videos:
                     if video.get('season') == season and video.get('episode') == episode:
                         episode_thumb = video.get('thumbnail', '')
