@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<addon id="plugin.video.aiostreams" name="AIOStreams" version="3.0.4" provider-name="Jon">
+<addon id="plugin.video.aiostreams" name="AIOStreams" version="3.0.5" provider-name="Jon">
     <requires>
         <import addon="xbmc.python" version="3.0.0"/>
         <import addon="script.module.requests" version="2.25.1"/>
@@ -14,7 +14,7 @@
         <platform>all</platform>
         <license>MIT</license>
         <website>https://aiostreams.shiggsy.co.uk</website>
-        <news>v3.0.4: Converted source select dialog to programmatic WindowDialog - now works with ALL skins including Bingie. No longer requires skin-specific XML files or textures. | v3.0.3: Fixed source select dialog displaying white text with no background. | v3.0.2: CRITICAL FIX - Fixed Next Up list being cleared when marking episodes as watched.</news>
+        <news>v3.0.5: CRITICAL FIX - Clear in-memory cache when rebuilding database to fix stale empty cache preventing Next Up from loading. | v3.0.4: Converted source select dialog to programmatic WindowDialog - now works with ALL skins including Bingie. | v3.0.3: Fixed source select dialog white text issue.</news>
         <assets>
             <icon>resources/icon.png</icon>
             <fanart>resources/fanart.jpg</fanart>

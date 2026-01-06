@@ -1,5 +1,18 @@
 # Changelog
 
+## [3.0.5] - 2026-01-06
+
+### Fixed
+- **CRITICAL**: Fixed stale in-memory cache preventing Next Up list from loading after database rebuild
+- **Database Rebuild**: Now properly clears in-memory caches before rebuilding database
+- **Database Clear**: Added cache invalidation to prevent stale cached data
+
+### Technical
+- Added `trakt.invalidate_progress_cache()` call in `rebuild_trakt_database()` before clearing tables
+- Added `trakt.invalidate_progress_cache()` call in `clear_trakt_database()` before clearing tables
+- Ensures fresh data is fetched from API after database operations
+- Fixes issue where empty batch cache persisted after bug that cleared Next Up list
+
 ## [3.0.4] - 2026-01-06
 
 ### Changed

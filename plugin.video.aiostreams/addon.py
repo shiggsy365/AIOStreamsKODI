@@ -2769,7 +2769,11 @@ def clear_trakt_database():
             'Continue?'
         ):
             return
-        
+
+        # Clear in-memory caches
+        xbmc.log('[AIOStreams] Clearing in-memory caches before database clear', xbmc.LOGINFO)
+        trakt.invalidate_progress_cache()
+
         db = TraktSyncDatabase()
         if not db.connect():
             xbmcgui.Dialog().notification('AIOStreams', 'Failed to connect to database', xbmcgui.NOTIFICATION_ERROR)
@@ -2809,7 +2813,11 @@ def rebuild_trakt_database():
             'Continue?'
         ):
             return
-        
+
+        # Clear in-memory caches FIRST (critical for fixing stale cache bug)
+        xbmc.log('[AIOStreams] Clearing in-memory caches before database rebuild', xbmc.LOGINFO)
+        trakt.invalidate_progress_cache()
+
         # Clear database
         from resources.lib.database.trakt_sync import TraktSyncDatabase
         db = TraktSyncDatabase()
