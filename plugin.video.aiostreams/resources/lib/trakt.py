@@ -502,7 +502,6 @@ def get_show_progress_by_trakt_id(show_id):
     Handles Trakt's eventual consistency by not caching recently updated shows.
     """
     global _show_progress_with_next_cache, _pending_show_updates
-    import time
 
     # Check if this show was recently updated (within last 10 seconds)
     recently_updated = False
@@ -1017,7 +1016,6 @@ def remove_from_watchlist(media_type, imdb_id, season=None, episode=None):
 def mark_watched(media_type, imdb_id, season=None, episode=None, playback_id=None):
     """Mark item as watched and clear any in-progress status."""
     global _pending_show_updates
-    import time
     
     if not imdb_id:
         xbmc.log('[AIOStreams] Cannot mark as watched: no IMDB ID provided', xbmc.LOGWARNING)
