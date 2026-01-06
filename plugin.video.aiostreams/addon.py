@@ -1371,8 +1371,8 @@ def select_stream():
     # Use Kodi's built-in select dialog with ListItems
     xbmc.log(f'[AIOStreams] Showing stream selection dialog with {len(stream_data["streams"])} streams', xbmc.LOGDEBUG)
 
-    # Create formatted labels for custom dialog
-    stream_labels = create_stream_list_items(stream_data['streams'])
+    # Create formatted labels for custom dialog (strip emojis - they render as boxes)
+    stream_labels = create_stream_list_items(stream_data['streams'], strip_emojis_flag=True)
 
     # Show custom multi-line dialog
     dialog = StreamSelectDialog(
@@ -1702,8 +1702,8 @@ def show_streams_dialog(content_type, media_id, stream_data, title):
     # Use Kodi's built-in select dialog with ListItems
     xbmc.log(f'[AIOStreams] Showing stream selection dialog with {len(stream_data["streams"])} streams', xbmc.LOGDEBUG)
 
-    # Create formatted labels for custom dialog
-    stream_labels = create_stream_list_items(stream_data['streams'])
+    # Create formatted labels for custom dialog (strip emojis - they render as boxes)
+    stream_labels = create_stream_list_items(stream_data['streams'], strip_emojis_flag=True)
 
     # Show custom multi-line dialog
     dialog = StreamSelectDialog(
