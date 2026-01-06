@@ -112,7 +112,7 @@ class TorboxFormatter(BaseFormatter):
 
 
 class GDriveFormatter(BaseFormatter):
-    """Google Drive (Full) formatter: [Provider*] Quality (Indexer) - Size - Source"""
+    """Google Drive (Full) formatter: [Provider⚡] Quality (Indexer) - 📦 Size"""
     
     def format_parsed(self, provider, quality, size, indexer, cache_status):
         # Check if cached
@@ -120,9 +120,9 @@ class GDriveFormatter(BaseFormatter):
         
         # Provider with cache indicator
         if is_cached:
-            provider_part = f"[COLOR cyan][{provider}*][/COLOR]"
+            provider_part = f"[COLOR cyan][{provider}⚡][/COLOR]"
         else:
-            provider_part = f"[COLOR orange][{provider}][/COLOR]"
+            provider_part = f"[COLOR orange][{provider}⏳][/COLOR]"
         
         # Quality
         quality_part = f" {quality}" if quality else ""
@@ -130,11 +130,8 @@ class GDriveFormatter(BaseFormatter):
         # Indexer in parentheses
         indexer_part = f" ({indexer})" if indexer else ""
         
-        # Size with label
-        size_part = f"[COLOR lime]{size}[/COLOR]" if size else ""
-        
-        # Source with label
-        source_part = indexer if indexer else ""
+        # Size with emoji label
+        size_part = f"📦 [COLOR lime]{size}[/COLOR]" if size else ""
         
         # Combine
         line1 = f"{provider_part}{quality_part}{indexer_part}"
@@ -146,83 +143,64 @@ class GDriveFormatter(BaseFormatter):
 
 
 class LightGDriveFormatter(BaseFormatter):
-    """Google Drive (Light) formatter: [Provider*] Quality - Size - Source"""
+    """Google Drive (Light) formatter: Provider - Quality • Size • Indexer"""
     
     def format_parsed(self, provider, quality, size, indexer, cache_status):
-        # Check if cached
-        is_cached = cache_status.lower() == 'cached'
+        # Simple format without colors, using bullet points
+        parts = [provider]
+        if quality:
+            parts.append(quality)
+        if size:
+            parts.append(size)
+        if indexer:
+            parts.append(indexer)
         
-        # Provider with cache indicator
-        if is_cached:
-            provider_part = f"[COLOR cyan][{provider}*][/COLOR]"
-        else:
-            provider_part = f"[COLOR orange][{provider}][/COLOR]"
-        
-        # Quality
-        quality_part = f" {quality}" if quality else ""
-        
-        # Size
-        size_part = size if size else ""
-        
-        # Source
-        source_part = indexer if indexer else ""
-        
-        # Combine
-        parts = [f"{provider_part}{quality_part}"]
-        if size_part:
-            parts.append(size_part)
-        if source_part:
-            parts.append(source_part)
-        
-        return " - ".join(parts)
+        return " • ".join(parts)
 
 
 class PrismFormatter(BaseFormatter):
-    """Prism-style formatter with quality indicators: Quality (Size, Source) [Provider*]"""
+    """Prism-style formatter with emojis: 🚀Quality - 📦Size 📡Indexer - ⚡Ready (Provider)"""
     
     def format_parsed(self, provider, quality, size, indexer, cache_status):
-        # Map quality to display with indicator
+        # Map quality to display with emoji
         quality_map = {
-            '4K': '4K UHD',
-            '2160p': '4K UHD',
-            'QHD': 'QHD',
-            '1440p': 'QHD',
-            'FHD': 'FHD',
-            '1080p': 'FHD',
-            'HD': 'HD',
-            '720p': 'HD',
+            '4K': '🚀4K UHD',
+            '2160p': '🚀4K UHD',
+            'QHD': '✨QHD',
+            '1440p': '✨QHD',
+            'FHD': '🚀FHD',
+            '1080p': '🚀FHD',
+            'HD': '💿HD',
+            '720p': '💿HD',
         }
         
-        # Get quality display
-        quality_display = quality_map.get(quality, quality)
+        # Get quality display with emoji
+        quality_display = quality_map.get(quality, f'🚀{quality}')
         
         # Check if cached
         is_cached = cache_status.lower() == 'cached'
         
         # Cache status
         if is_cached:
-            cache_icon = "*Ready"
+            cache_icon = "⚡Ready"
         else:
-            cache_icon = "Not Ready"
-        
-        # Provider
-        provider_part = f"({provider})"
+            cache_icon = "❌Not Ready"
         
         # Build format
         parts = [f"[COLOR gold]{quality_display}[/COLOR]"]
         
-        # Add size and source
+        # Add size and source with emojis
         details = []
         if size:
-            details.append(size)
+            details.append(f"📦{size}")
         if indexer:
-            details.append(indexer)
+            details.append(f"📡{indexer}")
         
         if details:
             parts.append(" ".join(details))
         
-        # Add provider and cache
-        parts.append(f"{cache_icon} {provider_part}")
+        # Add cache status and provider
+        parts.append(f"{cache_icon} ({provider})")
         
         return " - ".join(parts)
 
