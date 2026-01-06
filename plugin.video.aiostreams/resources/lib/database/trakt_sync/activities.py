@@ -311,7 +311,7 @@ class TraktSyncDatabase(BaseTraktDB):
                 continue
             
             self.execute_sql("""
-                INSERT INTO watchlist (trakt_id, mediatype, imdb_id, listed_at)
+                INSERT OR REPLACE INTO watchlist (trakt_id, mediatype, imdb_id, listed_at)
                 VALUES (?, 'movie', ?, ?)
             """, (
                 trakt_id,
@@ -511,7 +511,7 @@ class TraktSyncDatabase(BaseTraktDB):
                 continue
             
             self.execute_sql("""
-                INSERT INTO watchlist (trakt_id, mediatype, imdb_id, listed_at)
+                INSERT OR REPLACE INTO watchlist (trakt_id, mediatype, imdb_id, listed_at)
                 VALUES (?, 'show', ?, ?)
             """, (
                 trakt_id,
@@ -541,7 +541,7 @@ class TraktSyncDatabase(BaseTraktDB):
                 continue
             
             self.execute_sql("""
-                INSERT INTO bookmarks (trakt_id, resume_time, percent_played, type, paused_at)
+                INSERT OR REPLACE INTO bookmarks (trakt_id, resume_time, percent_played, type, paused_at)
                 VALUES (?, ?, ?, ?, ?)
             """, (
                 trakt_id,
