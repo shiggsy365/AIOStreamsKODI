@@ -56,19 +56,29 @@ def get_clipboard_content():
 
     try:
         if system == 'windows':
-            # Windows clipboard via PowerShell
+            # Windows clipboard via PowerShell - use startupinfo to hide window
+            startupinfo = subprocess.STARTUPINFO()
+            startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
+            startupinfo.wShowWindow = subprocess.SW_HIDE
+
             result = subprocess.run(
-                ['powershell', '-command', 'Get-Clipboard'],
-                capture_output=True, text=True, timeout=5,
-                creationflags=subprocess.CREATE_NO_WINDOW if hasattr(subprocess, 'CREATE_NO_WINDOW') else 0
+                ['powershell', '-NoProfile', '-Command', 'Get-Clipboard'],
+                capture_output=True,
+                text=True,
+                timeout=3,
+                startupinfo=startupinfo
             )
             if result.returncode == 0:
-                return result.stdout.strip()
+                content = result.stdout.strip()
+                return content
+            else:
+                xbmc.log(f'[AIOStreams WebConfig] PowerShell error: {result.stderr}', xbmc.LOGDEBUG)
+
         elif system == 'darwin':
             # macOS clipboard via pbpaste
             result = subprocess.run(
                 ['pbpaste'],
-                capture_output=True, text=True, timeout=5
+                capture_output=True, text=True, timeout=3
             )
             if result.returncode == 0:
                 return result.stdout.strip()
@@ -76,11 +86,13 @@ def get_clipboard_content():
             # Linux - try xclip or xsel
             for cmd in [['xclip', '-selection', 'clipboard', '-o'], ['xsel', '--clipboard', '--output']]:
                 try:
-                    result = subprocess.run(cmd, capture_output=True, text=True, timeout=5)
+                    result = subprocess.run(cmd, capture_output=True, text=True, timeout=3)
                     if result.returncode == 0:
                         return result.stdout.strip()
                 except FileNotFoundError:
                     continue
+    except subprocess.TimeoutExpired:
+        xbmc.log('[AIOStreams WebConfig] Clipboard read timed out', xbmc.LOGDEBUG)
     except Exception as e:
         xbmc.log(f'[AIOStreams WebConfig] Clipboard read failed: {e}', xbmc.LOGDEBUG)
 
@@ -109,12 +121,6 @@ def configure_aiostreams(host_url=None):
     2. Monitor clipboard for manifest.json URL
     3. Auto-detect when user copies manifest URL
     4. Save to settings
-
-    Args:
-        host_url: Optional host URL. If not provided, uses current setting.
-
-    Returns:
-        str: The captured manifest URL, or None if cancelled/failed
     """
     addon = xbmcaddon.Addon()
     monitor = xbmc.Monitor()
@@ -161,17 +167,22 @@ def configure_aiostreams(host_url=None):
         '3. The URL will be detected automatically'
     )
 
-    # Clear any existing manifest URL from clipboard by reading current value
-    initial_clipboard = get_clipboard_content()
+    # Read current clipboard to ignore it
+    initial_clipboard = get_clipboard_content() or ''
+    xbmc.log(f'[AIOStreams WebConfig] Initial clipboard content length: {len(initial_clipboard)}', xbmc.LOGDEBUG)
 
     # Open browser
-    if not open_browser(configure_url):
+    browser_opened = open_browser(configure_url)
+    if not browser_opened:
         # Offer to show URL manually
         if xbmcgui.Dialog().yesno(
             'Browser Failed',
             'Could not open browser automatically.\n\nWould you like to see the URL to open manually?'
         ):
             xbmcgui.Dialog().textviewer('Configuration URL', configure_url)
+
+    # Give browser time to open before starting to monitor
+    xbmc.sleep(2000)
 
     # Monitor clipboard for manifest URL
     progress = xbmcgui.DialogProgress()
@@ -183,15 +194,24 @@ def configure_aiostreams(host_url=None):
     )
 
     timeout = 300  # 5 minutes
-    poll_interval = 1.0  # Check every second
+    poll_interval = 1.5  # Check every 1.5 seconds
     start_time = time.time()
     manifest_url = None
+    check_count = 0
 
-    while not monitor.abortRequested():
+    xbmc.log('[AIOStreams WebConfig] Starting clipboard monitoring loop', xbmc.LOGINFO)
+
+    while True:
+        # Check for abort
+        if monitor.abortRequested():
+            xbmc.log('[AIOStreams WebConfig] Abort requested', xbmc.LOGDEBUG)
+            break
+
         elapsed = time.time() - start_time
         remaining = timeout - elapsed
 
         if remaining <= 0:
+            xbmc.log('[AIOStreams WebConfig] Timeout reached', xbmc.LOGINFO)
             break
 
         # Update progress
@@ -205,19 +225,24 @@ def configure_aiostreams(host_url=None):
         )
 
         if progress.iscanceled():
+            xbmc.log('[AIOStreams WebConfig] User cancelled', xbmc.LOGINFO)
             break
 
         # Check clipboard
+        check_count += 1
         clipboard = get_clipboard_content()
+
+        if check_count % 10 == 0:  # Log every 10 checks
+            xbmc.log(f'[AIOStreams WebConfig] Clipboard check #{check_count}, content: {clipboard[:50] if clipboard else "None"}...', xbmc.LOGDEBUG)
+
         if clipboard and clipboard != initial_clipboard:
             if is_valid_manifest_url(clipboard):
                 manifest_url = clipboard.strip()
-                xbmc.log(f'[AIOStreams WebConfig] Detected manifest URL in clipboard', xbmc.LOGINFO)
+                xbmc.log(f'[AIOStreams WebConfig] Detected manifest URL: {manifest_url[:50]}...', xbmc.LOGINFO)
                 break
 
-        # Wait before next poll
-        if monitor.waitForAbort(poll_interval):
-            break
+        # Wait before next poll using Kodi's sleep (non-blocking)
+        xbmc.sleep(int(poll_interval * 1000))
 
     progress.close()
 
@@ -226,7 +251,7 @@ def configure_aiostreams(host_url=None):
         # Handle stremio:// URLs (convert to https://)
         if manifest_url.startswith('stremio://'):
             manifest_url = 'https://' + manifest_url[10:]
-            xbmc.log(f'[AIOStreams WebConfig] Converted stremio:// URL to https://', xbmc.LOGDEBUG)
+            xbmc.log('[AIOStreams WebConfig] Converted stremio:// URL to https://', xbmc.LOGDEBUG)
 
         # Save to settings
         addon.setSetting('base_url', manifest_url)

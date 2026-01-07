@@ -16,38 +16,74 @@ import xbmcvfs
 CONTROL_STREAM_LIST = 5000
 CONTROL_SCROLLBAR = 5001
 
-# Emoji to text replacements
+# Emoji to text replacements - specific mappings with Kodi color codes
 EMOJI_REPLACEMENTS = {
-    '🕵️': '[#]',
-    '🕵': '[#]',
-    '☁️': '[Lib]',
-    '☁': '[Lib]',
-    '⚡': '[Cached]',
-    '⏳': '[Uncached]',
-    '🎞️': '|',
-    '🎞': '|',
-    '🏷️': '|',
-    '🏷': '|',
-    '📺': '',
-    '🎧': '|',
+    '🕵️': '[COLOR green]#[/COLOR]',
+    '🕵': '[COLOR green]#[/COLOR]',
+    '☁️': '[COLOR dodgerblue]Lib[/COLOR]',
+    '☁': '[COLOR dodgerblue]Lib[/COLOR]',
+    '⚡': '[COLOR yellow]Cached[/COLOR]',
+    '⏳': '[COLOR red]Uncached[/COLOR]',
+    '📦': '[SIZE]',
+    '⏱️': '[DUR]',
+    '⏱': '[DUR]',
+    '📅': '[AGE]',
+    '🔍': '[IDX]',
+    '🌐': '[LANG]',
+    '👥': '[SEED]',
+    '🌱': '[SEED]',
     '•': '-',
-    '🔊': '|',
-    '📦': '[Size]',
-    '⏱️': '[Duration]',
-    '⏱': '[Duration]',
-    '📅': '[Age]',
-    '🔍': '[Indx]',
-    '🌐': '[Lang]',
 }
 
+# Emojis to replace with pipe separator
+EMOJI_TO_PIPE = [
+    '🎞️', '🎞', '🏷️', '🏷', '🎧', '🔊', '📡',
+]
+
+# Emojis to remove entirely
+EMOJI_TO_REMOVE = [
+    'ℹ️', 'ℹ', '📁', '🎥', '📺',
+]
+
+import re
 
 def replace_emojis(text):
     """Replace emojis with text equivalents for better compatibility."""
     if not text:
         return text
 
+    # Apply specific replacements first
     for emoji, replacement in EMOJI_REPLACEMENTS.items():
         text = text.replace(emoji, replacement)
+
+    # Replace separator emojis with pipe
+    for emoji in EMOJI_TO_PIPE:
+        text = text.replace(emoji, '|')
+
+    # Remove specific emojis entirely
+    for emoji in EMOJI_TO_REMOVE:
+        text = text.replace(emoji, '')
+
+    # Replace any remaining emojis with pipe (catch-all)
+    # This regex matches most emoji characters
+    emoji_pattern = re.compile(
+        "["
+        "\U0001F600-\U0001F64F"  # emoticons
+        "\U0001F300-\U0001F5FF"  # symbols & pictographs
+        "\U0001F680-\U0001F6FF"  # transport & map symbols
+        "\U0001F700-\U0001F77F"  # alchemical symbols
+        "\U0001F780-\U0001F7FF"  # geometric shapes
+        "\U0001F800-\U0001F8FF"  # supplemental arrows
+        "\U0001F900-\U0001F9FF"  # supplemental symbols
+        "\U0001FA00-\U0001FA6F"  # chess symbols
+        "\U0001FA70-\U0001FAFF"  # symbols extended
+        "\U00002702-\U000027B0"  # dingbats
+        "\U000024C2-\U0001F251"  # enclosed characters
+        "\U0001F1E0-\U0001F1FF"  # flags
+        "]+",
+        flags=re.UNICODE
+    )
+    text = emoji_pattern.sub('|', text)
 
     # Clean up any double spaces or pipes that might result
     while '  ' in text:
@@ -56,6 +92,10 @@ def replace_emojis(text):
         text = text.replace('||', '|')
     while '| |' in text:
         text = text.replace('| |', '|')
+    # Clean up pipes at start/end of lines
+    lines = text.split('\n')
+    lines = [line.strip().strip('|').strip() for line in lines]
+    text = '\n'.join(lines)
 
     return text.strip()
 
