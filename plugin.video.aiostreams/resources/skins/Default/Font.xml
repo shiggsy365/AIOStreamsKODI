@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    AIOStreams Custom Font Definitions
+
+    For emoji support, place an emoji-capable font (like NotoEmoji-Regular.ttf
+    or NotoColorEmoji.ttf) in the fonts/ directory.
+
+    Recommended fonts for emoji support:
+    - Noto Emoji: https://fonts.google.com/noto/specimen/Noto+Emoji
+    - Segoe UI Emoji (Windows)
+    - Apple Color Emoji (macOS)
+-->
+<fonts>
+    <fontset id="Default" unicode="true">
+        <!-- Title fonts -->
+        <font>
+            <name>aiostreams_title</name>
+            <filename>NotoSans-Bold.ttf</filename>
+            <size>32</size>
+            <style>bold</style>
+        </font>
+
+        <!-- Large stream name font -->
+        <font>
+            <name>aiostreams_stream_name</name>
+            <filename>NotoSans-Bold.ttf</filename>
+            <size>22</size>
+            <style>bold</style>
+        </font>
+
+        <!-- Stream detail lines (medium) -->
+        <font>
+            <name>aiostreams_stream_detail</name>
+            <filename>NotoSans-Regular.ttf</filename>
+            <size>18</size>
+        </font>
+
+        <!-- Small detail text -->
+        <font>
+            <name>aiostreams_small</name>
+            <filename>NotoSans-Regular.ttf</filename>
+            <size>16</size>
+        </font>
+
+        <!-- Instructions / helper text -->
+        <font>
+            <name>aiostreams_helper</name>
+            <filename>NotoSans-Regular.ttf</filename>
+            <size>14</size>
+        </font>
+
+        <!--
+            Emoji-capable font (optional - place font file in fonts/ directory)
+            If using Noto Emoji, download from:
+            https://github.com/googlefonts/noto-emoji/blob/main/fonts/NotoEmoji-Regular.ttf
+        -->
+        <font>
+            <name>aiostreams_emoji</name>
+            <filename>NotoSans-Regular.ttf</filename>
+            <size>18</size>
+        </font>
+    </fontset>
+
+    <!-- Fallback fontset using system fonts -->
+    <fontset id="Fallback" unicode="true">
+        <font>
+            <name>aiostreams_title</name>
+            <filename>arial.ttf</filename>
+            <size>32</size>
+            <style>bold</style>
+        </font>
+        <font>
+            <name>aiostreams_stream_name</name>
+            <filename>arial.ttf</filename>
+            <size>22</size>
+            <style>bold</style>
+        </font>
+        <font>
+            <name>aiostreams_stream_detail</name>
+            <filename>arial.ttf</filename>
+            <size>18</size>
+        </font>
+        <font>
+            <name>aiostreams_small</name>
+            <filename>arial.ttf</filename>
+            <size>16</size>
+        </font>
+        <font>
+            <name>aiostreams_helper</name>
+            <filename>arial.ttf</filename>
+            <size>14</size>
+        </font>
+        <font>
+            <name>aiostreams_emoji</name>
+            <filename>arial.ttf</filename>
+            <size>18</size>
+        </font>
+    </fontset>
+</fonts>
