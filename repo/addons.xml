@@ -47,9 +47,9 @@ Original source: https://github.com/googlefonts/noto-emoji</description>
 <addon id="repository.aiostreams" name="AIOStreams Repository" version="1.0.0" provider-name="AIOStreams">
     <extension point="xbmc.addon.repository" name="AIOStreams Repository">
         <dir>
-            <info compressed="false">https://raw.githubusercontent.com/shiggsy365/AIOStreamsKODI/claude/release-plugin-v3-JSBx0/repo/addons.xml</info>
-            <checksum>https://raw.githubusercontent.com/shiggsy365/AIOStreamsKODI/claude/release-plugin-v3-JSBx0/repo/addons.xml.md5</checksum>
-            <datadir zip="true">https://raw.githubusercontent.com/shiggsy365/AIOStreamsKODI/claude/release-plugin-v3-JSBx0/repo/</datadir>
+            <info compressed="false">https://raw.githubusercontent.com/shiggsy365/AIOStreamsKODI/claude/push-new-version-1N4wp/repo/addons.xml</info>
+            <checksum>https://raw.githubusercontent.com/shiggsy365/AIOStreamsKODI/claude/push-new-version-1N4wp/repo/addons.xml.md5</checksum>
+            <datadir zip="true">https://raw.githubusercontent.com/shiggsy365/AIOStreamsKODI/claude/push-new-version-1N4wp/repo/</datadir>
         </dir>
     </extension>
     <extension point="xbmc.addon.metadata">
