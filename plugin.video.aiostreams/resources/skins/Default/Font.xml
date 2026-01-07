@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    AIOStreams Custom Font Definitions
+
+    Includes Noto Emoji font for proper emoji rendering in stream selection dialogs.
+    The NotoEmoji-Regular.ttf font is bundled in the fonts/ directory.
+
+    Font fallback order: custom font -> Kodi system fonts -> arial
+-->
+<fonts>
+    <fontset id="Default" unicode="true">
+        <!-- Title fonts - Uses system font with emoji fallback -->
+        <font>
+            <name>aiostreams_title</name>
+            <filename>NotoSans-Bold.ttf</filename>
+            <size>32</size>
+            <style>bold</style>
+        </font>
+
+        <!-- Large stream name font -->
+        <font>
+            <name>aiostreams_stream_name</name>
+            <filename>NotoSans-Bold.ttf</filename>
+            <size>22</size>
+            <style>bold</style>
+        </font>
+
+        <!--
+            Stream detail lines - Uses Noto Emoji for emoji support
+            This is the main font used in stream selection dialogs
+        -->
+        <font>
+            <name>aiostreams_stream_detail</name>
+            <filename>NotoEmoji-Regular.ttf</filename>
+            <size>18</size>
+        </font>
+
+        <!-- Small detail text with emoji support -->
+        <font>
+            <name>aiostreams_small</name>
+            <filename>NotoEmoji-Regular.ttf</filename>
+            <size>16</size>
+        </font>
+
+        <!-- Instructions / helper text -->
+        <font>
+            <name>aiostreams_helper</name>
+            <filename>NotoSans-Regular.ttf</filename>
+            <size>14</size>
+        </font>
+
+        <!-- Dedicated emoji font for explicit emoji usage -->
+        <font>
+            <name>aiostreams_emoji</name>
+            <filename>NotoEmoji-Regular.ttf</filename>
+            <size>18</size>
+        </font>
+
+        <!-- Large emoji font -->
+        <font>
+            <name>aiostreams_emoji_large</name>
+            <filename>NotoEmoji-Regular.ttf</filename>
+            <size>24</size>
+        </font>
+
+        <!-- Standard Kodi fonts (for compatibility) -->
+        <font>
+            <name>font10</name>
+            <filename>NotoSans-Regular.ttf</filename>
+            <size>15</size>
+        </font>
+
+        <font>
+            <name>font12</name>
+            <filename>NotoSans-Regular.ttf</filename>
+            <size>18</size>
+        </font>
+
+        <font>
+            <name>font13</name>
+            <filename>NotoEmoji-Regular.ttf</filename>
+            <size>20</size>
+        </font>
+
+        <font>
+            <name>font13_title</name>
+            <filename>NotoSans-Bold.ttf</filename>
+            <size>22</size>
+            <style>bold</style>
+        </font>
+
+        <font>
+            <name>font30</name>
+            <filename>NotoSans-Bold.ttf</filename>
+            <size>30</size>
+            <style>bold</style>
+        </font>
+    </fontset>
+
+    <!-- Fallback fontset using system fonts -->
+    <fontset id="Fallback" unicode="true">
+        <font>
+            <name>aiostreams_title</name>
+            <filename>arial.ttf</filename>
+            <size>32</size>
+            <style>bold</style>
+        </font>
+        <font>
+            <name>aiostreams_stream_name</name>
+            <filename>arial.ttf</filename>
+            <size>22</size>
+            <style>bold</style>
+        </font>
+        <font>
+            <name>aiostreams_stream_detail</name>
+            <filename>arial.ttf</filename>
+            <size>18</size>
+        </font>
+        <font>
+            <name>aiostreams_small</name>
+            <filename>arial.ttf</filename>
+            <size>16</size>
+        </font>
+        <font>
+            <name>aiostreams_helper</name>
+            <filename>arial.ttf</filename>
+            <size>14</size>
+        </font>
+        <font>
+            <name>aiostreams_emoji</name>
+            <filename>arial.ttf</filename>
+            <size>18</size>
+        </font>
+        <font>
+            <name>aiostreams_emoji_large</name>
+            <filename>arial.ttf</filename>
+            <size>24</size>
+        </font>
+        <font>
+            <name>font10</name>
+            <filename>arial.ttf</filename>
+            <size>15</size>
+        </font>
+        <font>
+            <name>font12</name>
+            <filename>arial.ttf</filename>
+            <size>18</size>
+        </font>
+        <font>
+            <name>font13</name>
+            <filename>arial.ttf</filename>
+            <size>20</size>
+        </font>
+        <font>
+            <name>font13_title</name>
+            <filename>arial.ttf</filename>
+            <size>22</size>
+            <style>bold</style>
+        </font>
+        <font>
+            <name>font30</name>
+            <filename>arial.ttf</filename>
+            <size>30</size>
+            <style>bold</style>
+        </font>
+    </fontset>
+</fonts>

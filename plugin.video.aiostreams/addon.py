@@ -8,20 +8,43 @@ from urllib.parse import urlencode, parse_qsl
 import requests
 import json
 
-# Import new modules
+# Import new modules with enhanced architecture
 try:
     from resources.lib import trakt, filters, cache
     from resources.lib.monitor import PLAYER
     from resources.lib import streams, ui_helpers, settings_helpers, constants
+    from resources.lib.globals import g
+    from resources.lib import network
+    from resources.lib.router import get_router, action, dispatch, set_default
+    from resources.lib.providers import ProviderManager, AIOStreamsProvider
+    from resources.lib.providers.base import get_provider_manager
     HAS_MODULES = True
+    HAS_NEW_MODULES = True
 except Exception as e:
     HAS_MODULES = False
+    HAS_NEW_MODULES = False
     xbmc.log(f'[AIOStreams] Failed to import modules: {e}', xbmc.LOGERROR)
 
-# Initialize addon
+# Initialize globals (new pattern)
+if HAS_NEW_MODULES:
+    try:
+        g.init(sys.argv)
+    except Exception as e:
+        xbmc.log(f'[AIOStreams] Failed to initialize globals: {e}', xbmc.LOGERROR)
+
+# Initialize addon (legacy compatibility)
 ADDON = xbmcaddon.Addon()
 ADDON_PATH = xbmcvfs.translatePath(ADDON.getAddonInfo('path'))
 HANDLE = int(sys.argv[1])
+
+# Initialize provider manager
+if HAS_NEW_MODULES:
+    try:
+        provider_manager = get_provider_manager()
+        aiostreams_provider = AIOStreamsProvider()
+        provider_manager.register(aiostreams_provider)
+    except Exception as e:
+        xbmc.log(f'[AIOStreams] Failed to initialize providers: {e}', xbmc.LOGERROR)
 
 # Run cache cleanup on startup (async, won't block)
 if HAS_MODULES:
@@ -29,7 +52,7 @@ if HAS_MODULES:
         cache.cleanup_expired_cache()
     except:
         pass
-    
+
     # Run migration check on addon startup (once per install)
     try:
         from resources.lib.database.migration import DatabaseMigration
@@ -3200,135 +3223,156 @@ def test_connection():
                            f'Please check your settings and try again.')
 
 
-def router(params):
-    """Route to the appropriate function based on parameters."""
-    action = params.get('action', '')
-    
-    if action == 'search':
-        search()
-    elif action == 'search_unified':
-        search_unified()
-    elif action == 'search_tab':
-        # Tab-specific search with proper content type
-        query = params.get('query', '')
-        content_type = params.get('content_type', 'movie')
-        skip = int(params.get('skip', 0))
+# ============================================================================
+# Action Registry - Cleaner routing using dictionary pattern
+# ============================================================================
 
-        if not query:
-            keyboard = xbmcgui.Dialog().input('Search', type=xbmcgui.INPUT_ALPHANUM)
-            if keyboard:
-                query = keyboard
-            else:
-                xbmcplugin.endOfDirectory(HANDLE, succeeded=False)
-                return
+# Action handler registry - maps action names to handler functions
+ACTION_REGISTRY = {
+    # Search actions
+    'search': lambda p: search(),
+    'search_unified': lambda p: search_unified(),
+    'search_tab': lambda p: handle_search_tab(p),
 
-        if skip > 0:
-            # Handle pagination
-            xbmcplugin.setPluginCategory(HANDLE, f'Search {content_type.title()}: {query}')
-            xbmcplugin.setContent(HANDLE, 'movies' if content_type == 'movie' else 'tvshows')
+    # Playback actions
+    'play': lambda p: play(),
+    'select_stream': lambda p: select_stream(),
+    'show_streams': lambda p: show_streams(),
 
-            results = search_catalog(query, content_type, skip=skip)
-            if results and 'metas' in results:
-                items = results['metas']
-                if HAS_MODULES and filters:
-                    items = filters.filter_items(items)
+    # Browse actions
+    'movie_lists': lambda p: movie_lists(),
+    'series_lists': lambda p: series_lists(),
+    'catalogs': lambda p: list_catalogs(),
+    'catalog_genres': lambda p: list_catalog_genres(),
+    'browse_catalog': lambda p: browse_catalog(),
 
-                for meta in items:
-                    item_id = meta.get('id')
-                    if content_type == 'series':
-                        url = get_url(action='show_seasons', meta_id=item_id)
-                        is_folder = True
-                    else:
-                        url = get_url(action='play', content_type='movie', imdb_id=item_id)
-                        is_folder = False
-                    list_item = create_listitem_with_context(meta, content_type, url)
+    # TV Show navigation
+    'show_seasons': lambda p: show_seasons(),
+    'show_episodes': lambda p: show_episodes(),
+    'show_related': lambda p: show_related(),
 
-                    # Set IsPlayable property for movies
-                    if not is_folder:
-                        list_item.setProperty('IsPlayable', 'true')
+    # Trakt menu actions
+    'trakt_menu': lambda p: trakt_menu(),
+    'trakt_watchlist': lambda p: trakt_watchlist(),
+    'trakt_collection': lambda p: trakt_collection(),
+    'trakt_next_up': lambda p: trakt_next_up(),
 
-                    xbmcplugin.addDirectoryItem(HANDLE, url, list_item, is_folder)
+    # Trakt authentication
+    'trakt_auth': lambda p: trakt_auth(),
+    'trakt_revoke': lambda p: trakt_revoke(),
 
-                # Check for next page
-                next_skip = skip + 20
-                next_results = search_catalog(query, content_type, skip=next_skip)
-                if next_results and 'metas' in next_results and len(next_results['metas']) > 0:
-                    list_item = xbmcgui.ListItem(label='[COLOR yellow]» Load More...[/COLOR]')
-                    url = get_url(action='search_tab', content_type=content_type, query=query, skip=next_skip)
-                    xbmcplugin.addDirectoryItem(HANDLE, url, list_item, True)
+    # Trakt item actions
+    'trakt_add_watchlist': lambda p: trakt_add_watchlist(),
+    'trakt_remove_watchlist': lambda p: trakt_remove_watchlist(),
+    'trakt_mark_watched': lambda p: trakt_mark_watched(),
+    'trakt_mark_unwatched': lambda p: trakt_mark_unwatched(),
+    'trakt_remove_playback': lambda p: trakt_remove_playback(),
+    'trakt_hide_show': lambda p: trakt_hide_show(),
+    'trakt_hide_from_progress': lambda p: trakt_hide_from_progress(),
+    'trakt_unhide_from_progress': lambda p: trakt_unhide_from_progress(),
 
-            xbmcplugin.endOfDirectory(HANDLE)
+    # Settings/maintenance actions
+    'clear_stream_stats': lambda p: clear_stream_stats(),
+    'clear_preferences': lambda p: clear_preferences(),
+    'database_reset': lambda p: database_reset(),
+    'show_database_info': lambda p: show_database_info(),
+    'test_connection': lambda p: test_connection(),
+    'quick_actions': lambda p: quick_actions(),
+}
+
+
+def handle_search_tab(params):
+    """Handle search_tab action with pagination logic."""
+    query = params.get('query', '')
+    content_type = params.get('content_type', 'movie')
+    skip = int(params.get('skip', 0))
+
+    if not query:
+        keyboard = xbmcgui.Dialog().input('Search', type=xbmcgui.INPUT_ALPHANUM)
+        if keyboard:
+            query = keyboard
         else:
-            # Initial search - show with tabs
-            search_by_tab(query, content_type)
-    elif action == 'play':
-        play()
-    elif action == 'select_stream':
-        select_stream()
-    elif action == 'movie_lists':
-        movie_lists()
-    elif action == 'series_lists':
-        series_lists()
-    elif action == 'catalogs':
-        list_catalogs()
-    elif action == 'catalog_genres':
-        list_catalog_genres()
-    elif action == 'browse_catalog':
-        browse_catalog()
-    elif action == 'show_streams':
-        show_streams()
-    elif action == 'show_seasons':
-        show_seasons()
-    elif action == 'show_episodes':
-        show_episodes()
-    elif action == 'trakt_menu':
-        trakt_menu()
-    elif action == 'trakt_watchlist':
-        trakt_watchlist()
-    elif action == 'trakt_collection':
-        trakt_collection()
-    elif action == 'trakt_next_up':
-        trakt_next_up()
-    elif action == 'show_related':
-        show_related()
-    elif action == 'trakt_hide_show':
-        trakt_hide_show()
-    elif action == 'trakt_auth':
-        trakt_auth()
-    elif action == 'trakt_revoke':
-        trakt_revoke()
-    elif action == 'trakt_add_watchlist':
-        trakt_add_watchlist()
-    elif action == 'trakt_remove_watchlist':
-        trakt_remove_watchlist()
-    elif action == 'trakt_mark_watched':
-        trakt_mark_watched()
-    elif action == 'trakt_mark_unwatched':
-        trakt_mark_unwatched()
-    elif action == 'trakt_remove_playback':
-        trakt_remove_playback()
-    elif action == 'trakt_hide_from_progress':
-        trakt_hide_from_progress()
-    elif action == 'trakt_unhide_from_progress':
-        trakt_unhide_from_progress()
-    elif action == 'clear_stream_stats':
-        clear_stream_stats()
-    elif action == 'clear_preferences':
-        clear_preferences()
-    elif action == 'database_reset':
-        database_reset()
-    elif action == 'show_database_info':
-        show_database_info()
-    elif action == 'test_connection':
-        test_connection()
-    elif action == 'quick_actions':
-        quick_actions()
-    elif params:
+            xbmcplugin.endOfDirectory(HANDLE, succeeded=False)
+            return
+
+    if skip > 0:
+        # Handle pagination
+        xbmcplugin.setPluginCategory(HANDLE, f'Search {content_type.title()}: {query}')
+        xbmcplugin.setContent(HANDLE, 'movies' if content_type == 'movie' else 'tvshows')
+
+        results = search_catalog(query, content_type, skip=skip)
+        if results and 'metas' in results:
+            items = results['metas']
+            if HAS_MODULES and filters:
+                items = filters.filter_items(items)
+
+            for meta in items:
+                item_id = meta.get('id')
+                if content_type == 'series':
+                    url = get_url(action='show_seasons', meta_id=item_id)
+                    is_folder = True
+                else:
+                    url = get_url(action='play', content_type='movie', imdb_id=item_id)
+                    is_folder = False
+                list_item = create_listitem_with_context(meta, content_type, url)
+
+                # Set IsPlayable property for movies
+                if not is_folder:
+                    list_item.setProperty('IsPlayable', 'true')
+
+                xbmcplugin.addDirectoryItem(HANDLE, url, list_item, is_folder)
+
+            # Check for next page
+            next_skip = skip + 20
+            next_results = search_catalog(query, content_type, skip=next_skip)
+            if next_results and 'metas' in next_results and len(next_results['metas']) > 0:
+                list_item = xbmcgui.ListItem(label='[COLOR yellow]» Load More...[/COLOR]')
+                url = get_url(action='search_tab', content_type=content_type, query=query, skip=next_skip)
+                xbmcplugin.addDirectoryItem(HANDLE, url, list_item, True)
+
+        xbmcplugin.endOfDirectory(HANDLE)
+    else:
+        # Initial search - show with tabs
+        search_by_tab(query, content_type)
+
+
+def router(params):
+    """
+    Route to the appropriate function based on parameters.
+    Uses action registry pattern for cleaner, more maintainable code.
+    """
+    action_name = params.get('action', '')
+
+    # Look up action in registry
+    handler = ACTION_REGISTRY.get(action_name)
+
+    if handler:
+        # Execute registered handler
+        xbmc.log(f'[AIOStreams] Dispatching action: {action_name}', xbmc.LOGDEBUG)
+        try:
+            handler(params)
+        except Exception as e:
+            xbmc.log(f'[AIOStreams] Action error ({action_name}): {e}', xbmc.LOGERROR)
+    elif action_name:
+        # Unknown action with a name - log warning and show index
+        xbmc.log(f'[AIOStreams] Unknown action: {action_name}', xbmc.LOGWARNING)
         index()
     else:
+        # No action specified - show index
         index()
 
+
+# ============================================================================
+# Main Entry Point
+# ============================================================================
 
 if __name__ == '__main__':
     params = dict(parse_qsl(sys.argv[2][1:]))
     router(params)
+
+    # Cleanup on exit if using new modules
+    if HAS_NEW_MODULES:
+        try:
+            g.deinit()
+        except:
+            pass
