@@ -50,6 +50,37 @@ def open_browser(url):
             return False
 
 
+def clear_clipboard():
+    """Clear the system clipboard (platform-specific)."""
+    system = platform.system().lower()
+
+    try:
+        if system == 'windows':
+            startupinfo = subprocess.STARTUPINFO()
+            startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
+            startupinfo.wShowWindow = subprocess.SW_HIDE
+
+            subprocess.run(
+                ['powershell', '-NoProfile', '-Command', 'Set-Clipboard -Value $null'],
+                capture_output=True,
+                timeout=3,
+                startupinfo=startupinfo
+            )
+            xbmc.log('[AIOStreams WebConfig] Clipboard cleared', xbmc.LOGDEBUG)
+        elif system == 'darwin':
+            subprocess.run(['pbcopy'], input=b'', timeout=3)
+        else:
+            # Linux - try xclip or xsel
+            for cmd in [['xclip', '-selection', 'clipboard'], ['xsel', '--clipboard', '--input']]:
+                try:
+                    subprocess.run(cmd, input=b'', timeout=3)
+                    break
+                except FileNotFoundError:
+                    continue
+    except Exception as e:
+        xbmc.log(f'[AIOStreams WebConfig] Failed to clear clipboard: {e}', xbmc.LOGDEBUG)
+
+
 def get_clipboard_content():
     """Try to get clipboard content (platform-specific)."""
     system = platform.system().lower()
@@ -167,9 +198,9 @@ def configure_aiostreams(host_url=None):
         '3. The URL will be detected automatically'
     )
 
-    # Read current clipboard to ignore it
-    initial_clipboard = get_clipboard_content() or ''
-    xbmc.log(f'[AIOStreams WebConfig] Initial clipboard content length: {len(initial_clipboard)}', xbmc.LOGDEBUG)
+    # Clear clipboard before starting to ensure clean detection
+    clear_clipboard()
+    xbmc.log('[AIOStreams WebConfig] Cleared clipboard before browser open', xbmc.LOGDEBUG)
 
     # Open browser
     browser_opened = open_browser(configure_url)
@@ -235,11 +266,11 @@ def configure_aiostreams(host_url=None):
         if check_count % 10 == 0:  # Log every 10 checks
             xbmc.log(f'[AIOStreams WebConfig] Clipboard check #{check_count}, content: {clipboard[:50] if clipboard else "None"}...', xbmc.LOGDEBUG)
 
-        if clipboard and clipboard != initial_clipboard:
-            if is_valid_manifest_url(clipboard):
-                manifest_url = clipboard.strip()
-                xbmc.log(f'[AIOStreams WebConfig] Detected manifest URL: {manifest_url[:50]}...', xbmc.LOGINFO)
-                break
+        # Since we cleared the clipboard, any valid manifest URL is new
+        if clipboard and is_valid_manifest_url(clipboard):
+            manifest_url = clipboard.strip()
+            xbmc.log(f'[AIOStreams WebConfig] Detected manifest URL: {manifest_url[:50]}...', xbmc.LOGINFO)
+            break
 
         # Wait before next poll using Kodi's sleep (non-blocking)
         xbmc.sleep(int(poll_interval * 1000))
@@ -264,6 +295,10 @@ def configure_aiostreams(host_url=None):
             addon.setSetting('aiostreams_host', host_base)
         except:
             pass
+
+        # Clear clipboard after saving for security
+        clear_clipboard()
+        xbmc.log('[AIOStreams WebConfig] Cleared clipboard after saving', xbmc.LOGDEBUG)
 
         xbmcgui.Dialog().notification(
             'AIOStreams',

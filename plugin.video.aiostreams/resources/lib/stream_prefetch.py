@@ -125,7 +125,10 @@ class StreamPrefetchManager:
 
                 try:
                     # Fetch streams
-                    streams = get_streams_func(show_imdb, season, episode)
+                    stream_data = get_streams_func(show_imdb, season, episode)
+
+                    # Extract streams list from response
+                    streams = stream_data.get('streams', []) if isinstance(stream_data, dict) else stream_data
 
                     if streams:
                         # Get best stream using quality short-circuit
