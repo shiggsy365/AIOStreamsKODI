@@ -757,22 +757,38 @@ def search():
             xbmcplugin.endOfDirectory(HANDLE, succeeded=False)
             return
         query = keyboard.strip()
-    
+
     # If content_type is 'both', use unified search directly
     if content_type == 'both':
         search_unified_internal(query)
         return
-    
+
     # Show progress dialog
     progress = xbmcgui.DialogProgress()
     progress.create('AIOStreams', 'Searching...')
-    
+
     # Perform search
     results = search_catalog(query, content_type, skip=skip)
     progress.close()
-    
-    if not results or 'metas' not in results:
-        xbmcgui.Dialog().notification('AIOStreams', 'No results found', xbmcgui.NOTIFICATION_INFO)
+
+    if not results or 'metas' not in results or len(results['metas']) == 0:
+        # No results found - offer to try again in case of typo
+        dialog = xbmcgui.Dialog()
+        retry = dialog.yesno(
+            'No Results Found',
+            f'No results found for "{query}".',
+            'Check spelling and try again?',
+            nolabel='Cancel',
+            yeslabel='Try Again'
+        )
+        if retry:
+            # Let user correct the search query
+            keyboard = dialog.input('Search', query, type=xbmcgui.INPUT_ALPHANUM)
+            if keyboard and keyboard.strip():
+                # Recursively call search with corrected query
+                corrected_query = keyboard.strip()
+                xbmc.log(f'[AIOStreams] Retrying search with corrected query: {corrected_query}', xbmc.LOGINFO)
+                xbmc.executebuiltin(f'Container.Update({get_url(action="search", content_type=content_type, query=corrected_query)})')
         xbmcplugin.endOfDirectory(HANDLE, succeeded=False)
         return
     
@@ -850,14 +866,31 @@ def search_by_tab(query, content_type):
 
     # Show progress dialog
     progress = xbmcgui.DialogProgress()
-    progress.create('AIOStreams', f'Searching {content_type}s...')
+    content_label = 'TV shows' if content_type == 'series' else f'{content_type}s'
+    progress.create('AIOStreams', f'Searching {content_label}...')
 
     # Perform search
     results = search_catalog(query, content_type, skip=0)
     progress.close()
 
     if not results or 'metas' not in results or len(results['metas']) == 0:
-        xbmcgui.Dialog().notification('AIOStreams', 'No results found', xbmcgui.NOTIFICATION_INFO)
+        # No results found - offer to try again in case of typo
+        dialog = xbmcgui.Dialog()
+        retry = dialog.yesno(
+            'No Results Found',
+            f'No {content_type}s found for "{query}".',
+            'Check spelling and try again?',
+            nolabel='Cancel',
+            yeslabel='Try Again'
+        )
+        if retry:
+            # Let user correct the search query
+            keyboard = dialog.input('Search', query, type=xbmcgui.INPUT_ALPHANUM)
+            if keyboard and keyboard.strip():
+                # Recursively call unified search with corrected query
+                corrected_query = keyboard.strip()
+                xbmc.log(f'[AIOStreams] Retrying search with corrected query: {corrected_query}', xbmc.LOGINFO)
+                xbmc.executebuiltin(f'Container.Update({get_url(action="search", content_type="both", query=corrected_query)})')
         xbmcplugin.endOfDirectory(HANDLE, succeeded=False)
         return
 
@@ -1610,14 +1643,25 @@ def show_streams_dialog(content_type, media_id, stream_data, title, poster='', f
         stream_mgr.record_stream_selection(stream_data['streams'][selected].get('name', ''))
 
     # Play selected stream
-    play_stream_by_index(content_type, media_id, stream_data, selected)
+    # Use direct playback since we're called from RunPlugin (show_streams action)
+    play_stream_by_index(content_type, media_id, stream_data, selected, use_player=True)
 
 
-def play_stream_by_index(content_type, media_id, stream_data, index):
-    """Play a stream by its index in the stream list."""
+def play_stream_by_index(content_type, media_id, stream_data, index, use_player=False):
+    """Play a stream by its index in the stream list.
+
+    Args:
+        content_type: Type of content ('movie' or 'series')
+        media_id: Media ID (IMDB for movies, imdb:season:episode for series)
+        stream_data: Stream data dict with 'streams' list
+        index: Index of stream to play
+        use_player: If True, use xbmc.Player().play() (for RunPlugin context)
+                    If False, use setResolvedUrl (for playable listitem context)
+    """
     if index >= len(stream_data['streams']):
         xbmcgui.Dialog().notification('AIOStreams', 'Invalid stream index', xbmcgui.NOTIFICATION_ERROR)
-        xbmcplugin.endOfDirectory(HANDLE, succeeded=False)
+        if not use_player:
+            xbmcplugin.endOfDirectory(HANDLE, succeeded=False)
         return False
 
     stream = stream_data['streams'][index]
@@ -1625,6 +1669,8 @@ def play_stream_by_index(content_type, media_id, stream_data, index):
 
     if not stream_url:
         xbmcgui.Dialog().notification('AIOStreams', 'No playable URL found', xbmcgui.NOTIFICATION_ERROR)
+        if not use_player:
+            xbmcplugin.setResolvedUrl(HANDLE, False, xbmcgui.ListItem())
         return False
 
     # Create list item for playback
@@ -1656,8 +1702,17 @@ def play_stream_by_index(content_type, media_id, stream_data, index):
         else:
             PLAYER.set_media_info('movie', media_id, None, None)
 
-    # Set resolved URL for playback
-    xbmcplugin.setResolvedUrl(HANDLE, True, list_item)
+    # Start playback using appropriate method
+    if use_player:
+        # Called from RunPlugin context (e.g., "Scrape Streams" context menu)
+        # Use direct playback
+        xbmc.log(f'[AIOStreams] Starting direct playback: {stream_url}', xbmc.LOGINFO)
+        player = xbmc.Player()
+        player.play(stream_url, list_item)
+    else:
+        # Called from playable listitem context (e.g., clicking a movie/episode)
+        # Use setResolvedUrl
+        xbmcplugin.setResolvedUrl(HANDLE, True, list_item)
 
     # Monitor playback with 30 second timeout
     playback_started = False
