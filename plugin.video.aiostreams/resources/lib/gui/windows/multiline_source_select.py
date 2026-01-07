@@ -16,6 +16,49 @@ import xbmcvfs
 CONTROL_STREAM_LIST = 5000
 CONTROL_SCROLLBAR = 5001
 
+# Emoji to text replacements
+EMOJI_REPLACEMENTS = {
+    '🕵️': '[#]',
+    '🕵': '[#]',
+    '☁️': '[Lib]',
+    '☁': '[Lib]',
+    '⚡': '[Cached]',
+    '⏳': '[Uncached]',
+    '🎞️': '|',
+    '🎞': '|',
+    '🏷️': '|',
+    '🏷': '|',
+    '📺': '',
+    '🎧': '|',
+    '•': '-',
+    '🔊': '|',
+    '📦': '[Size]',
+    '⏱️': '[Duration]',
+    '⏱': '[Duration]',
+    '📅': '[Age]',
+    '🔍': '[Indx]',
+    '🌐': '[Lang]',
+}
+
+
+def replace_emojis(text):
+    """Replace emojis with text equivalents for better compatibility."""
+    if not text:
+        return text
+
+    for emoji, replacement in EMOJI_REPLACEMENTS.items():
+        text = text.replace(emoji, replacement)
+
+    # Clean up any double spaces or pipes that might result
+    while '  ' in text:
+        text = text.replace('  ', ' ')
+    while '||' in text:
+        text = text.replace('||', '|')
+    while '| |' in text:
+        text = text.replace('| |', '|')
+
+    return text.strip()
+
 
 class MultiLineSourceSelect(xbmcgui.WindowXML):
     """
@@ -95,6 +138,10 @@ class MultiLineSourceSelect(xbmcgui.WindowXML):
                 # Get stream name and description
                 name = stream.get('name', stream.get('title', ''))
                 description = stream.get('description', '')
+
+                # Replace emojis with text equivalents for compatibility
+                name = replace_emojis(name)
+                description = replace_emojis(description)
 
                 # Build multi-line label
                 # The XML textbox will render \n as line breaks
