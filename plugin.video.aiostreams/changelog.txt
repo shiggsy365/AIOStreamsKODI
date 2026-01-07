@@ -1,5 +1,16 @@
 # Changelog
 
+## [3.4.5] - 2026-01-07
+
+### Bug Fixes
+- Fixed Trakt sync error: added missing `force` parameter to sync_activities()
+- Fixed prefetch error: properly extract streams list from API response
+- Fixed clipboard monitoring: clear clipboard before/after configuration
+
+### Improvements
+- Emoji replacement with Kodi color codes for better stream display
+- Improved clipboard detection reliability
+
 ## [3.1.0] - 2026-01-06
 
 ### MAJOR ARCHITECTURAL IMPROVEMENT - Seren's Next Up Approach
