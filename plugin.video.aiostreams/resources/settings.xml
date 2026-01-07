@@ -2,7 +2,10 @@
 <settings>
     <!-- General Settings -->
     <category label="General">
-        <setting id="base_url" type="text" label="AIOStreams Base URL" default=""/>
+        <setting id="aiostreams_config" type="lsep" label="AIOStreams Configuration"/>
+        <setting id="aiostreams_host" type="text" label="AIOStreams Host URL" default="https://aiostreams.elfhosted.com"/>
+        <setting id="configure_aiostreams" type="action" label="Configure AIOStreams (Open Browser)" action="RunPlugin(plugin://plugin.video.aiostreams/?action=configure_aiostreams)"/>
+        <setting id="base_url" type="text" label="Manifest URL (auto-filled)" default=""/>
         <setting id="timeout" type="number" label="Request Timeout (seconds)" default="10"/>
 
         <setting id="playback_settings" type="lsep" label="Playback Settings"/>
