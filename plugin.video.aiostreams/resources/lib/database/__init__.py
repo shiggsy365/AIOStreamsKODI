@@ -40,15 +40,28 @@ class Database:
 
     def connect(self):
         """
-        Establish connection to the SQLite database.
+        Establish connection to the SQLite database with WAL mode for concurrent access.
 
         Returns:
             bool: True if connection successful, False otherwise
         """
         try:
-            self.connection = sqlite3.connect(self.db_path)
+            # Connect with timeout to handle concurrent access
+            self.connection = sqlite3.connect(
+                self.db_path,
+                timeout=10.0,  # 10 second timeout for lock contention
+                check_same_thread=False  # Allow multi-threaded access
+            )
             self.connection.row_factory = sqlite3.Row  # Enable dict-like row access
-            xbmc.log(f'[AIOStreams] Connected to database: {self.db_path}', xbmc.LOGDEBUG)
+
+            # Enable WAL mode for concurrent read/write support
+            # This prevents "database is locked" errors when service + UI access simultaneously
+            self.connection.execute("PRAGMA journal_mode=WAL")
+            self.connection.execute("PRAGMA synchronous=NORMAL")  # Faster than FULL, safe with WAL
+            self.connection.execute("PRAGMA cache_size=-64000")   # 64MB cache for better performance
+            self.connection.execute("PRAGMA temp_store=MEMORY")   # Store temp tables in memory
+
+            xbmc.log(f'[AIOStreams] Connected to database (WAL mode): {self.db_path}', xbmc.LOGDEBUG)
             return True
         except sqlite3.Error as e:
             xbmc.log(f'[AIOStreams] Database connection error: {e}', xbmc.LOGERROR)

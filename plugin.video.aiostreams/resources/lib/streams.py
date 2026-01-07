@@ -138,6 +138,46 @@ class StreamManager:
 
         return sorted(streams, key=get_stream_score, reverse=True)
 
+    def get_best_stream_fast(self, streams, quality_threshold='1080p', reliability_threshold=80):
+        """Get best stream with early termination if excellent quality found.
+
+        Implements "short-circuit" optimization - if we find a high-quality, reliable
+        stream early, return it immediately without processing remaining streams.
+
+        Args:
+            streams: List of stream dicts
+            quality_threshold: Minimum quality to short-circuit (default: 1080p)
+            reliability_threshold: Minimum reliability score to short-circuit (default: 80%)
+
+        Returns:
+            Best stream dict or None if no streams
+        """
+        if not streams:
+            return None
+
+        # Sort streams first
+        sorted_streams = self.sort_streams(streams)
+
+        # Get quality rank threshold
+        min_quality_rank = constants.QUALITY_RANKS.get(quality_threshold, constants.QUALITY_RANKS['1080p'])
+
+        # Check first few streams for excellent quality
+        for stream in sorted_streams[:5]:  # Only check top 5 for fast path
+            stream_name = stream.get('name', stream.get('title', ''))
+            stream_url = stream.get('url', stream.get('externalUrl', ''))
+
+            _, quality_rank, quality_label = self.detect_quality(stream_name)
+            reliability = self.get_reliability_score(stream_url)
+
+            # Short-circuit: Found excellent stream
+            if quality_rank >= min_quality_rank and reliability >= reliability_threshold:
+                xbmc.log(f'[AIOStreams] Fast path: Found excellent stream ({quality_label}, {reliability}% reliable)', xbmc.LOGINFO)
+                return stream
+
+        # No excellent stream found in top 5, return best overall
+        xbmc.log('[AIOStreams] No excellent stream in top 5, using best available', xbmc.LOGDEBUG)
+        return sorted_streams[0] if sorted_streams else None
+
     def get_reliability_score(self, stream_url):
         """
         Get reliability score for a stream (0-100).

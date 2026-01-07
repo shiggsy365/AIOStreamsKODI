@@ -757,22 +757,38 @@ def search():
             xbmcplugin.endOfDirectory(HANDLE, succeeded=False)
             return
         query = keyboard.strip()
-    
+
     # If content_type is 'both', use unified search directly
     if content_type == 'both':
         search_unified_internal(query)
         return
-    
+
     # Show progress dialog
     progress = xbmcgui.DialogProgress()
     progress.create('AIOStreams', 'Searching...')
-    
+
     # Perform search
     results = search_catalog(query, content_type, skip=skip)
     progress.close()
-    
-    if not results or 'metas' not in results:
-        xbmcgui.Dialog().notification('AIOStreams', 'No results found', xbmcgui.NOTIFICATION_INFO)
+
+    if not results or 'metas' not in results or len(results['metas']) == 0:
+        # No results found - offer to try again in case of typo
+        dialog = xbmcgui.Dialog()
+        retry = dialog.yesno(
+            'No Results Found',
+            f'No results found for "{query}".',
+            'Check spelling and try again?',
+            nolabel='Cancel',
+            yeslabel='Try Again'
+        )
+        if retry:
+            # Let user correct the search query
+            keyboard = dialog.input('Search', query, type=xbmcgui.INPUT_ALPHANUM)
+            if keyboard and keyboard.strip():
+                # Recursively call search with corrected query
+                corrected_query = keyboard.strip()
+                xbmc.log(f'[AIOStreams] Retrying search with corrected query: {corrected_query}', xbmc.LOGINFO)
+                xbmc.executebuiltin(f'Container.Update({get_url(action="search", content_type=content_type, query=corrected_query)})')
         xbmcplugin.endOfDirectory(HANDLE, succeeded=False)
         return
     
@@ -850,14 +866,31 @@ def search_by_tab(query, content_type):
 
     # Show progress dialog
     progress = xbmcgui.DialogProgress()
-    progress.create('AIOStreams', f'Searching {content_type}s...')
+    content_label = 'TV shows' if content_type == 'series' else f'{content_type}s'
+    progress.create('AIOStreams', f'Searching {content_label}...')
 
     # Perform search
     results = search_catalog(query, content_type, skip=0)
     progress.close()
 
     if not results or 'metas' not in results or len(results['metas']) == 0:
-        xbmcgui.Dialog().notification('AIOStreams', 'No results found', xbmcgui.NOTIFICATION_INFO)
+        # No results found - offer to try again in case of typo
+        dialog = xbmcgui.Dialog()
+        retry = dialog.yesno(
+            'No Results Found',
+            f'No {content_type}s found for "{query}".',
+            'Check spelling and try again?',
+            nolabel='Cancel',
+            yeslabel='Try Again'
+        )
+        if retry:
+            # Let user correct the search query
+            keyboard = dialog.input('Search', query, type=xbmcgui.INPUT_ALPHANUM)
+            if keyboard and keyboard.strip():
+                # Recursively call unified search with corrected query
+                corrected_query = keyboard.strip()
+                xbmc.log(f'[AIOStreams] Retrying search with corrected query: {corrected_query}', xbmc.LOGINFO)
+                xbmc.executebuiltin(f'Container.Update({get_url(action="search", content_type="both", query=corrected_query)})')
         xbmcplugin.endOfDirectory(HANDLE, succeeded=False)
         return
 
@@ -1610,14 +1643,25 @@ def show_streams_dialog(content_type, media_id, stream_data, title, poster='', f
         stream_mgr.record_stream_selection(stream_data['streams'][selected].get('name', ''))
 
     # Play selected stream
-    play_stream_by_index(content_type, media_id, stream_data, selected)
+    # Use direct playback since we're called from RunPlugin (show_streams action)
+    play_stream_by_index(content_type, media_id, stream_data, selected, use_player=True)
 
 
-def play_stream_by_index(content_type, media_id, stream_data, index):
-    """Play a stream by its index in the stream list."""
+def play_stream_by_index(content_type, media_id, stream_data, index, use_player=False):
+    """Play a stream by its index in the stream list.
+
+    Args:
+        content_type: Type of content ('movie' or 'series')
+        media_id: Media ID (IMDB for movies, imdb:season:episode for series)
+        stream_data: Stream data dict with 'streams' list
+        index: Index of stream to play
+        use_player: If True, use xbmc.Player().play() (for RunPlugin context)
+                    If False, use setResolvedUrl (for playable listitem context)
+    """
     if index >= len(stream_data['streams']):
         xbmcgui.Dialog().notification('AIOStreams', 'Invalid stream index', xbmcgui.NOTIFICATION_ERROR)
-        xbmcplugin.endOfDirectory(HANDLE, succeeded=False)
+        if not use_player:
+            xbmcplugin.endOfDirectory(HANDLE, succeeded=False)
         return False
 
     stream = stream_data['streams'][index]
@@ -1625,6 +1669,8 @@ def play_stream_by_index(content_type, media_id, stream_data, index):
 
     if not stream_url:
         xbmcgui.Dialog().notification('AIOStreams', 'No playable URL found', xbmcgui.NOTIFICATION_ERROR)
+        if not use_player:
+            xbmcplugin.setResolvedUrl(HANDLE, False, xbmcgui.ListItem())
         return False
 
     # Create list item for playback
@@ -1656,8 +1702,17 @@ def play_stream_by_index(content_type, media_id, stream_data, index):
         else:
             PLAYER.set_media_info('movie', media_id, None, None)
 
-    # Set resolved URL for playback
-    xbmcplugin.setResolvedUrl(HANDLE, True, list_item)
+    # Start playback using appropriate method
+    if use_player:
+        # Called from RunPlugin context (e.g., "Scrape Streams" context menu)
+        # Use direct playback
+        xbmc.log(f'[AIOStreams] Starting direct playback: {stream_url}', xbmc.LOGINFO)
+        player = xbmc.Player()
+        player.play(stream_url, list_item)
+    else:
+        # Called from playable listitem context (e.g., clicking a movie/episode)
+        # Use setResolvedUrl
+        xbmcplugin.setResolvedUrl(HANDLE, True, list_item)
 
     # Monitor playback with 30 second timeout
     playback_started = False
@@ -2403,6 +2458,12 @@ def trakt_next_up():
             list_item.setProperty('IsPlayable', 'true')
             xbmcplugin.addDirectoryItem(HANDLE, url, list_item, False)
 
+    # Push Next Up data to window properties for instant widget updates
+    _push_next_up_to_window(next_episodes)
+
+    # Trigger background prefetch for top 3 Next Up episodes
+    _prefetch_next_up_streams(next_episodes)
+
     xbmcplugin.endOfDirectory(HANDLE)
 
 
@@ -2503,8 +2564,118 @@ def trakt_revoke():
     if not HAS_MODULES:
         xbmcgui.Dialog().ok('AIOStreams', 'Trakt module not available')
         return
-    
+
     trakt.revoke_authorization()
+
+
+# Helper functions for Trakt actions
+def _get_params():
+    """Get URL parameters as dict."""
+    return dict(parse_qsl(sys.argv[2][1:]))
+
+
+def _refresh_ui():
+    """Refresh container and trigger background widget refresh."""
+    xbmc.executebuiltin('Container.Refresh')
+    try:
+        from resources.lib import utils
+        utils.trigger_background_refresh(delay=0.5)
+    except Exception as e:
+        xbmc.log(f'[AIOStreams] Failed to trigger widget refresh: {e}', xbmc.LOGDEBUG)
+
+
+def _parse_episode_params(params):
+    """Parse and convert episode parameters to integers.
+
+    Args:
+        params: Dict of URL parameters
+
+    Returns:
+        tuple: (season_int, episode_int) or (None, None)
+    """
+    season = params.get('season')
+    episode = params.get('episode')
+    season_int = int(season) if season else None
+    episode_int = int(episode) if episode else None
+    return season_int, episode_int
+
+
+def _push_next_up_to_window(next_episodes):
+    """Push Next Up data to Kodi window properties for instant widget updates.
+
+    This allows skins to access Next Up data without forcing container refresh,
+    eliminating the "stutter" effect in widgets.
+
+    Args:
+        next_episodes: List of episode dicts from get_next_up_episodes()
+    """
+    try:
+        window = xbmcgui.Window(10000)  # Home window (persistent)
+
+        # Limit to first 20 episodes for performance
+        limited_episodes = next_episodes[:20]
+
+        # Push each episode to window properties
+        for idx, ep_data in enumerate(limited_episodes):
+            show_imdb = ep_data.get('show_imdb_id', '')
+            show_title = ep_data.get('show_title', 'Unknown')
+            season = ep_data.get('season', 0)
+            episode = ep_data.get('episode', 0)
+            episode_imdb = ep_data.get('episode_imdb_id', '')
+            last_watched = ep_data.get('last_watched_at', '')
+
+            # Set window properties with AIOStreams. prefix
+            prefix = f'AIOStreams.NextUp.{idx}'
+            window.setProperty(f'{prefix}.ShowTitle', str(show_title))
+            window.setProperty(f'{prefix}.ShowIMDB', str(show_imdb))
+            window.setProperty(f'{prefix}.Season', str(season))
+            window.setProperty(f'{prefix}.Episode', str(episode))
+            window.setProperty(f'{prefix}.EpisodeIMDB', str(episode_imdb))
+            window.setProperty(f'{prefix}.Label', f'{show_title} S{season:02d}E{episode:02d}')
+            window.setProperty(f'{prefix}.LastWatched', str(last_watched))
+            window.setProperty(f'{prefix}.PlayURL', get_url(action='play', content_type='series',
+                                                            imdb_id=show_imdb, season=season, episode=episode))
+
+        # Set total count
+        window.setProperty('AIOStreams.NextUp.Count', str(len(limited_episodes)))
+
+        # Clear unused slots (in case list got smaller)
+        for idx in range(len(limited_episodes), 20):
+            prefix = f'AIOStreams.NextUp.{idx}'
+            window.clearProperty(f'{prefix}.ShowTitle')
+            window.clearProperty(f'{prefix}.ShowIMDB')
+            window.clearProperty(f'{prefix}.Season')
+            window.clearProperty(f'{prefix}.Episode')
+            window.clearProperty(f'{prefix}.EpisodeIMDB')
+            window.clearProperty(f'{prefix}.Label')
+            window.clearProperty(f'{prefix}.LastWatched')
+            window.clearProperty(f'{prefix}.PlayURL')
+
+        xbmc.log(f'[AIOStreams] Pushed {len(limited_episodes)} Next Up items to window properties', xbmc.LOGINFO)
+
+    except Exception as e:
+        xbmc.log(f'[AIOStreams] Error pushing Next Up to window properties: {e}', xbmc.LOGERROR)
+
+
+def _prefetch_next_up_streams(next_episodes):
+    """Trigger background prefetch for top Next Up episodes.
+
+    Args:
+        next_episodes: List of episode dicts from get_next_up_episodes()
+    """
+    try:
+        from resources.lib.stream_prefetch import get_prefetch_manager
+
+        def get_streams_wrapper(show_imdb, season, episode):
+            """Wrapper to fetch streams for an episode."""
+            media_id = f"{show_imdb}:{season}:{episode}"
+            return get_streams('series', media_id)
+
+        manager = get_prefetch_manager()
+        manager.prefetch_streams_async(next_episodes, get_streams_wrapper)
+
+    except Exception as e:
+        xbmc.log(f'[AIOStreams] Error triggering stream prefetch: {e}', xbmc.LOGERROR)
 
 
 def trakt_add_watchlist():
@@ -2512,19 +2683,13 @@ def trakt_add_watchlist():
     if not HAS_MODULES:
         return
 
-    params = dict(parse_qsl(sys.argv[2][1:]))
+    params = _get_params()
     media_type = params.get('media_type', 'movie')
     imdb_id = params.get('imdb_id', '')
 
     if imdb_id:
         trakt.add_to_watchlist(media_type, imdb_id)
-        xbmc.executebuiltin('Container.Refresh')
-        # Trigger widget refresh in background
-        try:
-            from resources.lib import utils
-            utils.trigger_background_refresh(delay=0.5)
-        except Exception as e:
-            xbmc.log(f'[AIOStreams] Failed to trigger widget refresh: {e}', xbmc.LOGDEBUG)
+        _refresh_ui()
 
 
 def trakt_remove_watchlist():
@@ -2532,23 +2697,14 @@ def trakt_remove_watchlist():
     if not HAS_MODULES:
         return
 
-    params = dict(parse_qsl(sys.argv[2][1:]))
+    params = _get_params()
     media_type = params.get('media_type', 'movie')
     imdb_id = params.get('imdb_id', '')
-    season = params.get('season')
-    episode = params.get('episode')
+    season_int, episode_int = _parse_episode_params(params)
 
     if imdb_id:
-        season_int = int(season) if season else None
-        episode_int = int(episode) if episode else None
         trakt.remove_from_watchlist(media_type, imdb_id, season_int, episode_int)
-        xbmc.executebuiltin('Container.Refresh')
-        # Trigger widget refresh in background
-        try:
-            from resources.lib import utils
-            utils.trigger_background_refresh(delay=0.5)
-        except Exception as e:
-            xbmc.log(f'[AIOStreams] Failed to trigger widget refresh: {e}', xbmc.LOGDEBUG)
+        _refresh_ui()
 
 
 def trakt_mark_watched():
@@ -2556,25 +2712,16 @@ def trakt_mark_watched():
     if not HAS_MODULES:
         return
 
-    params = dict(parse_qsl(sys.argv[2][1:]))
+    params = _get_params()
     media_type = params.get('media_type', 'movie')
     imdb_id = params.get('imdb_id', '')
-    season = params.get('season')
-    episode = params.get('episode')
     playback_id = params.get('playback_id', '')
+    season_int, episode_int = _parse_episode_params(params)
 
     if imdb_id:
-        season_int = int(season) if season else None
-        episode_int = int(episode) if episode else None
         playback_id_int = int(playback_id) if playback_id else None
         trakt.mark_watched(media_type, imdb_id, season_int, episode_int, playback_id_int)
-        xbmc.executebuiltin('Container.Refresh')
-        # Trigger widget refresh in background
-        try:
-            from resources.lib import utils
-            utils.trigger_background_refresh(delay=0.5)
-        except Exception as e:
-            xbmc.log(f'[AIOStreams] Failed to trigger widget refresh: {e}', xbmc.LOGDEBUG)
+        _refresh_ui()
 
 
 def trakt_mark_unwatched():
@@ -2582,23 +2729,14 @@ def trakt_mark_unwatched():
     if not HAS_MODULES:
         return
 
-    params = dict(parse_qsl(sys.argv[2][1:]))
+    params = _get_params()
     media_type = params.get('media_type', 'movie')
     imdb_id = params.get('imdb_id', '')
-    season = params.get('season')
-    episode = params.get('episode')
+    season_int, episode_int = _parse_episode_params(params)
 
     if imdb_id:
-        season_int = int(season) if season else None
-        episode_int = int(episode) if episode else None
         trakt.mark_unwatched(media_type, imdb_id, season_int, episode_int)
-        xbmc.executebuiltin('Container.Refresh')
-        # Trigger widget refresh in background
-        try:
-            from resources.lib import utils
-            utils.trigger_background_refresh(delay=0.5)
-        except Exception as e:
-            xbmc.log(f'[AIOStreams] Failed to trigger widget refresh: {e}', xbmc.LOGDEBUG)
+        _refresh_ui()
 
 
 def trakt_remove_playback():
@@ -2618,21 +2756,14 @@ def trakt_hide_from_progress():
     if not HAS_MODULES:
         return
 
-    params = dict(parse_qsl(sys.argv[2][1:]))
+    params = _get_params()
     media_type = params.get('media_type', 'movie')
     imdb_id = params.get('imdb_id', '')
 
     if imdb_id:
         success = trakt.hide_from_progress(media_type, imdb_id)
         if success:
-            # Refresh current container immediately
-            xbmc.executebuiltin('Container.Refresh')
-            # Trigger widget refresh in background
-            try:
-                from resources.lib import utils
-                utils.trigger_background_refresh(delay=0.5)
-            except Exception as e:
-                xbmc.log(f'[AIOStreams] Failed to trigger widget refresh: {e}', xbmc.LOGDEBUG)
+            _refresh_ui()
 
 
 def trakt_unhide_from_progress():
@@ -2640,21 +2771,14 @@ def trakt_unhide_from_progress():
     if not HAS_MODULES:
         return
 
-    params = dict(parse_qsl(sys.argv[2][1:]))
+    params = _get_params()
     media_type = params.get('media_type', 'movie')
     imdb_id = params.get('imdb_id', '')
 
     if imdb_id:
         success = trakt.unhide_from_progress(media_type, imdb_id)
         if success:
-            # Refresh current container immediately
-            xbmc.executebuiltin('Container.Refresh')
-            # Trigger widget refresh in background
-            try:
-                from resources.lib import utils
-                utils.trigger_background_refresh(delay=0.5)
-            except Exception as e:
-                xbmc.log(f'[AIOStreams] Failed to trigger widget refresh: {e}', xbmc.LOGDEBUG)
+            _refresh_ui()
 
 
 # Maintenance Tools
