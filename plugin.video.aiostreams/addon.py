@@ -3251,6 +3251,21 @@ def test_connection():
                            f'Please check your settings and try again.')
 
 
+def configure_aiostreams_action():
+    """Open browser to configure AIOStreams and capture the manifest URL."""
+    try:
+        from resources.lib.web_config import configure_aiostreams
+        result = configure_aiostreams()
+        if result:
+            xbmc.log(f'[AIOStreams] Configuration completed: {result}', xbmc.LOGINFO)
+    except ImportError as e:
+        xbmc.log(f'[AIOStreams] Failed to import web_config: {e}', xbmc.LOGERROR)
+        xbmcgui.Dialog().ok('AIOStreams', 'Web configuration module not available.\n\nPlease update the addon.')
+    except Exception as e:
+        xbmc.log(f'[AIOStreams] Configure action failed: {e}', xbmc.LOGERROR)
+        xbmcgui.Dialog().ok('AIOStreams', f'Configuration failed:\n\n{str(e)}')
+
+
 # ============================================================================
 # Action Registry - Cleaner routing using dictionary pattern
 # ============================================================================
@@ -3306,6 +3321,7 @@ ACTION_REGISTRY = {
     'show_database_info': lambda p: show_database_info(),
     'test_connection': lambda p: test_connection(),
     'quick_actions': lambda p: quick_actions(),
+    'configure_aiostreams': lambda p: configure_aiostreams_action(),
 }
 
 
