@@ -7,6 +7,7 @@ import xbmcvfs
 import requests
 import time
 import json
+import random
 
 # Import cache module
 try:
@@ -275,42 +276,89 @@ def clear_token_data():
     ADDON.setSetting('trakt_expires', '0')
 
 
-def call_trakt(path, method='GET', data=None, params=None, with_auth=True, extra_headers=None):
-    """Make authenticated request to Trakt API.
+def call_trakt(path, method='GET', data=None, params=None, with_auth=True, extra_headers=None, max_retries=3):
+    """Make authenticated request to Trakt API with retry logic.
 
     Args:
+        path: API endpoint path
+        method: HTTP method (GET, POST, DELETE)
+        data: JSON data for POST requests
+        params: Query parameters
+        with_auth: Whether to include auth token
         extra_headers: Optional dict of additional headers (e.g., {'X-Start-Date': '2024-01-01T00:00:00Z'})
+        max_retries: Maximum number of retry attempts (default: 3)
+
+    Returns:
+        JSON response data or True for empty responses, None on failure
+    """
+    token_refreshed = False
+
+    for attempt in range(max_retries):
+        result = _call_trakt_once(path, method, data, params, with_auth, extra_headers, token_refreshed)
+
+        # Check result type to determine if we should retry
+        if result is not None:
+            # Success or non-retryable error
+            return result
+
+        # For retryable errors, implement exponential backoff
+        if attempt < max_retries - 1:
+            # Exponential backoff: 2^attempt seconds + random jitter (0-1s)
+            delay = (2 ** attempt) + random.uniform(0, 1)
+            xbmc.log(f'[AIOStreams] Trakt API retry {attempt + 1}/{max_retries} in {delay:.1f}s for {path}', xbmc.LOGINFO)
+            time.sleep(delay)
+
+            # Mark that we've tried token refresh to avoid infinite loops
+            if result == 'token_refresh_needed':
+                token_refreshed = True
+
+    xbmc.log(f'[AIOStreams] Trakt API request failed after {max_retries} attempts: {path}', xbmc.LOGERROR)
+    return None
+
+
+def _call_trakt_once(path, method='GET', data=None, params=None, with_auth=True, extra_headers=None, token_refreshed=False):
+    """Single attempt to call Trakt API.
+
+    Args:
+        token_refreshed: Whether we've already attempted token refresh (prevents infinite loops)
+
+    Returns:
+        Response data on success
+        None for retryable errors (timeouts, 5xx, 429)
+        'token_refresh_needed' for 401 errors
     """
     client_id = get_client_id()
     if not client_id:
         xbmcgui.Dialog().notification('AIOStreams', 'Trakt Client ID not set', xbmcgui.NOTIFICATION_WARNING)
-        return None
+        return {}  # Non-retryable error
 
     headers = {
         'Content-Type': 'application/json',
         'trakt-api-version': API_VERSION,
-        'trakt-api-key': client_id
+        'trakt-api-key': client_id,
+        'User-Agent': 'AIOStreams/3.3.11 (Kodi)'  # Unique User-Agent to prevent shadow bans
     }
 
     # Add any extra headers (like X-Start-Date for delta sync)
     if extra_headers:
         headers.update(extra_headers)
-    
+
     # Add authorization if needed
     if with_auth:
         # Check if token needs refresh
         if time.time() > get_token_expires():
             refresh_access_token()
-        
+
         token = get_access_token()
         if token:
             headers['Authorization'] = f'Bearer {token}'
         elif path not in ['oauth/device/code', 'oauth/device/token']:
             xbmcgui.Dialog().notification('AIOStreams', 'Not authorized with Trakt', xbmcgui.NOTIFICATION_WARNING)
-            return None
-    
+            return {}  # Non-retryable error
+
     url = f'{API_ENDPOINT}/{path}'
-    
+    response = None
+
     try:
         if method == 'GET':
             response = requests.get(url, headers=headers, params=params, timeout=10)
@@ -319,24 +367,50 @@ def call_trakt(path, method='GET', data=None, params=None, with_auth=True, extra
         elif method == 'DELETE':
             response = requests.delete(url, headers=headers, timeout=10)
         else:
-            return None
-        
+            return {}  # Non-retryable error
+
+        # Handle rate limiting (429 Too Many Requests)
+        if response.status_code == 429:
+            retry_after = response.headers.get('Retry-After', '60')
+            xbmc.log(f'[AIOStreams] Trakt rate limit hit, retry after {retry_after}s', xbmc.LOGWARNING)
+            try:
+                time.sleep(min(int(retry_after), 120))  # Cap at 2 minutes
+            except ValueError:
+                time.sleep(60)  # Default to 60s if header is invalid
+            return None  # Retryable error
+
+        # Handle token expiration (401 Unauthorized)
+        if response.status_code == 401 and with_auth and not token_refreshed:
+            xbmc.log('[AIOStreams] Trakt token expired, attempting refresh...', xbmc.LOGINFO)
+            if refresh_access_token():
+                return 'token_refresh_needed'  # Signal retry with refreshed token
+            else:
+                xbmc.log('[AIOStreams] Token refresh failed', xbmc.LOGERROR)
+                return {}  # Non-retryable error
+
+        # Handle server errors (5xx)
+        if 500 <= response.status_code < 600:
+            xbmc.log(f'[AIOStreams] Trakt server error {response.status_code}, will retry', xbmc.LOGWARNING)
+            return None  # Retryable error
+
         response.raise_for_status()
-        
+
         if response.text:
             return response.json()
         return True
-    
+
+    except requests.exceptions.Timeout:
+        xbmc.log(f'[AIOStreams] Trakt request timeout for {path}, will retry', xbmc.LOGWARNING)
+        return None  # Retryable error
     except requests.exceptions.HTTPError as e:
-        if response.status_code == 401 and with_auth:
-            # Token expired, try refresh
-            refresh_access_token()
-            return call_trakt(path, method, data, params, with_auth)
-        xbmc.log(f'[AIOStreams] Trakt API error: {e}', xbmc.LOGERROR)
-        return None
+        xbmc.log(f'[AIOStreams] Trakt API HTTP error: {e}', xbmc.LOGERROR)
+        return {}  # Non-retryable error (already handled specific codes above)
+    except requests.exceptions.RequestException as e:
+        xbmc.log(f'[AIOStreams] Trakt network error: {e}', xbmc.LOGERROR)
+        return None  # Retryable error (network issues)
     except Exception as e:
         xbmc.log(f'[AIOStreams] Trakt request failed: {e}', xbmc.LOGERROR)
-        return None
+        return {}  # Non-retryable error
 
 
 def authorize():
