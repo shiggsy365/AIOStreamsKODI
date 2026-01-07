@@ -23,19 +23,20 @@ class TraktSyncDatabase(BaseTraktDB):
     
     # ===== Activities API =====
     
-    def fetch_remote_activities(self, silent=False):
+    def fetch_remote_activities(self, silent=False, force=False):
         """Fetch /sync/last_activities with 5-minute throttle.
-        
+
         Args:
             silent: If False, log throttle messages
-        
+            force: If True, bypass throttle check
+
         Returns:
             dict: Activities JSON from Trakt, or None if called too soon
         """
         # Get last call timestamp from database
         activities = self.fetchone("SELECT last_activities_call FROM activities WHERE sync_id=1")
-        
-        if activities:
+
+        if activities and not force:
             last_call = activities.get('last_activities_call', 0)
             # Throttle to 5 minutes
             if time.time() < (last_call + (5 * 60)):
@@ -60,20 +61,21 @@ class TraktSyncDatabase(BaseTraktDB):
     
     # ===== Main Sync Coordinator =====
     
-    def sync_activities(self, silent=False):
+    def sync_activities(self, silent=False, force=False):
         """Main sync coordinator - compares timestamps and syncs only changed data.
-        
+
         Args:
             silent: If False, show progress dialog
-        
+            force: If True, bypass throttle check
+
         Returns:
             bool: True if sync completed without errors, False if errors occurred,
                   None if sync was skipped (throttled)
         """
         self.sync_errors = []
-        
-        # Fetch remote activities (throttled)
-        remote_activities = self.fetch_remote_activities(silent=silent)
+
+        # Fetch remote activities (throttled unless force=True)
+        remote_activities = self.fetch_remote_activities(silent=silent, force=force)
         
         if remote_activities is None:
             return None  # Too soon since last sync
