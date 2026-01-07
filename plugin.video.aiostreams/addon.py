@@ -18,6 +18,7 @@ try:
     from resources.lib.router import get_router, action, dispatch, set_default
     from resources.lib.providers import ProviderManager, AIOStreamsProvider
     from resources.lib.providers.base import get_provider_manager
+    from resources.lib.gui import show_source_select_dialog
     HAS_MODULES = True
     HAS_NEW_MODULES = True
 except Exception as e:
@@ -1309,30 +1310,43 @@ def select_stream():
         xbmcplugin.setResolvedUrl(HANDLE, False, xbmcgui.ListItem())
         return
     
-    # Use Dialog().select() - server formats the data
+    # Use custom multi-line dialog with emoji support
     xbmc.log(f'[AIOStreams] Showing stream selection dialog with {len(stream_data["streams"])} streams', xbmc.LOGDEBUG)
 
-    # Create stream list - concatenate name and description on one line
-    stream_list = []
-    for stream in stream_data['streams']:
-        stream_name = stream.get('name', 'Unknown Stream')
-        stream_desc = stream.get('description', '')
-        # Concatenate name and description with space separator
-        full_label = f"{stream_name} {stream_desc}" if stream_desc else stream_name
-        list_item = xbmcgui.ListItem(label=full_label)
-        stream_list.append(list_item)
+    # Use custom dialog if available
+    if HAS_MODULES:
+        try:
+            selected, selected_stream = show_source_select_dialog(
+                streams=stream_data['streams'],
+                title=title if title else 'Select Stream'
+            )
+            xbmc.log(f'[AIOStreams] Custom dialog returned: selected={selected}', xbmc.LOGDEBUG)
+        except Exception as e:
+            xbmc.log(f'[AIOStreams] Custom dialog failed, falling back: {e}', xbmc.LOGERROR)
+            selected = -1
+    else:
+        selected = -1
 
-    # Show dialog
-    selected = xbmcgui.Dialog().select(
-        f"Select Stream ({len(stream_list)} available)",
-        stream_list,
-        useDetails=False
-    )
+    # Fallback to standard dialog if custom dialog not available or failed
+    if selected == -1 and not HAS_MODULES:
+        stream_list = []
+        for stream in stream_data['streams']:
+            stream_name = stream.get('name', 'Unknown Stream')
+            stream_desc = stream.get('description', '')
+            full_label = f"{stream_name} {stream_desc}" if stream_desc else stream_name
+            list_item = xbmcgui.ListItem(label=full_label)
+            stream_list.append(list_item)
+
+        selected = xbmcgui.Dialog().select(
+            f"Select Stream ({len(stream_list)} available)",
+            stream_list,
+            useDetails=False
+        )
 
     if selected < 0:
         xbmcplugin.setResolvedUrl(HANDLE, False, xbmcgui.ListItem())
         return
-    
+
     # Get selected stream
     stream = stream_data['streams'][selected]
     stream_url = stream.get('url') or stream.get('externalUrl')
@@ -1636,25 +1650,39 @@ def show_streams_dialog(content_type, media_id, stream_data, title, poster='', f
         xbmcplugin.endOfDirectory(HANDLE, succeeded=False)
         return
 
-    # Use Dialog().select() - server formats the data
+    # Use custom multi-line dialog with emoji support
     xbmc.log(f'[AIOStreams] Showing stream selection dialog with {len(stream_data["streams"])} streams', xbmc.LOGDEBUG)
 
-    # Create stream list - concatenate name and description on one line
-    stream_list = []
-    for stream in stream_data['streams']:
-        stream_name = stream.get('name', 'Unknown Stream')
-        stream_desc = stream.get('description', '')
-        # Concatenate name and description with space separator
-        full_label = f"{stream_name} {stream_desc}" if stream_desc else stream_name
-        list_item = xbmcgui.ListItem(label=full_label)
-        stream_list.append(list_item)
+    # Use custom dialog if available
+    if HAS_MODULES:
+        try:
+            selected, selected_stream = show_source_select_dialog(
+                streams=stream_data['streams'],
+                title=title if title else 'Select Stream',
+                fanart=fanart
+            )
+            xbmc.log(f'[AIOStreams] Custom dialog returned: selected={selected}', xbmc.LOGDEBUG)
+        except Exception as e:
+            xbmc.log(f'[AIOStreams] Custom dialog failed, falling back: {e}', xbmc.LOGERROR)
+            selected = -1
+    else:
+        selected = -1
 
-    # Show dialog
-    selected = xbmcgui.Dialog().select(
-        f"Select Stream ({len(stream_list)} available)",
-        stream_list,
-        useDetails=False
-    )
+    # Fallback to standard dialog if custom dialog not available or failed
+    if selected == -1 and not HAS_MODULES:
+        stream_list = []
+        for stream in stream_data['streams']:
+            stream_name = stream.get('name', 'Unknown Stream')
+            stream_desc = stream.get('description', '')
+            full_label = f"{stream_name} {stream_desc}" if stream_desc else stream_name
+            list_item = xbmcgui.ListItem(label=full_label)
+            stream_list.append(list_item)
+
+        selected = xbmcgui.Dialog().select(
+            f"Select Stream ({len(stream_list)} available)",
+            stream_list,
+            useDetails=False
+        )
 
     if selected < 0:
         # User cancelled
