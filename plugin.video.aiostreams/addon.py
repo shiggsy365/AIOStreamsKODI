@@ -1166,10 +1166,11 @@ def play():
 
     # If set to show streams, show dialog instead of auto-playing
     if default_behavior == 'show_streams':
-        show_streams_dialog(content_type, media_id, stream_data, title, from_playable=True)
-        # Must call setResolvedUrl(False) after dialog to clear Kodi's pending state
-        # The actual playback is done via xbmc.Player().play() in show_streams_dialog
+        # IMPORTANT: Call setResolvedUrl(False) BEFORE showing dialog to immediately
+        # cancel Kodi's loading/waiting state. The dialog handles playback separately
+        # via xbmc.Player().play() so we don't need the resolved URL mechanism.
         xbmcplugin.setResolvedUrl(HANDLE, False, xbmcgui.ListItem())
+        show_streams_dialog(content_type, media_id, stream_data, title, from_playable=True)
         return
 
     # Otherwise, auto-play first stream
@@ -2884,6 +2885,61 @@ def clear_cache():
         xbmcgui.Dialog().notification('AIOStreams', 'Failed to clear cache', xbmcgui.NOTIFICATION_ERROR)
 
 
+def refresh_manifest_cache():
+    """Clear manifest cache and fetch fresh manifest from server."""
+    if not HAS_MODULES:
+        xbmcgui.Dialog().notification('AIOStreams', 'Modules not available', xbmcgui.NOTIFICATION_ERROR)
+        return
+
+    try:
+        import hashlib
+
+        base_url = get_base_url()
+        if not base_url:
+            xbmcgui.Dialog().notification('AIOStreams', 'No manifest URL configured', xbmcgui.NOTIFICATION_ERROR)
+            return
+
+        # Generate cache key matching the one used in get_manifest()
+        cache_key = hashlib.md5(base_url.encode()).hexdigest()[:16]
+
+        xbmc.log(f'[AIOStreams] Clearing manifest cache for key: {cache_key}', xbmc.LOGINFO)
+
+        # Delete the manifest cache file
+        cache_dir = cache.get_cache_dir()
+        import os
+        manifest_path = os.path.join(cache_dir, f'manifest_{cache_key}.json')
+
+        if os.path.exists(manifest_path):
+            os.remove(manifest_path)
+            xbmc.log(f'[AIOStreams] Deleted manifest cache: {manifest_path}', xbmc.LOGINFO)
+
+        # Also clear from cache module's internal tracking
+        cache.cleanup_expired_cache(force_all=False)
+
+        # Now fetch fresh manifest
+        xbmc.log('[AIOStreams] Fetching fresh manifest from server', xbmc.LOGINFO)
+        manifest = get_manifest()
+
+        if manifest:
+            xbmcgui.Dialog().notification(
+                'AIOStreams',
+                'Manifest cache refreshed successfully',
+                xbmcgui.NOTIFICATION_INFO,
+                3000
+            )
+            xbmc.log(f'[AIOStreams] Manifest refreshed, catalogs: {len(manifest.get("catalogs", []))}', xbmc.LOGINFO)
+        else:
+            xbmcgui.Dialog().notification(
+                'AIOStreams',
+                'Failed to fetch manifest from server',
+                xbmcgui.NOTIFICATION_ERROR
+            )
+
+    except Exception as e:
+        xbmc.log(f'[AIOStreams] Failed to refresh manifest cache: {e}', xbmc.LOGERROR)
+        xbmcgui.Dialog().notification('AIOStreams', f'Failed to refresh: {str(e)}', xbmcgui.NOTIFICATION_ERROR)
+
+
 def clear_stream_stats():
     """Clear stream reliability statistics."""
     if not HAS_MODULES:
@@ -3332,6 +3388,7 @@ ACTION_REGISTRY = {
     'test_connection': lambda p: test_connection(),
     'quick_actions': lambda p: quick_actions(),
     'configure_aiostreams': lambda p: configure_aiostreams_action(),
+    'refresh_manifest_cache': lambda p: refresh_manifest_cache(),
 }
 
 

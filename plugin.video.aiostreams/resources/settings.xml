@@ -64,6 +64,7 @@
         <setting id="debug_logging" type="bool" label="Enable Debug Logging" default="false"/>
 
         <setting id="maintenance" type="lsep" label="Maintenance"/>
+        <setting id="refresh_manifest_cache" type="action" label="Refresh Manifest Cache" action="RunPlugin(plugin://plugin.video.aiostreams/?action=refresh_manifest_cache)"/>
         <setting id="database_reset" type="action" label="Database Reset" action="RunPlugin(plugin://plugin.video.aiostreams/?action=database_reset)"/>
         <setting id="show_database_info" type="action" label="Show Database Info" action="RunPlugin(plugin://plugin.video.aiostreams/?action=show_database_info)"/>
         <setting id="clear_stream_stats" type="action" label="Clear Stream Statistics" action="RunPlugin(plugin://plugin.video.aiostreams/?action=clear_stream_stats)"/>
