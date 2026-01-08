@@ -1,8 +1,10 @@
+name: GitHub Actions Demo
+run-name: ${{ github.actor }} is testing out GitHub Actions 🚀
+on: [push]
 jobs:
-  release:
-    name: Create Release
+  Explore-GitHub-Actions:
     runs-on: ubuntu-latest
-    steps: 
+    steps:
       - name: Generate Checksum
         uses: ToxicAven/generate-checksum-file@66708d081e14d5616c5b0920ff9a127f6f499dee
         with:
