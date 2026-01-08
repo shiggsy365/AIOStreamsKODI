@@ -180,11 +180,16 @@ class MultiLineSourceSelect(xbmcgui.WindowXML):
             self.setProperty('stream_count', str(len(self.streams)))
 
             if self.fanart:
+                xbmc.log(f'[AIOStreams] Setting fanart: {self.fanart}', xbmc.LOGINFO)
                 self.setProperty('fanart', self.fanart)
             if self.clearlogo:
+                xbmc.log(f'[AIOStreams] Setting clearlogo: {self.clearlogo}', xbmc.LOGINFO)
                 self.setProperty('clearlogo', self.clearlogo)
             if self.poster:
+                xbmc.log(f'[AIOStreams] Setting poster: {self.poster}', xbmc.LOGINFO)
                 self.setProperty('poster', self.poster)
+            else:
+                xbmc.log('[AIOStreams] No poster provided to dialog', xbmc.LOGINFO)
 
             # Get list control
             self._list_control = self.getControl(CONTROL_STREAM_LIST)

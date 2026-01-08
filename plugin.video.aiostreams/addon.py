@@ -637,10 +637,13 @@ def create_listitem_with_context(meta, content_type, action_url):
 
     item_id = meta.get('id', '')
     title = meta.get('name', 'Unknown')
+    poster = meta.get('poster', '')
+    fanart = meta.get('background', '')
+    clearlogo = meta.get('logo', '')
 
     if content_type == 'movie':
         # Movie context menu: Scrape Streams, View Trailer, Mark as Watched, Watchlist
-        context_menu.append(('[COLOR lightcoral]Scrape Streams[/COLOR]', f'RunPlugin({get_url(action="show_streams", content_type="movie", media_id=item_id, title=title)})'))
+        context_menu.append(('[COLOR lightcoral]Scrape Streams[/COLOR]', f'RunPlugin({get_url(action="show_streams", content_type="movie", media_id=item_id, title=title, poster=poster, fanart=fanart, clearlogo=clearlogo)})'))
 
         # Add trailer if available
         trailers = meta.get('trailers', [])
@@ -1401,6 +1404,7 @@ def select_stream():
     title = params.get('title', '')
     poster = params.get('poster', '')
     fanart = params.get('fanart', '')
+    clearlogo = params.get('clearlogo', '')
 
     # Format media ID for AIOStreams API
     if content_type == 'movie':
@@ -1440,7 +1444,8 @@ def select_stream():
                 streams=stream_data['streams'],
                 title=title if title else 'Select Stream',
                 fanart=fanart,
-                poster=poster
+                poster=poster,
+                clearlogo=clearlogo
             )
             xbmc.log(f'[AIOStreams] Custom dialog returned: selected={selected}', xbmc.LOGDEBUG)
         except Exception as e:
@@ -1720,6 +1725,7 @@ def show_streams():
     title = params.get('title', 'Unknown')
     poster = params.get('poster', '')
     fanart = params.get('fanart', '')
+    clearlogo = params.get('clearlogo', '')
 
     # Show loading dialog while fetching streams
     progress = xbmcgui.DialogProgress()
@@ -1737,10 +1743,10 @@ def show_streams():
         return
 
     # Always show streams dialog (ignore default behavior - user explicitly requested stream selection)
-    show_streams_dialog(content_type, media_id, stream_data, title, poster, fanart)
+    show_streams_dialog(content_type, media_id, stream_data, title, poster, fanart, clearlogo)
 
 
-def show_streams_dialog(content_type, media_id, stream_data, title, poster='', fanart='', from_playable=False):
+def show_streams_dialog(content_type, media_id, stream_data, title, poster='', fanart='', clearlogo='', from_playable=False):
     """Show streams in a selection dialog.
 
     Args:
@@ -1786,7 +1792,8 @@ def show_streams_dialog(content_type, media_id, stream_data, title, poster='', f
                 streams=stream_data['streams'],
                 title=title if title else 'Select Stream',
                 fanart=fanart,
-                poster=poster
+                poster=poster,
+                clearlogo=clearlogo
             )
             xbmc.log(f'[AIOStreams] Custom dialog returned: selected={selected}', xbmc.LOGDEBUG)
         except Exception as e:
@@ -2167,8 +2174,11 @@ def show_episodes():
         # Add episode context menu
         episode_title = f'{series_name} - S{season:02d}E{episode_num:02d}'
         episode_media_id = f"{meta_id}:{season}:{episode_num}"
+        episode_poster = meta.get('poster', '')
+        episode_fanart = meta.get('background', '')
+        episode_clearlogo = meta.get('logo', '')
         context_menu = [
-            ('[COLOR lightcoral]Scrape Streams[/COLOR]', f'RunPlugin({get_url(action="show_streams", content_type="series", media_id=episode_media_id, title=episode_title)})'),
+            ('[COLOR lightcoral]Scrape Streams[/COLOR]', f'RunPlugin({get_url(action="show_streams", content_type="series", media_id=episode_media_id, title=episode_title, poster=episode_poster, fanart=episode_fanart, clearlogo=episode_clearlogo)})'),
             ('[COLOR lightcoral]Browse Show[/COLOR]', f'ActivateWindow(Videos,{sys.argv[0]}?{urlencode({"action": "show_seasons", "meta_id": meta_id})},return)')
         ]
 
@@ -2604,7 +2614,7 @@ def trakt_next_up():
         episode_media_id = f"{show_imdb}:{season}:{episode}"
         episode_title_str = f'{show_title} - S{season:02d}E{episode:02d}'
         context_menu = [
-            ('[COLOR lightcoral]Scrape Streams[/COLOR]', f'RunPlugin({get_url(action="show_streams", content_type="series", media_id=episode_media_id, title=episode_title_str)})'),
+            ('[COLOR lightcoral]Scrape Streams[/COLOR]', f'RunPlugin({get_url(action="show_streams", content_type="series", media_id=episode_media_id, title=episode_title_str, poster=poster, fanart=fanart, clearlogo=logo)})'),
             ('[COLOR lightcoral]Browse Show[/COLOR]', f'ActivateWindow(Videos,{sys.argv[0]}?{urlencode({"action": "show_seasons", "meta_id": show_imdb})},return)')
         ]
 
@@ -3366,6 +3376,9 @@ def quick_actions():
     content_type = params.get('content_type', 'movie')
     imdb_id = params.get('imdb_id', '')
     title = params.get('title', 'Unknown')
+    poster = params.get('poster', '')
+    fanart = params.get('fanart', '')
+    clearlogo = params.get('clearlogo', '')
 
     if not imdb_id:
         xbmcgui.Dialog().notification('AIOStreams', 'No content selected', xbmcgui.NOTIFICATION_ERROR)
@@ -3396,7 +3409,7 @@ def quick_actions():
         xbmc.executebuiltin(f'Container.Update({get_url(action="show_related", content_type=content_type, imdb_id=imdb_id, title=title)})')
     elif selected == 4:  # Play
         if content_type == 'movie':
-            xbmc.executebuiltin(f'RunPlugin({get_url(action="show_streams", content_type="movie", media_id=imdb_id, title=title)})')
+            xbmc.executebuiltin(f'RunPlugin({get_url(action="show_streams", content_type="movie", media_id=imdb_id, title=title, poster=poster, fanart=fanart, clearlogo=clearlogo)})')
         else:
             xbmc.executebuiltin(f'Container.Update({get_url(action="show_seasons", meta_id=imdb_id)})')
 
