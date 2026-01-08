@@ -88,6 +88,7 @@ The addon is optimized for use as a Kodi widget:
 For issues, feature requests, or questions:
 - GitHub Issues: [Report an issue](https://github.com/shiggsy365/AIOStreamsKODI/issues)
 
-## License
+## Contribute
 
-MIT License - See LICENSE file for details
+
+https://ko-fi.com/shiggsy365
