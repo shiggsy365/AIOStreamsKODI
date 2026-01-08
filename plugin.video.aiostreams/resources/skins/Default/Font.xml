@@ -28,19 +28,19 @@
         <!--
             Stream detail lines - Uses Noto Emoji for emoji support
             This is the main font used in stream selection dialogs
-            Size reduced by 25% (18 -> 14)
+            Size reduced to 11px to fit 6 rows comfortably
         -->
         <font>
             <name>aiostreams_stream_detail</name>
             <filename>NotoEmoji-Regular.ttf</filename>
-            <size>14</size>
+            <size>11</size>
         </font>
 
-        <!-- Stream description - 25% smaller than stream_detail (14 -> 11) -->
+        <!-- Stream description - Reduced to 9px to fit 6 rows of text -->
         <font>
             <name>aiostreams_stream_desc</name>
             <filename>NotoEmoji-Regular.ttf</filename>
-            <size>11</size>
+            <size>9</size>
         </font>
 
         <!-- Small detail text with emoji support -->
@@ -122,12 +122,12 @@
         <font>
             <name>aiostreams_stream_detail</name>
             <filename>arial.ttf</filename>
-            <size>14</size>
+            <size>11</size>
         </font>
         <font>
             <name>aiostreams_stream_desc</name>
             <filename>arial.ttf</filename>
-            <size>11</size>
+            <size>9</size>
         </font>
         <font>
             <name>aiostreams_small</name>
