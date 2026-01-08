@@ -118,16 +118,16 @@
             <!--
                 UNFOCUSED ITEM LAYOUT - Dimmed appearance
                 Width 890 allows 2 items per row (1800/2 = 900, minus gap)
-                Height 262 (50% taller than original 175)
+                Height 196 (25% reduction from 262)
             -->
-            <itemlayout width="890" height="262">
+            <itemlayout width="890" height="196">
                 <control type="group">
                     <!-- Item background (dark) -->
                     <control type="image">
                         <left>5</left>
                         <top>5</top>
                         <width>880</width>
-                        <height>252</height>
+                        <height>186</height>
                         <texture>white.png</texture>
                         <colordiffuse>44222222</colordiffuse>
                     </control>
@@ -137,7 +137,7 @@
                         <left>5</left>
                         <top>5</top>
                         <width>2</width>
-                        <height>252</height>
+                        <height>186</height>
                         <texture>white.png</texture>
                         <colordiffuse>44888888</colordiffuse>
                     </control>
@@ -147,7 +147,7 @@
                         <left>883</left>
                         <top>5</top>
                         <width>2</width>
-                        <height>252</height>
+                        <height>186</height>
                         <texture>white.png</texture>
                         <colordiffuse>44888888</colordiffuse>
                     </control>
@@ -165,7 +165,7 @@
                     <!-- Border - bottom -->
                     <control type="image">
                         <left>5</left>
-                        <top>255</top>
+                        <top>189</top>
                         <width>880</width>
                         <height>2</height>
                         <texture>white.png</texture>
@@ -189,7 +189,7 @@
                         <left>15</left>
                         <top>40</top>
                         <width>860</width>
-                        <height>210</height>
+                        <height>144</height>
                         <font>font10</font>
                         <textcolor>66888888</textcolor>
                         <align>left</align>
@@ -202,14 +202,14 @@
             <!--
                 FOCUSED ITEM LAYOUT - Light blue text, bright border
             -->
-            <focusedlayout width="890" height="262">
+            <focusedlayout width="890" height="196">
                 <control type="group">
                     <!-- Focused background -->
                     <control type="image">
                         <left>5</left>
                         <top>5</top>
                         <width>880</width>
-                        <height>252</height>
+                        <height>186</height>
                         <texture>white.png</texture>
                         <colordiffuse>66111122</colordiffuse>
                     </control>
@@ -219,7 +219,7 @@
                         <left>5</left>
                         <top>5</top>
                         <width>3</width>
-                        <height>252</height>
+                        <height>186</height>
                         <texture>white.png</texture>
                         <colordiffuse>FF66CCFF</colordiffuse>
                     </control>
@@ -229,7 +229,7 @@
                         <left>882</left>
                         <top>5</top>
                         <width>3</width>
-                        <height>252</height>
+                        <height>186</height>
                         <texture>white.png</texture>
                         <colordiffuse>FF66CCFF</colordiffuse>
                     </control>
@@ -247,7 +247,7 @@
                     <!-- Border - bottom (light blue) -->
                     <control type="image">
                         <left>5</left>
-                        <top>254</top>
+                        <top>188</top>
                         <width>880</width>
                         <height>3</height>
                         <texture>white.png</texture>
@@ -271,7 +271,7 @@
                         <left>15</left>
                         <top>40</top>
                         <width>860</width>
-                        <height>210</height>
+                        <height>144</height>
                         <font>font10</font>
                         <textcolor>FFCCCCCC</textcolor>
                         <align>left</align>

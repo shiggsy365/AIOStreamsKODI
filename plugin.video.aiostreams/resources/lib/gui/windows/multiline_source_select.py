@@ -16,20 +16,21 @@ import xbmcvfs
 CONTROL_STREAM_LIST = 5000
 CONTROL_SCROLLBAR = 5001
 
-# Unicode symbol mappings - emoji to Unicode text conversions
+# Unicode symbol mappings - emoji to BMP Unicode conversions
+# Using Kodi's arial.ttf (DejaVu Sans) which has good BMP Unicode coverage
 UNICODE_SYMBOLS = {
     # Status indicators
-    '🔒': '◉',              # Proxied -> Fisheye
-    '🔓': '○',              # Not proxied -> Empty circle
+    '🔒': '●',              # Proxied -> Black circle
+    '🔓': '○',              # Not proxied -> White circle
     '⚡': '⚡',              # Cached (keep as is - works in Unicode)
-    '❌': '○',              # Uncached -> Empty circle
-    '⏳': '○',              # Uncached -> Empty circle
+    '❌': '○',              # Uncached -> White circle
+    '⏳': '○',              # Uncached -> White circle
 
     # Video/Media
     '🎥': '▶',              # Video type -> Play symbol
     '🎞️': '■',             # Video format -> Square
     '🎞': '■',              # Video format -> Square
-    '📺': '▣',              # Video encoding -> Filled square
+    '📺': '■',              # Video encoding -> Square
 
     # Audio
     '🎧': '♪',              # Audio stream -> Eighth note
@@ -72,8 +73,8 @@ UNICODE_SYMBOLS = {
     'ℹ': 'ⓘ',              # Message -> Circled i
 
     # Common emoji variants (without variation selector)
-    '🕵️': '◉',             # Proxied detective -> Fisheye
-    '🕵': '◉',              # Proxied detective -> Fisheye
+    '🕵️': '●',             # Proxied detective -> Black circle
+    '🕵': '●',              # Proxied detective -> Black circle
 }
 
 # No need for EMOJI_TO_PIPE or EMOJI_TO_REMOVE - catch-all handles the rest
