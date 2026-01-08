@@ -175,6 +175,8 @@ class MultiLineSourceSelect(xbmcgui.WindowXML):
     def onInit(self):
         """Called when dialog is initialized. Set up controls and populate list."""
         try:
+            xbmc.log(f'[AIOStreams] Dialog onInit started with {len(self.streams)} streams', xbmc.LOGDEBUG)
+
             # Set window properties for the skin
             self.setProperty('title', self.title)
             self.setProperty('stream_count', str(len(self.streams)))
@@ -195,13 +197,23 @@ class MultiLineSourceSelect(xbmcgui.WindowXML):
             self._list_control = self.getControl(CONTROL_STREAM_LIST)
 
             if self._list_control:
+                xbmc.log('[AIOStreams] List control found, populating...', xbmc.LOGDEBUG)
                 self._populate_list()
-                self.setFocusId(CONTROL_STREAM_LIST)
+                xbmc.log(f'[AIOStreams] List populated with {self._list_control.size()} items, setting focus...', xbmc.LOGDEBUG)
+
+                # Try to set focus, but don't fail if it doesn't work
+                try:
+                    self.setFocusId(CONTROL_STREAM_LIST)
+                    xbmc.log('[AIOStreams] Focus set successfully', xbmc.LOGDEBUG)
+                except Exception as focus_error:
+                    xbmc.log(f'[AIOStreams] Could not set focus (this may be normal): {focus_error}', xbmc.LOGWARNING)
             else:
                 xbmc.log('[AIOStreams] Could not find stream list control', xbmc.LOGERROR)
 
         except Exception as e:
             xbmc.log(f'[AIOStreams] Error in onInit: {e}', xbmc.LOGERROR)
+            import traceback
+            xbmc.log(f'[AIOStreams] Traceback: {traceback.format_exc()}', xbmc.LOGERROR)
 
     def _parse_stream_fields(self, text):
         """

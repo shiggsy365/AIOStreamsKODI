@@ -8,7 +8,7 @@
     - Right: Content poster
 -->
 <window type="dialog">
-    <defaultcontrol always="true">5000</defaultcontrol>
+    <defaultcontrol>5000</defaultcontrol>
 
     <coordinates>
         <left>0</left>

@@ -641,6 +641,8 @@ def create_listitem_with_context(meta, content_type, action_url):
     fanart = meta.get('background', '')
     clearlogo = meta.get('logo', '')
 
+    xbmc.log(f'[AIOStreams] Metadata for {title}: poster={poster}, fanart={fanart}, clearlogo={clearlogo}', xbmc.LOGINFO)
+
     if content_type == 'movie':
         # Movie context menu: Scrape Streams, View Trailer, Mark as Watched, Watchlist
         context_menu.append(('[COLOR lightcoral]Scrape Streams[/COLOR]', f'RunPlugin({get_url(action="show_streams", content_type="movie", media_id=item_id, title=title, poster=poster, fanart=fanart, clearlogo=clearlogo)})'))
@@ -1727,6 +1729,8 @@ def show_streams():
     fanart = params.get('fanart', '')
     clearlogo = params.get('clearlogo', '')
 
+    xbmc.log(f'[AIOStreams] show_streams params: poster={poster}, fanart={fanart}, clearlogo={clearlogo}', xbmc.LOGINFO)
+
     # Show loading dialog while fetching streams
     progress = xbmcgui.DialogProgress()
     progress.create('AIOStreams', 'Scraping streams...')
@@ -1752,6 +1756,8 @@ def show_streams_dialog(content_type, media_id, stream_data, title, poster='', f
     Args:
         from_playable: If True, called from playable listitem context (don't use endOfDirectory)
     """
+    xbmc.log(f'[AIOStreams] show_streams_dialog received: poster={poster}, fanart={fanart}, clearlogo={clearlogo}', xbmc.LOGINFO)
+
     if not HAS_MODULES:
         # Fallback to simple dialog - use custom formatting
         stream_list = []
