@@ -50,8 +50,63 @@ def open_browser(url):
             return False
 
 
+def is_android():
+    """Check if running on Android."""
+    return xbmc.getCondVisibility('System.Platform.Android')
+
+
+def close_browser():
+    """Try to close the browser after configuration is complete."""
+    system = platform.system().lower()
+
+    try:
+        if system == 'windows':
+            # Close common browsers on Windows
+            startupinfo = subprocess.STARTUPINFO()
+            startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
+            startupinfo.wShowWindow = subprocess.SW_HIDE
+
+            for browser in ['chrome.exe', 'msedge.exe', 'firefox.exe', 'opera.exe', 'brave.exe']:
+                try:
+                    subprocess.run(
+                        ['taskkill', '/IM', browser, '/F'],
+                        capture_output=True,
+                        timeout=3,
+                        startupinfo=startupinfo
+                    )
+                except:
+                    pass
+            xbmc.log('[AIOStreams WebConfig] Attempted to close browser', xbmc.LOGDEBUG)
+
+        elif system == 'darwin':
+            # Close common browsers on macOS
+            for browser in ['Google Chrome', 'Safari', 'Firefox', 'Microsoft Edge']:
+                try:
+                    subprocess.run(['pkill', '-f', browser], capture_output=True, timeout=3)
+                except:
+                    pass
+
+        elif is_android():
+            # On Android, try to go back to Kodi
+            xbmc.executebuiltin('ActivateWindow(home)')
+
+        else:
+            # Linux - try pkill for common browsers
+            for browser in ['chrome', 'chromium', 'firefox', 'opera', 'brave']:
+                try:
+                    subprocess.run(['pkill', '-f', browser], capture_output=True, timeout=3)
+                except:
+                    pass
+    except Exception as e:
+        xbmc.log(f'[AIOStreams WebConfig] Failed to close browser: {e}', xbmc.LOGDEBUG)
+
+
 def clear_clipboard():
     """Clear the system clipboard (platform-specific)."""
+    # Skip on Android - clipboard clearing doesn't work reliably
+    if is_android():
+        return
+
     system = platform.system().lower()
 
     try:
@@ -189,18 +244,31 @@ def configure_aiostreams(host_url=None):
     else:
         configure_url = host_url + '/stremio/configure'
 
-    # Show instructions
-    xbmcgui.Dialog().ok(
-        'AIOStreams Configuration',
-        'A browser will open to configure AIOStreams.\n\n'
-        '1. Configure your settings in the browser\n'
-        '2. Click [B]"Copy manifest to clipboard"[/B]\n'
-        '3. The URL will be detected automatically'
-    )
+    # Check if on Android - use different flow (manual paste)
+    on_android = is_android()
 
-    # Clear clipboard before starting to ensure clean detection
-    clear_clipboard()
-    xbmc.log('[AIOStreams WebConfig] Cleared clipboard before browser open', xbmc.LOGDEBUG)
+    if on_android:
+        # Android: Show instructions for manual paste
+        xbmcgui.Dialog().ok(
+            'AIOStreams Configuration',
+            'A browser will open to configure AIOStreams.\n\n'
+            '1. Configure your settings in the browser\n'
+            '2. Click [B]"Copy manifest to clipboard"[/B]\n'
+            '3. Return to Kodi and paste the URL when prompted'
+        )
+    else:
+        # Desktop: Show instructions for auto-detection
+        xbmcgui.Dialog().ok(
+            'AIOStreams Configuration',
+            'A browser will open to configure AIOStreams.\n\n'
+            '1. Configure your settings in the browser\n'
+            '2. Click [B]"Copy manifest to clipboard"[/B]\n'
+            '3. The URL will be detected automatically'
+        )
+
+        # Clear clipboard before starting to ensure clean detection
+        clear_clipboard()
+        xbmc.log('[AIOStreams WebConfig] Cleared clipboard before browser open', xbmc.LOGDEBUG)
 
     # Open browser
     browser_opened = open_browser(configure_url)
@@ -214,6 +282,48 @@ def configure_aiostreams(host_url=None):
 
     # Give browser time to open before starting to monitor
     xbmc.sleep(2000)
+
+    # Android: Skip clipboard monitoring, go straight to manual entry
+    if on_android:
+        manifest_url = xbmcgui.Dialog().input(
+            'Paste Manifest URL',
+            type=xbmcgui.INPUT_ALPHANUM
+        )
+
+        if manifest_url:
+            manifest_url = manifest_url.strip()
+
+            # Handle stremio:// URLs
+            if manifest_url.startswith('stremio://'):
+                manifest_url = 'https://' + manifest_url[10:]
+
+            if is_valid_manifest_url(manifest_url) or manifest_url.startswith('http'):
+                # Save to settings
+                addon.setSetting('base_url', manifest_url)
+
+                try:
+                    from urllib.parse import urlparse
+                    parsed = urlparse(manifest_url)
+                    host_base = f'{parsed.scheme}://{parsed.netloc}'
+                    addon.setSetting('aiostreams_host', host_base)
+                except:
+                    pass
+
+                # Try to return to Kodi
+                close_browser()
+
+                xbmcgui.Dialog().notification(
+                    'AIOStreams',
+                    'Configuration saved successfully!',
+                    xbmcgui.NOTIFICATION_INFO,
+                    3000
+                )
+                return manifest_url
+            else:
+                xbmcgui.Dialog().ok('Invalid URL', 'The URL should contain manifest.json or start with https://')
+
+        xbmcgui.Dialog().notification('AIOStreams', 'Configuration cancelled', xbmcgui.NOTIFICATION_WARNING)
+        return None
 
     # Monitor clipboard for manifest URL
     progress = xbmcgui.DialogProgress()
@@ -299,6 +409,9 @@ def configure_aiostreams(host_url=None):
         # Clear clipboard after saving for security
         clear_clipboard()
         xbmc.log('[AIOStreams WebConfig] Cleared clipboard after saving', xbmc.LOGDEBUG)
+
+        # Close browser after successful configuration
+        close_browser()
 
         xbmcgui.Dialog().notification(
             'AIOStreams',
