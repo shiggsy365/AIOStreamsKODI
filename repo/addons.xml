@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <addons>
-<addon id="plugin.video.aiostreams" name="AIOStreams" version="3.5.12" provider-name="Jon">
+<addon id="plugin.video.aiostreams" name="AIOStreams" version="3.5.14" provider-name="Jon">
     <requires>
         <import addon="xbmc.python" version="3.0.0"/>
         <import addon="script.module.requests" version="2.25.1"/>
@@ -15,7 +15,7 @@
         <platform>all</platform>
         <license>MIT</license>
         <website>https://aiostreams.shiggsy.co.uk</website>
-        <news>v3.5.12: New stream selection layout with poster display, structured field rows (Size/Proxied/In Library/Duration, Video/Indexer, Audio/Cached, Filename), and green headings. Updated custom formatter documentation. | v3.5.11: Emoji replaced with stars except {P} and {C}.</news>
+        <news>v3.5.14: Fixed poster parameter passing to dialog - poster now displays on right side of stream entries. | v3.5.13: Green box layout with Resolution/Service/Addon, compact 160px rows.</news>
         <assets>
             <icon>resources/icon.png</icon>
             <fanart>resources/fanart.jpg</fanart>

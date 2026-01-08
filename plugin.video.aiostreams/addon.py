@@ -1399,6 +1399,8 @@ def select_stream():
     content_type = params['content_type']
     imdb_id = params['imdb_id']
     title = params.get('title', '')
+    poster = params.get('poster', '')
+    fanart = params.get('fanart', '')
 
     # Format media ID for AIOStreams API
     if content_type == 'movie':
@@ -1436,7 +1438,9 @@ def select_stream():
         try:
             selected, selected_stream = show_source_select_dialog(
                 streams=stream_data['streams'],
-                title=title if title else 'Select Stream'
+                title=title if title else 'Select Stream',
+                fanart=fanart,
+                poster=poster
             )
             xbmc.log(f'[AIOStreams] Custom dialog returned: selected={selected}', xbmc.LOGDEBUG)
         except Exception as e:
@@ -1781,7 +1785,8 @@ def show_streams_dialog(content_type, media_id, stream_data, title, poster='', f
             selected, selected_stream = show_source_select_dialog(
                 streams=stream_data['streams'],
                 title=title if title else 'Select Stream',
-                fanart=fanart
+                fanart=fanart,
+                poster=poster
             )
             xbmc.log(f'[AIOStreams] Custom dialog returned: selected={selected}', xbmc.LOGDEBUG)
         except Exception as e:

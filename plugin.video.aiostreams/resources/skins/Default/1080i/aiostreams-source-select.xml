@@ -3,10 +3,9 @@
     AIOStreams Stream Selection Dialog - Single Column with Poster Layout
 
     Displays streams in a single-column list with:
-    - Left pane: Stream information in structured rows
-    - Right pane: Content poster
-    - Focused items: light blue text, bright border
-    - Unfocused items: dimmed text, subtle border
+    - Left box: Green box with Resolution, Service, Addon stacked
+    - Middle: Stream information in structured rows
+    - Right: Content poster
 -->
 <window type="dialog">
     <defaultcontrol always="true">5000</defaultcontrol>
@@ -116,16 +115,16 @@
 
             <!--
                 UNFOCUSED ITEM LAYOUT
-                Height 250px to accommodate poster and text rows
+                Height 160px for compact display
             -->
-            <itemlayout height="250">
+            <itemlayout height="160">
                 <control type="group">
                     <!-- Item background (dark) -->
                     <control type="image">
                         <left>5</left>
                         <top>5</top>
                         <width>1790</width>
-                        <height>240</height>
+                        <height>150</height>
                         <texture>white.png</texture>
                         <colordiffuse>44222222</colordiffuse>
                     </control>
@@ -135,7 +134,7 @@
                         <left>5</left>
                         <top>5</top>
                         <width>2</width>
-                        <height>240</height>
+                        <height>150</height>
                         <texture>white.png</texture>
                         <colordiffuse>44888888</colordiffuse>
                     </control>
@@ -145,7 +144,7 @@
                         <left>1793</left>
                         <top>5</top>
                         <width>2</width>
-                        <height>240</height>
+                        <height>150</height>
                         <texture>white.png</texture>
                         <colordiffuse>44888888</colordiffuse>
                     </control>
@@ -163,37 +162,80 @@
                     <!-- Border - bottom -->
                     <control type="image">
                         <left>5</left>
-                        <top>243</top>
+                        <top>153</top>
                         <width>1790</width>
                         <height>2</height>
                         <texture>white.png</texture>
                         <colordiffuse>44888888</colordiffuse>
                     </control>
 
-                    <!-- LEFT PANE: Stream Information -->
+                    <!-- LEFT GREEN BOX: Resolution, Service, Addon -->
                     <control type="group">
                         <left>15</left>
-                        <top>12</top>
-                        <width>1400</width>
-                        <height>226</height>
+                        <top>15</top>
+                        <width>140</width>
+                        <height>120</height>
 
-                        <!-- Top line: Resolution, Service, Addon (no headings) -->
-                        <control type="label">
+                        <!-- Green background box -->
+                        <control type="image">
                             <left>0</left>
                             <top>0</top>
-                            <width>1400</width>
+                            <width>140</width>
+                            <height>120</height>
+                            <texture>white.png</texture>
+                            <colordiffuse>FF00FF00</colordiffuse>
+                        </control>
+
+                        <!-- Resolution -->
+                        <control type="label">
+                            <left>0</left>
+                            <top>10</top>
+                            <width>140</width>
                             <height>30</height>
                             <font>font13</font>
-                            <textcolor>88FFFFFF</textcolor>
-                            <label>$INFO[ListItem.Property(resolution)]   $INFO[ListItem.Property(service)]   $INFO[ListItem.Property(addon)]</label>
+                            <textcolor>FF000000</textcolor>
+                            <align>center</align>
+                            <label>$INFO[ListItem.Property(resolution)]</label>
                         </control>
+
+                        <!-- Service -->
+                        <control type="label">
+                            <left>0</left>
+                            <top>45</top>
+                            <width>140</width>
+                            <height>25</height>
+                            <font>font12</font>
+                            <textcolor>FF000000</textcolor>
+                            <align>center</align>
+                            <label>$INFO[ListItem.Property(service)]</label>
+                        </control>
+
+                        <!-- Addon -->
+                        <control type="label">
+                            <left>0</left>
+                            <top>75</top>
+                            <width>140</width>
+                            <height>25</height>
+                            <font>font12</font>
+                            <textcolor>FF000000</textcolor>
+                            <align>center</align>
+                            <label>$INFO[ListItem.Property(addon)]</label>
+                        </control>
+                    </control>
+
+                    <!-- MIDDLE SECTION: Stream Information -->
+                    <control type="group">
+                        <left>170</left>
+                        <top>15</top>
+                        <width>1310</width>
+                        <height>120</height>
 
                         <!-- Row 1: SIZE, PROXIED, IN LIBRARY, DURATION -->
                         <control type="label">
                             <left>0</left>
-                            <top>40</top>
-                            <width>1400</width>
-                            <height>28</height>
+                            <top>0</top>
+                            <width>1310</width>
+                            <height>25</height>
                             <font>font12</font>
                             <textcolor>88AAAAAA</textcolor>
                             <label>[COLOR FF00FF00]SIZE:[/COLOR] $INFO[ListItem.Property(size)]   [COLOR FF00FF00]PROXIED:[/COLOR] $INFO[ListItem.Property(proxied)]   [COLOR FF00FF00]IN LIBRARY:[/COLOR] $INFO[ListItem.Property(in_library)]   [COLOR FF00FF00]DURATION:[/COLOR] $INFO[ListItem.Property(duration)]</label>
@@ -202,9 +244,9 @@
                         <!-- Row 2: VIDEO, INDEXER -->
                         <control type="label">
                             <left>0</left>
-                            <top>75</top>
-                            <width>1400</width>
-                            <height>28</height>
+                            <top>30</top>
+                            <width>1310</width>
+                            <height>25</height>
                             <font>font12</font>
                             <textcolor>88AAAAAA</textcolor>
                             <label>[COLOR FF00FF00]VIDEO:[/COLOR] $INFO[ListItem.Property(video)]   [COLOR FF00FF00]INDEXER:[/COLOR] $INFO[ListItem.Property(indexer)]</label>
@@ -213,32 +255,32 @@
                         <!-- Row 3: AUDIO, CACHED -->
                         <control type="label">
                             <left>0</left>
-                            <top>110</top>
-                            <width>1400</width>
-                            <height>28</height>
+                            <top>60</top>
+                            <width>1310</width>
+                            <height>25</height>
                             <font>font12</font>
                             <textcolor>88AAAAAA</textcolor>
                             <label>[COLOR FF00FF00]AUDIO:[/COLOR] $INFO[ListItem.Property(audio)]   [COLOR FF00FF00]CACHED:[/COLOR] $INFO[ListItem.Property(cached)]</label>
                         </control>
 
                         <!-- Row 4: FILENAME -->
-                        <control type="textbox">
+                        <control type="label">
                             <left>0</left>
-                            <top>145</top>
-                            <width>1400</width>
-                            <height>70</height>
+                            <top>90</top>
+                            <width>1310</width>
+                            <height>25</height>
                             <font>font12</font>
                             <textcolor>88AAAAAA</textcolor>
                             <label>[COLOR FF00FF00]FILENAME:[/COLOR] $INFO[ListItem.Property(filename)]</label>
                         </control>
                     </control>
 
-                    <!-- RIGHT PANE: Poster -->
+                    <!-- RIGHT SECTION: Poster -->
                     <control type="image">
-                        <left>1450</left>
-                        <top>20</top>
-                        <width>320</width>
-                        <height>210</height>
+                        <left>1500</left>
+                        <top>15</top>
+                        <width>280</width>
+                        <height>120</height>
                         <aspectratio>keep</aspectratio>
                         <texture>$INFO[Window.Property(poster)]</texture>
                         <visible>!String.IsEmpty(Window.Property(poster))</visible>
@@ -247,16 +289,16 @@
             </itemlayout>
 
             <!--
-                FOCUSED ITEM LAYOUT - Light blue text, bright border
+                FOCUSED ITEM LAYOUT - Brighter text
             -->
-            <focusedlayout height="250">
+            <focusedlayout height="160">
                 <control type="group">
                     <!-- Focused background -->
                     <control type="image">
                         <left>5</left>
                         <top>5</top>
                         <width>1790</width>
-                        <height>240</height>
+                        <height>150</height>
                         <texture>white.png</texture>
                         <colordiffuse>66111122</colordiffuse>
                     </control>
@@ -266,7 +308,7 @@
                         <left>5</left>
                         <top>5</top>
                         <width>3</width>
-                        <height>240</height>
+                        <height>150</height>
                         <texture>white.png</texture>
                         <colordiffuse>FF66CCFF</colordiffuse>
                     </control>
@@ -276,7 +318,7 @@
                         <left>1792</left>
                         <top>5</top>
                         <width>3</width>
-                        <height>240</height>
+                        <height>150</height>
                         <texture>white.png</texture>
                         <colordiffuse>FF66CCFF</colordiffuse>
                     </control>
@@ -294,37 +336,80 @@
                     <!-- Border - bottom (light blue) -->
                     <control type="image">
                         <left>5</left>
-                        <top>242</top>
+                        <top>152</top>
                         <width>1790</width>
                         <height>3</height>
                         <texture>white.png</texture>
                         <colordiffuse>FF66CCFF</colordiffuse>
                     </control>
 
-                    <!-- LEFT PANE: Stream Information -->
+                    <!-- LEFT GREEN BOX: Resolution, Service, Addon -->
                     <control type="group">
                         <left>15</left>
-                        <top>12</top>
-                        <width>1400</width>
-                        <height>226</height>
+                        <top>15</top>
+                        <width>140</width>
+                        <height>120</height>
 
-                        <!-- Top line: Resolution, Service, Addon (no headings) -->
-                        <control type="label">
+                        <!-- Green background box -->
+                        <control type="image">
                             <left>0</left>
                             <top>0</top>
-                            <width>1400</width>
+                            <width>140</width>
+                            <height>120</height>
+                            <texture>white.png</texture>
+                            <colordiffuse>FF00FF00</colordiffuse>
+                        </control>
+
+                        <!-- Resolution -->
+                        <control type="label">
+                            <left>0</left>
+                            <top>10</top>
+                            <width>140</width>
                             <height>30</height>
                             <font>font13</font>
-                            <textcolor>FFFFFFFF</textcolor>
-                            <label>$INFO[ListItem.Property(resolution)]   $INFO[ListItem.Property(service)]   $INFO[ListItem.Property(addon)]</label>
+                            <textcolor>FF000000</textcolor>
+                            <align>center</align>
+                            <label>$INFO[ListItem.Property(resolution)]</label>
                         </control>
+
+                        <!-- Service -->
+                        <control type="label">
+                            <left>0</left>
+                            <top>45</top>
+                            <width>140</width>
+                            <height>25</height>
+                            <font>font12</font>
+                            <textcolor>FF000000</textcolor>
+                            <align>center</align>
+                            <label>$INFO[ListItem.Property(service)]</label>
+                        </control>
+
+                        <!-- Addon -->
+                        <control type="label">
+                            <left>0</left>
+                            <top>75</top>
+                            <width>140</width>
+                            <height>25</height>
+                            <font>font12</font>
+                            <textcolor>FF000000</textcolor>
+                            <align>center</align>
+                            <label>$INFO[ListItem.Property(addon)]</label>
+                        </control>
+                    </control>
+
+                    <!-- MIDDLE SECTION: Stream Information -->
+                    <control type="group">
+                        <left>170</left>
+                        <top>15</top>
+                        <width>1310</width>
+                        <height>120</height>
 
                         <!-- Row 1: SIZE, PROXIED, IN LIBRARY, DURATION -->
                         <control type="label">
                             <left>0</left>
-                            <top>40</top>
-                            <width>1400</width>
-                            <height>28</height>
+                            <top>0</top>
+                            <width>1310</width>
+                            <height>25</height>
                             <font>font12</font>
                             <textcolor>FFCCCCCC</textcolor>
                             <label>[COLOR FF00FF00]SIZE:[/COLOR] $INFO[ListItem.Property(size)]   [COLOR FF00FF00]PROXIED:[/COLOR] $INFO[ListItem.Property(proxied)]   [COLOR FF00FF00]IN LIBRARY:[/COLOR] $INFO[ListItem.Property(in_library)]   [COLOR FF00FF00]DURATION:[/COLOR] $INFO[ListItem.Property(duration)]</label>
@@ -333,9 +418,9 @@
                         <!-- Row 2: VIDEO, INDEXER -->
                         <control type="label">
                             <left>0</left>
-                            <top>75</top>
-                            <width>1400</width>
-                            <height>28</height>
+                            <top>30</top>
+                            <width>1310</width>
+                            <height>25</height>
                             <font>font12</font>
                             <textcolor>FFCCCCCC</textcolor>
                             <label>[COLOR FF00FF00]VIDEO:[/COLOR] $INFO[ListItem.Property(video)]   [COLOR FF00FF00]INDEXER:[/COLOR] $INFO[ListItem.Property(indexer)]</label>
@@ -344,32 +429,32 @@
                         <!-- Row 3: AUDIO, CACHED -->
                         <control type="label">
                             <left>0</left>
-                            <top>110</top>
-                            <width>1400</width>
-                            <height>28</height>
+                            <top>60</top>
+                            <width>1310</width>
+                            <height>25</height>
                             <font>font12</font>
                             <textcolor>FFCCCCCC</textcolor>
                             <label>[COLOR FF00FF00]AUDIO:[/COLOR] $INFO[ListItem.Property(audio)]   [COLOR FF00FF00]CACHED:[/COLOR] $INFO[ListItem.Property(cached)]</label>
                         </control>
 
                         <!-- Row 4: FILENAME -->
-                        <control type="textbox">
+                        <control type="label">
                             <left>0</left>
-                            <top>145</top>
-                            <width>1400</width>
-                            <height>70</height>
+                            <top>90</top>
+                            <width>1310</width>
+                            <height>25</height>
                             <font>font12</font>
                             <textcolor>FFCCCCCC</textcolor>
                             <label>[COLOR FF00FF00]FILENAME:[/COLOR] $INFO[ListItem.Property(filename)]</label>
                         </control>
                     </control>
 
-                    <!-- RIGHT PANE: Poster -->
+                    <!-- RIGHT SECTION: Poster -->
                     <control type="image">
-                        <left>1450</left>
-                        <top>20</top>
-                        <width>320</width>
-                        <height>210</height>
+                        <left>1500</left>
+                        <top>15</top>
+                        <width>280</width>
+                        <height>120</height>
                         <aspectratio>keep</aspectratio>
                         <texture>$INFO[Window.Property(poster)]</texture>
                         <visible>!String.IsEmpty(Window.Property(poster))</visible>
