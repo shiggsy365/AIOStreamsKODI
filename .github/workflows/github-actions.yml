@@ -1,0 +1,12 @@
+            - name: Generate Checksum File
+  # You may pin to the exact commit or the version.
+  # uses: ToxicAven/generate-checksum-file@66708d081e14d5616c5b0920ff9a127f6f499dee
+  uses: ToxicAven/generate-checksum-file@v2
+  with:
+    # The URL of the file to check.
+    filePath: 
+    # Where to save the file.
+    saveFile: 
+    # The algorithm that has been used for calculating the checksum.
+    algorithm: # default is MD5
+          
