@@ -178,7 +178,7 @@
                         <top>12</top>
                         <width>860</width>
                         <height>28</height>
-                        <font>aiostreams_stream_detail</font>
+                        <font>font12</font>
                         <textcolor>88AAAAAA</textcolor>
                         <align>left</align>
                         <label>$INFO[ListItem.Property(stream_name)]</label>
@@ -190,7 +190,7 @@
                         <top>40</top>
                         <width>860</width>
                         <height>210</height>
-                        <font>aiostreams_stream_desc</font>
+                        <font>font10</font>
                         <textcolor>66888888</textcolor>
                         <align>left</align>
                         <autoscroll>false</autoscroll>
@@ -260,7 +260,7 @@
                         <top>12</top>
                         <width>860</width>
                         <height>28</height>
-                        <font>aiostreams_stream_detail</font>
+                        <font>font12</font>
                         <textcolor>FF99DDFF</textcolor>
                         <align>left</align>
                         <label>$INFO[ListItem.Property(stream_name)]</label>
@@ -272,7 +272,7 @@
                         <top>40</top>
                         <width>860</width>
                         <height>210</height>
-                        <font>aiostreams_stream_desc</font>
+                        <font>font10</font>
                         <textcolor>FFCCCCCC</textcolor>
                         <align>left</align>
                         <autoscroll>false</autoscroll>
