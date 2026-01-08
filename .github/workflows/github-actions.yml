@@ -1,6 +1,7 @@
 jobs:
   release:
     name: Create Release
+    runs-on: ubuntu-latest
     steps: 
       - name: Generate Checksum
         uses: ToxicAven/generate-checksum-file@66708d081e14d5616c5b0920ff9a127f6f499dee
