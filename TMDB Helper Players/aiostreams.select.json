@@ -1,0 +1,9 @@
+{
+    "name": "AIOStreams (Source Select)",
+    "plugin": "plugin.video.aiostreams",
+    "priority": 201,
+    "play_movie": "plugin://plugin.video.aiostreams/?action=select_stream&content_type=movie&imdb_id={imdb}",
+    "play_episode": "plugin://plugin.video.aiostreams/?action=select_stream&content_type=series&imdb_id={imdb}&season={season}&episode={episode}",
+    "requires_ids": true,
+    "is_resolvable": "false"
+}

@@ -1,0 +1,13 @@
+{
+    "name": "AIOStreams",
+    "plugin": "plugin.video.aiostreams",
+    "priority": 200,
+    "play_movie": "plugin://plugin.video.aiostreams/?action=play&content_type=movie&imdb_id={imdb}",
+    "play_episode": "plugin://plugin.video.aiostreams/?action=play&content_type=series&imdb_id={imdb}&season={season}&episode={episode}",
+    "requires_ids": true,
+    "is_resolvable": "false",
+    "fallback": {
+        "play_episode": "aiostreams.select.json play_episode",
+        "play_movie": "aiostreams.select.json play_movie"
+    }
+}
