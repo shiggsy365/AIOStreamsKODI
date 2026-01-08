@@ -5,6 +5,7 @@
     Displays streams in a 2-column grid with borders around each item.
     Focused items: light blue text, bright border
     Unfocused items: dimmed text, subtle border
+    Item height: 262px (50% taller for more info rows)
 -->
 <window type="dialog">
     <defaultcontrol always="true">5000</defaultcontrol>
@@ -117,15 +118,16 @@
             <!--
                 UNFOCUSED ITEM LAYOUT - Dimmed appearance
                 Width 890 allows 2 items per row (1800/2 = 900, minus gap)
+                Height 262 (50% taller than original 175)
             -->
-            <itemlayout width="890" height="175">
+            <itemlayout width="890" height="262">
                 <control type="group">
                     <!-- Item background (dark) -->
                     <control type="image">
                         <left>5</left>
                         <top>5</top>
                         <width>880</width>
-                        <height>165</height>
+                        <height>252</height>
                         <texture>white.png</texture>
                         <colordiffuse>44222222</colordiffuse>
                     </control>
@@ -135,7 +137,7 @@
                         <left>5</left>
                         <top>5</top>
                         <width>2</width>
-                        <height>165</height>
+                        <height>252</height>
                         <texture>white.png</texture>
                         <colordiffuse>44888888</colordiffuse>
                     </control>
@@ -145,7 +147,7 @@
                         <left>883</left>
                         <top>5</top>
                         <width>2</width>
-                        <height>165</height>
+                        <height>252</height>
                         <texture>white.png</texture>
                         <colordiffuse>44888888</colordiffuse>
                     </control>
@@ -163,7 +165,7 @@
                     <!-- Border - bottom -->
                     <control type="image">
                         <left>5</left>
-                        <top>168</top>
+                        <top>255</top>
                         <width>880</width>
                         <height>2</height>
                         <texture>white.png</texture>
@@ -182,12 +184,12 @@
                         <label>$INFO[ListItem.Property(stream_name)]</label>
                     </control>
 
-                    <!-- Stream description - dimmed -->
+                    <!-- Stream description - dimmed (taller for more rows) -->
                     <control type="textbox">
                         <left>15</left>
                         <top>40</top>
                         <width>860</width>
-                        <height>125</height>
+                        <height>210</height>
                         <font>aiostreams_stream_desc</font>
                         <textcolor>66888888</textcolor>
                         <align>left</align>
@@ -200,14 +202,14 @@
             <!--
                 FOCUSED ITEM LAYOUT - Light blue text, bright border
             -->
-            <focusedlayout width="890" height="175">
+            <focusedlayout width="890" height="262">
                 <control type="group">
                     <!-- Focused background -->
                     <control type="image">
                         <left>5</left>
                         <top>5</top>
                         <width>880</width>
-                        <height>165</height>
+                        <height>252</height>
                         <texture>white.png</texture>
                         <colordiffuse>66111122</colordiffuse>
                     </control>
@@ -217,7 +219,7 @@
                         <left>5</left>
                         <top>5</top>
                         <width>3</width>
-                        <height>165</height>
+                        <height>252</height>
                         <texture>white.png</texture>
                         <colordiffuse>FF66CCFF</colordiffuse>
                     </control>
@@ -227,7 +229,7 @@
                         <left>882</left>
                         <top>5</top>
                         <width>3</width>
-                        <height>165</height>
+                        <height>252</height>
                         <texture>white.png</texture>
                         <colordiffuse>FF66CCFF</colordiffuse>
                     </control>
@@ -245,7 +247,7 @@
                     <!-- Border - bottom (light blue) -->
                     <control type="image">
                         <left>5</left>
-                        <top>167</top>
+                        <top>254</top>
                         <width>880</width>
                         <height>3</height>
                         <texture>white.png</texture>
@@ -264,12 +266,12 @@
                         <label>$INFO[ListItem.Property(stream_name)]</label>
                     </control>
 
-                    <!-- Stream description - lighter when focused -->
+                    <!-- Stream description - lighter when focused (taller for more rows) -->
                     <control type="textbox">
                         <left>15</left>
                         <top>40</top>
                         <width>860</width>
-                        <height>125</height>
+                        <height>210</height>
                         <font>aiostreams_stream_desc</font>
                         <textcolor>FFCCCCCC</textcolor>
                         <align>left</align>
