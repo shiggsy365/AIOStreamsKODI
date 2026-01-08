@@ -39,11 +39,7 @@ With many thanks to:
 - **Viren070** for AIOStreams - [https://github.com/Viren070/aiostreams](https://github.com/Viren070/aiostreams)
 
 ## Installation
-
-1. Download the latest release ZIP file
-2. In Kodi, go to Settings > Add-ons > Install from zip file
-3. Select the downloaded ZIP file
-4. Wait for installation confirmation
+(https://github.com/shiggsy365/AIOStreamsKODI/blob/main/INSTALLATION.md)
 
 ## Custom Search Integration
 
