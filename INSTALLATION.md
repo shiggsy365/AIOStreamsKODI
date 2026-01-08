@@ -159,31 +159,6 @@ plugin://plugin.video.aiostreams/?action=search&content_type=series&query=breaki
 
 ---
 
-## Widget Support
-
-The addon is optimized for use as Kodi widgets. Recommended widget paths:
-
-### Continue Watching
-```
-plugin://plugin.video.aiostreams/?action=trakt_continue_watching  # TV Shows
-plugin://plugin.video.aiostreams/?action=trakt_continue_movies    # Movies
-```
-
-### Next Up
-```
-plugin://plugin.video.aiostreams/?action=trakt_next_up
-```
-
-### Trending & Popular
-```
-plugin://plugin.video.aiostreams/?action=trakt_trending&media_type=movies
-plugin://plugin.video.aiostreams/?action=trakt_trending&media_type=shows
-plugin://plugin.video.aiostreams/?action=trakt_popular&media_type=movies
-plugin://plugin.video.aiostreams/?action=trakt_popular&media_type=shows
-```
-
----
-
 ## Features Documentation
 
 For complete feature documentation, see:
@@ -192,29 +167,6 @@ For complete feature documentation, see:
 
 ---
 
-## Version Information
-
-**Current Version**: 2.3.2
-
-### What's New in 2.3.2
-- **Major performance improvements**: Lists now load instantly (previously 25-38 seconds)
-- **Fixed caching**: Cache now works properly with no sequential API calls
-- **Episode thumbnails**: Continue watching shows episode-specific landscape images
-- **Movie continue watching**: Separate list for movies in progress
-- **Trailer support**: Automatic trailer parsing with YouTube integration
-- **Remove from continue watching**: Context menu option to clear progress
-- **Custom search integration**: URL format for Kodi skin integration
-- **Cast photos**: Now display properly on Trakt lists from cached data
-
-### Previous Versions
-- **v2.3.1**: Bugfix for cast errors and similar content detection
-- **v2.3.0**: Tabbed search interface with Movies/TV Shows/All tabs
-- **v2.2.0**: Fixed cast display using xbmc.Actor objects
-- **v2.0.0**: Dynamic context menus, quality filtering, UI enhancements
-
----
-
-## Support
 
 - **GitHub Issues**: [Report a bug](https://github.com/shiggsy365/AIOStreamsKODI/issues)
 - **Documentation**: See FEATURES.md for detailed feature guide
