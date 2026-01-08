@@ -185,7 +185,32 @@ You must have a running AIOStreams instance configured with:
   - GitHub: [cedya77/aiometadata](https://github.com/cedya77/aiometadata)
   - Configure as both search and metadata source in AIOStreams
 
-- **Stream Scrapers**: Use Google Drive or GDrive Lite custom formatters for best results
+- **Custom Formatter**: Configure your AIOStreams custom formatter with the following format for optimal display:
+
+  **Name field:**
+  ```
+  {stream.resolution::exists["RESOLUTION: {stream.resolution}"||""]}
+  {service.name::exists["SERVICE: {service.name}"||""]}
+  {addon.name::exists["ADDON: {addon.name}"||""]}
+  {stream.size::>0["SIZE: {stream.size::bytes}"||""]}
+  {stream.proxied::istrue["PROXIED: YES"||""]}{stream.proxied::isfalse["PROXIED: NO"||""]}
+  {service.cached::istrue["CACHED: YES"||""]}{service.cached::isfalse["CACHED:NO"||""]}
+  {stream.library::istrue["IN LIBRARY: YES"||""]}{stream.library::isfalse["IN LIBRARY: NO"||""]}
+  {stream.duration::>0["DURATION: {stream.duration::time} "||""]}
+  {stream.quality::exists["VIDEO: {stream.quality}"||""]} | {stream.visualTags} | {stream.encode}
+  {stream.audioTags::exists["AUDIO: {stream.audioTags::join(' | ')} | {stream.audioChannels}"||""]}{stream.languages::exists[" | {stream.languages::join(' / ')}"||""]}
+  {stream.indexer::exists["INDEXER: {stream.indexer} "||""]}{stream.seeders::exists["| {stream.seeders} Seeders"||""]}{stream.age::exists[" | {stream.age} Old"||""]}
+  {stream.filename::exists["FILENAME: {stream.filename}"||""]}
+  ```
+
+  **Description field:** Leave blank
+
+  This format provides structured stream information with:
+  - Resolution, Service, and Addon at the top
+  - Organized rows for Size, Proxied status, Library status, and Duration
+  - Video quality and Indexer information
+  - Audio details and Cache status
+  - Complete filename for reference
 
 - **Hosting**: Self-host both AIOStreams and AIOMetadata to avoid rate limiting
 

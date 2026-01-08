@@ -20,61 +20,61 @@ CONTROL_SCROLLBAR = 5001
 # All replacements are wrapped in red color tags for visibility
 UNICODE_SYMBOLS = {
     # Status indicators
-    '🔒': '[COLOR red]+[/COLOR]',              # Proxied
-    '🔓': '[COLOR red]-[/COLOR]',              # Not proxied
-    '⚡': '[COLOR red]*[/COLOR]',              # Cached
-    '❌': '[COLOR red]x[/COLOR]',              # Uncached
-    '⏳': '[COLOR red]-[/COLOR]',              # Uncached
+    '🔒': '{P}',            # Proxied
+    '🔓': '★',              # Not proxied
+    '⚡': '{C}',            # Cached
+    '❌': '★',              # Uncached
+    '⏳': '★',              # Uncached
 
     # Video/Media
-    '🎥': '[COLOR red]>[/COLOR]',              # Video type -> play arrow
-    '🎞️': '[COLOR red]#[/COLOR]',             # Video format -> hash
-    '🎞': '[COLOR red]#[/COLOR]',              # Video format (no variation selector)
-    '📺': '[COLOR red]=[/COLOR]',              # Video encoding -> equals
+    '🎥': '★',              # Video type
+    '🎞️': '★',             # Video format
+    '🎞': '★',              # Video format (no variation selector)
+    '📺': '★',              # Video encoding
 
     # Audio
-    '🎧': '[COLOR red]~[/COLOR]',              # Audio stream -> tilde
-    '🔊': '[COLOR red]~~[/COLOR]',             # Audio channels -> double tilde
+    '🎧': '★',              # Audio stream
+    '🔊': '★',              # Audio channels
 
     # File info
-    '📦': '[COLOR red]@[/COLOR]',              # File size -> at sign
-    '💾': '[COLOR red]@[/COLOR]',              # File size (alt)
+    '📦': '★',              # File size
+    '💾': '★',              # File size (alt)
 
     # Stats & metadata
-    '⏱️': '[COLOR red]T[/COLOR]',             # Duration -> T
-    '⏱': '[COLOR red]T[/COLOR]',              # Duration (no variation selector)
-    '👥': '[COLOR red]^[/COLOR]',              # Seeders -> caret
-    '🌱': '[COLOR red]^[/COLOR]',              # Seeders (alt)
-    '👤': '[COLOR red]^[/COLOR]',              # Seeders (alt)
-    '📅': '[COLOR red]D[/COLOR]',              # Age -> D
-    '🔍': '[COLOR red]o[/COLOR]',              # Release group -> lowercase o
-    '📡': '[COLOR red]o[/COLOR]',              # Release group (alt)
-    '⚙️': '[COLOR red]o[/COLOR]',             # Release group (alt)
-    '⚙': '[COLOR red]o[/COLOR]',              # Release group (no variation selector)
+    '⏱️': '★',             # Duration
+    '⏱': '★',              # Duration (no variation selector)
+    '👥': '★',              # Seeders
+    '🌱': '★',              # Seeders (alt)
+    '👤': '★',              # Seeders (alt)
+    '📅': '★',              # Age
+    '🔍': '★',              # Release group
+    '📡': '★',              # Release group (alt)
+    '⚙️': '★',             # Release group (alt)
+    '⚙': '★',              # Release group (no variation selector)
 
     # Identifiers
-    '🏷️': '[COLOR red]:[/COLOR]',             # Label -> colon
-    '🏷': '[COLOR red]:[/COLOR]',              # Label (no variation selector)
-    '🌎': '[COLOR red]L[/COLOR]',              # Language -> L
-    '🌐': '[COLOR red]L[/COLOR]',              # Language (alt)
-    '🗣️': '[COLOR red]L[/COLOR]',             # Language (alt)
-    '🗣': '[COLOR red]L[/COLOR]',              # Language (no variation selector)
+    '🏷️': '★',             # Label
+    '🏷': '★',              # Label (no variation selector)
+    '🌎': '★',              # Language
+    '🌐': '★',              # Language (alt)
+    '🗣️': '★',             # Language (alt)
+    '🗣': '★',              # Language (no variation selector)
 
     # Actions
-    '🔥': '[COLOR red]![/COLOR]',              # Remove -> exclamation
-    '☁️': '[COLOR red]C[/COLOR]',             # Library -> C
-    '☁': '[COLOR red]C[/COLOR]',              # Library (no variation selector)
-    '📌': '[COLOR red]P[/COLOR]',              # Library (alt) -> P
+    '🔥': '★',              # Remove
+    '☁️': '★',             # Library
+    '☁': '★',              # Library (no variation selector)
+    '📌': '★',              # Library (alt)
 
     # Info
-    '📁': '[COLOR red]>[/COLOR]',              # Filename -> right arrow
-    '🎬': '[COLOR red]>[/COLOR]',              # Filename (alt)
-    'ℹ️': '[COLOR red]i[/COLOR]',             # Message -> i
-    'ℹ': '[COLOR red]i[/COLOR]',              # Message (no variation selector)
+    '📁': '★',              # Filename
+    '🎬': '★',              # Filename (alt)
+    'ℹ️': '★',             # Message
+    'ℹ': '★',              # Message (no variation selector)
 
     # Common emoji variants
-    '🕵️': '[COLOR red]+[/COLOR]',             # Proxied detective
-    '🕵': '[COLOR red]+[/COLOR]',              # Proxied detective (no variation selector)
+    '🕵️': '{P}',           # Proxied detective
+    '🕵': '{P}',            # Proxied detective (no variation selector)
 }
 
 # No need for EMOJI_TO_PIPE or EMOJI_TO_REMOVE - catch-all handles the rest
@@ -110,7 +110,7 @@ def replace_emojis(text):
         "]+",
         flags=re.UNICODE
     )
-    text = emoji_pattern.sub('[COLOR red]*[/COLOR]', text)  # Red star for unmapped emojis
+    text = emoji_pattern.sub('★', text)  # Star for unmapped emojis
 
     # Clean up any double spaces that might result
     while '  ' in text:
@@ -159,11 +159,13 @@ class MultiLineSourceSelect(xbmcgui.WindowXML):
             title: Media title to display
             fanart: Optional fanart image path
             clearlogo: Optional clearlogo image path
+            poster: Optional poster image path
         """
         self.streams = kwargs.pop('streams', [])
         self.title = kwargs.pop('title', 'Select Stream')
         self.fanart = kwargs.pop('fanart', '')
         self.clearlogo = kwargs.pop('clearlogo', '')
+        self.poster = kwargs.pop('poster', '')
 
         self.selected_index = -1
         self._list_control = None
@@ -181,6 +183,8 @@ class MultiLineSourceSelect(xbmcgui.WindowXML):
                 self.setProperty('fanart', self.fanart)
             if self.clearlogo:
                 self.setProperty('clearlogo', self.clearlogo)
+            if self.poster:
+                self.setProperty('poster', self.poster)
 
             # Get list control
             self._list_control = self.getControl(CONTROL_STREAM_LIST)
@@ -193,6 +197,79 @@ class MultiLineSourceSelect(xbmcgui.WindowXML):
 
         except Exception as e:
             xbmc.log(f'[AIOStreams] Error in onInit: {e}', xbmc.LOGERROR)
+
+    def _parse_stream_fields(self, text):
+        """
+        Parse stream name text into individual fields.
+
+        Expected format from AIOStreams custom formatter:
+        RESOLUTION: 2160p
+        SERVICE: Real-Debrid
+        ADDON: Torrentio
+        SIZE: 62.5 GB
+        PROXIED: YES
+        CACHED: YES
+        IN LIBRARY: NO
+        DURATION: 2h:32m:0s
+        VIDEO: BluRay | DV | HEVC
+        AUDIO: Atmos | TrueHD | 7.1 | English / Italian
+        INDEXER: RARBG | 125 Seeders | 10d Old
+        FILENAME: Movie.Title.2023.2160p.BluRay...
+
+        Returns dict with parsed fields.
+        """
+        fields = {
+            'resolution': '',
+            'service': '',
+            'addon': '',
+            'size': '',
+            'proxied': '',
+            'cached': '',
+            'in_library': '',
+            'duration': '',
+            'video': '',
+            'audio': '',
+            'indexer': '',
+            'filename': ''
+        }
+
+        if not text:
+            return fields
+
+        lines = text.split('\n')
+        for line in lines:
+            line = line.strip()
+            if ':' in line:
+                key, value = line.split(':', 1)
+                key = key.strip().upper()
+                value = value.strip()
+
+                if key == 'RESOLUTION':
+                    fields['resolution'] = value
+                elif key == 'SERVICE':
+                    fields['service'] = value
+                elif key == 'ADDON':
+                    fields['addon'] = value
+                elif key == 'SIZE':
+                    fields['size'] = value
+                elif key == 'PROXIED':
+                    fields['proxied'] = value
+                elif key == 'CACHED':
+                    fields['cached'] = value
+                elif key == 'IN LIBRARY':
+                    fields['in_library'] = value
+                elif key == 'DURATION':
+                    fields['duration'] = value
+                elif key == 'VIDEO':
+                    fields['video'] = value
+                elif key == 'AUDIO':
+                    fields['audio'] = value
+                elif key == 'INDEXER':
+                    fields['indexer'] = value
+                elif key == 'FILENAME':
+                    fields['filename'] = value
+
+        return fields
 
     def _populate_list(self):
         """Populate the list control with formatted streams."""
@@ -208,21 +285,30 @@ class MultiLineSourceSelect(xbmcgui.WindowXML):
                 name = replace_emojis(name)
                 description = replace_emojis(description)
 
-                # Build multi-line label
-                # The XML textbox will render \n as line breaks
-                if description:
-                    # Combine name and description with line break
-                    full_label = f"{name}\n{description}"
-                else:
-                    full_label = name
+                # Parse fields from name (custom formatter format)
+                fields = self._parse_stream_fields(name)
 
                 # Create list item
-                list_item = xbmcgui.ListItem(label=full_label)
+                list_item = xbmcgui.ListItem(label=name)
 
                 # Store original index for retrieval
                 list_item.setProperty('stream_index', str(idx))
 
-                # Add any additional properties the skin might want
+                # Set individual field properties for XML layout
+                list_item.setProperty('resolution', fields['resolution'])
+                list_item.setProperty('service', fields['service'])
+                list_item.setProperty('addon', fields['addon'])
+                list_item.setProperty('size', fields['size'])
+                list_item.setProperty('proxied', fields['proxied'])
+                list_item.setProperty('cached', fields['cached'])
+                list_item.setProperty('in_library', fields['in_library'])
+                list_item.setProperty('duration', fields['duration'])
+                list_item.setProperty('video', fields['video'])
+                list_item.setProperty('audio', fields['audio'])
+                list_item.setProperty('indexer', fields['indexer'])
+                list_item.setProperty('filename', fields['filename'])
+
+                # Also keep original for backwards compatibility
                 list_item.setProperty('stream_name', name)
                 if description:
                     list_item.setProperty('stream_description', description)
@@ -286,7 +372,7 @@ class MultiLineSourceSelect(xbmcgui.WindowXML):
         return None
 
 
-def show_source_select_dialog(streams, title='Select Stream', fanart='', clearlogo=''):
+def show_source_select_dialog(streams, title='Select Stream', fanart='', clearlogo='', poster=''):
     """
     Convenience function to show the multi-line source select dialog.
 
@@ -295,6 +381,7 @@ def show_source_select_dialog(streams, title='Select Stream', fanart='', clearlo
         title: Media title to display in header
         fanart: Optional fanart image path
         clearlogo: Optional clearlogo image path
+        poster: Optional poster image path
 
     Returns:
         tuple: (selected_index, selected_stream) or (-1, None) if cancelled
@@ -310,7 +397,8 @@ def show_source_select_dialog(streams, title='Select Stream', fanart='', clearlo
         streams=streams,
         title=title,
         fanart=fanart,
-        clearlogo=clearlogo
+        clearlogo=clearlogo,
+        poster=poster
     )
 
     dialog.doModal()
