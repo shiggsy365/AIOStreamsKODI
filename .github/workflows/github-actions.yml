@@ -1,4 +1,4 @@
-  - name: github-actions
+  name: github-actions
   uses: ToxicAven/generate-checksum-file@66708d081e14d5616c5b0920ff9a127f6f499dee
   # uses: ToxicAven/generate-checksum-file@v2
   with:
