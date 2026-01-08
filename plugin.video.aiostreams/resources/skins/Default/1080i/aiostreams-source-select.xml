@@ -1,496 +1,128 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!--
-    AIOStreams Stream Selection Dialog - Single Column with Poster Layout
-
-    Displays streams in a single-column list with:
-    - Left box: Red box with Resolution, Service, Addon stacked (white text, left aligned)
-    - Middle: Stream information with red headings
-    - Right: Content poster
--->
-<window type="dialog">
-    <defaultcontrol>5000</defaultcontrol>
-
-    <coordinates>
-        <left>0</left>
-        <top>0</top>
-        <width>1920</width>
-        <height>1080</height>
-    </coordinates>
-
+<window>
+    <defaultcontrol always="true">1000</defaultcontrol>
     <controls>
-        <!-- ============================================ -->
-        <!-- BACKGROUND LAYER -->
-        <!-- ============================================ -->
-        <control type="group">
-            <!-- Solid black base -->
-            <control type="image">
-                <left>0</left>
-                <top>0</top>
-                <width>1920</width>
-                <height>1080</height>
-                <texture>white.png</texture>
-                <colordiffuse>FF000000</colordiffuse>
-            </control>
-
-            <!-- Optional fanart (dimmed) -->
-            <control type="image">
-                <left>0</left>
-                <top>0</top>
-                <width>1920</width>
-                <height>1080</height>
-                <texture background="true">$INFO[Window.Property(fanart)]</texture>
-                <colordiffuse>33FFFFFF</colordiffuse>
-                <visible>!String.IsEmpty(Window.Property(fanart))</visible>
-            </control>
-
-            <!-- Dark gradient overlay for readability -->
-            <control type="image">
-                <left>0</left>
-                <top>0</top>
-                <width>1920</width>
-                <height>1080</height>
-                <texture>white.png</texture>
-                <colordiffuse>DD000000</colordiffuse>
-            </control>
+        <!-- Background Fanart: Pulled from your original logic -->
+        <control type="image">
+            <left>0</left>
+            <top>0</top>
+            <width>1920</width>
+            <height>1080</height>
+            <aspectratio>scale</aspectratio>
+            <texture>$INFO[Container(1000).ListItem.Property(fanart)]</texture>
+            <fadetime>400</fadetime>
         </control>
 
-        <!-- ============================================ -->
-        <!-- HEADER SECTION -->
-        <!-- ============================================ -->
-        <control type="group">
-            <left>60</left>
-            <top>30</top>
-            <width>1800</width>
-            <height>80</height>
-
-            <!-- Clearlogo (if available) -->
-            <control type="image">
-                <left>0</left>
-                <top>0</top>
-                <width>280</width>
-                <height>70</height>
-                <aspectratio>keep</aspectratio>
-                <texture>$INFO[Window.Property(clearlogo)]</texture>
-                <visible>!String.IsEmpty(Window.Property(clearlogo))</visible>
-            </control>
-
-            <!-- Title (if no clearlogo) -->
-            <control type="label">
-                <left>0</left>
-                <top>15</top>
-                <width>600</width>
-                <height>50</height>
-                <font>aiostreams_title</font>
-                <textcolor>FFFFCC00</textcolor>
-                <label>$INFO[Window.Property(title)]</label>
-                <visible>String.IsEmpty(Window.Property(clearlogo))</visible>
-            </control>
-
-            <!-- Stream count badge -->
-            <control type="label">
-                <right>0</right>
-                <top>25</top>
-                <width>300</width>
-                <height>30</height>
-                <font>aiostreams_small</font>
-                <textcolor>88FFFFFF</textcolor>
-                <align>right</align>
-                <label>$INFO[Window.Property(stream_count)] streams</label>
-            </control>
+        <!-- Dark Overlay -->
+        <control type="image">
+            <left>0</left>
+            <top>0</top>
+            <width>1920</width>
+            <height>1080</height>
+            <texture>black-back.png</texture>
+            <colordiffuse>CCFFFFFF</colordiffuse>
         </control>
 
-        <!-- ============================================ -->
-        <!-- STREAM LIST - Single Column (2/3 width for content, 1/3 for poster) -->
-        <!-- ============================================ -->
-        <control type="list" id="5000">
-            <left>60</left>
-            <top>120</top>
-            <width>1800</width>
-            <height>880</height>
-            <onup>5000</onup>
-            <ondown>5000</ondown>
-            <pagecontrol>5001</pagecontrol>
-            <scrolltime>200</scrolltime>
-            <preloaditems>10</preloaditems>
+        <!-- Clearlogo (Top Left) -->
+        <control type="image">
+            <left>80</left>
+            <top>40</top>
+            <width>450</width>
+            <height>180</height>
+            <aspectratio align="left">keep</aspectratio>
+            <texture>$INFO[Container(1000).ListItem.Property(clearlogo)]</texture>
+        </control>
 
-            <!--
-                UNFOCUSED ITEM LAYOUT
-                Height 140px for compact display with poster
-                Stream info: 1133px (2/3), Poster: 600px (1/3)
-            -->
-            <itemlayout height="140">
-                <control type="group">
-                    <!-- Item background (dark) -->
-                    <control type="image">
-                        <left>5</left>
-                        <top>5</top>
-                        <width>1790</width>
-                        <height>130</height>
-                        <texture>white.png</texture>
-                        <colordiffuse>44222222</colordiffuse>
-                    </control>
-
-                    <!-- Border - left -->
-                    <control type="image">
-                        <left>5</left>
-                        <top>5</top>
-                        <width>2</width>
-                        <height>130</height>
-                        <texture>white.png</texture>
-                        <colordiffuse>44888888</colordiffuse>
-                    </control>
-
-                    <!-- Border - right -->
-                    <control type="image">
-                        <left>1793</left>
-                        <top>5</top>
-                        <width>2</width>
-                        <height>130</height>
-                        <texture>white.png</texture>
-                        <colordiffuse>44888888</colordiffuse>
-                    </control>
-
-                    <!-- Border - top -->
-                    <control type="image">
-                        <left>5</left>
-                        <top>5</top>
-                        <width>1790</width>
-                        <height>2</height>
-                        <texture>white.png</texture>
-                        <colordiffuse>44888888</colordiffuse>
-                    </control>
-
-                    <!-- Border - bottom -->
-                    <control type="image">
-                        <left>5</left>
-                        <top>133</top>
-                        <width>1790</width>
-                        <height>2</height>
-                        <texture>white.png</texture>
-                        <colordiffuse>44888888</colordiffuse>
-                    </control>
-
-                    <!-- LEFT RED BOX: Resolution, Service, Addon -->
-                    <control type="group">
-                        <left>15</left>
-                        <top>12</top>
-                        <width>240</width>
-                        <height>106</height>
-
-                        <!-- Red background box -->
-                        <control type="image">
-                            <left>0</left>
-                            <top>0</top>
-                            <width>240</width>
-                            <height>106</height>
-                            <texture>white.png</texture>
-                            <colordiffuse>FFFF0000</colordiffuse>
-                        </control>
-
-                        <!-- Resolution -->
-                        <control type="label">
-                            <left>10</left>
-                            <top>5</top>
-                            <width>220</width>
-                            <height>28</height>
-                            <font>font13</font>
-                            <textcolor>FFFFFFFF</textcolor>
-                            <align>left</align>
-                            <label>$INFO[ListItem.Property(resolution)]</label>
-                        </control>
-
-                        <!-- Service -->
-                        <control type="label">
-                            <left>10</left>
-                            <top>38</top>
-                            <width>220</width>
-                            <height>22</height>
-                            <font>font10</font>
-                            <textcolor>FFFFFFFF</textcolor>
-                            <align>left</align>
-                            <label>$INFO[ListItem.Property(service)]</label>
-                        </control>
-
-                        <!-- Addon (wrapped) -->
-                        <control type="textbox">
-                            <left>10</left>
-                            <top>65</top>
-                            <width>220</width>
-                            <height>36</height>
-                            <font>font10</font>
-                            <textcolor>FFFFFFFF</textcolor>
-                            <align>left</align>
-                            <label>$INFO[ListItem.Property(addon)]</label>
-                        </control>
-                    </control>
-
-                    <!-- MIDDLE SECTION: Stream Information -->
-                    <control type="group">
-                        <left>265</left>
-                        <top>12</top>
-                        <width>860</width>
-                        <height>106</height>
-
-                        <!-- Row 1: SIZE, PROXIED, IN LIBRARY, DURATION -->
-                        <control type="label">
-                            <left>0</left>
-                            <top>0</top>
-                            <width>860</width>
-                            <height>22</height>
-                            <font>font10</font>
-                            <textcolor>88AAAAAA</textcolor>
-                            <label>[COLOR FFFF0000]SIZE:[/COLOR] $INFO[ListItem.Property(size)]   [COLOR FFFF0000]PROXIED:[/COLOR] $INFO[ListItem.Property(proxied)]   [COLOR FFFF0000]IN LIBRARY:[/COLOR] $INFO[ListItem.Property(in_library)]   [COLOR FFFF0000]DURATION:[/COLOR] $INFO[ListItem.Property(duration)]</label>
-                        </control>
-
-                        <!-- Row 2: VIDEO, INDEXER -->
-                        <control type="label">
-                            <left>0</left>
-                            <top>26</top>
-                            <width>860</width>
-                            <height>22</height>
-                            <font>font10</font>
-                            <textcolor>88AAAAAA</textcolor>
-                            <label>[COLOR FFFF0000]VIDEO:[/COLOR] $INFO[ListItem.Property(video)]   [COLOR FFFF0000]INDEXER:[/COLOR] $INFO[ListItem.Property(indexer)]</label>
-                        </control>
-
-                        <!-- Row 3: AUDIO, CACHED -->
-                        <control type="label">
-                            <left>0</left>
-                            <top>52</top>
-                            <width>860</width>
-                            <height>22</height>
-                            <font>font10</font>
-                            <textcolor>88AAAAAA</textcolor>
-                            <label>[COLOR FFFF0000]AUDIO:[/COLOR] $INFO[ListItem.Property(audio)]   [COLOR FFFF0000]CACHED:[/COLOR] $INFO[ListItem.Property(cached)]</label>
-                        </control>
-
-                        <!-- Row 4: FILENAME -->
-                        <control type="label">
-                            <left>0</left>
-                            <top>78</top>
-                            <width>860</width>
-                            <height>22</height>
-                            <font>font10</font>
-                            <textcolor>88AAAAAA</textcolor>
-                            <label>[COLOR FFFF0000]FILENAME:[/COLOR] $INFO[ListItem.Property(filename)]</label>
-                        </control>
-                    </control>
-
-                    <!-- RIGHT SECTION: Poster (1/3 of width = 600px) -->
-                    <control type="image">
-                        <left>1140</left>
-                        <top>12</top>
-                        <width>640</width>
-                        <height>106</height>
-                        <aspectratio>keep</aspectratio>
-                        <texture>$INFO[Window.Property(poster)]</texture>
-                        <visible>!String.IsEmpty(Window.Property(poster))</visible>
-                    </control>
+        <!-- Main Stream List: Narrowed to 1100px for the "Narrow Box" look -->
+        <control type="list" id="1000">
+            <left>80</left>
+            <top>250</top>
+            <width>1100</width>
+            <height>750</height>
+            <onleft>1000</onleft>
+            <onright>1000</onright>
+            <onup>1000</onup>
+            <ondown>1000</ondown>
+            <pagecontrol>60</pagecontrol>
+            <scrolltime tween="quadratic" easing="out">200</scrolltime>
+            
+            <itemlayout height="100" width="1100">
+                <control type="image">
+                    <width>1080</width>
+                    <height>90</height>
+                    <texture border="10">button-nofocus.png</texture>
+                </control>
+                <control type="label">
+                    <left>30</left>
+                    <top>0</top>
+                    <width>1000</width>
+                    <height>90</height>
+                    <font>font14</font>
+                    <textcolor>white</textcolor>
+                    <aligny>center</aligny>
+                    <label>$INFO[ListItem.Label]</label>
                 </control>
             </itemlayout>
 
-            <!--
-                FOCUSED ITEM LAYOUT - Brighter text
-            -->
-            <focusedlayout height="140">
-                <control type="group">
-                    <!-- Focused background -->
-                    <control type="image">
-                        <left>5</left>
-                        <top>5</top>
-                        <width>1790</width>
-                        <height>130</height>
-                        <texture>white.png</texture>
-                        <colordiffuse>66111122</colordiffuse>
-                    </control>
-
-                    <!-- Border - left (light blue) -->
-                    <control type="image">
-                        <left>5</left>
-                        <top>5</top>
-                        <width>3</width>
-                        <height>130</height>
-                        <texture>white.png</texture>
-                        <colordiffuse>FF66CCFF</colordiffuse>
-                    </control>
-
-                    <!-- Border - right (light blue) -->
-                    <control type="image">
-                        <left>1792</left>
-                        <top>5</top>
-                        <width>3</width>
-                        <height>130</height>
-                        <texture>white.png</texture>
-                        <colordiffuse>FF66CCFF</colordiffuse>
-                    </control>
-
-                    <!-- Border - top (light blue) -->
-                    <control type="image">
-                        <left>5</left>
-                        <top>5</top>
-                        <width>1790</width>
-                        <height>3</height>
-                        <texture>white.png</texture>
-                        <colordiffuse>FF66CCFF</colordiffuse>
-                    </control>
-
-                    <!-- Border - bottom (light blue) -->
-                    <control type="image">
-                        <left>5</left>
-                        <top>132</top>
-                        <width>1790</width>
-                        <height>3</height>
-                        <texture>white.png</texture>
-                        <colordiffuse>FF66CCFF</colordiffuse>
-                    </control>
-
-                    <!-- LEFT RED BOX: Resolution, Service, Addon -->
-                    <control type="group">
-                        <left>15</left>
-                        <top>12</top>
-                        <width>240</width>
-                        <height>106</height>
-
-                        <!-- Red background box -->
-                        <control type="image">
-                            <left>0</left>
-                            <top>0</top>
-                            <width>240</width>
-                            <height>106</height>
-                            <texture>white.png</texture>
-                            <colordiffuse>FFFF0000</colordiffuse>
-                        </control>
-
-                        <!-- Resolution -->
-                        <control type="label">
-                            <left>10</left>
-                            <top>5</top>
-                            <width>220</width>
-                            <height>28</height>
-                            <font>font13</font>
-                            <textcolor>FFFFFFFF</textcolor>
-                            <align>left</align>
-                            <label>$INFO[ListItem.Property(resolution)]</label>
-                        </control>
-
-                        <!-- Service -->
-                        <control type="label">
-                            <left>10</left>
-                            <top>38</top>
-                            <width>220</width>
-                            <height>22</height>
-                            <font>font10</font>
-                            <textcolor>FFFFFFFF</textcolor>
-                            <align>left</align>
-                            <label>$INFO[ListItem.Property(service)]</label>
-                        </control>
-
-                        <!-- Addon (wrapped) -->
-                        <control type="textbox">
-                            <left>10</left>
-                            <top>65</top>
-                            <width>220</width>
-                            <height>36</height>
-                            <font>font10</font>
-                            <textcolor>FFFFFFFF</textcolor>
-                            <align>left</align>
-                            <label>$INFO[ListItem.Property(addon)]</label>
-                        </control>
-                    </control>
-
-                    <!-- MIDDLE SECTION: Stream Information -->
-                    <control type="group">
-                        <left>265</left>
-                        <top>12</top>
-                        <width>860</width>
-                        <height>106</height>
-
-                        <!-- Row 1: SIZE, PROXIED, IN LIBRARY, DURATION -->
-                        <control type="label">
-                            <left>0</left>
-                            <top>0</top>
-                            <width>860</width>
-                            <height>22</height>
-                            <font>font10</font>
-                            <textcolor>FFCCCCCC</textcolor>
-                            <label>[COLOR FFFF0000]SIZE:[/COLOR] $INFO[ListItem.Property(size)]   [COLOR FFFF0000]PROXIED:[/COLOR] $INFO[ListItem.Property(proxied)]   [COLOR FFFF0000]IN LIBRARY:[/COLOR] $INFO[ListItem.Property(in_library)]   [COLOR FFFF0000]DURATION:[/COLOR] $INFO[ListItem.Property(duration)]</label>
-                        </control>
-
-                        <!-- Row 2: VIDEO, INDEXER -->
-                        <control type="label">
-                            <left>0</left>
-                            <top>26</top>
-                            <width>860</width>
-                            <height>22</height>
-                            <font>font10</font>
-                            <textcolor>FFCCCCCC</textcolor>
-                            <label>[COLOR FFFF0000]VIDEO:[/COLOR] $INFO[ListItem.Property(video)]   [COLOR FFFF0000]INDEXER:[/COLOR] $INFO[ListItem.Property(indexer)]</label>
-                        </control>
-
-                        <!-- Row 3: AUDIO, CACHED -->
-                        <control type="label">
-                            <left>0</left>
-                            <top>52</top>
-                            <width>860</width>
-                            <height>22</height>
-                            <font>font10</font>
-                            <textcolor>FFCCCCCC</textcolor>
-                            <label>[COLOR FFFF0000]AUDIO:[/COLOR] $INFO[ListItem.Property(audio)]   [COLOR FFFF0000]CACHED:[/COLOR] $INFO[ListItem.Property(cached)]</label>
-                        </control>
-
-                        <!-- Row 4: FILENAME -->
-                        <control type="label">
-                            <left>0</left>
-                            <top>78</top>
-                            <width>860</width>
-                            <height>22</height>
-                            <font>font10</font>
-                            <textcolor>FFCCCCCC</textcolor>
-                            <label>[COLOR FFFF0000]FILENAME:[/COLOR] $INFO[ListItem.Property(filename)]</label>
-                        </control>
-                    </control>
-
-                    <!-- RIGHT SECTION: Poster (1/3 of width = 600px) -->
-                    <control type="image">
-                        <left>1140</left>
-                        <top>12</top>
-                        <width>640</width>
-                        <height>106</height>
-                        <aspectratio>keep</aspectratio>
-                        <texture>$INFO[Window.Property(poster)]</texture>
-                        <visible>!String.IsEmpty(Window.Property(poster))</visible>
-                    </control>
+            <focusedlayout height="100" width="1100">
+                <control type="image">
+                    <width>1080</width>
+                    <height>90</height>
+                    <texture border="10">button-focus.png</texture>
+                    <visible>Control.HasFocus(1000)</visible>
+                </control>
+                <control type="label">
+                    <left>30</left>
+                    <top>0</top>
+                    <width>1000</width>
+                    <height>90</height>
+                    <font>font14</font>
+                    <textcolor>white</textcolor>
+                    <aligny>center</aligny>
+                    <label>$INFO[ListItem.Label]</label>
+                    <scroll>true</scroll>
                 </control>
             </focusedlayout>
         </control>
 
-        <!-- Scrollbar -->
-        <control type="scrollbar" id="5001">
-            <left>1870</left>
-            <top>120</top>
-            <width>8</width>
-            <height>880</height>
-            <orientation>vertical</orientation>
-            <showonepage>false</showonepage>
-            <texturesliderbackground colordiffuse="22FFFFFF">white.png</texturesliderbackground>
-            <texturesliderbar colordiffuse="FF66CCFF">white.png</texturesliderbar>
-            <texturesliderbarfocus colordiffuse="FF99DDFF">white.png</texturesliderbarfocus>
-            <textureslidernib colordiffuse="00000000">white.png</textureslidernib>
-            <textureslidernibfocus colordiffuse="00000000">white.png</textureslidernibfocus>
+        <!-- THE SINGLE POSTER (Your Yellow Box) -->
+        <!-- This is a single control that replaces the 400+ lines of repeating posters -->
+        <control type="group">
+            <left>1250</left>
+            <top>250</top>
+            <control type="image">
+                <width>550</width>
+                <height>750</height>
+                <aspectratio>keep</aspectratio>
+                <texture background="true">$INFO[Container(1000).ListItem.Icon]</texture>
+                <fadetime>300</fadetime>
+                <bordertexture border="20">Thumbnail_Shadow.png</bordertexture>
+            </control>
+            
+            <!-- Metadata Area: Using your specific AIO properties -->
+            <control type="label">
+                <top>760</top>
+                <width>550</width>
+                <height>40</height>
+                <font>font12</font>
+                <align>center</align>
+                <textcolor>grey2</textcolor>
+                <label>$INFO[Container(1000).ListItem.Property(Debrid)]  |  $INFO[Container(1000).ListItem.Property(Resolution)]  |  $INFO[Container(1000).ListItem.Property(Size)]</label>
+            </control>
         </control>
 
-        <!-- ============================================ -->
-        <!-- FOOTER - Instructions -->
-        <!-- ============================================ -->
-        <control type="label">
-            <left>60</left>
-            <top>1015</top>
-            <width>1800</width>
-            <height>40</height>
-            <font>aiostreams_helper</font>
-            <textcolor>66FFFFFF</textcolor>
-            <align>center</align>
-            <label>Select stream to play  |  [B]Back[/B] to cancel</label>
+        <!-- Scrollbar -->
+        <control type="scrollbar" id="60">
+            <left>1185</left>
+            <top>250</top>
+            <width>10</width>
+            <height>750</height>
+            <texturesliderbackground border="0,2,0,2">ScrollBarV.png</texturesliderbackground>
+            <texturesliderbar border="0,2,0,2">ScrollBarV_Focus.png</texturesliderbar>
+            <onleft>1000</onleft>
+            <onright>1000</onright>
+            <showonepage>false</showonepage>
+            <orientation>vertical</orientation>
         </control>
     </controls>
 </window>
