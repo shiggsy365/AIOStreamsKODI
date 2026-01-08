@@ -16,65 +16,65 @@ import xbmcvfs
 CONTROL_STREAM_LIST = 5000
 CONTROL_SCROLLBAR = 5001
 
-# Unicode symbol mappings - emoji to BMP Unicode conversions
-# Using Kodi's arial.ttf (DejaVu Sans) which has good BMP Unicode coverage
+# Simple ASCII symbol mappings - using only standard ASCII characters
+# These work in ANY font without requiring special Unicode support
 UNICODE_SYMBOLS = {
     # Status indicators
-    '🔒': '●',              # Proxied -> Black circle
-    '🔓': '○',              # Not proxied -> White circle
-    '⚡': '⚡',              # Cached (keep as is - works in Unicode)
-    '❌': '○',              # Uncached -> White circle
-    '⏳': '○',              # Uncached -> White circle
+    '🔒': '[P]',            # Proxied
+    '🔓': '[ ]',            # Not proxied
+    '⚡': '[C]',            # Cached
+    '❌': '[X]',            # Uncached
+    '⏳': '[-]',            # Uncached
 
     # Video/Media
-    '🎥': '▶',              # Video type -> Play symbol
-    '🎞️': '■',             # Video format -> Square
-    '🎞': '■',              # Video format -> Square
-    '📺': '■',              # Video encoding -> Square
+    '🎥': 'VID',            # Video type
+    '🎞️': 'FMT',           # Video format
+    '🎞': 'FMT',            # Video format (no variation selector)
+    '📺': 'ENC',            # Video encoding
 
     # Audio
-    '🎧': '♪',              # Audio stream -> Eighth note
-    '🔊': '♫',              # Audio channels -> Beamed notes
+    '🎧': 'AUD',            # Audio stream
+    '🔊': 'CH',             # Audio channels
 
     # File info
-    '📦': '◆',              # File size -> Diamond
-    '💾': '◆',              # File size (alt) -> Diamond
+    '📦': 'SIZE',           # File size
+    '💾': 'SIZE',           # File size (alt)
 
     # Stats & metadata
-    '⏱️': '⌚',             # Duration -> Watch
-    '⏱': '⌚',              # Duration -> Watch
-    '👥': '▲',              # Seeders -> Up triangle
-    '🌱': '▲',              # Seeders -> Up triangle
-    '👤': '▲',              # Seeders (alt) -> Up triangle
-    '📅': '◷',              # Age -> Circle with dot
-    '🔍': '○',              # Release group -> Circle
-    '📡': '○',              # Release group (alt) -> Circle
-    '⚙️': '○',              # Release group (alt 2) -> Circle
-    '⚙': '○',              # Release group (alt 3) -> Circle
+    '⏱️': 'DUR',           # Duration
+    '⏱': 'DUR',            # Duration (no variation selector)
+    '👥': 'SEED',           # Seeders
+    '🌱': 'SEED',           # Seeders (alt)
+    '👤': 'SEED',           # Seeders (alt)
+    '📅': 'AGE',            # Age
+    '🔍': 'GRP',            # Release group
+    '📡': 'GRP',            # Release group (alt)
+    '⚙️': 'GRP',           # Release group (alt)
+    '⚙': 'GRP',            # Release group (no variation selector)
 
     # Identifiers
-    '🏷️': '◈',             # Label -> Diamond with center
-    '🏷': '◈',              # Label -> Diamond with center
-    '🌎': '◎',              # Language -> Bullseye
-    '🌐': '◎',              # Language (alt) -> Bullseye
-    '🗣️': '◎',              # Language (alt 2) -> Bullseye
-    '🗣': '◎',              # Language (alt 3) -> Bullseye
+    '🏷️': 'TAG',           # Label
+    '🏷': 'TAG',            # Label (no variation selector)
+    '🌎': 'LANG',           # Language
+    '🌐': 'LANG',           # Language (alt)
+    '🗣️': 'LANG',          # Language (alt)
+    '🗣': 'LANG',           # Language (no variation selector)
 
     # Actions
-    '🔥': '★',              # Remove -> Star
-    '☁️': '◎',              # Library -> Bullseye
-    '☁': '◎',              # Library -> Bullseye
-    '📌': '◎',              # Library (alt) -> Bullseye
+    '🔥': 'DEL',            # Remove
+    '☁️': 'LIB',           # Library
+    '☁': 'LIB',            # Library (no variation selector)
+    '📌': 'PIN',            # Library (alt)
 
     # Info
-    '📁': '▸',              # Filename -> Right triangle
-    '🎬': '▸',              # Filename (alt) -> Right triangle
-    'ℹ️': 'ⓘ',              # Message -> Circled i
-    'ℹ': 'ⓘ',              # Message -> Circled i
+    '📁': 'FILE',           # Filename
+    '🎬': 'FILE',           # Filename (alt)
+    'ℹ️': 'INFO',          # Message
+    'ℹ': 'INFO',           # Message (no variation selector)
 
-    # Common emoji variants (without variation selector)
-    '🕵️': '●',             # Proxied detective -> Black circle
-    '🕵': '●',              # Proxied detective -> Black circle
+    # Common emoji variants
+    '🕵️': '[P]',           # Proxied detective
+    '🕵': '[P]',            # Proxied detective (no variation selector)
 }
 
 # No need for EMOJI_TO_PIPE or EMOJI_TO_REMOVE - catch-all handles the rest
@@ -90,8 +90,8 @@ def replace_emojis(text):
     for emoji, symbol in UNICODE_SYMBOLS.items():
         text = text.replace(emoji, symbol)
 
-    # Replace any remaining emojis with star (catch-all)
-    # This regex matches most emoji characters
+    # Remove any remaining unmapped emojis (catch-all)
+    # This regex matches most emoji characters including flags
     emoji_pattern = re.compile(
         "["
         "\U0001F600-\U0001F64F"  # emoticons
@@ -105,11 +105,12 @@ def replace_emojis(text):
         "\U0001FA70-\U0001FAFF"  # symbols extended
         "\U00002702-\U000027B0"  # dingbats
         "\U000024C2-\U0001F251"  # enclosed characters
-        "\U0001F1E0-\U0001F1FF"  # flags
+        "\U0001F1E0-\U0001F1FF"  # flags (regional indicators)
+        "\uFE0F"                  # variation selector
         "]+",
         flags=re.UNICODE
     )
-    text = emoji_pattern.sub('★', text)
+    text = emoji_pattern.sub('', text)  # Remove instead of replacing with star
 
     # Clean up any double spaces that might result
     while '  ' in text:
