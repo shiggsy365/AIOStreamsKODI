@@ -26,27 +26,27 @@
         </font>
 
         <!--
-            Stream detail lines - Uses Noto Emoji for emoji support
+            Stream detail lines - Uses NotoSans for Unicode symbol support
             This is the main font used in stream selection dialogs
             Size reduced to 11px to fit 6 rows comfortably
         -->
         <font>
             <name>aiostreams_stream_detail</name>
-            <filename>NotoEmoji-Regular.ttf</filename>
+            <filename>NotoSans-Regular.ttf</filename>
             <size>11</size>
         </font>
 
         <!-- Stream description - Reduced to 9px to fit 6 rows of text -->
         <font>
             <name>aiostreams_stream_desc</name>
-            <filename>NotoEmoji-Regular.ttf</filename>
+            <filename>NotoSans-Regular.ttf</filename>
             <size>9</size>
         </font>
 
-        <!-- Small detail text with emoji support -->
+        <!-- Small detail text with Unicode symbol support -->
         <font>
             <name>aiostreams_small</name>
-            <filename>NotoEmoji-Regular.ttf</filename>
+            <filename>NotoSans-Regular.ttf</filename>
             <size>16</size>
         </font>
 
@@ -57,17 +57,17 @@
             <size>14</size>
         </font>
 
-        <!-- Dedicated emoji font for explicit emoji usage -->
+        <!-- Dedicated symbol font for explicit Unicode usage -->
         <font>
             <name>aiostreams_emoji</name>
-            <filename>NotoEmoji-Regular.ttf</filename>
+            <filename>NotoSans-Regular.ttf</filename>
             <size>18</size>
         </font>
 
-        <!-- Large emoji font -->
+        <!-- Large symbol font -->
         <font>
             <name>aiostreams_emoji_large</name>
-            <filename>NotoEmoji-Regular.ttf</filename>
+            <filename>NotoSans-Regular.ttf</filename>
             <size>24</size>
         </font>
 
@@ -86,7 +86,7 @@
 
         <font>
             <name>font13</name>
-            <filename>NotoEmoji-Regular.ttf</filename>
+            <filename>NotoSans-Regular.ttf</filename>
             <size>20</size>
         </font>
 
