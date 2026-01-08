@@ -1153,62 +1153,82 @@ def play():
         media_id = f"{imdb_id}:{season}:{episode}"
         title = params.get('title', f'S{season}E{episode}')
 
-    # Fetch streams
-    stream_data = get_streams(content_type, media_id)
+    # Cancel Kodi's loading state immediately - we'll handle our own progress display
+    xbmcplugin.setResolvedUrl(HANDLE, False, xbmcgui.ListItem())
 
-    if not stream_data or 'streams' not in stream_data or len(stream_data['streams']) == 0:
-        xbmcgui.Dialog().notification('AIOStreams', 'No streams available', xbmcgui.NOTIFICATION_ERROR)
-        xbmcplugin.setResolvedUrl(HANDLE, False, xbmcgui.ListItem())
-        return
+    # Show progress dialog while scraping streams
+    progress = xbmcgui.DialogProgress()
+    progress.create('AIOStreams', 'Scraping streams...')
+    progress.update(0)
 
-    # Check default_behavior setting
-    default_behavior = get_setting('default_behavior', 'show_streams')
+    try:
+        # Fetch streams
+        progress.update(25, 'Scraping streams...')
+        stream_data = get_streams(content_type, media_id)
+        progress.update(75)
 
-    # If set to show streams, show dialog instead of auto-playing
-    if default_behavior == 'show_streams':
-        # IMPORTANT: Call setResolvedUrl(False) BEFORE showing dialog to immediately
-        # cancel Kodi's loading/waiting state. The dialog handles playback separately
-        # via xbmc.Player().play() so we don't need the resolved URL mechanism.
-        xbmcplugin.setResolvedUrl(HANDLE, False, xbmcgui.ListItem())
-        show_streams_dialog(content_type, media_id, stream_data, title, from_playable=True)
-        return
+        if not stream_data or 'streams' not in stream_data or len(stream_data['streams']) == 0:
+            progress.close()
+            xbmcgui.Dialog().notification('AIOStreams', 'No streams available', xbmcgui.NOTIFICATION_ERROR)
+            return
 
-    # Otherwise, auto-play first stream
-    stream = stream_data['streams'][0]
-    stream_url = stream.get('url') or stream.get('externalUrl')
+        # Check default_behavior setting
+        default_behavior = get_setting('default_behavior', 'show_streams')
 
-    if not stream_url:
-        xbmcgui.Dialog().notification('AIOStreams', 'No playable URL found', xbmcgui.NOTIFICATION_ERROR)
-        xbmcplugin.setResolvedUrl(HANDLE, False, xbmcgui.ListItem())
-        return
+        # If set to show streams, show dialog instead of auto-playing
+        if default_behavior == 'show_streams':
+            progress.update(100)
+            progress.close()
+            show_streams_dialog(content_type, media_id, stream_data, title, from_playable=True)
+            return
 
-    # Create list item for playback
-    list_item = xbmcgui.ListItem(path=stream_url)
-    list_item.setProperty('IsPlayable', 'true')
+        # Otherwise, auto-play first stream
+        progress.update(85, 'Preparing playback...')
+        stream = stream_data['streams'][0]
+        stream_url = stream.get('url') or stream.get('externalUrl')
 
-    # Add subtitles if available
-    subtitle_data = get_subtitles(content_type, media_id)
-    if subtitle_data and 'subtitles' in subtitle_data:
-        subtitle_paths = []
-        for subtitle in subtitle_data['subtitles']:
-            sub_url = subtitle.get('url')
-            if sub_url:
-                # Download subtitle with language-coded filename for proper Kodi display
-                lang = subtitle.get('lang', 'unknown')
-                sub_path = download_subtitle_with_language(sub_url, lang, media_id)
-                subtitle_paths.append(sub_path)
-                xbmc.log(f'[AIOStreams] Added subtitle [{lang}]: {sub_path}', xbmc.LOGINFO)
+        if not stream_url:
+            progress.close()
+            xbmcgui.Dialog().notification('AIOStreams', 'No playable URL found', xbmcgui.NOTIFICATION_ERROR)
+            return
 
-        if subtitle_paths:
-            list_item.setSubtitles(subtitle_paths)
+        # Create list item for playback
+        list_item = xbmcgui.ListItem(path=stream_url)
+        list_item.setProperty('IsPlayable', 'true')
 
-    # Set media info for scrobbling
-    if HAS_MODULES and PLAYER:
-        scrobble_type = 'movie' if content_type == 'movie' else 'episode'
-        PLAYER.set_media_info(scrobble_type, imdb_id, season, episode)
+        # Add subtitles if available
+        progress.update(90, 'Loading subtitles...')
+        subtitle_data = get_subtitles(content_type, media_id)
+        if subtitle_data and 'subtitles' in subtitle_data:
+            subtitle_paths = []
+            for subtitle in subtitle_data['subtitles']:
+                sub_url = subtitle.get('url')
+                if sub_url:
+                    # Download subtitle with language-coded filename for proper Kodi display
+                    lang = subtitle.get('lang', 'unknown')
+                    sub_path = download_subtitle_with_language(sub_url, lang, media_id)
+                    subtitle_paths.append(sub_path)
+                    xbmc.log(f'[AIOStreams] Added subtitle [{lang}]: {sub_path}', xbmc.LOGINFO)
 
-    # Set resolved URL for playback
-    xbmcplugin.setResolvedUrl(HANDLE, True, list_item)
+            if subtitle_paths:
+                list_item.setSubtitles(subtitle_paths)
+
+        # Set media info for scrobbling
+        if HAS_MODULES and PLAYER:
+            scrobble_type = 'movie' if content_type == 'movie' else 'episode'
+            PLAYER.set_media_info(scrobble_type, imdb_id, season, episode)
+
+        # Close progress and start playback
+        progress.update(100, 'Starting playback...')
+        progress.close()
+
+        # Use xbmc.Player().play() for playback since we already cancelled setResolvedUrl
+        xbmc.Player().play(stream_url, list_item)
+
+    except Exception as e:
+        progress.close()
+        xbmc.log(f'[AIOStreams] Play error: {e}', xbmc.LOGERROR)
+        xbmcgui.Dialog().notification('AIOStreams', f'Playback error: {str(e)}', xbmcgui.NOTIFICATION_ERROR)
 
 
 def format_stream_title(stream, for_dialog=False):
