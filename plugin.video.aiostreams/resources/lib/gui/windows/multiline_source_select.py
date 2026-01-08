@@ -16,55 +16,80 @@ import xbmcvfs
 CONTROL_STREAM_LIST = 5000
 CONTROL_SCROLLBAR = 5001
 
-# Emoji to text replacements - specific mappings with Kodi color codes
-EMOJI_REPLACEMENTS = {
-    '🕵️': '[COLOR green]#[/COLOR]',
-    '🕵': '[COLOR green]#[/COLOR]',
-    '☁️': '[COLOR dodgerblue]Lib[/COLOR]',
-    '☁': '[COLOR dodgerblue]Lib[/COLOR]',
-    '⚡': '[COLOR yellow]Cached[/COLOR]',
-    '⏳': '[COLOR red]Uncached[/COLOR]',
-    '📦': '[SIZE]',
-    '⏱️': '[DUR]',
-    '⏱': '[DUR]',
-    '📅': '[AGE]',
-    '🔍': '[IDX]',
-    '🌐': '[LANG]',
-    '👥': '[SEED]',
-    '🌱': '[SEED]',
-    '•': '-',
+# Unicode symbol mappings - emoji to Unicode text conversions
+UNICODE_SYMBOLS = {
+    # Status indicators
+    '🔒': '◉',              # Proxied -> Fisheye
+    '🔓': '○',              # Not proxied -> Empty circle
+    '⚡': '⚡',              # Cached (keep as is - works in Unicode)
+    '❌': '○',              # Uncached -> Empty circle
+    '⏳': '○',              # Uncached -> Empty circle
+
+    # Video/Media
+    '🎥': '▶',              # Video type -> Play symbol
+    '🎞️': '■',             # Video format -> Square
+    '🎞': '■',              # Video format -> Square
+    '📺': '▣',              # Video encoding -> Filled square
+
+    # Audio
+    '🎧': '♪',              # Audio stream -> Eighth note
+    '🔊': '♫',              # Audio channels -> Beamed notes
+
+    # File info
+    '📦': '◆',              # File size -> Diamond
+    '💾': '◆',              # File size (alt) -> Diamond
+
+    # Stats & metadata
+    '⏱️': '⌚',             # Duration -> Watch
+    '⏱': '⌚',              # Duration -> Watch
+    '👥': '▲',              # Seeders -> Up triangle
+    '🌱': '▲',              # Seeders -> Up triangle
+    '👤': '▲',              # Seeders (alt) -> Up triangle
+    '📅': '◷',              # Age -> Circle with dot
+    '🔍': '○',              # Release group -> Circle
+    '📡': '○',              # Release group (alt) -> Circle
+    '⚙️': '○',              # Release group (alt 2) -> Circle
+    '⚙': '○',              # Release group (alt 3) -> Circle
+
+    # Identifiers
+    '🏷️': '◈',             # Label -> Diamond with center
+    '🏷': '◈',              # Label -> Diamond with center
+    '🌎': '◎',              # Language -> Bullseye
+    '🌐': '◎',              # Language (alt) -> Bullseye
+    '🗣️': '◎',              # Language (alt 2) -> Bullseye
+    '🗣': '◎',              # Language (alt 3) -> Bullseye
+
+    # Actions
+    '🔥': '★',              # Remove -> Star
+    '☁️': '◎',              # Library -> Bullseye
+    '☁': '◎',              # Library -> Bullseye
+    '📌': '◎',              # Library (alt) -> Bullseye
+
+    # Info
+    '📁': '▸',              # Filename -> Right triangle
+    '🎬': '▸',              # Filename (alt) -> Right triangle
+    'ℹ️': 'ⓘ',              # Message -> Circled i
+    'ℹ': 'ⓘ',              # Message -> Circled i
+
+    # Common emoji variants (without variation selector)
+    '🕵️': '◉',             # Proxied detective -> Fisheye
+    '🕵': '◉',              # Proxied detective -> Fisheye
 }
 
-# Emojis to replace with pipe separator
-EMOJI_TO_PIPE = [
-    '🎞️', '🎞', '🏷️', '🏷', '🎧', '🔊', '📡',
-]
-
-# Emojis to remove entirely
-EMOJI_TO_REMOVE = [
-    'ℹ️', 'ℹ', '📁', '🎥', '📺',
-]
+# No need for EMOJI_TO_PIPE or EMOJI_TO_REMOVE - catch-all handles the rest
 
 import re
 
 def replace_emojis(text):
-    """Replace emojis with text equivalents for better compatibility."""
+    """Replace emojis with Unicode symbols for better compatibility."""
     if not text:
         return text
 
-    # Apply specific replacements first
-    for emoji, replacement in EMOJI_REPLACEMENTS.items():
-        text = text.replace(emoji, replacement)
+    # Apply specific Unicode symbol replacements first
+    for emoji, symbol in UNICODE_SYMBOLS.items():
+        text = text.replace(emoji, symbol)
 
-    # Replace separator emojis with pipe
-    for emoji in EMOJI_TO_PIPE:
-        text = text.replace(emoji, '|')
-
-    # Remove specific emojis entirely
-    for emoji in EMOJI_TO_REMOVE:
-        text = text.replace(emoji, '')
-
-    # Replace any remaining emojis with pipe (catch-all)
+    # Replace any remaining emojis with star (catch-all)
     # This regex matches most emoji characters
     emoji_pattern = re.compile(
         "["
@@ -83,18 +108,16 @@ def replace_emojis(text):
         "]+",
         flags=re.UNICODE
     )
-    text = emoji_pattern.sub('|', text)
+    text = emoji_pattern.sub('★', text)
 
-    # Clean up any double spaces or pipes that might result
+    # Clean up any double spaces that might result
     while '  ' in text:
         text = text.replace('  ', ' ')
-    while '||' in text:
-        text = text.replace('||', '|')
-    while '| |' in text:
-        text = text.replace('| |', '|')
-    # Clean up pipes at start/end of lines
+
+    # Preserve line breaks (\n) - don't strip them from lines
+    # Only strip leading/trailing whitespace from each line
     lines = text.split('\n')
-    lines = [line.strip().strip('|').strip() for line in lines]
+    lines = [line.strip() for line in lines]
     text = '\n'.join(lines)
 
     return text.strip()
