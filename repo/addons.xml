@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <addons>
-<addon id="plugin.video.aiostreams" name="AIOStreams" version="3.5.16" provider-name="Jon">
+<addon id="plugin.video.aiostreams" name="AIOStreams" version="3.5.17" provider-name="Jon">
     <requires>
         <import addon="xbmc.python" version="3.0.0"/>
         <import addon="script.module.requests" version="2.25.1"/>
@@ -15,7 +15,7 @@
         <platform>all</platform>
         <license>MIT</license>
         <website>https://aiostreams.shiggsy.co.uk</website>
-        <news>v3.5.16: CRITICAL FIX - Pass poster/fanart/clearlogo parameters to stream dialog from all entry points (context menus, quick actions, browse). Added logging to debug poster display. | v3.5.15: Red box layout.</news>
+        <news>v3.5.17: Red box doubled in width (120px→240px, internal width 220px), middle section adjusted (860px), better text spacing. | v3.5.16: Fixed poster parameter passing.</news>
         <assets>
             <icon>resources/icon.png</icon>
             <fanart>resources/fanart.jpg</fanart>
