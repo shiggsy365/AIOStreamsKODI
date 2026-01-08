@@ -1339,11 +1339,14 @@ def select_stream():
     finally:
         progress.close()
 
+    # Small delay to allow Kodi to release modal dialog state before showing stream selection
+    xbmc.sleep(100)
+
     if not stream_data or 'streams' not in stream_data or len(stream_data['streams']) == 0:
         xbmcgui.Dialog().notification('AIOStreams', 'No streams available', xbmcgui.NOTIFICATION_ERROR)
         xbmcplugin.setResolvedUrl(HANDLE, False, xbmcgui.ListItem())
         return
-    
+
     # Use custom multi-line dialog with emoji support
     xbmc.log(f'[AIOStreams] Showing stream selection dialog with {len(stream_data["streams"])} streams', xbmc.LOGDEBUG)
 
