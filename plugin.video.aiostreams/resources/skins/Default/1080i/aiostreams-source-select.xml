@@ -8,7 +8,7 @@
     - Right: Content poster
 -->
 <window type="dialog">
-    <defaultcontrol always="true">5000</defaultcontrol>
+    <defaultcontrol>5000</defaultcontrol>
 
     <coordinates>
         <left>0</left>
@@ -174,14 +174,14 @@
                     <control type="group">
                         <left>15</left>
                         <top>12</top>
-                        <width>120</width>
+                        <width>240</width>
                         <height>106</height>
 
                         <!-- Red background box -->
                         <control type="image">
                             <left>0</left>
                             <top>0</top>
-                            <width>120</width>
+                            <width>240</width>
                             <height>106</height>
                             <texture>white.png</texture>
                             <colordiffuse>FFFF0000</colordiffuse>
@@ -189,9 +189,9 @@
 
                         <!-- Resolution -->
                         <control type="label">
-                            <left>5</left>
+                            <left>10</left>
                             <top>5</top>
-                            <width>110</width>
+                            <width>220</width>
                             <height>28</height>
                             <font>font13</font>
                             <textcolor>FFFFFFFF</textcolor>
@@ -201,9 +201,9 @@
 
                         <!-- Service -->
                         <control type="label">
-                            <left>5</left>
+                            <left>10</left>
                             <top>38</top>
-                            <width>110</width>
+                            <width>220</width>
                             <height>22</height>
                             <font>font10</font>
                             <textcolor>FFFFFFFF</textcolor>
@@ -213,9 +213,9 @@
 
                         <!-- Addon (wrapped) -->
                         <control type="textbox">
-                            <left>5</left>
+                            <left>10</left>
                             <top>65</top>
-                            <width>110</width>
+                            <width>220</width>
                             <height>36</height>
                             <font>font10</font>
                             <textcolor>FFFFFFFF</textcolor>
@@ -226,16 +226,16 @@
 
                     <!-- MIDDLE SECTION: Stream Information -->
                     <control type="group">
-                        <left>145</left>
+                        <left>265</left>
                         <top>12</top>
-                        <width>980</width>
+                        <width>860</width>
                         <height>106</height>
 
                         <!-- Row 1: SIZE, PROXIED, IN LIBRARY, DURATION -->
                         <control type="label">
                             <left>0</left>
                             <top>0</top>
-                            <width>980</width>
+                            <width>860</width>
                             <height>22</height>
                             <font>font10</font>
                             <textcolor>88AAAAAA</textcolor>
@@ -246,7 +246,7 @@
                         <control type="label">
                             <left>0</left>
                             <top>26</top>
-                            <width>980</width>
+                            <width>860</width>
                             <height>22</height>
                             <font>font10</font>
                             <textcolor>88AAAAAA</textcolor>
@@ -257,7 +257,7 @@
                         <control type="label">
                             <left>0</left>
                             <top>52</top>
-                            <width>980</width>
+                            <width>860</width>
                             <height>22</height>
                             <font>font10</font>
                             <textcolor>88AAAAAA</textcolor>
@@ -268,7 +268,7 @@
                         <control type="label">
                             <left>0</left>
                             <top>78</top>
-                            <width>980</width>
+                            <width>860</width>
                             <height>22</height>
                             <font>font10</font>
                             <textcolor>88AAAAAA</textcolor>
@@ -348,14 +348,14 @@
                     <control type="group">
                         <left>15</left>
                         <top>12</top>
-                        <width>120</width>
+                        <width>240</width>
                         <height>106</height>
 
                         <!-- Red background box -->
                         <control type="image">
                             <left>0</left>
                             <top>0</top>
-                            <width>120</width>
+                            <width>240</width>
                             <height>106</height>
                             <texture>white.png</texture>
                             <colordiffuse>FFFF0000</colordiffuse>
@@ -363,9 +363,9 @@
 
                         <!-- Resolution -->
                         <control type="label">
-                            <left>5</left>
+                            <left>10</left>
                             <top>5</top>
-                            <width>110</width>
+                            <width>220</width>
                             <height>28</height>
                             <font>font13</font>
                             <textcolor>FFFFFFFF</textcolor>
@@ -375,9 +375,9 @@
 
                         <!-- Service -->
                         <control type="label">
-                            <left>5</left>
+                            <left>10</left>
                             <top>38</top>
-                            <width>110</width>
+                            <width>220</width>
                             <height>22</height>
                             <font>font10</font>
                             <textcolor>FFFFFFFF</textcolor>
@@ -387,9 +387,9 @@
 
                         <!-- Addon (wrapped) -->
                         <control type="textbox">
-                            <left>5</left>
+                            <left>10</left>
                             <top>65</top>
-                            <width>110</width>
+                            <width>220</width>
                             <height>36</height>
                             <font>font10</font>
                             <textcolor>FFFFFFFF</textcolor>
@@ -400,16 +400,16 @@
 
                     <!-- MIDDLE SECTION: Stream Information -->
                     <control type="group">
-                        <left>145</left>
+                        <left>265</left>
                         <top>12</top>
-                        <width>980</width>
+                        <width>860</width>
                         <height>106</height>
 
                         <!-- Row 1: SIZE, PROXIED, IN LIBRARY, DURATION -->
                         <control type="label">
                             <left>0</left>
                             <top>0</top>
-                            <width>980</width>
+                            <width>860</width>
                             <height>22</height>
                             <font>font10</font>
                             <textcolor>FFCCCCCC</textcolor>
@@ -420,7 +420,7 @@
                         <control type="label">
                             <left>0</left>
                             <top>26</top>
-                            <width>980</width>
+                            <width>860</width>
                             <height>22</height>
                             <font>font10</font>
                             <textcolor>FFCCCCCC</textcolor>
@@ -431,7 +431,7 @@
                         <control type="label">
                             <left>0</left>
                             <top>52</top>
-                            <width>980</width>
+                            <width>860</width>
                             <height>22</height>
                             <font>font10</font>
                             <textcolor>FFCCCCCC</textcolor>
@@ -442,7 +442,7 @@
                         <control type="label">
                             <left>0</left>
                             <top>78</top>
-                            <width>980</width>
+                            <width>860</width>
                             <height>22</height>
                             <font>font10</font>
                             <textcolor>FFCCCCCC</textcolor>
