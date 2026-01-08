@@ -1380,9 +1380,10 @@ def select_stream():
     if HAS_MODULES and PLAYER:
         scrobble_type = 'movie' if content_type == 'movie' else 'episode'
         PLAYER.set_media_info(scrobble_type, imdb_id, season, episode)
-    
-    # Set resolved URL for playback
-    xbmcplugin.setResolvedUrl(HANDLE, True, list_item)
+
+    # Use direct playback instead of setResolvedUrl to avoid modal dialog conflicts
+    # When showing a selection dialog, setResolvedUrl can timeout waiting for resolution
+    xbmc.Player().play(stream_url, list_item)
 
 
 def movie_lists():

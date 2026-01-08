@@ -1,12 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-    AIOStreams Multi-Line Stream Selection Dialog
+    AIOStreams Multi-Line Stream Selection Dialog - 2 Column Layout
 
-    This skin displays stream results with full emoji support and
-    dynamic multi-line content (1-10 rows per stream).
-
-    Uses textbox controls to properly render multi-line content
-    with line breaks as provided by the formatter.
+    Displays streams in a 2-column grid with borders around each item.
+    Name line uses standard font, description uses 25% smaller font.
 -->
 <window type="dialog">
     <defaultcontrol always="true">5000</defaultcontrol>
@@ -62,14 +59,14 @@
             <left>60</left>
             <top>30</top>
             <width>1800</width>
-            <height>100</height>
+            <height>80</height>
 
             <!-- Clearlogo (if available) -->
             <control type="image">
                 <left>0</left>
                 <top>0</top>
                 <width>280</width>
-                <height>90</height>
+                <height>70</height>
                 <aspectratio>keep</aspectratio>
                 <texture>$INFO[Window.Property(clearlogo)]</texture>
                 <visible>!String.IsEmpty(Window.Property(clearlogo))</visible>
@@ -78,11 +75,11 @@
             <!-- Title (if no clearlogo) -->
             <control type="label">
                 <left>0</left>
-                <top>20</top>
+                <top>15</top>
                 <width>600</width>
                 <height>50</height>
                 <font>aiostreams_title</font>
-                <textcolor>FFFFFFFF</textcolor>
+                <textcolor>FFFFCC00</textcolor>
                 <label>$INFO[Window.Property(title)]</label>
                 <visible>String.IsEmpty(Window.Property(clearlogo))</visible>
             </control>
@@ -90,7 +87,7 @@
             <!-- Stream count badge -->
             <control type="label">
                 <right>0</right>
-                <top>35</top>
+                <top>25</top>
                 <width>300</width>
                 <height>30</height>
                 <font>aiostreams_small</font>
@@ -101,118 +98,125 @@
         </control>
 
         <!-- ============================================ -->
-        <!-- STREAM LIST - Main Content Area -->
+        <!-- STREAM LIST - 2 Column Grid -->
         <!-- ============================================ -->
         <control type="panel" id="5000">
             <left>60</left>
-            <top>140</top>
+            <top>120</top>
             <width>1800</width>
-            <height>850</height>
+            <height>880</height>
             <onup>5000</onup>
             <ondown>5000</ondown>
+            <onleft>5000</onleft>
+            <onright>5000</onright>
             <orientation>vertical</orientation>
             <pagecontrol>5001</pagecontrol>
             <scrolltime>200</scrolltime>
-            <preloaditems>5</preloaditems>
+            <preloaditems>10</preloaditems>
+            <itemgap>10</itemgap>
 
             <!--
-                UNFOCUSED ITEM LAYOUT
-                Uses textbox for multi-line content with proper line break handling
+                UNFOCUSED ITEM LAYOUT - 2 columns (880px each with 20px gap)
             -->
-            <itemlayout width="1800" height="200">
+            <itemlayout width="890" height="175">
                 <control type="group">
-                    <!-- Item background (subtle) -->
+                    <!-- Item border/frame -->
                     <control type="image">
                         <left>0</left>
-                        <top>4</top>
-                        <width>1800</width>
-                        <height>192</height>
-                        <texture>white.png</texture>
-                        <colordiffuse>22FFFFFF</colordiffuse>
+                        <top>0</top>
+                        <width>880</width>
+                        <height>170</height>
+                        <texture border="2">white.png</texture>
+                        <colordiffuse>66FFFFFF</colordiffuse>
                     </control>
 
-                    <!-- Left accent bar -->
+                    <!-- Item background -->
                     <control type="image">
-                        <left>0</left>
-                        <top>4</top>
-                        <width>4</width>
-                        <height>192</height>
+                        <left>2</left>
+                        <top>2</top>
+                        <width>876</width>
+                        <height>166</height>
                         <texture>white.png</texture>
-                        <colordiffuse>440099FF</colordiffuse>
+                        <colordiffuse>33000000</colordiffuse>
                     </control>
 
-                    <!--
-                        STREAM CONTENT - Multi-line textbox
-                        ListItem.Label contains ALL lines separated by \n
-                        The textbox will render line breaks correctly
-                    -->
-                    <control type="textbox">
-                        <left>20</left>
-                        <top>12</top>
-                        <width>1760</width>
-                        <height>180</height>
+                    <!-- Stream name (first line) -->
+                    <control type="label">
+                        <left>12</left>
+                        <top>8</top>
+                        <width>856</width>
+                        <height>28</height>
                         <font>aiostreams_stream_detail</font>
                         <textcolor>FFDDDDDD</textcolor>
                         <align>left</align>
+                        <label>$INFO[ListItem.Property(stream_name)]</label>
+                    </control>
+
+                    <!-- Stream description (remaining lines - smaller font) -->
+                    <control type="textbox">
+                        <left>12</left>
+                        <top>36</top>
+                        <width>856</width>
+                        <height>130</height>
+                        <font>aiostreams_stream_desc</font>
+                        <textcolor>FFAAAAAA</textcolor>
+                        <align>left</align>
                         <autoscroll>false</autoscroll>
-                        <label>$INFO[ListItem.Label]</label>
+                        <label>$INFO[ListItem.Property(stream_description)]</label>
                     </control>
                 </control>
             </itemlayout>
 
             <!--
-                FOCUSED ITEM LAYOUT
-                Highlighted with blue accent
+                FOCUSED ITEM LAYOUT - Highlighted with colored border
             -->
-            <focusedlayout width="1800" height="200">
+            <focusedlayout width="890" height="175">
                 <control type="group">
+                    <!-- Focused border (red/bright) -->
+                    <control type="image">
+                        <left>0</left>
+                        <top>0</top>
+                        <width>880</width>
+                        <height>170</height>
+                        <texture border="3">white.png</texture>
+                        <colordiffuse>FFCC0000</colordiffuse>
+                        <animation effect="fade" start="70" end="100" time="150">Focus</animation>
+                    </control>
+
                     <!-- Focused background -->
                     <control type="image">
-                        <left>0</left>
-                        <top>4</top>
-                        <width>1800</width>
-                        <height>192</height>
+                        <left>3</left>
+                        <top>3</top>
+                        <width>874</width>
+                        <height>164</height>
                         <texture>white.png</texture>
-                        <colordiffuse>FF1A1A2E</colordiffuse>
+                        <colordiffuse>66111111</colordiffuse>
                         <animation effect="fade" start="0" end="100" time="150">Focus</animation>
                     </control>
 
-                    <!-- Left accent bar (bright blue when focused) -->
-                    <control type="image">
-                        <left>0</left>
-                        <top>4</top>
-                        <width>4</width>
-                        <height>192</height>
-                        <texture>white.png</texture>
-                        <colordiffuse>FF0099FF</colordiffuse>
-                        <animation effect="fade" start="50" end="100" time="150">Focus</animation>
-                    </control>
-
-                    <!-- Selection glow effect -->
-                    <control type="image">
-                        <left>0</left>
-                        <top>4</top>
-                        <width>1800</width>
-                        <height>192</height>
-                        <texture border="3">white.png</texture>
-                        <colordiffuse>880099FF</colordiffuse>
-                        <animation effect="fade" start="0" end="100" time="150">Focus</animation>
-                    </control>
-
-                    <!--
-                        STREAM CONTENT - Multi-line textbox (focused)
-                        Brighter white text for better contrast
-                    -->
-                    <control type="textbox">
-                        <left>20</left>
-                        <top>12</top>
-                        <width>1760</width>
-                        <height>180</height>
+                    <!-- Stream name (first line) - brighter when focused -->
+                    <control type="label">
+                        <left>12</left>
+                        <top>8</top>
+                        <width>856</width>
+                        <height>28</height>
                         <font>aiostreams_stream_detail</font>
                         <textcolor>FFFFFFFF</textcolor>
                         <align>left</align>
+                        <label>$INFO[ListItem.Property(stream_name)]</label>
+                    </control>
+
+                    <!-- Stream description (remaining lines - smaller font) -->
+                    <control type="textbox">
+                        <left>12</left>
+                        <top>36</top>
+                        <width>856</width>
+                        <height>130</height>
+                        <font>aiostreams_stream_desc</font>
+                        <textcolor>FFCCCCCC</textcolor>
+                        <align>left</align>
                         <autoscroll>false</autoscroll>
-                        <label>$INFO[ListItem.Label]</label>
+                        <label>$INFO[ListItem.Property(stream_description)]</label>
                     </control>
                 </control>
             </focusedlayout>
@@ -221,14 +225,14 @@
         <!-- Scrollbar -->
         <control type="scrollbar" id="5001">
             <left>1870</left>
-            <top>140</top>
+            <top>120</top>
             <width>8</width>
-            <height>850</height>
+            <height>880</height>
             <orientation>vertical</orientation>
             <showonepage>false</showonepage>
             <texturesliderbackground colordiffuse="22FFFFFF">white.png</texturesliderbackground>
-            <texturesliderbar colordiffuse="FF0099FF">white.png</texturesliderbar>
-            <texturesliderbarfocus colordiffuse="FF00CCFF">white.png</texturesliderbarfocus>
+            <texturesliderbar colordiffuse="FFCC0000">white.png</texturesliderbar>
+            <texturesliderbarfocus colordiffuse="FFFF3333">white.png</texturesliderbarfocus>
             <textureslidernib colordiffuse="00000000">white.png</textureslidernib>
             <textureslidernibfocus colordiffuse="00000000">white.png</textureslidernibfocus>
         </control>
@@ -238,7 +242,7 @@
         <!-- ============================================ -->
         <control type="label">
             <left>60</left>
-            <top>1005</top>
+            <top>1015</top>
             <width>1800</width>
             <height>40</height>
             <font>aiostreams_helper</font>
