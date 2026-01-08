@@ -1315,7 +1315,7 @@ def select_stream():
     content_type = params['content_type']
     imdb_id = params['imdb_id']
     title = params.get('title', '')
-    
+
     # Format media ID for AIOStreams API
     if content_type == 'movie':
         media_id = imdb_id
@@ -1325,10 +1325,20 @@ def select_stream():
         season = params.get('season')
         episode = params.get('episode')
         media_id = f"{imdb_id}:{season}:{episode}"
-    
-    # Fetch streams
-    stream_data = get_streams(content_type, media_id)
-    
+
+    # Show progress dialog while scraping streams
+    progress = xbmcgui.DialogProgress()
+    progress.create('AIOStreams', 'Scraping streams...')
+    progress.update(0)
+
+    try:
+        # Fetch streams
+        progress.update(25, 'Scraping streams...')
+        stream_data = get_streams(content_type, media_id)
+        progress.update(75)
+    finally:
+        progress.close()
+
     if not stream_data or 'streams' not in stream_data or len(stream_data['streams']) == 0:
         xbmcgui.Dialog().notification('AIOStreams', 'No streams available', xbmcgui.NOTIFICATION_ERROR)
         xbmcplugin.setResolvedUrl(HANDLE, False, xbmcgui.ListItem())
