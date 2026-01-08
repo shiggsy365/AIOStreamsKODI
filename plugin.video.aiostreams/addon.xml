@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<addon id="plugin.video.aiostreams" name="AIOStreams" version="3.5.8" provider-name="Jon">
+<addon id="plugin.video.aiostreams" name="AIOStreams" version="3.5.9" provider-name="Jon">
     <requires>
         <import addon="xbmc.python" version="3.0.0"/>
         <import addon="script.module.requests" version="2.25.1"/>
@@ -14,7 +14,7 @@
         <platform>all</platform>
         <license>MIT</license>
         <website>https://aiostreams.shiggsy.co.uk</website>
-        <news>v3.5.8: Use Kodi's arial.ttf (DejaVu Sans) for guaranteed BMP Unicode support. Reduce stream container height by 25%. | v3.5.7: Use Kodi built-in fonts.</news>
+        <news>v3.5.9: Replace all emoji with simple ASCII text (VID, AUD, SIZE, etc.) for guaranteed font compatibility. | v3.5.8: Reduced container height 25%.</news>
         <assets>
             <icon>resources/icon.png</icon>
             <fanart>resources/fanart.jpg</fanart>
