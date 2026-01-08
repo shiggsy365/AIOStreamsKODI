@@ -1,16 +1,16 @@
 # AIOStreams Kodi Addon
 
-A powerful Kodi addon for streaming content from AIOStreams with comprehensive Trakt integration, advanced search capabilities, and smart metadata caching.
+A powerful Kodi addon for streaming content from AIOStreams with comprehensive Trakt integration, SQLite database, advanced search capabilities, and smart metadata caching.
 
 ## Features
 
 ### Core Features
 - **AIOStreams Integration**: Browse catalogs, search content, and stream from AIOStreams
 - **Trakt Integration**: Full sync with Trakt for watchlists, collections, watch history, and progress tracking
-- **Smart Caching**: Disk-based metadata cache reduces API calls and improves performance
+- **SQLite Database**: Custom database reduces API calls and improves performance
 - **Advanced Search**: Tabbed search interface with separate Movies/TV Shows/All Results views
 - **Metadata, Catalog and Subtitle synchronisation**: Pulls metadata, catalogs and subtitles from AIO manifests
-- **TMDbHelper Compatibility**, TMDbHelper Players are saved in the repo
+- **TMDbHelper Compatibility**, TMDbHelper Players are saved in the repo, I suggest editing after installing to have default option as direct play, and fallback as scrape streams.
 
 ### Trakt Features
 - **Next Up**: Smart list of next unwatched episodes from your watched shows
@@ -19,7 +19,7 @@ A powerful Kodi addon for streaming content from AIOStreams with comprehensive T
 - **Context Menus**: Quick actions for adding to watchlist, marking watched, and more
 
 ### Performance
-- **30-Day Cache**: Metadata cached for 30 days to minimize API requests
+- **SQLite Database**: Caches all watching and watchlist shows for better next up performance and faster loading of catalogs.
 
 ### Content Discovery
 - **Trailers**: Automatic trailer parsing from metadata with YouTube integration
@@ -31,17 +31,7 @@ AIOStreams is required for this plugin, with at least one scraper configured, a 
 
 I recommend setting up AIOMetadata within AIOStreams, and letting AIOMetadata provide the search and metadata catalogs from TMDb and TVDb. I also recommend self hosting both services to avoid rate limiting.
 
-The stream scraper will work best using the following pattern within the formatter. The plugin can only display 2 rows, and no emojis:
-
-**Name Template:**
-```
-{stream.resolution::exists["[{stream.resolution}]"||""]}{stream.regexMatched::exists[" ({[stream.regexMatched]})"||""]} {stream.size::>0["[{stream.size::bytes}]"||""]}{stream.folderSize::>0["/[{stream.folderSize::bytes}]"||""]} {stream.proxied::istrue["[#]"||""]} {stream.type::=p2p["[P2P] "||""]}{service.shortName::exists["[{service.shortName}"||""]}{service.cached::istrue[" Cached] "||""]}{service.cached::isfalse[" NoCache] "||""]}[{addon.name}]{stream.library::istrue[" [Library]"||""]}  {stream.duration::>0["{stream.duration::time} "||""]}- {stream.languages::exists["{stream.languages::join(' | ')}"||""]}
-```
-
-**Description Template:**
-```
-[{stream.quality::exists["{stream.quality}"||""]}{stream.encode::exists[" {stream.encode} "||""]}{stream.visualTags::exists["{stream.visualTags::join(' | ')} "||""]}{stream.audioTags::exists["{stream.audioTags::join(' ')}"||""]} {stream.audioChannels::exists["{stream.audioChannels::join(' | ')}"||""]}] [{stream.seeders::>0["Seed-{stream.seeders} "||""]}{stream.age::exists["Age-{stream.age} "||""]}{stream.indexer::exists[" {stream.indexer}"||""]}] {stream.filename::exists["{stream.filename}"||""]}
-```
+The stream scraper will work best using the Google Drive or GDrive Lite custom formatters in AIOStreams
 
 ### Credits
 With many thanks to:
@@ -85,10 +75,8 @@ The addon is optimized for use as a Kodi widget:
 
 ## Performance Tips
 
-1. **Initial Load**: First load of lists may be slow as cache builds
-2. **Subsequent Loads**: Lists load instantly with warm cache
-3. **Cache Cleanup**: Cache automatically cleans expired entries (30+ days)
-4. **Manual Cache Clear**: Use Settings > Clear Cache if needed
+1. **Initial Load**: First load of lists may be slow as database builds
+2. **Subsequent Loads**: Lists load instantly with warm cache, and pre-loads stream results for the first 3 next up items with a 15min TTL
 
 
 ## Credits
