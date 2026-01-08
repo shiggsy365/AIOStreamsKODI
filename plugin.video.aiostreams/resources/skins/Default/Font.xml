@@ -36,6 +36,13 @@
             <size>14</size>
         </font>
 
+        <!-- Stream description - 25% smaller than stream_detail (14 -> 11) -->
+        <font>
+            <name>aiostreams_stream_desc</name>
+            <filename>NotoEmoji-Regular.ttf</filename>
+            <size>11</size>
+        </font>
+
         <!-- Small detail text with emoji support -->
         <font>
             <name>aiostreams_small</name>
@@ -116,6 +123,11 @@
             <name>aiostreams_stream_detail</name>
             <filename>arial.ttf</filename>
             <size>14</size>
+        </font>
+        <font>
+            <name>aiostreams_stream_desc</name>
+            <filename>arial.ttf</filename>
+            <size>11</size>
         </font>
         <font>
             <name>aiostreams_small</name>
