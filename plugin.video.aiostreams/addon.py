@@ -1329,18 +1329,12 @@ def select_stream():
     # Show progress dialog while scraping streams
     progress = xbmcgui.DialogProgress()
     progress.create('AIOStreams', 'Scraping streams...')
-    progress.update(0)
 
     try:
         # Fetch streams
-        progress.update(25, 'Scraping streams...')
         stream_data = get_streams(content_type, media_id)
-        progress.update(75)
     finally:
         progress.close()
-
-    # Small delay to allow Kodi to release modal dialog state before showing stream selection
-    xbmc.sleep(100)
 
     if not stream_data or 'streams' not in stream_data or len(stream_data['streams']) == 0:
         xbmcgui.Dialog().notification('AIOStreams', 'No streams available', xbmcgui.NOTIFICATION_ERROR)
