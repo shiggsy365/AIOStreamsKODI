@@ -3,10 +3,10 @@
   # uses: ToxicAven/generate-checksum-file@66708d081e14d5616c5b0920ff9a127f6f499dee
   uses: ToxicAven/generate-checksum-file@v2
   with:
-    # The URL of the file to check.
-    filePath: 
-    # Where to save the file.
-    saveFile: 
+    
+    filePath: https://github.com/shiggsy365/AIOStreamsKODI/raw/refs/heads/main/repo/plugin.video.aiostreams/plugin.video.aiostreams-3.5.19.zip
+    
+    saveFile: https://github.com/shiggsy365/AIOStreamsKODI/raw/refs/heads/main/plugin.video.aiostreams-3.5.19.zip.md5
     # The algorithm that has been used for calculating the checksum.
-    algorithm: # default is MD5
+    algorithm: MD5
           
