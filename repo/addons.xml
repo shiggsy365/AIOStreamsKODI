@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <addons>
-<addon id="plugin.video.aiostreams" name="AIOStreams" version="3.5.10" provider-name="Jon">
+<addon id="plugin.video.aiostreams" name="AIOStreams" version="3.5.11" provider-name="Jon">
     <requires>
         <import addon="xbmc.python" version="3.0.0"/>
         <import addon="script.module.requests" version="2.25.1"/>
@@ -15,7 +15,7 @@
         <platform>all</platform>
         <license>MIT</license>
         <website>https://aiostreams.shiggsy.co.uk</website>
-        <news>v3.5.10: Use red-colored single ASCII chars (+, -, *, >, #, ~, @, etc.) for emoji replacement. Unmapped emoji show as red *. | v3.5.8: Reduced container height 25%.</news>
+        <news>v3.5.11: All emoji replaced with stars (★) except {P} for proxied and {C} for cached. Added borders around stream containers. | v3.5.8: Reduced container height 25%.</news>
         <assets>
             <icon>resources/icon.png</icon>
             <fanart>resources/fanart.jpg</fanart>

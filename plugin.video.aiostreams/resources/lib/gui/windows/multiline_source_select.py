@@ -20,61 +20,61 @@ CONTROL_SCROLLBAR = 5001
 # All replacements are wrapped in red color tags for visibility
 UNICODE_SYMBOLS = {
     # Status indicators
-    '🔒': '[COLOR red]+[/COLOR]',              # Proxied
-    '🔓': '[COLOR red]-[/COLOR]',              # Not proxied
-    '⚡': '[COLOR red]*[/COLOR]',              # Cached
-    '❌': '[COLOR red]x[/COLOR]',              # Uncached
-    '⏳': '[COLOR red]-[/COLOR]',              # Uncached
+    '🔒': '{P}',            # Proxied
+    '🔓': '★',              # Not proxied
+    '⚡': '{C}',            # Cached
+    '❌': '★',              # Uncached
+    '⏳': '★',              # Uncached
 
     # Video/Media
-    '🎥': '[COLOR red]>[/COLOR]',              # Video type -> play arrow
-    '🎞️': '[COLOR red]#[/COLOR]',             # Video format -> hash
-    '🎞': '[COLOR red]#[/COLOR]',              # Video format (no variation selector)
-    '📺': '[COLOR red]=[/COLOR]',              # Video encoding -> equals
+    '🎥': '★',              # Video type
+    '🎞️': '★',             # Video format
+    '🎞': '★',              # Video format (no variation selector)
+    '📺': '★',              # Video encoding
 
     # Audio
-    '🎧': '[COLOR red]~[/COLOR]',              # Audio stream -> tilde
-    '🔊': '[COLOR red]~~[/COLOR]',             # Audio channels -> double tilde
+    '🎧': '★',              # Audio stream
+    '🔊': '★',              # Audio channels
 
     # File info
-    '📦': '[COLOR red]@[/COLOR]',              # File size -> at sign
-    '💾': '[COLOR red]@[/COLOR]',              # File size (alt)
+    '📦': '★',              # File size
+    '💾': '★',              # File size (alt)
 
     # Stats & metadata
-    '⏱️': '[COLOR red]T[/COLOR]',             # Duration -> T
-    '⏱': '[COLOR red]T[/COLOR]',              # Duration (no variation selector)
-    '👥': '[COLOR red]^[/COLOR]',              # Seeders -> caret
-    '🌱': '[COLOR red]^[/COLOR]',              # Seeders (alt)
-    '👤': '[COLOR red]^[/COLOR]',              # Seeders (alt)
-    '📅': '[COLOR red]D[/COLOR]',              # Age -> D
-    '🔍': '[COLOR red]o[/COLOR]',              # Release group -> lowercase o
-    '📡': '[COLOR red]o[/COLOR]',              # Release group (alt)
-    '⚙️': '[COLOR red]o[/COLOR]',             # Release group (alt)
-    '⚙': '[COLOR red]o[/COLOR]',              # Release group (no variation selector)
+    '⏱️': '★',             # Duration
+    '⏱': '★',              # Duration (no variation selector)
+    '👥': '★',              # Seeders
+    '🌱': '★',              # Seeders (alt)
+    '👤': '★',              # Seeders (alt)
+    '📅': '★',              # Age
+    '🔍': '★',              # Release group
+    '📡': '★',              # Release group (alt)
+    '⚙️': '★',             # Release group (alt)
+    '⚙': '★',              # Release group (no variation selector)
 
     # Identifiers
-    '🏷️': '[COLOR red]:[/COLOR]',             # Label -> colon
-    '🏷': '[COLOR red]:[/COLOR]',              # Label (no variation selector)
-    '🌎': '[COLOR red]L[/COLOR]',              # Language -> L
-    '🌐': '[COLOR red]L[/COLOR]',              # Language (alt)
-    '🗣️': '[COLOR red]L[/COLOR]',             # Language (alt)
-    '🗣': '[COLOR red]L[/COLOR]',              # Language (no variation selector)
+    '🏷️': '★',             # Label
+    '🏷': '★',              # Label (no variation selector)
+    '🌎': '★',              # Language
+    '🌐': '★',              # Language (alt)
+    '🗣️': '★',             # Language (alt)
+    '🗣': '★',              # Language (no variation selector)
 
     # Actions
-    '🔥': '[COLOR red]![/COLOR]',              # Remove -> exclamation
-    '☁️': '[COLOR red]C[/COLOR]',             # Library -> C
-    '☁': '[COLOR red]C[/COLOR]',              # Library (no variation selector)
-    '📌': '[COLOR red]P[/COLOR]',              # Library (alt) -> P
+    '🔥': '★',              # Remove
+    '☁️': '★',             # Library
+    '☁': '★',              # Library (no variation selector)
+    '📌': '★',              # Library (alt)
 
     # Info
-    '📁': '[COLOR red]>[/COLOR]',              # Filename -> right arrow
-    '🎬': '[COLOR red]>[/COLOR]',              # Filename (alt)
-    'ℹ️': '[COLOR red]i[/COLOR]',             # Message -> i
-    'ℹ': '[COLOR red]i[/COLOR]',              # Message (no variation selector)
+    '📁': '★',              # Filename
+    '🎬': '★',              # Filename (alt)
+    'ℹ️': '★',             # Message
+    'ℹ': '★',              # Message (no variation selector)
 
     # Common emoji variants
-    '🕵️': '[COLOR red]+[/COLOR]',             # Proxied detective
-    '🕵': '[COLOR red]+[/COLOR]',              # Proxied detective (no variation selector)
+    '🕵️': '{P}',           # Proxied detective
+    '🕵': '{P}',            # Proxied detective (no variation selector)
 }
 
 # No need for EMOJI_TO_PIPE or EMOJI_TO_REMOVE - catch-all handles the rest
@@ -110,7 +110,7 @@ def replace_emojis(text):
         "]+",
         flags=re.UNICODE
     )
-    text = emoji_pattern.sub('[COLOR red]*[/COLOR]', text)  # Red star for unmapped emojis
+    text = emoji_pattern.sub('★', text)  # Star for unmapped emojis
 
     # Clean up any double spaces that might result
     while '  ' in text:
