@@ -1326,6 +1326,10 @@ def select_stream():
         episode = params.get('episode')
         media_id = f"{imdb_id}:{season}:{episode}"
 
+    # Cancel Kodi's resolver state immediately to avoid modal dialog conflicts
+    # TMDBHelper calls this as a resolver, but we need to show a dialog first
+    xbmcplugin.setResolvedUrl(HANDLE, False, xbmcgui.ListItem())
+
     # Show progress dialog while scraping streams
     progress = xbmcgui.DialogProgress()
     progress.create('AIOStreams', 'Scraping streams...')
@@ -1338,7 +1342,6 @@ def select_stream():
 
     if not stream_data or 'streams' not in stream_data or len(stream_data['streams']) == 0:
         xbmcgui.Dialog().notification('AIOStreams', 'No streams available', xbmcgui.NOTIFICATION_ERROR)
-        xbmcplugin.setResolvedUrl(HANDLE, False, xbmcgui.ListItem())
         return
 
     # Use custom multi-line dialog with emoji support
@@ -1375,16 +1378,14 @@ def select_stream():
         )
 
     if selected < 0:
-        xbmcplugin.setResolvedUrl(HANDLE, False, xbmcgui.ListItem())
         return
 
     # Get selected stream
     stream = stream_data['streams'][selected]
     stream_url = stream.get('url') or stream.get('externalUrl')
-    
+
     if not stream_url:
         xbmcgui.Dialog().notification('AIOStreams', 'No playable URL found', xbmcgui.NOTIFICATION_ERROR)
-        xbmcplugin.setResolvedUrl(HANDLE, False, xbmcgui.ListItem())
         return
     
     # Create list item for playback
