@@ -3,7 +3,8 @@
     AIOStreams Multi-Line Stream Selection Dialog - 2 Column Layout
 
     Displays streams in a 2-column grid with borders around each item.
-    Name line uses standard font, description uses 25% smaller font.
+    Focused items: light blue text, bright border
+    Unfocused items: dimmed text, subtle border
 -->
 <window type="dialog">
     <defaultcontrol always="true">5000</defaultcontrol>
@@ -98,7 +99,7 @@
         </control>
 
         <!-- ============================================ -->
-        <!-- STREAM LIST - 2 Column Grid -->
+        <!-- STREAM LIST - 2 Column Grid (wrapping panel) -->
         <!-- ============================================ -->
         <control type="panel" id="5000">
             <left>60</left>
@@ -109,57 +110,86 @@
             <ondown>5000</ondown>
             <onleft>5000</onleft>
             <onright>5000</onright>
-            <orientation>vertical</orientation>
             <pagecontrol>5001</pagecontrol>
             <scrolltime>200</scrolltime>
             <preloaditems>10</preloaditems>
-            <itemgap>10</itemgap>
 
             <!--
-                UNFOCUSED ITEM LAYOUT - 2 columns (880px each with 20px gap)
+                UNFOCUSED ITEM LAYOUT - Dimmed appearance
+                Width 890 allows 2 items per row (1800/2 = 900, minus gap)
             -->
             <itemlayout width="890" height="175">
                 <control type="group">
-                    <!-- Item border/frame -->
+                    <!-- Item background (dark) -->
                     <control type="image">
-                        <left>0</left>
-                        <top>0</top>
+                        <left>5</left>
+                        <top>5</top>
                         <width>880</width>
-                        <height>170</height>
-                        <texture border="2">white.png</texture>
-                        <colordiffuse>66FFFFFF</colordiffuse>
-                    </control>
-
-                    <!-- Item background -->
-                    <control type="image">
-                        <left>2</left>
-                        <top>2</top>
-                        <width>876</width>
-                        <height>166</height>
+                        <height>165</height>
                         <texture>white.png</texture>
-                        <colordiffuse>33000000</colordiffuse>
+                        <colordiffuse>44222222</colordiffuse>
                     </control>
 
-                    <!-- Stream name (first line) -->
+                    <!-- Border - left -->
+                    <control type="image">
+                        <left>5</left>
+                        <top>5</top>
+                        <width>2</width>
+                        <height>165</height>
+                        <texture>white.png</texture>
+                        <colordiffuse>44888888</colordiffuse>
+                    </control>
+
+                    <!-- Border - right -->
+                    <control type="image">
+                        <left>883</left>
+                        <top>5</top>
+                        <width>2</width>
+                        <height>165</height>
+                        <texture>white.png</texture>
+                        <colordiffuse>44888888</colordiffuse>
+                    </control>
+
+                    <!-- Border - top -->
+                    <control type="image">
+                        <left>5</left>
+                        <top>5</top>
+                        <width>880</width>
+                        <height>2</height>
+                        <texture>white.png</texture>
+                        <colordiffuse>44888888</colordiffuse>
+                    </control>
+
+                    <!-- Border - bottom -->
+                    <control type="image">
+                        <left>5</left>
+                        <top>168</top>
+                        <width>880</width>
+                        <height>2</height>
+                        <texture>white.png</texture>
+                        <colordiffuse>44888888</colordiffuse>
+                    </control>
+
+                    <!-- Stream name (first line) - dimmed -->
                     <control type="label">
-                        <left>12</left>
-                        <top>8</top>
-                        <width>856</width>
+                        <left>15</left>
+                        <top>12</top>
+                        <width>860</width>
                         <height>28</height>
                         <font>aiostreams_stream_detail</font>
-                        <textcolor>FFDDDDDD</textcolor>
+                        <textcolor>88AAAAAA</textcolor>
                         <align>left</align>
                         <label>$INFO[ListItem.Property(stream_name)]</label>
                     </control>
 
-                    <!-- Stream description (remaining lines - smaller font) -->
+                    <!-- Stream description - dimmed -->
                     <control type="textbox">
-                        <left>12</left>
-                        <top>36</top>
-                        <width>856</width>
-                        <height>130</height>
+                        <left>15</left>
+                        <top>40</top>
+                        <width>860</width>
+                        <height>125</height>
                         <font>aiostreams_stream_desc</font>
-                        <textcolor>FFAAAAAA</textcolor>
+                        <textcolor>66888888</textcolor>
                         <align>left</align>
                         <autoscroll>false</autoscroll>
                         <label>$INFO[ListItem.Property(stream_description)]</label>
@@ -168,50 +198,78 @@
             </itemlayout>
 
             <!--
-                FOCUSED ITEM LAYOUT - Highlighted with colored border
+                FOCUSED ITEM LAYOUT - Light blue text, bright border
             -->
             <focusedlayout width="890" height="175">
                 <control type="group">
-                    <!-- Focused border (red/bright) -->
-                    <control type="image">
-                        <left>0</left>
-                        <top>0</top>
-                        <width>880</width>
-                        <height>170</height>
-                        <texture border="3">white.png</texture>
-                        <colordiffuse>FFCC0000</colordiffuse>
-                        <animation effect="fade" start="70" end="100" time="150">Focus</animation>
-                    </control>
-
                     <!-- Focused background -->
                     <control type="image">
-                        <left>3</left>
-                        <top>3</top>
-                        <width>874</width>
-                        <height>164</height>
+                        <left>5</left>
+                        <top>5</top>
+                        <width>880</width>
+                        <height>165</height>
                         <texture>white.png</texture>
-                        <colordiffuse>66111111</colordiffuse>
-                        <animation effect="fade" start="0" end="100" time="150">Focus</animation>
+                        <colordiffuse>66111122</colordiffuse>
                     </control>
 
-                    <!-- Stream name (first line) - brighter when focused -->
+                    <!-- Border - left (light blue) -->
+                    <control type="image">
+                        <left>5</left>
+                        <top>5</top>
+                        <width>3</width>
+                        <height>165</height>
+                        <texture>white.png</texture>
+                        <colordiffuse>FF66CCFF</colordiffuse>
+                    </control>
+
+                    <!-- Border - right (light blue) -->
+                    <control type="image">
+                        <left>882</left>
+                        <top>5</top>
+                        <width>3</width>
+                        <height>165</height>
+                        <texture>white.png</texture>
+                        <colordiffuse>FF66CCFF</colordiffuse>
+                    </control>
+
+                    <!-- Border - top (light blue) -->
+                    <control type="image">
+                        <left>5</left>
+                        <top>5</top>
+                        <width>880</width>
+                        <height>3</height>
+                        <texture>white.png</texture>
+                        <colordiffuse>FF66CCFF</colordiffuse>
+                    </control>
+
+                    <!-- Border - bottom (light blue) -->
+                    <control type="image">
+                        <left>5</left>
+                        <top>167</top>
+                        <width>880</width>
+                        <height>3</height>
+                        <texture>white.png</texture>
+                        <colordiffuse>FF66CCFF</colordiffuse>
+                    </control>
+
+                    <!-- Stream name - light blue when focused -->
                     <control type="label">
-                        <left>12</left>
-                        <top>8</top>
-                        <width>856</width>
+                        <left>15</left>
+                        <top>12</top>
+                        <width>860</width>
                         <height>28</height>
                         <font>aiostreams_stream_detail</font>
-                        <textcolor>FFFFFFFF</textcolor>
+                        <textcolor>FF99DDFF</textcolor>
                         <align>left</align>
                         <label>$INFO[ListItem.Property(stream_name)]</label>
                     </control>
 
-                    <!-- Stream description (remaining lines - smaller font) -->
+                    <!-- Stream description - lighter when focused -->
                     <control type="textbox">
-                        <left>12</left>
-                        <top>36</top>
-                        <width>856</width>
-                        <height>130</height>
+                        <left>15</left>
+                        <top>40</top>
+                        <width>860</width>
+                        <height>125</height>
                         <font>aiostreams_stream_desc</font>
                         <textcolor>FFCCCCCC</textcolor>
                         <align>left</align>
@@ -231,8 +289,8 @@
             <orientation>vertical</orientation>
             <showonepage>false</showonepage>
             <texturesliderbackground colordiffuse="22FFFFFF">white.png</texturesliderbackground>
-            <texturesliderbar colordiffuse="FFCC0000">white.png</texturesliderbar>
-            <texturesliderbarfocus colordiffuse="FFFF3333">white.png</texturesliderbarfocus>
+            <texturesliderbar colordiffuse="FF66CCFF">white.png</texturesliderbar>
+            <texturesliderbarfocus colordiffuse="FF99DDFF">white.png</texturesliderbarfocus>
             <textureslidernib colordiffuse="00000000">white.png</textureslidernib>
             <textureslidernibfocus colordiffuse="00000000">white.png</textureslidernibfocus>
         </control>

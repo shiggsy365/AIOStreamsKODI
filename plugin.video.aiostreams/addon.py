@@ -1166,7 +1166,10 @@ def play():
 
     # If set to show streams, show dialog instead of auto-playing
     if default_behavior == 'show_streams':
-        show_streams_dialog(content_type, media_id, stream_data, title)
+        show_streams_dialog(content_type, media_id, stream_data, title, from_playable=True)
+        # Must call setResolvedUrl(False) after dialog to clear Kodi's pending state
+        # The actual playback is done via xbmc.Player().play() in show_streams_dialog
+        xbmcplugin.setResolvedUrl(HANDLE, False, xbmcgui.ListItem())
         return
 
     # Otherwise, auto-play first stream
@@ -1620,8 +1623,12 @@ def show_streams():
     show_streams_dialog(content_type, media_id, stream_data, title, poster, fanart)
 
 
-def show_streams_dialog(content_type, media_id, stream_data, title, poster='', fanart=''):
-    """Show streams in a selection dialog."""
+def show_streams_dialog(content_type, media_id, stream_data, title, poster='', fanart='', from_playable=False):
+    """Show streams in a selection dialog.
+
+    Args:
+        from_playable: If True, called from playable listitem context (don't use endOfDirectory)
+    """
     if not HAS_MODULES:
         # Fallback to simple dialog - use custom formatting
         stream_list = []
@@ -1648,7 +1655,8 @@ def show_streams_dialog(content_type, media_id, stream_data, title, poster='', f
     # Check if we have any streams
     if not stream_data['streams']:
         xbmcgui.Dialog().notification('AIOStreams', 'No streams match your quality preferences', xbmcgui.NOTIFICATION_ERROR)
-        xbmcplugin.endOfDirectory(HANDLE, succeeded=False)
+        if not from_playable:
+            xbmcplugin.endOfDirectory(HANDLE, succeeded=False)
         return
 
     # Use custom multi-line dialog with emoji support
@@ -1686,8 +1694,9 @@ def show_streams_dialog(content_type, media_id, stream_data, title, poster='', f
         )
 
     if selected < 0:
-        # User cancelled
-        xbmcplugin.endOfDirectory(HANDLE, succeeded=False)
+        # User cancelled - don't call endOfDirectory if from playable context
+        if not from_playable:
+            xbmcplugin.endOfDirectory(HANDLE, succeeded=False)
         return
 
     # Record selection for learning
