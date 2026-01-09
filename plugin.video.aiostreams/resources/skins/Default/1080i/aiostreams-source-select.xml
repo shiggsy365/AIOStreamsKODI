@@ -1,6 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <window>
     <defaultcontrol always="true">5000</defaultcontrol>
+
+    <!-- VARIABLE DEFINITIONS AT THE TOP TO ENSURE THEY ARE LOADED -->
+    <variables>
+        <variable name="PosterTextureVar">
+            <value condition="!String.IsEmpty(ListItem.Icon)">$INFO[ListItem.Icon]</value>
+            <value condition="!String.IsEmpty(Window.Property(poster))">$INFO[Window.Property(poster)]</value>
+            <value>DefaultVideo.png</value>
+        </variable>
+    </variables>
+
     <controls>
         <!-- 1. BACKGROUNDS -->
         <control type="image">
@@ -96,31 +106,31 @@
                     </control>
                 </control>
 
-                <!-- GREY BOX CONTENT (Right) -->
+                <!-- GREY BOX CONTENT (Right) - Font 8 and Adjusted spacing -->
                 <control type="group">
                     <left>280</left>
                     <top>15</top>
                     <control type="label">
                         <width>950</width>
-                        <height>40</height>
-                        <font>font11</font>
-                        <textcolor>grey2</textcolor>
+                        <height>30</height>
+                        <font>font8</font>
+                        <textcolor>grey</textcolor>
                         <label>[COLOR white]SIZE:[/COLOR] $INFO[ListItem.Property(size)]  •  [COLOR white]PROXIED:[/COLOR] $INFO[ListItem.Property(proxied)]  •  [COLOR white]CACHED:[/COLOR] $INFO[ListItem.Property(cached)]  •  [COLOR white]IN LIBRARY:[/COLOR] $INFO[ListItem.Property(library)]  •  [COLOR white]DURATION:[/COLOR] $INFO[ListItem.Property(duration)]</label>
                     </control>
                     <control type="label">
-                        <top>40</top>
+                        <top>45</top>
                         <width>950</width>
-                        <height>40</height>
-                        <font>font11</font>
-                        <textcolor>grey2</textcolor>
+                        <height>30</height>
+                        <font>font8</font>
+                        <textcolor>grey</textcolor>
                         <label>[COLOR white]VIDEO:[/COLOR] $INFO[ListItem.Property(video)]  •  [COLOR white]AUDIO:[/COLOR] $INFO[ListItem.Property(audio)]</label>
                     </control>
                     <control type="label">
-                        <top>80</top>
+                        <top>90</top>
                         <width>950</width>
-                        <height>40</height>
-                        <font>font11</font>
-                        <textcolor>grey2</textcolor>
+                        <height>30</height>
+                        <font>font8</font>
+                        <textcolor>grey</textcolor>
                         <label>[COLOR white]FILENAME:[/COLOR] $INFO[ListItem.Label]</label>
                     </control>
                 </control>
@@ -180,30 +190,30 @@
                     </control>
                 </control>
 
-                <!-- GREY BOX CONTENT (Right) -->
+                <!-- GREY BOX CONTENT (Right) - Font 8 and Adjusted spacing -->
                 <control type="group">
                     <left>280</left>
                     <top>15</top>
                     <control type="label">
                         <width>950</width>
-                        <height>40</height>
-                        <font>font11</font>
+                        <height>30</height>
+                        <font>font8</font>
                         <textcolor>white</textcolor>
                         <label>[COLOR gold]SIZE:[/COLOR] $INFO[ListItem.Property(size)]  •  [COLOR gold]PROXIED:[/COLOR] $INFO[ListItem.Property(proxied)]  •  [COLOR gold]CACHED:[/COLOR] $INFO[ListItem.Property(cached)]  •  [COLOR gold]IN LIBRARY:[/COLOR] $INFO[ListItem.Property(library)]  •  [COLOR gold]DURATION:[/COLOR] $INFO[ListItem.Property(duration)]</label>
                     </control>
                     <control type="label">
-                        <top>40</top>
+                        <top>45</top>
                         <width>950</width>
-                        <height>40</height>
-                        <font>font11</font>
+                        <height>30</height>
+                        <font>font8</font>
                         <textcolor>white</textcolor>
                         <label>[COLOR gold]VIDEO:[/COLOR] $INFO[ListItem.Property(video)]  •  [COLOR gold]AUDIO:[/COLOR] $INFO[ListItem.Property(audio)]</label>
                     </control>
                     <control type="label">
-                        <top>80</top>
+                        <top>90</top>
                         <width>950</width>
-                        <height>40</height>
-                        <font>font11</font>
+                        <height>30</height>
+                        <font>font8</font>
                         <textcolor>white</textcolor>
                         <scroll>true</scroll>
                         <label>[COLOR gold]FILENAME:[/COLOR] $INFO[ListItem.Label]</label>
@@ -220,6 +230,7 @@
                 <width>540</width>
                 <height>780</height>
                 <aspectratio>keep</aspectratio>
+                <!-- Using the variable defined at the top -->
                 <texture background="true">$VAR[PosterTextureVar]</texture>
                 <bordertexture border="20">Thumbnail_Shadow.png</bordertexture>
             </control>
@@ -249,10 +260,4 @@
             <orientation>vertical</orientation>
         </control>
     </controls>
-
-    <variable name="PosterTextureVar">
-        <value condition="!String.IsEmpty(ListItem.Icon)">$INFO[ListItem.Icon]</value>
-        <value condition="!String.IsEmpty(Window.Property(poster))">$INFO[Window.Property(poster)]</value>
-        <value>DefaultVideo.png</value>
-    </variable>
 </window>
