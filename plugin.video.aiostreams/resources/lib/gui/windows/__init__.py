@@ -7,9 +7,15 @@ from .multiline_source_select import (
     ProgrammaticMultiLineSelect,
     show_source_select_dialog
 )
+from .autoplay_next import (
+    AutoplayNextDialog,
+    show_autoplay_dialog
+)
 
 __all__ = [
     'MultiLineSourceSelect',
     'ProgrammaticMultiLineSelect',
-    'show_source_select_dialog'
+    'show_source_select_dialog',
+    'AutoplayNextDialog',
+    'show_autoplay_dialog'
 ]

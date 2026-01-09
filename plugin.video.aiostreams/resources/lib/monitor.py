@@ -1,8 +1,9 @@
 # -*- coding: utf-8 -*-
-"""Playback monitoring for Trakt scrobbling"""
+"""Playback monitoring for Trakt scrobbling and autoplay next episode"""
 import xbmc
 import xbmcaddon
 from resources.lib import trakt
+from resources.lib.autoplay import AutoplayManager
 
 ADDON = xbmcaddon.Addon()
 
@@ -20,6 +21,9 @@ class AIOStreamsPlayer(xbmc.Player):
         self.started = False
         self.total_time = 0
         self.current_time = 0
+
+        # Autoplay manager
+        self.autoplay = AutoplayManager(self)
     
     def set_media_info(self, media_type, imdb_id, season=None, episode=None):
         """Set media information for scrobbling."""
@@ -52,20 +56,44 @@ class AIOStreamsPlayer(xbmc.Player):
     def onPlayBackStarted(self):
         """Called when playback starts."""
         if not self.should_scrobble():
+            # Check for autoplay even if not scrobbling
+            self._check_autoplay_start()
             return
-        
+
         try:
             self.total_time = self.getTotalTime()
             self.current_time = self.getTime()
-            
+
             # Scrobble start
-            trakt.scrobble('start', self.media_type, self.imdb_id, 0, 
+            trakt.scrobble('start', self.media_type, self.imdb_id, 0,
                           self.season, self.episode)
             self.started = True
-            
+
             xbmc.log('[AIOStreams] Scrobble started', xbmc.LOGINFO)
+
+            # Start autoplay monitoring if enabled
+            self._check_autoplay_start()
+
         except Exception as e:
             xbmc.log(f'[AIOStreams] Scrobble start error: {e}', xbmc.LOGERROR)
+
+    def _check_autoplay_start(self):
+        """Check if autoplay should be started for this episode."""
+        try:
+            # Only autoplay for TV shows (not movies)
+            if (self.is_aiostreams and
+                self.media_type == 'series' and
+                self.imdb_id and
+                self.season is not None and
+                self.episode is not None and
+                self.autoplay.is_enabled()):
+
+                xbmc.log(f'[AIOStreams] Starting autoplay for S{self.season:02d}E{self.episode:02d}',
+                        xbmc.LOGINFO)
+                self.autoplay.start_monitoring(self.imdb_id, self.season, self.episode)
+
+        except Exception as e:
+            xbmc.log(f'[AIOStreams] Error checking autoplay start: {e}', xbmc.LOGERROR)
     
     def onPlayBackPaused(self):
         """Called when playback is paused."""
@@ -103,17 +131,23 @@ class AIOStreamsPlayer(xbmc.Player):
     
     def onPlayBackStopped(self):
         """Called when playback stops."""
+        # Stop autoplay monitoring
+        try:
+            self.autoplay.stop()
+        except Exception as e:
+            xbmc.log(f'[AIOStreams] Error stopping autoplay: {e}', xbmc.LOGERROR)
+
         if not self.should_scrobble() or not self.started:
             self.clear_media_info()
             return
-        
+
         try:
             progress = int((self.current_time / self.total_time) * 100) if self.total_time > 0 else 0
-            
+
             # Scrobble stop
             trakt.scrobble('stop', self.media_type, self.imdb_id, progress,
                           self.season, self.episode)
-            
+
             xbmc.log(f'[AIOStreams] Scrobble stopped at {progress}%', xbmc.LOGINFO)
         except Exception as e:
             xbmc.log(f'[AIOStreams] Scrobble stop error: {e}', xbmc.LOGERROR)
@@ -122,15 +156,21 @@ class AIOStreamsPlayer(xbmc.Player):
     
     def onPlayBackEnded(self):
         """Called when playback ends."""
+        # Stop autoplay monitoring (dialog may have handled this already)
+        try:
+            self.autoplay.stop()
+        except Exception as e:
+            xbmc.log(f'[AIOStreams] Error stopping autoplay: {e}', xbmc.LOGERROR)
+
         if not self.should_scrobble() or not self.started:
             self.clear_media_info()
             return
-        
+
         try:
             # Scrobble stop at 100%
             trakt.scrobble('stop', self.media_type, self.imdb_id, 100,
                           self.season, self.episode)
-            
+
             xbmc.log('[AIOStreams] Scrobble completed at 100%', xbmc.LOGINFO)
         except Exception as e:
             xbmc.log(f'[AIOStreams] Scrobble end error: {e}', xbmc.LOGERROR)
