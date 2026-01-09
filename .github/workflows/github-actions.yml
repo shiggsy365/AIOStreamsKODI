@@ -8,6 +8,6 @@ jobs:
       - name: Generate Checksum
         uses: ToxicAven/generate-checksum-file@66708d081e14d5616c5b0920ff9a127f6f499dee
         with:
-          filePath: https://github.com/shiggsy365/AIOStreamsKODI/raw/refs/heads/main/repo/plugin.video.aiostreams/plugin.video.aiostreams-3.5.19.zip
-          saveFile: https://github.com/shiggsy365/AIOStreamsKODI/raw/refs/heads/main/plugin.video.aiostreams-3.5.19.zip.md5
+          filePath: repo/plugin.video.aiostreams/plugin.video.aiostreams-3.5.19.zip
+          saveFile: repo/plugin.video.aiostreams/plugin.video.aiostreams-3.5.19.zip.md5
           algorithm: MD5
