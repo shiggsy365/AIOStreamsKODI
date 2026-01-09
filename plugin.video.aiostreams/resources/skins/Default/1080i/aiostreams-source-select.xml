@@ -1,15 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <window>
-    <defaultcontrol always="true">1000</defaultcontrol>
+    <!-- Changed from 1000 to 5000 to match your Python script -->
+    <defaultcontrol always="true">5000</defaultcontrol>
     <controls>
-        <!-- Background Fanart: Pulled from your original logic -->
+        <!-- Background Fanart -->
         <control type="image">
             <left>0</left>
             <top>0</top>
             <width>1920</width>
             <height>1080</height>
             <aspectratio>scale</aspectratio>
-            <texture>$INFO[Container(1000).ListItem.Property(fanart)]</texture>
+            <texture>$INFO[Container(5000).ListItem.Property(fanart)]</texture>
             <fadetime>400</fadetime>
         </control>
 
@@ -23,26 +24,26 @@
             <colordiffuse>CCFFFFFF</colordiffuse>
         </control>
 
-        <!-- Clearlogo (Top Left) -->
+        <!-- Clearlogo in Top Left -->
         <control type="image">
             <left>80</left>
             <top>40</top>
             <width>450</width>
             <height>180</height>
             <aspectratio align="left">keep</aspectratio>
-            <texture>$INFO[Container(1000).ListItem.Property(clearlogo)]</texture>
+            <texture>$INFO[Container(5000).ListItem.Property(clearlogo)]</texture>
         </control>
 
-        <!-- Main Stream List: Narrowed to 1100px for the "Narrow Box" look -->
-        <control type="list" id="1000">
+        <!-- Main Stream List (ID changed to 5000) -->
+        <control type="list" id="5000">
             <left>80</left>
             <top>250</top>
             <width>1100</width>
             <height>750</height>
-            <onleft>1000</onleft>
-            <onright>1000</onright>
-            <onup>1000</onup>
-            <ondown>1000</ondown>
+            <onleft>5000</onleft>
+            <onright>5000</onright>
+            <onup>5000</onup>
+            <ondown>5000</ondown>
             <pagecontrol>60</pagecontrol>
             <scrolltime tween="quadratic" easing="out">200</scrolltime>
             
@@ -69,7 +70,7 @@
                     <width>1080</width>
                     <height>90</height>
                     <texture border="10">button-focus.png</texture>
-                    <visible>Control.HasFocus(1000)</visible>
+                    <visible>Control.HasFocus(5000)</visible>
                 </control>
                 <control type="label">
                     <left>30</left>
@@ -85,8 +86,7 @@
             </focusedlayout>
         </control>
 
-        <!-- THE SINGLE POSTER (Your Yellow Box) -->
-        <!-- This is a single control that replaces the 400+ lines of repeating posters -->
+        <!-- SIDE POSTER DISPLAY -->
         <control type="group">
             <left>1250</left>
             <top>250</top>
@@ -94,12 +94,13 @@
                 <width>550</width>
                 <height>750</height>
                 <aspectratio>keep</aspectratio>
-                <texture background="true">$INFO[Container(1000).ListItem.Icon]</texture>
+                <!-- Reference Container 5000 -->
+                <texture background="true">$INFO[Container(5000).ListItem.Icon]</texture>
                 <fadetime>300</fadetime>
                 <bordertexture border="20">Thumbnail_Shadow.png</bordertexture>
             </control>
             
-            <!-- Metadata Area: Using your specific AIO properties -->
+            <!-- Context Info -->
             <control type="label">
                 <top>760</top>
                 <width>550</width>
@@ -107,7 +108,7 @@
                 <font>font12</font>
                 <align>center</align>
                 <textcolor>grey2</textcolor>
-                <label>$INFO[Container(1000).ListItem.Property(Debrid)]  |  $INFO[Container(1000).ListItem.Property(Resolution)]  |  $INFO[Container(1000).ListItem.Property(Size)]</label>
+                <label>$INFO[Container(5000).ListItem.Property(Debrid)] • $INFO[Container(5000).ListItem.Property(Resolution)] • $INFO[Container(5000).ListItem.Property(Size)]</label>
             </control>
         </control>
 
@@ -119,8 +120,8 @@
             <height>750</height>
             <texturesliderbackground border="0,2,0,2">ScrollBarV.png</texturesliderbackground>
             <texturesliderbar border="0,2,0,2">ScrollBarV_Focus.png</texturesliderbar>
-            <onleft>1000</onleft>
-            <onright>1000</onright>
+            <onleft>5000</onleft>
+            <onright>5000</onright>
             <showonepage>false</showonepage>
             <orientation>vertical</orientation>
         </control>
