@@ -99,7 +99,7 @@
                     </control>
                     <control type="label">
                         <top>95</top>
-						<left>5</left
+						<left>5</left>
                         <width>250</width>
                         <height>30</height>
                         <font>font10</font>
