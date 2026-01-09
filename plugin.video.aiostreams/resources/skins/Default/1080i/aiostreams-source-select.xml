@@ -17,7 +17,6 @@
             <width>1920</width>
             <height>1080</height>
             <aspectratio>scale</aspectratio>
-            <!-- Using window properties which is how many AIO Python scripts push metadata -->
             <texture>$INFO[Window.Property(fanart)]</texture>
             <fadetime>400</fadetime>
         </control>
@@ -31,7 +30,7 @@
             <colordiffuse>CCFFFFFF</colordiffuse>
         </control>
 
-        <!-- 2. THE STREAM LIST -->
+        <!-- 2. THE STREAM LIST (Adjusted for better spacing and list item layout) -->
         <control type="list" id="5000">
             <left>80</left>
             <top>250</top>
@@ -52,14 +51,26 @@
                     <height>100</height>
                     <texture border="10">button-nofocus.png</texture>
                 </control>
+                <!-- Stream Title / Quality Info -->
                 <control type="label">
                     <left>30</left>
+                    <top>0</top>
                     <width>1000</width>
-                    <height>100</height>
+                    <height>60</height>
                     <font>font14</font>
                     <textcolor>white</textcolor>
                     <aligny>center</aligny>
                     <label>$INFO[ListItem.Label]</label>
+                </control>
+                <!-- Secondary Info (Debrid/Source) -->
+                <control type="label">
+                    <left>30</left>
+                    <top>55</top>
+                    <width>1000</width>
+                    <height>35</height>
+                    <font>font12</font>
+                    <textcolor>grey</textcolor>
+                    <label>$INFO[ListItem.Property(Debrid)] • $INFO[ListItem.Property(Source)]</label>
                 </control>
             </itemlayout>
 
@@ -71,18 +82,28 @@
                 </control>
                 <control type="label">
                     <left>30</left>
+                    <top>0</top>
                     <width>1000</width>
-                    <height>100</height>
+                    <height>60</height>
                     <font>font14</font>
                     <textcolor>white</textcolor>
                     <aligny>center</aligny>
                     <label>$INFO[ListItem.Label]</label>
                     <scroll>true</scroll>
                 </control>
+                <control type="label">
+                    <left>30</left>
+                    <top>55</top>
+                    <width>1000</width>
+                    <height>35</height>
+                    <font>font12</font>
+                    <textcolor>white</textcolor>
+                    <label>$INFO[ListItem.Property(Debrid)] • $INFO[ListItem.Property(Source)]</label>
+                </control>
             </focusedlayout>
         </control>
 
-        <!-- 3. POSTER GROUP -->
+        <!-- 3. POSTER GROUP (Updated to match specific alignment in image 2) -->
         <control type="group">
             <left>1220</left>
             <top>250</top>
@@ -90,7 +111,6 @@
                 <width>600</width>
                 <height>750</height>
                 <aspectratio>keep</aspectratio>
-                <!-- Try Window Property first as fallback for script-pushed art -->
                 <texture background="true">$VAR[PosterTextureVar]</texture>
                 <fadetime>300</fadetime>
                 <bordertexture border="20">Thumbnail_Shadow.png</bordertexture>
@@ -100,10 +120,10 @@
                 <top>770</top>
                 <width>600</width>
                 <height>40</height>
-                <font>font13</font>
+                <font>font13_title</font>
                 <align>center</align>
-                <textcolor>grey2</textcolor>
-                <label>$INFO[ListItem.Property(Debrid)] • $INFO[ListItem.Property(Resolution)] • $INFO[ListItem.Property(Size)]</label>
+                <textcolor>white</textcolor>
+                <label>$INFO[ListItem.Property(Resolution)] • $INFO[ListItem.Property(Size)]</label>
             </control>
         </control>
 
@@ -132,7 +152,6 @@
         </control>
     </controls>
 
-    <!-- Variables to handle potential missing info from script -->
     <variable name="PosterTextureVar">
         <value condition="!String.IsEmpty(ListItem.Icon)">$INFO[ListItem.Icon]</value>
         <value>$INFO[Window.Property(poster)]</value>
