@@ -6,8 +6,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Generate Checksum
-        uses: ToxicAven/generate-checksum-file@66708d081e14d5616c5b0920ff9a127f6f499dee
+        uses: ToxicAven/generate-checksum-file@v2
         with:
           filePath: .github/repo/plugin.video.aiostreams/plugin.video.aiostreams-3.5.19.zip
           saveFile: .github/repo/plugin.video.aiostreams/plugin.video.aiostreams-3.5.19.zip.md5
-          
+          algorithm: MD5
