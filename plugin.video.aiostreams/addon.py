@@ -1455,6 +1455,11 @@ def select_stream():
         episode = params.get('episode')
         media_id = f"{imdb_id}:{season}:{episode}"
 
+    # Cancel Kodi's resolver state immediately to avoid modal dialog conflicts
+    # TMDBHelper calls this as a resolver, but we need to show a dialog first
+    # MUST be done before any API calls or dialog shows
+    xbmcplugin.setResolvedUrl(HANDLE, False, xbmcgui.ListItem())
+
     # If metadata not provided in params (common with TMDBHelper), fetch it from API
     if not poster or not fanart or not clearlogo:
         xbmc.log(f'[AIOStreams] select_stream() fetching metadata for {imdb_id} (poster={bool(poster)}, fanart={bool(fanart)}, clearlogo={bool(clearlogo)})', xbmc.LOGINFO)
@@ -1469,11 +1474,7 @@ def select_stream():
                 clearlogo = meta.get('logo', '')
             if not title:
                 title = meta.get('name', '')
-            xbmc.log(f'[AIOStreams] select_stream() fetched metadata: poster={bool(poster)}, fanart={bool(fanart)}, clearlogo={bool(clearlogo)}', xbmc.LOGINFO)
-
-    # Cancel Kodi's resolver state immediately to avoid modal dialog conflicts
-    # TMDBHelper calls this as a resolver, but we need to show a dialog first
-    xbmcplugin.setResolvedUrl(HANDLE, False, xbmcgui.ListItem())
+            xbmc.log(f'[AIOStreams] select_stream() fetched metadata: poster={bool(poster)}, fanart={bool(fanart)}, clearlogo={bool(clearlogo)})', xbmc.LOGINFO)
 
     # Show progress dialog while scraping streams
     progress = xbmcgui.DialogProgress()
