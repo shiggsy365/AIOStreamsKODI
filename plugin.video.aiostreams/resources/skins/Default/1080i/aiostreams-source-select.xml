@@ -1,8 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <window>
-    <!-- Changed from 1000 to 5000 to match your Python script -->
     <defaultcontrol always="true">5000</defaultcontrol>
     <controls>
+        <!-- Static Background (Prevents black screen while loading) -->
+        <control type="image">
+            <left>0</left>
+            <top>0</top>
+            <width>1920</width>
+            <height>1080</height>
+            <texture>black-back.png</texture>
+        </control>
+
         <!-- Background Fanart -->
         <control type="image">
             <left>0</left>
@@ -34,7 +42,7 @@
             <texture>$INFO[Container(5000).ListItem.Property(clearlogo)]</texture>
         </control>
 
-        <!-- Main Stream List (ID changed to 5000) -->
+        <!-- Main Stream List -->
         <control type="list" id="5000">
             <left>80</left>
             <top>250</top>
@@ -46,6 +54,8 @@
             <ondown>5000</ondown>
             <pagecontrol>60</pagecontrol>
             <scrolltime tween="quadratic" easing="out">200</scrolltime>
+            <!-- Ensure the list is focusable -->
+            <visible>true</visible>
             
             <itemlayout height="100" width="1100">
                 <control type="image">
@@ -94,7 +104,6 @@
                 <width>550</width>
                 <height>750</height>
                 <aspectratio>keep</aspectratio>
-                <!-- Reference Container 5000 -->
                 <texture background="true">$INFO[Container(5000).ListItem.Icon]</texture>
                 <fadetime>300</fadetime>
                 <bordertexture border="20">Thumbnail_Shadow.png</bordertexture>
