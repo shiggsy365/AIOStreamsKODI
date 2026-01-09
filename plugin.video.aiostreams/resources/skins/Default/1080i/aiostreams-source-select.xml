@@ -83,24 +83,24 @@
                         <top>10</top>
                         <width>250</width>
                         <height>50</height>
-                        <font>font15</font> <!-- Adjusted based on standard Kodi sizing -->
-                        <align>center</align>
+                        <font>font18</font> <!-- Adjusted based on standard Kodi sizing -->
+                        <align>left</align>
                         <label>$INFO[ListItem.Property(resolution)]</label>
                     </control>
                     <control type="label">
                         <top>65</top>
                         <width>250</width>
                         <height>30</height>
-                        <font>font12</font>
-                        <align>center</align>
+                        <font>font10</font>
+                        <align>left</align>
                         <label>$INFO[ListItem.Property(service)]</label>
                     </control>
                     <control type="label">
                         <top>95</top>
                         <width>250</width>
                         <height>30</height>
-                        <font>font12</font>
-                        <align>center</align>
+                        <font>font10</font>
+                        <align>left</align>
                         <label>$INFO[ListItem.Property(addon)]</label>
                     </control>
                 </control>
@@ -114,7 +114,7 @@
                         <height>35</height>
                         <font>font10</font>
                         <textcolor>grey</textcolor>
-                        <label>[COLOR white]SIZE:[/COLOR] $INFO[ListItem.Property(size)]  •  [COLOR white]PROXIED:[/COLOR] $INFO[ListItem.Property(proxied)]  •  [COLOR white]CACHED:[/COLOR] $INFO[ListItem.Property(cached)]  •  [COLOR white]IN LIBRARY:[/COLOR] $INFO[ListItem.Property(library)]  •  [COLOR white]DURATION:[/COLOR] $INFO[ListItem.Property(duration)]</label>
+                        <label>[COLOR white]SIZE:[/COLOR] $INFO[ListItem.Property(size)]  •  [COLOR white]PROXIED:[/COLOR] $INFO[ListItem.Property(proxied)]  •  [COLOR white]CACHED:[/COLOR] $INFO[ListItem.Property(cached)]  •  [COLOR white]IN LIBRARY:[/COLOR] $INFO[ListItem.Property(in_library)]  •  [COLOR white]DURATION:[/COLOR] $INFO[ListItem.Property(duration)]</label>
                     </control>
                     <control type="label">
                         <top>50</top>
@@ -130,7 +130,7 @@
                         <height>35</height>
                         <font>font10</font>
                         <textcolor>grey</textcolor>
-                        <label>[COLOR white]FILENAME:[/COLOR] $INFO[ListItem.Label]</label>
+                        <label>[COLOR white]FILENAME:[/COLOR] $INFO[ListItem.Property(filename)]</label>
                     </control>
                 </control>
             </itemlayout>
