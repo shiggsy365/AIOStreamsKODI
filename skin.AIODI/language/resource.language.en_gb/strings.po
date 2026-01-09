@@ -1,0 +1,240 @@
+# AIODI Skin Language File
+# Addon Name: AIODI - AIOStreams Integrated Dynamic Interface
+# Addon Provider: shiggsy365
+
+msgid ""
+msgstr ""
+"Project-Id-Version: AIODI Skin\n"
+"Report-Msgid-Bugs-To: https://github.com/shiggsy365/AIOStreamsKODI\n"
+"POT-Creation-Date: 2025-01-09\n"
+"Language: en_GB\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+# Category labels
+msgctxt "#30000"
+msgid "General"
+msgstr ""
+
+msgctxt "#30001"
+msgid "Appearance"
+msgstr ""
+
+msgctxt "#30100"
+msgid "Widgets"
+msgstr ""
+
+msgctxt "#30101"
+msgid "Widget Settings"
+msgstr ""
+
+msgctxt "#30102"
+msgid "Widget Management"
+msgstr ""
+
+msgctxt "#30200"
+msgid "AIOStreams Integration"
+msgstr ""
+
+msgctxt "#30201"
+msgid "Integration Settings"
+msgstr ""
+
+# General settings
+msgctxt "#30010"
+msgid "Theme"
+msgstr ""
+
+msgctxt "#30011"
+msgid "Default"
+msgstr ""
+
+msgctxt "#30012"
+msgid "Dark"
+msgstr ""
+
+msgctxt "#30013"
+msgid "Light"
+msgstr ""
+
+msgctxt "#30020"
+msgid "Show fanart backgrounds"
+msgstr ""
+
+msgctxt "#30021"
+msgid "Animate widgets"
+msgstr ""
+
+# Widget settings
+msgctxt "#30110"
+msgid "Home widgets (JSON)"
+msgstr ""
+
+msgctxt "#30111"
+msgid "JSON configuration for home page widgets (advanced)"
+msgstr ""
+
+msgctxt "#30120"
+msgid "Movies widgets (JSON)"
+msgstr ""
+
+msgctxt "#30121"
+msgid "JSON configuration for movies page widgets (advanced)"
+msgstr ""
+
+msgctxt "#30130"
+msgid "Shows widgets (JSON)"
+msgstr ""
+
+msgctxt "#30131"
+msgid "JSON configuration for shows page widgets (advanced)"
+msgstr ""
+
+msgctxt "#30140"
+msgid "Widget refresh interval (seconds)"
+msgstr ""
+
+msgctxt "#30150"
+msgid "Open Widget Configurator"
+msgstr ""
+
+msgctxt "#30151"
+msgid "Reset Home Widgets"
+msgstr ""
+
+msgctxt "#30152"
+msgid "Reset Movies Widgets"
+msgstr ""
+
+msgctxt "#30153"
+msgid "Reset Shows Widgets"
+msgstr ""
+
+# AIOStreams settings
+msgctxt "#30210"
+msgid "Enable Trakt integration"
+msgstr ""
+
+msgctxt "#30220"
+msgid "Open AIOStreams Settings"
+msgstr ""
+
+# Widget labels
+msgctxt "#30300"
+msgid "Continue Watching"
+msgstr ""
+
+msgctxt "#30301"
+msgid "Next Up"
+msgstr ""
+
+msgctxt "#30302"
+msgid "Trending Movies"
+msgstr ""
+
+msgctxt "#30303"
+msgid "Trending TV Shows"
+msgstr ""
+
+msgctxt "#30304"
+msgid "Popular Movies"
+msgstr ""
+
+msgctxt "#30305"
+msgid "Popular TV Shows"
+msgstr ""
+
+msgctxt "#30306"
+msgid "Watchlist - Movies"
+msgstr ""
+
+msgctxt "#30307"
+msgid "Watchlist - Shows"
+msgstr ""
+
+msgctxt "#30308"
+msgid "Recommended Movies"
+msgstr ""
+
+msgctxt "#30309"
+msgid "Recommended Shows"
+msgstr ""
+
+msgctxt "#30310"
+msgid "Collection - Movies"
+msgstr ""
+
+msgctxt "#30311"
+msgid "Collection - Shows"
+msgstr ""
+
+# Common labels
+msgctxt "#30400"
+msgid "Movies"
+msgstr ""
+
+msgctxt "#30401"
+msgid "TV Shows"
+msgstr ""
+
+msgctxt "#30402"
+msgid "Home"
+msgstr ""
+
+msgctxt "#30403"
+msgid "Settings"
+msgstr ""
+
+msgctxt "#30404"
+msgid "Search"
+msgstr ""
+
+msgctxt "#30405"
+msgid "Exit"
+msgstr ""
+
+# Widget configurator
+msgctxt "#30500"
+msgid "Widget Configuration"
+msgstr ""
+
+msgctxt "#30501"
+msgid "Available Widgets"
+msgstr ""
+
+msgctxt "#30502"
+msgid "Active Widgets"
+msgstr ""
+
+msgctxt "#30503"
+msgid "Add Widget"
+msgstr ""
+
+msgctxt "#30504"
+msgid "Remove Widget"
+msgstr ""
+
+msgctxt "#30505"
+msgid "Move Up"
+msgstr ""
+
+msgctxt "#30506"
+msgid "Move Down"
+msgstr ""
+
+msgctxt "#30507"
+msgid "Save"
+msgstr ""
+
+msgctxt "#30508"
+msgid "Cancel"
+msgstr ""
+
+msgctxt "#30509"
+msgid "Reset to Defaults"
+msgstr ""
+
+msgctxt "#30510"
+msgid "Current Page"
+msgstr ""

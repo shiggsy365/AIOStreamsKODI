@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<includes>
+    <!-- AIOStreams Main Menu Items -->
+    <include name="AIOStreamsMainMenu">
+        <control type="grouplist">
+            <orientation>vertical</orientation>
+            <itemgap>0</itemgap>
+
+            <control type="button" id="1000">
+                <width>400</width>
+                <height>60</height>
+                <font>font27</font>
+                <label>$LOCALIZE[30402]</label>
+                <onclick>ActivateWindow(Home)</onclick>
+            </control>
+
+            <control type="button" id="1001">
+                <width>400</width>
+                <height>60</height>
+                <font>font27</font>
+                <label>$LOCALIZE[30400]</label>
+                <onclick>ActivateWindow(Videos,plugin://plugin.video.aiostreams/?action=movies,return)</onclick>
+            </control>
+
+            <control type="button" id="1002">
+                <width>400</width>
+                <height>60</height>
+                <font>font27</font>
+                <label>$LOCALIZE[30401]</label>
+                <onclick>ActivateWindow(Videos,plugin://plugin.video.aiostreams/?action=tvshows,return)</onclick>
+            </control>
+
+            <control type="button" id="1003">
+                <width>400</width>
+                <height>60</height>
+                <font>font27</font>
+                <label>$LOCALIZE[30404]</label>
+                <onclick>ActivateWindow(Videos,plugin://plugin.video.aiostreams/?action=search,return)</onclick>
+            </control>
+        </control>
+    </include>
+
+    <!-- AIOStreams Context Menu -->
+    <include name="AIOStreamsContextMenu">
+        <control type="grouplist">
+            <orientation>vertical</orientation>
+            <itemgap>0</itemgap>
+
+            <control type="button">
+                <width>300</width>
+                <height>50</height>
+                <font>font20</font>
+                <label>Add to Watchlist</label>
+                <onclick>RunPlugin(plugin://plugin.video.aiostreams/?action=trakt_add_to_watchlist&amp;tmdb_id=$INFO[ListItem.Property(tmdb_id)]&amp;media_type=$INFO[ListItem.Property(media_type)])</onclick>
+            </control>
+
+            <control type="button">
+                <width>300</width>
+                <height>50</height>
+                <font>font20</font>
+                <label>Add to Collection</label>
+                <onclick>RunPlugin(plugin://plugin.video.aiostreams/?action=trakt_add_to_collection&amp;tmdb_id=$INFO[ListItem.Property(tmdb_id)]&amp;media_type=$INFO[ListItem.Property(media_type)])</onclick>
+            </control>
+
+            <control type="button">
+                <width>300</width>
+                <height>50</height>
+                <font>font20</font>
+                <label>Mark as Watched</label>
+                <onclick>RunPlugin(plugin://plugin.video.aiostreams/?action=trakt_mark_watched&amp;tmdb_id=$INFO[ListItem.Property(tmdb_id)]&amp;media_type=$INFO[ListItem.Property(media_type)])</onclick>
+            </control>
+
+            <control type="button">
+                <width>300</width>
+                <height>50</height>
+                <font>font20</font>
+                <label>Find Similar</label>
+                <onclick>ActivateWindow(Videos,plugin://plugin.video.aiostreams/?action=similar&amp;tmdb_id=$INFO[ListItem.Property(tmdb_id)]&amp;media_type=$INFO[ListItem.Property(media_type)],return)</onclick>
+            </control>
+        </control>
+    </include>
+
+    <!-- Quick Actions Bar -->
+    <include name="AIOStreamsQuickActions">
+        <control type="grouplist">
+            <orientation>horizontal</orientation>
+            <itemgap>10</itemgap>
+
+            <control type="button">
+                <width>120</width>
+                <height>50</height>
+                <font>font20</font>
+                <label>Play</label>
+                <onclick>RunPlugin(plugin://plugin.video.aiostreams/?action=play&amp;tmdb_id=$INFO[ListItem.Property(tmdb_id)]&amp;media_type=$INFO[ListItem.Property(media_type)])</onclick>
+            </control>
+
+            <control type="button">
+                <width>120</width>
+                <height>50</height>
+                <font>font20</font>
+                <label>Info</label>
+                <onclick>Action(Info)</onclick>
+            </control>
+
+            <control type="button">
+                <width>120</width>
+                <height>50</height>
+                <font>font20</font>
+                <label>+ List</label>
+                <onclick>RunPlugin(plugin://plugin.video.aiostreams/?action=trakt_add_to_watchlist&amp;tmdb_id=$INFO[ListItem.Property(tmdb_id)]&amp;media_type=$INFO[ListItem.Property(media_type)])</onclick>
+            </control>
+        </control>
+    </include>
+
+    <!-- Trakt Status Indicators -->
+    <include name="TraktStatusIndicators">
+        <control type="group">
+            <control type="image">
+                <visible>!String.IsEmpty(ListItem.Property(trakt_watched))</visible>
+                <left>10</left>
+                <top>10</top>
+                <width>30</width>
+                <height>30</height>
+                <texture colordiffuse="FF00FF00">common/checkmark.png</texture>
+            </control>
+
+            <control type="image">
+                <visible>!String.IsEmpty(ListItem.Property(trakt_watchlist))</visible>
+                <left>50</left>
+                <top>10</top>
+                <width>30</width>
+                <height>30</height>
+                <texture colordiffuse="FFFFFF00">common/bookmark.png</texture>
+            </control>
+
+            <control type="image">
+                <visible>!String.IsEmpty(ListItem.Property(trakt_collection))</visible>
+                <left>90</left>
+                <top>10</top>
+                <width>30</width>
+                <height>30</height>
+                <texture colordiffuse="FF1E90FF">common/collection.png</texture>
+            </control>
+        </control>
+    </include>
+
+</includes>

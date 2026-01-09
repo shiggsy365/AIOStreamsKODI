@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<colors>
+    <!-- Primary Colors -->
+    <color name="primary">FF1E90FF</color>
+    <color name="primary_dark">FF0066CC</color>
+    <color name="primary_light">FF4FA8FF</color>
+
+    <!-- Background Colors -->
+    <color name="background">FF000000</color>
+    <color name="background_overlay">DD000000</color>
+    <color name="background_dialog">AA000000</color>
+
+    <!-- Text Colors -->
+    <color name="text_primary">FFFFFFFF</color>
+    <color name="text_secondary">FFAAAAAA</color>
+    <color name="text_disabled">FF666666</color>
+    <color name="text_focused">FF1E90FF</color>
+
+    <!-- Accent Colors -->
+    <color name="accent">FF1E90FF</color>
+    <color name="accent_success">FF00FF00</color>
+    <color name="accent_warning">FFFFFF00</color>
+    <color name="accent_error">FFFF0000</color>
+
+    <!-- Widget Colors -->
+    <color name="widget_background">22FFFFFF</color>
+    <color name="widget_border">441E90FF</color>
+    <color name="widget_focused">FF1E90FF</color>
+
+    <!-- Status Colors -->
+    <color name="watched">FF00FF00</color>
+    <color name="watchlist">FFFFFF00</color>
+    <color name="collection">FF1E90FF</color>
+
+    <!-- Common Colors -->
+    <color name="white">FFFFFFFF</color>
+    <color name="black">FF000000</color>
+    <color name="transparent">00000000</color>
+    <color name="semi_transparent">80000000</color>
+
+    <!-- Highlight Colors -->
+    <color name="highlight">FF1E90FF</color>
+    <color name="highlight_alt">FF00AA00</color>
+</colors>

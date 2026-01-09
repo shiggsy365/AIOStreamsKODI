@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<window type="dialog">
+    <controls>
+        <!-- Background -->
+        <control type="image">
+            <left>0</left>
+            <top>0</top>
+            <width>1920</width>
+            <height>1080</height>
+            <texture colordiffuse="AA000000">common/white.png</texture>
+            <aspectratio>stretch</aspectratio>
+        </control>
+
+        <!-- Loading Box -->
+        <control type="group">
+            <left>760</left>
+            <top>440</top>
+            <width>400</width>
+            <height>200</height>
+
+            <!-- Box Background -->
+            <control type="image">
+                <left>0</left>
+                <top>0</top>
+                <width>400</width>
+                <height>200</height>
+                <texture colordiffuse="FF1A1A1A">common/white.png</texture>
+                <aspectratio>stretch</aspectratio>
+            </control>
+
+            <!-- Loading Text -->
+            <control type="label">
+                <left>0</left>
+                <top>80</top>
+                <width>400</width>
+                <height>40</height>
+                <font>font30</font>
+                <textcolor>FFFFFFFF</textcolor>
+                <align>center</align>
+                <label>Loading...</label>
+            </control>
+        </control>
+    </controls>
+</window>

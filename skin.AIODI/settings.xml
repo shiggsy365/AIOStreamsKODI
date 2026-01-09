@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<settings version="1">
+    <section id="skin.aiodi">
+        <category id="general" label="30000">
+            <group id="1" label="30001">
+                <setting id="theme" type="string" label="30010" default="default">
+                    <level>0</level>
+                    <constraints>
+                        <options>
+                            <option label="30011">default</option>
+                            <option label="30012">dark</option>
+                            <option label="30013">light</option>
+                        </options>
+                    </constraints>
+                </setting>
+                <setting id="show_fanart" type="boolean" label="30020" default="true">
+                    <level>0</level>
+                </setting>
+                <setting id="animate_widgets" type="boolean" label="30021" default="true">
+                    <level>0</level>
+                </setting>
+            </group>
+        </category>
+
+        <category id="widgets" label="30100">
+            <group id="1" label="30101">
+                <setting id="home_widgets" type="string" label="30110" default="">
+                    <level>1</level>
+                    <help>30111</help>
+                </setting>
+                <setting id="movies_widgets" type="string" label="30120" default="">
+                    <level>1</level>
+                    <help>30121</help>
+                </setting>
+                <setting id="shows_widgets" type="string" label="30130" default="">
+                    <level>1</level>
+                    <help>30131</help>
+                </setting>
+                <setting id="widget_refresh_interval" type="integer" label="30140" default="60">
+                    <level>0</level>
+                    <constraints>
+                        <minimum>30</minimum>
+                        <step>30</step>
+                        <maximum>300</maximum>
+                    </constraints>
+                </setting>
+            </group>
+            <group id="2" label="30102">
+                <setting id="open_widget_config" type="action" label="30150">
+                    <level>0</level>
+                    <data>
+                        <action>ActivateWindow(1150)</action>
+                    </data>
+                </setting>
+                <setting id="reset_home_widgets" type="action" label="30151">
+                    <level>0</level>
+                    <data>
+                        <action>RunScript(special://skin/scripts/widget_manager.py,action=reset,page=home)</action>
+                    </data>
+                </setting>
+                <setting id="reset_movies_widgets" type="action" label="30152">
+                    <level>0</level>
+                    <data>
+                        <action>RunScript(special://skin/scripts/widget_manager.py,action=reset,page=movies)</action>
+                    </data>
+                </setting>
+                <setting id="reset_shows_widgets" type="action" label="30153">
+                    <level>0</level>
+                    <data>
+                        <action>RunScript(special://skin/scripts/widget_manager.py,action=reset,page=shows)</action>
+                    </data>
+                </setting>
+            </group>
+        </category>
+
+        <category id="aiostreams" label="30200">
+            <group id="1" label="30201">
+                <setting id="enable_trakt" type="boolean" label="30210" default="true">
+                    <level>0</level>
+                </setting>
+                <setting id="open_aiostreams_settings" type="action" label="30220">
+                    <level>0</level>
+                    <data>
+                        <action>Addon.OpenSettings(plugin.video.aiostreams)</action>
+                    </data>
+                </setting>
+            </group>
+        </category>
+    </section>
+</settings>
