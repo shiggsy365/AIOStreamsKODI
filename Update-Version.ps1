@@ -11,10 +11,13 @@ $zipPath      = "C:\Users\jon_s\OneDrive\Documents\GitHub\AIOStreamsKODI\repo\pl
 # Escape dots in OLDREF for Regex replacement
 $OldRefEscaped = [regex]::Escape($OLDREF)
 
-# 2. Replace versions in XML files
+# 2. Replace versions with Kodi-compatible encoding (No BOM)
 Write-Host "Updating XML files..." -ForegroundColor Cyan
-(Get-Content $addonXmlPath) -replace $OldRefEscaped, $NEWREF | Set-Content $addonXmlPath
-(Get-Content $repoXmlPath)  -replace $OldRefEscaped, $NEWREF | Set-Content $repoXmlPath
+$content1 = (Get-Content $addonXmlPath) -replace $OldRefEscaped, $NEWREF
+$content2 = (Get-Content $repoXmlPath)  -replace $OldRefEscaped, $NEWREF
+
+[System.IO.File]::WriteAllLines($addonXmlPath, $content1)
+[System.IO.File]::WriteAllLines($repoXmlPath, $content2)
 
 # 3. Create the ZIP file (Using .NET for better compatibility)
 Write-Host "Creating zip via .NET..." -ForegroundColor Cyan
@@ -23,15 +26,12 @@ if (Test-Path $zipPath) { Remove-Item $zipPath -Force }
 Add-Type -AssemblyName System.IO.Compression.FileSystem
 [System.IO.Compression.ZipFile]::CreateFromDirectory($sourceDir, $zipPath, [System.IO.Compression.CompressionLevel]::Optimal, $true)
 
-# 4. Generate MD5 Hashes
+# 4. Generate MD5 (Ensure no extra spaces or newlines)
 Write-Host "Generating MD5 hashes..." -ForegroundColor Cyan
+$repoHash = (Get-FileHash $repoXmlPath -Algorithm MD5).Hash.ToLower()
+[System.IO.File]::WriteAllText("$repoXmlPath.md5", $repoHash)
 
-# Hash for repo/addons.xml
-(Get-FileHash $repoXmlPath -Algorithm MD5).Hash.ToLower() | 
-    Out-File -FilePath "$repoXmlPath.md5" -NoNewline -Encoding ascii
-
-# Hash for the new ZIP file
-(Get-FileHash $zipPath -Algorithm MD5).Hash.ToLower() | 
-    Out-File -FilePath "$zipPath.md5" -NoNewline -Encoding ascii
+$zipHash = (Get-FileHash $zipPath -Algorithm MD5).Hash.ToLower()
+[System.IO.File]::WriteAllText("$zipPath.md5", $zipHash)
 
 Write-Host "Process Complete!" -ForegroundColor Green
