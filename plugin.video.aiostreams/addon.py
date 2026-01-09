@@ -1167,6 +1167,8 @@ def play():
     fanart = params.get('fanart', '')
     clearlogo = params.get('clearlogo', '')
 
+    xbmc.log(f'[AIOStreams] play() params: poster={poster[:50] if poster else "empty"}, fanart={fanart[:50] if fanart else "empty"}, clearlogo={clearlogo[:50] if clearlogo else "empty"}', xbmc.LOGINFO)
+
     # Format media ID for AIOStreams API
     if content_type == 'movie':
         media_id = imdb_id
@@ -1178,6 +1180,20 @@ def play():
         episode = params.get('episode')
         media_id = f"{imdb_id}:{season}:{episode}"
         title = params.get('title', f'S{season}E{episode}')
+
+    # If metadata not provided in params, fetch it from API
+    if not poster or not fanart or not clearlogo:
+        xbmc.log(f'[AIOStreams] play() fetching metadata for {imdb_id} (poster={bool(poster)}, fanart={bool(fanart)}, clearlogo={bool(clearlogo)})', xbmc.LOGINFO)
+        meta_data = get_meta(content_type, imdb_id)
+        if meta_data and 'meta' in meta_data:
+            meta = meta_data['meta']
+            if not poster:
+                poster = meta.get('poster', '')
+            if not fanart:
+                fanart = meta.get('background', '')
+            if not clearlogo:
+                clearlogo = meta.get('logo', '')
+            xbmc.log(f'[AIOStreams] play() fetched metadata: poster={bool(poster)}, fanart={bool(fanart)}, clearlogo={bool(clearlogo)}', xbmc.LOGINFO)
 
     # Cancel Kodi's loading state immediately - we'll handle our own progress display
     xbmcplugin.setResolvedUrl(HANDLE, False, xbmcgui.ListItem())
@@ -1438,6 +1454,22 @@ def select_stream():
         season = params.get('season')
         episode = params.get('episode')
         media_id = f"{imdb_id}:{season}:{episode}"
+
+    # If metadata not provided in params (common with TMDBHelper), fetch it from API
+    if not poster or not fanart or not clearlogo:
+        xbmc.log(f'[AIOStreams] select_stream() fetching metadata for {imdb_id} (poster={bool(poster)}, fanart={bool(fanart)}, clearlogo={bool(clearlogo)})', xbmc.LOGINFO)
+        meta_data = get_meta(content_type, imdb_id)
+        if meta_data and 'meta' in meta_data:
+            meta = meta_data['meta']
+            if not poster:
+                poster = meta.get('poster', '')
+            if not fanart:
+                fanart = meta.get('background', '')
+            if not clearlogo:
+                clearlogo = meta.get('logo', '')
+            if not title:
+                title = meta.get('name', '')
+            xbmc.log(f'[AIOStreams] select_stream() fetched metadata: poster={bool(poster)}, fanart={bool(fanart)}, clearlogo={bool(clearlogo)}', xbmc.LOGINFO)
 
     # Cancel Kodi's resolver state immediately to avoid modal dialog conflicts
     # TMDBHelper calls this as a resolver, but we need to show a dialog first
