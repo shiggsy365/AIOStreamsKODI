@@ -3,7 +3,7 @@
     <extension point="xbmc.addon.repository" name="AIOStreams Repository">
         <dir>
             <info compressed="false">https://github.com/shiggsy365/AIOStreamsKODI/raw/refs/heads/main/docs/repository.aiostreams/zips/addons.xml</info>
-            <checksum>https://github.com/shiggsy365/AIOStreamsKODI/raw/refs/heads/main/docs/repository.aiostreams/zips/addons.xml</checksum>
+            <checksum>https://github.com/shiggsy365/AIOStreamsKODI/raw/refs/heads/main/docs/repository.aiostreams/zips/addons.xml.md5</checksum>
             <datadir zip="true">https://github.com/shiggsy365/AIOStreamsKODI/raw/refs/heads/main/docs/repository.aiostreams/zips/</datadir>
         </dir>
     </extension>

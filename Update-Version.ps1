@@ -5,7 +5,7 @@ $NEWREF = Read-Host "Enter the New Version"
 # Base Path
 $baseDir = "C:\Users\jon_s\OneDrive\Documents\GitHub\AIOStreamsKODI"
 
-# Specific File Paths for Updates
+# Updated Specific File Paths for Version Updates
 $xmlPaths = @(
     "$baseDir\plugin.video.aiostreams\addon.xml",
     "$baseDir\docs\plugin.video.aiostreams\addon.xml",
@@ -13,8 +13,10 @@ $xmlPaths = @(
     "$baseDir\docs\index.html"
 )
 
-# Zip Destinations
-$zipDest1 = "$baseDir\docs\repository.aiostreams\zips\plugin.video.aiostreams-$NEWREF.zip"
+# Updated Zip Destinations based on your new tree structure
+# Path 1: Inside the nested plugin folder in zips
+$zipDest1 = "$baseDir\docs\repository.aiostreams\zips\plugin.video.aiostreams\plugin.video.aiostreams-$NEWREF.zip"
+# Path 2: Inside the docs plugin folder
 $zipDest2 = "$baseDir\docs\plugin.video.aiostreams\plugin.video.aiostreams-$NEWREF.zip"
 
 $OldRefEscaped = [regex]::Escape($OLDREF)
@@ -43,13 +45,17 @@ foreach ($xml in $xmlPaths) { Update-KodiFile $xml $OldRefEscaped $NEWREF }
 # 3. Create ZIP Files
 Write-Host "Building ZIP files..." -ForegroundColor Cyan
 function Build-KodiZip($destination, $sourceDir) {
+    # Ensure the destination directory exists
+    $destDir = Split-Path $destination
+    if (!(Test-Path $destDir)) { New-Item -ItemType Directory -Path $destDir -Force }
+    
     if (Test-Path $destination) { Remove-Item $destination -Force }
     $zipArchive = [System.IO.Compression.ZipFile]::Open($destination, [System.IO.Compression.ZipArchiveMode]::Create)
     try {
-        # Add addon.xml FIRST
+        # Add addon.xml FIRST (Critical for Kodi)
         $entryName = "plugin.video.aiostreams/addon.xml"
         [System.IO.Compression.ZipFileExtensions]::CreateEntryFromFile($zipArchive, "$sourceDir\addon.xml", $entryName)
-        # Add others
+        # Add all other files
         $files = Get-ChildItem $sourceDir -Recurse | Where-Object { $_.Name -ne "addon.xml" -and !$_.PSIsContainer }
         foreach ($file in $files) {
             $relativePath = $file.FullName.Substring($sourceDir.Length + 1).Replace("\", "/")
@@ -73,11 +79,11 @@ function Write-MD5($targetFile, $md5Path) {
     }
 }
 
-# Requested MD5 updates
+# Updated MD5 targets to match your new structure
 Write-MD5 "$baseDir\docs\repository.aiostreams-1.0.0.zip" "$baseDir\docs\repository.aiostreams-1.0.0.zip.md5"
 Write-MD5 "$baseDir\docs\repository.aiostreams\zips\repository.aiostreams-1.0.0.zip" "$baseDir\docs\repository.aiostreams\zips\repository.aiostreams-1.0.0.zip.md5"
 Write-MD5 $zipDest1 "$zipDest1.md5"
 Write-MD5 "$baseDir\docs\repository.aiostreams\zips\addons.xml" "$baseDir\docs\repository.aiostreams\zips\addons.xml.md5"
 Write-MD5 $zipDest2 "$zipDest2.md5"
 
-Write-Host "`nSuccess! Version $NEWREF fully deployed." -ForegroundColor Green
+Write-Host "`nSuccess! Version $NEWREF fully deployed to new paths." -ForegroundColor Green
