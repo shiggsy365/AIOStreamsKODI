@@ -43,7 +43,7 @@
         <control type="list" id="5000">
             <left>60</left>
             <top>220</top>
-            <width>1320</width>
+            <width>1270</width>
             <height>820</height>
             <onleft>5000</onleft>
             <onright>5000</onright>
@@ -55,7 +55,6 @@
             <orientation>vertical</orientation>
             
             <itemlayout height="130" width="1250">
-                <!-- DARK GREY Right Background -->
                 <control type="image">
                     <left>220</left>
                     <top>5</top>
@@ -64,8 +63,6 @@
                     <texture>white.png</texture>
                     <colordiffuse>ff1a1a1a</colordiffuse>
                 </control>
-
-                <!-- DARK RED Left Background -->
                 <control type="image">
                     <left>0</left>
                     <top>5</top>
@@ -74,22 +71,20 @@
                     <texture>white.png</texture>
                     <colordiffuse>ff4d0000</colordiffuse>
                 </control>
-                
-                <!-- RED BOX CONTENT (Left) -->
                 <control type="group">
                     <left>10</left>
                     <top>5</top>
                     <control type="label">
                         <top>5</top>
-						<width>220</width>
+                        <width>220</width>
                         <height>50</height>
-                        <font>font13</font> <!-- Adjusted based on standard Kodi sizing -->
+                        <font>font13</font>
                         <align>left</align>
                         <label>$INFO[ListItem.Property(resolution)]</label>
                     </control>
                     <control type="label">
                         <top>50</top>
-						<width>220</width>
+                        <width>220</width>
                         <height>30</height>
                         <font>font10</font>
                         <align>left</align>
@@ -97,21 +92,19 @@
                     </control>
                     <control type="label">
                         <top>80</top>
-						<width>220</width>
+                        <width>220</width>
                         <height>30</height>
                         <font>font10</font>
                         <align>left</align>
                         <label>$INFO[ListItem.Property(addon)]</label>
                     </control>
                 </control>
-
-                <!-- GREY BOX CONTENT (Right) - Set to font10 -->
                 <control type="group">
                     <left>240</left>
                     <top>15</top>
                     <control type="label">
-						<top>0</top>
-                        <width>1060</width>
+                        <top>0</top>
+                        <width>1010</width>
                         <height>35</height>
                         <font>font10</font>
                         <textcolor>grey</textcolor>
@@ -119,15 +112,15 @@
                     </control>
                     <control type="label">
                         <top>35</top>
-                        <width>1060</width>
+                        <width>1010</width>
                         <height>35</height>
                         <font>font10</font>
                         <textcolor>grey</textcolor>
-                        <label>[COLOR white]VIDEO:[/COLOR] $INFO[ListItem.Property(video)]  •  [COLOR white]AUDIO:[/COLOR] $INFO[ListItem.Property(audio  •  [COLOR white]AUDIO:[/COLOR] $INFO[ListItem.Property(indexer)]</label>
+                        <label>[COLOR white]VIDEO:[/COLOR] $INFO[ListItem.Property(video)]  •  [COLOR white]AUDIO:[/COLOR] $INFO[ListItem.Property(audio)]  •  [COLOR white]INDEXER:[/COLOR] $INFO[ListItem.Property(indexer)]</label>
                     </control>
                     <control type="label">
                         <top>70</top>
-                        <width>1060</width>
+                        <width>1010</width>
                         <height>35</height>
                         <font>font10</font>
                         <textcolor>grey</textcolor>
@@ -137,17 +130,14 @@
             </itemlayout>
 
             <focusedlayout height="130" width="1250">
-                <!-- LIGHTER GREY Right Background -->
                 <control type="image">
                     <left>220</left>
                     <top>5</top>
-                    <width>1100</width>
+                    <width>1050</width>
                     <height>120</height>
                     <texture>white.png</texture>
                     <colordiffuse>ff333333</colordiffuse>
                 </control>
-
-                <!-- LIGHTER RED Left Background -->
                 <control type="image">
                     <left>0</left>
                     <top>5</top>
@@ -156,8 +146,6 @@
                     <texture>white.png</texture>
                     <colordiffuse>ff800000</colordiffuse>
                 </control>
-                
-                <!-- RED BOX CONTENT (Left) -->
                 <control type="group">
                     <left>10</left>
                     <top>5</top>
@@ -189,14 +177,12 @@
                         <label>$INFO[ListItem.Property(addon)]</label>
                     </control>
                 </control>
-
-                <!-- GREY BOX CONTENT (Right) - Set to font10 -->
                 <control type="group">
                     <left>240</left>
                     <top>15</top>
                     <control type="label">
-						<top>0</top>
-                        <width>1060</width>
+                        <top>0</top>
+                        <width>1010</width>
                         <height>35</height>
                         <font>font10</font>
                         <textcolor>white</textcolor>
@@ -204,15 +190,15 @@
                     </control>
                     <control type="label">
                         <top>35</top>
-                        <width>1060</width>
+                        <width>1010</width>
                         <height>35</height>
                         <font>font10</font>
                         <textcolor>white</textcolor>
-                        <label>[COLOR gold]VIDEO:[/COLOR] $INFO[ListItem.Property(video)]  •  [COLOR gold]AUDIO:[/COLOR] $INFO[ListItem.Property(audio)]  •  [COLOR gold]AUDIO:[/COLOR] $INFO[ListItem.Property(indexer)]</label>
+                        <label>[COLOR gold]VIDEO:[/COLOR] $INFO[ListItem.Property(video)]  •  [COLOR gold]AUDIO:[/COLOR] $INFO[ListItem.Property(audio)]  •  [COLOR gold]INDEXER:[/COLOR] $INFO[ListItem.Property(indexer)]</label>
                     </control>
                     <control type="label">
                         <top>70</top>
-                        <width>1060</width>
+                        <width>1010</width>
                         <height>35</height>
                         <font>font10</font>
                         <textcolor>white</textcolor>
@@ -227,13 +213,22 @@
         <control type="group">
             <left>1340</left>
             <top>185</top>
-            <control type="image">
+            <control type="image" id="1001">
                 <width>500</width>
                 <height>750</height>
                 <aspectratio>keep</aspectratio>
-                <!-- Fallback directly to the Window Property if the Variable fails -->
                 <texture background="true">$INFO[Window.Property(poster)]</texture>
                 <bordertexture border="20">Thumbnail_Shadow.png</bordertexture>
+            </control>
+            <!-- STREAM COUNT HEADING -->
+            <control type="label">
+                <top>770</top>
+                <width>500</width>
+                <height>60</height>
+                <font>font30_title</font> <!-- Using a standard large/bold font -->
+                <align>center</align>
+                <textcolor>white</textcolor>
+                <label>$INFO[Container(5000).NumItems] STREAMS FOUND</label>
             </control>
         </control>
 
