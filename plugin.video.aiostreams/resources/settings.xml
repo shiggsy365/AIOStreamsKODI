@@ -23,6 +23,13 @@
         <setting id="resume_settings" type="lsep" label="Resume &amp; Progress"/>
         <setting id="auto_resume" type="bool" label="Auto Resume Playback" default="true"/>
         <setting id="auto_mark_watched_percent" type="number" label="Mark Watched at %" default="90"/>
+
+        <setting id="autoplay_settings" type="lsep" label="Autoplay Next Episode"/>
+        <setting id="autoplay_next_episode" type="bool" label="Enable Autoplay Next Episode" default="false"/>
+        <setting id="autoplay_under_15" type="number" label="Shows under 15 min (seconds before end)" default="20" enable="eq(-1,true)"/>
+        <setting id="autoplay_under_30" type="number" label="Shows under 30 min (seconds before end)" default="30" enable="eq(-2,true)"/>
+        <setting id="autoplay_under_45" type="number" label="Shows under 45 min (seconds before end)" default="45" enable="eq(-3,true)"/>
+        <setting id="autoplay_over_45" type="number" label="Shows over 45 min (seconds before end)" default="60" enable="eq(-4,true)"/>
     </category>
     
     <!-- Trakt Settings -->
