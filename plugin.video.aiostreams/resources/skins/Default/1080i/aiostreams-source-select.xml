@@ -2,7 +2,6 @@
 <window>
     <defaultcontrol always="true">5000</defaultcontrol>
 
-    <!-- VARIABLE DEFINITIONS AT THE TOP TO ENSURE THEY ARE LOADED -->
     <variables>
         <variable name="PosterTextureVar">
             <value condition="!String.IsEmpty(ListItem.Icon)">$INFO[ListItem.Icon]</value>
@@ -81,10 +80,10 @@
                     <left>0</left>
                     <top>5</top>
                     <control type="label">
-                        <top>15</top>
+                        <top>10</top>
                         <width>250</width>
                         <height>50</height>
-                        <font>font30_title</font>
+                        <font>font15</font> <!-- Adjusted based on standard Kodi sizing -->
                         <align>center</align>
                         <label>$INFO[ListItem.Property(resolution)]</label>
                     </control>
@@ -106,30 +105,30 @@
                     </control>
                 </control>
 
-                <!-- GREY BOX CONTENT (Right) - Font 8 and Adjusted spacing -->
+                <!-- GREY BOX CONTENT (Right) - Set to font10 -->
                 <control type="group">
                     <left>280</left>
                     <top>15</top>
                     <control type="label">
                         <width>950</width>
-                        <height>30</height>
-                        <font>font8</font>
+                        <height>35</height>
+                        <font>font10</font>
                         <textcolor>grey</textcolor>
                         <label>[COLOR white]SIZE:[/COLOR] $INFO[ListItem.Property(size)]  •  [COLOR white]PROXIED:[/COLOR] $INFO[ListItem.Property(proxied)]  •  [COLOR white]CACHED:[/COLOR] $INFO[ListItem.Property(cached)]  •  [COLOR white]IN LIBRARY:[/COLOR] $INFO[ListItem.Property(library)]  •  [COLOR white]DURATION:[/COLOR] $INFO[ListItem.Property(duration)]</label>
                     </control>
                     <control type="label">
-                        <top>45</top>
+                        <top>50</top>
                         <width>950</width>
-                        <height>30</height>
-                        <font>font8</font>
+                        <height>35</height>
+                        <font>font10</font>
                         <textcolor>grey</textcolor>
                         <label>[COLOR white]VIDEO:[/COLOR] $INFO[ListItem.Property(video)]  •  [COLOR white]AUDIO:[/COLOR] $INFO[ListItem.Property(audio)]</label>
                     </control>
                     <control type="label">
-                        <top>90</top>
+                        <top>95</top>
                         <width>950</width>
-                        <height>30</height>
-                        <font>font8</font>
+                        <height>35</height>
+                        <font>font10</font>
                         <textcolor>grey</textcolor>
                         <label>[COLOR white]FILENAME:[/COLOR] $INFO[ListItem.Label]</label>
                     </control>
@@ -162,10 +161,10 @@
                     <left>0</left>
                     <top>5</top>
                     <control type="label">
-                        <top>15</top>
+                        <top>10</top>
                         <width>250</width>
                         <height>50</height>
-                        <font>font30_title</font>
+                        <font>font15</font>
                         <align>center</align>
                         <textcolor>white</textcolor>
                         <label>$INFO[ListItem.Property(resolution)]</label>
@@ -190,30 +189,30 @@
                     </control>
                 </control>
 
-                <!-- GREY BOX CONTENT (Right) - Font 8 and Adjusted spacing -->
+                <!-- GREY BOX CONTENT (Right) - Set to font10 -->
                 <control type="group">
                     <left>280</left>
                     <top>15</top>
                     <control type="label">
                         <width>950</width>
-                        <height>30</height>
-                        <font>font8</font>
+                        <height>35</height>
+                        <font>font10</font>
                         <textcolor>white</textcolor>
                         <label>[COLOR gold]SIZE:[/COLOR] $INFO[ListItem.Property(size)]  •  [COLOR gold]PROXIED:[/COLOR] $INFO[ListItem.Property(proxied)]  •  [COLOR gold]CACHED:[/COLOR] $INFO[ListItem.Property(cached)]  •  [COLOR gold]IN LIBRARY:[/COLOR] $INFO[ListItem.Property(library)]  •  [COLOR gold]DURATION:[/COLOR] $INFO[ListItem.Property(duration)]</label>
                     </control>
                     <control type="label">
-                        <top>45</top>
+                        <top>50</top>
                         <width>950</width>
-                        <height>30</height>
-                        <font>font8</font>
+                        <height>35</height>
+                        <font>font10</font>
                         <textcolor>white</textcolor>
                         <label>[COLOR gold]VIDEO:[/COLOR] $INFO[ListItem.Property(video)]  •  [COLOR gold]AUDIO:[/COLOR] $INFO[ListItem.Property(audio)]</label>
                     </control>
                     <control type="label">
-                        <top>90</top>
+                        <top>95</top>
                         <width>950</width>
-                        <height>30</height>
-                        <font>font8</font>
+                        <height>35</height>
+                        <font>font10</font>
                         <textcolor>white</textcolor>
                         <scroll>true</scroll>
                         <label>[COLOR gold]FILENAME:[/COLOR] $INFO[ListItem.Label]</label>
@@ -224,14 +223,14 @@
 
         <!-- 3. POSTER GROUP -->
         <control type="group">
-            <left>1320</left>
+            <left>1340</left>
             <top>225</top>
             <control type="image">
-                <width>540</width>
-                <height>780</height>
+                <width>500</width>
+                <height>750</height>
                 <aspectratio>keep</aspectratio>
-                <!-- Using the variable defined at the top -->
-                <texture background="true">$VAR[PosterTextureVar]</texture>
+                <!-- Fallback directly to the Window Property if the Variable fails -->
+                <texture background="true">$INFO[Window.Property(poster)]</texture>
                 <bordertexture border="20">Thumbnail_Shadow.png</bordertexture>
             </control>
         </control>
