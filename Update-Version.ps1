@@ -5,7 +5,7 @@ $NEWREF = Read-Host "Enter the New Version"
 # Paths
 $baseDir      = "C:\Users\jon_s\OneDrive\Documents\GitHub\AIOStreamsKODI"
 $pluginDir    = "$baseDir\plugin.video.aiostreams"
-$repoDir      = "$baseDir\repo"
+$repoDir      = "$baseDir\docs"
 $zipPath      = "$repoDir\plugin.video.aiostreams\plugin.video.aiostreams-$NEWREF.zip"
 
 $OldRefEscaped = [regex]::Escape($OLDREF)
