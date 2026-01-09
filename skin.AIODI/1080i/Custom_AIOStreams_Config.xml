@@ -1,0 +1,361 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<window type="window" id="1150">
+    <defaultcontrol always="true">100</defaultcontrol>
+    <onload>RunScript(special://skin/scripts/widget_manager.py,action=load)</onload>
+    <controls>
+        <!-- Background -->
+        <control type="image">
+            <left>0</left>
+            <top>0</top>
+            <width>1920</width>
+            <height>1080</height>
+            <texture colordiffuse="FF000000">common/white.png</texture>
+            <aspectratio>stretch</aspectratio>
+        </control>
+
+        <control type="image">
+            <left>0</left>
+            <top>0</top>
+            <width>1920</width>
+            <height>1080</height>
+            <texture background="true">$INFO[Window(Home).Property(Fanart_Image)]</texture>
+            <colordiffuse>40FFFFFF</colordiffuse>
+            <aspectratio>scale</aspectratio>
+        </control>
+
+        <!-- Main Dialog Container -->
+        <control type="group">
+            <left>240</left>
+            <top>120</top>
+            <width>1440</width>
+            <height>840</height>
+
+            <!-- Dialog Background -->
+            <control type="image">
+                <left>0</left>
+                <top>0</top>
+                <width>1440</width>
+                <height>840</height>
+                <texture colordiffuse="DD000000">common/white.png</texture>
+                <aspectratio>stretch</aspectratio>
+            </control>
+
+            <!-- Title Bar -->
+            <control type="label">
+                <left>60</left>
+                <top>40</top>
+                <width>1320</width>
+                <height>60</height>
+                <font>font37_title</font>
+                <textcolor>FFFFFFFF</textcolor>
+                <label>$LOCALIZE[30500]</label>
+            </control>
+
+            <!-- Close Button -->
+            <control type="button" id="9000">
+                <left>1340</left>
+                <top>40</top>
+                <width>60</width>
+                <height>60</height>
+                <label>X</label>
+                <font>font30</font>
+                <textcolor>FFFFFFFF</textcolor>
+                <focusedcolor>FFFF0000</focusedcolor>
+                <onclick>Close</onclick>
+            </control>
+
+            <!-- Page Selector -->
+            <control type="group">
+                <left>60</left>
+                <top>120</top>
+                <width>1320</width>
+                <height>60</height>
+
+                <control type="label">
+                    <left>0</left>
+                    <top>0</top>
+                    <width>200</width>
+                    <height>60</height>
+                    <font>font27</font>
+                    <textcolor>FFAAAAAA</textcolor>
+                    <label>$LOCALIZE[30510]:</label>
+                </control>
+
+                <control type="radiobutton" id="200">
+                    <left>220</left>
+                    <top>0</top>
+                    <width>250</width>
+                    <height>60</height>
+                    <font>font30</font>
+                    <label>$LOCALIZE[30402]</label>
+                    <ondown>100</ondown>
+                    <onup>500</onup>
+                    <onleft>202</onleft>
+                    <onright>201</onright>
+                </control>
+
+                <control type="radiobutton" id="201">
+                    <left>490</left>
+                    <top>0</top>
+                    <width>250</width>
+                    <height>60</height>
+                    <font>font30</font>
+                    <label>$LOCALIZE[30400]</label>
+                    <ondown>100</ondown>
+                    <onup>500</onup>
+                    <onleft>200</onleft>
+                    <onright>202</onright>
+                </control>
+
+                <control type="radiobutton" id="202">
+                    <left>760</left>
+                    <top>0</top>
+                    <width>250</width>
+                    <height>60</height>
+                    <font>font30</font>
+                    <label>$LOCALIZE[30401]</label>
+                    <ondown>100</ondown>
+                    <onup>500</onup>
+                    <onleft>201</onleft>
+                    <onright>200</onright>
+                </control>
+            </control>
+
+            <!-- Section Labels -->
+            <control type="label">
+                <left>60</left>
+                <top>220</top>
+                <width>600</width>
+                <height>40</height>
+                <font>font27</font>
+                <textcolor>FFFFFFFF</textcolor>
+                <label>$LOCALIZE[30501]</label>
+            </control>
+
+            <control type="label">
+                <left>720</left>
+                <top>220</top>
+                <width>600</width>
+                <height>40</height>
+                <font>font27</font>
+                <textcolor>FFFFFFFF</textcolor>
+                <label>$LOCALIZE[30502]</label>
+            </control>
+
+            <!-- Available Widgets List -->
+            <control type="list" id="100">
+                <left>60</left>
+                <top>280</top>
+                <width>600</width>
+                <height>420</height>
+                <onleft>9000</onleft>
+                <onright>300</onright>
+                <ondown>400</ondown>
+                <onup>200</onup>
+                <itemlayout height="60">
+                    <control type="label">
+                        <left>20</left>
+                        <top>0</top>
+                        <width>560</width>
+                        <height>60</height>
+                        <font>font27</font>
+                        <textcolor>FFAAAAAA</textcolor>
+                        <label>$INFO[ListItem.Label]</label>
+                    </control>
+                </itemlayout>
+                <focusedlayout height="60">
+                    <control type="image">
+                        <left>0</left>
+                        <top>0</top>
+                        <width>600</width>
+                        <height>60</height>
+                        <texture colordiffuse="FF1E90FF">common/white.png</texture>
+                    </control>
+                    <control type="label">
+                        <left>20</left>
+                        <top>0</top>
+                        <width>560</width>
+                        <height>60</height>
+                        <font>font27</font>
+                        <textcolor>FFFFFFFF</textcolor>
+                        <label>$INFO[ListItem.Label]</label>
+                    </control>
+                </focusedlayout>
+                <content>
+                    <item>
+                        <label>$LOCALIZE[30300]</label>
+                        <property name="widget_id">continue_watching</property>
+                    </item>
+                    <item>
+                        <label>$LOCALIZE[30301]</label>
+                        <property name="widget_id">next_up</property>
+                    </item>
+                    <item>
+                        <label>$LOCALIZE[30302]</label>
+                        <property name="widget_id">trending_movies</property>
+                    </item>
+                    <item>
+                        <label>$LOCALIZE[30303]</label>
+                        <property name="widget_id">trending_shows</property>
+                    </item>
+                    <item>
+                        <label>$LOCALIZE[30304]</label>
+                        <property name="widget_id">popular_movies</property>
+                    </item>
+                    <item>
+                        <label>$LOCALIZE[30305]</label>
+                        <property name="widget_id">popular_shows</property>
+                    </item>
+                    <item>
+                        <label>$LOCALIZE[30306]</label>
+                        <property name="widget_id">watchlist_movies</property>
+                    </item>
+                    <item>
+                        <label>$LOCALIZE[30307]</label>
+                        <property name="widget_id">watchlist_shows</property>
+                    </item>
+                    <item>
+                        <label>$LOCALIZE[30308]</label>
+                        <property name="widget_id">recommended_movies</property>
+                    </item>
+                    <item>
+                        <label>$LOCALIZE[30309]</label>
+                        <property name="widget_id">recommended_shows</property>
+                    </item>
+                    <item>
+                        <label>$LOCALIZE[30310]</label>
+                        <property name="widget_id">collection_movies</property>
+                    </item>
+                    <item>
+                        <label>$LOCALIZE[30311]</label>
+                        <property name="widget_id">collection_shows</property>
+                    </item>
+                </content>
+            </control>
+
+            <!-- Active Widgets List -->
+            <control type="list" id="300">
+                <left>720</left>
+                <top>280</top>
+                <width>660</width>
+                <height>420</height>
+                <onleft>100</onleft>
+                <onright>9000</onright>
+                <ondown>500</ondown>
+                <onup>200</onup>
+                <itemlayout height="60">
+                    <control type="label">
+                        <left>20</left>
+                        <top>0</top>
+                        <width>500</width>
+                        <height>60</height>
+                        <font>font27</font>
+                        <textcolor>FF00FF00</textcolor>
+                        <label>$INFO[ListItem.Label]</label>
+                    </control>
+                    <control type="label">
+                        <left>520</left>
+                        <top>0</top>
+                        <width>140</width>
+                        <height>60</height>
+                        <font>font20</font>
+                        <textcolor>FFAAAAAA</textcolor>
+                        <align>right</align>
+                        <label>[↑] [↓] [X]</label>
+                    </control>
+                </itemlayout>
+                <focusedlayout height="60">
+                    <control type="image">
+                        <left>0</left>
+                        <top>0</top>
+                        <width>660</width>
+                        <height>60</height>
+                        <texture colordiffuse="FF00AA00">common/white.png</texture>
+                    </control>
+                    <control type="label">
+                        <left>20</left>
+                        <top>0</top>
+                        <width>500</width>
+                        <height>60</height>
+                        <font>font27</font>
+                        <textcolor>FFFFFFFF</textcolor>
+                        <label>$INFO[ListItem.Label]</label>
+                    </control>
+                    <control type="label">
+                        <left>520</left>
+                        <top>0</top>
+                        <width>140</width>
+                        <height>60</height>
+                        <font>font20</font>
+                        <textcolor>FFFFFFFF</textcolor>
+                        <align>right</align>
+                        <label>[↑] [↓] [X]</label>
+                    </control>
+                </focusedlayout>
+            </control>
+
+            <!-- Action Buttons -->
+            <control type="button" id="400">
+                <left>60</left>
+                <top>720</top>
+                <width>200</width>
+                <height>60</height>
+                <font>font27</font>
+                <label>$LOCALIZE[30503]</label>
+                <onup>100</onup>
+                <ondown>200</ondown>
+                <onleft>502</onleft>
+                <onright>501</onright>
+                <textcolor>FFFFFFFF</textcolor>
+                <focusedcolor>FF000000</focusedcolor>
+            </control>
+
+            <control type="button" id="501">
+                <left>280</left>
+                <top>720</top>
+                <width>200</width>
+                <height>60</height>
+                <font>font27</font>
+                <label>$LOCALIZE[30504]</label>
+                <onup>100</onup>
+                <ondown>200</ondown>
+                <onleft>400</onleft>
+                <onright>500</onright>
+                <textcolor>FFFFFFFF</textcolor>
+                <focusedcolor>FF000000</focusedcolor>
+            </control>
+
+            <control type="button" id="500">
+                <left>500</left>
+                <top>720</top>
+                <width>200</width>
+                <height>60</height>
+                <font>font27</font>
+                <label>$LOCALIZE[30507]</label>
+                <onup>300</onup>
+                <ondown>200</ondown>
+                <onleft>501</onleft>
+                <onright>502</onright>
+                <onclick>Close</onclick>
+                <textcolor>FFFFFFFF</textcolor>
+                <focusedcolor>FF000000</focusedcolor>
+            </control>
+
+            <control type="button" id="502">
+                <left>720</left>
+                <top>720</top>
+                <width>200</width>
+                <height>60</height>
+                <font>font27</font>
+                <label>$LOCALIZE[30509]</label>
+                <onup>300</onup>
+                <ondown>200</ondown>
+                <onleft>500</onleft>
+                <onright>400</onright>
+                <textcolor>FFFFFFFF</textcolor>
+                <focusedcolor>FF000000</focusedcolor>
+            </control>
+
+        </control>
+    </controls>
+</window>
