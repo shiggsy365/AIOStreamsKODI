@@ -1,4 +1,4 @@
-# AIOStreams Kodi Addon - Installation Guide
+# Installation Guide
 
 Complete installation and configuration guide for AIOStreams Kodi Addon.
 
@@ -6,754 +6,588 @@ Complete installation and configuration guide for AIOStreams Kodi Addon.
 
 ## Table of Contents
 
-1. [Prerequisites](#prerequisites)
-2. [Installation Methods](#installation-methods)
-   - [Method 1: Repository Installation (Recommended)](#method-1-repository-installation-recommended)
-   - [Method 2: Manual Zip Installation](#method-2-manual-zip-installation)
-3. [Initial Configuration](#initial-configuration)
-4. [AIOStreams Backend Setup](#aiostreams-backend-setup)
-5. [Trakt Integration Setup](#trakt-integration-setup)
-6. [TMDBHelper Integration](#tmdbhelper-integration)
-7. [Advanced Configuration](#advanced-configuration)
-8. [Keyboard Shortcuts Setup](#keyboard-shortcuts-setup-optional)
-9. [Troubleshooting](#troubleshooting)
-10. [Updating the Addon](#updating-the-addon)
+- [Prerequisites](#prerequisites)
+- [Installation Methods](#installation-methods)
+- [Initial Configuration](#initial-configuration)
+- [Settings Deep Dive](#settings-deep-dive)
+- [TMDBHelper Integration](#tmdbhelper-integration)
+- [Trakt Integration Setup](#trakt-integration-setup)
+- [Keyboard Shortcuts](#keyboard-shortcuts)
+- [Troubleshooting](#troubleshooting)
 
 ---
 
 ## Prerequisites
 
-### Required
+### Required: AIOStreams Backend
 
-1. **Kodi 19+ (Matrix, Nexus, or Omega)**
-   - Download from: [kodi.tv/download](https://kodi.tv/download)
-   - Python 3 addon support required
+You **must** have a running AIOStreams instance before installing this addon.
 
-2. **AIOStreams Backend**
-   - Self-hosted instance or hosted service (e.g., ElfHosted)
-   - Minimum configuration required:
-     - At least one stream scraper
-     - Search provider (recommend: AIOMetadata)
-     - Metadata source (recommend: AIOMetadata)
-   - GitHub: [github.com/Viren070/aiostreams](https://github.com/Viren070/aiostreams)
+#### Option 1: ElfHosted (Easiest)
+- Sign up at [ElfHosted](https://elfhosted.com)
+- Subscribe to AIOStreams service
+- Note your instance URL (e.g., `https://aiostreams-yourusername.elfhosted.com`)
 
-### Recommended
+#### Option 2: Self-Hosted (Recommended for Power Users)
+1. Follow [AIOStreams installation guide](https://github.com/Viren070/aiostreams)
+2. Configure at least one scraper (torrent indexer or debrid service)
+3. Configure search provider (recommend AIOMetadata)
+4. Configure metadata source (recommend AIOMetadata)
 
-3. **AIOMetadata** (for rich metadata and search)
-   - Provides TMDb/TVDb integration
-   - GitHub: [github.com/cedya77/aiometadata](https://github.com/cedya77/aiometadata)
-   - Configure as both search and metadata source in AIOStreams
+### Required: AIOMetadata (Highly Recommended)
 
-4. **Trakt Account** (for sync features)
-   - Free account: [trakt.tv](https://trakt.tv)
-   - Tracks watch history, progress, and recommendations
+For the best experience, configure [AIOMetadata](https://github.com/cedya77/aiometadata) as your search and metadata provider:
 
-### Optional
+1. Install AIOMetadata following its documentation
+2. In AIOStreams settings, set AIOMetadata as:
+   - Search provider
+   - Metadata source
 
-5. **TMDBHelper** (for unified content discovery)
-   - Available from official Kodi repository
-   - Enhanced content browsing and unified player interface
+This provides rich TMDb/TVDb metadata and comprehensive search catalogs.
+
+### Kodi Requirements
+
+- **Kodi 19 or higher** (Matrix, Nexus, Omega)
+  - Python 3 addon support required
+- **script.module.requests** (automatically installed as dependency)
+
+### Optional Components
+
+- **Trakt Account** - For watch history sync features ([trakt.tv](https://trakt.tv))
+- **TMDBHelper** - For enhanced content discovery ([official Kodi repo](https://kodi.wiki/view/Add-on:The_Movie_Database_Helper))
+- **resource.fonts.noto-emoji** - For better emoji rendering in stream info
 
 ---
 
 ## Installation Methods
 
-### Method 1: Repository Installation (Recommended)
+### Method 1: From Repository (Recommended)
 
-Installing via repository ensures automatic updates and easy maintenance.
+**Step 1: Add Repository Source**
 
-#### Step 1: Enable Unknown Sources
+1. In Kodi, go to **Settings** → **File manager** → **Add source**
+2. Click **<None>** to add a new source
+3. Enter repository URL: `https://shiggsy365.github.io/AIOStreamsKODI/`
+4. Give it a name: `AIOStreams Repo`
+5. Click **OK**
 
-1. Open Kodi
-2. Navigate to: **Settings → System → Add-ons**
-3. Enable: **Unknown sources**
-4. Click **Yes** when prompted with security warning
+**Step 2: Install Repository**
 
-#### Step 2: Download Repository
+1. Go to **Settings** → **Add-ons**
+2. Select **Install from zip file**
+3. Navigate to **AIOStreams Repo**
+4. Select `repository.aiostreams-x.x.x.zip`
+5. Wait for "Add-on installed" notification
 
-Download the repository zip file:
-- **URL**: [repository.aiostreams.zip](https://github.com/shiggsy365/AIOStreamsKODI/raw/main/repository.aiostreams.zip)
-- Save to a location accessible from Kodi (Downloads folder, USB drive, etc.)
+**Step 3: Install Addon**
 
-#### Step 3: Install Repository
+1. Select **Install from repository**
+2. Choose **AIOStreams Repository**
+3. Navigate to **Video add-ons**
+4. Select **AIOStreams**
+5. Click **Install**
+6. Confirm dependency installation (script.module.requests)
+7. Wait for "Add-on enabled" notification
 
-1. In Kodi, go to: **Settings → Add-ons**
-2. Click: **Install from zip file**
-3. Browse to the downloaded `repository.aiostreams.zip`
-4. Select the file and wait for installation
-5. You should see: **"Add-on enabled"** notification
+### Method 2: From Zip File (Manual)
 
-#### Step 4: Install AIOStreams Addon
-
-1. Stay in: **Settings → Add-ons**
-2. Click: **Install from repository**
-3. Select: **AIOStreams Repository**
-4. Navigate to: **Video add-ons**
-5. Select: **AIOStreams**
-6. Click: **Install**
-7. Dependencies will install automatically (script.module.requests, etc.)
-8. Wait for: **"AIOStreams Add-on enabled"** notification
-
-#### Step 5: Verify Installation
-
-1. Navigate to: **Add-ons → Video add-ons**
-2. You should see: **AIOStreams** in the list
-3. Right-click and select: **Information**
-4. Verify version is current (3.5.4 or later)
-
-✅ **Installation Complete!** Proceed to [Initial Configuration](#initial-configuration)
-
----
-
-### Method 2: Manual Zip Installation
-
-Install directly from the addon zip file without using the repository.
-
-> **Note**: Manual installation means you won't receive automatic updates. Use repository installation when possible.
-
-#### Step 1: Enable Unknown Sources
-
-1. Open Kodi
-2. Navigate to: **Settings → System → Add-ons**
-3. Enable: **Unknown sources**
-
-#### Step 2: Download Addon
-
-Download the latest addon zip:
-- **URL**: [plugin.video.aiostreams.zip](https://github.com/shiggsy365/AIOStreamsKODI/raw/main/repo/plugin.video.aiostreams/plugin.video.aiostreams-3.5.4.zip)
-
-#### Step 3: Install Addon
-
-1. In Kodi, go to: **Settings → Add-ons**
-2. Click: **Install from zip file**
-3. Browse to the downloaded `plugin.video.aiostreams-3.5.4.zip`
-4. Select the file and wait for installation
-5. Dependencies install automatically
-6. Wait for: **"Add-on enabled"** notification
-
-#### Step 4: Verify Installation
-
-1. Navigate to: **Add-ons → Video add-ons**
-2. Verify **AIOStreams** appears in the list
-
-✅ **Installation Complete!** Proceed to [Initial Configuration](#initial-configuration)
+1. Download latest release from [Releases](https://github.com/shiggsy365/AIOStreamsKODI/releases)
+2. In Kodi: **Settings** → **Add-ons** → **Install from zip file**
+3. Navigate to download location
+4. Select `plugin.video.aiostreams-x.x.x.zip`
+5. Confirm dependency installation
+6. Wait for installation notification
 
 ---
 
 ## Initial Configuration
 
-After installation, configure the addon to connect to your AIOStreams backend.
+### Quick Setup (Minimum Configuration)
 
-### Step 1: Open Addon Settings
+**Step 1: Open Settings**
 
-1. Navigate to: **Add-ons → Video add-ons → AIOStreams**
-2. **Right-click** on AIOStreams
-3. Select: **Settings**
+1. Navigate to **Add-ons** → **Video add-ons**
+2. Find **AIOStreams**
+3. Right-click (or press C) → **Settings**
 
-### Step 2: Configure AIOStreams Host
+**Step 2: Configure AIOStreams Backend**
 
-**Settings → General → AIOStreams Configuration**
+1. Go to **General** category
+2. Under **AIOStreams Configuration**:
+   - **AIOStreams Host URL**: Enter your AIOStreams server URL
+     - ElfHosted: `https://aiostreams-yourusername.elfhosted.com`
+     - Self-hosted: `http://your-server-ip:8080` or your domain
+   - **Manifest URL**: Automatically filled (leave as is)
+   - **Request Timeout**: Leave at 10 seconds (increase if slow network)
 
-1. **AIOStreams Host URL**:
-   - Enter your AIOStreams server address
-   - Examples:
-     - Self-hosted: `http://192.168.1.100:8080`
-     - Self-hosted with domain: `https://aiostreams.yourdomain.com`
-     - ElfHosted: `https://your-instance.elfhosted.com`
+**Step 3: Test Connection**
 
-   > **Important**: Include `http://` or `https://` and the port if needed
+1. Go to **Advanced** category
+2. Under **Maintenance**, click **Test AIOStreams Connection**
+3. Verify successful connection message
 
-2. **Manifest URL**:
-   - Leave blank (auto-filled from host)
+**Step 4: Start Using**
 
-3. **Request Timeout**:
-   - Default: 10 seconds
-   - Increase if server is slow: 15-20 seconds
-
-### Step 3: Test Connection
-
-1. Navigate to: **Settings → Advanced → Maintenance**
-2. Click: **Test AIOStreams Connection**
-3. You should see:
-   ```
-   ✓ Connection successful!
-
-   Server: https://your-server.com
-   Response time: 0.23s
-   Catalogs available: 15
-   ```
-
-4. If connection fails, see [Troubleshooting](#troubleshooting-connection-issues)
-
-### Step 4: Configure Basic Settings (Optional)
-
-**Settings → General → Playback Settings**
-
-- **Default Behavior**:
-  - `show_streams` (default) - Shows all streams for manual selection
-  - `play_first` - Auto-plays first available stream
-
-**Settings → General → Quality Settings**
-
-- **Preferred Quality**: Select your preferred quality (any/4k/1080p/720p/480p)
-- **Minimum Quality**: Hide streams below this quality
-- **Hide Low Quality Streams**: Enable to filter low-quality streams
-
-✅ **Basic Configuration Complete!**
-
-The addon is now functional for browsing and streaming content.
+You can now access the addon from **Add-ons** → **Video add-ons** → **AIOStreams**!
 
 ---
 
-## AIOStreams Backend Setup
+## Settings Deep Dive
 
-Ensure your AIOStreams backend is properly configured for optimal addon performance.
+### General Settings
 
-### Required AIOStreams Configuration
+#### AIOStreams Configuration
 
-1. **Stream Scrapers**:
-   - Configure at least one scraper in AIOStreams
-   - Recommended: Google Drive or GDrive Lite formatters
-   - Test scrapers work before using addon
+**AIOStreams Host URL**
+- Your AIOStreams server address
+- Must include protocol (`http://` or `https://`)
+- Examples:
+  - `https://aiostreams.elfhosted.com`
+  - `http://192.168.1.100:8080`
+  - `https://my-aiostreams.domain.com`
 
-2. **Search Provider**:
-   - Configure search endpoint in AIOStreams
-   - **Recommended**: AIOMetadata
-   - Alternative: Direct TMDb/TVDb integration
+**Configure AIOStreams (Open Browser)**
+- Opens your AIOStreams web interface in default browser
+- Useful for configuring scrapers, metadata sources, etc.
 
-3. **Metadata Source**:
-   - Configure metadata endpoint in AIOStreams
-   - **Recommended**: AIOMetadata
-   - Provides rich metadata (posters, fanart, cast, ratings)
+**Manifest URL**
+- Auto-filled from host URL
+- Shows the manifest endpoint being used
+- Don't modify unless you know what you're doing
 
-4. **Subtitle Scrapers** (Optional):
-   - Configure subtitle providers in AIOStreams
-   - Automatically integrated when available
+**Request Timeout**
+- Default: 10 seconds
+- How long to wait for AIOStreams responses
+- Increase if you have slow network or distant server
+- Range: 5-30 seconds recommended
 
-### AIOMetadata Integration (Recommended)
+#### Playback Settings
 
-[AIOMetadata](https://github.com/cedya77/aiometadata) provides the best metadata and search experience.
+**Default Behavior**
+- `show_streams` (default): Always show stream selection dialog
+- `play_first`: Auto-play first available stream
 
-#### Setup AIOMetadata:
+**When to use each:**
+- `show_streams`: Best for users who want control over quality/source
+- `play_first`: Best for "just play it" experience, faster playback start
 
-1. **Deploy AIOMetadata**:
-   - Self-host or use ElfHosted
-   - Follow AIOMetadata installation guide
+**Fallback on Stream Failure**
+- Only visible when `Default Behavior` is `play_first`
+- `show_streams` (default): Show all streams if first fails
+- `play_next`: Automatically try next stream without showing dialog
 
-2. **Configure in AIOStreams**:
-   - Set AIOMetadata URL as search provider
-   - Set AIOMetadata URL as metadata source
-   - Configure TMDb/TVDb API keys in AIOMetadata
+#### Quality Settings
 
-3. **Test Integration**:
-   - Search for content in AIOStreams web interface
-   - Verify metadata appears correctly
+**Preferred Quality**
+- `any` (default): No preference, shows all qualities
+- `4k`: Prefer 4K/2160p streams
+- `1080p`: Prefer Full HD streams
+- `720p`: Prefer HD streams
+- `480p`: Prefer SD streams
 
-### Testing AIOStreams Backend
+Note: This is a preference, not a filter. Higher quality streams are still shown.
 
-Before using the Kodi addon, test your AIOStreams backend:
+**Minimum Quality**
+- Default: `480p`
+- Options: `240p` | `360p` | `480p` | `720p` | `1080p`
+- Streams below this quality won't be shown
 
-1. **Open AIOStreams Web Interface**:
-   - Navigate to your AIOStreams URL in browser
-   - Example: `http://localhost:8080`
+**Hide Low Quality Streams**
+- Default: Disabled
+- When enabled, filters out streams below minimum quality
+- When disabled, low quality streams shown but marked/sorted lower
 
-2. **Test Search**:
-   - Search for popular movie (e.g., "Inception")
-   - Verify results appear
+#### Subtitle Settings
 
-3. **Test Scraping**:
-   - Click on a movie/show
-   - Verify streams are found
+**Filter Subtitle Languages**
+- Comma-separated 3-letter language codes
+- Example: `eng,spa,fre` for English, Spanish, French
+- Leave blank to show all languages
+- Uses ISO 639-3 codes
 
-4. **Test Playback**:
-   - Click a stream link
-   - Verify it's a valid video URL
+#### Resume & Progress
 
-✅ Once backend is working, the Kodi addon will work seamlessly.
+**Auto Resume Playback**
+- Default: Enabled
+- Automatically resume from last watched position
+- Requires Trakt integration for cross-device sync
+- Local resume points stored even without Trakt
+
+**Mark Watched at %**
+- Default: 90%
+- When to automatically mark content as watched
+- Range: 50-100%
+- Example: At 90%, anything beyond 90% is marked watched
+
+#### Autoplay Next Episode
+
+**Enable Autoplay Next Episode**
+- Default: Disabled
+- Shows countdown dialog near end of TV episodes
+- Only works for TV shows (not movies)
+
+**Shows under 15 min (seconds before end)**
+- Default: 20 seconds
+- When to show autoplay dialog for short episodes
+- Example: 12-minute episode shows dialog at 11:40
+
+**Shows under 30 min (seconds before end)**
+- Default: 30 seconds
+- For typical sitcom-length episodes
+- Example: 22-minute episode shows dialog at 21:30
+
+**Shows under 45 min (seconds before end)**
+- Default: 45 seconds
+- For typical drama-length episodes
+- Example: 42-minute episode shows dialog at 41:15
+
+**Shows over 45 min (seconds before end)**
+- Default: 60 seconds
+- For feature-length episodes
+- Example: 60-minute episode shows dialog at 59:00
+
+**How Autoplay Works:**
+1. At (configured time - 10s), streams start scraping in background
+2. At configured time, dialog appears with episode thumbnail and title
+3. User can click "Play Now", "Stop Watching", or wait 10 seconds
+4. After countdown, next episode auto-plays
 
 ---
 
-## Trakt Integration Setup
+### Trakt Settings
 
-Trakt integration provides powerful sync features: watchlists, watch history, progress tracking, and recommendations.
+See [Trakt Integration Setup](#trakt-integration-setup) for complete OAuth setup.
 
-### Prerequisites
+**Client ID / Client Secret**
+- Your Trakt API application credentials
+- Required for OAuth authentication
 
-1. **Trakt Account**: Create free account at [trakt.tv](https://trakt.tv)
-2. **Trakt API Application**: Required for OAuth authentication
+**Authorize Trakt**
+- Starts OAuth flow to link your Trakt account
+- Opens authorization page in browser
 
-### Step 1: Create Trakt API Application
+**Revoke Authorization**
+- Disconnects Trakt account
+- Clears all tokens and synced data
 
-1. **Login to Trakt**: [trakt.tv](https://trakt.tv)
+**Enable Auto-Sync (Background Service)**
+- Default: Enabled
+- Syncs watchlist, collections, history every 5 minutes
+- Uses delta sync (only changed data)
 
-2. **Create New Application**:
-   - Navigate to: [trakt.tv/oauth/applications/new](https://trakt.tv/oauth/applications/new)
+**Enable Scrobbling**
+- Default: Enabled
+- Automatically tracks what you're watching
+- Updates Trakt in real-time during playback
 
-3. **Fill Application Details**:
-   ```
-   Name: AIOStreams Kodi
-   Description: AIOStreams Kodi Addon Integration
-   Redirect URI: urn:ietf:wg:oauth:2.0:oob
-   Permissions: (Select all the following)
-   ☑ /scrobble
-   ☑ /sync/collection
-   ☑ /sync/history
-   ☑ /sync/playback
-   ☑ /sync/rating
-   ☑ /sync/watchlist
-   ☑ /recommendations
-   ```
+---
 
-4. **Save Application**
+### User Interface Settings
 
-5. **Copy Credentials**:
-   - **Client ID**: Long alphanumeric string (copy this)
-   - **Client Secret**: Long alphanumeric string (copy this)
+**Show Progress Bars**
+- Default: Enabled
+- Visual progress bars for episodes and seasons
+- Format: `[████████░░] 85%`
 
-   > **Important**: Keep Client Secret secure. Never share publicly.
+**Color Code by Watch Status**
+- Default: Enabled
+- Blue: Watched
+- Gold: In progress
+- White: Unwatched
 
-### Step 2: Configure Addon with Trakt Credentials
+**Show Quality Badges**
+- Default: Enabled
+- Displays quality labels on streams: [4K], [1080p], [720p]
 
-1. **Open Addon Settings**:
-   - Add-ons → Video add-ons → AIOStreams → Right-click → Settings
+**Show Reliability Icons**
+- Default: Enabled
+- Star ratings based on success rate:
+  - ★★★★★: 90%+ success
+  - ★★★★☆: 70-89% success
+  - ★★★☆☆: 50-69% success
+  - ★★☆☆☆: 30-49% success
+  - ★☆☆☆☆: <30% success
 
-2. **Navigate to Trakt Category**:
-   - Settings → **Trakt**
+**Learn Stream Preferences**
+- Default: Enabled
+- Tracks which providers you select most often
+- Prioritizes preferred providers in future selections
+- Reset via Advanced → Clear Learned Preferences
 
-3. **Enter Credentials**:
-   - **Client ID**: Paste your Trakt Client ID
-   - **Client Secret**: Paste your Trakt Client Secret
+---
 
-4. **Save Settings**: Click **OK**
+### Advanced Settings
 
-### Step 3: Authorize Trakt
+#### Performance
 
-1. **Start Authorization**:
-   - Settings → Trakt → Click: **Authorize Trakt**
+**Cache Expiry (hours)**
+- Default: 24 hours
+- How long to cache metadata before refreshing
+- Lower = more up-to-date, more API calls
+- Higher = better performance, possibly stale data
+- Range: 1-168 hours (1 week)
 
-2. **Authorization Dialog Appears**:
-   ```
-   Trakt Authorization Required
+**Max Streams to Display**
+- Default: 20
+- Limits number of streams shown in selection
+- Lower = faster loading
+- Higher = more options
+- Range: 5-100
 
-   1. Visit: https://trakt.tv/activate
-   2. Enter code: XXXX-XXXX
-   3. Click "Authorize" to complete
-   ```
+**Stream Test Timeout (sec)**
+- Default: 5 seconds
+- Timeout for testing stream availability
+- Increase if streams frequently fail to load
+- Range: 3-15 seconds
 
-3. **Complete Authorization**:
-   - Open browser and visit: [trakt.tv/activate](https://trakt.tv/activate)
-   - Enter the code shown in Kodi dialog
-   - Click **Continue**
-   - Review permissions and click **Authorize**
+#### Debug
 
-4. **Return to Kodi**:
-   - Click **OK** in the Kodi dialog
-   - You should see: **"Trakt authorized successfully"**
+**Enable Debug Logging**
+- Default: Disabled
+- Enables verbose logging for troubleshooting
+- Logs written to Kodi log file
+- Useful for reporting issues
 
-### Step 4: Configure Trakt Sync Settings
+#### Maintenance
 
-**Settings → Trakt → Sync Settings**
+**Refresh Manifest Cache**
+- Forces reload of AIOStreams catalog list
+- Use if catalogs aren't showing up
+- Clears and rebuilds catalog cache
 
-- **Enable Auto-Sync**: `✓` Enabled (default)
-  - Background service syncs every 5 minutes
-  - Only syncs changed data (delta sync)
+**Database Reset**
+- **Warning**: Deletes all Trakt sync data
+- Requires re-sync from Trakt
+- Use if database is corrupted
 
-**Settings → Trakt → Trakt Features**
+**Show Database Info**
+- Displays statistics:
+  - Total movies/shows synced
+  - Total episodes watched
+  - Database file size
+  - Last sync time
 
-- **Enable Scrobbling**: `✓` Enabled (default)
-  - Automatically tracks playback to Trakt
-  - Updates watch status and progress
+**Clear Stream Statistics**
+- Resets reliability tracking for all providers
+- Stars return to neutral state
+- Use if statistics seem inaccurate
 
-### Step 5: Initial Sync
+**Clear Learned Preferences**
+- Resets provider preference learning
+- Streams return to default sorting
+- Use if you want to start fresh
 
-1. **Navigate to Addon Main Menu**:
-   - Add-ons → Video add-ons → AIOStreams
+**Test AIOStreams Connection**
+- Diagnostic tool to verify backend connectivity
+- Shows connection status and latency
+- Reports any configuration errors
 
-2. **Open Trakt Menu**:
-   - Select: **Trakt** folder
+---
 
-3. **First Load Triggers Sync**:
-   - Initial sync may take 30-60 seconds
-   - Progress dialog shows: "Syncing with Trakt..."
-   - Subsequent loads are instant (from database)
+### Filter Settings
 
-### Step 6: Verify Trakt Integration
+**Enable Rating Filters**
+- Master switch for content rating filters
+- When disabled, all rating checkboxes are inactive
 
-Test Trakt features are working:
+**Hide Ratings**
+Individual checkboxes for each rating:
 
-1. **Check Watchlist**:
-   - Trakt → Watchlist
-   - Should show your Trakt watchlist items
+**Movies:**
+- G, PG, PG-13, R, NC-17
 
-2. **Check Next Up**:
-   - Trakt → Next Up
-   - Should show next unwatched episodes
+**TV Shows:**
+- TV-Y, TV-Y7, TV-G, TV-PG, TV-14, TV-MA
 
-3. **Test Context Menu**:
-   - Right-click any movie/show
-   - Verify "Add to Watchlist" / "Remove from Watchlist" appears
-   - Verify "Mark as Watched" / "Mark as Unwatched" appears
-
-✅ **Trakt Integration Complete!**
-
-### Revoking Trakt Authorization
-
-To disconnect Trakt:
-
-1. Settings → Trakt → Click: **Revoke Authorization**
-2. Confirmation dialog appears
-3. Click **Yes** to revoke
-4. All Trakt data remains in local database
+When enabled, content with selected ratings will be hidden from lists.
 
 ---
 
 ## TMDBHelper Integration
 
-TMDBHelper provides unified content discovery and playback interface. AIOStreams can integrate as a player.
+TMDBHelper provides a unified interface for discovering and playing content across multiple addons.
 
-### Prerequisites
+### Installing TMDBHelper
 
-1. **TMDBHelper Installed**: Available from official Kodi repository
-2. **AIOStreams Configured**: Backend must be working
+**Step 1: Install TMDBHelper**
+1. Go to **Settings** → **Add-ons**
+2. Select **Install from repository**
+3. Choose **Kodi Add-on repository**
+4. Navigate to **Information providers**
+5. Select **The Movie Database Helper**
+6. Click **Install**
 
-### Step 1: Install TMDBHelper
+**Step 2: Download Player Configurations**
+1. Download [tmdbhelper-players.zip](https://github.com/shiggsy365/AIOStreamsKODI/raw/main/TMDB%20Helper%20Players/tmdbhelper-players.zip)
+2. Extract the zip file
 
-1. **Open Kodi Add-ons**:
-   - Settings → Add-ons → Install from repository
+**Step 3: Install Player Configs**
+1. Locate your Kodi userdata folder:
+   - **Windows**: `%APPDATA%\Kodi\userdata\`
+   - **Mac**: `~/Library/Application Support/Kodi/userdata/`
+   - **Linux**: `~/.kodi/userdata/`
+   - **Android**: `/sdcard/Android/data/org.xbmc.kodi/files/.kodi/userdata/`
+2. Navigate to `addon_data/plugin.video.themoviedb.helper/players/`
+   - Create the `players` folder if it doesn't exist
+3. Copy the extracted JSON files to this folder
 
-2. **Navigate to**:
-   - Kodi Add-on repository → Video add-ons
+**Step 4: Configure TMDBHelper**
+1. Open TMDBHelper settings
+2. Go to **Players** tab
+3. Enable **AIOStreams** and **AIOStreams (Source Select)**
+4. Set priority order (higher = tried first)
 
-3. **Find and Install**:
-   - Select: **TMDbHelper**
-   - Click: **Install**
-   - Wait for installation to complete
+### Player Configurations
 
-### Step 2: Download AIOStreams Player Configs
+**aiostreams.direct.json** (Priority 200)
+- **Direct Playback**: Auto-plays first available stream
+- **Fallback**: Shows source selection if first stream fails
+- **Best for**: "Just play it" experience
 
-Download the pre-configured player files:
+**aiostreams.select.json** (Priority 201)
+- **Manual Selection**: Always shows stream selection dialog
+- **Quality Info**: Displays quality badges and reliability ratings
+- **Best for**: Users who want source control
 
-- **URL**: [tmdbhelper-players.zip](https://github.com/shiggsy365/AIOStreamsKODI/raw/main/TMDB%20Helper%20Players/tmdbhelper-players.zip)
-- Save and extract the zip file
+### Using TMDBHelper with AIOStreams
 
-### Step 3: Install Player Configs
-
-#### Option A: Manual Installation
-
-1. **Locate TMDBHelper Players Folder**:
-
-   **Windows**:
-   ```
-   %APPDATA%\Kodi\userdata\addon_data\plugin.video.themoviedb.helper\players\
-   ```
-
-   **Linux**:
-   ```
-   ~/.kodi/userdata/addon_data/plugin.video.themoviedb.helper/players/
-   ```
-
-   **macOS**:
-   ```
-   ~/Library/Application Support/Kodi/userdata/addon_data/plugin.video.themoviedb.helper/players/
-   ```
-
-   **Android**:
-   ```
-   /sdcard/Android/data/org.xbmc.kodi/files/.kodi/userdata/addon_data/plugin.video.themoviedb.helper/players/
-   ```
-
-2. **Copy Files**:
-   - Extract the downloaded `tmdbhelper-players.zip`
-   - Copy both JSON files to the `players/` folder:
-     - `aiostreams.direct.json`
-     - `aiostreams.select.json`
-
-3. **Restart Kodi**: Required for TMDBHelper to detect new players
-
-#### Option B: File Manager Installation (Kodi)
-
-1. **Access File Manager**:
-   - Settings → File manager → Add source
-
-2. **Add Source**:
-   - Browse to location of extracted player files
-   - Add as source
-
-3. **Copy via Kodi**:
-   - Use Kodi's file manager to copy JSON files
-   - Destination: TMDBHelper players folder
-
-### Step 4: Verify Player Installation
-
-1. **Open TMDBHelper Settings**:
-   - Add-ons → Video add-ons → TMDbHelper → Right-click → Settings
-
-2. **Navigate to Players**:
-   - Settings → Players → Manage Players
-
-3. **Check Players List**:
-   - You should see:
-     - ✓ **AIOStreams** (Priority 200)
-     - ✓ **AIOStreams (Source Select)** (Priority 201)
-
-### Player Configurations Explained
-
-#### aiostreams.direct.json (Automatic Playback)
-
-```json
-{
-  "name": "AIOStreams",
-  "priority": 200,
-  "play_movie": "plugin://plugin.video.aiostreams/?action=play_first&content_type=movie&imdb_id={imdb}",
-  "play_episode": "plugin://plugin.video.aiostreams/?action=play_first&content_type=series&imdb_id={imdb}&season={season}&episode={episode}",
-  "is_resolvable": "true",
-  "fallback": {
-    "play_episode": "aiostreams.select.json play_episode",
-    "play_movie": "aiostreams.select.json play_movie"
-  }
-}
-```
-
-**Features:**
-- Uses `play_first` endpoint - always direct plays first stream
-- Ignores AIOStreams addon's default behavior setting
-- Falls back to source selection on playback failure
-- **Best for**: Users who want instant playback
-
-#### aiostreams.select.json (Manual Selection)
-
-```json
-{
-  "name": "AIOStreams (Source Select)",
-  "priority": 201,
-  "play_movie": "plugin://plugin.video.aiostreams/?action=select_stream&content_type=movie&imdb_id={imdb}",
-  "play_episode": "plugin://plugin.video.aiostreams/?action=select_stream&content_type=series&imdb_id={imdb}&season={season}&episode={episode}",
-  "is_resolvable": "true"
-}
-```
-
-**Features:**
-- Uses `select_stream` endpoint - shows stream selection dialog
-- Displays quality badges and reliability ratings
-- Allows manual source selection
-- **Best for**: Users who want control over source selection
-
-### Step 5: Test TMDBHelper Integration
-
-1. **Open TMDBHelper**:
-   - Add-ons → Video add-ons → TMDbHelper
-
-2. **Browse Content**:
-   - Search or browse for a movie/show
-
-3. **Play Content**:
-   - Select a movie or episode
-   - Choose: **AIOStreams** or **AIOStreams (Source Select)**
-   - Content should play via AIOStreams
-
-✅ **TMDBHelper Integration Complete!**
+1. Open TMDBHelper
+2. Browse or search for content
+3. Select a movie or episode
+4. Choose **Play** from context menu
+5. TMDBHelper will use AIOStreams as configured
+6. Content plays via your AIOStreams backend
 
 ---
 
-## Advanced Configuration
+## Trakt Integration Setup
 
-### Stream Quality and Filtering
+Complete guide to setting up Trakt.tv integration.
 
-**Settings → General → Quality Settings**
+### Step 1: Create Trakt Account
 
-Fine-tune stream selection based on quality preferences:
+1. Go to [trakt.tv](https://trakt.tv)
+2. Sign up for free account
+3. Verify email address
 
-- **Preferred Quality**:
-  - `any` - No preference, show all
-  - `4k` - Prefer 4K/2160p streams
-  - `1080p` - Prefer Full HD streams
-  - `720p` - Prefer HD streams
-  - `480p` - Prefer SD streams
+### Step 2: Create Trakt API Application
 
-- **Minimum Quality**:
-  - Set lowest acceptable quality
-  - Hides streams below this threshold
-  - Options: 240p, 360p, 480p, 720p, 1080p
+1. Go to [trakt.tv/oauth/applications](https://trakt.tv/oauth/applications)
+2. Click **New Application**
+3. Fill in application details:
+   - **Name**: `Kodi AIOStreams` (or any name you prefer)
+   - **Description**: `AIOStreams Kodi Addon`
+   - **Redirect URI**: `urn:ietf:wg:oauth:2.0:oob`
+   - **Permissions**: Check all boxes (if available)
+4. Click **Save App**
+5. Note your **Client ID** and **Client Secret**
 
-- **Hide Low Quality Streams**:
-  - Enable to filter out low-quality streams automatically
+### Step 3: Configure Addon
 
-**How Quality Detection Works:**
-- Addon parses stream titles for quality indicators
-- Recognizes: 4K, 2160p, UHD, 1080p, FHD, 720p, HD, 480p, SD, 360p, 240p
-- Color-coded badges: [4K] [1080p] [720p] [SD]
+1. Open AIOStreams addon settings
+2. Go to **Trakt** category
+3. Enter **Client ID** from Step 2
+4. Enter **Client Secret** from Step 2
+5. Click **Authorize Trakt**
 
-### Stream Reliability Tracking
+### Step 4: Complete OAuth Flow
 
-**Settings → User Interface**
+1. A browser window will open with Trakt authorization page
+2. Review permissions requested
+3. Click **Authorize**
+4. You'll see an authorization code
+5. **Important**: Leave this page open
+6. Return to Kodi
+7. The addon will automatically detect authorization
+8. Wait for "Trakt authorized successfully" notification
 
-- **Show Reliability Icons**: Display star ratings on streams
-- **Learn Stream Preferences**: Prioritize preferred providers
+### Step 5: Initial Sync
 
-**How Reliability Tracking Works:**
+1. First sync will download all your Trakt data
+2. This may take a few minutes depending on library size
+3. Progress shown via notification
+4. Subsequent syncs use delta sync (much faster)
 
-1. **Success/Failure Tracking**:
-   - Addon tracks which streams successfully play
-   - Calculates success rate per provider
-   - Stores statistics in: `stream_stats.json`
+### Trakt Features
 
-2. **Star Ratings**:
-   - ★★★ Excellent (90%+ success)
-   - ★★☆ Good (70-89% success)
-   - ★☆☆ Fair (50-69% success)
-   - ☆☆☆ Poor (<50% success)
+**Automatic Sync** (Background Service)
+- Runs every 5 minutes
+- Only syncs changed data (delta sync)
+- Minimal API usage
 
-3. **Preference Learning**:
-   - Remembers which providers you select
-   - Prioritizes your preferred providers
-   - Stored in: `stream_prefs.json`
+**Scrobbling**
+- Automatic playback tracking
+- Updates watch progress in real-time
+- Marks content as watched at configured percentage
 
-4. **Stream Sorting**:
-   - 1st: Quality (preferred → highest available)
-   - 2nd: Reliability (highest success rate)
-   - 3rd: Learned preferences (most frequently selected)
+**Synced Data**
+- Watchlist (movies and shows)
+- Collection (owned content)
+- Watch history (per episode/movie)
+- Playback progress (resume points)
+- Hidden items (excluded from recommendations)
 
-**Maintenance:**
-- Clear Statistics: Settings → Advanced → Clear Stream Statistics
-- Clear Preferences: Settings → Advanced → Clear Learned Preferences
-
-### UI Enhancements
-
-**Settings → User Interface → Display Options**
-
-Customize visual appearance:
-
-- **Show Progress Bars**: `✓` Enabled
-  - Visual indicators for watch progress
-  - Shows: [████████░░] 85% (episode) or 8/10 (season)
-
-- **Color Code by Watch Status**: `✓` Enabled
-  - Blue: Watched content
-  - Gold: In-progress (partially watched)
-  - White: Unwatched content
-
-- **Show Quality Badges**: `✓` Enabled
-  - Displays quality labels: [4K] [1080p] [720p]
-  - Color-coded for easy identification
-
-- **Show Reliability Icons**: `✓` Enabled
-  - Displays star ratings: ★★★ ★★☆ ★☆☆
-  - Shows provider success rates
-
-### Performance Tuning
-
-**Settings → Advanced → Performance**
-
-Optimize performance based on your setup:
-
-- **Cache Expiry (hours)**: Default 24
-  - How long to cache metadata
-  - Longer = fewer API calls, less fresh data
-  - Shorter = more API calls, fresher data
-  - Recommended: 12-48 hours
-
-- **Max Streams to Display**: Default 20
-  - Limit number of streams shown
-  - Lower = faster selection dialog
-  - Higher = more options
-  - Recommended: 15-30 streams
-
-- **Stream Test Timeout (sec)**: Default 5
-  - Timeout for testing stream availability
-  - Increase if streams are slow to respond
-  - Decrease for faster selection
-  - Recommended: 3-10 seconds
-
-### Debug Logging
-
-**Settings → Advanced → Debug**
-
-- **Enable Debug Logging**: Disabled by default
-  - Enables detailed logging for troubleshooting
-  - Logs include: API calls, stream parsing, Trakt sync
-  - Check logs: Settings → System → Logging → View Log
-
-**When to Enable:**
-- Troubleshooting connection issues
-- Investigating playback failures
-- Reporting bugs to developer
-
-**Viewing Logs:**
-1. Settings → System → Logging
-2. Enable: Component-specific logging
-3. Click: View Log File
-4. Search for: `plugin.video.aiostreams`
+**Lists Available in Addon**
+- Next Up (smart next episode list)
+- Continue Watching (resume in-progress content)
+- Watchlist
+- Collection
 
 ---
 
-## Keyboard Shortcuts Setup (Optional)
+## Keyboard Shortcuts
 
-Add keyboard shortcuts for quick actions while browsing content.
+Optional keyboard shortcuts for quick actions.
 
-### Step 1: Locate Keymap Template
+### Installing Keymap
 
-The addon includes a keymap template:
-```
-plugin.video.aiostreams/keymap.xml.template
-```
+**Step 1: Create Keymap File**
 
-### Step 2: Copy Keymap File
+1. Locate Kodi userdata folder (see TMDBHelper section)
+2. Navigate to `keymaps/` folder
+   - Create folder if it doesn't exist
+3. Create file named `aiostreams.xml`
 
-Copy the template to Kodi's keymaps folder:
+**Step 2: Add Keymap Content**
 
-**Windows**:
-```
-Copy from: <addon_path>/keymap.xml.template
-Copy to:   %APPDATA%\Kodi\userdata\keymaps\aiostreams.xml
-```
-
-**Linux**:
-```bash
-cp ~/.kodi/addons/plugin.video.aiostreams/keymap.xml.template \
-   ~/.kodi/userdata/keymaps/aiostreams.xml
-```
-
-**macOS**:
-```bash
-cp ~/Library/Application\ Support/Kodi/addons/plugin.video.aiostreams/keymap.xml.template \
-   ~/Library/Application\ Support/Kodi/userdata/keymaps/aiostreams.xml
-```
-
-**Android** (via File Manager):
-```
-Copy from: /sdcard/Android/data/org.xbmc.kodi/files/.kodi/addons/plugin.video.aiostreams/keymap.xml.template
-Copy to:   /sdcard/Android/data/org.xbmc.kodi/files/.kodi/userdata/keymaps/aiostreams.xml
-```
-
-### Step 3: Restart Kodi
-
-Restart Kodi for keymaps to take effect.
-
-### Default Keyboard Shortcuts
-
-| Key | Action | Description |
-|-----|--------|-------------|
-| **Q** | Toggle Watchlist | Add/remove from Trakt watchlist |
-| **W** | Mark as Watched | Toggle watched status |
-| **I** | Show Info | Display detailed information |
-| **S** | Similar Content | Browse related/similar content |
-| **A** | Quick Actions | Open quick actions menu |
-
-### Customizing Shortcuts
-
-Edit `aiostreams.xml` to customize shortcuts:
+Copy this content to `aiostreams.xml`:
 
 ```xml
+<?xml version="1.0" encoding="UTF-8"?>
 <keymap>
-  <FullscreenVideo>
+  <global>
     <keyboard>
-      <q>RunPlugin(plugin://plugin.video.aiostreams/?action=toggle_watchlist)</q>
-      <w>RunPlugin(plugin://plugin.video.aiostreams/?action=toggle_watched)</w>
-      <!-- Add your custom shortcuts here -->
+      <!-- Q = Toggle Watchlist -->
+      <q>RunScript(special://home/addons/plugin.video.aiostreams/addon.py,action=trakt_toggle_watchlist)</q>
+
+      <!-- W = Mark as Watched -->
+      <w>RunScript(special://home/addons/plugin.video.aiostreams/addon.py,action=trakt_mark_watched)</w>
+
+      <!-- I = Show Info -->
+      <i>Action(Info)</i>
+
+      <!-- S = Similar Content -->
+      <s>RunScript(special://home/addons/plugin.video.aiostreams/addon.py,action=show_similar)</s>
+
+      <!-- A = Quick Actions Menu -->
+      <a>RunScript(special://home/addons/plugin.video.aiostreams/addon.py,action=quick_actions)</a>
     </keyboard>
-  </FullscreenVideo>
+  </global>
 </keymap>
 ```
+
+**Step 3: Reload Keymaps**
+
+1. Restart Kodi, or
+2. Go to **Settings** → **System** → **Input** → **Reload keymaps**
+
+### Available Shortcuts
+
+- **Q**: Toggle Watchlist (add/remove current item)
+- **W**: Mark as Watched/Unwatched
+- **I**: Show detailed info
+- **S**: Browse similar content
+- **A**: Open quick actions menu
 
 ---
 
@@ -761,363 +595,104 @@ Edit `aiostreams.xml` to customize shortcuts:
 
 ### Connection Issues
 
-#### Problem: "Unable to connect to AIOStreams"
+**Problem**: "Cannot connect to AIOStreams"
 
-**Solutions:**
+Solutions:
+1. Verify AIOStreams host URL is correct
+2. Ensure AIOStreams is running and accessible
+3. Check firewall settings
+4. Try increasing request timeout in settings
+5. Use **Test AIOStreams Connection** in Advanced settings
 
-1. **Verify AIOStreams URL**:
-   - Check Settings → General → AIOStreams Host URL
-   - Ensure URL is correct including protocol (http/https)
-   - Test URL in browser - should show AIOStreams interface
+**Problem**: "Manifest not found"
 
-2. **Check Network Connectivity**:
-   - Ensure Kodi device can reach AIOStreams server
-   - Test from browser on same device
-   - Verify no firewall blocking connection
+Solutions:
+1. Use **Refresh Manifest Cache** in Advanced settings
+2. Verify AIOStreams has catalogs configured
+3. Check AIOStreams logs for errors
 
-3. **Test Connection**:
-   - Settings → Advanced → Maintenance → Test AIOStreams Connection
-   - Check error message for details
+### Stream Issues
 
-4. **Increase Timeout**:
-   - Settings → General → Request Timeout
-   - Increase to 15-20 seconds for slow servers
+**Problem**: "No streams found"
 
-5. **Check AIOStreams Logs**:
-   - View AIOStreams backend logs
-   - Look for connection errors or crashes
+Solutions:
+1. Verify scrapers are configured in AIOStreams
+2. Check if content is available in your region
+3. Try searching for different content
+4. Check AIOStreams web interface directly
 
-#### Problem: "Connection timeout"
+**Problem**: "Stream fails to play"
 
-**Solutions:**
-- Increase timeout: Settings → General → Request Timeout
-- Check AIOStreams server is running
-- Verify network latency (ping server)
-- Try different network connection
+Solutions:
+1. Try next stream in list
+2. Enable debug logging to see detailed error
+3. Check if stream URL is still valid
+4. Verify debrid service is working (if using)
 
 ### Trakt Issues
 
-#### Problem: "Trakt authorization failed"
+**Problem**: "Trakt authorization failed"
 
-**Solutions:**
+Solutions:
+1. Verify Client ID and Secret are correct
+2. Ensure redirect URI is `urn:ietf:wg:oauth:2.0:oob`
+3. Check Trakt application is approved
+4. Try revoking and re-authorizing
 
-1. **Verify Credentials**:
-   - Double-check Client ID is correct
-   - Double-check Client Secret is correct
-   - Ensure no extra spaces when pasting
+**Problem**: "Sync not updating"
 
-2. **Check Trakt Application**:
-   - Visit: [trakt.tv/oauth/applications](https://trakt.tv/oauth/applications)
-   - Verify application exists and is active
-   - Verify Redirect URI is: `urn:ietf:wg:oauth:2.0:oob`
-
-3. **Re-authorize**:
-   - Settings → Trakt → Revoke Authorization
-   - Settings → Trakt → Authorize Trakt
-   - Follow authorization flow again
-
-#### Problem: "Trakt lists are empty"
-
-**Solutions:**
-
-1. **Force Sync**:
-   - Settings → Advanced → Maintenance → Database Reset
-   - Restart addon
-   - Open Trakt menu to trigger sync
-
-2. **Check Trakt Account**:
-   - Visit [trakt.tv](https://trakt.tv) in browser
-   - Verify your watchlist/collection has content
-   - Add test items if empty
-
-3. **Check Auto-Sync**:
-   - Settings → Trakt → Enable Auto-Sync
-   - Ensure it's enabled
-
-#### Problem: "Scrobbling not working"
-
-**Solutions:**
-
-1. **Enable Scrobbling**:
-   - Settings → Trakt → Enable Scrobbling
-   - Ensure it's enabled
-
-2. **Check Trakt Permissions**:
-   - Verify API application has `/scrobble` permission
-   - Re-authorize if needed
-
-3. **Test Manually**:
-   - Play content for at least 5 minutes
-   - Check Trakt website for updated watch history
-   - May take a few minutes to appear
-
-### Playback Issues
-
-#### Problem: "No streams found"
-
-**Solutions:**
-
-1. **Check AIOStreams Backend**:
-   - Test search/scraping in AIOStreams web interface
-   - Verify scrapers are working
-   - Check scraper configuration
-
-2. **Check Quality Filters**:
-   - Settings → General → Quality Settings
-   - Temporarily set Preferred Quality to "any"
-   - Disable "Hide Low Quality Streams"
-
-3. **Clear Cache**:
-   - Settings → Advanced → Refresh Manifest Cache
-   - Restart addon
-
-#### Problem: "Streams fail to play"
-
-**Solutions:**
-
-1. **Try Different Stream**:
-   - Use "Show Streams" to see all options
-   - Try multiple sources
-   - Check reliability ratings
-
-2. **Check Stream URL**:
-   - Enable debug logging
-   - Check log for stream URL
-   - Test URL directly in browser/player
-
-3. **Update Stream Statistics**:
-   - Settings → Advanced → Clear Stream Statistics
-   - Start fresh with reliability tracking
-
-4. **Check Network**:
-   - Some streams may be geo-blocked
-   - Try VPN if necessary
-
-#### Problem: "Playback stutters/buffers"
-
-**Solutions:**
-
-1. **Select Lower Quality**:
-   - Settings → General → Preferred Quality
-   - Choose 720p or 480p instead of 1080p/4K
-
-2. **Check Internet Speed**:
-   - Test internet connection speed
-   - 4K requires 25+ Mbps
-   - 1080p requires 10+ Mbps
-   - 720p requires 5+ Mbps
-
-3. **Adjust Cache**:
-   - Kodi Settings → Player → Videos
-   - Increase buffer size
-
-### TMDBHelper Integration Issues
-
-#### Problem: "AIOStreams not appearing in TMDBHelper"
-
-**Solutions:**
-
-1. **Verify Player Files**:
-   - Check files exist in: `addon_data/plugin.video.themoviedb.helper/players/`
-   - Files should be: `aiostreams.direct.json` and `aiostreams.select.json`
-
-2. **Restart Kodi**:
-   - TMDBHelper only detects players on startup
-   - Restart required after adding player files
-
-3. **Check TMDBHelper Settings**:
-   - TMDBHelper → Settings → Players → Manage Players
-   - Verify AIOStreams players are listed and enabled
-
-#### Problem: "Modal dialog error" when using TMDBHelper
-
-**Solution:**
-- This should be fixed in current version (3.5.3+)
-- Ensure addon is updated to latest version
-- If still occurring, report as bug with details
+Solutions:
+1. Verify auto-sync is enabled in settings
+2. Check background service is running
+3. Use **Database Reset** and re-sync (last resort)
+4. Check Trakt website to verify data exists
 
 ### Performance Issues
 
-#### Problem: "Addon is slow"
+**Problem**: "Addon is slow"
 
-**Solutions:**
+Solutions:
+1. Increase cache expiry time
+2. Disable color coding temporarily
+3. Reduce max streams to display
+4. Clear database and re-sync
+5. Check network connection speed
 
-1. **Wait for Initial Sync**:
-   - First load always slower (building database)
-   - Subsequent loads should be instant
+**Problem**: "Lists take long to load"
 
-2. **Disable Color Coding**:
-   - Settings → User Interface → Color Code by Watch Status
-   - Disable if Trakt sync is slow
-
-3. **Increase Cache Expiry**:
-   - Settings → Advanced → Cache Expiry
-   - Increase to 48 hours or more
-
-4. **Reduce Max Streams**:
-   - Settings → Advanced → Max Streams to Display
-   - Lower to 10-15 for faster dialogs
-
-5. **Clear Database**:
-   - Settings → Advanced → Database Reset
-   - Fresh start if database corrupted
-
-#### Problem: "High memory usage"
-
-**Solutions:**
-- Restart Kodi periodically
-- Clear cache: Settings → Advanced → Refresh Manifest Cache
-- Reduce Cache Expiry
-
-### General Issues
-
-#### Problem: "Addon won't start"
-
-**Solutions:**
-
-1. **Check Dependencies**:
-   - Ensure script.module.requests is installed
-   - Check for dependency errors in log
-
-2. **Reinstall Addon**:
-   - Uninstall AIOStreams
-   - Restart Kodi
-   - Reinstall from repository or zip
-
-3. **Check Logs**:
-   - View Kodi log file
-   - Search for errors related to `plugin.video.aiostreams`
-
-#### Problem: "Settings not saving"
-
-**Solutions:**
-
-1. **Check File Permissions**:
-   - Ensure Kodi has write access to addon_data folder
-   - Check folder permissions
-
-2. **Check Storage Space**:
-   - Ensure device has free storage space
-
-3. **Reinstall Addon**:
-   - Note: May lose settings
-   - Uninstall and reinstall
+Solutions:
+1. Wait for initial sync to complete
+2. Subsequent loads use cached data (instant)
+3. Increase cache expiry to reduce refreshes
 
 ---
 
-## Updating the Addon
+## Getting Help
 
-### Via Repository (Automatic)
+**Issue Reporting**
+- GitHub Issues: [Report a problem](https://github.com/shiggsy365/AIOStreamsKODI/issues)
+- Include:
+  - Kodi version
+  - Addon version
+  - Debug log (enable debug logging first)
+  - Steps to reproduce
 
-If installed via repository, updates are automatic:
-
-1. **Check for Updates**:
-   - Kodi checks periodically (default: daily)
-   - Updates download and install automatically
-
-2. **Manual Update Check**:
-   - Settings → Add-ons → Check for updates
-
-3. **Verify Version**:
-   - Add-ons → Video add-ons → AIOStreams
-   - Right-click → Information
-   - Check version number
-
-### Manual Update
-
-If installed manually:
-
-1. **Download Latest Version**:
-   - [plugin.video.aiostreams-3.5.4.zip](https://github.com/shiggsy365/AIOStreamsKODI/raw/main/repo/plugin.video.aiostreams/plugin.video.aiostreams-3.5.4.zip)
-
-2. **Install Over Existing**:
-   - Settings → Add-ons → Install from zip file
-   - Select new zip file
-   - Kodi will upgrade existing installation
-
-3. **Settings Preserved**:
-   - All settings are retained during upgrade
-   - No need to reconfigure
-
-### Switching from Manual to Repository
-
-To start receiving automatic updates:
-
-1. **Install Repository**:
-   - Follow [Method 1: Repository Installation](#method-1-repository-installation-recommended)
-
-2. **Addon Automatically Managed**:
-   - No need to uninstall existing addon
-   - Repository takes over update management
+**Documentation**
+- [README.md](README.md) - Overview and features
+- [ARCHITECTURE.md](ARCHITECTURE.md) - Technical details
+- [FEATURES.md](plugin.video.aiostreams/FEATURES.md) - Feature documentation
 
 ---
 
-## Additional Resources
+### Acknowledgments
 
-### Documentation
+This addon is powered by:
 
-- **README.md**: Overview, features, architecture, and quick start
-- **FEATURES.md**: Detailed feature guide with examples
-- **GitHub Repository**: [github.com/shiggsy365/AIOStreamsKODI](https://github.com/shiggsy365/AIOStreamsKODI)
+- **[AIOStreams](https://github.com/Viren070/aiostreams)** by [Viren070](https://github.com/Viren070) - Streaming aggregation backend
+- **[AIOMetadata](https://github.com/cedya77/aiometadata)** by [Cedya77](https://github.com/cedya77) - Metadata and catalog provider
 
-### Related Projects
+Special thanks to the Kodi community for testing and feedback!
 
-- **AIOStreams**: [github.com/Viren070/aiostreams](https://github.com/Viren070/aiostreams)
-- **AIOMetadata**: [github.com/cedya77/aiometadata](https://github.com/cedya77/aiometadata)
-- **Trakt**: [trakt.tv](https://trakt.tv)
-- **TMDBHelper**: Available in Kodi official repository
-
-### Support
-
-- **GitHub Issues**: [Report a bug or request a feature](https://github.com/shiggsy365/AIOStreamsKODI/issues)
-- **Kodi Forum**: Community support and discussion
-
-### Contributing
-
-Contributions welcome! Support the developer:
+**Support the ecosystem:**
 
 [<img src="https://github.com/shiggsy365/AIOStreamsKODI/blob/main/.github/support_me_on_kofi_red.png?raw=true">](https://ko-fi.com/shiggsy365)
-
----
-
-## Frequently Asked Questions
-
-### Q: Do I need a Trakt account?
-
-**A**: No, Trakt is optional. The addon works for streaming without Trakt, but you'll miss sync features like watchlists, watch history, and progress tracking.
-
-### Q: Can I use multiple AIOStreams backends?
-
-**A**: No, currently only one backend URL can be configured. You can change it in settings.
-
-### Q: Does this addon host or provide content?
-
-**A**: No, the addon only connects to your AIOStreams backend. You must configure your own backend with scrapers.
-
-### Q: Is this legal?
-
-**A**: The addon itself is legal software. Legality of streamed content depends on your jurisdiction and content sources. Users are responsible for compliance with local laws.
-
-### Q: Why aren't automatic updates working?
-
-**A**: Automatic updates only work if installed via repository. Manual zip installation requires manual updates.
-
-### Q: Can I use this on FireStick/Android TV?
-
-**A**: Yes, works on any device that runs Kodi 19+.
-
-### Q: How do I backup my settings?
-
-**A**: Backup the entire addon_data folder:
-- `userdata/addon_data/plugin.video.aiostreams/`
-- Includes settings, database, and statistics
-
-### Q: Can I use this with Real-Debrid or Premiumize?
-
-**A**: If your AIOStreams backend is configured with RD/PM scrapers, yes. Configure in AIOStreams, not the addon.
-
----
-
-**Installation Guide Version**: 3.5.4
-**Last Updated**: 2026-01-08
-**Addon Version**: 3.5.4 or later
