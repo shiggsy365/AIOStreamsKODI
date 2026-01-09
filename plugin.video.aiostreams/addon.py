@@ -1195,10 +1195,9 @@ def play():
                 clearlogo = meta.get('logo', '')
             xbmc.log(f'[AIOStreams] play() fetched metadata: poster={bool(poster)}, fanart={bool(fanart)}, clearlogo={bool(clearlogo)}', xbmc.LOGINFO)
 
-    # Cancel Kodi's loading state immediately - we'll handle our own progress display
-    xbmcplugin.setResolvedUrl(HANDLE, False, xbmcgui.ListItem())
-
     # Show progress dialog while scraping streams
+    # Note: We don't call setResolvedUrl here because we use xbmc.Player().play() directly
+    # Calling setResolvedUrl(False) would cause a "Playback Failed" notification
     progress = xbmcgui.DialogProgress()
     progress.create('AIOStreams', 'Scraping streams...')
     progress.update(0)
@@ -1264,7 +1263,7 @@ def play():
         progress.update(100, 'Starting playback...')
         progress.close()
 
-        # Use xbmc.Player().play() for playback since we already cancelled setResolvedUrl
+        # Use xbmc.Player().play() for direct playback
         xbmc.Player().play(stream_url, list_item)
 
     except Exception as e:
@@ -1289,10 +1288,9 @@ def play_first():
         episode = params.get('episode')
         media_id = f"{imdb_id}:{season}:{episode}"
 
-    # Cancel Kodi's loading state immediately - we'll handle our own progress display
-    xbmcplugin.setResolvedUrl(HANDLE, False, xbmcgui.ListItem())
-
     # Show progress dialog while scraping streams
+    # Note: We don't call setResolvedUrl here because we use xbmc.Player().play() directly
+    # Calling setResolvedUrl(False) would cause a "Playback Failed" notification
     progress = xbmcgui.DialogProgress()
     progress.create('AIOStreams', 'Scraping streams...')
     progress.update(0)
@@ -1348,7 +1346,7 @@ def play_first():
         progress.update(100, 'Starting playback...')
         progress.close()
 
-        # Use xbmc.Player().play() for playback since we already cancelled setResolvedUrl
+        # Use xbmc.Player().play() for direct playback
         xbmc.Player().play(stream_url, list_item)
 
     except Exception as e:
