@@ -10,4 +10,4 @@ jobs:
         with:
           filePath: .github/repo/plugin.video.aiostreams/plugin.video.aiostreams-3.5.19.zip
           saveFile: .github/repo/plugin.video.aiostreams/plugin.video.aiostreams-3.5.19.zip.md5
-          algorithm: MD5
+          
