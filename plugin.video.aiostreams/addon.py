@@ -1460,27 +1460,32 @@ def select_stream():
     # MUST be done before any API calls or dialog shows
     xbmcplugin.setResolvedUrl(HANDLE, False, xbmcgui.ListItem())
 
-    # If metadata not provided in params (common with TMDBHelper), fetch it from API
-    if not poster or not fanart or not clearlogo:
-        xbmc.log(f'[AIOStreams] select_stream() fetching metadata for {imdb_id} (poster={bool(poster)}, fanart={bool(fanart)}, clearlogo={bool(clearlogo)})', xbmc.LOGINFO)
-        meta_data = get_meta(content_type, imdb_id)
-        if meta_data and 'meta' in meta_data:
-            meta = meta_data['meta']
-            if not poster:
-                poster = meta.get('poster', '')
-            if not fanart:
-                fanart = meta.get('background', '')
-            if not clearlogo:
-                clearlogo = meta.get('logo', '')
-            if not title:
-                title = meta.get('name', '')
-            xbmc.log(f'[AIOStreams] select_stream() fetched metadata: poster={bool(poster)}, fanart={bool(fanart)}, clearlogo={bool(clearlogo)})', xbmc.LOGINFO)
-
-    # Show progress dialog while scraping streams
+    # Show progress dialog immediately to replace Kodi's error notification
+    # This prevents modal dialog conflicts
     progress = xbmcgui.DialogProgress()
-    progress.create('AIOStreams', 'Scraping streams...')
+    progress.create('AIOStreams', 'Fetching metadata...')
+    progress.update(0)
 
     try:
+        # If metadata not provided in params (common with TMDBHelper), fetch it from API
+        if not poster or not fanart or not clearlogo:
+            xbmc.log(f'[AIOStreams] select_stream() fetching metadata for {imdb_id} (poster={bool(poster)}, fanart={bool(fanart)}, clearlogo={bool(clearlogo)})', xbmc.LOGINFO)
+            meta_data = get_meta(content_type, imdb_id)
+            if meta_data and 'meta' in meta_data:
+                meta = meta_data['meta']
+                if not poster:
+                    poster = meta.get('poster', '')
+                if not fanart:
+                    fanart = meta.get('background', '')
+                if not clearlogo:
+                    clearlogo = meta.get('logo', '')
+                if not title:
+                    title = meta.get('name', '')
+                xbmc.log(f'[AIOStreams] select_stream() fetched metadata: poster={bool(poster)}, fanart={bool(fanart)}, clearlogo={bool(clearlogo)})', xbmc.LOGINFO)
+
+        # Update progress for stream fetching
+        progress.update(50, 'Scraping streams...')
+
         # Fetch streams
         stream_data = get_streams(content_type, media_id)
     finally:
