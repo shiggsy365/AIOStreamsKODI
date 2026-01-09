@@ -30,11 +30,11 @@
             <colordiffuse>CCFFFFFF</colordiffuse>
         </control>
 
-        <!-- 2. THE STREAM LIST (Refined with specific backgrounds and smaller fonts) -->
+        <!-- 2. THE STREAM LIST -->
         <control type="list" id="5000">
             <left>60</left>
             <top>220</top>
-            <width>1300</width>
+            <width>1250</width>
             <height>820</height>
             <onleft>5000</onleft>
             <onright>5000</onright>
@@ -45,15 +45,15 @@
             <focusposition>0</focusposition>
             <orientation>vertical</orientation>
             
-            <itemlayout height="165" width="1300">
+            <itemlayout height="165" width="1250">
                 <!-- DARK GREY Right Background -->
                 <control type="image">
                     <left>260</left>
                     <top>5</top>
-                    <width>1020</width>
+                    <width>980</width>
                     <height>150</height>
-                    <texture border="5">button-nofocus.png</texture>
-                    <colordiffuse>FF222222</colordiffuse>
+                    <texture>white.png</texture>
+                    <colordiffuse>ff1a1a1a</colordiffuse>
                 </control>
 
                 <!-- DARK RED Left Background -->
@@ -62,8 +62,8 @@
                     <top>5</top>
                     <width>250</width>
                     <height>150</height>
-                    <texture border="5">button-nofocus.png</texture>
-                    <colordiffuse>FF660000</colordiffuse>
+                    <texture>white.png</texture>
+                    <colordiffuse>ff4d0000</colordiffuse>
                 </control>
                 
                 <!-- RED BOX CONTENT (Left) -->
@@ -96,31 +96,28 @@
                     </control>
                 </control>
 
-                <!-- GREY BOX CONTENT (Right - Removed Resolution/Service duplicates) -->
+                <!-- GREY BOX CONTENT (Right) -->
                 <control type="group">
                     <left>280</left>
                     <top>15</top>
-                    <!-- Row 1: Smaller font (font11) -->
                     <control type="label">
-                        <width>980</width>
+                        <width>950</width>
                         <height>40</height>
                         <font>font11</font>
                         <textcolor>grey2</textcolor>
                         <label>[COLOR white]SIZE:[/COLOR] $INFO[ListItem.Property(size)]  •  [COLOR white]PROXIED:[/COLOR] $INFO[ListItem.Property(proxied)]  •  [COLOR white]CACHED:[/COLOR] $INFO[ListItem.Property(cached)]  •  [COLOR white]IN LIBRARY:[/COLOR] $INFO[ListItem.Property(library)]  •  [COLOR white]DURATION:[/COLOR] $INFO[ListItem.Property(duration)]</label>
                     </control>
-                    <!-- Row 2 -->
                     <control type="label">
                         <top>40</top>
-                        <width>980</width>
+                        <width>950</width>
                         <height>40</height>
                         <font>font11</font>
                         <textcolor>grey2</textcolor>
                         <label>[COLOR white]VIDEO:[/COLOR] $INFO[ListItem.Property(video)]  •  [COLOR white]AUDIO:[/COLOR] $INFO[ListItem.Property(audio)]</label>
                     </control>
-                    <!-- Row 3 -->
                     <control type="label">
                         <top>80</top>
-                        <width>980</width>
+                        <width>950</width>
                         <height>40</height>
                         <font>font11</font>
                         <textcolor>grey2</textcolor>
@@ -129,15 +126,15 @@
                 </control>
             </itemlayout>
 
-            <focusedlayout height="165" width="1300">
+            <focusedlayout height="165" width="1250">
                 <!-- LIGHTER GREY Right Background -->
                 <control type="image">
                     <left>260</left>
                     <top>5</top>
-                    <width>1020</width>
+                    <width>980</width>
                     <height>150</height>
-                    <texture border="5">button-focus.png</texture>
-                    <colordiffuse>FF444444</colordiffuse>
+                    <texture>white.png</texture>
+                    <colordiffuse>ff333333</colordiffuse>
                 </control>
 
                 <!-- LIGHTER RED Left Background -->
@@ -146,10 +143,11 @@
                     <top>5</top>
                     <width>250</width>
                     <height>150</height>
-                    <texture border="5">button-focus.png</texture>
-                    <colordiffuse>FF990000</colordiffuse>
+                    <texture>white.png</texture>
+                    <colordiffuse>ff800000</colordiffuse>
                 </control>
                 
+                <!-- RED BOX CONTENT (Left) -->
                 <control type="group">
                     <left>0</left>
                     <top>5</top>
@@ -182,11 +180,12 @@
                     </control>
                 </control>
 
+                <!-- GREY BOX CONTENT (Right) -->
                 <control type="group">
                     <left>280</left>
                     <top>15</top>
                     <control type="label">
-                        <width>980</width>
+                        <width>950</width>
                         <height>40</height>
                         <font>font11</font>
                         <textcolor>white</textcolor>
@@ -194,7 +193,7 @@
                     </control>
                     <control type="label">
                         <top>40</top>
-                        <width>980</width>
+                        <width>950</width>
                         <height>40</height>
                         <font>font11</font>
                         <textcolor>white</textcolor>
@@ -202,7 +201,7 @@
                     </control>
                     <control type="label">
                         <top>80</top>
-                        <width>980</width>
+                        <width>950</width>
                         <height>40</height>
                         <font>font11</font>
                         <textcolor>white</textcolor>
@@ -213,13 +212,13 @@
             </focusedlayout>
         </control>
 
-        <!-- 3. POSTER GROUP (Pulled in further right) -->
+        <!-- 3. POSTER GROUP -->
         <control type="group">
-            <left>1380</left>
+            <left>1320</left>
             <top>225</top>
             <control type="image">
-                <width>480</width>
-                <height>680</height>
+                <width>540</width>
+                <height>780</height>
                 <aspectratio>keep</aspectratio>
                 <texture background="true">$VAR[PosterTextureVar]</texture>
                 <bordertexture border="20">Thumbnail_Shadow.png</bordertexture>
@@ -238,12 +237,12 @@
 
         <!-- 5. SCROLLBAR -->
         <control type="scrollbar" id="60">
-            <left>1345</left>
+            <left>1295</left>
             <top>220</top>
             <width>12</width>
             <height>820</height>
-            <texturesliderbackground border="0,2,0,2">ScrollBarV.png</texturesliderbackground>
-            <texturesliderbar border="0,2,0,2">ScrollBarV_Focus.png</texturesliderbar>
+            <texturesliderbackground>ScrollBarV.png</texturesliderbackground>
+            <texturesliderbar>ScrollBarV_Focus.png</texturesliderbar>
             <onleft>5000</onleft>
             <onright>5000</onright>
             <showonepage>false</showonepage>
