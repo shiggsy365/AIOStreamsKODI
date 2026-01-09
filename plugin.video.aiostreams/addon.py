@@ -840,7 +840,11 @@ def search():
             is_folder = True
         else:
             # For movies, make them playable directly
-            url = get_url(action='play', content_type='movie', imdb_id=item_id)
+            title = meta.get('name', 'Unknown')
+            poster = meta.get('poster', '')
+            fanart = meta.get('background', '')
+            clearlogo = meta.get('logo', '')
+            url = get_url(action='play', content_type='movie', imdb_id=item_id, title=title, poster=poster, fanart=fanart, clearlogo=clearlogo)
             is_folder = False
 
         list_item = create_listitem_with_context(meta, content_type, url)
@@ -936,7 +940,11 @@ def search_by_tab(query, content_type):
             url = get_url(action='show_seasons', meta_id=item_id)
             is_folder = True
         else:
-            url = get_url(action='play', content_type='movie', imdb_id=item_id)
+            title = meta.get('name', 'Unknown')
+            poster = meta.get('poster', '')
+            fanart = meta.get('background', '')
+            clearlogo = meta.get('logo', '')
+            url = get_url(action='play', content_type='movie', imdb_id=item_id, title=title, poster=poster, fanart=fanart, clearlogo=clearlogo)
             is_folder = False
 
         list_item = create_listitem_with_context(meta, content_type, url)
@@ -1013,7 +1021,11 @@ def search_all_results(query):
         # Add results directly without header
         for meta in movies[:10]:
             item_id = meta.get('id')
-            url = get_url(action='play', content_type='movie', imdb_id=item_id)
+            title = meta.get('name', 'Unknown')
+            poster = meta.get('poster', '')
+            fanart = meta.get('background', '')
+            clearlogo = meta.get('logo', '')
+            url = get_url(action='play', content_type='movie', imdb_id=item_id, title=title, poster=poster, fanart=fanart, clearlogo=clearlogo)
             list_item = create_listitem_with_context(meta, 'movie', url)
             list_item.setProperty('IsPlayable', 'true')
             xbmcplugin.addDirectoryItem(HANDLE, url, list_item, False)
@@ -1094,7 +1106,11 @@ def search_unified():
         # Add movie results (limit to 10)
         for meta in movies[:10]:
             item_id = meta.get('id')
-            url = get_url(action='play', content_type='movie', imdb_id=item_id)
+            title = meta.get('name', 'Unknown')
+            poster = meta.get('poster', '')
+            fanart = meta.get('background', '')
+            clearlogo = meta.get('logo', '')
+            url = get_url(action='play', content_type='movie', imdb_id=item_id, title=title, poster=poster, fanart=fanart, clearlogo=clearlogo)
             list_item = create_listitem_with_context(meta, 'movie', url)
             list_item.setProperty('IsPlayable', 'true')
             xbmcplugin.addDirectoryItem(HANDLE, url, list_item, False)
@@ -1146,6 +1162,11 @@ def play():
     content_type = params['content_type']
     imdb_id = params['imdb_id']
 
+    # Extract metadata for stream dialog
+    poster = params.get('poster', '')
+    fanart = params.get('fanart', '')
+    clearlogo = params.get('clearlogo', '')
+
     # Format media ID for AIOStreams API
     if content_type == 'movie':
         media_id = imdb_id
@@ -1184,7 +1205,7 @@ def play():
         if default_behavior == 'show_streams':
             progress.update(100)
             progress.close()
-            show_streams_dialog(content_type, media_id, stream_data, title, from_playable=True)
+            show_streams_dialog(content_type, media_id, stream_data, title, poster, fanart, clearlogo, from_playable=True)
             return
 
         # Otherwise, auto-play first stream
@@ -1436,6 +1457,28 @@ def select_stream():
         xbmcgui.Dialog().notification('AIOStreams', 'No streams available', xbmcgui.NOTIFICATION_ERROR)
         return
 
+    # Use stream manager for enhanced display (same as show_streams_dialog)
+    if HAS_MODULES:
+        stream_mgr = streams.get_stream_manager()
+
+        # Filter streams by quality
+        filtered_streams = stream_mgr.filter_by_quality(stream_data['streams'])
+
+        # Sort streams by reliability and quality
+        sorted_streams = stream_mgr.sort_streams(filtered_streams)
+
+        # Limit number of streams
+        max_streams = settings_helpers.get_max_streams()
+        sorted_streams = sorted_streams[:max_streams]
+
+        # Update stream_data with sorted streams
+        stream_data['streams'] = sorted_streams
+
+    # Check if we have any streams after filtering
+    if not stream_data['streams']:
+        xbmcgui.Dialog().notification('AIOStreams', 'No streams match your quality preferences', xbmcgui.NOTIFICATION_ERROR)
+        return
+
     # Use custom multi-line dialog with emoji support
     xbmc.log(f'[AIOStreams] Showing stream selection dialog with {len(stream_data["streams"])} streams', xbmc.LOGDEBUG)
 
@@ -1474,6 +1517,10 @@ def select_stream():
 
     if selected < 0:
         return
+
+    # Record selection for learning
+    if HAS_MODULES:
+        stream_mgr.record_stream_selection(stream_data['streams'][selected].get('name', ''))
 
     # Get selected stream
     stream = stream_data['streams'][selected]
@@ -1695,7 +1742,11 @@ def browse_catalog():
             url = get_url(action='show_seasons', meta_id=item_id)
             is_folder = True
         else:
-            url = get_url(action='play', content_type='movie', imdb_id=item_id)
+            title = meta.get('name', 'Unknown')
+            poster = meta.get('poster', '')
+            fanart = meta.get('background', '')
+            clearlogo = meta.get('logo', '')
+            url = get_url(action='play', content_type='movie', imdb_id=item_id, title=title, poster=poster, fanart=fanart, clearlogo=clearlogo)
             is_folder = False
 
         list_item = create_listitem_with_context(meta, content_type, url)
@@ -2200,7 +2251,7 @@ def show_episodes():
         list_item.addContextMenuItems(context_menu)
 
         # Make episodes directly playable
-        url = get_url(action='play', content_type='series', imdb_id=meta_id, season=season, episode=episode_num)
+        url = get_url(action='play', content_type='series', imdb_id=meta_id, season=season, episode=episode_num, title=episode_title, poster=episode_poster, fanart=episode_fanart, clearlogo=episode_clearlogo)
         list_item.setProperty('IsPlayable', 'true')
         xbmcplugin.addDirectoryItem(HANDLE, url, list_item, False)
     
@@ -2369,7 +2420,11 @@ def trakt_watchlist():
             url = get_url(action='show_seasons', meta_id=item_id)
             is_folder = True
         else:
-            url = get_url(action='play', content_type='movie', imdb_id=item_id)
+            title = meta.get('name', 'Unknown')
+            poster = meta.get('poster', '')
+            fanart = meta.get('background', '')
+            clearlogo = meta.get('logo', '')
+            url = get_url(action='play', content_type='movie', imdb_id=item_id, title=title, poster=poster, fanart=fanart, clearlogo=clearlogo)
             is_folder = False
 
         list_item = create_listitem_with_context(meta, content_type, url)
@@ -2491,12 +2546,16 @@ def trakt_collection():
                     meta['app_extras'] = cached_data.get('app_extras', {})
                     if not meta['description']:
                         meta['description'] = cached_data.get('description', '')
-        
+
         if content_type == 'series':
             url = get_url(action='show_seasons', meta_id=item_id)
             is_folder = True
         else:
-            url = get_url(action='play', content_type='movie', imdb_id=item_id)
+            title = meta.get('name', 'Unknown')
+            poster = meta.get('poster', '')
+            fanart = meta.get('background', '')
+            clearlogo = meta.get('logo', '')
+            url = get_url(action='play', content_type='movie', imdb_id=item_id, title=title, poster=poster, fanart=fanart, clearlogo=clearlogo)
             is_folder = False
 
         list_item = create_listitem_with_context(meta, content_type, url)
@@ -2649,7 +2708,7 @@ def trakt_next_up():
 
         # Make episodes directly playable
         if show_imdb:
-            url = get_url(action='play', content_type='series', imdb_id=show_imdb, season=season, episode=episode)
+            url = get_url(action='play', content_type='series', imdb_id=show_imdb, season=season, episode=episode, title=episode_title_str, poster=poster, fanart=fanart, clearlogo=logo)
             list_item.setProperty('IsPlayable', 'true')
             xbmcplugin.addDirectoryItem(HANDLE, url, list_item, False)
 
@@ -2718,7 +2777,11 @@ def show_related():
             url = get_url(action='show_seasons', meta_id=item_id)
             is_folder = True
         else:
-            url = get_url(action='play', content_type='movie', imdb_id=item_id, title=meta.get('name', 'Unknown'))
+            title = meta.get('name', 'Unknown')
+            poster = meta.get('poster', '')
+            fanart = meta.get('background', '')
+            clearlogo = meta.get('logo', '')
+            url = get_url(action='play', content_type='movie', imdb_id=item_id, title=title, poster=poster, fanart=fanart, clearlogo=clearlogo)
             is_folder = False
 
         list_item = create_listitem_with_context(meta, item_content_type, url)
@@ -3560,7 +3623,11 @@ def handle_search_tab(params):
                     url = get_url(action='show_seasons', meta_id=item_id)
                     is_folder = True
                 else:
-                    url = get_url(action='play', content_type='movie', imdb_id=item_id)
+                    title = meta.get('name', 'Unknown')
+                    poster = meta.get('poster', '')
+                    fanart = meta.get('background', '')
+                    clearlogo = meta.get('logo', '')
+                    url = get_url(action='play', content_type='movie', imdb_id=item_id, title=title, poster=poster, fanart=fanart, clearlogo=clearlogo)
                     is_folder = False
                 list_item = create_listitem_with_context(meta, content_type, url)
 
