@@ -291,10 +291,53 @@ def get_subtitles(content_type, media_id):
     return make_request(url, 'Subtitle error')
 
 
+def get_subtitle_language_filter():
+    """Get the user's subtitle language filter preferences."""
+    filter_setting = get_setting('subtitle_languages', '')
+    if not filter_setting or not filter_setting.strip():
+        return None
+
+    # Split by comma and normalize to 3-letter codes
+    langs = [lang.strip().lower() for lang in filter_setting.split(',') if lang.strip()]
+
+    # Normalize all to 3-letter codes
+    normalized_langs = []
+    for lang in langs:
+        normalized = normalize_language_to_3letter(lang)
+        if normalized and normalized != 'unk':
+            normalized_langs.append(normalized)
+
+    return normalized_langs if normalized_langs else None
+
+
+def filter_subtitles_by_language(subtitles):
+    """Filter subtitles based on user's language preferences."""
+    language_filter = get_subtitle_language_filter()
+
+    # If no filter is set, return all subtitles
+    if not language_filter:
+        return subtitles
+
+    filtered = []
+    for subtitle in subtitles:
+        lang = subtitle.get('lang', '').lower().strip()
+        # Normalize the subtitle language to 3-letter code
+        normalized_lang = normalize_language_to_3letter(lang)
+
+        # Include if it matches any of the filter languages
+        if normalized_lang in language_filter:
+            filtered.append(subtitle)
+            xbmc.log(f'[AIOStreams] Including subtitle: {normalized_lang} (matches filter)', xbmc.LOGDEBUG)
+        else:
+            xbmc.log(f'[AIOStreams] Filtering out subtitle: {normalized_lang}', xbmc.LOGDEBUG)
+
+    return filtered
+
+
 def download_subtitle_with_language(subtitle_url, language, media_id):
     """
-    Download subtitle to local cache with language-coded filename.
-    This allows Kodi to properly display subtitle language names.
+    Download subtitle to local cache with AIOStreams branding.
+    This creates subtitles named "AIOStreams - LANG" for display in Kodi.
     """
     import os
     import hashlib
@@ -311,8 +354,8 @@ def download_subtitle_with_language(subtitle_url, language, media_id):
         # Use hash to avoid filesystem issues with special characters
         media_hash = hashlib.md5(media_id.encode()).hexdigest()[:8]
 
-        # Normalize language code (e.g., "English" -> "en", "Spanish" -> "es")
-        lang_code = normalize_language_code(language)
+        # Normalize language code to 3-letter format
+        lang_code = normalize_language_to_3letter(language)
 
         # Determine subtitle extension from URL or default to .srt
         if subtitle_url.endswith('.vtt'):
@@ -320,7 +363,8 @@ def download_subtitle_with_language(subtitle_url, language, media_id):
         else:
             ext = '.srt'
 
-        subtitle_filename = f"{media_hash}.{lang_code}{ext}"
+        # Format: "AIOStreams - eng.srt" displays as "AIOStreams - eng" in Kodi
+        subtitle_filename = f"{media_hash}.AIOStreams - {lang_code}{ext}"
         subtitle_path = os.path.join(subtitle_cache_dir, subtitle_filename)
 
         # Download subtitle content
@@ -332,13 +376,50 @@ def download_subtitle_with_language(subtitle_url, language, media_id):
         with open(subtitle_path, 'wb') as f:
             f.write(response.content)
 
-        xbmc.log(f'[AIOStreams] Downloaded subtitle [{lang_code}] to: {subtitle_path}', xbmc.LOGINFO)
+        xbmc.log(f'[AIOStreams] Downloaded subtitle [AIOStreams - {lang_code}] to: {subtitle_path}', xbmc.LOGINFO)
         return subtitle_path
 
     except Exception as e:
         xbmc.log(f'[AIOStreams] Error downloading subtitle: {e}', xbmc.LOGERROR)
         # Fall back to original URL
         return subtitle_url
+
+
+def normalize_language_to_3letter(language):
+    """Convert language code to ISO 639-2 (3-letter) format."""
+    # Common language mappings to 3-letter codes
+    lang_map_3 = {
+        # 3-letter codes (already normalized)
+        'eng': 'eng', 'spa': 'spa', 'fre': 'fre', 'fra': 'fra', 'ger': 'ger', 'deu': 'deu',
+        'ita': 'ita', 'por': 'por', 'rus': 'rus', 'chi': 'chi', 'zho': 'zho',
+        'jpn': 'jpn', 'kor': 'kor', 'ara': 'ara', 'hin': 'hin', 'dut': 'dut', 'nld': 'nld',
+        'pol': 'pol', 'tur': 'tur', 'swe': 'swe', 'dan': 'dan', 'nor': 'nor',
+        'fin': 'fin', 'cze': 'cze', 'ces': 'ces', 'gre': 'gre', 'ell': 'ell',
+        'heb': 'heb', 'tha': 'tha', 'vie': 'vie',
+        # 2-letter to 3-letter conversions
+        'en': 'eng', 'es': 'spa', 'fr': 'fra', 'de': 'deu', 'it': 'ita',
+        'pt': 'por', 'ru': 'rus', 'zh': 'zho', 'ja': 'jpn', 'ko': 'kor',
+        'ar': 'ara', 'hi': 'hin', 'nl': 'nld', 'pl': 'pol', 'tr': 'tur',
+        'sv': 'swe', 'da': 'dan', 'no': 'nor', 'fi': 'fin', 'cs': 'ces',
+        'el': 'ell', 'he': 'heb', 'th': 'tha', 'vi': 'vie',
+        # Full language names to 3-letter
+        'english': 'eng', 'spanish': 'spa', 'french': 'fra', 'german': 'deu',
+        'italian': 'ita', 'portuguese': 'por', 'russian': 'rus', 'chinese': 'zho',
+        'japanese': 'jpn', 'korean': 'kor', 'arabic': 'ara', 'hindi': 'hin',
+        'dutch': 'nld', 'polish': 'pol', 'turkish': 'tur', 'swedish': 'swe',
+        'danish': 'dan', 'norwegian': 'nor', 'finnish': 'fin', 'czech': 'ces',
+        'greek': 'ell', 'hebrew': 'heb', 'thai': 'tha', 'vietnamese': 'vie',
+    }
+
+    # Try to get language code
+    lang_lower = language.lower().strip()
+
+    # If it's already a 3-letter code, return as-is if valid
+    if len(lang_lower) == 3 and lang_lower in lang_map_3:
+        return lang_map_3[lang_lower]
+
+    # Try to find in mapping
+    return lang_map_3.get(lang_lower, lang_lower[:3] if len(lang_lower) >= 3 else 'unk')
 
 
 def normalize_language_code(language):
@@ -1241,8 +1322,11 @@ def play():
         progress.update(90, 'Loading subtitles...')
         subtitle_data = get_subtitles(content_type, media_id)
         if subtitle_data and 'subtitles' in subtitle_data:
+            # Filter subtitles by user's language preferences
+            filtered_subtitles = filter_subtitles_by_language(subtitle_data['subtitles'])
+
             subtitle_paths = []
-            for subtitle in subtitle_data['subtitles']:
+            for subtitle in filtered_subtitles:
                 sub_url = subtitle.get('url')
                 if sub_url:
                     # Download subtitle with language-coded filename for proper Kodi display
@@ -1324,8 +1408,11 @@ def play_first():
         progress.update(90, 'Loading subtitles...')
         subtitle_data = get_subtitles(content_type, media_id)
         if subtitle_data and 'subtitles' in subtitle_data:
+            # Filter subtitles by user's language preferences
+            filtered_subtitles = filter_subtitles_by_language(subtitle_data['subtitles'])
+
             subtitle_paths = []
-            for subtitle in subtitle_data['subtitles']:
+            for subtitle in filtered_subtitles:
                 sub_url = subtitle.get('url')
                 if sub_url:
                     # Download subtitle with language-coded filename for proper Kodi display
@@ -1573,8 +1660,11 @@ def select_stream():
     # Add subtitles if available
     subtitle_data = get_subtitles(content_type, media_id)
     if subtitle_data and 'subtitles' in subtitle_data:
+        # Filter subtitles by user's language preferences
+        filtered_subtitles = filter_subtitles_by_language(subtitle_data['subtitles'])
+
         subtitle_paths = []
-        for subtitle in subtitle_data['subtitles']:
+        for subtitle in filtered_subtitles:
             sub_url = subtitle.get('url')
             if sub_url:
                 # Download subtitle with language-coded filename for proper Kodi display
@@ -1959,15 +2049,21 @@ def play_stream_by_index(content_type, media_id, stream_data, index, use_player=
     # Add subtitles if available
     subtitle_data = get_subtitles(content_type, media_id)
     if subtitle_data and 'subtitles' in subtitle_data:
-        subtitle_urls = []
-        for subtitle in subtitle_data['subtitles']:
+        # Filter subtitles by user's language preferences
+        filtered_subtitles = filter_subtitles_by_language(subtitle_data['subtitles'])
+
+        subtitle_paths = []
+        for subtitle in filtered_subtitles:
             sub_url = subtitle.get('url')
             if sub_url:
-                subtitle_urls.append(sub_url)
-                xbmc.log(f'[AIOStreams] Added subtitle: {subtitle.get("lang", "unknown")} - {sub_url}', xbmc.LOGINFO)
+                # Download subtitle with language-coded filename for proper Kodi display
+                lang = subtitle.get('lang', 'unknown')
+                sub_path = download_subtitle_with_language(sub_url, lang, media_id)
+                subtitle_paths.append(sub_path)
+                xbmc.log(f'[AIOStreams] Added subtitle [{lang}]: {sub_path}', xbmc.LOGINFO)
 
-        if subtitle_urls:
-            list_item.setSubtitles(subtitle_urls)
+        if subtitle_paths:
+            list_item.setSubtitles(subtitle_paths)
 
     # Set media info for scrobbling
     if HAS_MODULES and PLAYER:
