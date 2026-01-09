@@ -16,10 +16,12 @@ Write-Host "Updating XML files..." -ForegroundColor Cyan
 (Get-Content $addonXmlPath) -replace $OldRefEscaped, $NEWREF | Set-Content $addonXmlPath
 (Get-Content $repoXmlPath)  -replace $OldRefEscaped, $NEWREF | Set-Content $repoXmlPath
 
-# 3. Create the ZIP file
-Write-Host "Creating zip: plugin.video.aiostreams-$NEWREF.zip" -ForegroundColor Cyan
-if (Test-Path $zipPath) { Remove-Item $zipPath -Force } # Remove existing zip if it exists
-Compress-Archive -Path $sourceDir -DestinationPath $zipPath
+# 3. Create the ZIP file (Using .NET for better compatibility)
+Write-Host "Creating zip via .NET..." -ForegroundColor Cyan
+if (Test-Path $zipPath) { Remove-Item $zipPath -Force }
+
+Add-Type -AssemblyName System.IO.Compression.FileSystem
+[System.IO.Compression.ZipFile]::CreateFromDirectory($sourceDir, $zipPath, [System.IO.Compression.CompressionLevel]::Optimal, $true)
 
 # 4. Generate MD5 Hashes
 Write-Host "Generating MD5 hashes..." -ForegroundColor Cyan
