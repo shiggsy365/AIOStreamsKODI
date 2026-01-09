@@ -2,47 +2,26 @@
 <window>
     <defaultcontrol always="true">5000</defaultcontrol>
     <controls>
-        <!-- Static Background (Prevents black screen while loading) -->
+        <!-- 1. BACKGROUND LAYER -->
         <control type="image">
-            <left>0</left>
-            <top>0</top>
-            <width>1920</width>
-            <height>1080</height>
+            <include>FullScreenDimensions</include>
             <texture>black-back.png</texture>
         </control>
 
-        <!-- Background Fanart -->
         <control type="image">
-            <left>0</left>
-            <top>0</top>
-            <width>1920</width>
-            <height>1080</height>
+            <include>FullScreenDimensions</include>
             <aspectratio>scale</aspectratio>
             <texture>$INFO[Container(5000).ListItem.Property(fanart)]</texture>
             <fadetime>400</fadetime>
         </control>
 
-        <!-- Dark Overlay -->
         <control type="image">
-            <left>0</left>
-            <top>0</top>
-            <width>1920</width>
-            <height>1080</height>
+            <include>FullScreenDimensions</include>
             <texture>black-back.png</texture>
             <colordiffuse>CCFFFFFF</colordiffuse>
         </control>
 
-        <!-- Clearlogo in Top Left -->
-        <control type="image">
-            <left>80</left>
-            <top>40</top>
-            <width>450</width>
-            <height>180</height>
-            <aspectratio align="left">keep</aspectratio>
-            <texture>$INFO[Container(5000).ListItem.Property(clearlogo)]</texture>
-        </control>
-
-        <!-- Main Stream List -->
+        <!-- 2. STREAM LIST (The "Narrow Boxes") -->
         <control type="list" id="5000">
             <left>80</left>
             <top>250</top>
@@ -54,20 +33,18 @@
             <ondown>5000</ondown>
             <pagecontrol>60</pagecontrol>
             <scrolltime tween="quadratic" easing="out">200</scrolltime>
-            <!-- Ensure the list is focusable -->
-            <visible>true</visible>
             
-            <itemlayout height="100" width="1100">
+            <itemlayout height="110" width="1100">
+                <!-- This draws the 'Box' background -->
                 <control type="image">
                     <width>1080</width>
-                    <height>90</height>
+                    <height>100</height>
                     <texture border="10">button-nofocus.png</texture>
                 </control>
                 <control type="label">
                     <left>30</left>
-                    <top>0</top>
                     <width>1000</width>
-                    <height>90</height>
+                    <height>100</height>
                     <font>font14</font>
                     <textcolor>white</textcolor>
                     <aligny>center</aligny>
@@ -75,18 +52,18 @@
                 </control>
             </itemlayout>
 
-            <focusedlayout height="100" width="1100">
+            <focusedlayout height="110" width="1100">
+                <!-- This draws the 'Focused Box' background -->
                 <control type="image">
                     <width>1080</width>
-                    <height>90</height>
+                    <height>100</height>
                     <texture border="10">button-focus.png</texture>
-                    <visible>Control.HasFocus(5000)</visible>
+                    <animation effect="fade" start="100" end="70" time="200" condition="!Control.HasFocus(5000)">Conditional</animation>
                 </control>
                 <control type="label">
                     <left>30</left>
-                    <top>0</top>
                     <width>1000</width>
-                    <height>90</height>
+                    <height>100</height>
                     <font>font14</font>
                     <textcolor>white</textcolor>
                     <aligny>center</aligny>
@@ -96,36 +73,46 @@
             </focusedlayout>
         </control>
 
-        <!-- SIDE POSTER DISPLAY -->
+        <!-- 3. SIDE POSTER (The Yellow Box Area) -->
         <control type="group">
-            <left>1250</left>
+            <left>1220</left>
             <top>250</top>
             <control type="image">
-                <width>550</width>
+                <width>600</width>
                 <height>750</height>
                 <aspectratio>keep</aspectratio>
                 <texture background="true">$INFO[Container(5000).ListItem.Icon]</texture>
                 <fadetime>300</fadetime>
+                <!-- Using the shadow texture from your original setup -->
                 <bordertexture border="20">Thumbnail_Shadow.png</bordertexture>
             </control>
             
-            <!-- Context Info -->
             <control type="label">
-                <top>760</top>
-                <width>550</width>
+                <top>770</top>
+                <width>600</width>
                 <height>40</height>
-                <font>font12</font>
+                <font>font13</font>
                 <align>center</align>
                 <textcolor>grey2</textcolor>
                 <label>$INFO[Container(5000).ListItem.Property(Debrid)] • $INFO[Container(5000).ListItem.Property(Resolution)] • $INFO[Container(5000).ListItem.Property(Size)]</label>
             </control>
         </control>
 
-        <!-- Scrollbar -->
+        <!-- 4. TOP LOGO LAYER (Moved here to ensure it's on top) -->
+        <control type="image">
+            <left>80</left>
+            <top>40</top>
+            <width>500</width>
+            <height>180</height>
+            <aspectratio align="left">keep</aspectratio>
+            <texture>$INFO[Container(5000).ListItem.Property(clearlogo)]</texture>
+        </control>
+
+        <!-- 5. SCROLLBAR -->
         <control type="scrollbar" id="60">
             <left>1185</left>
             <top>250</top>
-            <width>10</width>
+            <width>12</width>
             <height>750</height>
             <texturesliderbackground border="0,2,0,2">ScrollBarV.png</texturesliderbackground>
             <texturesliderbar border="0,2,0,2">ScrollBarV_Focus.png</texturesliderbar>
