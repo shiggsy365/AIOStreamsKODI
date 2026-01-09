@@ -1206,6 +1206,14 @@ def search_unified():
 
 def play():
     """Play content - behavior depends on settings (show streams or auto-play first)."""
+    # IMPORTANT: Cancel resolver state immediately if called from resolvable context
+    # This prevents "failed to play item" errors when using xbmc.Player().play() directly
+    if HANDLE >= 0:
+        try:
+            xbmcplugin.setResolvedUrl(HANDLE, False, xbmcgui.ListItem())
+        except:
+            pass  # Not in a resolvable context, ignore
+
     params = dict(parse_qsl(sys.argv[2][1:]))
     content_type = params['content_type']
     imdb_id = params['imdb_id']
@@ -1244,7 +1252,6 @@ def play():
             xbmc.log(f'[AIOStreams] play() fetched metadata: poster={bool(poster)}, fanart={bool(fanart)}, clearlogo={bool(clearlogo)}', xbmc.LOGINFO)
 
     # Show progress dialog while scraping streams
-    # Note: We don't call setResolvedUrl here because we use xbmc.Player().play() directly
     # Calling setResolvedUrl(False) would cause a "Playback Failed" notification
     progress = xbmcgui.DialogProgress()
     progress.create('AIOStreams', 'Scraping streams...')
@@ -1326,6 +1333,15 @@ def play():
 
 def play_first():
     """Play first stream directly - ignores default_behavior setting (for TMDBHelper)."""
+    # IMPORTANT: Cancel resolver state immediately if called from resolvable context
+    # This prevents "failed to play item" errors when using xbmc.Player().play() directly
+    # We do this BEFORE any blocking operations to avoid Kodi waiting on resolver
+    if HANDLE >= 0:
+        try:
+            xbmcplugin.setResolvedUrl(HANDLE, False, xbmcgui.ListItem())
+        except:
+            pass  # Not in a resolvable context, ignore
+
     params = dict(parse_qsl(sys.argv[2][1:]))
     content_type = params['content_type']
     imdb_id = params['imdb_id']
@@ -1341,8 +1357,6 @@ def play_first():
         media_id = f"{imdb_id}:{season}:{episode}"
 
     # Show progress dialog while scraping streams
-    # Note: We don't call setResolvedUrl here because we use xbmc.Player().play() directly
-    # Calling setResolvedUrl(False) would cause a "Playback Failed" notification
     progress = xbmcgui.DialogProgress()
     progress.create('AIOStreams', 'Scraping streams...')
     progress.update(0)
