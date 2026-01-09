@@ -30,12 +30,12 @@
             <colordiffuse>CCFFFFFF</colordiffuse>
         </control>
 
-        <!-- 2. THE STREAM LIST (3-Row Metadata Layout) -->
+        <!-- 2. THE STREAM LIST (Refined with specific backgrounds and smaller fonts) -->
         <control type="list" id="5000">
-            <left>80</left>
-            <top>250</top>
-            <width>1200</width>
-            <height>780</height>
+            <left>60</left>
+            <top>220</top>
+            <width>1300</width>
+            <height>820</height>
             <onleft>5000</onleft>
             <onright>5000</onright>
             <onup>5000</onup>
@@ -45,45 +45,49 @@
             <focusposition>0</focusposition>
             <orientation>vertical</orientation>
             
-            <itemlayout height="160" width="1200">
-                <!-- Main Container Background -->
+            <itemlayout height="165" width="1300">
+                <!-- DARK GREY Right Background -->
                 <control type="image">
-                    <width>1180</width>
+                    <left>260</left>
+                    <top>5</top>
+                    <width>1020</width>
                     <height>150</height>
-                    <texture border="10">button-nofocus.png</texture>
+                    <texture border="5">button-nofocus.png</texture>
+                    <colordiffuse>FF222222</colordiffuse>
+                </control>
+
+                <!-- DARK RED Left Background -->
+                <control type="image">
+                    <left>0</left>
+                    <top>5</top>
+                    <width>250</width>
+                    <height>150</height>
+                    <texture border="5">button-nofocus.png</texture>
+                    <colordiffuse>FF660000</colordiffuse>
                 </control>
                 
-                <!-- RED BOX SECTION (Left) -->
+                <!-- RED BOX CONTENT (Left) -->
                 <control type="group">
-                    <left>10</left>
-                    <top>10</top>
-                    <control type="image">
-                        <width>250</width>
-                        <height>130</height>
-                        <texture border="5">red-box.png</texture> <!-- Ensure red-box.png exists or use a color diffuse -->
-                        <colordiffuse>AAFF0000</colordiffuse>
-                    </control>
-                    <!-- Resolution (Large) -->
+                    <left>0</left>
+                    <top>5</top>
                     <control type="label">
-                        <top>10</top>
+                        <top>15</top>
                         <width>250</width>
                         <height>50</height>
                         <font>font30_title</font>
                         <align>center</align>
                         <label>$INFO[ListItem.Property(resolution)]</label>
                     </control>
-                    <!-- Service -->
                     <control type="label">
-                        <top>60</top>
+                        <top>65</top>
                         <width>250</width>
                         <height>30</height>
                         <font>font12</font>
                         <align>center</align>
                         <label>$INFO[ListItem.Property(service)]</label>
                     </control>
-                    <!-- Addon -->
                     <control type="label">
-                        <top>90</top>
+                        <top>95</top>
                         <width>250</width>
                         <height>30</height>
                         <font>font12</font>
@@ -92,59 +96,65 @@
                     </control>
                 </control>
 
-                <!-- GREY BOX SECTION (Right - 3 Rows) -->
+                <!-- GREY BOX CONTENT (Right - Removed Resolution/Service duplicates) -->
                 <control type="group">
-                    <left>275</left>
+                    <left>280</left>
                     <top>15</top>
-                    <!-- Row 1: Size, Proxied, Cached, Library, Duration -->
+                    <!-- Row 1: Smaller font (font11) -->
                     <control type="label">
-                        <width>900</width>
+                        <width>980</width>
                         <height>40</height>
-                        <font>font13</font>
+                        <font>font11</font>
                         <textcolor>grey2</textcolor>
                         <label>[COLOR white]SIZE:[/COLOR] $INFO[ListItem.Property(size)]  •  [COLOR white]PROXIED:[/COLOR] $INFO[ListItem.Property(proxied)]  •  [COLOR white]CACHED:[/COLOR] $INFO[ListItem.Property(cached)]  •  [COLOR white]IN LIBRARY:[/COLOR] $INFO[ListItem.Property(library)]  •  [COLOR white]DURATION:[/COLOR] $INFO[ListItem.Property(duration)]</label>
                     </control>
-                    <!-- Row 2: Video, Audio -->
+                    <!-- Row 2 -->
                     <control type="label">
                         <top>40</top>
-                        <width>900</width>
+                        <width>980</width>
                         <height>40</height>
-                        <font>font13</font>
+                        <font>font11</font>
                         <textcolor>grey2</textcolor>
                         <label>[COLOR white]VIDEO:[/COLOR] $INFO[ListItem.Property(video)]  •  [COLOR white]AUDIO:[/COLOR] $INFO[ListItem.Property(audio)]</label>
                     </control>
-                    <!-- Row 3: Filename -->
+                    <!-- Row 3 -->
                     <control type="label">
                         <top>80</top>
-                        <width>880</width>
+                        <width>980</width>
                         <height>40</height>
-                        <font>font12</font>
+                        <font>font11</font>
                         <textcolor>grey2</textcolor>
                         <label>[COLOR white]FILENAME:[/COLOR] $INFO[ListItem.Label]</label>
                     </control>
                 </control>
             </itemlayout>
 
-            <!-- Focused Layout (Same structure, white text/gold highlights) -->
-            <focusedlayout height="160" width="1200">
+            <focusedlayout height="165" width="1300">
+                <!-- LIGHTER GREY Right Background -->
                 <control type="image">
-                    <width>1180</width>
+                    <left>260</left>
+                    <top>5</top>
+                    <width>1020</width>
                     <height>150</height>
-                    <texture border="10">button-focus.png</texture>
+                    <texture border="5">button-focus.png</texture>
+                    <colordiffuse>FF444444</colordiffuse>
+                </control>
+
+                <!-- LIGHTER RED Left Background -->
+                <control type="image">
+                    <left>0</left>
+                    <top>5</top>
+                    <width>250</width>
+                    <height>150</height>
+                    <texture border="5">button-focus.png</texture>
+                    <colordiffuse>FF990000</colordiffuse>
                 </control>
                 
-                <!-- RED BOX SECTION (Left) -->
                 <control type="group">
-                    <left>10</left>
-                    <top>10</top>
-                    <control type="image">
-                        <width>250</width>
-                        <height>130</height>
-                        <texture border="5">red-box.png</texture>
-                        <colordiffuse>FFFF0000</colordiffuse>
-                    </control>
+                    <left>0</left>
+                    <top>5</top>
                     <control type="label">
-                        <top>10</top>
+                        <top>15</top>
                         <width>250</width>
                         <height>50</height>
                         <font>font30_title</font>
@@ -153,7 +163,7 @@
                         <label>$INFO[ListItem.Property(resolution)]</label>
                     </control>
                     <control type="label">
-                        <top>60</top>
+                        <top>65</top>
                         <width>250</width>
                         <height>30</height>
                         <font>font12</font>
@@ -162,7 +172,7 @@
                         <label>$INFO[ListItem.Property(service)]</label>
                     </control>
                     <control type="label">
-                        <top>90</top>
+                        <top>95</top>
                         <width>250</width>
                         <height>30</height>
                         <font>font12</font>
@@ -172,30 +182,29 @@
                     </control>
                 </control>
 
-                <!-- GREY BOX SECTION (Right) -->
                 <control type="group">
-                    <left>275</left>
+                    <left>280</left>
                     <top>15</top>
                     <control type="label">
-                        <width>900</width>
+                        <width>980</width>
                         <height>40</height>
-                        <font>font13</font>
+                        <font>font11</font>
                         <textcolor>white</textcolor>
                         <label>[COLOR gold]SIZE:[/COLOR] $INFO[ListItem.Property(size)]  •  [COLOR gold]PROXIED:[/COLOR] $INFO[ListItem.Property(proxied)]  •  [COLOR gold]CACHED:[/COLOR] $INFO[ListItem.Property(cached)]  •  [COLOR gold]IN LIBRARY:[/COLOR] $INFO[ListItem.Property(library)]  •  [COLOR gold]DURATION:[/COLOR] $INFO[ListItem.Property(duration)]</label>
                     </control>
                     <control type="label">
                         <top>40</top>
-                        <width>900</width>
+                        <width>980</width>
                         <height>40</height>
-                        <font>font13</font>
+                        <font>font11</font>
                         <textcolor>white</textcolor>
                         <label>[COLOR gold]VIDEO:[/COLOR] $INFO[ListItem.Property(video)]  •  [COLOR gold]AUDIO:[/COLOR] $INFO[ListItem.Property(audio)]</label>
                     </control>
                     <control type="label">
                         <top>80</top>
-                        <width>880</width>
+                        <width>980</width>
                         <height>40</height>
-                        <font>font12</font>
+                        <font>font11</font>
                         <textcolor>white</textcolor>
                         <scroll>true</scroll>
                         <label>[COLOR gold]FILENAME:[/COLOR] $INFO[ListItem.Label]</label>
@@ -204,13 +213,13 @@
             </focusedlayout>
         </control>
 
-        <!-- 3. POSTER GROUP -->
+        <!-- 3. POSTER GROUP (Pulled in further right) -->
         <control type="group">
-            <left>1320</left>
-            <top>250</top>
+            <left>1380</left>
+            <top>225</top>
             <control type="image">
-                <width>520</width>
-                <height>730</height>
+                <width>480</width>
+                <height>680</height>
                 <aspectratio>keep</aspectratio>
                 <texture background="true">$VAR[PosterTextureVar]</texture>
                 <bordertexture border="20">Thumbnail_Shadow.png</bordertexture>
@@ -219,20 +228,20 @@
 
         <!-- 4. TOP LOGO -->
         <control type="image">
-            <left>80</left>
-            <top>40</top>
+            <left>60</left>
+            <top>30</top>
             <width>500</width>
-            <height>180</height>
+            <height>160</height>
             <aspectratio align="left">keep</aspectratio>
             <texture>$INFO[Window.Property(clearlogo)]</texture>
         </control>
 
         <!-- 5. SCROLLBAR -->
         <control type="scrollbar" id="60">
-            <left>1290</left>
-            <top>250</top>
+            <left>1345</left>
+            <top>220</top>
             <width>12</width>
-            <height>750</height>
+            <height>820</height>
             <texturesliderbackground border="0,2,0,2">ScrollBarV.png</texturesliderbackground>
             <texturesliderbar border="0,2,0,2">ScrollBarV_Focus.png</texturesliderbar>
             <onleft>5000</onleft>
