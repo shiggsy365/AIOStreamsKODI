@@ -17,6 +17,9 @@
         <setting id="min_quality" type="select" label="Minimum Quality" values="240p|360p|480p|720p|1080p" default="480p"/>
         <setting id="filter_low_quality" type="bool" label="Hide Low Quality Streams" default="false"/>
 
+        <setting id="subtitle_settings" type="lsep" label="Subtitle Settings"/>
+        <setting id="subtitle_languages" type="text" label="Filter Subtitle Languages" default="" help="Enter comma-separated 3-letter country codes (e.g. eng, spa). Leave blank for all languages."/>
+
         <setting id="resume_settings" type="lsep" label="Resume &amp; Progress"/>
         <setting id="auto_resume" type="bool" label="Auto Resume Playback" default="true"/>
         <setting id="auto_mark_watched_percent" type="number" label="Mark Watched at %" default="90"/>
