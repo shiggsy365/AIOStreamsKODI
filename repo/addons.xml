@@ -15,7 +15,7 @@
         <platform>all</platform>
         <license>MIT</license>
         <website>https://aiostreams.shiggsy.co.uk</website>
-        <news>v3.5.18: Enhanced debug logging for poster/fanart/clearlogo tracking, improved dialog focus error handling, removed strict defaultcontrol in XML. | v3.5.17: Red box doubled in width (120px→240px), middle section adjusted (860px).</news>
+        <news>v3.5.19: New release.</news>
         <assets>
             <icon>resources/icon.png</icon>
             <fanart>resources/fanart.jpg</fanart>
