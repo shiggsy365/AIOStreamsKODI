@@ -22,33 +22,13 @@
         </assets>
     </extension>
 </addon>
-<addon id="resource.fonts.noto-emoji" name="Noto Emoji Font" version="2.047.0" provider-name="Google">
-    <requires>
-        <import addon="xbmc.python" version="3.0.0"/>
-    </requires>
-    <extension point="xbmc.addon.metadata">
-        <summary lang="en_GB">Noto Emoji font for emoji rendering in Kodi addons</summary>
-        <description lang="en_GB">Google's Noto Emoji font provides comprehensive emoji character support. This resource addon makes the font available to other Kodi addons for emoji rendering in custom skins and dialogs.
-
-Font version: 2.047
-License: SIL Open Font License 1.1
-
-Original source: https://github.com/googlefonts/noto-emoji</description>
-        <platform>all</platform>
-        <license>SIL Open Font License 1.1</license>
-        <website>https://github.com/googlefonts/noto-emoji</website>
-        <source>https://github.com/googlefonts/noto-emoji</source>
-        <assets>
-            <icon>icon.png</icon>
-        </assets>
-    </extension>
-</addon>
 <addon id="repository.aiostreams" name="AIOStreams Repository" version="1.0.0" provider-name="AIOStreams">
     <extension point="xbmc.addon.repository" name="AIOStreams Repository">
         <dir>
-            <info compressed="false">https://raw.githubusercontent.com/shiggsy365/AIOStreamsKODI/main/repo/addons.xml</info>
-            <checksum>https://raw.githubusercontent.com/shiggsy365/AIOStreamsKODI/main/repo/addons.xml.md5</checksum>
-            <datadir zip="true">https://raw.githubusercontent.com/shiggsy365/AIOStreamsKODI/main/repo/</datadir>
+            <info compressed="false">https://raw.githubusercontent.com/shiggsy365/AIOStreamsKODI/main/docs/addons.xml</info>
+            <checksum>https://raw.githubusercontent.com/shiggsy365/AIOStreamsKODI/main/docs/addons.xml.md5</checksum>
+            repository.aiostreams-1.0.0.zip
+            <datadir zip="true">https://raw.githubusercontent.com/shiggsy365/AIOStreamsKODI/main/docs/</datadir>
         </dir>
     </extension>
     <extension point="xbmc.addon.metadata">
