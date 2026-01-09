@@ -226,14 +226,10 @@ You must have a running AIOStreams instance configured with:
 
 ---
 
-## Installation
-
-**See [INSTALLATION.md](INSTALLATION.md) for complete installation guide.**
-
 ### Quick Start
 
 1. **Install Repository**:
-   - Download [repository.aiostreams.zip](https://github.com/shiggsy365/AIOStreamsKODI/raw/main/repository.aiostreams.zip)
+   - Add the repository to your Kodi File Browser as a source (https://shiggsy365.github.io/AIOStreamsKODI/)
    - Kodi → Settings → Add-ons → Install from zip file
 
 2. **Install Addon**:
