@@ -350,9 +350,13 @@ def download_subtitle_with_language(subtitle_url, language, media_id):
         if not xbmcvfs.exists(subtitle_cache_dir):
             xbmcvfs.mkdirs(subtitle_cache_dir)
 
-        # Create unique filename based on media_id and language
-        # Use hash to avoid filesystem issues with special characters
+        # Create unique filename based on media_id and subtitle URL
+        # Use hashes to avoid filesystem issues with special characters
         media_hash = hashlib.md5(media_id.encode()).hexdigest()[:8]
+
+        # Hash the URL to create a unique identifier for this specific subtitle
+        # This allows multiple subtitles with the same language to coexist
+        url_hash = hashlib.md5(subtitle_url.encode()).hexdigest()[:6]
 
         # Normalize language code to 3-letter format
         lang_code = normalize_language_to_3letter(language)
@@ -363,8 +367,10 @@ def download_subtitle_with_language(subtitle_url, language, media_id):
         else:
             ext = '.srt'
 
-        # Format: "AIOStreams - eng.srt" displays as "AIOStreams - eng" in Kodi
-        subtitle_filename = f"{media_hash}.AIOStreams - {lang_code}{ext}"
+        # Format: "{media_hash}_{url_hash}.AIOStreams - eng.srt"
+        # Kodi displays this as "AIOStreams - eng" (strips hash and extension)
+        # The url_hash ensures each subtitle has a unique filename
+        subtitle_filename = f"{media_hash}_{url_hash}.AIOStreams - {lang_code}{ext}"
         subtitle_path = os.path.join(subtitle_cache_dir, subtitle_filename)
 
         # Download subtitle content
