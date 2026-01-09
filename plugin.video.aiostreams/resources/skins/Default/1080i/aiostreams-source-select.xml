@@ -2,8 +2,7 @@
 <window>
     <defaultcontrol always="true">5000</defaultcontrol>
     <controls>
-        <!-- 1. BACKGROUND LAYER -->
-        <!-- Explicitly setting width/height instead of invalid include -->
+        <!-- 1. BACKGROUNDS -->
         <control type="image">
             <left>0</left>
             <top>0</top>
@@ -18,7 +17,8 @@
             <width>1920</width>
             <height>1080</height>
             <aspectratio>scale</aspectratio>
-            <texture>$INFO[Container(5000).ListItem.Property(fanart)]</texture>
+            <!-- Using window properties which is how many AIO Python scripts push metadata -->
+            <texture>$INFO[Window.Property(fanart)]</texture>
             <fadetime>400</fadetime>
         </control>
 
@@ -31,7 +31,7 @@
             <colordiffuse>CCFFFFFF</colordiffuse>
         </control>
 
-        <!-- 2. STREAM LIST (The "Narrow Boxes") -->
+        <!-- 2. THE STREAM LIST -->
         <control type="list" id="5000">
             <left>80</left>
             <top>250</top>
@@ -43,6 +43,8 @@
             <ondown>5000</ondown>
             <pagecontrol>60</pagecontrol>
             <scrolltime tween="quadratic" easing="out">200</scrolltime>
+            <focusposition>0</focusposition>
+            <orientation>vertical</orientation>
             
             <itemlayout height="110" width="1100">
                 <control type="image">
@@ -66,7 +68,6 @@
                     <width>1080</width>
                     <height>100</height>
                     <texture border="10">button-focus.png</texture>
-                    <animation effect="fade" start="100" end="70" time="200" condition="!Control.HasFocus(5000)">Conditional</animation>
                 </control>
                 <control type="label">
                     <left>30</left>
@@ -81,7 +82,7 @@
             </focusedlayout>
         </control>
 
-        <!-- 3. SIDE POSTER (The Yellow Box Area) -->
+        <!-- 3. POSTER GROUP -->
         <control type="group">
             <left>1220</left>
             <top>250</top>
@@ -89,7 +90,8 @@
                 <width>600</width>
                 <height>750</height>
                 <aspectratio>keep</aspectratio>
-                <texture background="true">$INFO[Container(5000).ListItem.Icon]</texture>
+                <!-- Try Window Property first as fallback for script-pushed art -->
+                <texture background="true">$VAR[PosterTextureVar]</texture>
                 <fadetime>300</fadetime>
                 <bordertexture border="20">Thumbnail_Shadow.png</bordertexture>
             </control>
@@ -101,18 +103,18 @@
                 <font>font13</font>
                 <align>center</align>
                 <textcolor>grey2</textcolor>
-                <label>$INFO[Container(5000).ListItem.Property(Debrid)] • $INFO[Container(5000).ListItem.Property(Resolution)] • $INFO[Container(5000).ListItem.Property(Size)]</label>
+                <label>$INFO[ListItem.Property(Debrid)] • $INFO[ListItem.Property(Resolution)] • $INFO[ListItem.Property(Size)]</label>
             </control>
         </control>
 
-        <!-- 4. TOP LOGO LAYER -->
+        <!-- 4. LOGO -->
         <control type="image">
             <left>80</left>
             <top>40</top>
             <width>500</width>
             <height>180</height>
             <aspectratio align="left">keep</aspectratio>
-            <texture>$INFO[Container(5000).ListItem.Property(clearlogo)]</texture>
+            <texture>$INFO[Window.Property(clearlogo)]</texture>
         </control>
 
         <!-- 5. SCROLLBAR -->
@@ -129,4 +131,10 @@
             <orientation>vertical</orientation>
         </control>
     </controls>
+
+    <!-- Variables to handle potential missing info from script -->
+    <variable name="PosterTextureVar">
+        <value condition="!String.IsEmpty(ListItem.Icon)">$INFO[ListItem.Icon]</value>
+        <value>$INFO[Window.Property(poster)]</value>
+    </variable>
 </window>
