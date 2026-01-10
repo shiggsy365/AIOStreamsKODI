@@ -8,7 +8,7 @@
             <control type="group">
                 <visible>!String.IsEmpty(Window(Home).Property(AIOStreams.$PARAM[page].Widget.$PARAM[widget_index].Label))</visible>
                 <left>0</left>
-                <top>$PARAM[widget_index],0,160</top>
+                <top>$PARAM[top_pos]</top>
                 <width>1800</width>
                 <height>150</height>
 
@@ -24,13 +24,13 @@
                 </control>
 
                 <!-- Widget Content List -->
-                <control type="list" id="$PARAM[widget_index],50,+">
+                <control type="list" id="110$PARAM[widget_index]">
                     <left>0</left>
                     <top>50</top>
                     <width>1800</width>
                     <height>320</height>
                     <onup>9000</onup>
-                    <ondown>$PARAM[widget_index],51,+</ondown>
+                    <ondown>110$PARAM[next_index]</ondown>
                     <orientation>horizontal</orientation>
                     <preloaditems>2</preloaditems>
                     <pagecontrol></pagecontrol>
@@ -104,30 +104,40 @@
             <!-- Widget 0 -->
             <include content="WidgetTemplate">
                 <param name="widget_index">0</param>
+                <param name="top_pos">0</param>
+                <param name="next_index">1</param>
                 <param name="page">home</param>
             </include>
 
             <!-- Widget 1 -->
             <include content="WidgetTemplate">
                 <param name="widget_index">1</param>
+                <param name="top_pos">400</param>
+                <param name="next_index">2</param>
                 <param name="page">home</param>
             </include>
 
             <!-- Widget 2 -->
             <include content="WidgetTemplate">
                 <param name="widget_index">2</param>
+                <param name="top_pos">800</param>
+                <param name="next_index">3</param>
                 <param name="page">home</param>
             </include>
 
             <!-- Widget 3 -->
             <include content="WidgetTemplate">
                 <param name="widget_index">3</param>
+                <param name="top_pos">1200</param>
+                <param name="next_index">4</param>
                 <param name="page">home</param>
             </include>
 
             <!-- Widget 4 -->
             <include content="WidgetTemplate">
                 <param name="widget_index">4</param>
+                <param name="top_pos">1600</param>
+                <param name="next_index">0</param>
                 <param name="page">home</param>
             </include>
         </control>
@@ -144,30 +154,40 @@
             <!-- Widget 0 -->
             <include content="WidgetTemplate">
                 <param name="widget_index">0</param>
+                <param name="top_pos">0</param>
+                <param name="next_index">1</param>
                 <param name="page">movies</param>
             </include>
 
             <!-- Widget 1 -->
             <include content="WidgetTemplate">
                 <param name="widget_index">1</param>
+                <param name="top_pos">400</param>
+                <param name="next_index">2</param>
                 <param name="page">movies</param>
             </include>
 
             <!-- Widget 2 -->
             <include content="WidgetTemplate">
                 <param name="widget_index">2</param>
+                <param name="top_pos">800</param>
+                <param name="next_index">3</param>
                 <param name="page">movies</param>
             </include>
 
             <!-- Widget 3 -->
             <include content="WidgetTemplate">
                 <param name="widget_index">3</param>
+                <param name="top_pos">1200</param>
+                <param name="next_index">4</param>
                 <param name="page">movies</param>
             </include>
 
             <!-- Widget 4 -->
             <include content="WidgetTemplate">
                 <param name="widget_index">4</param>
+                <param name="top_pos">1600</param>
+                <param name="next_index">0</param>
                 <param name="page">movies</param>
             </include>
         </control>
@@ -184,30 +204,40 @@
             <!-- Widget 0 -->
             <include content="WidgetTemplate">
                 <param name="widget_index">0</param>
+                <param name="top_pos">0</param>
+                <param name="next_index">1</param>
                 <param name="page">shows</param>
             </include>
 
             <!-- Widget 1 -->
             <include content="WidgetTemplate">
                 <param name="widget_index">1</param>
+                <param name="top_pos">400</param>
+                <param name="next_index">2</param>
                 <param name="page">shows</param>
             </include>
 
             <!-- Widget 2 -->
             <include content="WidgetTemplate">
                 <param name="widget_index">2</param>
+                <param name="top_pos">800</param>
+                <param name="next_index">3</param>
                 <param name="page">shows</param>
             </include>
 
             <!-- Widget 3 -->
             <include content="WidgetTemplate">
                 <param name="widget_index">3</param>
+                <param name="top_pos">1200</param>
+                <param name="next_index">4</param>
                 <param name="page">shows</param>
             </include>
 
             <!-- Widget 4 -->
             <include content="WidgetTemplate">
                 <param name="widget_index">4</param>
+                <param name="top_pos">1600</param>
+                <param name="next_index">0</param>
                 <param name="page">shows</param>
             </include>
         </control>

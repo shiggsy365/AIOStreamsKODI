@@ -121,7 +121,7 @@
                 <top>10</top>
                 <width>30</width>
                 <height>30</height>
-                <texture colordiffuse="FF00FF00">common/checkmark.png</texture>
+                <texture colordiffuse="FF00FF00">DefaultIconCheck.png</texture>
             </control>
 
             <control type="image">
@@ -130,7 +130,7 @@
                 <top>10</top>
                 <width>30</width>
                 <height>30</height>
-                <texture colordiffuse="FFFFFF00">common/bookmark.png</texture>
+                <texture colordiffuse="FFFFFF00">DefaultFolder.png</texture>
             </control>
 
             <control type="image">
@@ -139,7 +139,7 @@
                 <top>10</top>
                 <width>30</width>
                 <height>30</height>
-                <texture colordiffuse="FF1E90FF">common/collection.png</texture>
+                <texture colordiffuse="FF1E90FF">DefaultAddonSearch.png</texture>
             </control>
         </control>
     </include>
