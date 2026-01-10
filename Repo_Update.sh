@@ -18,7 +18,8 @@ BASE_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 get_source_version() {
     local xml_path="$1"
     if [[ -f "$xml_path" ]]; then
-        local version=$(grep -m 1 "version=" "$xml_path" | sed -n 's/.*version="\([^"]*\)".*/\1/p')
+        # Look for version inside the <addon tag specifically
+        local version=$(grep -E "<addon " "$xml_path" | grep -m 1 "version=" | sed -n 's/.*version="\([^"]*\)".*/\1/p')
         echo "$version"
     else
         echo ""
