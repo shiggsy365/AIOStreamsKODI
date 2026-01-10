@@ -47,8 +47,9 @@ update_kodi_file() {
     local new="$3"
 
     if [[ -f "$path" ]]; then
-        if grep -q "$old" "$path"; then
-            sed -i "s/$old/$new/g" "$path"
+        # Specifically target version="[old]" to avoid breaking dependencies or descriptions
+        if grep -q "version=\"$old\"" "$path"; then
+            sed -i "s/version=\"$old\"/version=\"$new\"/g" "$path"
             echo -e "  ${GREEN}[+]${GRAY} Updated: $path${NC}"
         else
             echo -e "  ${GRAY}[i] No changes needed: $path${NC}"
