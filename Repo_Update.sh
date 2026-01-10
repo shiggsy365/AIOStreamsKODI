@@ -219,20 +219,35 @@ update_plugin() {
     build_plugin_zip "$zip_dest1" "$BASE_DIR/plugin.video.aiostreams"
     build_plugin_zip "$zip_dest2" "$BASE_DIR/plugin.video.aiostreams"
 
-    # Generate checksums
-    echo -e "\n${CYAN}[3/4] Generating MD5 checksums...${NC}"
-    write_md5 "$BASE_DIR/docs/repository.aiostreams-1.0.0.zip" "$BASE_DIR/docs/repository.aiostreams-1.0.0.zip.md5"
-    write_md5 "$BASE_DIR/docs/repository.aiostreams/zips/repository.aiostreams-1.0.0.zip" "$BASE_DIR/docs/repository.aiostreams/zips/repository.aiostreams-1.0.0.zip.md5"
-    write_md5 "$zip_dest1" "$zip_dest1.md5"
-    write_md5 "$BASE_DIR/docs/repository.aiostreams/zips/addons.xml" "$BASE_DIR/docs/repository.aiostreams/zips/addons.xml.md5"
-    write_md5 "$zip_dest2" "$zip_dest2.md5"
+    # Get Repo Version
+    local repo_xml="$BASE_DIR/docs/repository.aiostreams/addon.xml"
+    local repo_version=$(grep -m 1 "id=\"repository.aiostreams\"" "$repo_xml" | sed -n 's/.*version="\([^"]*\)".*/\1/p')
+    if [[ -z "$repo_version" ]]; then repo_version="1.0.0"; fi
 
     # Rebuild Repository ZIP
-    echo -e "\n${CYAN}[5/4] Rebuilding repository ZIP...${NC}"
+    echo -e "\n${CYAN}[5/4] Rebuilding repository ZIPs...${NC}"
+    local repo_zip_id_dir="$BASE_DIR/docs/repository.aiostreams/zips/repository.aiostreams"
+    mkdir -p "$repo_zip_id_dir"
+    
+    # Root installer (keep as 1.0.0 for fixed links if needed, or versioned)
     build_repository_zip "$BASE_DIR/docs/repository.aiostreams-1.0.0.zip" "$BASE_DIR/docs/repository.aiostreams"
-    cp "$BASE_DIR/docs/repository.aiostreams-1.0.0.zip" "$BASE_DIR/docs/repository.aiostreams/zips/repository.aiostreams-1.0.0.zip"
+    
+    # Internal repo-structured zip (CRITICAL for Kodi updates)
+    local internal_repo_zip="$repo_zip_id_dir/repository.aiostreams-$repo_version.zip"
+    cp "$BASE_DIR/docs/repository.aiostreams-1.0.0.zip" "$internal_repo_zip"
+    
+    # Update checksums
     write_md5 "$BASE_DIR/docs/repository.aiostreams-1.0.0.zip" "$BASE_DIR/docs/repository.aiostreams-1.0.0.zip.md5"
-    write_md5 "$BASE_DIR/docs/repository.aiostreams/zips/repository.aiostreams-1.0.0.zip" "$BASE_DIR/docs/repository.aiostreams/zips/repository.aiostreams-1.0.0.zip.md5"
+    write_md5 "$internal_repo_zip" "$internal_repo_zip.md5"
+    write_md5 "$BASE_DIR/docs/repository.aiostreams/zips/addons.xml" "$BASE_DIR/docs/repository.aiostreams/zips/addons.xml.md5"
+
+    # Clean up old repo versions in zips folder
+    for f in "$repo_zip_id_dir"/repository.aiostreams-*.zip; do
+        if [[ -f "$f" && "$f" != "$internal_repo_zip" ]]; then
+            rm -f "$f" "$f.md5"
+            echo -e "  ${GREEN}[+]${GRAY} Deleted old repo version: $(basename "$f")${NC}"
+        fi
+    done
 
     # Cleanup old version
     echo -e "\n${CYAN}[4/4] Checking for old version files...${NC}"
@@ -301,18 +316,35 @@ update_skin() {
     echo -e "  ${GREEN}[+]${GRAY} Copying addon.xml to repository zips directory${NC}"
     cp "$BASE_DIR/docs/skin.aiodi/addon.xml" "$BASE_DIR/docs/repository.aiostreams/zips/skin.aiodi/addon.xml"
 
-    # Generate checksums
-    echo -e "\n${CYAN}[3/4] Generating MD5 checksums...${NC}"
-    write_md5 "$zip_dest_repo" "$zip_dest_repo.md5"
-    write_md5 "$zip_dest_docs" "$zip_dest_docs.md5"
+    # Get Repo Version
+    local repo_xml="$BASE_DIR/docs/repository.aiostreams/addon.xml"
+    local repo_version=$(grep -m 1 "id=\"repository.aiostreams\"" "$repo_xml" | sed -n 's/.*version="\([^"]*\)".*/\1/p')
+    if [[ -z "$repo_version" ]]; then repo_version="1.0.0"; fi
+
+    # Rebuild Repository ZIPs
+    echo -e "\n${CYAN}[5/4] Rebuilding repository ZIPs...${NC}"
+    local repo_zip_id_dir="$BASE_DIR/docs/repository.aiostreams/zips/repository.aiostreams"
+    mkdir -p "$repo_zip_id_dir"
+
+    # Root installer
+    build_repository_zip "$BASE_DIR/docs/repository.aiostreams-1.0.0.zip" "$BASE_DIR/docs/repository.aiostreams"
+
+    # Internal repo-structured zip
+    local internal_repo_zip="$repo_zip_id_dir/repository.aiostreams-$repo_version.zip"
+    cp "$BASE_DIR/docs/repository.aiostreams-1.0.0.zip" "$internal_repo_zip"
+
+    # Update checksums
+    write_md5 "$BASE_DIR/docs/repository.aiostreams-1.0.0.zip" "$BASE_DIR/docs/repository.aiostreams-1.0.0.zip.md5"
+    write_md5 "$internal_repo_zip" "$internal_repo_zip.md5"
     write_md5 "$BASE_DIR/docs/repository.aiostreams/zips/addons.xml" "$BASE_DIR/docs/repository.aiostreams/zips/addons.xml.md5"
 
-    # Rebuild Repository ZIP
-    echo -e "\n${CYAN}[5/4] Rebuilding repository ZIP...${NC}"
-    build_repository_zip "$BASE_DIR/docs/repository.aiostreams-1.0.0.zip" "$BASE_DIR/docs/repository.aiostreams"
-    cp "$BASE_DIR/docs/repository.aiostreams-1.0.0.zip" "$BASE_DIR/docs/repository.aiostreams/zips/repository.aiostreams-1.0.0.zip"
-    write_md5 "$BASE_DIR/docs/repository.aiostreams-1.0.0.zip" "$BASE_DIR/docs/repository.aiostreams-1.0.0.zip.md5"
-    write_md5 "$BASE_DIR/docs/repository.aiostreams/zips/repository.aiostreams-1.0.0.zip" "$BASE_DIR/docs/repository.aiostreams/zips/repository.aiostreams-1.0.0.zip.md5"
+    # Clean up old repo versions in zips folder
+    for f in "$repo_zip_id_dir"/repository.aiostreams-*.zip; do
+        if [[ -f "$f" && "$f" != "$internal_repo_zip" ]]; then
+            rm -f "$f" "$f.md5"
+            echo -e "  ${GREEN}[+]${GRAY} Deleted old repo version: $(basename "$f")${NC}"
+        fi
+    done
 
     # Cleanup old version
     echo -e "\n${CYAN}[4/4] Checking for old version files...${NC}"
