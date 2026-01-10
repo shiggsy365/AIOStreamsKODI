@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<addon id="skin.aiodi" version="1.0.10" name="AIODI - AIOStreams Integrated Skin" provider-name="shiggsy365">
+<addon id="skin.aiodi" version="1.0.11" name="AIODI - AIOStreams Integrated Skin" provider-name="shiggsy365">
     <requires>
-        <import addon="xbmc.gui" version="5.15.0"/>
+        <import addon="xbmc.gui" version="5.16.0"/>
     </requires>
-    <extension point="xbmc.gui.skin" debugging="false">
+    <extension point="xbmc.gui.skin" defaultresolution="1080i" defaultaspect="16:9" defaultcodepage="UTF-8">
         <res width="1920" height="1080" aspect="16:9" default="true" folder="1080i"/>
     </extension>
     <extension point="xbmc.addon.metadata">

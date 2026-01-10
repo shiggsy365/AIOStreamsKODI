@@ -1,6 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <addons>
-<addon id="plugin.video.aiostreams" name="AIOStreams" version="3.5.75" provider-name="Jon">
+<addon id="repository.aiostreams" name="AIOStreams Repository" version="1.0.2" provider-name="AIOStreams">
+    <extension point="xbmc.addon.repository" name="AIOStreams Repository">
+<dir>
+        <info compressed="false">https://shiggsy365.github.io/AIOStreamsKODI/repository.aiostreams/zips/addons.xml</info>
+        <checksum>https://shiggsy365.github.io/AIOStreamsKODI/repository.aiostreams/zips/addons.xml.md5</checksum>
+        <datadir zip="true">https://shiggsy365.github.io/AIOStreamsKODI/repository.aiostreams/zips/</datadir>
+</dir>
+    </extension>
+    <extension point="xbmc.addon.metadata">
+        <summary>AIOStreams Addon Repository</summary>
+        <description>Official repository for AIOStreams Kodi addon with automatic updates</description>
+        <platform>all</platform>
+        <assets>
+            <icon>icon.png</icon>
+        </assets>
+    </extension>
+</addon>
+<addon id="plugin.video.aiostreams" name="AIOStreams" version="3.5.76" provider-name="Jon">
     <requires>
         <import addon="xbmc.python" version="3.0.0"/>
         <import addon="script.module.requests" version="2.25.1"/>
@@ -15,24 +32,24 @@
         <platform>all</platform>
         <license>MIT</license>
         <website>https://aiostreams.shiggsy.co.uk</website>
-        <news>v3.5.75: New release.</news>
+        <news>v3.5.76: New release.</news>
         <assets>
             <icon>resources/icon.png</icon>
             <fanart>resources/fanart.jpg</fanart>
         </assets>
     </extension>
 </addon>
-<addon id="skin.aiodi" version="1.0.10" name="AIODI - AIOStreams Integrated Skin" provider-name="shiggsy365">
+<addon id="skin.aiodi" version="1.0.11" name="AIODI - AIOStreams Integrated Skin" provider-name="shiggsy365">
     <requires>
-        <import addon="xbmc.gui" version="5.15.0"/>
+        <import addon="xbmc.gui" version="5.16.0"/>
     </requires>
-    <extension point="xbmc.gui.skin" debugging="false">
+    <extension point="xbmc.gui.skin" defaultresolution="1080i" defaultaspect="16:9" defaultcodepage="UTF-8">
         <res width="1920" height="1080" aspect="16:9" default="true" folder="1080i"/>
     </extension>
     <extension point="xbmc.addon.metadata">
         <summary lang="en_GB">AIOStreams Integrated Dynamic Interface</summary>
         <description lang="en_GB">AIODI is a custom Kodi skin designed specifically for AIOStreams with deep integration, dynamic widget management, and a clean Netflix-style interface. Features include customizable home widgets, Trakt integration, and seamless content browsing without navigating through addon menus.</description>
-        <news>v1.0.10: Optimized metadata for skin visibility.</news>
+        <news>v1.0.11: Corrected extension point metadata and bumped GUI version.</news>
         <platform>all</platform>
         <license>Creative Commons Attribution Non-Commercial Share-Alike 4.0</license>
         <website>https://github.com/shiggsy365/AIOStreamsKODI</website>
@@ -40,23 +57,6 @@
         <assets>
             <icon>resources/icon.png</icon>
             <fanart>resources/fanart.jpg</fanart>
-        </assets>
-    </extension>
-</addon>
-<addon id="repository.aiostreams" name="AIOStreams Repository" version="1.0.1" provider-name="AIOStreams">
-    <extension point="xbmc.addon.repository" name="AIOStreams Repository">
-	<dir>
-    	    <info compressed="false">https://shiggsy365.github.io/AIOStreamsKODI/repository.aiostreams/zips/addons.xml</info>
-    	    <checksum>https://shiggsy365.github.io/AIOStreamsKODI/repository.aiostreams/zips/addons.xml.md5</checksum>
-    	    <datadir zip="true">https://shiggsy365.github.io/AIOStreamsKODI/repository.aiostreams/zips/</datadir>
-	</dir>
-    </extension>
-    <extension point="xbmc.addon.metadata">
-        <summary>AIOStreams Addon Repository</summary>
-        <description>Official repository for AIOStreams Kodi addon with automatic updates</description>
-        <platform>all</platform>
-        <assets>
-            <icon>icon.png</icon>
         </assets>
     </extension>
 </addon>

@@ -90,7 +90,7 @@ write_md5() {
     if [[ -f "$target_file" ]]; then
         local filename=$(basename "$target_file")
         local hash=$(md5sum "$target_file" | awk '{print $1}')
-        echo -n "$hash" > "$md5_path"
+        echo "$hash" > "$md5_path"
         echo -e "  ${GREEN}[+]${GRAY} Created: $(basename "$md5_path")${NC}"
     else
         echo -e "  ${YELLOW}[!] Warning: File not found - $target_file${NC}"
