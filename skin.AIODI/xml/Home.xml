@@ -16,66 +16,66 @@
         <!-- Top Navigation Bar -->
         <include>NavigationBar</include>
 
-            <!-- Main Menu -->
-            <control type="grouplist" id="9000">
-                <left>500</left>
-                <top>30</top>
-                <width>1200</width>
+        <!-- Main Menu -->
+        <control type="grouplist" id="9000">
+            <left>500</left>
+            <top>30</top>
+            <width>1200</width>
+            <height>60</height>
+            <ondown>50</ondown>
+            <orientation>horizontal</orientation>
+            <itemgap>10</itemgap>
+
+            <control type="button" id="9001">
+                <width>150</width>
                 <height>60</height>
-                <ondown>50</ondown>
-                <orientation>horizontal</orientation>
-                <itemgap>10</itemgap>
-
-                <control type="button" id="9001">
-                    <width>150</width>
-                    <height>60</height>
-                    <font>font30</font>
-                    <label>$LOCALIZE[30402]</label>
-                    <textcolor>FFFFFFFF</textcolor>
-                    <focusedcolor>ThemeColor</focusedcolor>
-                    <onclick>ActivateWindow(Home)</onclick>
-                </control>
-
-                <control type="button" id="9002">
-                    <width>150</width>
-                    <height>60</height>
-                    <font>font30</font>
-                    <label>$LOCALIZE[30400]</label>
-                    <textcolor>FFFFFFFF</textcolor>
-                    <focusedcolor>ThemeColor</focusedcolor>
-                    <onclick>ActivateWindow(Videos,plugin://plugin.video.aiostreams/?action=movie_lists,return)</onclick>
-                </control>
-
-                <control type="button" id="9003">
-                    <width>150</width>
-                    <height>60</height>
-                    <font>font30</font>
-                    <label>$LOCALIZE[30401]</label>
-                    <textcolor>FFFFFFFF</textcolor>
-                    <focusedcolor>ThemeColor</focusedcolor>
-                    <onclick>ActivateWindow(Videos,plugin://plugin.video.aiostreams/?action=series_lists,return)</onclick>
-                </control>
-
-                <control type="button" id="9004">
-                    <width>150</width>
-                    <height>60</height>
-                    <font>font30</font>
-                    <label>$LOCALIZE[30404]</label>
-                    <textcolor>FFFFFFFF</textcolor>
-                    <focusedcolor>ThemeColor</focusedcolor>
-                    <onclick>ActivateWindow(Videos,plugin://plugin.video.aiostreams/?action=search_unified,return)</onclick>
-                </control>
-
-                <control type="button" id="9005">
-                    <width>150</width>
-                    <height>60</height>
-                    <font>font30</font>
-                    <label>$LOCALIZE[30403]</label>
-                    <textcolor>FFFFFFFF</textcolor>
-                    <focusedcolor>ThemeColor</focusedcolor>
-                    <onclick>ActivateWindow(skinsettings)</onclick>
-                </control>
+                <font>font30</font>
+                <label>$LOCALIZE[30402]</label>
+                <textcolor>FFFFFFFF</textcolor>
+                <focusedcolor>ThemeColor</focusedcolor>
+                <onclick>ActivateWindow(Home)</onclick>
             </control>
+
+            <control type="button" id="9002">
+                <width>150</width>
+                <height>60</height>
+                <font>font30</font>
+                <label>$LOCALIZE[30400]</label>
+                <textcolor>FFFFFFFF</textcolor>
+                <focusedcolor>ThemeColor</focusedcolor>
+                <onclick>ActivateWindow(Videos,plugin://plugin.video.aiostreams/?action=movie_lists,return)</onclick>
+            </control>
+
+            <control type="button" id="9003">
+                <width>150</width>
+                <height>60</height>
+                <font>font30</font>
+                <label>$LOCALIZE[30401]</label>
+                <textcolor>FFFFFFFF</textcolor>
+                <focusedcolor>ThemeColor</focusedcolor>
+                <onclick>ActivateWindow(Videos,plugin://plugin.video.aiostreams/?action=series_lists,return)</onclick>
+            </control>
+
+            <control type="button" id="9004">
+                <width>150</width>
+                <height>60</height>
+                <font>font30</font>
+                <label>$LOCALIZE[30404]</label>
+                <textcolor>FFFFFFFF</textcolor>
+                <focusedcolor>ThemeColor</focusedcolor>
+                <onclick>ActivateWindow(Videos,plugin://plugin.video.aiostreams/?action=search_unified,return)</onclick>
+            </control>
+
+            <control type="button" id="9005">
+                <width>150</width>
+                <height>60</height>
+                <font>font30</font>
+                <label>$LOCALIZE[30403]</label>
+                <textcolor>FFFFFFFF</textcolor>
+                <focusedcolor>ThemeColor</focusedcolor>
+                <onclick>ActivateWindow(skinsettings)</onclick>
+            </control>
+        </control>
 
         <!-- Widget Container -->
         <control type="group">
