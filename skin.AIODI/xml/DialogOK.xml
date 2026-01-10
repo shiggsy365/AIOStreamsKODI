@@ -36,7 +36,7 @@
                 <width>720</width>
                 <height>60</height>
                 <font>font37_title</font>
-                <textcolor>FF1E90FF</textcolor>
+                <textcolor>ThemeColor</textcolor>
                 <align>center</align>
             </control>
 

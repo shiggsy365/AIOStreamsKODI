@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<addon id="skin.aiodi" version="1.1.27" name="AIODI" provider-name="shiggsy365">
+<addon id="skin.aiodi" version="1.1.29" name="AIODI" provider-name="shiggsy365">
+...
+        <news>v1.1.28: Comprehensive Skin Layout &amp; Visual Overhaul. Fixed broken navigation, misaligned widgets, and redesigned settings page.</news>
     <requires>
         <import addon="xbmc.gui" version="5.17.0"/>
         <import addon="plugin.video.aiostreams"/>

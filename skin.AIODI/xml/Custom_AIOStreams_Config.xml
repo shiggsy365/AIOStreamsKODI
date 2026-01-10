@@ -169,7 +169,7 @@
                         <top>0</top>
                         <width>600</width>
                         <height>60</height>
-                        <texture colordiffuse="FF1E90FF">common/white.png</texture>
+                        <texture colordiffuse="ThemeColor">common/white.png</texture>
                     </control>
                     <control type="label">
                         <left>20</left>

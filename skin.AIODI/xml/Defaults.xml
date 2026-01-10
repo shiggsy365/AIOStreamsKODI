@@ -6,7 +6,7 @@
         <width>200</width>
         <font>font27</font>
         <textcolor>FFFFFFFF</textcolor>
-        <focusedcolor>FF1E90FF</focusedcolor>
+        <focusedcolor>ThemeColor</focusedcolor>
         <disabledcolor>FF666666</disabledcolor>
         <align>center</align>
         <aligny>center</aligny>
@@ -48,7 +48,7 @@
         <width>300</width>
         <font>font27</font>
         <textcolor>FFFFFFFF</textcolor>
-        <focusedcolor>FF1E90FF</focusedcolor>
+        <focusedcolor>ThemeColor</focusedcolor>
     </default>
 
     <!-- Default Slider -->

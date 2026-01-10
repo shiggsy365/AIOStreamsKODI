@@ -62,7 +62,7 @@
                         <top>0</top>
                         <width>1800</width>
                         <height>140</height>
-                        <texture colordiffuse="441E90FF">common/white.png</texture>
+                        <texture colordiffuse="441E90FF">common/white.png</texture> <!-- Use 44 as alpha for the theme color -->
                     </control>
                     <control type="image">
                         <left>10</left>
@@ -71,7 +71,7 @@
                         <height>120</height>
                         <aspectratio>scale</aspectratio>
                         <texture background="true">$INFO[ListItem.Art(poster)]</texture>
-                        <bordertexture border="4" colordiffuse="FF1E90FF">common/border.png</bordertexture>
+                        <bordertexture border="4" colordiffuse="ThemeColor">common/border.png</bordertexture>
                         <bordersize>4</bordersize>
                     </control>
                     <control type="label">
@@ -80,7 +80,7 @@
                         <width>1660</width>
                         <height>40</height>
                         <font>font30</font>
-                        <textcolor>FF1E90FF</textcolor>
+                        <textcolor>ThemeColor</textcolor>
                         <label>$INFO[ListItem.Label]</label>
                     </control>
                     <control type="label">
