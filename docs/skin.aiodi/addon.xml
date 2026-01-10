@@ -20,9 +20,8 @@
         <website>https://github.com/shiggsy365/AIOStreamsKODI</website>
         <source>https://github.com/shiggsy365/AIOStreamsKODI</source>
         <assets>
-            <icon>media/icon.png</icon>
-            <fanart>media/fanart.jpg</fanart>
-            <screenshot>media/screenshots/home.jpg</screenshot>
+            <icon>resources/icon.png</icon>
+            <fanart>resources/fanart.jpg</fanart>
         </assets>
     </extension>
 </addon>
