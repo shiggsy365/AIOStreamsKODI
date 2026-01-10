@@ -47,9 +47,9 @@ update_kodi_file() {
     local new="$3"
 
     if [[ -f "$path" ]]; then
-        # Specifically target version="[old]" to avoid breaking dependencies or descriptions
-        if grep -q "version=\"$old\"" "$path"; then
-            sed -i "s/version=\"$old\"/version=\"$new\"/g" "$path"
+        # Specifically target <addon ... version="[old]" to avoid breaking XML headers or dependencies
+        if grep -qE "<addon .*version=\"$old\"" "$path"; then
+            sed -i "s/\(<addon .*\)version=\"$old\"/\1version=\"$new\"/g" "$path"
             echo -e "  ${GREEN}[+]${GRAY} Updated: $path${NC}"
         else
             echo -e "  ${GRAY}[i] No changes needed: $path${NC}"
