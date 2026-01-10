@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version='1.0' encoding='UTF-8'?>
 <addons>
 <addon id="repository.aiostreams" name="AIOStreams Repository" version="1.1.27" provider-name="AIOStreams">
     <extension point="xbmc.addon.repository" name="AIOStreams Repository">
@@ -19,8 +19,8 @@
 </addon>
 <addon id="plugin.video.aiostreams" name="AIOStreams" version="1.1.27" provider-name="Jon">
     <requires>
-        <import addon="xbmc.python" version="3.0.0"/>
-        <import addon="script.module.requests" version="2.25.1"/>
+        <import addon="xbmc.python" version="3.0.0" />
+        <import addon="script.module.requests" version="2.25.1" />
     </requires>
     <extension point="xbmc.python.pluginsource" library="addon.py">
         <provides>video</provides>
@@ -39,17 +39,17 @@
         </assets>
     </extension>
 </addon>
-<addon id="skin.aiodi" version="1.1.30" name="AIODI" provider-name="shiggsy365">
+<addon id="skin.aiodi" version="2.0.0" name="AIODI" provider-name="shiggsy365">
     <requires>
-        <import addon="xbmc.gui" version="5.17.0"/>
+        <import addon="xbmc.gui" version="5.17.0" />
     </requires>
     <extension point="xbmc.gui.skin" debugging="false">
-        <res width="1920" height="1080" aspect="16:9" default="true" folder="xml"/>
+        <res width="1920" height="1080" aspect="16:9" default="true" folder="xml" />
     </extension>
     <extension point="xbmc.addon.metadata">
         <summary lang="en_GB">AIOStreams Integrated Dynamic Interface</summary>
         <description lang="en_GB">AIODI is a custom Kodi skin designed specifically for AIOStreams with deep integration.</description>
-        <news>v1.1.29: Comprehensive Skin Layout &amp; Visual Overhaul. Fixed broken navigation, misaligned widgets, and redesigned settings page.</news>
+        <news>v2.0.0: Arctic Fuse 2 Theme Integration - Transformed to minimal design with opacity-based colors, subtle grays, and elegant focus states.</news>
         <platform>all</platform>
         <license>Creative Commons Attribution Non-Commercial Share-Alike 4.0</license>
         <assets>
