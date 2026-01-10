@@ -178,7 +178,6 @@ update_plugin() {
         "$BASE_DIR/docs/plugin.video.aiostreams/addon.xml"
         "$BASE_DIR/docs/repository.aiostreams/addon.xml"
         "$BASE_DIR/docs/repository.aiostreams/zips/addons.xml"
-        "$BASE_DIR/docs/index.html"
     )
 
     local zip_dest1="$BASE_DIR/docs/repository.aiostreams/zips/plugin.video.aiostreams/plugin.video.aiostreams-$new_version.zip"

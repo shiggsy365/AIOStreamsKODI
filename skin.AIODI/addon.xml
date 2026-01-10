@@ -1,7 +1,7 @@
-<?xml version="1.1.23" encoding="UTF-8"?>
-<addon id="skin.aiodi" version="1.1.24" name="AIODI" provider-name="shiggsy365">
+<?xml version="1.0" encoding="UTF-8"?>
+<addon id="skin.aiodi" version="1.1.27" name="AIODI" provider-name="shiggsy365">
     <requires>
-        <import addon="xbmc.gui" version="1.1.23"/>
+        <import addon="xbmc.gui" version="5.17.0"/>
         <import addon="plugin.video.aiostreams"/>
     </requires>
     <extension point="xbmc.gui.skin" debugging="false">
@@ -10,7 +10,7 @@
     <extension point="xbmc.addon.metadata">
         <summary lang="en_GB">AIOStreams Integrated Dynamic Interface</summary>
         <description lang="en_GB">AIODI is a custom Kodi skin designed specifically for AIOStreams with deep integration.</description>
-        <news>v1.1.8: Absolute Sync & Standalone Restoration.</news>
+        <news>v1.1.27: Absolute Alignment & Integrity Fix.</news>
         <platform>all</platform>
         <license>Creative Commons Attribution Non-Commercial Share-Alike 4.0</license>
         <assets>
