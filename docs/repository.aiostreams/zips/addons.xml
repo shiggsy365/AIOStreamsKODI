@@ -24,22 +24,18 @@
 </addon>
 <addon id="skin.aiodi" version="1.0.6" name="AIODI - AIOStreams Integrated Skin" provider-name="shiggsy365">
     <requires>
-        <import addon="xbmc.gui" version="5.16.0"/>
+        <import addon="xbmc.gui" version="5.14.0"/>
         <import addon="plugin.video.aiostreams" version="3.5.0"/>
         <import addon="script.module.requests" version="2.31.0"/>
     </requires>
     <extension point="xbmc.gui.skin" debugging="false">
         <res width="1920" height="1080" aspect="16:9" default="true" folder="1080i"/>
     </extension>
-    <extension point="xbmc.service" library="service.py">
-        <provides>service</provides>
-    </extension>
     <extension point="xbmc.addon.metadata">
         <summary lang="en_GB">AIOStreams Integrated Dynamic Interface</summary>
         <description lang="en_GB">AIODI is a custom Kodi skin designed specifically for AIOStreams with deep integration, dynamic widget management, and a clean Netflix-style interface. Features include customizable home widgets, Trakt integration, and seamless content browsing without navigating through addon menus.</description>
         <platform>all</platform>
         <license>Creative Commons Attribution Non-Commercial Share-Alike 4.0</license>
-        <forum></forum>
         <website>https://github.com/shiggsy365/AIOStreamsKODI</website>
         <source>https://github.com/shiggsy365/AIOStreamsKODI</source>
         <assets>
