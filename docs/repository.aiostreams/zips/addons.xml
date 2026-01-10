@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <addons>
-<addon id="plugin.video.aiostreams" name="AIOStreams" version="3.5.71" provider-name="Jon">
+<addon id="plugin.video.aiostreams" name="AIOStreams" version="3.5.72" provider-name="Jon">
     <requires>
         <import addon="xbmc.python" version="3.0.0"/>
         <import addon="script.module.requests" version="2.25.1"/>
@@ -15,14 +15,14 @@
         <platform>all</platform>
         <license>MIT</license>
         <website>https://aiostreams.shiggsy.co.uk</website>
-        <news>v3.5.71: New release.</news>
+        <news>v3.5.72: New release.</news>
         <assets>
             <icon>resources/icon.png</icon>
             <fanart>resources/fanart.jpg</fanart>
         </assets>
     </extension>
 </addon>
-<addon id="skin.aiodi" version="1.0.6" name="AIODI - AIOStreams Integrated Skin" provider-name="shiggsy365">
+<addon id="skin.aiodi" version="1.0.7" name="AIODI - AIOStreams Integrated Skin" provider-name="shiggsy365">
     <requires>
         <import addon="xbmc.gui" version="5.14.0"/>
         <import addon="plugin.video.aiostreams" version="3.5.0"/>
