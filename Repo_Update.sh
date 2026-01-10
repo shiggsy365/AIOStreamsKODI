@@ -158,6 +158,36 @@ build_skin_zip() {
     echo -e "  ${GREEN}[+]${GRAY} Created: $destination (${zip_size} KB)${NC}"
 }
 
+build_repository_zip() {
+    local destination="$1"
+    local source_dir="$2"
+
+    local dest_dir=$(dirname "$destination")
+    mkdir -p "$dest_dir"
+
+    if [[ -f "$destination" ]]; then
+        rm -f "$destination"
+    fi
+
+    # Create temporary directory for ZIP structure
+    local temp_dir=$(mktemp -d)
+    local repo_dir="$temp_dir/repository.aiostreams"
+    mkdir -p "$repo_dir"
+
+    # Copy necessary files
+    cp "$source_dir/addon.xml" "$repo_dir/"
+    cp "$source_dir/icon.png" "$repo_dir/"
+
+    # Create ZIP from temp directory
+    (cd "$temp_dir" && zip -r -q "$destination" repository.aiostreams/)
+
+    # Cleanup
+    rm -rf "$temp_dir"
+
+    local zip_size=$(du -k "$destination" | cut -f1)
+    echo -e "  ${GREEN}[+]${GRAY} Created: $destination (${zip_size} KB)${NC}"
+}
+
 update_plugin() {
     local old_version="$1"
     local new_version="$2"
@@ -170,6 +200,7 @@ update_plugin() {
     local xml_paths=(
         "$BASE_DIR/plugin.video.aiostreams/addon.xml"
         "$BASE_DIR/docs/plugin.video.aiostreams/addon.xml"
+        "$BASE_DIR/docs/repository.aiostreams/addon.xml"
         "$BASE_DIR/docs/repository.aiostreams/zips/addons.xml"
         "$BASE_DIR/docs/index.html"
     )
@@ -195,6 +226,13 @@ update_plugin() {
     write_md5 "$zip_dest1" "$zip_dest1.md5"
     write_md5 "$BASE_DIR/docs/repository.aiostreams/zips/addons.xml" "$BASE_DIR/docs/repository.aiostreams/zips/addons.xml.md5"
     write_md5 "$zip_dest2" "$zip_dest2.md5"
+
+    # Rebuild Repository ZIP
+    echo -e "\n${CYAN}[5/4] Rebuilding repository ZIP...${NC}"
+    build_repository_zip "$BASE_DIR/docs/repository.aiostreams-1.0.0.zip" "$BASE_DIR/docs/repository.aiostreams"
+    cp "$BASE_DIR/docs/repository.aiostreams-1.0.0.zip" "$BASE_DIR/docs/repository.aiostreams/zips/repository.aiostreams-1.0.0.zip"
+    write_md5 "$BASE_DIR/docs/repository.aiostreams-1.0.0.zip" "$BASE_DIR/docs/repository.aiostreams-1.0.0.zip.md5"
+    write_md5 "$BASE_DIR/docs/repository.aiostreams/zips/repository.aiostreams-1.0.0.zip" "$BASE_DIR/docs/repository.aiostreams/zips/repository.aiostreams-1.0.0.zip.md5"
 
     # Cleanup old version
     echo -e "\n${CYAN}[4/4] Checking for old version files...${NC}"
@@ -234,6 +272,7 @@ update_skin() {
     local xml_paths=(
         "$BASE_DIR/skin.AIODI/addon.xml"
         "$BASE_DIR/docs/skin.aiodi/addon.xml"
+        "$BASE_DIR/docs/repository.aiostreams/addon.xml"
         "$BASE_DIR/docs/repository.aiostreams/zips/addons.xml"
     )
 
@@ -267,6 +306,13 @@ update_skin() {
     write_md5 "$zip_dest_repo" "$zip_dest_repo.md5"
     write_md5 "$zip_dest_docs" "$zip_dest_docs.md5"
     write_md5 "$BASE_DIR/docs/repository.aiostreams/zips/addons.xml" "$BASE_DIR/docs/repository.aiostreams/zips/addons.xml.md5"
+
+    # Rebuild Repository ZIP
+    echo -e "\n${CYAN}[5/4] Rebuilding repository ZIP...${NC}"
+    build_repository_zip "$BASE_DIR/docs/repository.aiostreams-1.0.0.zip" "$BASE_DIR/docs/repository.aiostreams"
+    cp "$BASE_DIR/docs/repository.aiostreams-1.0.0.zip" "$BASE_DIR/docs/repository.aiostreams/zips/repository.aiostreams-1.0.0.zip"
+    write_md5 "$BASE_DIR/docs/repository.aiostreams-1.0.0.zip" "$BASE_DIR/docs/repository.aiostreams-1.0.0.zip.md5"
+    write_md5 "$BASE_DIR/docs/repository.aiostreams/zips/repository.aiostreams-1.0.0.zip" "$BASE_DIR/docs/repository.aiostreams/zips/repository.aiostreams-1.0.0.zip.md5"
 
     # Cleanup old version
     echo -e "\n${CYAN}[4/4] Checking for old version files...${NC}"
