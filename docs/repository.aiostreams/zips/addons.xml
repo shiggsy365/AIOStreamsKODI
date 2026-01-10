@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <addons>
-<addon id="repository.aiostreams" name="AIOStreams Repository" version="1.0.9" provider-name="AIOStreams">
+<addon id="repository.aiostreams" name="AIOStreams Repository" version="1.1.0" provider-name="AIOStreams">
     <extension point="xbmc.addon.repository" name="AIOStreams Repository">
 <dir>
         <info compressed="false">https://shiggsy365.github.io/AIOStreamsKODI/repository.aiostreams/zips/addons.xml</info>
@@ -17,7 +17,7 @@
         </assets>
     </extension>
 </addon>
-<addon id="plugin.video.aiostreams" name="AIOStreams" version="3.5.83" provider-name="Jon">
+<addon id="plugin.video.aiostreams" name="AIOStreams" version="3.5.84" provider-name="Jon">
     <requires>
         <import addon="xbmc.python" version="3.0.0"/>
         <import addon="script.module.requests" version="2.25.1"/>
@@ -32,14 +32,14 @@
         <platform>all</platform>
         <license>MIT</license>
         <website>https://aiostreams.shiggsy.co.uk</website>
-        <news>v3.5.83: New release.</news>
+        <news>v3.5.84: New release.</news>
         <assets>
             <icon>resources/icon.png</icon>
             <fanart>resources/fanart.jpg</fanart>
         </assets>
     </extension>
 </addon>
-<addon id="skin.aiodi" version="1.0.18" name="AIODI" provider-name="shiggsy365">
+<addon id="skin.aiodi" version="1.0.19" name="AIODI" provider-name="shiggsy365">
     <requires>
         <import addon="xbmc.gui" version="5.17.0"/>
     </requires>
@@ -49,7 +49,7 @@
     <extension point="xbmc.addon.metadata">
         <summary lang="en_GB">AIOStreams Integrated Dynamic Interface</summary>
         <description lang="en_GB">AIODI is a custom Kodi skin designed specifically for AIOStreams with deep integration.</description>
-        <news>v1.0.18: Compatibility update for various Kodi versions.</news>
+        <news>v1.0.19: Compatibility update for various Kodi versions.</news>
         <platform>all</platform>
         <license>Creative Commons Attribution Non-Commercial Share-Alike 4.0</license>
         <assets>
