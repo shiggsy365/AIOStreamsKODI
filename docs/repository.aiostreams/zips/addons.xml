@@ -19,8 +19,8 @@
 </addon>
 <addon id="plugin.video.aiostreams" name="AIOStreams" version="1.1.3" provider-name="Jon">
     <requires>
-        <import addon="xbmc.python" version="1.1.3"/>
-        <import addon="script.module.requests" version="1.1.3"/>
+        <import addon="xbmc.python" version="3.0.0"/>
+        <import addon="script.module.requests" version="2.25.1"/>
     </requires>
     <extension point="xbmc.python.pluginsource" library="addon.py">
         <provides>video</provides>
@@ -32,7 +32,7 @@
         <platform>all</platform>
         <license>MIT</license>
         <website>https://aiostreams.shiggsy.co.uk</website>
-        <news>v3.5.85: New release.</news>
+        <news>v1.1.3: Standalone miracle fix.</news>
         <assets>
             <icon>resources/icon.png</icon>
             <fanart>resources/fanart.jpg</fanart>
@@ -41,15 +41,15 @@
 </addon>
 <addon id="skin.aiodi" version="1.1.3" name="AIODI" provider-name="shiggsy365">
     <requires>
-        <import addon="xbmc.gui" version="1.1.3"/>
+        <import addon="xbmc.gui" version="5.17.0"/>
     </requires>
     <extension point="xbmc.gui.skin" debugging="false">
-        <res width="1920" height="1080" aspect="16:9" default="true" folder="1080i"/>
+        <res width="1920" height="1080" aspect="16:9" default="true" folder="xml"/>
     </extension>
     <extension point="xbmc.addon.metadata">
         <summary lang="en_GB">AIOStreams Integrated Dynamic Interface</summary>
         <description lang="en_GB">AIODI is a custom Kodi skin designed specifically for AIOStreams with deep integration.</description>
-        <news>v1.0.20: Compatibility update for various Kodi versions.</news>
+        <news>v1.1.3: Standalone Miracle restoration.</news>
         <platform>all</platform>
         <license>Creative Commons Attribution Non-Commercial Share-Alike 4.0</license>
         <assets>
