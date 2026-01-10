@@ -1,3 +1,13 @@
+[B]2.0.0[/B]
+• Arctic Fuse 2 Theme Integration - Major visual overhaul
+• Replaced bright blue (#1E90FF) with subtle gray (#b3b3b3) theme
+• Implemented opacity-based color system (100%, 90%, 70%, 50%, 30%, 12% variations)
+• Added main_fg/bg, dialog_fg/bg, panel, overlay, and shadow color definitions
+• Updated navigation with subtle focus states for minimal aesthetic
+• Updated all 14 color themes with Arctic Fuse 2 backgrounds
+• Updated dialog files with transparent overlays and soft text
+• Transformed from Netflix-style to minimal, content-focused design
+
 [B]0.8.5[/B]
 • Updated language files from Transifex
 
