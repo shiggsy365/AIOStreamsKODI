@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <addons>
-<addon id="plugin.video.aiostreams" name="AIOStreams" version="3.5.67" provider-name="Jon">
+<addon id="plugin.video.aiostreams" name="AIOStreams" version="3.5.68" provider-name="Jon">
     <requires>
         <import addon="xbmc.python" version="3.0.0"/>
         <import addon="script.module.requests" version="2.25.1"/>
@@ -15,34 +15,17 @@
         <platform>all</platform>
         <license>MIT</license>
         <website>https://aiostreams.shiggsy.co.uk</website>
-        <news>v3.5.67: New release.</news>
+        <news>v3.5.68: New release.</news>
         <assets>
             <icon>resources/icon.png</icon>
             <fanart>resources/fanart.jpg</fanart>
         </assets>
     </extension>
 </addon>
-<addon id="repository.aiostreams" name="AIOStreams Repository" version="1.0.2" provider-name="AIOStreams">
-    <extension point="xbmc.addon.repository" name="AIOStreams Repository">
-	<dir>
-    	    <info compressed="false">https://github.com/shiggsy365/AIOStreamsKODI/raw/refs/heads/main/docs/repository.aiostreams/zips/addons.xml</info>
-    	    <checksum>https://github.com/shiggsy365/AIOStreamsKODI/raw/refs/heads/main/docs/repository.aiostreams/zips/addons.xml.md5</checksum>
-    	    <datadir zip="true">https://github.com/shiggsy365/AIOStreamsKODI/raw/refs/heads/main/docs/repository.aiostreams/zips/</datadir>
-	</dir>
-    </extension>
-    <extension point="xbmc.addon.metadata">
-        <summary>AIOStreams Addon Repository</summary>
-        <description>Official repository for AIOStreams Kodi addon with automatic updates</description>
-        <platform>all</platform>
-        <assets>
-            <icon>icon.png</icon>
-        </assets>
-    </extension>
-</addon>
-<addon id="skin.aiodi" version="1.0.2" name="AIODI - AIOStreams Integrated Skin" provider-name="shiggsy365">
+<addon id="skin.aiodi" version="1.0.3" name="AIODI - AIOStreams Integrated Skin" provider-name="shiggsy365">
     <requires>
         <import addon="xbmc.gui" version="5.16.0"/>
-        <import addon="plugin.video.aiostreams" version="1.5.0"/>
+        <import addon="plugin.video.aiostreams" version="3.5.68"/>
         <import addon="script.module.requests" version="2.31.0"/>
     </requires>
     <extension point="xbmc.gui.skin" debugging="false">
@@ -63,6 +46,23 @@
             <icon>media/icon.png</icon>
             <fanart>media/fanart.jpg</fanart>
             <screenshot>media/screenshots/home.jpg</screenshot>
+        </assets>
+    </extension>
+</addon>
+<addon id="repository.aiostreams" name="AIOStreams Repository" version="1.0.3" provider-name="AIOStreams">
+    <extension point="xbmc.addon.repository" name="AIOStreams Repository">
+	<dir>
+    	    <info compressed="false">https://github.com/shiggsy365/AIOStreamsKODI/raw/refs/heads/main/docs/repository.aiostreams/zips/addons.xml</info>
+    	    <checksum>https://github.com/shiggsy365/AIOStreamsKODI/raw/refs/heads/main/docs/repository.aiostreams/zips/addons.xml.md5</checksum>
+    	    <datadir zip="true">https://github.com/shiggsy365/AIOStreamsKODI/raw/refs/heads/main/docs/repository.aiostreams/zips/</datadir>
+	</dir>
+    </extension>
+    <extension point="xbmc.addon.metadata">
+        <summary>AIOStreams Addon Repository</summary>
+        <description>Official repository for AIOStreams Kodi addon with automatic updates</description>
+        <platform>all</platform>
+        <assets>
+            <icon>icon.png</icon>
         </assets>
     </extension>
 </addon>
