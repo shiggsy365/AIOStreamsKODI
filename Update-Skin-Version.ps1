@@ -49,12 +49,12 @@ function Update-KodiFile($path, $old, $new) {
         if ($content -ne $updated) {
             $updated = $updated.Trim()
             [System.IO.File]::WriteAllText($path, $updated, $Utf8NoBOM)
-            Write-Host "  ✓ Updated: $path" -ForegroundColor Gray
+            Write-Host "  [+] Updated: $path" -ForegroundColor Gray
         } else {
-            Write-Host "  ℹ No changes needed: $path" -ForegroundColor DarkGray
+            Write-Host "  [i] No changes needed: $path" -ForegroundColor DarkGray
         }
     } else {
-        Write-Host "  ✗ Warning: Path not found - $path" -ForegroundColor Yellow
+        Write-Host "  [!] Warning: Path not found - $path" -ForegroundColor Yellow
     }
 }
 
@@ -69,13 +69,13 @@ function Build-SkinZip($destination, $sourceDir) {
     $destDir = Split-Path $destination
     if (!(Test-Path $destDir)) {
         New-Item -ItemType Directory -Path $destDir -Force | Out-Null
-        Write-Host "  ✓ Created directory: $destDir" -ForegroundColor Gray
+        Write-Host "  [+] Created directory: $destDir" -ForegroundColor Gray
     }
 
     # Remove old ZIP if it exists
     if (Test-Path $destination) {
         Remove-Item $destination -Force
-        Write-Host "  ✓ Removed existing ZIP" -ForegroundColor Gray
+        Write-Host "  [+] Removed existing ZIP" -ForegroundColor Gray
     }
 
     $zipArchive = [System.IO.Compression.ZipFile]::Open($destination, [System.IO.Compression.ZipArchiveMode]::Create)
@@ -95,7 +95,7 @@ function Build-SkinZip($destination, $sourceDir) {
         if (Test-Path $addonXmlPath) {
             $entryName = "skin.aiodi/addon.xml"
             [System.IO.Compression.ZipFileExtensions]::CreateEntryFromFile($zipArchive, $addonXmlPath, $entryName)
-            Write-Host "  ✓ Added: addon.xml (priority file)" -ForegroundColor Gray
+            Write-Host "  [+] Added: addon.xml (priority file)" -ForegroundColor Gray
         }
 
         # Add all other files except excluded ones
@@ -113,7 +113,7 @@ function Build-SkinZip($destination, $sourceDir) {
             $fileCount++
         }
 
-        Write-Host "  ✓ Added: $fileCount additional files" -ForegroundColor Gray
+        Write-Host "  [+] Added: $fileCount additional files" -ForegroundColor Gray
 
     } finally {
         $zipArchive.Dispose()
@@ -121,11 +121,11 @@ function Build-SkinZip($destination, $sourceDir) {
 
     $zipSize = (Get-Item $destination).Length
     $zipSizeKB = [math]::Round($zipSize / 1KB, 2)
-    Write-Host "  ✓ Created: $destination ($zipSizeKB KB)" -ForegroundColor Green
+    Write-Host "  [OK] Created: $destination (${zipSizeKB} KB)" -ForegroundColor Green
 }
 
 Build-SkinZip $zipDestRepo "$baseDir\skin.AIODI"
-Write-Host "  ✓ Copying ZIP to docs/skin.aiodi/" -ForegroundColor Gray
+Write-Host "  [+] Copying ZIP to docs/skin.aiodi/" -ForegroundColor Gray
 Copy-Item $zipDestRepo $zipDestDocs -Force
 
 # 4. Generate Checksums
@@ -134,9 +134,9 @@ function Write-MD5($targetFile, $md5Path) {
     if (Test-Path $targetFile) {
         $hash = (Get-FileHash $targetFile -Algorithm MD5).Hash.ToLower()
         [System.IO.File]::WriteAllText($md5Path, "$hash  $(Split-Path $targetFile -Leaf)", $Utf8NoBOM)
-        Write-Host "  ✓ Created: $(Split-Path $md5Path -Leaf)" -ForegroundColor Gray
+        Write-Host "  [+] Created: $(Split-Path $md5Path -Leaf)" -ForegroundColor Gray
     } else {
-        Write-Host "  ✗ Warning: File not found - $targetFile" -ForegroundColor Yellow
+        Write-Host "  [!] Warning: File not found - $targetFile" -ForegroundColor Yellow
     }
 }
 
@@ -159,27 +159,27 @@ if ($foundOldFiles) {
         # Clean up repository folder
         if (Test-Path $oldZipPathRepo) {
             Remove-Item $oldZipPathRepo -Force
-            Write-Host "  ✓ Deleted: $oldZipPathRepo" -ForegroundColor Gray
+            Write-Host "  [+] Deleted: $oldZipPathRepo" -ForegroundColor Gray
         }
         if (Test-Path $oldZipMd5PathRepo) {
             Remove-Item $oldZipMd5PathRepo -Force
-            Write-Host "  ✓ Deleted: $oldZipMd5PathRepo" -ForegroundColor Gray
+            Write-Host "  [+] Deleted: $oldZipMd5PathRepo" -ForegroundColor Gray
         }
 
         # Clean up docs folder
         if (Test-Path $oldZipPathDocs) {
             Remove-Item $oldZipPathDocs -Force
-            Write-Host "  ✓ Deleted: $oldZipPathDocs" -ForegroundColor Gray
+            Write-Host "  [+] Deleted: $oldZipPathDocs" -ForegroundColor Gray
         }
         if (Test-Path $oldZipMd5PathDocs) {
             Remove-Item $oldZipMd5PathDocs -Force
-            Write-Host "  ✓ Deleted: $oldZipMd5PathDocs" -ForegroundColor Gray
+            Write-Host "  [+] Deleted: $oldZipMd5PathDocs" -ForegroundColor Gray
         }
     } else {
-        Write-Host "  ℹ Keeping old version files" -ForegroundColor DarkGray
+        Write-Host "  [i] Keeping old version files" -ForegroundColor DarkGray
     }
 } else {
-    Write-Host "  ℹ No old version files found" -ForegroundColor DarkGray
+    Write-Host "  [i] No old version files found" -ForegroundColor DarkGray
 }
 
 # 6. Verification & Summary
@@ -203,16 +203,16 @@ foreach ($item in $verifyItems) {
         if ($item.Path -match "\.xml$") {
             $content = Get-Content $item.Path -Raw
             if ($content -match $NEWREF) {
-                Write-Host "  ✓ $($item.Description) - Version updated" -ForegroundColor Green
+                Write-Host "  [+] $($item.Description) - Version updated" -ForegroundColor Green
             } else {
-                Write-Host "  ✗ $($item.Description) - Version NOT found!" -ForegroundColor Red
+                Write-Host "  [!] $($item.Description) - Version NOT found!" -ForegroundColor Red
                 $allValid = $false
             }
         } else {
-            Write-Host "  ✓ $($item.Description) - Exists" -ForegroundColor Green
+            Write-Host "  [+] $($item.Description) - Exists" -ForegroundColor Green
         }
     } else {
-        Write-Host "  ✗ $($item.Description) - Missing!" -ForegroundColor Red
+        Write-Host "  [!] $($item.Description) - Missing!" -ForegroundColor Red
         $allValid = $false
     }
 }
@@ -220,7 +220,7 @@ foreach ($item in $verifyItems) {
 # Final Summary
 Write-Host "`n========================================" -ForegroundColor Cyan
 if ($allValid) {
-    Write-Host "✓ SUCCESS! Skin version $NEWREF deployed!" -ForegroundColor Green
+    Write-Host "[+] SUCCESS! Skin version $NEWREF deployed!" -ForegroundColor Green
     Write-Host "========================================" -ForegroundColor Cyan
     Write-Host "`nNext Steps:" -ForegroundColor Yellow
     Write-Host "  1. Review changes in Git" -ForegroundColor White
@@ -233,7 +233,7 @@ if ($allValid) {
     Write-Host "    - Repository: $zipDestRepo" -ForegroundColor DarkCyan
     Write-Host "    - Docs: $zipDestDocs" -ForegroundColor DarkCyan
 } else {
-    Write-Host "✗ ERRORS DETECTED - Please review!" -ForegroundColor Red
+    Write-Host "[!] ERRORS DETECTED - Please review!" -ForegroundColor Red
     Write-Host "========================================" -ForegroundColor Cyan
 }
 
