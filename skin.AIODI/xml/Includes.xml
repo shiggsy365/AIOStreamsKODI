@@ -22,7 +22,7 @@
 	<include file="View_501_Banner.xml" />
 	<include file="View_502_FanArt.xml" />
 	<include file="Variables.xml" />
-	<constant name="ThemeColor">FF1E90FF</constant>
+	<constant name="ThemeColor">ffb3b3b3</constant>
 	<constant name="DepthDialog">0.50</constant>
 	<constant name="DepthDialog+">0.52</constant>
 	<constant name="DepthDialog-">0.48</constant>

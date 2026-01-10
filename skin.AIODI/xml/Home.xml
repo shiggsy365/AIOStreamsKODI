@@ -31,8 +31,8 @@
                 <height>60</height>
                 <font>font30</font>
                 <label>$LOCALIZE[30402]</label>
-                <textcolor>FFFFFFFF</textcolor>
-                <focusedcolor>ThemeColor</focusedcolor>
+                <textcolor>main_fg_70</textcolor>
+                <focusedcolor>main_fg_100</focusedcolor>
                 <onclick>ActivateWindow(Home)</onclick>
             </control>
 
@@ -41,8 +41,8 @@
                 <height>60</height>
                 <font>font30</font>
                 <label>$LOCALIZE[30400]</label>
-                <textcolor>FFFFFFFF</textcolor>
-                <focusedcolor>ThemeColor</focusedcolor>
+                <textcolor>main_fg_70</textcolor>
+                <focusedcolor>main_fg_100</focusedcolor>
                 <onclick>ActivateWindow(Videos,plugin://plugin.video.aiostreams/?action=movie_lists,return)</onclick>
             </control>
 
@@ -51,8 +51,8 @@
                 <height>60</height>
                 <font>font30</font>
                 <label>$LOCALIZE[30401]</label>
-                <textcolor>FFFFFFFF</textcolor>
-                <focusedcolor>ThemeColor</focusedcolor>
+                <textcolor>main_fg_70</textcolor>
+                <focusedcolor>main_fg_100</focusedcolor>
                 <onclick>ActivateWindow(Videos,plugin://plugin.video.aiostreams/?action=series_lists,return)</onclick>
             </control>
 
@@ -61,8 +61,8 @@
                 <height>60</height>
                 <font>font30</font>
                 <label>$LOCALIZE[30404]</label>
-                <textcolor>FFFFFFFF</textcolor>
-                <focusedcolor>ThemeColor</focusedcolor>
+                <textcolor>main_fg_70</textcolor>
+                <focusedcolor>main_fg_100</focusedcolor>
                 <onclick>ActivateWindow(Videos,plugin://plugin.video.aiostreams/?action=search_unified,return)</onclick>
             </control>
 
@@ -71,8 +71,8 @@
                 <height>60</height>
                 <font>font30</font>
                 <label>$LOCALIZE[30403]</label>
-                <textcolor>FFFFFFFF</textcolor>
-                <focusedcolor>ThemeColor</focusedcolor>
+                <textcolor>main_fg_70</textcolor>
+                <focusedcolor>main_fg_100</focusedcolor>
                 <onclick>ActivateWindow(skinsettings)</onclick>
             </control>
         </control>
@@ -100,7 +100,7 @@
                 <top>0</top>
                 <width>960</width>
                 <height>280</height>
-                <texture colordiffuse="AA000000">common/white.png</texture>
+                <texture colordiffuse="main_bg_70">common/white.png</texture>
                 <aspectratio>stretch</aspectratio>
             </control>
 
@@ -110,7 +110,7 @@
                 <width>880</width>
                 <height>60</height>
                 <font>font37_title</font>
-                <textcolor>FFFFFFFF</textcolor>
+                <textcolor>main_fg_100</textcolor>
                 <align>center</align>
                 <label>AIOStreams Not Configured</label>
             </control>
@@ -121,7 +121,7 @@
                 <width>880</width>
                 <height>100</height>
                 <font>font27</font>
-                <textcolor>FFAAAAAA</textcolor>
+                <textcolor>main_fg_70</textcolor>
                 <align>center</align>
                 <label>Please install the AIOStreams addon or configure your widgets in Settings.</label>
             </control>

@@ -24,7 +24,7 @@
                 <top>0</top>
                 <width>400</width>
                 <height>200</height>
-                <texture colordiffuse="FF1A1A1A">common/white.png</texture>
+                <texture colordiffuse="dialog_bg_90">common/white.png</texture>
                 <aspectratio>stretch</aspectratio>
             </control>
 
@@ -35,7 +35,7 @@
                 <width>400</width>
                 <height>40</height>
                 <font>font30</font>
-                <textcolor>FFFFFFFF</textcolor>
+                <textcolor>main_fg_100</textcolor>
                 <align>center</align>
                 <label>Loading...</label>
             </control>
