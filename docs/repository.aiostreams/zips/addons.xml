@@ -1,6 +1,6 @@
-<?xml version="1.1.6" encoding="UTF-8"?>
+<?xml version="1.1.7" encoding="UTF-8"?>
 <addons>
-<addon id="repository.aiostreams" name="AIOStreams Repository" version="1.1.6" provider-name="AIOStreams">
+<addon id="repository.aiostreams" name="AIOStreams Repository" version="1.1.7" provider-name="AIOStreams">
     <extension point="xbmc.addon.repository" name="AIOStreams Repository">
 <dir>
         <info compressed="false">https://shiggsy365.github.io/AIOStreamsKODI/repository.aiostreams/zips/addons.xml</info>
@@ -17,10 +17,10 @@
         </assets>
     </extension>
 </addon>
-<addon id="plugin.video.aiostreams" name="AIOStreams" version="1.1.6" provider-name="Jon">
+<addon id="plugin.video.aiostreams" name="AIOStreams" version="1.1.7" provider-name="Jon">
     <requires>
-        <import addon="xbmc.python" version="1.1.6"/>
-        <import addon="script.module.requests" version="1.1.6"/>
+        <import addon="xbmc.python" version="1.1.7"/>
+        <import addon="script.module.requests" version="1.1.7"/>
     </requires>
     <extension point="xbmc.python.pluginsource" library="addon.py">
         <provides>video</provides>
@@ -39,9 +39,9 @@
         </assets>
     </extension>
 </addon>
-<addon id="skin.aiodi" version="1.1.6" name="AIODI" provider-name="shiggsy365">
+<addon id="skin.aiodi" version="1.1.7" name="AIODI" provider-name="shiggsy365">
     <requires>
-        <import addon="xbmc.gui" version="1.1.6"/>
+        <import addon="xbmc.gui" version="1.1.7"/>
     </requires>
     <extension point="xbmc.gui.skin" debugging="false">
         <res width="1920" height="1080" aspect="16:9" default="true" folder="xml"/>
