@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <addons>
-<addon id="repository.aiostreams" name="AIOStreams Repository" version="1.0.4" provider-name="AIOStreams">
+<addon id="repository.aiostreams" name="AIOStreams Repository" version="1.0.5" provider-name="AIOStreams">
     <extension point="xbmc.addon.repository" name="AIOStreams Repository">
 <dir>
         <info compressed="false">https://shiggsy365.github.io/AIOStreamsKODI/repository.aiostreams/zips/addons.xml</info>
@@ -17,7 +17,7 @@
         </assets>
     </extension>
 </addon>
-<addon id="plugin.video.aiostreams" name="AIOStreams" version="3.5.78" provider-name="Jon">
+<addon id="plugin.video.aiostreams" name="AIOStreams" version="3.5.79" provider-name="Jon">
     <requires>
         <import addon="xbmc.python" version="3.0.0"/>
         <import addon="script.module.requests" version="2.25.1"/>
@@ -32,29 +32,29 @@
         <platform>all</platform>
         <license>MIT</license>
         <website>https://aiostreams.shiggsy.co.uk</website>
-        <news>v3.5.78: New release.</news>
+        <news>v3.5.79: New release.</news>
         <assets>
             <icon>resources/icon.png</icon>
             <fanart>resources/fanart.jpg</fanart>
         </assets>
     </extension>
 </addon>
-<addon id="skin.aiodi" version="1.0.13" name="AIODI" provider-name="shiggsy365">
+<addon id="skin.aiodi" version="1.0.14" name="AIODI" provider-name="shiggsy365">
     <requires>
-        <import addon="xbmc.gui" version="5.15.0"/>
+        <import addon="xbmc.gui" version="5.17.0"/>
     </requires>
-    <extension point="xbmc.gui.skin" defaultresolution="1080i" defaultaspect="16:9">
+    <extension point="xbmc.gui.skin" debugging="false">
         <res width="1920" height="1080" aspect="16:9" default="true" folder="1080i"/>
     </extension>
     <extension point="xbmc.addon.metadata">
         <summary lang="en_GB">AIOStreams Integrated Dynamic Interface</summary>
         <description lang="en_GB">AIODI is a custom Kodi skin designed specifically for AIOStreams with deep integration.</description>
-        <news>v1.0.13: Compatibility update for various Kodi versions.</news>
+        <news>v1.0.14: Compatibility update for various Kodi versions.</news>
         <platform>all</platform>
         <license>Creative Commons Attribution Non-Commercial Share-Alike 4.0</license>
         <assets>
-            <icon>resources/icon.png</icon>
-            <fanart>resources/fanart.jpg</fanart>
+            <icon>icon.png</icon>
+            <fanart>fanart.jpg</fanart>
         </assets>
     </extension>
 </addon>

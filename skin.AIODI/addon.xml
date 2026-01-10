@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<addon id="skin.aiodi" version="1.0.13" name="AIODI - AIOStreams Integrated Skin" provider-name="shiggsy365">
+<addon id="skin.aiodi" version="1.0.14" name="AIODI - AIOStreams Integrated Skin" provider-name="shiggsy365">
     <requires>
-        <import addon="xbmc.gui" version="5.15.0"/>
+        <import addon="xbmc.gui" version="5.17.0"/>
     </requires>
-    <extension point="xbmc.gui.skin" defaultresolution="1080i" defaultaspect="16:9">
+    <extension point="xbmc.gui.skin" debugging="false">
         <res width="1920" height="1080" aspect="16:9" default="true" folder="1080i"/>
     </extension>
     <extension point="xbmc.addon.metadata">
@@ -14,8 +14,8 @@
         <website>https://github.com/shiggsy365/AIOStreamsKODI</website>
         <source>https://github.com/shiggsy365/AIOStreamsKODI</source>
         <assets>
-            <icon>resources/icon.png</icon>
-            <fanart>resources/fanart.jpg</fanart>
+            <icon>icon.png</icon>
+            <fanart>fanart.jpg</fanart>
         </assets>
     </extension>
 </addon>
