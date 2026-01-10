@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <addons>
-<addon id="plugin.video.aiostreams" name="AIOStreams" version="3.5.74" provider-name="Jon">
+<addon id="plugin.video.aiostreams" name="AIOStreams" version="3.5.75" provider-name="Jon">
     <requires>
         <import addon="xbmc.python" version="3.0.0"/>
         <import addon="script.module.requests" version="2.25.1"/>
@@ -15,14 +15,14 @@
         <platform>all</platform>
         <license>MIT</license>
         <website>https://aiostreams.shiggsy.co.uk</website>
-        <news>v3.5.74: New release.</news>
+        <news>v3.5.75: New release.</news>
         <assets>
             <icon>resources/icon.png</icon>
             <fanart>resources/fanart.jpg</fanart>
         </assets>
     </extension>
 </addon>
-<addon id="skin.aiodi" version="1.0.9" name="AIODI - AIOStreams Integrated Skin" provider-name="shiggsy365">
+<addon id="skin.aiodi" version="1.0.10" name="AIODI - AIOStreams Integrated Skin" provider-name="shiggsy365">
     <requires>
         <import addon="xbmc.gui" version="5.15.0"/>
     </requires>
@@ -32,6 +32,7 @@
     <extension point="xbmc.addon.metadata">
         <summary lang="en_GB">AIOStreams Integrated Dynamic Interface</summary>
         <description lang="en_GB">AIODI is a custom Kodi skin designed specifically for AIOStreams with deep integration, dynamic widget management, and a clean Netflix-style interface. Features include customizable home widgets, Trakt integration, and seamless content browsing without navigating through addon menus.</description>
+        <news>v1.0.10: Optimized metadata for skin visibility.</news>
         <platform>all</platform>
         <license>Creative Commons Attribution Non-Commercial Share-Alike 4.0</license>
         <website>https://github.com/shiggsy365/AIOStreamsKODI</website>
