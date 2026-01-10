@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<addon id="skin.aiodi" version="1.0.16" name="AIODI - AIOStreams Integrated Skin" provider-name="shiggsy365" parent="skin.estuary">
+<addon id="skin.aiodi" version="1.0.17" name="AIODI - AIOStreams Integrated Skin" provider-name="shiggsy365" parent="skin.estuary">
     <requires>
         <import addon="xbmc.gui" version="5.17.0"/>
+        <import addon="skin.estuary"/>
     </requires>
     <extension point="xbmc.gui.skin" debugging="false">
         <res width="1920" height="1080" aspect="16:9" default="true" folder="1080i"/>
