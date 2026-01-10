@@ -1,3 +1,8 @@
+[B]2.0.2[/B]
+• Rebuilt package to resolve installation issues
+• Verified ZIP integrity and MD5 checksums
+• Same Arctic Fuse 2 theme with improved contrast
+
 [B]2.0.1[/B]
 • Fixed contrast issues - Improved text visibility
 • Changed foreground colors from #ededed to #ffffff (pure white)
