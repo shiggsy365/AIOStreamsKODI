@@ -25,15 +25,23 @@ BASE_DIR="$SCRIPT_DIR"
 
 # File paths
 SKIN_ADDON_XML="$BASE_DIR/skin.AIODI/addon.xml"
+DOCS_ADDON_XML="$BASE_DIR/docs/skin.aiodi/addon.xml"
 REPO_ADDONS_XML="$BASE_DIR/docs/repository.aiostreams/zips/addons.xml"
 REPO_ADDONS_MD5="$BASE_DIR/docs/repository.aiostreams/zips/addons.xml.md5"
 
-# ZIP paths
-ZIP_DIR="$BASE_DIR/docs/repository.aiostreams/zips/skin.aiodi"
-NEW_ZIP="$ZIP_DIR/skin.aiodi-$NEWREF.zip"
-NEW_ZIP_MD5="$NEW_ZIP.md5"
-OLD_ZIP="$ZIP_DIR/skin.aiodi-$OLDREF.zip"
-OLD_ZIP_MD5="$OLD_ZIP.md5"
+# ZIP paths (repository folder)
+ZIP_DIR_REPO="$BASE_DIR/docs/repository.aiostreams/zips/skin.aiodi"
+NEW_ZIP_REPO="$ZIP_DIR_REPO/skin.aiodi-$NEWREF.zip"
+NEW_ZIP_MD5_REPO="$NEW_ZIP_REPO.md5"
+OLD_ZIP_REPO="$ZIP_DIR_REPO/skin.aiodi-$OLDREF.zip"
+OLD_ZIP_MD5_REPO="$OLD_ZIP_REPO.md5"
+
+# ZIP paths (docs folder)
+ZIP_DIR_DOCS="$BASE_DIR/docs/skin.aiodi"
+NEW_ZIP_DOCS="$ZIP_DIR_DOCS/skin.aiodi-$NEWREF.zip"
+NEW_ZIP_MD5_DOCS="$NEW_ZIP_DOCS.md5"
+OLD_ZIP_DOCS="$ZIP_DIR_DOCS/skin.aiodi-$OLDREF.zip"
+OLD_ZIP_MD5_DOCS="$OLD_ZIP_DOCS.md5"
 
 echo -e "${YELLOW}Old Version: $OLDREF${NC}"
 echo -e "${GREEN}New Version: $NEWREF${NC}"
@@ -57,24 +65,26 @@ update_xml_version() {
 }
 
 update_xml_version "$SKIN_ADDON_XML"
+update_xml_version "$DOCS_ADDON_XML"
 update_xml_version "$REPO_ADDONS_XML"
 
 # 3. Create ZIP File
 echo -e "\n${CYAN}[2/5] Building skin ZIP file...${NC}"
 
-# Create ZIP directory if it doesn't exist
-mkdir -p "$ZIP_DIR"
-echo -e "${GRAY}  ✓ Ensured directory exists: $ZIP_DIR${NC}"
+# Create ZIP directories if they don't exist
+mkdir -p "$ZIP_DIR_REPO"
+mkdir -p "$ZIP_DIR_DOCS"
+echo -e "${GRAY}  ✓ Ensured directories exist${NC}"
 
 # Remove old ZIP if it exists
-if [ -f "$NEW_ZIP" ]; then
-    rm "$NEW_ZIP"
-    echo -e "${GRAY}  ✓ Removed existing ZIP${NC}"
+if [ -f "$NEW_ZIP_REPO" ]; then
+    rm "$NEW_ZIP_REPO"
+    echo -e "${GRAY}  ✓ Removed existing repository ZIP${NC}"
 fi
 
 # Create ZIP excluding development documentation
 cd "$BASE_DIR/skin.AIODI"
-zip -r "$NEW_ZIP" . \
+zip -r "$NEW_ZIP_REPO" . \
     -x "CUSTOM_SKIN_PLAN.md" \
     -x "IMPLEMENTATION_SUMMARY.md" \
     -x "TESTING_INSTRUCTIONS.md" \
@@ -82,8 +92,12 @@ zip -r "$NEW_ZIP" . \
 
 cd "$BASE_DIR"
 
-ZIP_SIZE=$(du -h "$NEW_ZIP" | cut -f1)
-echo -e "${GREEN}  ✓ Created: $NEW_ZIP ($ZIP_SIZE)${NC}"
+ZIP_SIZE=$(du -h "$NEW_ZIP_REPO" | cut -f1)
+echo -e "${GREEN}  ✓ Created: $NEW_ZIP_REPO ($ZIP_SIZE)${NC}"
+
+# Copy ZIP to docs folder
+cp "$NEW_ZIP_REPO" "$NEW_ZIP_DOCS"
+echo -e "${GRAY}  ✓ Copied ZIP to docs/skin.aiodi/${NC}"
 
 # 4. Generate Checksums
 echo -e "\n${CYAN}[3/5] Generating MD5 checksums...${NC}"
@@ -109,8 +123,11 @@ generate_md5() {
     fi
 }
 
-# Generate MD5 for new ZIP
-generate_md5 "$NEW_ZIP"
+# Generate MD5 for repository ZIP
+generate_md5 "$NEW_ZIP_REPO"
+
+# Generate MD5 for docs ZIP
+generate_md5 "$NEW_ZIP_DOCS"
 
 # Generate MD5 for addons.xml
 generate_md5 "$REPO_ADDONS_XML"
@@ -118,15 +135,31 @@ generate_md5 "$REPO_ADDONS_XML"
 # 5. Cleanup Old Version
 echo -e "\n${CYAN}[4/5] Checking for old version files...${NC}"
 
-if [ -f "$OLD_ZIP" ]; then
+FOUND_OLD=false
+[ -f "$OLD_ZIP_REPO" ] && FOUND_OLD=true
+[ -f "$OLD_ZIP_DOCS" ] && FOUND_OLD=true
+
+if [ "$FOUND_OLD" = true ]; then
     read -p "Found old version $OLDREF. Delete old ZIP files? (y/n): " cleanup
     if [ "$cleanup" = "y" ] || [ "$cleanup" = "Y" ]; then
-        rm -f "$OLD_ZIP"
-        echo -e "${GRAY}  ✓ Deleted: $OLD_ZIP${NC}"
+        # Clean up repository folder
+        if [ -f "$OLD_ZIP_REPO" ]; then
+            rm -f "$OLD_ZIP_REPO"
+            echo -e "${GRAY}  ✓ Deleted: $OLD_ZIP_REPO${NC}"
+        fi
+        if [ -f "$OLD_ZIP_MD5_REPO" ]; then
+            rm -f "$OLD_ZIP_MD5_REPO"
+            echo -e "${GRAY}  ✓ Deleted: $OLD_ZIP_MD5_REPO${NC}"
+        fi
 
-        if [ -f "$OLD_ZIP_MD5" ]; then
-            rm -f "$OLD_ZIP_MD5"
-            echo -e "${GRAY}  ✓ Deleted: $OLD_ZIP_MD5${NC}"
+        # Clean up docs folder
+        if [ -f "$OLD_ZIP_DOCS" ]; then
+            rm -f "$OLD_ZIP_DOCS"
+            echo -e "${GRAY}  ✓ Deleted: $OLD_ZIP_DOCS${NC}"
+        fi
+        if [ -f "$OLD_ZIP_MD5_DOCS" ]; then
+            rm -f "$OLD_ZIP_MD5_DOCS"
+            echo -e "${GRAY}  ✓ Deleted: $OLD_ZIP_MD5_DOCS${NC}"
         fi
     else
         echo -e "${GRAY}  ℹ Keeping old version files${NC}"
@@ -162,10 +195,13 @@ verify_file() {
     fi
 }
 
-verify_file "$SKIN_ADDON_XML" "Skin addon.xml" "true"
+verify_file "$SKIN_ADDON_XML" "Skin source addon.xml" "true"
+verify_file "$DOCS_ADDON_XML" "Docs addon.xml" "true"
 verify_file "$REPO_ADDONS_XML" "Repository addons.xml" "true"
-verify_file "$NEW_ZIP" "Skin ZIP file" "false"
-verify_file "$NEW_ZIP_MD5" "Skin ZIP MD5" "false"
+verify_file "$NEW_ZIP_REPO" "Repository ZIP file" "false"
+verify_file "$NEW_ZIP_MD5_REPO" "Repository ZIP MD5" "false"
+verify_file "$NEW_ZIP_DOCS" "Docs ZIP file" "false"
+verify_file "$NEW_ZIP_MD5_DOCS" "Docs ZIP MD5" "false"
 verify_file "$REPO_ADDONS_MD5" "Repository addons.xml MD5" "false"
 
 # Final Summary
@@ -180,7 +216,9 @@ if [ "$ALL_VALID" = true ]; then
     echo -e "${GRAY}     git add skin.AIODI/ docs/${NC}"
     echo -e "${GRAY}     git commit -m 'Update AIODI skin to v$NEWREF'${NC}"
     echo -e "${GRAY}     git push${NC}"
-    echo -e "\n${CYAN}  ZIP Location: $NEW_ZIP${NC}"
+    echo -e "\n${CYAN}  ZIP Locations:${NC}"
+    echo -e "    ${GRAY}- Repository: $NEW_ZIP_REPO${NC}"
+    echo -e "    ${GRAY}- Docs: $NEW_ZIP_DOCS${NC}"
 else
     echo -e "${RED}✗ ERRORS DETECTED - Please review!${NC}"
     echo -e "${CYAN}========================================${NC}"
