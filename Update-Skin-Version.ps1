@@ -11,15 +11,19 @@ $baseDir = "C:\Users\jon_s\OneDrive\Documents\GitHub\AIOStreamsKODI"
 # Specific File Paths for Version Updates
 $xmlPaths = @(
     "$baseDir\skin.AIODI\addon.xml",
+    "$baseDir\docs\skin.aiodi\addon.xml",
     "$baseDir\docs\repository.aiostreams\zips\addons.xml"
 )
 
-# ZIP Destination Path
-$zipDest = "$baseDir\docs\repository.aiostreams\zips\skin.aiodi\skin.aiodi-$NEWREF.zip"
+# ZIP Destination Paths
+$zipDestRepo = "$baseDir\docs\repository.aiostreams\zips\skin.aiodi\skin.aiodi-$NEWREF.zip"
+$zipDestDocs = "$baseDir\docs\skin.aiodi\skin.aiodi-$NEWREF.zip"
 
-# Old ZIP Path (for optional cleanup)
-$oldZipPath = "$baseDir\docs\repository.aiostreams\zips\skin.aiodi\skin.aiodi-$OLDREF.zip"
-$oldZipMd5Path = "$oldZipPath.md5"
+# Old ZIP Paths (for optional cleanup)
+$oldZipPathRepo = "$baseDir\docs\repository.aiostreams\zips\skin.aiodi\skin.aiodi-$OLDREF.zip"
+$oldZipMd5PathRepo = "$oldZipPathRepo.md5"
+$oldZipPathDocs = "$baseDir\docs\skin.aiodi\skin.aiodi-$OLDREF.zip"
+$oldZipMd5PathDocs = "$oldZipPathDocs.md5"
 
 $OldRefEscaped = [regex]::Escape($OLDREF)
 $Utf8NoBOM = New-Object System.Text.UTF8Encoding($false)
@@ -120,7 +124,9 @@ function Build-SkinZip($destination, $sourceDir) {
     Write-Host "  ✓ Created: $destination ($zipSizeKB KB)" -ForegroundColor Green
 }
 
-Build-SkinZip $zipDest "$baseDir\skin.AIODI"
+Build-SkinZip $zipDestRepo "$baseDir\skin.AIODI"
+Write-Host "  ✓ Copying ZIP to docs/skin.aiodi/" -ForegroundColor Gray
+Copy-Item $zipDestRepo $zipDestDocs -Force
 
 # 4. Generate Checksums
 Write-Host "`n[3/5] Generating MD5 checksums..." -ForegroundColor Cyan
@@ -134,23 +140,40 @@ function Write-MD5($targetFile, $md5Path) {
     }
 }
 
-# Generate MD5 for new ZIP
-Write-MD5 $zipDest "$zipDest.md5"
+# Generate MD5 for repository ZIP
+Write-MD5 $zipDestRepo "$zipDestRepo.md5"
+
+# Generate MD5 for docs ZIP
+Write-MD5 $zipDestDocs "$zipDestDocs.md5"
 
 # Generate MD5 for addons.xml
 Write-MD5 "$baseDir\docs\repository.aiostreams\zips\addons.xml" "$baseDir\docs\repository.aiostreams\zips\addons.xml.md5"
 
 # 5. Cleanup Old Version
 Write-Host "`n[4/5] Checking for old version files..." -ForegroundColor Cyan
-if (Test-Path $oldZipPath) {
+$foundOldFiles = (Test-Path $oldZipPathRepo) -or (Test-Path $oldZipPathDocs)
+
+if ($foundOldFiles) {
     $cleanup = Read-Host "Found old version $OLDREF. Delete old ZIP files? (y/n)"
     if ($cleanup -eq "y" -or $cleanup -eq "Y") {
-        Remove-Item $oldZipPath -Force
-        Write-Host "  ✓ Deleted: $oldZipPath" -ForegroundColor Gray
+        # Clean up repository folder
+        if (Test-Path $oldZipPathRepo) {
+            Remove-Item $oldZipPathRepo -Force
+            Write-Host "  ✓ Deleted: $oldZipPathRepo" -ForegroundColor Gray
+        }
+        if (Test-Path $oldZipMd5PathRepo) {
+            Remove-Item $oldZipMd5PathRepo -Force
+            Write-Host "  ✓ Deleted: $oldZipMd5PathRepo" -ForegroundColor Gray
+        }
 
-        if (Test-Path $oldZipMd5Path) {
-            Remove-Item $oldZipMd5Path -Force
-            Write-Host "  ✓ Deleted: $oldZipMd5Path" -ForegroundColor Gray
+        # Clean up docs folder
+        if (Test-Path $oldZipPathDocs) {
+            Remove-Item $oldZipPathDocs -Force
+            Write-Host "  ✓ Deleted: $oldZipPathDocs" -ForegroundColor Gray
+        }
+        if (Test-Path $oldZipMd5PathDocs) {
+            Remove-Item $oldZipMd5PathDocs -Force
+            Write-Host "  ✓ Deleted: $oldZipMd5PathDocs" -ForegroundColor Gray
         }
     } else {
         Write-Host "  ℹ Keeping old version files" -ForegroundColor DarkGray
@@ -163,10 +186,13 @@ if (Test-Path $oldZipPath) {
 Write-Host "`n[5/5] Verifying deployment..." -ForegroundColor Cyan
 
 $verifyItems = @(
-    @{ Path = "$baseDir\skin.AIODI\addon.xml"; Description = "Skin addon.xml" },
+    @{ Path = "$baseDir\skin.AIODI\addon.xml"; Description = "Skin source addon.xml" },
+    @{ Path = "$baseDir\docs\skin.aiodi\addon.xml"; Description = "Docs addon.xml" },
     @{ Path = "$baseDir\docs\repository.aiostreams\zips\addons.xml"; Description = "Repository addons.xml" },
-    @{ Path = $zipDest; Description = "Skin ZIP file" },
-    @{ Path = "$zipDest.md5"; Description = "Skin ZIP MD5" },
+    @{ Path = $zipDestRepo; Description = "Repository ZIP file" },
+    @{ Path = "$zipDestRepo.md5"; Description = "Repository ZIP MD5" },
+    @{ Path = $zipDestDocs; Description = "Docs ZIP file" },
+    @{ Path = "$zipDestDocs.md5"; Description = "Docs ZIP MD5" },
     @{ Path = "$baseDir\docs\repository.aiostreams\zips\addons.xml.md5"; Description = "Repository addons.xml MD5" }
 )
 
@@ -203,7 +229,9 @@ if ($allValid) {
     Write-Host "     git add skin.AIODI/ docs/" -ForegroundColor DarkGray
     Write-Host "     git commit -m 'Update AIODI skin to v$NEWREF'" -ForegroundColor DarkGray
     Write-Host "     git push" -ForegroundColor DarkGray
-    Write-Host "`n  ZIP Location: $zipDest" -ForegroundColor Cyan
+    Write-Host "`n  ZIP Locations:" -ForegroundColor Cyan
+    Write-Host "    - Repository: $zipDestRepo" -ForegroundColor DarkCyan
+    Write-Host "    - Docs: $zipDestDocs" -ForegroundColor DarkCyan
 } else {
     Write-Host "✗ ERRORS DETECTED - Please review!" -ForegroundColor Red
     Write-Host "========================================" -ForegroundColor Cyan
