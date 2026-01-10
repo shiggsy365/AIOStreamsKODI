@@ -15,40 +15,14 @@ NC='\033[0m' # No Color
 BASE_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 # Helper Functions
-get_latest_version() {
-    local docs_path="$1"
-
-    if [[ ! -d "$docs_path" ]]; then
+get_source_version() {
+    local xml_path="$1"
+    if [[ -f "$xml_path" ]]; then
+        local version=$(grep -m 1 "version=" "$xml_path" | sed -n 's/.*version="\([^"]*\)".*/\1/p')
+        echo "$version"
+    else
         echo ""
-        return
     fi
-
-    local latest_version=""
-    local max_major=0
-    local max_minor=0
-    local max_patch=0
-
-    for zip_file in "$docs_path"/*.zip; do
-        if [[ -f "$zip_file" ]]; then
-            local filename=$(basename "$zip_file")
-            if [[ $filename =~ -([0-9]+)\.([0-9]+)\.([0-9]+)\.zip$ ]]; then
-                local major="${BASH_REMATCH[1]}"
-                local minor="${BASH_REMATCH[2]}"
-                local patch="${BASH_REMATCH[3]}"
-
-                if [[ $major -gt $max_major ]] || \
-                   [[ $major -eq $max_major && $minor -gt $max_minor ]] || \
-                   [[ $major -eq $max_major && $minor -eq $max_minor && $patch -gt $max_patch ]]; then
-                    max_major=$major
-                    max_minor=$minor
-                    max_patch=$patch
-                    latest_version="$major.$minor.$patch"
-                fi
-            fi
-        fi
-    done
-
-    echo "$latest_version"
 }
 
 increment_version() {
@@ -381,8 +355,8 @@ echo -e "${CYAN}========================================${NC}"
 # Detect current versions
 echo -e "\n${YELLOW}Detecting current versions...${NC}"
 
-plugin_version=$(get_latest_version "$BASE_DIR/docs/plugin.video.aiostreams")
-skin_version=$(get_latest_version "$BASE_DIR/docs/skin.aiodi")
+plugin_version=$(get_source_version "$BASE_DIR/plugin.video.aiostreams/addon.xml")
+skin_version=$(get_source_version "$BASE_DIR/skin.AIODI/addon.xml")
 
 if [[ -n "$plugin_version" ]]; then
     echo -e "  ${WHITE}Plugin current version: $plugin_version${NC}"
