@@ -1,3 +1,9 @@
+[B]2.0.1[/B]
+• Fixed contrast issues - Improved text visibility
+• Changed foreground colors from #ededed to #ffffff (pure white)
+• Maintained Arctic Fuse 2 minimal aesthetic with better readability
+• All text now clearly visible in navigation, menus, and settings
+
 [B]2.0.0[/B]
 • Arctic Fuse 2 Theme Integration - Major visual overhaul
 • Replaced bright blue (#1E90FF) with subtle gray (#b3b3b3) theme
