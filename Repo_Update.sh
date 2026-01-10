@@ -193,6 +193,10 @@ update_plugin() {
     echo -e "\n${CYAN}[2/4] Building plugin ZIP files...${NC}"
     build_plugin_zip "$zip_dest1" "$BASE_DIR/plugin.video.aiostreams"
     build_plugin_zip "$zip_dest2" "$BASE_DIR/plugin.video.aiostreams"
+    
+    # Generate MD5 checksums
+    write_md5 "$zip_dest1" "$zip_dest1.md5"
+    write_md5 "$zip_dest2" "$zip_dest2.md5"
 
     # Get Repo Version
     local repo_xml="$BASE_DIR/docs/repository.aiostreams/addon.xml"
@@ -280,6 +284,10 @@ update_skin() {
     build_skin_zip "$zip_dest_repo" "$BASE_DIR/skin.AIODI"
     echo -e "  ${GREEN}[+]${GRAY} Copying ZIP to docs/skin.aiodi/${NC}"
     cp "$zip_dest_repo" "$zip_dest_docs"
+
+    # Generate MD5 checksums
+    write_md5 "$zip_dest_repo" "$zip_dest_repo.md5"
+    write_md5 "$zip_dest_docs" "$zip_dest_docs.md5"
 
     # Copy assets to repository directory (Root level for better visibility)
     echo -e "  ${GREEN}[+]${GRAY} Copying assets to repository directory${NC}"
