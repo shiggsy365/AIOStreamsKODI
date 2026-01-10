@@ -192,6 +192,10 @@ function Update-Skin($oldVersion, $newVersion) {
     Copy-Item "$baseDir\skin.AIODI\resources\icon.png" $repoResourcesDir -Force
     Copy-Item "$baseDir\skin.AIODI\resources\fanart.jpg" $repoResourcesDir -Force
 
+    # Copy addon.xml to zips directory (Kodi scans this for quick addon info)
+    Write-Host "  [+] Copying addon.xml to repository zips directory" -ForegroundColor Gray
+    Copy-Item "$baseDir\docs\skin.aiodi\addon.xml" "$baseDir\docs\repository.aiostreams\zips\skin.aiodi\addon.xml" -Force
+
     # Generate checksums
     Write-Host "`n[3/4] Generating MD5 checksums..." -ForegroundColor Cyan
     Write-MD5 $zipDestRepo "$zipDestRepo.md5"
