@@ -258,6 +258,10 @@ update_skin() {
     cp "$BASE_DIR/skin.AIODI/resources/icon.png" "$BASE_DIR/docs/repository.aiostreams/zips/skin.aiodi/resources/"
     cp "$BASE_DIR/skin.AIODI/resources/fanart.jpg" "$BASE_DIR/docs/repository.aiostreams/zips/skin.aiodi/resources/"
 
+    # Copy addon.xml to zips directory (Kodi scans this for quick addon info)
+    echo -e "  ${GREEN}[+]${GRAY} Copying addon.xml to repository zips directory${NC}"
+    cp "$BASE_DIR/docs/skin.aiodi/addon.xml" "$BASE_DIR/docs/repository.aiostreams/zips/skin.aiodi/addon.xml"
+
     # Generate checksums
     echo -e "\n${CYAN}[3/4] Generating MD5 checksums...${NC}"
     write_md5 "$zip_dest_repo" "$zip_dest_repo.md5"
