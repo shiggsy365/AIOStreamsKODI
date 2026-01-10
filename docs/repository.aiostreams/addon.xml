@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<addon id="repository.aiostreams" name="AIOStreams Repository" version="1.0.5" provider-name="AIOStreams">
+<addon id="repository.aiostreams" name="AIOStreams Repository" version="1.1.27" provider-name="AIOStreams">
     <extension point="xbmc.addon.repository" name="AIOStreams Repository">
         <dir>
             <info compressed="false">https://shiggsy365.github.io/AIOStreamsKODI/repository.aiostreams/zips/addons.xml</info>

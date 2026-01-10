@@ -15,40 +15,15 @@ NC='\033[0m' # No Color
 BASE_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 # Helper Functions
-get_latest_version() {
-    local docs_path="$1"
-
-    if [[ ! -d "$docs_path" ]]; then
+get_source_version() {
+    local xml_path="$1"
+    if [[ -f "$xml_path" ]]; then
+        # Look for version inside the <addon tag specifically
+        local version=$(grep -E "<addon " "$xml_path" | grep -m 1 "version=" | sed -n 's/.*version="\([^"]*\)".*/\1/p')
+        echo "$version"
+    else
         echo ""
-        return
     fi
-
-    local latest_version=""
-    local max_major=0
-    local max_minor=0
-    local max_patch=0
-
-    for zip_file in "$docs_path"/*.zip; do
-        if [[ -f "$zip_file" ]]; then
-            local filename=$(basename "$zip_file")
-            if [[ $filename =~ -([0-9]+)\.([0-9]+)\.([0-9]+)\.zip$ ]]; then
-                local major="${BASH_REMATCH[1]}"
-                local minor="${BASH_REMATCH[2]}"
-                local patch="${BASH_REMATCH[3]}"
-
-                if [[ $major -gt $max_major ]] || \
-                   [[ $major -eq $max_major && $minor -gt $max_minor ]] || \
-                   [[ $major -eq $max_major && $minor -eq $max_minor && $patch -gt $max_patch ]]; then
-                    max_major=$major
-                    max_minor=$minor
-                    max_patch=$patch
-                    latest_version="$major.$minor.$patch"
-                fi
-            fi
-        fi
-    done
-
-    echo "$latest_version"
 }
 
 increment_version() {
@@ -72,8 +47,9 @@ update_kodi_file() {
     local new="$3"
 
     if [[ -f "$path" ]]; then
-        if grep -q "$old" "$path"; then
-            sed -i "s/$old/$new/g" "$path"
+        # Specifically target <addon ... version="[old]" to avoid breaking XML headers or dependencies
+        if grep -qE "<addon .*version=\"$old\"" "$path"; then
+            sed -i "s/\(<addon .*\)version=\"$old\"/\1version=\"$new\"/g" "$path"
             echo -e "  ${GREEN}[+]${GRAY} Updated: $path${NC}"
         else
             echo -e "  ${GRAY}[i] No changes needed: $path${NC}"
@@ -90,7 +66,7 @@ write_md5() {
     if [[ -f "$target_file" ]]; then
         local filename=$(basename "$target_file")
         local hash=$(md5sum "$target_file" | awk '{print $1}')
-        echo "$hash" > "$md5_path"
+        echo -n "$hash" > "$md5_path"
         echo -e "  ${GREEN}[+]${GRAY} Created: $(basename "$md5_path")${NC}"
     else
         echo -e "  ${YELLOW}[!] Warning: File not found - $target_file${NC}"
@@ -202,7 +178,6 @@ update_plugin() {
         "$BASE_DIR/docs/plugin.video.aiostreams/addon.xml"
         "$BASE_DIR/docs/repository.aiostreams/addon.xml"
         "$BASE_DIR/docs/repository.aiostreams/zips/addons.xml"
-        "$BASE_DIR/docs/index.html"
     )
 
     local zip_dest1="$BASE_DIR/docs/repository.aiostreams/zips/plugin.video.aiostreams/plugin.video.aiostreams-$new_version.zip"
@@ -218,6 +193,10 @@ update_plugin() {
     echo -e "\n${CYAN}[2/4] Building plugin ZIP files...${NC}"
     build_plugin_zip "$zip_dest1" "$BASE_DIR/plugin.video.aiostreams"
     build_plugin_zip "$zip_dest2" "$BASE_DIR/plugin.video.aiostreams"
+    
+    # Generate MD5 checksums
+    write_md5 "$zip_dest1" "$zip_dest1.md5"
+    write_md5 "$zip_dest2" "$zip_dest2.md5"
 
     # Get Repo Version
     local repo_xml="$BASE_DIR/docs/repository.aiostreams/addon.xml"
@@ -306,6 +285,10 @@ update_skin() {
     echo -e "  ${GREEN}[+]${GRAY} Copying ZIP to docs/skin.aiodi/${NC}"
     cp "$zip_dest_repo" "$zip_dest_docs"
 
+    # Generate MD5 checksums
+    write_md5 "$zip_dest_repo" "$zip_dest_repo.md5"
+    write_md5 "$zip_dest_docs" "$zip_dest_docs.md5"
+
     # Copy assets to repository directory (Root level for better visibility)
     echo -e "  ${GREEN}[+]${GRAY} Copying assets to repository directory${NC}"
     mkdir -p "$BASE_DIR/docs/repository.aiostreams/zips/skin.aiodi/"
@@ -381,8 +364,8 @@ echo -e "${CYAN}========================================${NC}"
 # Detect current versions
 echo -e "\n${YELLOW}Detecting current versions...${NC}"
 
-plugin_version=$(get_latest_version "$BASE_DIR/docs/plugin.video.aiostreams")
-skin_version=$(get_latest_version "$BASE_DIR/docs/skin.aiodi")
+plugin_version=$(get_source_version "$BASE_DIR/plugin.video.aiostreams/addon.xml")
+skin_version=$(get_source_version "$BASE_DIR/skin.AIODI/addon.xml")
 
 if [[ -n "$plugin_version" ]]; then
     echo -e "  ${WHITE}Plugin current version: $plugin_version${NC}"

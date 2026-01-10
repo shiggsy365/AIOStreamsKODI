@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<window>
+    <defaultcontrol always="true">9000</defaultcontrol>
+    <onload>RunScript(special://skin/scripts/widget_manager.py,action=update,page=home)</onload>
+    <controls>
+        <!-- Background -->
+        <control type="image">
+            <left>0</left>
+            <top>0</top>
+            <width>1920</width>
+            <height>1080</height>
+            <texture background="true">$INFO[Window(Home).Property(Fanart_Image)]</texture>
+            <aspectratio>scale</aspectratio>
+        </control>
+
+        <!-- Top Navigation Bar -->
+        <include>NavigationBar</include>
+
+        <!-- Main Menu -->
+        <control type="grouplist" id="9000">
+            <left>500</left>
+            <top>30</top>
+            <width>1200</width>
+            <height>60</height>
+            <ondown>50</ondown>
+            <orientation>horizontal</orientation>
+            <itemgap>10</itemgap>
+
+            <control type="button" id="9001">
+                <width>150</width>
+                <height>60</height>
+                <font>font30</font>
+                <label>$LOCALIZE[30402]</label>
+                <textcolor>FFFFFFFF</textcolor>
+                <focusedcolor>ThemeColor</focusedcolor>
+                <onclick>ActivateWindow(Home)</onclick>
+            </control>
+
+            <control type="button" id="9002">
+                <width>150</width>
+                <height>60</height>
+                <font>font30</font>
+                <label>$LOCALIZE[30400]</label>
+                <textcolor>FFFFFFFF</textcolor>
+                <focusedcolor>ThemeColor</focusedcolor>
+                <onclick>ActivateWindow(Videos,plugin://plugin.video.aiostreams/?action=movie_lists,return)</onclick>
+            </control>
+
+            <control type="button" id="9003">
+                <width>150</width>
+                <height>60</height>
+                <font>font30</font>
+                <label>$LOCALIZE[30401]</label>
+                <textcolor>FFFFFFFF</textcolor>
+                <focusedcolor>ThemeColor</focusedcolor>
+                <onclick>ActivateWindow(Videos,plugin://plugin.video.aiostreams/?action=series_lists,return)</onclick>
+            </control>
+
+            <control type="button" id="9004">
+                <width>150</width>
+                <height>60</height>
+                <font>font30</font>
+                <label>$LOCALIZE[30404]</label>
+                <textcolor>FFFFFFFF</textcolor>
+                <focusedcolor>ThemeColor</focusedcolor>
+                <onclick>ActivateWindow(Videos,plugin://plugin.video.aiostreams/?action=search_unified,return)</onclick>
+            </control>
+
+            <control type="button" id="9005">
+                <width>150</width>
+                <height>60</height>
+                <font>font30</font>
+                <label>$LOCALIZE[30403]</label>
+                <textcolor>FFFFFFFF</textcolor>
+                <focusedcolor>ThemeColor</focusedcolor>
+                <onclick>ActivateWindow(skinsettings)</onclick>
+            </control>
+        </control>
+
+        <!-- Widget Container -->
+        <control type="group">
+            <left>60</left>
+            <top>180</top>
+            <width>1800</width>
+            <height>840</height>
+
+            <include>WidgetLayout</include>
+        </control>
+
+        <!-- Widget Not Found Message -->
+        <control type="group">
+            <visible>String.IsEmpty(Window(Home).Property(AIOStreams.home.Widget.0.Label))</visible>
+            <left>480</left>
+            <top>400</top>
+            <width>960</width>
+            <height>280</height>
+
+            <control type="image">
+                <left>0</left>
+                <top>0</top>
+                <width>960</width>
+                <height>280</height>
+                <texture colordiffuse="AA000000">common/white.png</texture>
+                <aspectratio>stretch</aspectratio>
+            </control>
+
+            <control type="label">
+                <left>40</left>
+                <top>40</top>
+                <width>880</width>
+                <height>60</height>
+                <font>font37_title</font>
+                <textcolor>FFFFFFFF</textcolor>
+                <align>center</align>
+                <label>AIOStreams Not Configured</label>
+            </control>
+
+            <control type="textbox">
+                <left>40</left>
+                <top>120</top>
+                <width>880</width>
+                <height>100</height>
+                <font>font27</font>
+                <textcolor>FFAAAAAA</textcolor>
+                <align>center</align>
+                <label>Please install the AIOStreams addon or configure your widgets in Settings.</label>
+            </control>
+        </control>
+
+    </controls>
+</window>
