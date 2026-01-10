@@ -45,7 +45,8 @@
 
         <setting id="trakt_features" type="lsep" label="Trakt Features"/>
         <setting id="trakt_scrobble" type="bool" label="Enable Scrobbling" default="true"/>
-        
+        <setting id="trakt_auto_mark_watched" type="bool" label="Auto-Mark as Watched (90%+)" default="true"/>
+
         <setting id="trakt_hidden" type="lsep" label="Hidden Settings" visible="false"/>
         <setting id="trakt_token" type="text" label="Access Token" default="" visible="false"/>
         <setting id="trakt_refresh" type="text" label="Refresh Token" default="" visible="false"/>

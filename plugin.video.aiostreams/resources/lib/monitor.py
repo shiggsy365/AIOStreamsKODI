@@ -2,6 +2,9 @@
 """Playback monitoring for Trakt scrobbling and autoplay next episode"""
 import xbmc
 import xbmcaddon
+import xbmcgui
+import threading
+import time
 from resources.lib import trakt
 from resources.lib.autoplay import AutoplayManager
 
@@ -21,6 +24,9 @@ class AIOStreamsPlayer(xbmc.Player):
         self.started = False
         self.total_time = 0
         self.current_time = 0
+        self.marked_watched = False
+        self.progress_monitor_thread = None
+        self.stop_monitoring = threading.Event()
 
         # Autoplay manager
         self.autoplay = AutoplayManager(self)
@@ -37,6 +43,9 @@ class AIOStreamsPlayer(xbmc.Player):
     
     def clear_media_info(self):
         """Clear media information."""
+        # Stop progress monitoring
+        self._stop_progress_monitoring()
+
         self.is_aiostreams = False
         self.media_type = None
         self.imdb_id = None
@@ -45,16 +54,120 @@ class AIOStreamsPlayer(xbmc.Player):
         self.started = False
         self.total_time = 0
         self.current_time = 0
+        self.marked_watched = False
     
     def should_scrobble(self):
         """Check if scrobbling is enabled and we have auth."""
-        return (ADDON.getSetting('trakt_scrobble') == 'true' and 
+        return (ADDON.getSetting('trakt_scrobble') == 'true' and
                 ADDON.getSetting('trakt_token') != '' and
-                self.is_aiostreams and 
+                self.is_aiostreams and
                 self.imdb_id)
-    
+
+    def should_auto_mark_watched(self):
+        """Check if auto-mark watched is enabled."""
+        return (ADDON.getSetting('trakt_auto_mark_watched') == 'true' and
+                ADDON.getSetting('trakt_token') != '' and
+                self.is_aiostreams and
+                self.imdb_id and
+                not self.marked_watched)
+
+    def _monitor_progress(self):
+        """Monitor playback progress and auto-mark as watched at 90%."""
+        xbmc.log('[AIOStreams] Progress monitoring thread started', xbmc.LOGDEBUG)
+
+        while not self.stop_monitoring.is_set():
+            try:
+                if not self.isPlaying():
+                    break
+
+                # Update current time
+                self.current_time = self.getTime()
+                if self.total_time == 0:
+                    self.total_time = self.getTotalTime()
+
+                # Calculate progress
+                if self.total_time > 0:
+                    progress = (self.current_time / self.total_time) * 100
+
+                    # Auto-mark as watched at 90%+
+                    if progress >= 90 and self.should_auto_mark_watched():
+                        xbmc.log(f'[AIOStreams] Progress {progress:.1f}% - Auto-marking as watched', xbmc.LOGINFO)
+                        self._auto_mark_watched()
+                        break  # Stop monitoring after marking
+
+            except Exception as e:
+                xbmc.log(f'[AIOStreams] Progress monitor error: {e}', xbmc.LOGERROR)
+                break
+
+            # Check every 5 seconds
+            if self.stop_monitoring.wait(5):
+                break
+
+        xbmc.log('[AIOStreams] Progress monitoring thread stopped', xbmc.LOGDEBUG)
+
+    def _start_progress_monitoring(self):
+        """Start the progress monitoring thread."""
+        if self.progress_monitor_thread and self.progress_monitor_thread.is_alive():
+            return  # Already monitoring
+
+        self.stop_monitoring.clear()
+        self.progress_monitor_thread = threading.Thread(target=self._monitor_progress)
+        self.progress_monitor_thread.daemon = True
+        self.progress_monitor_thread.start()
+        xbmc.log('[AIOStreams] Progress monitoring started', xbmc.LOGINFO)
+
+    def _stop_progress_monitoring(self):
+        """Stop the progress monitoring thread."""
+        self.stop_monitoring.set()
+        if self.progress_monitor_thread and self.progress_monitor_thread.is_alive():
+            self.progress_monitor_thread.join(timeout=1)
+            xbmc.log('[AIOStreams] Progress monitoring stopped', xbmc.LOGINFO)
+
+    def _auto_mark_watched(self):
+        """Auto-mark content as watched and refresh widget."""
+        try:
+            self.marked_watched = True  # Set flag to prevent double-marking
+
+            xbmc.log(f'[AIOStreams] Auto-marking as watched: {self.media_type} - {self.imdb_id}', xbmc.LOGINFO)
+
+            # Mark as watched
+            success = trakt.mark_watched(
+                self.media_type,
+                self.imdb_id,
+                season=self.season,
+                episode=self.episode
+            )
+
+            if success:
+                xbmc.log('[AIOStreams] Successfully auto-marked as watched', xbmc.LOGINFO)
+
+                # Refresh the container/widget
+                self._refresh_widget()
+            else:
+                xbmc.log('[AIOStreams] Failed to auto-mark as watched', xbmc.LOGWARNING)
+
+        except Exception as e:
+            xbmc.log(f'[AIOStreams] Error auto-marking as watched: {e}', xbmc.LOGERROR)
+
+    def _refresh_widget(self):
+        """Refresh the current widget/container."""
+        try:
+            # Give Trakt a moment to sync
+            time.sleep(0.5)
+
+            # Refresh container
+            xbmc.executebuiltin('Container.Refresh')
+            xbmc.log('[AIOStreams] Widget refreshed', xbmc.LOGINFO)
+
+        except Exception as e:
+            xbmc.log(f'[AIOStreams] Error refreshing widget: {e}', xbmc.LOGERROR)
+
     def onPlayBackStarted(self):
         """Called when playback starts."""
+        # Start progress monitoring for auto-mark watched (regardless of scrobbling)
+        if self.is_aiostreams and self.should_auto_mark_watched():
+            self._start_progress_monitoring()
+
         if not self.should_scrobble():
             # Check for autoplay even if not scrobbling
             self._check_autoplay_start()
@@ -137,6 +250,16 @@ class AIOStreamsPlayer(xbmc.Player):
         except Exception as e:
             xbmc.log(f'[AIOStreams] Error stopping autoplay: {e}', xbmc.LOGERROR)
 
+        # Check if we should auto-mark as watched before cleanup
+        try:
+            if self.is_aiostreams and self.total_time > 0:
+                progress = int((self.current_time / self.total_time) * 100)
+                if progress >= 90 and self.should_auto_mark_watched():
+                    xbmc.log(f'[AIOStreams] Stopped at {progress}% - Auto-marking as watched', xbmc.LOGINFO)
+                    self._auto_mark_watched()
+        except Exception as e:
+            xbmc.log(f'[AIOStreams] Error checking auto-mark on stop: {e}', xbmc.LOGERROR)
+
         if not self.should_scrobble() or not self.started:
             self.clear_media_info()
             return
@@ -161,6 +284,14 @@ class AIOStreamsPlayer(xbmc.Player):
             self.autoplay.stop()
         except Exception as e:
             xbmc.log(f'[AIOStreams] Error stopping autoplay: {e}', xbmc.LOGERROR)
+
+        # Auto-mark as watched if enabled (playback completed)
+        try:
+            if self.is_aiostreams and self.should_auto_mark_watched():
+                xbmc.log('[AIOStreams] Playback ended - Auto-marking as watched', xbmc.LOGINFO)
+                self._auto_mark_watched()
+        except Exception as e:
+            xbmc.log(f'[AIOStreams] Error auto-marking on playback end: {e}', xbmc.LOGERROR)
 
         if not self.should_scrobble() or not self.started:
             self.clear_media_info()
