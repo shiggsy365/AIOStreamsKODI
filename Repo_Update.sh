@@ -252,6 +252,12 @@ update_skin() {
     echo -e "  ${GREEN}[+]${GRAY} Copying ZIP to docs/skin.aiodi/${NC}"
     cp "$zip_dest_repo" "$zip_dest_docs"
 
+    # Copy assets to repository resources directory (for Kodi browsing)
+    echo -e "  ${GREEN}[+]${GRAY} Copying assets to repository resources directory${NC}"
+    mkdir -p "$BASE_DIR/docs/repository.aiostreams/zips/skin.aiodi/resources"
+    cp "$BASE_DIR/skin.AIODI/resources/icon.png" "$BASE_DIR/docs/repository.aiostreams/zips/skin.aiodi/resources/"
+    cp "$BASE_DIR/skin.AIODI/resources/fanart.jpg" "$BASE_DIR/docs/repository.aiostreams/zips/skin.aiodi/resources/"
+
     # Generate checksums
     echo -e "\n${CYAN}[3/4] Generating MD5 checksums...${NC}"
     write_md5 "$zip_dest_repo" "$zip_dest_repo.md5"

@@ -183,6 +183,15 @@ function Update-Skin($oldVersion, $newVersion) {
     Write-Host "  [+] Copying ZIP to docs/skin.aiodi/" -ForegroundColor Gray
     Copy-Item $zipDestRepo $zipDestDocs -Force
 
+    # Copy assets to repository resources directory (for Kodi browsing)
+    Write-Host "  [+] Copying assets to repository resources directory" -ForegroundColor Gray
+    $repoResourcesDir = "$baseDir\docs\repository.aiostreams\zips\skin.aiodi\resources"
+    if (!(Test-Path $repoResourcesDir)) {
+        New-Item -ItemType Directory -Path $repoResourcesDir -Force | Out-Null
+    }
+    Copy-Item "$baseDir\skin.AIODI\resources\icon.png" $repoResourcesDir -Force
+    Copy-Item "$baseDir\skin.AIODI\resources\fanart.jpg" $repoResourcesDir -Force
+
     # Generate checksums
     Write-Host "`n[3/4] Generating MD5 checksums..." -ForegroundColor Cyan
     Write-MD5 $zipDestRepo "$zipDestRepo.md5"
