@@ -2,8 +2,6 @@
 <addon id="skin.aiodi" version="1.0.7" name="AIODI - AIOStreams Integrated Skin" provider-name="shiggsy365">
     <requires>
         <import addon="xbmc.gui" version="5.14.0"/>
-        <import addon="plugin.video.aiostreams" version="3.5.0"/>
-        <import addon="script.module.requests" version="2.31.0"/>
     </requires>
     <extension point="xbmc.gui.skin" debugging="false">
         <res width="1920" height="1080" aspect="16:9" default="true" folder="1080i"/>
