@@ -1,1 +1,4 @@
+[B]4.0.1[/B]
+• REMOVED: Home menu items for Music Videos, Radio, Games, Pictures, and Videos.
+
 "[B]4.0.0[/B]n• Complete Reset: Replaced Arctic Fuse base with Estuary base for maximum stability.n• Standardized resource paths and XML structure.n"

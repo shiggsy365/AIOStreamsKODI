@@ -1,5 +1,5 @@
-<?xml version="4.0.0" encoding="UTF-8"?>
-<addon id="skin.AIODI" version="4.0.1" name="AIODI" provider-name="Jon">
+<?xml version="4.0.1" encoding="UTF-8"?>
+<addon id="skin.AIODI" version="4.0.2" name="AIODI" provider-name="Jon">
 	<requires>
 		<import addon="xbmc.gui" version="5.17.0"/>
 	</requires>
