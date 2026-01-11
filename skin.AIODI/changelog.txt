@@ -1,3 +1,10 @@
+[B]4.0.12[/B]
+• FIXED: AIOStreams loading error.
+• NEW: Customization Dialog (Long-press any menu item).
+• NEW: Show/Hide menu items and individual widget rows.
+• NEW: Rearrange widget order directly from the UI.
+• NEW: AIOStreams logo at the top of the side menu.
+
 [B]4.0.10[/B]
 • FIXED: Sidebar now correctly expands and collapses based on focus.
 • NEW: Smart Multi-Row Widgets for Movies and Series (Posters instead of Buttons).

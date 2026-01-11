@@ -1,0 +1,201 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<window type="dialog" id="1115">
+	<defaultcontrol>9000</defaultcontrol>
+	<onunload>ClearProperty(CustomizingContext,home)</onunload>
+	<controls>
+		<control type="group">
+			<include>OpenClose_Right</include>
+			<left>530</left>
+			<top>150</top>
+			<width>860</width>
+			<height>780</height>
+			<control type="image">
+				<include>FullScreenDimensions</include>
+				<texture colordiffuse="background">colors/black.png</texture>
+				<animation effect="fade" start="0" end="80" time="300">WindowOpen</animation>
+			</control>
+			<control type="image">
+				<left>0</left>
+				<top>0</top>
+				<width>860</width>
+				<height>780</height>
+				<texture border="20">dialogs/dialog-bg.png</texture>
+			</control>
+			<control type="label">
+				<left>40</left>
+				<top>30</top>
+				<width>780</width>
+				<height>40</height>
+				<label>AIODI Customization</label>
+				<font>font27_title</font>
+				<textcolor>button_focus</textcolor>
+			</control>
+			
+			<control type="fixedlist" id="9000">
+				<left>40</left>
+				<top>100</top>
+				<width>780</width>
+				<height>640</height>
+				<onleft>9000</onleft>
+				<onright>9000</onright>
+				<onup>9000</onup>
+				<ondown>9000</ondown>
+				<scrolltime tween="cubic" easing="out">500</scrolltime>
+				<itemlayout height="70" width="780">
+					<control type="label">
+						<left>20</left>
+						<width>600</width>
+						<height>70</height>
+						<font>font12</font>
+						<aligny>center</aligny>
+						<label>$INFO[ListItem.Label]</label>
+					</control>
+					<control type="image">
+						<right>20</right>
+						<top>15</top>
+						<width>40</width>
+						<height>40</height>
+						<texture>$INFO[ListItem.Property(status_icon)]</texture>
+					</control>
+				</itemlayout>
+				<focusedlayout height="70" width="780">
+					<control type="image">
+						<width>780</width>
+						<height>70</height>
+						<texture colordiffuse="button_focus">lists/focus.png</texture>
+					</control>
+					<control type="label">
+						<left>20</left>
+						<width>600</width>
+						<height>70</height>
+						<font>font12</font>
+						<aligny>center</aligny>
+						<label>$INFO[ListItem.Label]</label>
+						<textcolor>black</textcolor>
+					</control>
+					<control type="image">
+						<right>20</right>
+						<top>15</top>
+						<width>40</width>
+						<height>40</height>
+						<texture>$INFO[ListItem.Property(status_icon)]</texture>
+					</control>
+				</focusedlayout>
+				<content>
+					<!-- Menu Items -->
+					<item>
+						<label>Show Movies</label>
+						<onclick>Skin.ToggleSetting(HideMovies)</onclick>
+						<property name="status_icon">$VAR[StatusMoviesIconVar]</property>
+					</item>
+					<item>
+						<label>Show Series</label>
+						<onclick>Skin.ToggleSetting(HideSeries)</onclick>
+						<property name="status_icon">$VAR[StatusSeriesIconVar]</property>
+					</item>
+					<item>
+						<label>Show TV</label>
+						<onclick>Skin.ToggleSetting(HideTV)</onclick>
+						<property name="status_icon">$VAR[StatusTVIconVar]</property>
+					</item>
+					<item>
+						<label>Show Music</label>
+						<onclick>Skin.ToggleSetting(HideMusic)</onclick>
+						<property name="status_icon">$VAR[StatusMusicIconVar]</property>
+					</item>
+					<item>
+						<label>Show Add-ons</label>
+						<onclick>Skin.ToggleSetting(HideAddons)</onclick>
+						<property name="status_icon">$VAR[StatusAddonsIconVar]</property>
+					</item>
+					
+					<!-- Current Page Widgets -->
+					<item>
+						<label>--- Widget Visibility ---</label>
+						<onclick>noop</onclick>
+					</item>
+					<item>
+						<label>Show Row 1</label>
+						<onclick>Skin.ToggleSetting(HideRow1)</onclick>
+						<property name="status_icon">$VAR[StatusRow1IconVar]</property>
+					</item>
+					<item>
+						<label>Show Row 2</label>
+						<onclick>Skin.ToggleSetting(HideRow2)</onclick>
+						<property name="status_icon">$VAR[StatusRow2IconVar]</property>
+					</item>
+					<item>
+						<label>Show Row 3</label>
+						<onclick>Skin.ToggleSetting(HideRow3)</onclick>
+						<property name="status_icon">$VAR[StatusRow3IconVar]</property>
+					</item>
+					<item>
+						<label>Show Row 4</label>
+						<onclick>Skin.ToggleSetting(HideRow4)</onclick>
+						<property name="status_icon">$VAR[StatusRow4IconVar]</property>
+					</item>
+
+					<!-- Reordering -->
+					<item>
+						<label>--- Widget Reordering ---</label>
+						<onclick>noop</onclick>
+					</item>
+					<item>
+						<label>Row 1: Move Down</label>
+						<onclick>Skin.SetString(temp_idx,$INFO[Skin.String(Row1Index)])</onclick>
+						<onclick>Skin.SetString(Row1Index,$INFO[Skin.String(Row2Index)])</onclick>
+						<onclick>Skin.SetString(Row2Index,$INFO[Skin.String(temp_idx)])</onclick>
+					</item>
+					<item>
+						<label>Row 2: Move Up</label>
+						<onclick>Skin.SetString(temp_idx,$INFO[Skin.String(Row2Index)])</onclick>
+						<onclick>Skin.SetString(Row2Index,$INFO[Skin.String(Row1Index)])</onclick>
+						<onclick>Skin.SetString(Row1Index,$INFO[Skin.String(temp_idx)])</onclick>
+					</item>
+					<item>
+						<label>Row 2: Move Down</label>
+						<onclick>Skin.SetString(temp_idx,$INFO[Skin.String(Row2Index)])</onclick>
+						<onclick>Skin.SetString(Row2Index,$INFO[Skin.String(Row3Index)])</onclick>
+						<onclick>Skin.SetString(Row3Index,$INFO[Skin.String(temp_idx)])</onclick>
+					</item>
+					<item>
+						<label>Row 3: Move Up</label>
+						<onclick>Skin.SetString(temp_idx,$INFO[Skin.String(Row3Index)])</onclick>
+						<onclick>Skin.SetString(Row3Index,$INFO[Skin.String(Row2Index)])</onclick>
+						<onclick>Skin.SetString(Row2Index,$INFO[Skin.String(temp_idx)])</onclick>
+					</item>
+					<item>
+						<label>Row 3: Move Down</label>
+						<onclick>Skin.SetString(temp_idx,$INFO[Skin.String(Row3Index)])</onclick>
+						<onclick>Skin.SetString(Row3Index,$INFO[Skin.String(Row4Index)])</onclick>
+						<onclick>Skin.SetString(Row4Index,$INFO[Skin.String(temp_idx)])</onclick>
+					</item>
+					<item>
+						<label>Row 4: Move Up</label>
+						<onclick>Skin.SetString(temp_idx,$INFO[Skin.String(Row4Index)])</onclick>
+						<onclick>Skin.SetString(Row4Index,$INFO[Skin.String(Row3Index)])</onclick>
+						<onclick>Skin.SetString(Row3Index,$INFO[Skin.String(temp_idx)])</onclick>
+					</item>
+
+					<!-- Reset -->
+					<item>
+						<label>Reset All to Defaults</label>
+						<onclick>Skin.Reset(HideMovies)</onclick>
+						<onclick>Skin.Reset(HideSeries)</onclick>
+						<onclick>Skin.Reset(HideTV)</onclick>
+						<onclick>Skin.Reset(HideMusic)</onclick>
+						<onclick>Skin.Reset(HideAddons)</onclick>
+						<onclick>Skin.Reset(HideRow1)</onclick>
+						<onclick>Skin.Reset(HideRow2)</onclick>
+						<onclick>Skin.Reset(HideRow3)</onclick>
+						<onclick>Skin.Reset(HideRow4)</onclick>
+						<onclick>Skin.SetString(Row1Index,0)</onclick>
+						<onclick>Skin.SetString(Row2Index,1)</onclick>
+						<onclick>Skin.SetString(Row3Index,2)</onclick>
+						<onclick>Skin.SetString(Row4Index,3)</onclick>
+					</item>
+				</content>
+			</control>
+		</control>
+	</controls>
+</window>

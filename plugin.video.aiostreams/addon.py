@@ -1945,7 +1945,6 @@ def smart_widget():
     
     xbmcplugin.endOfDirectory(HANDLE)
 
-
 def browse_catalog():
     """Browse a specific catalog with optional genre filter."""
     params = dict(parse_qsl(sys.argv[2][1:]))

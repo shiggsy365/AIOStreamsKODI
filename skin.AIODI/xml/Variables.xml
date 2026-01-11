@@ -801,4 +801,58 @@
 	</variable>
 
 
+
+<variable name="StatusMoviesIconVar">
+<value condition="!Skin.HasSetting(HideMovies)">overlays/checkbox-on.png</value>
+<value>overlays/checkbox-off.png</value>
+</variable>
+<variable name="StatusSeriesIconVar">
+<value condition="!Skin.HasSetting(HideSeries)">overlays/checkbox-on.png</value>
+<value>overlays/checkbox-off.png</value>
+</variable>
+<variable name="StatusTVIconVar">
+<value condition="!Skin.HasSetting(HideTV)">overlays/checkbox-on.png</value>
+<value>overlays/checkbox-off.png</value>
+</variable>
+<variable name="StatusMusicIconVar">
+<value condition="!Skin.HasSetting(HideMusic)">overlays/checkbox-on.png</value>
+<value>overlays/checkbox-off.png</value>
+</variable>
+<variable name="StatusAddonsIconVar">
+<value condition="!Skin.HasSetting(HideAddons)">overlays/checkbox-on.png</value>
+<value>overlays/checkbox-off.png</value>
+</variable>
+<variable name="StatusRow1IconVar">
+<value condition="!Skin.HasSetting(HideRow1)">overlays/checkbox-on.png</value>
+<value>overlays/checkbox-off.png</value>
+</variable>
+<variable name="StatusRow2IconVar">
+<value condition="!Skin.HasSetting(HideRow2)">overlays/checkbox-on.png</value>
+<value>overlays/checkbox-off.png</value>
+</variable>
+<variable name="StatusRow3IconVar">
+<value condition="!Skin.HasSetting(HideRow3)">overlays/checkbox-on.png</value>
+<value>overlays/checkbox-off.png</value>
+</variable>
+<variable name="StatusRow4IconVar">
+<value condition="!Skin.HasSetting(HideRow4)">overlays/checkbox-on.png</value>
+<value>overlays/checkbox-off.png</value>
+</variable>
+
+<variable name="Row1IndexVar">
+<value condition="!String.IsEmpty(Skin.String(Row1Index))">$INFO[Skin.String(Row1Index)]</value>
+<value>0</value>
+</variable>
+<variable name="Row2IndexVar">
+<value condition="!String.IsEmpty(Skin.String(Row2Index))">$INFO[Skin.String(Row2Index)]</value>
+<value>1</value>
+</variable>
+<variable name="Row3IndexVar">
+<value condition="!String.IsEmpty(Skin.String(Row3Index))">$INFO[Skin.String(Row3Index)]</value>
+<value>2</value>
+</variable>
+<variable name="Row4IndexVar">
+<value condition="!String.IsEmpty(Skin.String(Row4Index))">$INFO[Skin.String(Row4Index)]</value>
+<value>3</value>
+</variable>
 </includes>
