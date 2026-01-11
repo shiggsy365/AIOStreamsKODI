@@ -14,7 +14,7 @@
 				<height>1040</height>
 				<centertop>50%</centertop>
 				<width>700</width>
-				<animation effect="fade" time="200">VisibleChange</animation>
+				<animation type="VisibleChange" effect="fade" time="200" />
 				<include content="DialogBackgroundCommons">
 					<param name="width" value="700" />
 					<param name="height" value="1040" />
@@ -67,7 +67,7 @@
 				<height>560</height>
 				<centertop>50%</centertop>
 				<width>700</width>
-				<animation effect="fade" time="200">VisibleChange</animation>
+				<animation type="VisibleChange" effect="fade" time="200" />
 				<include content="DialogBackgroundCommons">
 					<param name="width" value="700" />
 					<param name="height" value="560" />

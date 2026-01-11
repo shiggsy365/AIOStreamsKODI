@@ -6,14 +6,14 @@
 	<controls>
 		<control type="button" id="20000">
 			<include>HiddenObject</include>
-			<animation effect="fade" time="300" start="100" end="0">Focus</animation>
+			<animation type="Focus" effect="fade" time="300" start="100" end="0" />
 			<onfocus>SetFocus(2000)</onfocus>
 			<onclick>noop</onclick>
 			<visible allowhiddenfocus="true">Control.HasFocus(20000)</visible>
 		</control>
 		<control type="button" id="20001">
 			<include>HiddenObject</include>
-			<animation effect="fade" time="300" start="100" end="0">Focus</animation>
+			<animation type="Focus" effect="fade" time="300" start="100" end="0" />
 			<onfocus>SetFocus(2000)</onfocus>
 			<onclick>noop</onclick>
 			<visible allowhiddenfocus="true">Control.HasFocus(20001)</visible>
@@ -33,9 +33,9 @@
 			<visible>Player.HasAudio</visible>
 		</control>
 		<control type="group">
-			<animation effect="zoom" center="auto" end="102,102" time="0" condition="Integer.IsGreater(System.StereoscopicMode,0)">conditional</animation>
-			<animation effect="fade" start="100" end="bg_alpha" time="0" condition="Player.HasMedia">Conditional</animation>
-			<animation effect="fade" start="0" end="100" time="300" condition="Window.Previous(fullscreenvideo) | Window.Previous(FullscreenGame) | Window.Previous(startup)">WindowOpen</animation>
+			<animation type="conditional" effect="zoom" center="auto" end="102,102" time="0" condition="Integer.IsGreater(System.StereoscopicMode,0)" />
+			<animation type="Conditional" effect="fade" start="100" end="bg_alpha" time="0" condition="Player.HasMedia" />
+			<animation type="WindowOpen" effect="fade" start="0" end="100" time="300" condition="Window.Previous(fullscreenvideo) | Window.Previous(FullscreenGame) | Window.Previous(startup)" />
 			<include>ColoredBackgroundImages</include>
 		</control>
 		<control type="multiimage">
@@ -43,10 +43,10 @@
 			<include>FullScreenDimensions</include>
 			<aspectratio>scale</aspectratio>
 			<fadetime>400</fadetime>
-			<animation effect="zoom" center="auto" end="102,102" time="0" condition="Integer.IsGreater(System.StereoscopicMode,0)">conditional</animation>
-			<animation effect="fade" start="0" end="100" time="400">WindowOpen</animation>
-			<animation effect="fade" start="100" end="0" time="300">WindowClose</animation>
-			<animation effect="fade" time="400">VisibleChange</animation>
+			<animation type="conditional" effect="zoom" center="auto" end="102,102" time="0" condition="Integer.IsGreater(System.StereoscopicMode,0)" />
+			<animation type="WindowOpen" effect="fade" start="0" end="100" time="400" />
+			<animation type="WindowClose" effect="fade" start="100" end="0" time="300" />
+			<animation type="VisibleChange" effect="fade" time="400" />
 			<imagepath background="true" colordiffuse="bg_overlay">$VAR[WeatherFanartVar]</imagepath>
 			<visible>!Player.HasMedia</visible>
 		</control>
@@ -89,7 +89,7 @@
 					<shadowcolor>text_shadow</shadowcolor>
 					<label>$LOCALIZE[31154]</label>
 					<visible>Control.HasFocus(20)</visible>
-					<animation effect="fade" time="400">VisibleChange</animation>
+					<animation type="VisibleChange" effect="fade" time="400" />
 				</control>
 				<control type="button" id="20">
 					<left>2.5%</left>
@@ -206,11 +206,11 @@
 		<include>BottomBar</include>
 		<control type="group">
 			<visible>String.StartsWith(Weather.Temperature,$LOCALIZE[503])</visible>
-			<animation effect="fade" time="400">VisibleChange</animation>
+			<animation type="VisibleChange" effect="fade" time="400" />
 			<control type="image">
 				<texture>colors/black.png</texture>
 				<include>FullScreenDimensions</include>
-				<animation effect="fade" start="100" end="70" time="0" condition="true">Conditional</animation>
+				<animation type="Conditional" effect="fade" start="100" end="70" time="0" condition="true" />
 			</control>
 			<control type="group">
 				<depth>DepthMax</depth>
@@ -224,7 +224,7 @@
 					<width>80</width>
 					<height>80</height>
 					<aspectratio>keep</aspectratio>
-					<animation effect="rotate" end="-45" center="auto" time="200" delay="600" loop="true" reversible="false" condition="true">Conditional</animation>
+					<animation type="Conditional" effect="rotate" end="-45" center="auto" time="200" delay="600" loop="true" reversible="false" condition="true" />
 					<texture colordiffuse="button_focus">spinner.png</texture>
 				</control>
 				<control type="image">
@@ -233,7 +233,7 @@
 					<width>50</width>
 					<height>50</height>
 					<aspectratio>keep</aspectratio>
-					<animation effect="rotate" end="45" center="auto" time="200" delay="600" loop="true" reversible="false" condition="true">Conditional</animation>
+					<animation type="Conditional" effect="rotate" end="45" center="auto" time="200" delay="600" loop="true" reversible="false" condition="true" />
 					<texture flipx="true" colordiffuse="button_focus">spinner.png</texture>
 				</control>
 			</control>

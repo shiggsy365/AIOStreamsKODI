@@ -7,7 +7,7 @@
 	<controls>
 		<include>DefaultBackground</include>
 		<control type="group">
-			<animation effect="fade" start="100" end="0" time="200" tween="sine" condition="$EXP[infodialog_active]">Conditional</animation>
+			<animation type="Conditional" effect="fade" start="100" end="0" time="200" tween="sine" condition="$EXP[infodialog_active]" />
 			<control type="group">
 				<visible>Control.IsVisible(50)</visible>
 				<include>OpenClose_Left</include>
@@ -52,7 +52,7 @@
 					<onleft>50</onleft>
 					<onright>50</onright>
 					<orientation>vertical</orientation>
-					<animation effect="zoom" start="100,100" end="50,100" center="-50,0" time="300" tween="sine" easing="inout" condition="!Control.HasFocus(73)">conditional</animation>
+					<animation type="conditional" effect="zoom" start="100,100" end="50,100" center="-50,0" time="300" tween="sine" easing="inout" condition="!Control.HasFocus(73)" />
 				</control>
 				<include>PVRInfoPanel</include>
 			</control>

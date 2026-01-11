@@ -76,7 +76,7 @@
 				<onleft>50</onleft>
 				<onright>100</onright>
 				<texturesliderbackground />
-				<animation effect="zoom" end="50,100" time="300" tween="sine" center="0,0" easing="inout" condition="!Control.HasFocus(60)">conditional</animation>
+				<animation type="conditional" effect="zoom" end="50,100" time="300" tween="sine" center="0,0" easing="inout" condition="!Control.HasFocus(60)" />
 				<orientation>vertical</orientation>
 			</control>
 			<control type="scrollbar" id="61">
@@ -87,7 +87,7 @@
 				<onleft>100</onleft>
 				<onright>9000</onright>
 				<texturesliderbackground></texturesliderbackground>
-				<animation effect="zoom" end="50,100" time="300" tween="sine" center="848,0" easing="inout" condition="!Control.HasFocus(61)">conditional</animation>
+				<animation type="conditional" effect="zoom" end="50,100" time="300" tween="sine" center="848,0" easing="inout" condition="!Control.HasFocus(61)" />
 				<orientation>vertical</orientation>
 			</control>
 		</control>

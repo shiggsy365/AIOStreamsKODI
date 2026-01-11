@@ -15,7 +15,7 @@
 			</control>
 			<control type="group">
 				<visible>!$PARAM[only_label_condition]</visible>
-				<animation effect="slide" start="0,0" end="0,16" time="0" condition="!$EXP[listitem_has_epg_event_info]">Conditional</animation>
+				<animation type="Conditional" effect="slide" start="0,0" end="0,16" time="0" condition="!$EXP[listitem_has_epg_event_info]" />
 				<control type="image">
 					<left>29</left>
 					<top>17</top>
@@ -131,7 +131,7 @@
 					<left>0</left>
 					<top>0</top>
 					<right>0</right>
-					<animation effect="fade" start="100" end="0" time="0">UnFocus</animation>
+					<animation type="UnFocus" effect="fade" start="100" end="0" time="0" />
 					<texture colordiffuse="button_focus">lists/focus.png</texture>
 					<visible>Control.HasFocus($PARAM[list_id])</visible>
 				</control>
@@ -263,7 +263,7 @@
 	</include>
 	<include name="PVRProgress">
 		<control type="group">
-			<animation effect="fade" time="400">VisibleChange</animation>
+			<animation type="VisibleChange" effect="fade" time="400" />
 			<visible>!Player.ChannelPreviewActive</visible>
 			<control type="group">
 				<visible>Player.SeekEnabled | VideoPlayer.HasEPG</visible>
@@ -336,7 +336,7 @@
 			</control>
 		</control>
 		<control type="group">
-			<animation effect="fade" time="400">VisibleChange</animation>
+			<animation type="VisibleChange" effect="fade" time="400" />
 			<visible>Player.ChannelPreviewActive</visible>
 			<control type="label">
 				<top>22</top>
@@ -639,7 +639,7 @@
 						<width>16</width>
 						<height>16</height>
 						<texture>$VAR[PVRTimerIcon]</texture>
-						<animation effect="slide" start="0,0" end="19,0" condition="ListItem.IsNew | ListItem.IsPremiere | ListItem.IsFinale | ListItem.IsLive">Conditional</animation>
+						<animation type="Conditional" effect="slide" start="0,0" end="19,0" condition="ListItem.IsNew | ListItem.IsPremiere | ListItem.IsFinale | ListItem.IsLive" />
 					</control>
 				</itemlayout>
 				<focusedlayout height="62" width="60">
@@ -686,7 +686,7 @@
 						<width>16</width>
 						<height>16</height>
 						<texture>$VAR[PVRTimerIcon]</texture>
-						<animation effect="slide" start="0,0" end="19,0" condition="ListItem.IsNew | ListItem.IsPremiere | ListItem.IsFinale | ListItem.IsLive">Conditional</animation>
+						<animation type="Conditional" effect="slide" start="0,0" end="19,0" condition="ListItem.IsNew | ListItem.IsPremiere | ListItem.IsFinale | ListItem.IsLive" />
 					</control>
 				</focusedlayout>
 			</control>
@@ -699,7 +699,7 @@
 				<onright>10</onright>
 				<orientation>vertical</orientation>
 				<texturesliderbackground colordiffuse="22FFFFFF">colors/white.png</texturesliderbackground>
-				<animation effect="fade" start="100" end="40" time="0" condition="!system.getbool(input.enablemouse)">Conditional</animation>
+				<animation type="Conditional" effect="fade" start="100" end="40" time="0" condition="!system.getbool(input.enablemouse)" />
 				<visible>Control.IsVisible($PARAM[control_id])</visible>
 			</control>
 		</definition>

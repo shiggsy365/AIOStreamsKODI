@@ -9,7 +9,7 @@
 			<height>1080</height>
 			<centerleft>50%</centerleft>
 			<width>1920</width>
-			<animation effect="fade" start="100" end="0" time="200" tween="sine" condition="Window.IsVisible(script-embuary-video.xml) | Window.IsVisible(script-embuary-person.xml) | Window.IsVisible(script-embuary-image.xml)">Conditional</animation>
+			<animation type="Conditional" effect="fade" start="100" end="0" time="200" tween="sine" condition="Window.IsVisible(script-embuary-video.xml) | Window.IsVisible(script-embuary-person.xml) | Window.IsVisible(script-embuary-image.xml)" />
 			<control type="group">
 				<top>150</top>
 				<left>66</left>
@@ -338,7 +338,7 @@
 								<height>80</height>
 								<bottom>10</bottom>
 								<texture>overlays/overlayfade.png</texture>
-								<animation effect="fade" start="100" end="80" time="0" condition="true">Conditional</animation>
+								<animation type="Conditional" effect="fade" start="100" end="80" time="0" condition="true" />
 							</control>
 							<control type="label">
 								<left>25</left>
@@ -390,7 +390,7 @@
 								<height>80</height>
 								<bottom>10</bottom>
 								<texture>overlays/overlayfade.png</texture>
-								<animation effect="fade" start="100" end="80" time="0" condition="true">Conditional</animation>
+								<animation type="Conditional" effect="fade" start="100" end="80" time="0" condition="true" />
 							</control>
 							<control type="label">
 								<left>25</left>
@@ -451,7 +451,7 @@
 								<height>180</height>
 								<bottom>10</bottom>
 								<texture>overlays/overlayfade.png</texture>
-								<animation effect="fade" start="100" end="80" time="0" condition="true">Conditional</animation>
+								<animation type="Conditional" effect="fade" start="100" end="80" time="0" condition="true" />
 								<visible>String.IsEmpty(ListItem.Art(poster))</visible>
 							</control>
 							<control type="textbox">
@@ -494,7 +494,7 @@
 								<height>180</height>
 								<bottom>10</bottom>
 								<texture>overlays/overlayfade.png</texture>
-								<animation effect="fade" start="100" end="80" time="0" condition="true">Conditional</animation>
+								<animation type="Conditional" effect="fade" start="100" end="80" time="0" condition="true" />
 								<visible>String.IsEmpty(ListItem.Art(poster))</visible>
 							</control>
 							<control type="textbox">
@@ -683,10 +683,10 @@
 				<haspath>true</haspath>
 				<label>$VAR[VideoInfoBottomLabelVar]</label>
 				<visible>Control.HasFocus(6)</visible>
-				<animation effect="fade" start="0" end="100" time="300" delay="300">WindowOpen</animation>
-				<animation effect="fade" start="100" end="0" time="200">WindowClose</animation>
-				<animation effect="fade" start="0" end="100" time="300">Visible</animation>
-				<animation effect="fade" start="100" end="0" time="200">Hidden</animation>
+				<animation type="WindowOpen" effect="fade" start="0" end="100" time="300" delay="300" />
+				<animation type="WindowClose" effect="fade" start="100" end="0" time="200" />
+				<animation type="Visible" effect="fade" start="0" end="100" time="300" />
+				<animation type="Hidden" effect="fade" start="100" end="0" time="200" />
 			</control>
 			<include content="InfoDialogTopBarInfo">
 				<param name="main_label" value="$VAR[VideoInfoMainLabelVar]" />
@@ -694,9 +694,9 @@
 			</include>
 		</control>
 		<control type="group">
-			<animation effect="fade" start="0" end="100" time="300" delay="300">WindowOpen</animation>
-			<animation effect="fade" start="100" end="0" time="200">WindowClose</animation>
-			<animation effect="fade" start="100" end="0" time="200" tween="sine" condition="Window.IsVisible(script-embuary-video.xml) | Window.IsVisible(script-embuary-person.xml) | Window.IsVisible(script-embuary-image.xml)">Conditional</animation>
+			<animation type="WindowOpen" effect="fade" start="0" end="100" time="300" delay="300" />
+			<animation type="WindowClose" effect="fade" start="100" end="0" time="200" />
+			<animation type="Conditional" effect="fade" start="100" end="0" time="200" tween="sine" condition="Window.IsVisible(script-embuary-video.xml) | Window.IsVisible(script-embuary-person.xml) | Window.IsVisible(script-embuary-image.xml)" />
 			<centerleft>50%</centerleft>
 			<width>1920</width>
 			<bottom>0</bottom>
@@ -704,14 +704,14 @@
 			<include>MediaFlags</include>
 			<control type="group">
 				<visible>Control.HasFocus(50) + !String.IsEqual(ListItem.DBType,set)</visible>
-				<animation effect="fade" time="200">VisibleChange</animation>
+				<animation type="VisibleChange" effect="fade" time="200" />
 				<top>10</top>
 				<left>0</left>
 				<control type="image">
 					<left>21</left>
 					<width>36</width>
 					<height>36</height>
-					<animation effect="rotate" end="-90" center="36,19" time="0" condition="true">Conditional</animation>
+					<animation type="Conditional" effect="rotate" end="-90" center="36,19" time="0" condition="true" />
 					<texture colordiffuse="grey">frame/menu-nofo.png</texture>
 				</control>
 				<control type="label">
@@ -724,7 +724,7 @@
 			</control>
 			<control type="group">
 				<visible>Control.HasFocus(138)</visible>
-				<animation effect="fade" time="200">VisibleChange</animation>
+				<animation type="VisibleChange" effect="fade" time="200" />
 				<top>10</top>
 				<left>0</left>
 				<control type="image">

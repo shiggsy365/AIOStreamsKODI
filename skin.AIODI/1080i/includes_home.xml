@@ -1009,7 +1009,7 @@
 			<height>100</height>
 			<align>center</align>
 			<aligny>center</aligny>
-			<animation effect="slide" end="0,-92" time="0" condition="true">Conditional</animation>
+			<animation type="Conditional" effect="slide" end="0,-92" time="0" condition="true" />
 			<font>font30_title</font>
 			<label>$INFO[Window(weather).Property(Map.$PARAM[item_id].Heading)]</label>
 			<visible>Weather.IsFetched + !String.IsEmpty(Window(weather).Property(Map.$PARAM[item_id].Area)) + !String.IsEmpty(Window(weather).Property(Map.IsFetched))</visible>
@@ -1048,7 +1048,7 @@
 					<height>100</height>
 					<aspectratio aligny="center">keep</aspectratio>
 					<texture>dialogs/extendedprogress/loading.png</texture>
-					<animation effect="rotate" center="auto" start="360" end="0" time="1500" loop="true" condition="true">Conditional</animation>
+					<animation type="Conditional" effect="rotate" center="auto" start="360" end="0" time="1500" loop="true" condition="true" />
 				</control>
 			</control>
 		</definition>
@@ -1069,9 +1069,9 @@
 				<orientation>vertical</orientation>
 				<texturesliderbackground />
 				<hitrect x="0" y="0" w="60" h="100%" />
-				<animation effect="fade" start="0" end="100" time="200" delay="300">Visible</animation>
-				<animation effect="fade" start="100" end="0" time="200">Hidden</animation>
-				<animation effect="slide" end="6,0" time="300" tween="sine" easing="inout" condition="!Control.HasFocus($PARAM[scrollbar_id])">conditional</animation>
+				<animation type="Visible" effect="fade" start="0" end="100" time="200" delay="300" />
+				<animation type="Hidden" effect="fade" start="100" end="0" time="200" />
+				<animation type="conditional" effect="slide" end="6,0" time="300" tween="sine" easing="inout" condition="!Control.HasFocus($PARAM[scrollbar_id])" />
 			</control>
 		</control>
 	</include>

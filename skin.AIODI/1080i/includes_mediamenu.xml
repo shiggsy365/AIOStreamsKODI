@@ -212,9 +212,9 @@
 				</control>
 				<control type="group" id="141000">
 					<control type="grouplist" id="14100">
-						<animation effect="fade" start="0" end="100" time="400">WindowOpen</animation>
-						<animation effect="fade" start="100" end="0" time="300">WindowClose</animation>
-						<animation effect="fade" time="300">VisibleChange</animation>
+						<animation type="WindowOpen" effect="fade" start="0" end="100" time="400" />
+						<animation type="WindowClose" effect="fade" start="100" end="0" time="300" />
+						<animation type="VisibleChange" effect="fade" time="300" />
 						<orientation>horizontal</orientation>
 						<itemgap>-17</itemgap>
 						<left>5</left>
@@ -282,7 +282,7 @@
 			<aspectratio>scale</aspectratio>
 			<texture colordiffuse="80FFFFFF">colors/black.png</texture>
 			<visible>$EXP[sidebar_visible] + !System.HasActiveModalDialog</visible>
-			<animation effect="fade" time="200">VisibleChange</animation>
+			<animation type="VisibleChange" effect="fade" time="200" />
 		</control>
 		<control type="image">
 			<left>0</left>
@@ -313,10 +313,10 @@
         <param name="left">5</param>
 		<definition>
 			<control type="grouplist" id="14100">
-				<animation effect="fade" start="0" end="100" time="400">WindowOpen</animation>
-				<animation effect="fade" start="100" end="0" time="300">WindowClose</animation>
-				<animation effect="fade" time="300">VisibleChange</animation>
-				<animation effect="slide" end="-10,0" time="0" condition ="Window.IsActive(MyPlaylist.xml)">Conditional</animation>
+				<animation type="WindowOpen" effect="fade" start="0" end="100" time="400" />
+				<animation type="WindowClose" effect="fade" start="100" end="0" time="300" />
+				<animation type="VisibleChange" effect="fade" time="300" />
+				<animation type="Conditional" effect="slide" end="-10,0" time="0" condition ="Window.IsActive(MyPlaylist.xml)" />
 				<orientation>horizontal</orientation>
 				<itemgap>-17</itemgap>
 				<left>$PARAM[left]</left>

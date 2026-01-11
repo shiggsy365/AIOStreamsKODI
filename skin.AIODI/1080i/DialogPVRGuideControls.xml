@@ -17,7 +17,7 @@
 		<control type="group">
 			<bottom>0</bottom>
 			<height>150</height>
-			<animation effect="fade" time="200">VisibleChange</animation>
+			<animation type="VisibleChange" effect="fade" time="200" />
 			<control type="group" id="200">
 				<control type="image">
 					<left>0</left>
@@ -61,7 +61,7 @@
 							<include content="OSDButton">
 								<param name="texture" value="osd/fullscreen/buttons/play.png"/>
 							</include>
-							<animation effect="rotate" start="0" end="-90" center="auto" condition="true">Conditional</animation>
+							<animation type="Conditional" effect="rotate" start="0" end="-90" center="auto" condition="true" />
 							<onclick>PVR.EpgGridControl(CurrentProgramme)</onclick>
 						</control>
 						<control type="radiobutton" id="603">
@@ -122,7 +122,7 @@
 							<include content="OSDButton">
 								<param name="texture" value="osd/fullscreen/buttons/play.png"/>
 							</include>
-							<animation effect="rotate" start="0" end="-90" center="auto" condition="true">Conditional</animation>
+							<animation type="Conditional" effect="rotate" start="0" end="-90" center="auto" condition="true" />
 							<onclick>PVR.EpgGridControl(PlayingChannel)</onclick>
 							<visible>PVR.IsPlayingTV | PVR.IsPlayingRadio | PVR.IsPlayingEpgTag</visible>
 						</control>
@@ -157,7 +157,7 @@
 							<include content="OSDButton">
 								<param name="texture" value="osd/fullscreen/buttons/play.png"/>
 							</include>
-							<animation effect="rotate" start="0" end="180" center="auto" condition="true">Conditional</animation>
+							<animation type="Conditional" effect="rotate" start="0" end="180" center="auto" condition="true" />
 							<onclick>PVR.EpgGridControl(PreviousGroup)</onclick>
 						</control>
 						<control type="radiobutton" id="70044">

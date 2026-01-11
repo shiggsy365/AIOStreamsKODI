@@ -7,7 +7,7 @@
 	<controls>
 		<include>DefaultBackground</include>
 		<control type="group">
-			<animation effect="fade" start="100" end="0" time="200" tween="sine" condition="$EXP[infodialog_active]">Conditional</animation>
+			<animation type="Conditional" effect="fade" start="100" end="0" time="200" tween="sine" condition="$EXP[infodialog_active]" />
 			<include>View_50_List</include>
 			<include>View_52_IconWall</include>
 			<include content="View_55_WideList">
@@ -90,7 +90,7 @@
 				<height>78</height>
 				<bottom>0</bottom>
 				<visible>$EXP[sidebar_visible]</visible>
-				<animation effect="fade" time="300">VisibleChange</animation>
+				<animation type="VisibleChange" effect="fade" time="300" />
 				<include content="LeftAlignedInfo">
 					<param name="main_label" value="$INFO[Window(AddonBrowser).Property(Updated)]" />
 					<param name="sub_label" value="$LOCALIZE[31069]" />

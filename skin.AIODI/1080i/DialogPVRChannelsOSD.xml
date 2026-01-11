@@ -3,7 +3,7 @@
 	<defaultcontrol always="true">11</defaultcontrol>
 	<controls>
 		<control type="group">
-			<animation effect="fade" start="100" end="0" time="200" tween="sine" condition="$EXP[infodialog_active]">Conditional</animation>
+			<animation type="Conditional" effect="fade" start="100" end="0" time="200" tween="sine" condition="$EXP[infodialog_active]" />
 			<control type="group">
 				<depth>DepthOSD</depth>
 				<include>OpenClose_Left</include>
@@ -38,7 +38,7 @@
 					<onleft>11</onleft>
 					<onright>NextChannelGroup</onright>
 					<texturesliderbackground />
-					<animation effect="zoom" start="100,100" end="50,100" center="982,0" time="300" tween="sine" easing="inout" condition="!Control.HasFocus(60)">conditional</animation>
+					<animation type="conditional" effect="zoom" start="100,100" end="50,100" center="982,0" time="300" tween="sine" easing="inout" condition="!Control.HasFocus(60)" />
 				</control>
 				<control type="image">
 					<left>0</left>

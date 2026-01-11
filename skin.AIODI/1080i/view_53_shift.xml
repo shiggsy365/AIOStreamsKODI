@@ -8,9 +8,9 @@
 			<height>880</height>
 			<control type="group">
 				<visible>Control.IsVisible(53)</visible>
-				<animation effect="fade" start="0" end="100" time="300">WindowOpen</animation>
-				<animation effect="fade" start="100" end="0" time="300">WindowClose</animation>
-				<animation effect="fade" time="200">VisibleChange</animation>
+				<animation type="WindowOpen" effect="fade" start="0" end="100" time="300" />
+				<animation type="WindowClose" effect="fade" start="100" end="0" time="300" />
+				<animation type="VisibleChange" effect="fade" time="200" />
 				<control type="image">
 					<left>0</left>
 					<top>760</top>
@@ -37,12 +37,12 @@
 					<width>340</width>
 					<height>110</height>
 					<visible>Control.HasFocus(53)</visible>
-					<animation effect="fade" time="200">VisibleChange</animation>
+					<animation type="VisibleChange" effect="fade" time="200" />
 					<texture colordiffuse="button_focus">colors/grey.png</texture>
-					<animation effect="slide" start="0,0" end="-364,0" time="300" tween="sine" easing="inout" condition="Integer.IsEqual(Container.Position,1) | Integer.IsEqual(Container.Position,0)">Conditional</animation>
-					<animation effect="slide" start="0,0" end="-364,0" time="300" tween="sine" easing="inout" condition="Integer.IsEqual(Container.Position,0)">Conditional</animation>
-					<animation effect="slide" start="0,0" end="364,0" time="300" tween="sine" easing="inout" condition="Integer.IsEqual(Container.Position,3) | Integer.IsEqual(Container.Position,4)">Conditional</animation>
-					<animation effect="slide" start="0,0" end="364,0" time="300" tween="sine" easing="inout" condition="Integer.IsEqual(Container.Position,4)">Conditional</animation>
+					<animation type="Conditional" effect="slide" start="0,0" end="-364,0" time="300" tween="sine" easing="inout" condition="Integer.IsEqual(Container.Position,1) | Integer.IsEqual(Container.Position,0)" />
+					<animation type="Conditional" effect="slide" start="0,0" end="-364,0" time="300" tween="sine" easing="inout" condition="Integer.IsEqual(Container.Position,0)" />
+					<animation type="Conditional" effect="slide" start="0,0" end="364,0" time="300" tween="sine" easing="inout" condition="Integer.IsEqual(Container.Position,3) | Integer.IsEqual(Container.Position,4)" />
+					<animation type="Conditional" effect="slide" start="0,0" end="364,0" time="300" tween="sine" easing="inout" condition="Integer.IsEqual(Container.Position,4)" />
 				</control>
 				<control type="fixedlist" id="53">
 					<left>-150</left>
@@ -95,7 +95,7 @@
 					<height>180</height>
 					<orientation>horizontal</orientation>
 					<visible>ListItem.IsCollection</visible>
-					<animation effect="fade" time="200">VisibleChange</animation>
+					<animation type="VisibleChange" effect="fade" time="200" />
 					<focusedlayout height="40" width="470">
 						<control type="label">
 							<textoffsetx>10</textoffsetx>
@@ -185,8 +185,8 @@
 	</include>
 	<include name="ShiftTextbox">
 		<control type="group">
-			<animation effect="fade" time="200" start="0" end="100" condition="!String.IsEmpty(Control.GetLabel($PARAM[textbox_id]))">Conditional</animation>
-			<animation effect="fade" time="200" start="100" end="0" condition="String.IsEmpty(Control.GetLabel($PARAM[textbox_id]))">Conditional</animation>
+			<animation type="Conditional" effect="fade" time="200" start="0" end="100" condition="!String.IsEmpty(Control.GetLabel($PARAM[textbox_id]))" />
+			<animation type="Conditional" effect="fade" time="200" start="100" end="0" condition="String.IsEmpty(Control.GetLabel($PARAM[textbox_id]))" />
 			<control type="textbox" id="$PARAM[textbox_id]">
 				<left>30</left>
 				<top>45</top>

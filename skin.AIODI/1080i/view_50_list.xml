@@ -33,7 +33,7 @@
 						<onleft>50</onleft>
 						<onright>50</onright>
 						<orientation>vertical</orientation>
-						<animation effect="zoom" end="50,100" time="300" tween="sine" center="20,0" easing="inout" condition="!Control.HasFocus(50600)">conditional</animation>
+						<animation type="conditional" effect="zoom" end="50,100" time="300" tween="sine" center="20,0" easing="inout" condition="!Control.HasFocus(50600)" />
 					</control>
 				</control>
 			</control>
@@ -86,7 +86,7 @@
 						<left>301</left>
 						<top>560</top>
 						<control type="group">
-							<animation effect="fade" time="0" condition="$PARAM[animation]">VisibleChange</animation>
+							<animation type="VisibleChange" effect="fade" time="0" condition="$PARAM[animation]" />
 							<include content="UserRatingContent" condition="Skin.HasSetting(circle_userrating)">
 								<param name="infolabel" value="MusicPlayer.UserRating" />
 							</include>
@@ -166,7 +166,7 @@
 						<aligny>center</aligny>
 						<font>font12</font>
 						<label>$VAR[ListLabel2Var]</label>
-						<animation effect="fade" start="70" end="100" time="300" reversible="false">Focus</animation>
+						<animation type="Focus" effect="fade" start="70" end="100" time="300" reversible="false" />
 						<shadowcolor>text_shadow</shadowcolor>
 					</control>
 					<control type="image">
@@ -175,7 +175,7 @@
 						<width>32</width>
 						<height>32</height>
 						<texture>$VAR[ListWatchedIconVar]</texture>
-						<animation effect="fade" start="30" end="100" time="300" reversible="false">Focus</animation>
+						<animation type="Focus" effect="fade" start="30" end="100" time="300" reversible="false" />
 					</control>
 					<control type="image">
 						<left>21</left>
@@ -183,8 +183,8 @@
 						<width>32</width>
 						<height>32</height>
 						<texture colordiffuse="button_focus">$VAR[ListWatchedIconVar]</texture>
-						<animation effect="fade" start="0" end="100" time="300" reversible="false">Focus</animation>
-						<animation effect="fade" time="150">VisibleChange</animation>
+						<animation type="Focus" effect="fade" start="0" end="100" time="300" reversible="false" />
+						<animation type="VisibleChange" effect="fade" time="150" />
 						<visible>!Control.HasFocus($PARAM[list_id])</visible>
 					</control>
 				</focusedlayout>
@@ -266,7 +266,7 @@
 					<left>273</left>
 					<top>560</top>
 					<include condition="Skin.HasSetting(circle_rating) | Skin.HasSetting(circle_userrating)">RatingCircle</include>
-					<animation effect="slide" end="0,-140" time="0" condition="String.IsEqual(ListItem.DbType,episode)">conditional</animation>
+					<animation type="conditional" effect="slide" end="0,-140" time="0" condition="String.IsEqual(ListItem.DbType,episode)" />
 				</control>
 				<control type="group">
 					<visible>!Container.Content() | !String.isempty(ListItem.Plot)</visible>

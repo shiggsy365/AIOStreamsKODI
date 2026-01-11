@@ -3,6 +3,37 @@
     <include file="Defaults.xml" />
     <include file="Variables.xml" />
     
+    <!-- Dummy Includes to suppress Kodi warnings -->
+    <include name="RatingCircle"><control type="group" /></include>
+    <include name="MediaFlag"><control type="group" /></include>
+    <include name="MediaFlags"><control type="group" /></include>
+    <include name="HiddenObject"><control type="group" /></include>
+    <include name="DefaultBackground"><control type="group" /></include>
+    <include name="TopBar"><control type="group" /></include>
+    <include name="BottomBar"><control type="group" /></include>
+    <include name="NavigationBar"><control type="group" /></include>
+    <include name="CommonBackground"><control type="group" /></include>
+    <include name="FullScreenDimensions"><control type="group" /></include>
+    <include name="ContentPanel"><control type="group" /></include>
+    <include name="DialogBackgroundCommons"><control type="group" /></include>
+    <include name="PVRProgress"><control type="group" /></include>
+    <include name="PVRChannelNumberInput"><control type="group" /></include>
+    <include name="CommonScrollbars"><control type="group" /></include>
+    <include name="Animation_TopSlide"></include>
+    <include name="Animation_BottomSlide"></include>
+    <include name="OpenClose_Left"></include>
+    <include name="OpenClose_Right"></include>
+    <include name="Visible_Left"></include>
+    <include name="MediaMenuMouseOverlay"><control type="group" /></include>
+    <include name="ListThumbInfoPanel"><control type="group" /></include>
+    <include name="MediaMenuCommon"><control type="group" /></include>
+    <include name="MediaMenuListCommon"><control type="group" /></include>
+    <include name="MediaMenuNowPlaying"><control type="group" /></include>
+    <include name="MediaMenuLabelCommon"><control type="group" /></include>
+    <include name="MediaMenuItemsCommon"><control type="group" /></include>
+    <include name="LeftAlignedInfo"><control type="group" /></include>
+    <include name="SettingsPanel"><control type="group" /></include>
+
     <!-- Sub-Includes -->
     <include file="includes_animations.xml" />
     <include file="includes_buttons.xml" />
@@ -27,34 +58,4 @@
 
     <!-- Common Constants -->
     <constant name="ThemeColor">ffb3b3b3</constant>
-
-    <!-- Dummy Includes to suppress Kodi warnings -->
-    <include name="Animation_TopSlide"></include>
-    <include name="Animation_BottomSlide"></include>
-    <include name="OpenClose_Left"></include>
-    <include name="OpenClose_Right"></include>
-    <include name="Visible_Left"></include>
-    <include name="HiddenObject"></include>
-    <include name="DefaultBackground"></include>
-    <include name="TopBar"></include>
-    <include name="BottomBar"></include>
-    <include name="PVRProgress"></include>
-    <include name="PVRChannelNumberInput"></include>
-    <include name="MediaFlag"></include>
-    <include name="MediaFlags"></include>
-    <include name="CommonScrollbars"></include>
-    <include name="MediaMenuMouseOverlay"></include>
-    <include name="ListThumbInfoPanel"></include>
-    <include name="MediaMenuCommon"></include>
-    <include name="MediaMenuListCommon"></include>
-    <include name="MediaMenuNowPlaying"></include>
-    <include name="MediaMenuLabelCommon"></include>
-    <include name="MediaMenuItemsCommon"></include>
-    <include name="LeftAlignedInfo"></include>
-    <include name="SettingsPanel"></include>
-    <include name="FullScreenDimensions"></include>
-    <include name="ContentPanel"></include>
-    <include name="DialogBackgroundCommons"></include>
-    <include name="CommonBackground"></include>
-    <include name="NavigationBar"></include>
 </includes>

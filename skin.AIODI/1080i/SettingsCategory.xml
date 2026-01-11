@@ -8,10 +8,10 @@
 			<depth>DepthBackground</depth>
 			<include>FullScreenDimensions</include>
 			<aspectratio>scale</aspectratio>
-			<animation effect="zoom" center="auto" end="102,102" time="0" condition="Integer.IsGreater(System.StereoscopicMode,0)">conditional</animation>
-			<animation effect="fade" start="0" end="100" time="400" reversible="true" condition="!Window.Previous(Settings)">WindowOpen</animation>
-			<animation effect="fade" start="100" end="0" time="300" reversible="true" condition="!Window.Next(Settings)">WindowClose</animation>
-			<animation effect="fade" time="400">VisibleChange</animation>
+			<animation type="conditional" effect="zoom" center="auto" end="102,102" time="0" condition="Integer.IsGreater(System.StereoscopicMode,0)" />
+			<animation type="WindowOpen" effect="fade" start="0" end="100" time="400" reversible="true" condition="!Window.Previous(Settings)" />
+			<animation type="WindowClose" effect="fade" start="100" end="0" time="300" reversible="true" condition="!Window.Next(Settings)" />
+			<animation type="VisibleChange" effect="fade" time="400" />
 			<imagepath colordiffuse="35FFFFFF">$INFO[Skin.String(HomeFanart.path)]settings$INFO[Skin.String(HomeFanart.ext)]</imagepath>
 			<visible>!Player.HasMedia + !String.IsEmpty(Skin.String(HomeFanart.path))</visible>
 		</control>
@@ -126,13 +126,13 @@
 				<width>12</width>
 				<orientation>vertical</orientation>
 				<texturesliderbackground />
-				<animation effect="slide" end="6,0" time="300" tween="sine" easing="inout" condition="!Control.HasFocus(60)">conditional</animation>
+				<animation type="conditional" effect="slide" end="6,0" time="300" tween="sine" easing="inout" condition="!Control.HasFocus(60)" />
 				<onleft>5</onleft>
 				<onright>5</onright>
-				<animation effect="fade" start="0" end="100" time="200" delay="300">Visible</animation>
-				<animation effect="fade" start="100" end="0" time="200">Hidden</animation>
-				<animation effect="fade" start="0" end="100" delay="300" time="320">WindowOpen</animation>
-				<animation effect="fade" start="100" end="0" time="150">WindowClose</animation>
+				<animation type="Visible" effect="fade" start="0" end="100" time="200" delay="300" />
+				<animation type="Hidden" effect="fade" start="100" end="0" time="200" />
+				<animation type="WindowOpen" effect="fade" start="0" end="100" delay="300" time="320" />
+				<animation type="WindowClose" effect="fade" start="100" end="0" time="150" />
 				<hitrect x="0" y="0" w="60" h="100%" />
 			</control>
 		</control>

@@ -7,7 +7,7 @@
 	<controls>
 		<include>DefaultBackground</include>
 		<control type="group">
-			<animation effect="fade" start="100" end="0" time="200" tween="sine" condition="$EXP[infodialog_active]">Conditional</animation>
+			<animation type="Conditional" effect="fade" start="100" end="0" time="200" tween="sine" condition="$EXP[infodialog_active]" />
 			<include>View_50_List</include>
 			<include>View_52_IconWall</include>
 			<include>View_53_Shift</include>
@@ -31,8 +31,8 @@
 				<depth>DepthBars</depth>
 				<bottom>0</bottom>
 				<height>70</height>
-				<animation effect="fade" start="0" end="100" time="300" delay="300">WindowOpen</animation>
-				<animation effect="fade" start="100" end="0" time="200">WindowClose</animation>
+				<animation type="WindowOpen" effect="fade" start="0" end="100" time="300" delay="300" />
+				<animation type="WindowClose" effect="fade" start="100" end="0" time="200" />
 				<include condition="!Skin.HasSetting(hide_mediaflags) + ![Window.IsVisible(songinformation) | Window.IsVisible(musicinformation)]">MediaFlags</include>
 			</control>
 			<include>MediaMenuMouseOverlay</include>

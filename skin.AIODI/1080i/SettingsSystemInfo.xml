@@ -8,10 +8,10 @@
 			<include>FullScreenDimensions</include>
 			<aspectratio>scale</aspectratio>
 			<fadetime>600</fadetime>
-			<animation effect="zoom" center="auto" end="102,102" time="0" condition="Integer.IsGreater(System.StereoscopicMode,0)">conditional</animation>
-			<animation effect="fade" start="0" end="100" time="400">WindowOpen</animation>
-			<animation effect="fade" start="100" end="0" time="300">WindowClose</animation>
-			<animation effect="fade" time="400">VisibleChange</animation>
+			<animation type="conditional" effect="zoom" center="auto" end="102,102" time="0" condition="Integer.IsGreater(System.StereoscopicMode,0)" />
+			<animation type="WindowOpen" effect="fade" start="0" end="100" time="400" />
+			<animation type="WindowClose" effect="fade" start="100" end="0" time="300" />
+			<animation type="VisibleChange" effect="fade" time="400" />
 			<imagepath background="true" colordiffuse="bg_overlay">$INFO[Skin.String(HomeFanart.path)]settings$INFO[Skin.String(HomeFanart.ext)]</imagepath>
 			<visible>!Player.HasMedia + !String.IsEmpty(Skin.String(HomeFanart.path))</visible>
 		</control>
@@ -100,14 +100,14 @@
 				<bottom>340</bottom>
 				<orientation>vertical</orientation>
 				<texturesliderbackground />
-				<animation effect="slide" end="6,0" time="300" tween="sine" easing="inout" condition="!Control.HasFocus(60)">conditional</animation>
+				<animation type="conditional" effect="slide" end="6,0" time="300" tween="sine" easing="inout" condition="!Control.HasFocus(60)" />
 				<onleft>9000</onleft>
 				<onright>9000</onright>
 				<visible>Control.IsVisible(30)</visible>
-				<animation effect="fade" start="0" end="100" time="200" delay="300">Visible</animation>
-				<animation effect="fade" start="100" end="0" time="200">Hidden</animation>
-				<animation effect="fade" start="0" end="100" delay="300" time="320">WindowOpen</animation>
-				<animation effect="fade" start="100" end="0" time="150">WindowClose</animation>
+				<animation type="Visible" effect="fade" start="0" end="100" time="200" delay="300" />
+				<animation type="Hidden" effect="fade" start="100" end="0" time="200" />
+				<animation type="WindowOpen" effect="fade" start="0" end="100" delay="300" time="320" />
+				<animation type="WindowClose" effect="fade" start="100" end="0" time="150" />
 			</control>
 			<control type="image">
 				<left>380</left>
@@ -278,7 +278,7 @@
 				</control>
 			</control>
 			<control type="group">
-				<animation effect="slide" end="0,-55" time="0" condition="!System.SupportsCPUUsage">Conditional</animation>
+				<animation type="Conditional" effect="slide" end="0,-55" time="0" condition="!System.SupportsCPUUsage" />
 				<control type="label">
 					<top>155</top>
 					<left>420</left>

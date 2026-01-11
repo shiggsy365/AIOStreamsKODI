@@ -7,7 +7,7 @@
 	<controls>
 		<include>DefaultBackground</include>
 		<control type="group">
-			<animation effect="fade" start="100" end="0" time="200" tween="sine" condition="$EXP[infodialog_active]">Conditional</animation>
+			<animation type="Conditional" effect="fade" start="100" end="0" time="200" tween="sine" condition="$EXP[infodialog_active]" />
 			<include>View_50_List</include>
 			<include>View_51_Poster</include>
 			<include>View_52_IconWall</include>

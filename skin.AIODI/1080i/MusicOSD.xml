@@ -80,7 +80,7 @@
 						<top>0</top>
 						<width>74</width>
 						<height>74</height>
-						<animation center="38,38" effect="zoom" end="100" reversible="false" start="95" time="480" tween="back" condition="Control.HasFocus(602)">Conditional</animation>
+						<animation type="Conditional" center="38,38" effect="zoom" end="100" reversible="false" start="95" time="480" tween="back" condition="Control.HasFocus(602)" />
 						<texture colordiffuse="white">$VAR[PlayerControlsPlayImageVar]</texture>
 					</control>
 				</control>
@@ -112,7 +112,7 @@
 					<textureradiooffnofocus>osd/fullscreen/buttons/record.png</textureradiooffnofocus>
 					<texturefocus colordiffuse="button_focus">osd/fullscreen/buttons/button-fo.png</texturefocus>
 					<width>76</width>
-					<animation center="38,38" effect="zoom" end="100" reversible="false" start="95" time="480" tween="back">Focus</animation>
+					<animation type="Focus" center="38,38" effect="zoom" end="100" reversible="false" start="95" time="480" tween="back" />
 					<height>76</height>
 					<radiowidth>74</radiowidth>
 					<radioheight>74</radioheight>
@@ -201,7 +201,7 @@
 						<top>0</top>
 						<width>74</width>
 						<height>74</height>
-						<animation center="38,38" effect="zoom" end="100" reversible="false" start="95" time="480" tween="back" condition="Control.HasFocus(70053)">Conditional</animation>
+						<animation type="Conditional" center="38,38" effect="zoom" end="100" reversible="false" start="95" time="480" tween="back" condition="Control.HasFocus(70053)" />
 						<texture colordiffuse="white">$VAR[PlayerControlsRepeatImageVar]</texture>
 					</control>
 				</control>
@@ -214,7 +214,7 @@
 					<textureradiooffdisabled colordiffuse="disabled">osd/fullscreen/buttons/random-off.png</textureradiooffdisabled>
 					<texturefocus colordiffuse="button_focus">osd/fullscreen/buttons/button-fo.png</texturefocus>
 					<width>76</width>
-					<animation center="38,38" effect="zoom" end="100" reversible="false" start="95" time="480" tween="back">Focus</animation>
+					<animation type="Focus" center="38,38" effect="zoom" end="100" reversible="false" start="95" time="480" tween="back" />
 					<height>76</height>
 					<radiowidth>74</radiowidth>
 					<radioheight>74</radioheight>
@@ -244,7 +244,7 @@
 				</control>
 			</control>
 			<control type="label">
-				<animation effect="slide" end="0,-20" time="150" condition="MusicPlayer.Content(LiveTV)">conditional</animation>
+				<animation type="conditional" effect="slide" end="0,-20" time="150" condition="MusicPlayer.Content(LiveTV)" />
 				<right>20</right>
 				<top>-60</top>
 				<aligny>center</aligny>

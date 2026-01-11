@@ -97,7 +97,7 @@
 								<width>816</width>
 								<height>60</height>
 								<texture>overlays/overlayfade.png</texture>
-								<animation effect="fade" start="0" end="80" time="50">Focus</animation>
+								<animation type="Focus" effect="fade" start="0" end="80" time="50" />
 								<visible>!Listitem.IsParentFolder</visible>
 							</control>
 							<control type="image">

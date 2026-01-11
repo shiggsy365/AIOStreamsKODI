@@ -99,7 +99,7 @@
 						<onclick condition="[String.IsEqual(ListItem.DbType,song) + !String.IsEmpty(ListItem.Comment)] | [String.IsEqual(ListItem.DbType,album) + !String.IsEmpty(ListItem.Property(Album_Description))] | [String.IsEqual(ListItem.DbType,artist) + !String.IsEmpty(ListItem.Property(Artist_Description))]">ActivateWindow(1102)</onclick>
 					</control>
 					<control type="group">
-						<animation effect="slide" start="0,0" end="0,-295" time="0" condition="Integer.IsEqual(Container(50).NumItems,0)">Conditional</animation>
+						<animation type="Conditional" effect="slide" start="0,0" end="0,-295" time="0" condition="Integer.IsEqual(Container(50).NumItems,0)" />
 						<visible>[!Integer.IsEqual(Container(50).NumItems,0) + String.IsEmpty(Control.GetLabel(400))]</visible>
 						<control type="image">
 							<left>-4</left>
@@ -132,7 +132,7 @@
 						</control>
 					</control>
 					<control type="group">
-						<animation effect="slide" start="0,0" end="0,-295" time="0" condition="Integer.IsEqual(Container(50).NumItems,0)">Conditional</animation>
+						<animation type="Conditional" effect="slide" start="0,0" end="0,-295" time="0" condition="Integer.IsEqual(Container(50).NumItems,0)" />
 						<visible>[Integer.IsEqual(Container(50).NumItems,0) + !String.IsEmpty(Control.GetLabel(400))]</visible>
 						<control type="image">
 							<left>-18</left>
@@ -303,8 +303,8 @@
 					</itemlayout>
 					<focusedlayout height="360" width="236" condition="Container.Content(artists)">
 						<control type="group">
-							<animation effect="zoom" start="100" end="105" time="200" tween="sine" easing="inout" center="160,180">Focus</animation>
-							<animation effect="zoom" start="105" end="100" time="200" tween="sine" easing="inout" center="160,180">UnFocus</animation>
+							<animation type="Focus" effect="zoom" start="100" end="105" time="200" tween="sine" easing="inout" center="160,180" />
+							<animation type="UnFocus" effect="zoom" start="105" end="100" time="200" tween="sine" easing="inout" center="160,180" />
 							<control type="image">
 								<top>-10</top>
 								<width>250</width>
@@ -343,7 +343,7 @@
 								<width>218</width>
 								<height>280</height>
 								<texture border="8" colordiffuse="button_focus">buttons/thumbnail_focused.png</texture>
-								<animation effect="fade" start="100" end="0" time="200">Unfocus</animation>
+								<animation type="Unfocus" effect="fade" start="100" end="0" time="200" />
 							</control>
 						</control>
 					</focusedlayout>

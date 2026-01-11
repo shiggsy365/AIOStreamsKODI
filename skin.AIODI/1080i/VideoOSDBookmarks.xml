@@ -20,8 +20,8 @@
 				<left>0</left>
 				<width>100%</width>
 				<height>410</height>
-				<animation effect="fade" start="0" end="100" time="300">WindowOpen</animation>
-				<animation effect="fade" start="100" end="0" time="300">WindowClose</animation>
+				<animation type="WindowOpen" effect="fade" start="0" end="100" time="300" />
+				<animation type="WindowClose" effect="fade" start="100" end="0" time="300" />
 				<texture colordiffuse="E6FFFFFF">dialogs/dialog-bg-nobo.png</texture>
 			</control>
 			<control type="textbox">

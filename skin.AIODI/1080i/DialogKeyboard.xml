@@ -65,8 +65,8 @@
 				<bottom>0</bottom>
 				<height>480</height>
 				<width>1920</width>
-				<animation effect="slide" end="-60,0" time="200" tween="sine" easing="inout" condition="Control.IsVisible(110) | Control.IsVisible(130) | Control.IsVisible(150) | Control.IsVisible(170)">conditional</animation>
-				<animation effect="slide" end="-110,0" time="200" tween="sine" easing="inout" condition="Control.IsVisible(111) | Control.IsVisible(131) | Control.IsVisible(151) | Control.IsVisible(171)">conditional</animation>
+				<animation type="conditional" effect="slide" end="-60,0" time="200" tween="sine" easing="inout" condition="Control.IsVisible(110) | Control.IsVisible(130) | Control.IsVisible(150) | Control.IsVisible(170)" />
+				<animation type="conditional" effect="slide" end="-110,0" time="200" tween="sine" easing="inout" condition="Control.IsVisible(111) | Control.IsVisible(131) | Control.IsVisible(151) | Control.IsVisible(171)" />
 				<!-- 1st row -->
 				<control type="grouplist">
 					<left>320</left>

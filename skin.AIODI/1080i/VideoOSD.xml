@@ -20,9 +20,9 @@
 			<bottom>0</bottom>
 			<height>180</height>
 			<visible>![Window.IsVisible(SliderDialog) | Window.IsVisible(1110) | Window.IsVisible(osdaudiosettings) | Window.IsVisible(osdvideosettings) | Window.IsVisible(VideoBookmarks) | Window.IsVisible(playerprocessinfo) | Window.IsVisible(osdcmssettings) | Window.IsVisible(PVROSDChannels) | Window.IsVisible(pvrchannelguide)]</visible>
-			<animation effect="fade" time="200">VisibleChange</animation>
+			<animation type="VisibleChange" effect="fade" time="200" />
 			<control type="label">
-				<animation effect="slide" end="0,-20" time="150" condition="VideoPlayer.Content(LiveTV)">conditional</animation>
+				<animation type="conditional" effect="slide" end="0,-20" time="150" condition="VideoPlayer.Content(LiveTV)" />
 				<right>20</right>
 				<top>0</top>
 				<align>right</align>
@@ -85,7 +85,7 @@
 							<top>0</top>
 							<width>74</width>
 							<height>74</height>
-							<animation center="38,38" effect="zoom" end="100" reversible="false" start="95" time="480" tween="back" condition="Control.HasFocus(602)">Conditional</animation>
+							<animation type="Conditional" center="38,38" effect="zoom" end="100" reversible="false" start="95" time="480" tween="back" condition="Control.HasFocus(602)" />
 							<texture colordiffuse="white">$VAR[PlayerControlsPlayImageVar]</texture>
 						</control>
 					</control>
@@ -117,7 +117,7 @@
 						<textureradiooffnofocus>osd/fullscreen/buttons/record.png</textureradiooffnofocus>
 						<texturefocus colordiffuse="button_focus">osd/fullscreen/buttons/button-fo.png</texturefocus>
 						<width>76</width>
-						<animation center="38,38" effect="zoom" end="100" reversible="false" start="95" time="480" tween="back">Focus</animation>
+						<animation type="Focus" center="38,38" effect="zoom" end="100" reversible="false" start="95" time="480" tween="back" />
 						<height>76</height>
 						<radiowidth>74</radiowidth>
 						<radioheight>74</radioheight>

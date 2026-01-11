@@ -74,7 +74,7 @@
 						<bottom>-20</bottom>
 						<texture border="30" colordiffuse="button_focus">buttons/dialogbutton-fo.png</texture>
 						<visible>Control.HasFocus(52)</visible>
-						<animation reversible="false" effect="fade" start="20" end="75" time="200">Focus</animation>
+						<animation type="Focus" reversible="false" effect="fade" start="20" end="75" time="200" />
 					</control>
 					<control type="image">
 						<centerleft>50%</centerleft>

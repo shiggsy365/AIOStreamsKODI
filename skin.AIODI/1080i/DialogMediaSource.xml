@@ -61,7 +61,7 @@
 					<bottom>0</bottom>
 					<right>0</right>
 					<texture colordiffuse="button_focus">lists/focus.png</texture>
-					<animation effect="fade" start="100" end="50" time="0">UnFocus</animation>
+					<animation type="UnFocus" effect="fade" start="100" end="50" time="0" />
 				</control>
 				<control type="label">
 					<left>10</left>

@@ -4,8 +4,8 @@
 		<control type="button" id="20000">
 			<description>Dummy button to get animations right (hide focusedlayout on animations)</description>
 			<include>HiddenObject</include>
-			<animation effect="fade" delay="500" time="0" start="100" end="0">Visible</animation>
-			<animation effect="fade" delay="500" time="0" start="100" end="0">WindowOpen</animation>
+			<animation type="Visible" effect="fade" delay="500" time="0" start="100" end="0" />
+			<animation type="WindowOpen" effect="fade" delay="500" time="0" start="100" end="0" />
 			<onclick>noop</onclick>
 			<visible>Control.IsVisible(51)</visible>
 		</control>
@@ -18,9 +18,9 @@
 				<top>8</top>
 				<width>100%</width>
 				<height>415</height>
-				<animation effect="fade" start="0" end="100" time="300">WindowOpen</animation>
-				<animation effect="fade" start="100" end="0" time="300">WindowClose</animation>
-				<animation effect="fade" time="200">VisibleChange</animation>
+				<animation type="WindowOpen" effect="fade" start="0" end="100" time="300" />
+				<animation type="WindowClose" effect="fade" start="100" end="0" time="300" />
+				<animation type="VisibleChange" effect="fade" time="200" />
 				<texture colordiffuse="E6FFFFFF">dialogs/dialog-bg-nobo.png</texture>
 				<visible>Control.IsVisible(51)</visible>
 			</control>
@@ -60,7 +60,7 @@
 								<top>18</top>
 								<visible>Container.OnScrollPrevious</visible>
 								<visible>Control.IsVisible(20000)</visible>
-								<animation effect="fade" time="200" start="100" end="0">Hidden</animation>
+								<animation type="Hidden" effect="fade" time="200" start="100" end="0" />
 								<include>InfoWallMovieLayout</include>
 							</control>
 							<control type="group">
@@ -68,7 +68,7 @@
 								<top>18</top>
 								<visible>Container.OnScrollNext</visible>
 								<visible>Control.IsVisible(20000)</visible>
-								<animation effect="fade" time="200" start="100" end="0">Hidden</animation>
+								<animation type="Hidden" effect="fade" time="200" start="100" end="0" />
 								<include>InfoWallMovieLayout</include>
 							</control>
 						</control>
@@ -203,7 +203,7 @@
 				<width>482</width>
 				<height>721</height>
 				<visible>Control.HasFocus(51)</visible>
-				<animation effect="fade" time="100">VisibleChange</animation>
+				<animation type="VisibleChange" effect="fade" time="100" />
 				<texture border="8" colordiffuse="button_focus">buttons/thumbnail_focused.png</texture>
 			</control>
 			<control type="group">

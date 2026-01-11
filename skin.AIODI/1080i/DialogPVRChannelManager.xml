@@ -47,13 +47,13 @@
 					<scrolltime>200</scrolltime>
 					<itemlayout height="70" width="630">
 						<control type="group">
-							<animation effect="fade" start="100" end="50" time="0" condition="!ListItem.Property(ActiveChannel)">Conditional</animation>
+							<animation type="Conditional" effect="fade" start="100" end="50" time="0" condition="!ListItem.Property(ActiveChannel)" />
 							<control type="image">
 								<left>0</left>
 								<right>0</right>
 								<bottom>0</bottom>
 								<texture colordiffuse="selected">colors/white.png</texture>
-								<animation effect="fade" end="20" time="0" condition="true">Conditional</animation>
+								<animation type="Conditional" effect="fade" end="20" time="0" condition="true" />
 								<visible>ListItem.Property(Changed)</visible>
 							</control>
 							<control type="image">
@@ -88,7 +88,7 @@
 							<right>0</right>
 							<bottom>0</bottom>
 							<texture colordiffuse="selected">colors/white.png</texture>
-							<animation effect="fade" end="20" time="0" condition="true">Conditional</animation>
+							<animation type="Conditional" effect="fade" end="20" time="0" condition="true" />
 							<visible>ListItem.Property(Changed)</visible>
 						</control>
 						<control type="image">
@@ -96,7 +96,7 @@
 							<right>0</right>
 							<bottom>0</bottom>
 							<texture colordiffuse="button_focus">lists/focus.png</texture>
-							<animation effect="fade" start="100" end="30" time="0" condition="!Control.HasFocus(20)">conditional</animation>
+							<animation type="conditional" effect="fade" start="100" end="30" time="0" condition="!Control.HasFocus(20)" />
 						</control>
 						<control type="image">
 							<left>15</left>

@@ -1,3 +1,9 @@
+[B]3.1.0[/B]
+• FIXED: Globally standardized animation attributes to resolve "invalid animation type" errors.
+• FIXED: Robust dummy include definitions to suppress all remaining GUI warnings.
+• FIXED: Restored missing RatingCircle inclusion.
+• CLEANUP: Performed a major structural audit for Linux/Omega compatibility.
+
 [B]3.0.9[/B]
 • FIXED: Standardized all core window filenames to CamelCase for Linux compatibility.
 • FIXED: Standardized font filenames to lowercase and updated Font.xml.

@@ -6,7 +6,7 @@
 	<controls>
 		<include>DefaultBackground</include>
 		<control type="group">
-			<animation effect="fade" start="100" end="0" time="200" tween="sine" condition="$EXP[infodialog_active]">Conditional</animation>
+			<animation type="Conditional" effect="fade" start="100" end="0" time="200" tween="sine" condition="$EXP[infodialog_active]" />
 			<control type="group">
 				<visible>Control.IsVisible(50)</visible>
 				<include>OpenClose_Right</include>
@@ -184,7 +184,7 @@
 				<onleft>50</onleft>
 				<onright>9000</onright>
 				<orientation>vertical</orientation>
-				<animation effect="slide" end="6,0" time="300" tween="sine" easing="inout" condition="!Control.HasFocus(60)">conditional</animation>
+				<animation type="conditional" effect="slide" end="6,0" time="300" tween="sine" easing="inout" condition="!Control.HasFocus(60)" />
 				<visible>Control.IsVisible(50)</visible>
 			</control>
 		</control>

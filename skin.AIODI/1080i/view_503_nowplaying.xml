@@ -33,7 +33,7 @@
 						<onleft>503</onleft>
 						<onright>503</onright>
 						<orientation>vertical</orientation>
-						<animation effect="zoom" end="50,100" time="300" tween="sine" center="20,0" easing="inout" condition="!Control.HasFocus(503600)">conditional</animation>
+						<animation type="conditional" effect="zoom" end="50,100" time="300" tween="sine" center="20,0" easing="inout" condition="!Control.HasFocus(503600)" />
 					</control>
 				</control>
 			</control>
