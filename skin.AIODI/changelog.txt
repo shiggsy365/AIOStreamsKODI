@@ -1,3 +1,9 @@
+[B]4.0.22[/B]
+• FIXED: Widget positioning on Movies and Series pages.
+• NEW: Integrated page-specific widget reordering in Customization dialog.
+• REMOVED: Page-level "Customise" buttons for a cleaner UI.
+• IMPROVED: Reordering logic for Home, Movies, and Series categories.
+
 [B]4.0.20[/B]
 • NEW: Custom minimalist SVG icons for all menu items.
 • IMPROVED: Widget positioning (Lower 40% of screen).

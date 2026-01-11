@@ -1,9 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <window>
-<onload condition="String.IsEmpty(Skin.String(Row1Index))">Skin.SetString(Row1Index,0)</onload>
-<onload condition="String.IsEmpty(Skin.String(Row2Index))">Skin.SetString(Row2Index,1)</onload>
-<onload condition="String.IsEmpty(Skin.String(Row3Index))">Skin.SetString(Row3Index,2)</onload>
-<onload condition="String.IsEmpty(Skin.String(Row4Index))">Skin.SetString(Row4Index,3)</onload>
+<onload condition="String.IsEmpty(Skin.String(MovieRow1Index))">Skin.SetString(MovieRow1Index,0)</onload>
+<onload condition="String.IsEmpty(Skin.String(MovieRow2Index))">Skin.SetString(MovieRow2Index,1)</onload>
+<onload condition="String.IsEmpty(Skin.String(MovieRow3Index))">Skin.SetString(MovieRow3Index,2)</onload>
+<onload condition="String.IsEmpty(Skin.String(MovieRow4Index))">Skin.SetString(MovieRow4Index,3)</onload>
+<onload condition="String.IsEmpty(Skin.String(SeriesRow1Index))">Skin.SetString(SeriesRow1Index,0)</onload>
+<onload condition="String.IsEmpty(Skin.String(SeriesRow2Index))">Skin.SetString(SeriesRow2Index,1)</onload>
+<onload condition="String.IsEmpty(Skin.String(SeriesRow3Index))">Skin.SetString(SeriesRow3Index,2)</onload>
+<onload condition="String.IsEmpty(Skin.String(SeriesRow4Index))">Skin.SetString(SeriesRow4Index,3)</onload>
+
+
+
+
+
 <defaultcontrol>9000</defaultcontrol>
 <backgroundcolor>background</backgroundcolor>
 <controls>
@@ -135,24 +144,13 @@
 
 <!-- Home Widgets -->
 <control type="group" id="10000">
-					<top>650</top>
+					<top>450</top>
 <visible>String.IsEqual(Container(9000).ListItem.Property(id),home)</visible>
 <include content="Visible_Right_Delayed"><param name="id" value="home"/></include>
 <control type="grouplist" id="10001">
 						
 <include>WidgetGroupListCommon</include>
-<control type="button" id="1115">
-<width>300</width>
-<height>60</height>
-<label>Customise this page</label>
-<onclick>ActivateWindow(1115)</onclick>
-<texturefocus colordiffuse="button_focus">colors/white.png</texturefocus>
-<texturenofocus colordiffuse="44FFFFFF">colors/black.png</texturenofocus>
-<font>font13_title</font>
-<textcolor>white</textcolor>
-<focusedcolor>black</focusedcolor>
-<visible>!Skin.HasSetting(HideCustomiseButtons)</visible>
-</control>
+
 
 <control type="group">
 <visible>!Skin.HasSetting(HideRow1)</visible>
@@ -186,29 +184,18 @@
 
 <!-- Movie Widgets -->
 <control type="group" id="5000">
-					<top>650</top>
+					<top>450</top>
 <visible>String.IsEqual(Container(9000).ListItem.Property(id),movies)</visible>
 <include content="Visible_Right_Delayed"><param name="id" value="movies"/></include>
 <control type="grouplist" id="5001">
 						
 <include>WidgetGroupListCommon</include>
-<control type="button" id="1115">
-<width>300</width>
-<height>60</height>
-<label>Customise this page</label>
-<onclick>ActivateWindow(1115)</onclick>
-<texturefocus colordiffuse="button_focus">colors/white.png</texturefocus>
-<texturenofocus colordiffuse="44FFFFFF">colors/black.png</texturenofocus>
-<font>font13_title</font>
-<textcolor>white</textcolor>
-<focusedcolor>black</focusedcolor>
-<visible>!Skin.HasSetting(HideCustomiseButtons)</visible>
-</control>
+
 
 <control type="group">
 <visible>!Skin.HasSetting(HideRow1)</visible>
 <include content="WidgetListPoster">
-<param name="content_path" value="plugin://plugin.video.aiostreams/?action=smart_widget&amp;index=$VAR[Row1IndexVar]&amp;content_type=movie"/>
+<param name="content_path" value="plugin://plugin.video.aiostreams/?action=smart_widget&amp;index=$VAR[MovieRow1IndexVar]&amp;content_type=movie"/>
 <param name="widget_header" value="$INFO[Window(Home).Property(movie_catalog_0_name)]"/>
 <param name="widget_target" value="videos"/>
 <param name="list_id" value="5100"/>
@@ -217,7 +204,7 @@
 <control type="group">
 <visible>!Skin.HasSetting(HideRow2)</visible>
 <include content="WidgetListPoster">
-<param name="content_path" value="plugin://plugin.video.aiostreams/?action=smart_widget&amp;index=$VAR[Row2IndexVar]&amp;content_type=movie"/>
+<param name="content_path" value="plugin://plugin.video.aiostreams/?action=smart_widget&amp;index=$VAR[MovieRow2IndexVar]&amp;content_type=movie"/>
 <param name="widget_header" value="$INFO[Window(Home).Property(movie_catalog_1_name)]"/>
 <param name="widget_target" value="videos"/>
 <param name="list_id" value="5200"/>
@@ -226,7 +213,7 @@
 <control type="group">
 <visible>!Skin.HasSetting(HideRow3)</visible>
 <include content="WidgetListPoster">
-<param name="content_path" value="plugin://plugin.video.aiostreams/?action=smart_widget&amp;index=$VAR[Row3IndexVar]&amp;content_type=movie"/>
+<param name="content_path" value="plugin://plugin.video.aiostreams/?action=smart_widget&amp;index=$VAR[MovieRow3IndexVar]&amp;content_type=movie"/>
 <param name="widget_header" value="$INFO[Window(Home).Property(movie_catalog_2_name)]"/>
 <param name="widget_target" value="videos"/>
 <param name="list_id" value="5300"/>
@@ -235,7 +222,7 @@
 <control type="group">
 <visible>!Skin.HasSetting(HideRow4)</visible>
 <include content="WidgetListPoster">
-<param name="content_path" value="plugin://plugin.video.aiostreams/?action=smart_widget&amp;index=$VAR[Row4IndexVar]&amp;content_type=movie"/>
+<param name="content_path" value="plugin://plugin.video.aiostreams/?action=smart_widget&amp;index=$VAR[MovieRow4IndexVar]&amp;content_type=movie"/>
 <param name="widget_header" value="$INFO[Window(Home).Property(movie_catalog_3_name)]"/>
 <param name="widget_target" value="videos"/>
 <param name="list_id" value="5400"/>
@@ -246,29 +233,18 @@
 
 <!-- TV Series Widgets -->
 <control type="group" id="6000">
-					<top>650</top>
+					<top>450</top>
 <visible>String.IsEqual(Container(9000).ListItem.Property(id),tvshows)</visible>
 <include content="Visible_Right_Delayed"><param name="id" value="tvshows"/></include>
 <control type="grouplist" id="6001">
 						
 <include>WidgetGroupListCommon</include>
-<control type="button" id="1115">
-<width>300</width>
-<height>60</height>
-<label>Customise this page</label>
-<onclick>ActivateWindow(1115)</onclick>
-<texturefocus colordiffuse="button_focus">colors/white.png</texturefocus>
-<texturenofocus colordiffuse="44FFFFFF">colors/black.png</texturenofocus>
-<font>font13_title</font>
-<textcolor>white</textcolor>
-<focusedcolor>black</focusedcolor>
-<visible>!Skin.HasSetting(HideCustomiseButtons)</visible>
-</control>
+
 
 <control type="group">
 <visible>!Skin.HasSetting(HideRow1)</visible>
 <include content="WidgetListPoster">
-<param name="content_path" value="plugin://plugin.video.aiostreams/?action=smart_widget&amp;index=$VAR[Row1IndexVar]&amp;content_type=series"/>
+<param name="content_path" value="plugin://plugin.video.aiostreams/?action=smart_widget&amp;index=$VAR[SeriesRow1IndexVar]&amp;content_type=series"/>
 <param name="widget_header" value="$INFO[Window(Home).Property(series_catalog_0_name)]"/>
 <param name="widget_target" value="videos"/>
 <param name="list_id" value="6100"/>
@@ -277,7 +253,7 @@
 <control type="group">
 <visible>!Skin.HasSetting(HideRow2)</visible>
 <include content="WidgetListPoster">
-<param name="content_path" value="plugin://plugin.video.aiostreams/?action=smart_widget&amp;index=$VAR[Row2IndexVar]&amp;content_type=series"/>
+<param name="content_path" value="plugin://plugin.video.aiostreams/?action=smart_widget&amp;index=$VAR[SeriesRow2IndexVar]&amp;content_type=series"/>
 <param name="widget_header" value="$INFO[Window(Home).Property(series_catalog_1_name)]"/>
 <param name="widget_target" value="videos"/>
 <param name="list_id" value="6200"/>
@@ -286,7 +262,7 @@
 <control type="group">
 <visible>!Skin.HasSetting(HideRow3)</visible>
 <include content="WidgetListPoster">
-<param name="content_path" value="plugin://plugin.video.aiostreams/?action=smart_widget&amp;index=$VAR[Row3IndexVar]&amp;content_type=series"/>
+<param name="content_path" value="plugin://plugin.video.aiostreams/?action=smart_widget&amp;index=$VAR[SeriesRow3IndexVar]&amp;content_type=series"/>
 <param name="widget_header" value="$INFO[Window(Home).Property(series_catalog_2_name)]"/>
 <param name="widget_target" value="videos"/>
 <param name="list_id" value="6300"/>
@@ -295,7 +271,7 @@
 <control type="group">
 <visible>!Skin.HasSetting(HideRow4)</visible>
 <include content="WidgetListPoster">
-<param name="content_path" value="plugin://plugin.video.aiostreams/?action=smart_widget&amp;index=$VAR[Row4IndexVar]&amp;content_type=series"/>
+<param name="content_path" value="plugin://plugin.video.aiostreams/?action=smart_widget&amp;index=$VAR[SeriesRow4IndexVar]&amp;content_type=series"/>
 <param name="widget_header" value="$INFO[Window(Home).Property(series_catalog_3_name)]"/>
 <param name="widget_target" value="videos"/>
 <param name="list_id" value="6400"/>
