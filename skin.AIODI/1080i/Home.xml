@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <window>
     <include file="Includes.xml" />
-    <defaultcontrol always="true">51</defaultcontrol>
+    <defaultcontrol always="true">9001</defaultcontrol>
     <controls>
         <!-- Background -->
         <control type="image">
@@ -164,6 +164,17 @@
                     </focusedlayout>
                     <content>plugin://plugin.video.aiostreams/?action=trakt_next_up</content>
                 </control>
+                <control type="button" id="510">
+                    <left>0</left>
+                    <top>50</top>
+                    <width>1800</width>
+                    <height>60</height>
+                    <font>font25</font>
+                    <label>Trakt Next Up: No content found (Setup Trakt in Settings)</label>
+                    <textcolor>main_fg_70</textcolor>
+                    <onclick>ActivateWindow(Videos,plugin://plugin.video.aiostreams/?action=trakt_next_up,return)</onclick>
+                    <visible>Integer.IsEqual(Container(51).NumItems,0) + !Container(51).IsUpdating</visible>
+                </control>
             </control>
 
             <!-- Widget: Movie Watchlist -->
@@ -216,6 +227,17 @@
                     </focusedlayout>
                     <content>plugin://plugin.video.aiostreams/?action=trakt_watchlist&amp;content_type=movie</content>
                 </control>
+                <control type="button" id="520">
+                    <left>0</left>
+                    <top>50</top>
+                    <width>1800</width>
+                    <height>60</height>
+                    <font>font25</font>
+                    <label>Movie Watchlist: No content found</label>
+                    <textcolor>main_fg_70</textcolor>
+                    <onclick>ActivateWindow(Videos,plugin://plugin.video.aiostreams/?action=trakt_watchlist&amp;content_type=movie,return)</onclick>
+                    <visible>Integer.IsEqual(Container(52).NumItems,0) + !Container(52).IsUpdating</visible>
+                </control>
             </control>
 
             <!-- Widget: TV Watchlist -->
@@ -266,6 +288,17 @@
                         </control>
                     </focusedlayout>
                     <content>plugin://plugin.video.aiostreams/?action=trakt_watchlist&amp;content_type=series</content>
+                </control>
+                <control type="button" id="530">
+                    <left>0</left>
+                    <top>50</top>
+                    <width>1800</width>
+                    <height>60</height>
+                    <font>font25</font>
+                    <label>TV Watchlist: No content found</label>
+                    <textcolor>main_fg_70</textcolor>
+                    <onclick>ActivateWindow(Videos,plugin://plugin.video.aiostreams/?action=trakt_watchlist&amp;content_type=series,return)</onclick>
+                    <visible>Integer.IsEqual(Container(53).NumItems,0) + !Container(53).IsUpdating</visible>
                 </control>
             </control>
         </control>

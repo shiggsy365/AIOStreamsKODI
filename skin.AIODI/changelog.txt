@@ -1,3 +1,8 @@
+[B]3.1.2[/B]
+• FIXED: Resolve Home screen focus failure (Control 50) by adding fallback labels and setting default focus to top menu.
+• FIXED: Eliminated "Skin has invalid include" (empty name) warnings in includes_home.xml.
+• CLEANUP: Final audit of v3.1.x series for total Linux/Omega log silence.
+
 [B]3.1.0[/B]
 • FIXED: Globally standardized animation attributes to resolve "invalid animation type" errors.
 • FIXED: Robust dummy include definitions to suppress all remaining GUI warnings.

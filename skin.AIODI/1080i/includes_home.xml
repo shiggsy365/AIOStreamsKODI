@@ -29,11 +29,11 @@
 		<param name="onclick_condition">false</param>
 		<param name="browse_mode">auto</param>
 		<definition>
-			<include content="CategoryLabel">
+			<include condition="!String.IsEmpty($PARAM[widget_header])" content="CategoryLabel">
 				<param name="label">$PARAM[widget_header]</param>
 				<param name="list_id" value="$PARAM[list_id]"/>
 			</include>
-			<include content="BusyListSpinner">
+			<include condition="!String.IsEmpty($PARAM[list_id])" content="BusyListSpinner">
 				<param name="list_id" value="$PARAM[list_id]"/>
 				<param name="posy" value="250"/>
 			</include>
@@ -157,11 +157,11 @@
 		<param name="widget_limit">15</param>
 		<param name="browse_mode">auto</param>
 		<definition>
-			<include content="CategoryLabel">
+			<include condition="!String.IsEmpty($PARAM[widget_header])" content="CategoryLabel">
 				<param name="label">$PARAM[widget_header]</param>
 				<param name="list_id" value="$PARAM[list_id]"/>
 			</include>
-			<include content="BusyListSpinner">
+			<include condition="!String.IsEmpty($PARAM[list_id])" content="BusyListSpinner">
 				<param name="list_id" value="$PARAM[list_id]"/>
 				<param name="posy" value="200"/>
 			</include>
@@ -746,7 +746,7 @@
 						</control>
 					</control>
 				</focusedlayout>
-				<include>$PARAM[content_include]</include>
+				<include condition="!String.IsEmpty($PARAM[content_include])">$PARAM[content_include]</include>
 			</control>
 		</definition>
 	</include>
