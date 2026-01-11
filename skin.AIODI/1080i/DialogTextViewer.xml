@@ -1,6 +1,6 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0"encoding="utf-8"?>
 <window>
-    <include file="Includes.xml" />
+    <include file="Includes.xml"/>
 	<defaultcontrol always="true">1000</defaultcontrol>
 	<include>Animation_DialogPopupOpenClose</include>
 	<controls>
@@ -9,12 +9,12 @@
 			<centertop>50%</centertop>
 			<height>770</height>
 			<include content="DialogBackgroundCommons">
-				<param name="width" value="84%" />
-				<param name="height" value="770" />
-				<param name="header_label" value="$LOCALIZE[13406]" />
-				<param name="header_id" value="1" />
+				<param name="width"value="84%"/>
+				<param name="height"value="770"/>
+				<param name="header_label"value="$LOCALIZE[13406]"/>
+				<param name="header_id"value="1"/>
 			</include>
-			<control type="textbox" id="5">
+			<control type="textbox"id="5">
 				<left>1%</left>
 				<top>85</top>
 				<width>82%</width>
@@ -24,13 +24,13 @@
 				<font>font14</font>
 				<monofont>Mono26</monofont>
 			</control>
-			<control type="scrollbar" id="3000">
+			<control type="scrollbar"id="3000">
 				<include>HiddenObject</include>
 				<ondown>3000</ondown>
 				<onup>3000</onup>
 			</control>
 		</control>
-		<control type="button" id="1000">
+		<control type="button"id="1000">
 			<include>HiddenObject</include>
 			<onclick>Action(Close)</onclick>
 			<onup>PageUp(3000)</onup>
@@ -41,8 +41,8 @@
 			<top>113</top>
 			<width>48</width>
 			<height>20</height>
-			<texturefocus colordiffuse="button_focus" flipy="true">overlays/arrowdown.png</texturefocus>
-			<texturenofocus colordiffuse="button_focus" flipy="true">overlays/arrowdown.png</texturenofocus>
+			<texturefocus colordiffuse="button_focus"flipy="true">overlays/arrowdown.png</texturefocus>
+			<texturenofocus colordiffuse="button_focus"flipy="true">overlays/arrowdown.png</texturenofocus>
 			<onclick>SetFocus(3000)</onclick>
 			<onclick>Up</onclick>
 		</control>

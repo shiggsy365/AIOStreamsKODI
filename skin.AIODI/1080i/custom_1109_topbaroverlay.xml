@@ -1,5 +1,6 @@
-<?xml version="1.0" encoding="utf-8"?>
-<window type="dialog" id="1109">
+<?xml version="1.0"encoding="utf-8"?>
+<window type="dialog"id="1109">
+    <include file="Includes.xml"/>
 	<onload>Skin.TimerStart(1109_topbaroverlay)</onload>
 	<visible>Window.IsActive(fullscreenvideo) | Window.IsActive(visualisation)</visible>
 	<visible>Window.IsActive(seekbar) | Window.IsActive(pvrosdchannels) | Window.IsActive(pvrchannelguide)</visible>
@@ -9,14 +10,14 @@
 	<controls>
 		<control type="group">
 			<visible>![Player.ShowInfo | Window.IsActive(fullscreeninfo) | Player.ShowTime | Window.IsActive(videoosd) | Window.IsActive(musicosd) | Window.IsActive(playerprocessinfo) | Window.IsActive(pvrosdchannels) | Window.IsActive(pvrchannelguide)] + [!String.IsEmpty(Player.SeekNumeric) | Player.Seeking | Player.HasPerformedSeek(3) | Player.Forwarding | Player.Rewinding | Player.Paused] | !String.IsEmpty(PVR.ChannelNumberInput)</visible>
-			<animation type="VisibleChange" effect="fade" start="0" end="100" time="300" />
-			<animation type="Conditional" effect="slide" start="0,0" end="0,-80" time="300" condition="Player.Paused + Integer.IsGreaterOrEqual(Skin.TimerElapsedSecs(1109_topbaroverlay),5)" />
+			<animation type="VisibleChange"effect="fade"start="0"end="100"time="300"/>
+			<animation type="Conditional"effect="slide"start="0,0"end="0,-80"time="300"condition="Player.Paused + Integer.IsGreaterOrEqual(Skin.TimerElapsedSecs(1109_topbaroverlay),5)"/>
 			<control type="image">
 				<left>0</left>
 				<top>0</top>
 				<width>100%</width>
 				<height>55</height>
-				<texture colordiffuse="D0FFFFFF" border="0,55,0,0">frame/osdfade.png</texture>
+				<texture colordiffuse="D0FFFFFF"border="0,55,0,0">frame/osdfade.png</texture>
 			</control>
 			<control type="label">
 				<left>25</left>
@@ -63,8 +64,8 @@
 				<width>100%</width>
 				<height>16</height>
 				<info>Player.ProgressCache</info>
-				<texturebg border="3" colordiffuse="60FFFFFF">colors/white50.png</texturebg>
-				<midtexture>colors/white50.png</midtexture>
+				<texturebg border="3"colordiffuse="60FFFFFF">colors/white50.png</texturebg>
+				<midtexture >colors/white50.png</midtexture>
 				<visible>!VideoPlayer.Content(LiveTV)</visible>
 			</control>
 			<control type="progress">
@@ -73,7 +74,7 @@
 				<width>100%</width>
 				<height>16</height>
 				<info>Player.Progress</info>
-				<texturebg border="3" colordiffuse="60FFFFFF">colors/white50.png</texturebg>
+				<texturebg border="3"colordiffuse="60FFFFFF">colors/white50.png</texturebg>
 				<midtexture colordiffuse="button_focus">colors/white.png</midtexture>
 				<visible>!VideoPlayer.Content(LiveTV)</visible>
 			</control>
@@ -93,24 +94,24 @@
 				<control type="group">
 					<visible>Player.SeekEnabled + VideoPlayer.HasEPG</visible>
 					<include content="PVRProgress">
-						<param name="ts_bar_top" value="55"/>
-						<param name="epg_bar_top" value="63"/>
-						<param name="ts_bar_height" value="8"/>
-						<param name="epg_bar_height" value="8"/>
+						<param name="ts_bar_top"value="55"/>
+						<param name="epg_bar_top"value="63"/>
+						<param name="ts_bar_height"value="8"/>
+						<param name="epg_bar_height"value="8"/>
 					</include>
 				</control>
 				<control type="group">
 					<visible>Player.SeekEnabled + !VideoPlayer.HasEPG</visible>
 					<include content="PVRProgress">
-						<param name="ts_bar_top" value="55"/>
-						<param name="ts_bar_height" value="16"/>
+						<param name="ts_bar_top"value="55"/>
+						<param name="ts_bar_height"value="16"/>
 					</include>
 				</control>
 				<control type="group">
 					<visible>!Player.SeekEnabled + VideoPlayer.HasEPG</visible>
 					<include content="PVRProgress">
-						<param name="epg_bar_top" value="55"/>
-						<param name="epg_bar_height" value="16"/>
+						<param name="epg_bar_top"value="55"/>
+						<param name="epg_bar_height"value="16"/>
 					</include>
 				</control>
 			</control>
@@ -130,10 +131,10 @@
 				<top>55</top>
 				<width>100%</width>
 				<height>8</height>
-				<texturebg border="3" colordiffuse="00FFFFFF">colors/white50.png</texturebg>
-				<lefttexture>colors/white.png</lefttexture>
+				<texturebg border="3"colordiffuse="00FFFFFF">colors/white50.png</texturebg>
+				<lefttexture >colors/white.png</lefttexture>
 				<midtexture colordiffuse="FFFF0000">colors/white.png</midtexture>
-				<righttexture>colors/white.png</righttexture>
+				<righttexture >colors/white.png</righttexture>
 				<info>Player.Editlist</info>
 			</control>
 			<control type="ranges">
@@ -141,8 +142,8 @@
 				<top>67</top>
 				<width>100%</width>
 				<height>8</height>
-				<texturebg border="3" colordiffuse="00FFFFFF">colors/red50.png</texturebg>
-				<righttexture>colors/red.png</righttexture>
+				<texturebg border="3"colordiffuse="00FFFFFF">colors/red50.png</texturebg>
+				<righttexture >colors/red.png</righttexture>
 				<info>Player.Cuts</info>
 			</control>
 			<control type="ranges">
@@ -150,8 +151,8 @@
 				<top>67</top>
 				<width>100%</width>
 				<height>4</height>
-				<texturebg border="3" colordiffuse="00FFFFFF">colors/white50.png</texturebg>
-				<righttexture>colors/white.png</righttexture>
+				<texturebg border="3"colordiffuse="00FFFFFF">colors/white50.png</texturebg>
+				<righttexture >colors/white.png</righttexture>
 				<info>Player.SceneMarkers</info>
 			</control>
 			<control type="ranges">
@@ -159,14 +160,14 @@
 				<top>67</top>
 				<width>100%</width>
 				<height>4</height>
-				<texturebg border="3" colordiffuse="00FFFFFF">colors/white50.png</texturebg>
-				<righttexture>colors/white.png</righttexture>
+				<texturebg border="3"colordiffuse="00FFFFFF">colors/white50.png</texturebg>
+				<righttexture >colors/white.png</righttexture>
 				<info>Player.Chapters</info>
 			</control>
 		</control>
 		<control type="group">
-			<animation type="conditional" effect="slide" end="0,-200" time="300" tween="sine" easing="inout" condition="$EXP[infodialog_active]" />
-			<animation type="VisibleChange" effect="slide" start="0,-200" end="0,0" time="300" tween="cubic" easing="out" />
+			<animation type="conditional"effect="slide"end="0,-200"time="300"tween="sine"easing="inout"condition="$EXP[infodialog_active]"/>
+			<animation type="VisibleChange"effect="slide"start="0,-200"end="0,0"time="300"tween="cubic"easing="out"/>
 			<visible>Player.ShowInfo | Window.IsActive(fullscreeninfo) | Player.ShowTime | Window.IsActive(videoosd) | Window.IsActive(musicosd) | Window.IsActive(playerprocessinfo) | Window.IsActive(pvrosdchannels) | Window.IsActive(pvrchannelguide) + ![Player.Seeking | Player.HasPerformedSeek(3) | Player.Forwarding | Player.Rewinding | Player.Paused] | !String.IsEmpty(PVR.ChannelNumberInput)</visible>
 			<depth>DepthBars</depth>
 			<control type="image">
@@ -174,10 +175,10 @@
 				<top>0</top>
 				<width>100%</width>
 				<height>170</height>
-				<texture>frame/osdfade.png</texture>
+				<texture >frame/osdfade.png</texture>
 			</control>
 			<control type="group">
-				<animation type="conditional" effect="slide" end="90,0" time="0" condition="Skin.HasSetting(touchmode)" />
+				<animation type="conditional"effect="slide"end="90,0"time="0"condition="Skin.HasSetting(touchmode)"/>
 				<control type="grouplist">
 					<visible>!String.IsEmpty(Player.Art(tvshow.clearlogo)) | !String.IsEmpty(Player.Art(clearlogo))</visible>
 					<top>10</top>
@@ -189,7 +190,7 @@
 					<control type="image">
 						<width>300</width>
 						<texture>$VAR[PlayerClearLogoVar]</texture>
-						<aspectratio aligny="center" align="center">keep</aspectratio>
+						<aspectratio aligny="center"align="center">keep</aspectratio>
 					</control>
 					<control type="label">
 						<align>left</align>
@@ -204,7 +205,7 @@
 					<visible>!Window.IsActive(pvrosdchannels) + !Window.IsActive(pvrchannelguide)</visible>
 					<visible>String.IsEmpty(Player.Art(clearlogo))</visible>
 					<visible>String.IsEmpty(Player.Art(tvshow.clearlogo))</visible>
-					<animation type="VisibleChange" effect="fade" time="150" />
+					<animation type="VisibleChange"effect="fade"time="150"/>
 					<left>20</left>
 					<right>400</right>
 					<control type="label">
@@ -224,7 +225,7 @@
 			</control>
 			<control type="group">
 				<visible>!Window.IsVisible(extendedprogressdialog)</visible>
-				<animation type="VisibleChange" effect="fade" time="150" />
+				<animation type="VisibleChange"effect="fade"time="150"/>
 				<control type="label">
 					<font>font_clock</font>
 					<shadowcolor>text_shadow</shadowcolor>
@@ -265,8 +266,8 @@
 						<width>60</width>
 						<height>40</height>
 						<fadetime>300</fadetime>
-						<aspectratio aligny="center" align="right">keep</aspectratio>
-						<texture>dialogs/volume/mute.png</texture>
+						<aspectratio aligny="center"align="right">keep</aspectratio>
+						<texture >dialogs/volume/mute.png</texture>
 						<visible>Player.Muted</visible>
 					</control>
 				</control>

@@ -1,62 +1,62 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0"encoding="UTF-8"?>
 <includes>
-    <include file="Defaults.xml" />
-    <include file="Variables.xml" />
+    <include file="Defaults.xml"/>
+    <include file="Variables.xml"/>
     
     <!-- Dummy Includes to suppress Kodi warnings -->
-    <include name="RatingCircle"><control type="group" /></include>
-    <include name="MediaFlag"><control type="group" /></include>
-    <include name="MediaFlags"><control type="group" /></include>
-    <include name="HiddenObject"><control type="group" /></include>
-    <include name="DefaultBackground"><control type="group" /></include>
-    <include name="TopBar"><control type="group" /></include>
-    <include name="BottomBar"><control type="group" /></include>
-    <include name="NavigationBar"><control type="group" /></include>
-    <include name="CommonBackground"><control type="group" /></include>
-    <include name="FullScreenDimensions"><control type="group" /></include>
-    <include name="ContentPanel"><control type="group" /></include>
-    <include name="DialogBackgroundCommons"><control type="group" /></include>
-    <include name="PVRProgress"><control type="group" /></include>
-    <include name="PVRChannelNumberInput"><control type="group" /></include>
-    <include name="CommonScrollbars"><control type="group" /></include>
-    <include name="PicsInfoLine"><control type="group" /></include>
-    <include name="InfoWallEpisodeLayout"><control type="group" /></include>
-    <include name="Animation_TopSlide"><control type="group" /></include>
-    <include name="Animation_BottomSlide"><control type="group" /></include>
-    <include name="OpenClose_Left"><control type="group" /></include>
-    <include name="OpenClose_Right"><control type="group" /></include>
-    <include name="Visible_Left"><control type="group" /></include>
-    <include name="MediaMenuMouseOverlay"><control type="group" /></include>
-    <include name="ListThumbInfoPanel"><control type="group" /></include>
-    <include name="MediaMenuCommon"><control type="group" /></include>
-    <include name="MediaMenuListCommon"><control type="group" /></include>
-    <include name="MediaMenuNowPlaying"><control type="group" /></include>
-    <include name="MediaMenuLabelCommon"><control type="group" /></include>
-    <include name="MediaMenuItemsCommon"><control type="group" /></include>
-    <include name="LeftAlignedInfo"><control type="group" /></include>
-    <include name="SettingsPanel"><control type="group" /></include>
+    <include name="RatingCircle"><control type="group"/></include>
+    <include name="MediaFlag"><control type="group"/></include>
+    <include name="MediaFlags"><control type="group"/></include>
+    <include name="HiddenObject"><control type="group"/></include>
+    <include name="DefaultBackground"><control type="group"/></include>
+    <include name="TopBar"><control type="group"/></include>
+    <include name="BottomBar"><control type="group"/></include>
+    <include name="NavigationBar"><control type="group"/></include>
+    <include name="CommonBackground"><control type="group"/></include>
+    <include name="FullScreenDimensions"><control type="group"/></include>
+    <include name="ContentPanel"><control type="group"/></include>
+    <include name="DialogBackgroundCommons"><control type="group"/></include>
+    <include name="PVRProgress"><control type="group"/></include>
+    <include name="PVRChannelNumberInput"><control type="group"/></include>
+    <include name="CommonScrollbars"><control type="group"/></include>
+    <include name="PicsInfoLine"><control type="group"/></include>
+    <include name="InfoWallEpisodeLayout"><control type="group"/></include>
+    <include name="Animation_TopSlide"><control type="group"/></include>
+    <include name="Animation_BottomSlide"><control type="group"/></include>
+    <include name="OpenClose_Left"><control type="group"/></include>
+    <include name="OpenClose_Right"><control type="group"/></include>
+    <include name="Visible_Left"><control type="group"/></include>
+    <include name="MediaMenuMouseOverlay"><control type="group"/></include>
+    <include name="ListThumbInfoPanel"><control type="group"/></include>
+    <include name="MediaMenuCommon"><control type="group"/></include>
+    <include name="MediaMenuListCommon"><control type="group"/></include>
+    <include name="MediaMenuNowPlaying"><control type="group"/></include>
+    <include name="MediaMenuLabelCommon"><control type="group"/></include>
+    <include name="MediaMenuItemsCommon"><control type="group"/></include>
+    <include name="LeftAlignedInfo"><control type="group"/></include>
+    <include name="SettingsPanel"><control type="group"/></include>
 
     <!-- Sub-Includes -->
-    <include file="includes_animations.xml" />
-    <include file="includes_buttons.xml" />
-    <include file="includes_dialogselect.xml" />
-    <include file="includes_games.xml" />
-    <include file="includes_home.xml" />
-    <include file="includes_mediamenu.xml" />
-    <include file="includes_musicinfo.xml" />
-    <include file="includes_pvr.xml" />
+    <include file="includes_animations.xml"/>
+    <include file="includes_buttons.xml"/>
+    <include file="includes_dialogselect.xml"/>
+    <include file="includes_games.xml"/>
+    <include file="includes_home.xml"/>
+    <include file="includes_mediamenu.xml"/>
+    <include file="includes_musicinfo.xml"/>
+    <include file="includes_pvr.xml"/>
     
     <!-- Views -->
-    <include file="view_50_list.xml" />
-    <include file="view_51_poster.xml" />
-    <include file="view_52_iconwall.xml" />
-    <include file="view_53_shift.xml" />
-    <include file="view_54_infowall.xml" />
-    <include file="view_55_widelist.xml" />
-    <include file="view_500_wall.xml" />
-    <include file="view_501_banner.xml" />
-    <include file="view_502_fanart.xml" />
-    <include file="view_503_nowplaying.xml" />
+    <include file="view_50_list.xml"/>
+    <include file="view_51_poster.xml"/>
+    <include file="view_52_iconwall.xml"/>
+    <include file="view_53_shift.xml"/>
+    <include file="view_54_infowall.xml"/>
+    <include file="view_55_widelist.xml"/>
+    <include file="view_500_wall.xml"/>
+    <include file="view_501_banner.xml"/>
+    <include file="view_502_fanart.xml"/>
+    <include file="view_503_nowplaying.xml"/>
 
     <!-- Common Constants -->
     <constant name="ThemeColor">ffb3b3b3</constant>

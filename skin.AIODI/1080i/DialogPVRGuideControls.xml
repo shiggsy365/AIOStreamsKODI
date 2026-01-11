@@ -1,6 +1,6 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0"encoding="utf-8"?>
 <window>
-    <include file="Includes.xml" />
+    <include file="Includes.xml"/>
 	<defaultcontrol always="true">602</defaultcontrol>
 	<include>Animation_BottomSlide</include>
 	<depth>DepthOSD</depth>
@@ -18,14 +18,14 @@
 		<control type="group">
 			<bottom>0</bottom>
 			<height>150</height>
-			<animation type="VisibleChange" effect="fade" time="200" />
-			<control type="group" id="200">
+			<animation type="VisibleChange"effect="fade"time="200"/>
+			<control type="group"id="200">
 				<control type="image">
 					<left>0</left>
 					<top>0</top>
 					<width>100%</width>
 					<height>100%</height>
-					<texture>dialogs/dialog-bg-nobo.png</texture>
+					<texture>dialogs/dialog-bg- nobo.png</texture>
 				</control>
 				<control type="group">
 					<left>20</left>
@@ -37,7 +37,7 @@
 						<aligny>center</aligny>
 						<label>$LOCALIZE[19325]</label>
 					</control>
-					<control type="grouplist" id="201">
+					<control type="grouplist"id="201">
 						<top>54</top>
 						<height>135</height>
 						<align>center</align>
@@ -46,40 +46,40 @@
 						<orientation>horizontal</orientation>
 						<onleft>70045</onleft>
 						<onright>70040</onright>
-						<control type="radiobutton" id="600">
+						<control type="radiobutton"id="600">
 							<include content="OSDButton">
-								<param name="texture" value="osd/fullscreen/buttons/previous.png"/>
+								<param name="texture"value="osd/fullscreen/buttons/previous.png"/>
 							</include>
 							<onclick>PVR.EpgGridControl(FirstProgramme)</onclick>
 						</control>
-						<control type="radiobutton" id="601">
+						<control type="radiobutton"id="601">
 							<include content="OSDButton">
-								<param name="texture" value="osd/fullscreen/buttons/rewind.png"/>
+								<param name="texture"value="osd/fullscreen/buttons/rewind.png"/>
 							</include>
 							<onclick>PVR.EpgGridControl(-12)</onclick>
 						</control>
-						<control type="radiobutton" id="602">
+						<control type="radiobutton"id="602">
 							<include content="OSDButton">
-								<param name="texture" value="osd/fullscreen/buttons/play.png"/>
+								<param name="texture"value="osd/fullscreen/buttons/play.png"/>
 							</include>
-							<animation type="Conditional" effect="rotate" start="0" end="-90" center="auto" condition="true" />
+							<animation type="Conditional"effect="rotate"start="0"end="-90"center="auto"condition="true"/>
 							<onclick>PVR.EpgGridControl(CurrentProgramme)</onclick>
 						</control>
-						<control type="radiobutton" id="603">
+						<control type="radiobutton"id="603">
 							<include content="OSDButton">
-								<param name="texture" value="osd/fullscreen/buttons/forward.png"/>
+								<param name="texture"value="osd/fullscreen/buttons/forward.png"/>
 							</include>
 							<onclick>PVR.EpgGridControl(+12)</onclick>
 						</control>
-						<control type="radiobutton" id="604">
+						<control type="radiobutton"id="604">
 							<include content="OSDButton">
-								<param name="texture" value="osd/fullscreen/buttons/next.png"/>
+								<param name="texture"value="osd/fullscreen/buttons/next.png"/>
 							</include>
 							<onclick>PVR.EpgGridControl(LastProgramme)</onclick>
 						</control>
-						<control type="radiobutton" id="605">
+						<control type="radiobutton"id="605">
 							<include content="OSDButton">
-								<param name="texture" value="osd/fullscreen/buttons/calendar.png"/>
+								<param name="texture"value="osd/fullscreen/buttons/calendar.png"/>
 							</include>
 							<onclick>PVR.EpgGridControl(SelectDate)</onclick>
 						</control>
@@ -104,7 +104,7 @@
 						<aligny>center</aligny>
 						<label>$LOCALIZE[19148]</label>
 					</control>
-					<control type="grouplist" id="202">
+					<control type="grouplist"id="202">
 						<top>54</top>
 						<height>135</height>
 						<align>center</align>
@@ -113,23 +113,23 @@
 						<orientation>horizontal</orientation>
 						<onleft>605</onleft>
 						<onright>70043</onright>
-						<control type="radiobutton" id="70040">
+						<control type="radiobutton"id="70040">
 							<include content="OSDButton">
-								<param name="texture" value="osd/fullscreen/buttons/previous.png"/>
+								<param name="texture"value="osd/fullscreen/buttons/previous.png"/>
 							</include>
 							<onclick>PVR.EpgGridControl(FirstChannel)</onclick>
 						</control>
-						<control type="radiobutton" id="70041">
+						<control type="radiobutton"id="70041">
 							<include content="OSDButton">
-								<param name="texture" value="osd/fullscreen/buttons/play.png"/>
+								<param name="texture"value="osd/fullscreen/buttons/play.png"/>
 							</include>
-							<animation type="Conditional" effect="rotate" start="0" end="-90" center="auto" condition="true" />
+							<animation type="Conditional"effect="rotate"start="0"end="-90"center="auto"condition="true"/>
 							<onclick>PVR.EpgGridControl(PlayingChannel)</onclick>
 							<visible>PVR.IsPlayingTV | PVR.IsPlayingRadio | PVR.IsPlayingEpgTag</visible>
 						</control>
-						<control type="radiobutton" id="70042">
+						<control type="radiobutton"id="70042">
 							<include content="OSDButton">
-								<param name="texture" value="osd/fullscreen/buttons/next.png"/>
+								<param name="texture"value="osd/fullscreen/buttons/next.png"/>
 							</include>
 							<onclick>PVR.EpgGridControl(LastChannel)</onclick>
 						</control>
@@ -145,7 +145,7 @@
 						<aligny>center</aligny>
 						<label>$LOCALIZE[19141]</label>
 					</control>
-					<control type="grouplist" id="203">
+					<control type="grouplist"id="203">
 						<top>54</top>
 						<height>135</height>
 						<align>center</align>
@@ -154,22 +154,22 @@
 						<orientation>horizontal</orientation>
 						<onleft>70042</onleft>
 						<onright>600</onright>
-						<control type="radiobutton" id="70043">
+						<control type="radiobutton"id="70043">
 							<include content="OSDButton">
-								<param name="texture" value="osd/fullscreen/buttons/play.png"/>
+								<param name="texture"value="osd/fullscreen/buttons/play.png"/>
 							</include>
-							<animation type="Conditional" effect="rotate" start="0" end="180" center="auto" condition="true" />
+							<animation type="Conditional"effect="rotate"start="0"end="180"center="auto"condition="true"/>
 							<onclick>PVR.EpgGridControl(PreviousGroup)</onclick>
 						</control>
-						<control type="radiobutton" id="70044">
+						<control type="radiobutton"id="70044">
 							<include content="OSDButton">
-								<param name="texture" value="osd/fullscreen/buttons/play.png"/>
+								<param name="texture"value="osd/fullscreen/buttons/play.png"/>
 							</include>
 							<onclick>PVR.EpgGridControl(NextGroup)</onclick>
 						</control>
-						<control type="radiobutton" id="70045">
+						<control type="radiobutton"id="70045">
 							<include content="OSDButton">
-								<param name="texture" value="DefaultPlaylist.png"/>
+								<param name="texture"value="defaultplaylist.png"/>
 							</include>
 							<onclick>PVR.EpgGridControl(SelectGroup)</onclick>
 						</control>

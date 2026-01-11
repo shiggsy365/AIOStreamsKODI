@@ -1,3 +1,9 @@
+[B]3.1.6[/B]
+• FIXED: Massive rendering overhaul for Linux - standardizing all texture and font references to lowercase.
+• FIXED: Resolved "black on black" text and missing backgrounds by defining missing colors (grey, button_focus, etc.) in defaults.xml.
+• FIXED: Globally injected Includes.xml into ALL window types (Dialogs, Custom, etc.) to ensure resource resolution everywhere.
+• FIXED: Disabled Textures.xbt to force raw resource usage for maximum compatibility.
+
 [B]3.1.4[/B]
 • FIXED: Resolve MyVideoNav focus failure (Control 50) and added fallback navigation.
 • FIXED: Targeted "Skin has invalid include" (blank name) warning by silencing PicsInfoLine and ensuring global dummy robustness.

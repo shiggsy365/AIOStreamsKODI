@@ -1,9 +1,9 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0"encoding="UTF-8"?>
 <window>
-    <include file="Includes.xml" />
+    <include file="Includes.xml"/>
 	<defaultcontrol always="true">999</defaultcontrol>
 	<controls>
-		<control type="button" id="999">
+		<control type="button"id="999">
 			<left>0</left>
 			<top>0</top>
 			<width>100%</width>

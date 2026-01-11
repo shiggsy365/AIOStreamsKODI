@@ -1,6 +1,6 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0"encoding="utf-8"?>
 <window>
-    <include file="Includes.xml" />
+    <include file="Includes.xml"/>
 	<defaultcontrol always="true">2</defaultcontrol>
 	<include>Animation_DialogPopupOpenClose</include>
 	<controls>
@@ -21,9 +21,9 @@
 				<left>0</left>
 				<width>100%</width>
 				<height>410</height>
-				<animation type="WindowOpen" effect="fade" start="0" end="100" time="300" />
-				<animation type="WindowClose" effect="fade" start="100" end="0" time="300" />
-				<texture colordiffuse="E6FFFFFF">dialogs/dialog-bg-nobo.png</texture>
+				<animation type="WindowOpen"effect="fade"start="0"end="100"time="300"/>
+				<animation type="WindowClose"effect="fade"start="100"end="0"time="300"/>
+				<texture colordiffuse="E6FFFFFF">dialogs/dialog-bg- nobo.png</texture>
 			</control>
 			<control type="textbox">
 				<left>0</left>
@@ -36,7 +36,7 @@
 				<label>$LOCALIZE[31155]</label>
 				<visible>Integer.IsEqual(Container(11).NumItems,0)</visible>
 			</control>
-			<control type="grouplist" id="9001">
+			<control type="grouplist"id="9001">
 				<orientation>horizontal</orientation>
 				<left>0</left>
 				<top>-10</top>
@@ -46,23 +46,23 @@
 				<onup>11</onup>
 				<ondown>11</ondown>
 				<include content="DefaultDialogButton">
-					<param name="id" value="2" />
-					<param name="label" value="$LOCALIZE[294]" />
-					<param name="width" value="350" />
+					<param name="id"value="2"/>
+					<param name="label"value="$LOCALIZE[294]"/>
+					<param name="width"value="350"/>
 				</include>
 				<include content="DefaultDialogButton">
-					<param name="id" value="3" />
-					<param name="label" value="$LOCALIZE[296]" />
-					<param name="width" value="350" />
+					<param name="id"value="3"/>
+					<param name="label"value="$LOCALIZE[296]"/>
+					<param name="width"value="350"/>
 				</include>
 				<include content="DefaultDialogButton">
-					<param name="id" value="4" />
-					<param name="label" value="$LOCALIZE[20406]" />
-					<param name="width" value="350" />
-					<param name="visible" value="Control.IsEnabled(4)" />
+					<param name="id"value="4"/>
+					<param name="label"value="$LOCALIZE[20406]"/>
+					<param name="width"value="350"/>
+					<param name="visible"value="Control.IsEnabled(4)"/>
 				</include>
 			</control>
-			<control type="panel" id="11">
+			<control type="panel"id="11">
 				<left>0</left>
 				<top>81</top>
 				<width>100%</width>
@@ -72,7 +72,7 @@
 				<preloaditems>2</preloaditems>
 				<scrolltime tween="sine">200</scrolltime>
 				<orientation>horizontal</orientation>
-				<itemlayout width="360" height="340">
+				<itemlayout width="360"height="340">
 					<control type="group">
 						<left>70</left>
 						<control type="image">
@@ -81,7 +81,7 @@
 							<width>330</width>
 							<height>250</height>
 							<aspectratio>scale</aspectratio>
-							<texture border="4" fallback="DefaultVideo.png">$INFO[ListItem.Art(thumb)]</texture>
+							<texture border="4"fallback="defaultvideo.png">$INFO[ListItem.Art(thumb)]</texture>
 							<bordertexture colordiffuse="border_alpha">colors/black.png</bordertexture>
 							<bordersize>4</bordersize>
 						</control>
@@ -97,7 +97,7 @@
 						</control>
 					</control>
 				</itemlayout>
-				<focusedlayout width="360" height="340">
+				<focusedlayout width="360"height="340">
 					<control type="group">
 						<left>70</left>
 						<control type="image">
@@ -106,7 +106,7 @@
 							<width>330</width>
 							<height>250</height>
 							<aspectratio>scale</aspectratio>
-							<texture border="4" fallback="DefaultVideo.png">$INFO[ListItem.Art(thumb)]</texture>
+							<texture border="4"fallback="defaultvideo.png">$INFO[ListItem.Art(thumb)]</texture>
 							<bordertexture colordiffuse="border_alpha">colors/black.png</bordertexture>
 							<bordersize>4</bordersize>
 						</control>
@@ -125,7 +125,7 @@
 							<top>5</top>
 							<width>330</width>
 							<height>250</height>
-							<texture border="8" colordiffuse="button_focus">buttons/thumbnail_focused.png</texture>
+							<texture border="8"colordiffuse="button_focus">buttons/thumbnail_focused.png</texture>
 							<visible>Control.HasFocus(11)</visible>
 						</control>
 					</control>

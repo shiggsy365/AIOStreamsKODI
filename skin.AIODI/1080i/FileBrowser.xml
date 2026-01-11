@@ -1,6 +1,6 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0"encoding="UTF-8"?>
 <window>
-    <include file="Includes.xml" />
+    <include file="Includes.xml"/>
 	<defaultcontrol always="true">450</defaultcontrol>
 	<include>Animation_DialogPopupOpenClose</include>
 	<controls>
@@ -10,12 +10,12 @@
 			<width>1300</width>
 			<height>850</height>
 			<include content="DialogBackgroundCommons">
-				<param name="width" value="1300" />
-				<param name="height" value="850" />
-				<param name="header_label" value="" />
-				<param name="header_id" value="411" />
+				<param name="width"value="1300"/>
+				<param name="height"value="850"/>
+				<param name="header_label"value=""/>
+				<param name="header_id"value="411"/>
 			</include>
-			<control type="grouplist" id="9000">
+			<control type="grouplist"id="9000">
 				<left>990</left>
 				<top>85</top>
 				<width>400</width>
@@ -27,22 +27,22 @@
 				<onup>9000</onup>
 				<ondown>9000</ondown>
 				<include content="DefaultDialogButton">
-					<param name="id" value="413" />
-					<param name="label" value="$LOCALIZE[186]" />
+					<param name="id"value="413"/>
+					<param name="label"value="$LOCALIZE[186]"/>
 				</include>
 				<include content="DefaultDialogButton">
-					<param name="id" value="414" />
-					<param name="label" value="$LOCALIZE[222]" />
+					<param name="id"value="414"/>
+					<param name="label"value="$LOCALIZE[222]"/>
 				</include>
 				<include content="DefaultDialogButton">
-					<param name="id" value="415" />
-					<param name="label" value="$LOCALIZE[119]" />
-					<param name="visible" value="Control.IsEnabled(415)" />
+					<param name="id"value="415"/>
+					<param name="label"value="$LOCALIZE[119]"/>
+					<param name="visible"value="Control.IsEnabled(415)"/>
 				</include>
 				<include content="DefaultDialogButton">
-					<param name="id" value="416" />
-					<param name="label" value="$LOCALIZE[749]" />
-					<param name="visible" value="Control.IsEnabled(416)" />
+					<param name="id"value="416"/>
+					<param name="label"value="$LOCALIZE[749]"/>
+					<param name="visible"value="Control.IsEnabled(416)"/>
 				</include>
 			</control>
 			<control type="image">
@@ -53,16 +53,16 @@
 				<aspectratio aligny="bottom">keep</aspectratio>
 				<bordertexture colordiffuse="border_alpha">colors/black.png</bordertexture>
 				<bordersize>4</bordersize>
-				<texture border="4" background="true">$INFO[ListItem.Icon]</texture>
+				<texture border="4"background="true">$INFO[ListItem.Icon]</texture>
 			</control>
 			<control type="image">
 				<left>0</left>
 				<top>80</top>
 				<width>980</width>
 				<height>740</height>
-				<texture border="40">buttons/dialogbutton-nofo.png</texture>
+				<texture border="40">buttons/dialogbutton- nofo.png</texture>
 			</control>
-			<control type="panel" id="450">
+			<control type="panel"id="450">
 				<left>20</left>
 				<top>100</top>
 				<width>940</width>
@@ -73,7 +73,7 @@
 				<ondown>450</ondown>
 				<pagecontrol>60</pagecontrol>
 				<scrolltime>200</scrolltime>
-				<itemlayout height="70" width="940">
+				<itemlayout height="70"width="940">
 					<control type="image">
 						<left>10</left>
 						<top>10</top>
@@ -91,7 +91,7 @@
 						<label>$INFO[ListItem.Label]</label>
 					</control>
 				</itemlayout>
-				<focusedlayout height="70" width="940">
+				<focusedlayout height="70"width="940">
 					<control type="image">
 						<left>0</left>
 						<top>0</top>
@@ -118,7 +118,7 @@
 					</control>
 				</focusedlayout>
 			</control>
-			<control type="panel" id="451">
+			<control type="panel"id="451">
 				<left>20</left>
 				<top>100</top>
 				<width>940</width>
@@ -129,7 +129,7 @@
 				<ondown>451</ondown>
 				<pagecontrol>60</pagecontrol>
 				<scrolltime>200</scrolltime>
-				<itemlayout height="70" width="940">
+				<itemlayout height="70"width="940">
 					<control type="image">
 						<left>10</left>
 						<top>10</top>
@@ -147,7 +147,7 @@
 						<label>$INFO[ListItem.Label]</label>
 					</control>
 				</itemlayout>
-				<focusedlayout height="70" width="940">
+				<focusedlayout height="70"width="940">
 					<control type="image">
 						<left>0</left>
 						<top>0</top>
@@ -174,7 +174,7 @@
 					</control>
 				</focusedlayout>
 			</control>
-			<control type="scrollbar" id="60">
+			<control type="scrollbar"id="60">
 				<left>965</left>
 				<top>100</top>
 				<width>12</width>
@@ -183,7 +183,7 @@
 				<onright>9000</onright>
 				<orientation>vertical</orientation>
 			</control>
-			<control type="label" id="412">
+			<control type="label"id="412">
 				<description>Path label</description>
 				<left>25</left>
 				<bottom>10</bottom>
@@ -207,11 +207,11 @@
 			</control>
 		</control>
 		<include content="UpDownArrows">
-			<param name="container_id" value="450" />
-			<param name="posx" value="830" />
-			<param name="up_posy" value="50" />
-			<param name="down_posy" value="980" />
-			<param name="visible" value="!System.HasActiveModalDialog" />
+			<param name="container_id"value="450"/>
+			<param name="posx"value="830"/>
+			<param name="up_posy"value="50"/>
+			<param name="down_posy"value="980"/>
+			<param name="visible"value="!System.HasActiveModalDialog"/>
 		</include>
 	</controls>
 </window>

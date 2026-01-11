@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0"encoding="UTF-8"?>
 <includes>
 	<include name="GameDialogControllers">
 		<control type="group">
@@ -7,10 +7,10 @@
 			<width>1820</width>
 			<height>870</height>
 			<include content="DialogBackgroundCommons">
-				<param name="width" value="1820" />
-				<param name="height" value="870" />
-				<param name="header_label" value="$LOCALIZE[35058]" />
-				<param name="header_id" value="2" />
+				<param name="width"value="1820"/>
+				<param name="height"value="870"/>
+				<param name="header_label"value="$LOCALIZE[35058]"/>
+				<param name="header_id"value="2"/>
 			</include>
 			<control type="group">
 				<description>Controller list</description>
@@ -34,9 +34,9 @@
 					<bottom>-20</bottom>
 					<left>-20</left>
 					<right>0</right>
-					<texture border="40">buttons/dialogbutton-nofo.png</texture>
+					<texture border="40">buttons/dialogbutton- nofo.png</texture>
 				</control>
-				<control type="grouplist" id="3">
+				<control type="grouplist"id="3">
 					<description>Controller profiles grouplist</description>
 					<top>40</top>
 					<right>20</right>
@@ -46,13 +46,13 @@
 					<ondown>3</ondown>
 					<pagecontrol>62</pagecontrol>
 				</control>
-				<control type="scrollbar" id="62">
+				<control type="scrollbar"id="62">
 					<top>40</top>
 					<right>0</right>
 					<width>12</width>
 					<orientation>vertical</orientation>
 				</control>
-				<control type="button" id="10">
+				<control type="button"id="10">
 					<description>Default controller button</description>
 					<width>390</width>
 					<height>60</height>
@@ -63,7 +63,7 @@
 					<texturenofocus />
 				</control>
 			</control>
-			<control type="gamecontroller" id="31">
+			<control type="gamecontroller"id="31">
 				<top>130</top>
 				<left>470</left>
 				<width>540</width>
@@ -89,9 +89,9 @@
 					<bottom>-20</bottom>
 					<left>-20</left>
 					<right>0</right>
-					<texture border="40">buttons/dialogbutton-nofo.png</texture>
+					<texture border="40">buttons/dialogbutton- nofo.png</texture>
 				</control>
-				<control type="grouplist" id="5">
+				<control type="grouplist"id="5">
 					<description>Features grouplist</description>
 					<top>40</top>
 					<right>20</right>
@@ -101,13 +101,13 @@
 					<ondown>5</ondown>
 					<pagecontrol>61</pagecontrol>
 				</control>
-				<control type="scrollbar" id="61">
+				<control type="scrollbar"id="61">
 					<right>0</right>
 					<top>40</top>
 					<width>12</width>
 					<orientation>vertical</orientation>
 				</control>
-				<control type="button" id="7">
+				<control type="button"id="7">
 					<description>Default feature button</description>
 					<width>390</width>
 					<height>60</height>
@@ -119,7 +119,7 @@
 					<texturefocus colordiffuse="button_focus">lists/focus.png</texturefocus>
 					<texturenofocus />
 				</control>
-				<control type="label" id="8">
+				<control type="label"id="8">
 					<description>Feature group title</description>
 					<width>390</width>
 					<height>40</height>
@@ -129,13 +129,13 @@
 					<textcolor>grey</textcolor>
 					<shadowcolor>black</shadowcolor>
 				</control>
-				<control type="image" id="9">
+				<control type="image"id="9">
 					<description>Feature separator image</description>
 					<height>3</height>
-					<texture colordiffuse="AAAAAAAA" border="3">dialogs/separator-grey.png</texture>
+					<texture colordiffuse="AAAAAAAA"border="3">dialogs/separator- grey.png</texture>
 				</control>
 			</control>
-			<control type="grouplist" id="9001">
+			<control type="grouplist"id="9001">
 				<top>110</top>
 				<right>20</right>
 				<width>340</width>
@@ -143,34 +143,34 @@
 				<onright>3</onright>
 				<itemgap>dialogbuttons_itemgap</itemgap>
 				<include content="DefaultDialogButton">
-					<param name="width" value="350" />
-					<param name="id" value="18" />
-					<param name="label" value="$LOCALIZE[186]" />
+					<param name="width"value="350"/>
+					<param name="id"value="18"/>
+					<param name="label"value="$LOCALIZE[186]"/>
 				</include>
 				<include content="DefaultDialogButton">
-					<param name="width" value="350" />
-					<param name="id" value="19" />
-					<param name="label" value="$LOCALIZE[13007]" />
+					<param name="width"value="350"/>
+					<param name="id"value="19"/>
+					<param name="label"value="$LOCALIZE[13007]"/>
 				</include>
 				<include content="DefaultDialogButton">
-					<param name="width" value="350" />
-					<param name="id" value="20" />
-					<param name="label" value="$LOCALIZE[21452]" />
+					<param name="width"value="350"/>
+					<param name="id"value="20"/>
+					<param name="label"value="$LOCALIZE[21452]"/>
 				</include>
 				<include content="DefaultDialogButton">
-					<param name="width" value="350" />
-					<param name="id" value="22" />
-					<param name="label" value="$LOCALIZE[35021]" />
+					<param name="width"value="350"/>
+					<param name="id"value="22"/>
+					<param name="label"value="$LOCALIZE[35021]"/>
 				</include>
 				<include content="DefaultDialogButton">
-					<param name="width" value="350" />
-					<param name="id" value="17" />
-					<param name="label" value="$LOCALIZE[10043]" />
+					<param name="width"value="350"/>
+					<param name="id"value="17"/>
+					<param name="label"value="$LOCALIZE[10043]"/>
 				</include>
 				<include content="DefaultDialogButton">
-					<param name="width" value="350" />
-					<param name="id" value="21" />
-					<param name="label" value="$LOCALIZE[35019]" />
+					<param name="width"value="350"/>
+					<param name="id"value="21"/>
+					<param name="label"value="$LOCALIZE[35019]"/>
 				</include>
 			</control>
 			<control type="group">
@@ -185,9 +185,9 @@
 					<bottom>-20</bottom>
 					<left>-20</left>
 					<right>-20</right>
-					<texture border="40">buttons/dialogbutton-nofo.png</texture>
+					<texture border="40">buttons/dialogbutton- nofo.png</texture>
 				</control>
-				<control type="textbox" id="32">
+				<control type="textbox"id="32">
 					<top>5</top>
 					<bottom>5</bottom>
 					<left>10</left>
@@ -205,10 +205,10 @@
 			<width>1820</width>
 			<height>830</height>
 			<include content="DialogBackgroundCommons">
-				<param name="width" value="1820" />
-				<param name="height" value="830" />
-				<param name="header_label" value="" />
-				<param name="header_id" value="2" />
+				<param name="width"value="1820"/>
+				<param name="height"value="830"/>
+				<param name="header_label"value=""/>
+				<param name="header_id"value="2"/>
 			</include>
 			<control type="group">
 				<description>Content area</description>
@@ -226,9 +226,9 @@
 						<bottom>-20</bottom>
 						<left>-20</left>
 						<right>-20</right>
-						<texture border="40">buttons/dialogbutton-nofo.png</texture>
+						<texture border="40">buttons/dialogbutton- nofo.png</texture>
 					</control>
-					<control type="list" id="3">
+					<control type="list"id="3">
 						<description>Port item list</description>
 						<onright>9001</onright>
 						<onup>3</onup>
@@ -236,7 +236,7 @@
 						<pagecontrol>62</pagecontrol>
 						<scrolltime tween="sine">200</scrolltime>
 						<orientation>vertical</orientation>
-						<itemlayout width="1440" height="100">
+						<itemlayout width="1440"height="100">
 							<control type="group">
 								<control type="label">
 									<top>20</top>
@@ -263,14 +263,14 @@
 								</control>
 							</control>
 						</itemlayout>
-						<focusedlayout width="1440" height="100">
+						<focusedlayout width="1440"height="100">
 							<control type="group">
 								<control type="image">
 									<top>-20</top>
 									<bottom>-20</bottom>
 									<left>-20</left>
 									<right>-20</right>
-									<texture border="40" colordiffuse="button_focus">buttons/dialogbutton-fo.png</texture>
+									<texture border="40"colordiffuse="button_focus">buttons/dialogbutton- fo.png</texture>
 									<visible>Control.HasFocus(3)</visible>
 								</control>
 								<control type="label">
@@ -300,26 +300,26 @@
 						</focusedlayout>
 					</control>
 				</control>
-				<control type="scrollbar" id="62">
+				<control type="scrollbar"id="62">
 					<left>1430</left>
 					<width>12</width>
 					<orientation>vertical</orientation>
 				</control>
-				<control type="grouplist" id="9001">
+				<control type="grouplist"id="9001">
 					<top>-20</top>
 					<right>-20</right>
 					<width>330</width>
 					<onleft>3</onleft>
 					<itemgap>dialogbuttons_itemgap</itemgap>
 					<include content="DefaultDialogButton">
-						<param name="width" value="330" />
-						<param name="id" value="18" />
-						<param name="label" value="$LOCALIZE[186]" />
+						<param name="width"value="330"/>
+						<param name="id"value="18"/>
+						<param name="label"value="$LOCALIZE[186]"/>
 					</include>
 					<include content="DefaultDialogButton">
-						<param name="width" value="330" />
-						<param name="id" value="19" />
-						<param name="label" value="$LOCALIZE[13007]" />
+						<param name="width"value="330"/>
+						<param name="id"value="19"/>
+						<param name="label"value="$LOCALIZE[13007]"/>
 					</include>
 				</control>
 			</control>
@@ -332,10 +332,10 @@
 			<width>1820</width>
 			<height>962</height>
 			<include content="DialogBackgroundCommons">
-				<param name="width" value="1820" />
-				<param name="height" value="962" />
-				<param name="header_label" value="$LOCALIZE[35172]" />
-				<param name="header_id" value="2" />
+				<param name="width"value="1820"/>
+				<param name="height"value="962"/>
+				<param name="header_label"value="$LOCALIZE[35172]"/>
+				<param name="header_id"value="2"/>
 			</include>
 			<control type="group">
 				<description>Content area</description>
@@ -346,7 +346,7 @@
 				<control type="group">
 					<description>Area of the dialog for ports</description>
 					<height>96</height>
-					<control type="button" id="3">
+					<control type="button"id="3">
 						<description>Ports button</description>
 						<top>-20</top>
 						<bottom>-20</bottom>
@@ -358,18 +358,18 @@
 						<textoffsetx>36</textoffsetx>
 						<align>left</align>
 						<aligny>center</aligny>
-						<texturefocus border="40" colordiffuse="button_focus">buttons/dialogbutton-fo.png</texturefocus>
-						<texturenofocus border="40">buttons/dialogbutton-nofo.png</texturenofocus>
+						<texturefocus border="40"colordiffuse="button_focus">buttons/dialogbutton- fo.png</texturefocus>
+						<texturenofocus border="40">buttons/dialogbutton- nofo.png</texturenofocus>
 						<onclick>ActivateWindow(GamePorts)</onclick>
 					</control>
-					<control type="gamecontrollerlist" id="4">
-						<description>Active port list. Length should fit 13 listitems (12 controllers and one "controller disconnected" indicator).</description>
+					<control type="gamecontrollerlist"id="4">
+						<description>Active port list. Length should fit 13 listitems (12 controllers and one "controller disconnected"indicator).</description>
 						<right>0</right>
 						<width>1248</width>
 						<orientation>horizontal</orientation>
 						<align>right</align>
 						<enable>false</enable>
-						<itemlayout width="96" height="96">
+						<itemlayout width="96"height="96">
 							<control type="gamecontroller">
 								<texture>$INFO[ListItem.Icon]</texture>
 								<controllerid>$INFO[ListItem.Property(game.controllerid)]</controllerid>
@@ -377,7 +377,7 @@
 								<controllerdiffuse>button_focus</controllerdiffuse>
 							</control>
 						</itemlayout>
-						<focusedlayout width="96" height="96">
+						<focusedlayout width="96"height="96">
 							<control type="gamecontroller">
 								<texture>$INFO[ListItem.Icon]</texture>
 								<controllerid>$INFO[ListItem.Property(game.controllerid)]</controllerid>
@@ -390,7 +390,7 @@
 							with static content for testing.
 						<content>
 							<item>
-								<icon>DefaultAddonNone.png</icon>
+								<icon >defaultaddonnone.png</icon>
 							</item>
 							<item>
 								<property name="game.controllerid">game.controller.snes</property>
@@ -442,25 +442,25 @@
 						<bottom>-20</bottom>
 						<left>-20</left>
 						<right>-20</right>
-						<texture border="40">buttons/dialogbutton-nofo.png</texture>
+						<texture border="40">buttons/dialogbutton- nofo.png</texture>
 					</control>
-					<control type="list" id="7">
+					<control type="list"id="7">
 						<description>Controller list</description>
 						<onup>3</onup>
 						<ondown>10</ondown>
 						<pagecontrol>61</pagecontrol>
 						<scrolltime tween="sine">200</scrolltime>
 						<orientation>vertical</orientation>
-						<itemlayout width="1740" height="96">
+						<itemlayout width="1740"height="96">
 							<include>AgentControllerList</include>
 						</itemlayout>
-						<focusedlayout width="1740" height="96">
+						<focusedlayout width="1740"height="96">
 							<control type="image">
 								<top>-20</top>
 								<bottom>-20</bottom>
 								<left>-20</left>
 								<right>-20</right>
-								<texture border="40" colordiffuse="button_focus">buttons/dialogbutton-fo.png</texture>
+								<texture border="40"colordiffuse="button_focus">buttons/dialogbutton- fo.png</texture>
 								<visible>Control.HasFocus(7)</visible>
 							</control>
 							<include>AgentControllerList</include>
@@ -509,7 +509,7 @@
 						-->
 					</control>
 				</control>
-				<control type="scrollbar" id="61">
+				<control type="scrollbar"id="61">
 					<description>Controller list scroll bar</description>
 					<top>136</top>
 					<height>576</height>
@@ -517,7 +517,7 @@
 					<width>12</width>
 					<orientation>vertical</orientation>
 				</control>
-				<control type="grouplist" id="10">
+				<control type="grouplist"id="10">
 					<description>Action buttons</description>
 					<left>-20</left>
 					<right>-20</right>
@@ -527,9 +527,9 @@
 					<orientation>horizontal</orientation>
 					<itemgap>dialogbuttons_itemgap</itemgap>
 					<include content="DefaultDialogButton">
-						<param name="width" value="330" />
-						<param name="id" value="18" />
-						<param name="label" value="$LOCALIZE[186]" />
+						<param name="width"value="330"/>
+						<param name="id"value="18"/>
+						<param name="label"value="$LOCALIZE[186]"/>
 					</include>
 				</control>
 			</control>
@@ -546,13 +546,13 @@
 			<align>left</align>
 		</control>
 		<control type="gamecontrollerlist">
-			<description>Controller list which indicates the port a player's controller is connected to. Length should fit 13 listitems (12 controller items and one "input disabled" item).</description>
+			<description>Controller list which indicates the port a player's controller is connected to. Length should fit 13 listitems (12 controller items and one "input disabled"item).</description>
 			<right>0</right>
 			<width>1248</width>
 			<orientation>horizontal</orientation>
 			<align>right</align>
 			<enable>false</enable>
-			<itemlayout width="96" height="96">
+			<itemlayout width="96"height="96">
 				<control type="gamecontroller">
 					<texture>$INFO[ListItem.Icon]</texture>
 					<controllerid>$INFO[ListItem.Property(game.controllerid)]</controllerid>
@@ -560,7 +560,7 @@
 					<controllerdiffuse>button_focus</controllerdiffuse>
 				</control>
 			</itemlayout>
-			<focusedlayout width="96" height="96">
+			<focusedlayout width="96"height="96">
 				<control type="gamecontroller">
 					<texture>$INFO[ListItem.Icon]</texture>
 					<controllerid>$INFO[ListItem.Property(game.controllerid)]</controllerid>
@@ -573,7 +573,7 @@
 				with static content for testing.
 			<content>
 				<item>
-					<icon>DefaultAddonNone.png</icon>
+					<icon >defaultaddonnone.png</icon>
 				</item>
 				<item>
 					<property name="game.controllerid">game.controller.default</property>

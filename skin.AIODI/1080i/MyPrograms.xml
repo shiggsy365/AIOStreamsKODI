@@ -1,6 +1,6 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0"encoding="UTF-8"?>
 <window>
-    <include file="Includes.xml" />
+    <include file="Includes.xml"/>
 	<defaultcontrol always="true">52</defaultcontrol>
 	<backgroundcolor>background</backgroundcolor>
 	<views>50,52,55,500</views>
@@ -8,7 +8,7 @@
 	<controls>
 		<include>DefaultBackground</include>
 		<control type="group">
-			<animation type="Conditional" effect="fade" start="100" end="0" time="200" tween="sine" condition="$EXP[infodialog_active]" />
+			<animation type="Conditional"effect="fade"start="100"end="0"time="200"tween="sine"condition="$EXP[infodialog_active]"/>
 			<include>View_50_List</include>
 			<include>View_52_IconWall</include>
 			<include>View_55_WideList</include>
@@ -20,31 +20,31 @@
 				<include>ListThumbInfoPanel</include>
 			</control>
 			<include content="TopBar">
-				<param name="breadcrumbs_label" value="$LOCALIZE[10001]" />
+				<param name="breadcrumbs_label"value="$LOCALIZE[10001]"/>
 			</include>
 			<include content="BottomBar">
-				<param name="info_visible" value="true" />
+				<param name="info_visible"value="true"/>
 			</include>
 			<include>CommonScrollbars</include>
 			<include>MediaMenuMouseOverlay</include>
 			<control type="group">
 				<include>MediaMenuCommon</include>
-				<control type="grouplist" id="9000">
+				<control type="grouplist"id="9000">
 					<top>50</top>
 					<include>MediaMenuListCommon</include>
-					<control type="label" id="203">
+					<control type="label"id="203">
 						<description>Actions</description>
 						<include>MediaMenuLabelCommon</include>
 						<label>$LOCALIZE[31020]</label>
 						<visible>Control.IsVisible(621)</visible>
 					</control>
-					<control type="button" id="624">
+					<control type="button"id="624">
 						<include>MediaMenuItemsCommon</include>
 						<label>$LOCALIZE[10140]</label>
 						<onclick>Addon.OpenSettings($INFO[Container.PluginName])</onclick>
 						<visible>!String.IsEmpty(Container.PluginName)</visible>
 					</control>
-					<control type="button" id="621">
+					<control type="button"id="621">
 						<description>Get more</description>
 						<include>MediaMenuItemsCommon</include>
 						<label>$LOCALIZE[21452]</label>

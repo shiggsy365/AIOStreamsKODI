@@ -1,6 +1,6 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0"encoding="UTF-8"?>
 <window>
-    <include file="Includes.xml" />
+    <include file="Includes.xml"/>
 	<controls>
 		<include condition="Skin.HasSetting(touchmode)">TouchBackSlideshowButton</include>
 		<control type="image">
@@ -8,7 +8,7 @@
 			<centertop>50%</centertop>
 			<width>256</width>
 			<height>256</height>
-			<texture>icons/settings/player.png</texture>
+			<texture >icons/settings/player.png</texture>
 			<visible>SlideShow.IsVideo</visible>
 			<visible>![Player.Playing + Player.HasVideo] | SlideShow.IsPaused</visible>
 		</control>

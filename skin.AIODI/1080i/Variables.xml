@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0"encoding="UTF-8"?>
 <includes>
 	<variable name="PVRStatusImageVar">
 		<value condition="ListItem.IsRecording">windows/pvr/record.png</value>
@@ -34,42 +34,42 @@
 		<value condition="Player.HasAudio">$INFO[MusicPlayer.Artist]$INFO[MusicPlayer.Album, - ]</value>
 	</variable>
 	<variable name="NowPlayingIconVar">
-		<value condition="Player.Paused">icons/now-playing/pause.png</value>
-		<value>icons/now-playing/play.png</value>
+		<value condition="Player.Paused">icons/now- playing/pause.png</value>
+		<value>icons/now- playing/play.png</value>
 	</variable>
 	<variable name="NowPlayingPosterVar">
 		<value condition="!String.IsEmpty(Player.Art(poster))">$INFO[Player.Art(poster)]</value>
 		<value condition="!String.IsEmpty(Player.Art(tvshow.poster))">$INFO[Player.Art(tvshow.poster)]</value>
-		<value condition="String.IsEmpty(Player.Icon) + VideoPlayer.Content(livetv)">DefaultTVShows.png</value>
+		<value condition="String.IsEmpty(Player.Icon) + VideoPlayer.Content(livetv)">defaulttvshows.png</value>
 		<value>$INFO[Player.Icon]</value>
 	</variable>
 	<variable name="ShiftThumbVar">
 		<value condition="!String.IsEmpty(Listitem.Art(poster))">$INFO[Listitem.Art(poster)]</value>
-		<value condition="ListItem.IsParentFolder">DefaultFolderBackSquare.png</value>
-		<value condition="String.IsEmpty(Listitem.Thumb) + [String.IsEqual(listitem.dbtype,album) | String.IsEqual(listitem.dbtype,artist)]">DefaultAudio.png</value>
-		<value condition="ListItem.IsFolder + String.IsEmpty(ListItem.Thumb)">DefaultFolderSquare.png</value>
+		<value condition="ListItem.IsParentFolder">defaultfolderbacksquare.png</value>
+		<value condition="String.IsEmpty(Listitem.Thumb) + [String.IsEqual(listitem.dbtype,album) | String.IsEqual(listitem.dbtype,artist)]">defaultaudio.png</value>
+		<value condition="ListItem.IsFolder + String.IsEmpty(ListItem.Thumb)">defaultfoldersquare.png</value>
 		<value condition="String.IsEqual(ListItem.DbType,episode) + System.Setting(hideunwatchedepisodethumbs) + Integer.IsEqual(ListItem.Playcount,0) + !String.IsEmpty(Listitem.Art(fanart))">$INFO[Listitem.Art(fanart)]</value>
-		<value condition="String.IsEqual(ListItem.DbType,episode) + System.Setting(hideunwatchedepisodethumbs) + Integer.IsEqual(ListItem.Playcount,0) + String.IsEmpty(Listitem.Art(fanart))">OverlaySpoiler.png</value>
+		<value condition="String.IsEqual(ListItem.DbType,episode) + System.Setting(hideunwatchedepisodethumbs) + Integer.IsEqual(ListItem.Playcount,0) + String.IsEmpty(Listitem.Art(fanart))">overlayspoiler.png</value>
 		<value condition="String.IsEqual(ListItem.DbType,episode) + [ !System.Setting(hideunwatchedepisodethumbs) | Integer.IsGreater(ListItem.Playcount,0) ]">$INFO[Listitem.Art(thumb)]</value>
-		<value condition="Container.Content(favourites) + String.IsEmpty(Listitem.Art(thumb))">DefaultFavourites.png</value>
+		<value condition="Container.Content(favourites) + String.IsEmpty(Listitem.Art(thumb))">defaultfavourites.png</value>
 		<value>$INFO[ListItem.Art(thumb)]</value>
 	</variable>
 	<variable name="MusicInfoThumbVar">
 		<value condition="!String.IsEmpty(Listitem.Art(thumb))">$INFO[Listitem.Art(thumb)]</value>
-		<value condition="String.IsEqual(listitem.dbtype,artist)">DefaultArtist.png</value>
-		<value condition="String.IsEqual(listitem.dbtype,album)">DefaultAlbumCover.png</value>
-		<value>DefaultAudio.png</value>
+		<value condition="String.IsEqual(listitem.dbtype,artist)">defaultartist.png</value>
+		<value condition="String.IsEqual(listitem.dbtype,album)">defaultalbumcover.png</value>
+		<value >defaultaudio.png</value>
 	</variable>
 	<variable name="InfoWallThumbVar">
 		<value condition="!String.IsEqual(listitem.dbtype,musicvideo) + !String.IsEmpty(Listitem.Art(poster))">$INFO[Listitem.Art(poster)]</value>
 		<value condition="String.IsEqual(ListItem.DbType,episode) + System.Setting(hideunwatchedepisodethumbs) + Integer.IsEqual(ListItem.Playcount,0) + !String.IsEmpty(Listitem.Art(fanart))">$INFO[Listitem.Art(fanart)]</value>
-		<value condition="String.IsEqual(ListItem.DbType,episode) + System.Setting(hideunwatchedepisodethumbs) + Integer.IsEqual(ListItem.Playcount,0) + String.IsEmpty(Listitem.Art(fanart))">OverlaySpoiler.png</value>
+		<value condition="String.IsEqual(ListItem.DbType,episode) + System.Setting(hideunwatchedepisodethumbs) + Integer.IsEqual(ListItem.Playcount,0) + String.IsEmpty(Listitem.Art(fanart))">overlayspoiler.png</value>
 		<value condition="String.IsEqual(ListItem.DbType,episode) + [ !System.Setting(hideunwatchedepisodethumbs) | Integer.IsGreater(ListItem.Playcount,0) ]">$INFO[Listitem.Art(thumb)]</value>
 		<value>$INFO[ListItem.Icon]</value>
 	</variable>
 	<variable name="PosterThumbVar">
 		<value condition="!String.IsEmpty(Listitem.Art(poster))">$INFO[Listitem.Art(poster)]</value>
-		<value condition="ListItem.IsParentFolder">DefaultFolderBackPoster.png</value>
+		<value condition="ListItem.IsParentFolder">defaultfolderbackposter.png</value>
 		<value>$INFO[ListItem.Icon]</value>
 	</variable>
 	<variable name="IconWallThumbVar">
@@ -125,13 +125,13 @@
 		<value>[COLOR=button_focus]$INFO[Container(451).NumItems][/COLOR] $LOCALIZE[31036] - [COLOR=button_focus]$INFO[Container(451).CurrentPage]/$INFO[Container(451).NumPages][/COLOR]</value>
 	</variable>
 	<variable name="BannerArtVar">
-		<value condition="ListItem.IsParentFolder">DefaultBackBanner.png</value>
+		<value condition="ListItem.IsParentFolder">defaultbackbanner.png</value>
 		<value condition="!String.IsEmpty(ListItem.Art(banner))">$INFO[ListItem.Art(banner)]</value>
 		<value condition="!String.isempty(ListItem.Art(fanart))">$INFO[ListItem.Art(fanart)]</value>
-		<value>dialogs/dialog-bg-nobo.png</value>
+		<value>dialogs/dialog-bg- nobo.png</value>
 	</variable>
 	<variable name="FanartImageVar">
-		<value condition="ListItem.IsParentFolder">special://skin/extras/home-images/movie.jpg</value>
+		<value condition="ListItem.IsParentFolder">special://skin/extras/home- images/movie.jpg</value>
 		<value>$INFO[ListItem.Art(fanart)]</value>
 	</variable>
 	<variable name="ListBoxInfoVar">
@@ -164,16 +164,16 @@
 	<variable name="WidgetGenreIconVar">
 		<value condition="String.IsEqual(ListItem.Property(node.type),target_folder)">$INFO[ListItem.Icon]</value>
 		<value condition="System.AddonIsEnabled(resource.images.moviegenreicons.transparent)">$INFO[ListItem.Label,resource://resource.images.moviegenreicons.transparent/,.png]</value>
-		<value>DefaultGenre.png</value>
+		<value >defaultgenre.png</value>
 	</variable>
 	<variable name="WidgetStudioIconVar">
 		<value condition="String.IsEqual(ListItem.Property(node.type),target_folder)">$INFO[ListItem.Icon]</value>
 		<value condition="System.AddonIsEnabled(resource.images.studios.white)">$INFO[ListItem.Label,resource://resource.images.studios.white/,.png]</value>
-		<value>DefaultStudios.png</value>
+		<value >defaultstudios.png</value>
 	</variable>
 	<variable name="WidgetPlaylistIconVar">
 		<value condition="String.IsEqual(ListItem.Property(node.type),target_folder)">$INFO[ListItem.Icon]</value>
-		<value>DefaultPlaylist.png</value>
+		<value >defaultplaylist.png</value>
 	</variable>
 	<variable name="AddonsLabel2Var">
 		<value condition="ListItem.Property(addon.downloading)">$INFO[ListItem.Property(addon.status)]</value>
@@ -241,8 +241,8 @@
 		<value>ActivateWindow(videos,videodb://movies/sets/$INFO[ListItem.DBID]/,return)</value>
 	</variable>
 	<variable name="AddonLifecycleType">
-		<value condition="String.IsEqual(ListItem.AddonLifecycleType,$LOCALIZE[24170])">[COLOR button_focus]$LOCALIZE[24170][/COLOR][CR]$INFO[ListItem.AddonLifecycleDesc]</value> <!-- Deprecated -->
-		<value condition="String.IsEqual(ListItem.AddonLifecycleType,$LOCALIZE[24171])">[COLOR button_focus]$LOCALIZE[24171][/COLOR][CR]$INFO[ListItem.AddonLifecycleDesc]</value> <!-- Broken -->
+		<value condition="String.IsEqual(ListItem.AddonLifecycleType,$LOCALIZE[24170])">[COLOR button_focus]$LOCALIZE[24170][/COLOR][CR]$INFO[ListItem.AddonLifecycleDesc]</value ><!-- Deprecated -->
+		<value condition="String.IsEqual(ListItem.AddonLifecycleType,$LOCALIZE[24171])">[COLOR button_focus]$LOCALIZE[24171][/COLOR][CR]$INFO[ListItem.AddonLifecycleDesc]</value ><!-- Broken -->
 	</variable>
 	<variable name="AddonsListIconVar">
 		<value condition="[String.IsEqual(ListItem.AddonLifecycleType,$LOCALIZE[24170]) | String.IsEqual(ListItem.AddonLifecycleType,$LOCALIZE[24171])] + !ListItem.Property(addon.isenabled)">icons/addonstatus/disable.png</value>
@@ -250,25 +250,25 @@
 		<value condition="ListItem.Property(addon.downloading)">icons/addonstatus/install.png</value>
 		<value condition="ListItem.Property(addon.isinstalled) + !ListItem.Property(addon.isenabled) + Window.IsActive(addonbrowser)">icons/addonstatus/disable.png</value>
 		<value condition="ListItem.Property(addon.hasupdate) | ListItem.Property(addon.isupdate)">icons/addonstatus/update.png</value>
-		<value condition="ListItem.Property(addon.isenabled) + String.IsEqual(ListItem.AddonLifecycleType,$LOCALIZE[24169])">icons/addonstatus/enabled-normal.png</value>
-		<value condition="ListItem.Property(addon.isenabled) + String.IsEqual(ListItem.AddonLifecycleType,$LOCALIZE[24170])">icons/addonstatus/enabled-deprecated.png</value>
-		<value condition="ListItem.Property(addon.isenabled) + String.IsEqual(ListItem.AddonLifecycleType,$LOCALIZE[24171])">icons/addonstatus/enabled-broken.png</value>
-		<value condition="!ListItem.IsParentFolder">OverlayUnwatched.png</value>
+		<value condition="ListItem.Property(addon.isenabled) + String.IsEqual(ListItem.AddonLifecycleType,$LOCALIZE[24169])">icons/addonstatus/enabled- normal.png</value>
+		<value condition="ListItem.Property(addon.isenabled) + String.IsEqual(ListItem.AddonLifecycleType,$LOCALIZE[24170])">icons/addonstatus/enabled- deprecated.png</value>
+		<value condition="ListItem.Property(addon.isenabled) + String.IsEqual(ListItem.AddonLifecycleType,$LOCALIZE[24171])">icons/addonstatus/enabled- broken.png</value>
+		<value condition="!ListItem.IsParentFolder">overlayunwatched.png</value>
 	</variable>
 	<variable name="AddonsOriginVar">
 		<value condition="ListItem.Property(Addon.IsFromOfficialRepo) + ListItem.IsAutoUpdateable">icons/addonstatus/official.png</value>
-		<value condition="ListItem.Property(Addon.IsFromOfficialRepo)">icons/addonstatus/official-pinned.png</value>
+		<value condition="ListItem.Property(Addon.IsFromOfficialRepo)">icons/addonstatus/official- pinned.png</value>
 		<value condition="String.IsEqual(ListItem.AddonOrigin,$LOCALIZE[25014]) + ListItem.IsAutoUpdateable">icons/addonstatus/manual.png</value>
-		<value condition="String.IsEqual(ListItem.AddonOrigin,$LOCALIZE[25014])">icons/addonstatus/manual-pinned.png</value>
+		<value condition="String.IsEqual(ListItem.AddonOrigin,$LOCALIZE[25014])">icons/addonstatus/manual- pinned.png</value>
 		<value condition="ListItem.IsAutoUpdateable">icons/addonstatus/install.png</value>
-		<value>icons/addonstatus/install-pinned.png</value>
+		<value>icons/addonstatus/install- pinned.png</value>
 	</variable>
 	<variable name="ResolutionFlagVar">
-		<value condition="ListItem.IsStereoscopic">flags/videoresolution/3D.png</value>
+		<value condition="ListItem.IsStereoscopic">flags/videoresolution/3d.png</value>
 		<value>$INFO[ListItem.VideoResolution,flags/videoresolution/,.png]</value>
 	</variable>
 	<variable name="ContainerResolutionFlagVar">
-		<value condition="Container.ListItem.IsStereoscopic">flags/videoresolution/3D.png</value>
+		<value condition="Container.ListItem.IsStereoscopic">flags/videoresolution/3d.png</value>
 		<value>$INFO[Container.ListItem.VideoResolution,flags/videoresolution/,.png]</value>
 	</variable>
 	<variable name="BannerVar">
@@ -276,7 +276,7 @@
 		<value>$INFO[ListItem.Art(tvshow.banner)]</value>
 	</variable>
 	<variable name="PosterVar">
-		<value condition="ListItem.IsParentFolder">DefaultFolderBackPoster.png</value>
+		<value condition="ListItem.IsParentFolder">defaultfolderbackposter.png</value>
 		<value condition="!String.IsEmpty(Container.Art(season.poster)) + Container.Content(episodes)">$INFO[Container.Art(season.poster)]</value>
 		<value condition="!String.IsEmpty(Container.Art(tvshow.poster)) + Container.Content(episodes)">$INFO[Container.Art(tvshow.poster)]</value>
 		<value condition="!String.IsEmpty(Container.Art(tvshow.poster)) + Container.Content(seasons) + Window.IsActive(movieinformation)">$INFO[Container.Art(tvshow.poster)]</value>
@@ -361,14 +361,14 @@
 	</variable>
 	<variable name="SkinSettingOSDAutoCloseTime">
 		<value condition="!String.IsEmpty(Skin.String(OSDAutoCloseTime))">$INFO[Skin.String(OSDAutoCloseTime)]</value>
-		<value condition="String.IsEmpty(Skin.String(OSDAutoCloseTime))">4</value> <!-- Default value -->
+		<value condition="String.IsEmpty(Skin.String(OSDAutoCloseTime))">4</value ><!-- Default value -->
 	</variable>
 	<variable name="VolumeIconVar">
 		<value condition="Player.Muted">dialogs/volume/mute.png</value>
 		<value condition="Integer.IsGreater(Player.Volume,66)">dialogs/volume/volume.png</value>
 		<value condition="Integer.IsGreater(Player.Volume,33)">dialogs/volume/volume2.png</value>
 		<value condition="player.passthrough">dialogs/volume/volume.png</value>
-		<value>dialogs/volume/volume1.png</value>
+		<value >dialogs/volume/volume1.png</value>
 	</variable>
 	<variable name="ListSubLabelVar">
 		<value condition="ListItem.IsCollection"></value>
@@ -467,20 +467,20 @@
 		<value condition="ListItem.IsRecording">windows/pvr/record.png</value>
 		<value condition="ListItem.IsCollection">overlays/set.png</value>
 		<value condition="ListItem.HasVideoVersions">overlays/versions.png</value>
-		<value condition="ListItem.IsPlaying">overlays/watched/OverlayPlaying-List.png</value>
+		<value condition="ListItem.IsPlaying">overlays/watched/OverlayPlaying- list.png</value>
 		<value condition="ListItem.IsResumable">overlays/watched/resume.png</value>
 		<value condition="ListItem.HasVideoExtras">overlays/extras.png</value>
-		<value condition="ListItem.IsFolder + String.IsEmpty(Listitem.dbtype) + !String.IsEqual(ListItem.Overlay,OverlayWatched.png) + !ListItem.IsParentFolder">overlays/folder.png</value>
+		<value condition="ListItem.IsFolder + String.IsEmpty(Listitem.dbtype) + !String.IsEqual(ListItem.Overlay, overlaywatched.png) + !ListItem.IsParentFolder">overlays/folder.png</value>
 		<value condition="!String.IsEmpty(ListItem.Overlay)">$INFO[ListItem.Overlay]</value>
-		<value condition="!ListItem.IsParentFolder">OverlayUnwatched.png</value>
+		<value condition="!ListItem.IsParentFolder">overlayunwatched.png</value>
 	</variable>
 	<variable name="ItemStatusIconVar">
-		<value condition="[String.IsEqual(Listitem.DBType,tvshow) | String.IsEqual(Listitem.DBType,season)] + String.IsEqual(ListItem.Property(WatchedEpisodes),ListItem.Property(TotalEpisodes)) | String.IsEqual(ListItem.DBtype,set) + String.IsEqual(ListItem.Property(Watched),ListItem.Property(Total))">OverlayWatched.png</value>
-		<value condition="String.IsEqual(ListItem.DBtype,tvshow) | String.IsEqual(ListItem.DBtype,set) | String.IsEqual(ListItem.DBType,season)">lists/played-total.png</value>
+		<value condition="[String.IsEqual(Listitem.DBType,tvshow) | String.IsEqual(Listitem.DBType,season)] + String.IsEqual(ListItem.Property(WatchedEpisodes),ListItem.Property(TotalEpisodes)) | String.IsEqual(ListItem.DBtype,set) + String.IsEqual(ListItem.Property(Watched),ListItem.Property(Total))">overlaywatched.png</value>
+		<value condition="String.IsEqual(ListItem.DBtype,tvshow) | String.IsEqual(ListItem.DBtype,set) | String.IsEqual(ListItem.DBType,season)">lists/played- total.png</value>
 		<value condition="ListItem.IsRecording">windows/pvr/record.png</value>
 		<value condition="ListItem.HasReminder">icons/pvr/timers/bell.png</value>
 		<value condition="ListItem.HasTimer">icons/pvr/timers/recording.png</value>
-		<value condition="ListItem.IsPlaying">overlays/watched/OverlayPlaying-List.png</value>
+		<value condition="ListItem.IsPlaying">overlays/watched/OverlayPlaying- list.png</value>
 		<value condition="ListItem.IsResumable">overlays/watched/resume.png</value>
 		<value condition="ListItem.HasArchive">windows/pvr/archive.png</value>
 		<value condition="Integer.IsGreater(ListItem.Playcount,0)">$INFO[ListItem.Overlay]</value>
@@ -494,12 +494,12 @@
 		<value condition="ListItem.IsRecording">windows/pvr/record.png</value>
 		<value condition="ListItem.IsResumable">overlays/watched/resume.png</value>
 		<value condition="!String.IsEmpty(ListItem.Overlay)">$INFO[ListItem.Overlay]</value>
-		<value condition="!ListItem.IsParentFolder">OverlayUnwatched.png</value>
+		<value condition="!ListItem.IsParentFolder">overlayunwatched.png</value>
 	</variable>
 	<variable name="ListPVRTimersIconVar">
 		<value condition="ListItem.IsRecording">windows/pvr/record.png</value>
 		<value condition="ListItem.HasReminder">icons/pvr/timers/bell.png</value>
-		<value>icons/pvr/timers/recording.png</value>
+		<value >icons/pvr/timers/recording.png</value>
   </variable>
 	<!-- Breadcrumbs -->
 	<variable name="BreadcrumbsVideoVar">
@@ -568,12 +568,12 @@
 	</variable>
 	<variable name="PlayerControlsPlayImageVar">
 		<value condition="Player.Playing">osd/fullscreen/buttons/pause.png</value>
-		<value>osd/fullscreen/buttons/play.png</value>
+		<value >osd/fullscreen/buttons/play.png</value>
 	</variable>
 	<variable name="PlayerControlsRepeatImageVar">
-		<value condition="Playlist.IsRepeatOne">osd/fullscreen/buttons/repeat-one.png</value>
-		<value condition="Playlist.IsRepeat">osd/fullscreen/buttons/repeat-all.png</value>
-		<value>osd/fullscreen/buttons/repeat-off.png</value>
+		<value condition="Playlist.IsRepeatOne">osd/fullscreen/buttons/repeat- one.png</value>
+		<value condition="Playlist.IsRepeat">osd/fullscreen/buttons/repeat- all.png</value>
+		<value>osd/fullscreen/buttons/repeat- off.png</value>
 	</variable>
 	<variable name="PlayerLabel1">
 		<value condition="Player.HasVideo">$INFO[VideoPlayer.Title]</value>
@@ -591,18 +591,18 @@
 		<value condition="Player.HasAudio">$INFO[MusicPlayer.TrackNumber,,: ][COLOR=grey]$INFO[Player.Title][/COLOR]</value>
 	</variable>
 	<variable name="PVRTimerIcon">
-		<value condition="ListItem.IsRecording">icons/pvr/PVR-IsRecording.png</value>
+		<value condition="ListItem.IsRecording">icons/pvr/PVR- isrecording.png</value>
 		<value condition="ListItem.HasReminder">icons/pvr/timers/bell.png</value>
-		<value condition="ListItem.HasTimerSchedule + ListItem.TimerHasError">icons/pvr/PVR-HasTimerScheduleError.png</value>
-		<value condition="ListItem.HasTimer + ListItem.TimerHasError">icons/pvr/PVR-HasTimerError.png</value>
-		<value condition="ListItem.HasTimerSchedule + ListItem.TimerHasConflict">icons/pvr/PVR-HasTimerScheduleConflict.png</value>
-		<value condition="ListItem.HasTimer + ListItem.TimerHasConflict">icons/pvr/PVR-HasTimerConflict.png</value>
-		<value condition="ListItem.HasRecording">icons/pvr/PVR-HasRecording.png</value>
-		<value condition="ListItem.HasTimerSchedule + !ListItem.TimerIsActive">icons/pvr/PVR-HasTimerScheduleDisabled.png</value>
-		<value condition="ListItem.HasTimer + !ListItem.TimerIsActive">icons/pvr/PVR-HasTimerDisabled.png</value>
-		<value condition="ListItem.HasTimerSchedule">icons/pvr/PVR-HasTimerSchedule.png</value>
-		<value condition="ListItem.HasTimer">icons/pvr/PVR-HasTimer.png</value>
-		<value condition="ListItem.IsPlayable">icons/pvr/PVR-HasArchive.png</value>
+		<value condition="ListItem.HasTimerSchedule + ListItem.TimerHasError">icons/pvr/PVR- hastimerscheduleerror.png</value>
+		<value condition="ListItem.HasTimer + ListItem.TimerHasError">icons/pvr/PVR- hastimererror.png</value>
+		<value condition="ListItem.HasTimerSchedule + ListItem.TimerHasConflict">icons/pvr/PVR- hastimerscheduleconflict.png</value>
+		<value condition="ListItem.HasTimer + ListItem.TimerHasConflict">icons/pvr/PVR- hastimerconflict.png</value>
+		<value condition="ListItem.HasRecording">icons/pvr/PVR- hasrecording.png</value>
+		<value condition="ListItem.HasTimerSchedule + !ListItem.TimerIsActive">icons/pvr/PVR- hastimerscheduledisabled.png</value>
+		<value condition="ListItem.HasTimer + !ListItem.TimerIsActive">icons/pvr/PVR- hastimerdisabled.png</value>
+		<value condition="ListItem.HasTimerSchedule">icons/pvr/PVR- hastimerschedule.png</value>
+		<value condition="ListItem.HasTimer">icons/pvr/PVR- hastimer.png</value>
+		<value condition="ListItem.IsPlayable">icons/pvr/PVR- hasarchive.png</value>
 	</variable>
 	<variable name="SeasonEpisodeLabel">
 		<value condition="String.IsEmpty(ListItem.EpisodeName)">$INFO[ListItem.Season,S]$INFO[ListItem.Episode,E]</value>
@@ -689,7 +689,7 @@
 		<value condition="!String.IsEmpty(Container(6).ListItem.Art(thumb))">$INFO[Container(6).ListItem.Art(thumb)]</value>
 		<value condition="!String.IsEmpty(Container(50).ListItem.Art(poster))">$INFO[Container(50).ListItem.Art(poster)]</value>
 		<value condition="!String.IsEmpty(Container(50).ListItem.Art(thumb))">$INFO[Container(50).ListItem.Art(thumb)]</value>
-		<value condition="String.IsEmpty(Container(50).ListItem.Art(thumb))">DefaultMovies.png</value>
+		<value condition="String.IsEmpty(Container(50).ListItem.Art(thumb))">defaultmovies.png</value>
 		<value condition="!String.IsEmpty(Listitem.Art(poster))">$INFO[ListItem.Art(poster)]</value>
 		<value>$INFO[ListItem.Art(thumb)]</value>
 	</variable>

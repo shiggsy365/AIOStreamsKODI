@@ -1,6 +1,6 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0"encoding="UTF-8"?>
 <window>
-    <include file="Includes.xml" />
+    <include file="Includes.xml"/>
 	<defaultcontrol always="true">20</defaultcontrol>
 	<controls>
 		<include>DefaultBackground</include>
@@ -10,24 +10,24 @@
 			<centertop>50%</centertop>
 			<width>68</width>
 			<height>68</height>
-			<texture colordiffuse="button_focus" border="2">icons/file-manager/left-right.png</texture>
-			<animation type="WindowOpen" effect="fade" start="0" end="100" time="300" delay="100" />
-			<animation type="WindowClose" effect="fade" start="100" end="0" time="160" />
+			<texture colordiffuse="button_focus"border="2">icons/file-manager/left- right.png</texture>
+			<animation type="WindowOpen"effect="fade"start="0"end="100"time="300"delay="100"/>
+			<animation type="WindowClose"effect="fade"start="100"end="0"time="160"/>
 		</control>
 		<control type="group">
 			<left>0</left>
 			<include>OpenClose_Left</include>
 			<include content="ContentPanel">
-				<param name="width" value="872" />
+				<param name="width"value="872"/>
 			</include>
 			<include content="FileManagerPanel">
-				<param name="list_id" value="20" />
-				<param name="scrollbar_id" value="60" />
-				<param name="onleft_id" value="60" />
-				<param name="onright_id" value="21" />
-				<param name="width" value="812" />
+				<param name="list_id"value="20"/>
+				<param name="scrollbar_id"value="60"/>
+				<param name="onleft_id"value="60"/>
+				<param name="onright_id"value="21"/>
+				<param name="width"value="812"/>
 			</include>
-			<control type="scrollbar" id="60">
+			<control type="scrollbar"id="60">
 				<top>list_top_offset</top>
 				<left>0</left>
 				<width>12</width>
@@ -35,7 +35,7 @@
 				<onleft>20</onleft>
 				<onright>20</onright>
 				<orientation>vertical</orientation>
-				<animation type="conditional" effect="zoom" end="50,100" time="300" tween="sine" center="0,0" easing="inout" condition="!Control.HasFocus(60)" />
+				<animation type="conditional"effect="zoom"end="50,100"time="300"tween="sine"center="0,0"easing="inout"condition="!Control.HasFocus(60)"/>
 				<texturesliderbackground />
 			</control>
 		</control>
@@ -44,39 +44,39 @@
 			<right>0</right>
 			<include>OpenClose_Right</include>
 			<include content="ContentPanel">
-				<param name="width" value="878" />
-				<param name="flipx" value="true" />
-				<param name="left" value="-20" />
+				<param name="width"value="878"/>
+				<param name="flipx"value="true"/>
+				<param name="left"value="-20"/>
 			</include>
 			<include content="FileManagerPanel">
-				<param name="list_id" value="21" />
-				<param name="scrollbar_id" value="61" />
-				<param name="onleft_id" value="20" />
-				<param name="onright_id" value="61" />
-				<param name="width" value="817" />
+				<param name="list_id"value="21"/>
+				<param name="scrollbar_id"value="61"/>
+				<param name="onleft_id"value="20"/>
+				<param name="onright_id"value="61"/>
+				<param name="width"value="817"/>
 			</include>
-			<control type="scrollbar" id="61">
+			<control type="scrollbar"id="61">
 				<left>800</left>
-				<animation type="Conditional" effect="slide" end="5,0" time="0" condition="true" />
+				<animation type="Conditional"effect="slide"end="5,0"time="0"condition="true"/>
 				<top>list_top_offset</top>
 				<width>12</width>
 				<bottom>list_bottom_offset</bottom>
 				<onleft>21</onleft>
 				<onright>21</onright>
-				<animation type="conditional" effect="zoom" end="50,100" time="300" tween="sine" center="812,0" easing="inout" condition="!Control.HasFocus(61)" />
+				<animation type="conditional"effect="zoom"end="50,100"time="300"tween="sine"center="812,0"easing="inout"condition="!Control.HasFocus(61)"/>
 				<texturesliderbackground />
 				<orientation>vertical</orientation>
 			</control>
 		</control>
 		<include content="TopBar">
-			<param name="breadcrumbs_label" value="$LOCALIZE[7]" />
+			<param name="breadcrumbs_label"value="$LOCALIZE[7]"/>
 		</include>
 		<include>BottomBar</include>
 		<control type="group">
 			<bottom>0</bottom>
 			<height>65</height>
-			<animation type="WindowOpen" effect="fade" start="0" end="100" time="400" />
-			<animation type="WindowClose" effect="fade" start="100" end="0" time="300" />
+			<animation type="WindowOpen"effect="fade"start="0"end="100"time="400"/>
+			<animation type="WindowClose"effect="fade"start="100"end="0"time="300"/>
 			<control type="label">
 				<right>380</right>
 				<width>400</width>
@@ -85,7 +85,7 @@
 				<shadowcolor>text_shadow</shadowcolor>
 				<label>$INFO[Container(21).CurrentItem,, / ]$INFO[Container(21).NumItems]</label>
 			</control>
-			<control type="label" id="102">
+			<control type="label"id="102">
 				<right>40</right>
 				<width>600</width>
 				<height>48</height>
@@ -105,7 +105,7 @@
 				<shadowcolor>text_shadow</shadowcolor>
 				<label>$INFO[Container(20).CurrentItem,, / ]$INFO[Container(20).NumItems]</label>
 			</control>
-			<control type="label" id="101">
+			<control type="label"id="101">
 				<left>40</left>
 				<width>600</width>
 				<height>48</height>

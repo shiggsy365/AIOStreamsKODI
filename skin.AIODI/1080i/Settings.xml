@@ -1,6 +1,6 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0"encoding="UTF-8"?>
 <window>
-    <include file="Includes.xml" />
+    <include file="Includes.xml"/>
 	<defaultcontrol>9000</defaultcontrol>
 	<backgroundcolor>background</backgroundcolor>
 	<controls>
@@ -9,10 +9,10 @@
 			<depth>DepthBackground</depth>
 			<include>FullScreenDimensions</include>
 			<aspectratio>scale</aspectratio>
-			<animation type="conditional" effect="zoom" center="auto" end="102,102" time="0" condition="Integer.IsGreater(System.StereoscopicMode,0)" />
-			<animation type="WindowOpen" effect="fade" start="0" end="100" time="400" reversible="true" condition="!Window.Previous(SettingsCategory.xml)" />
-			<animation type="WindowClose" effect="fade" start="100" end="0" time="300" reversible="true" condition="!Window.Next(SettingsCategory.xml)" />
-			<animation type="VisibleChange" effect="fade" time="400" />
+			<animation type="conditional"effect="zoom"center="auto"end="102,102"time="0"condition="Integer.IsGreater(System.StereoscopicMode,0)"/>
+			<animation type="WindowOpen"effect="fade"start="0"end="100"time="400"reversible="true"condition="!Window.Previous(SettingsCategory.xml)"/>
+			<animation type="WindowClose"effect="fade"start="100"end="0"time="300"reversible="true"condition="!Window.Next(SettingsCategory.xml)"/>
+			<animation type="VisibleChange"effect="fade"time="400"/>
 			<imagepath colordiffuse="35FFFFFF">$INFO[Skin.String(HomeFanart.path)]settings$INFO[Skin.String(HomeFanart.ext)]</imagepath>
 			<visible>!Player.HasMedia + !String.IsEmpty(Skin.String(HomeFanart.path))</visible>
 		</control>
@@ -31,7 +31,7 @@
 				<align>center</align>
 				<font>font37</font>
 			</control>
-			<control type="panel" id="9000">
+			<control type="panel"id="9000">
 				<left>0</left>
 				<width>100%</width>
 				<top>120</top>
@@ -43,26 +43,26 @@
 					<item>
 						<label>$LOCALIZE[10003]</label>
 						<onclick>ActivateWindow(filemanager)</onclick>
-						<icon>icons/settings/filemanager.png</icon>
+						<icon >icons/settings/filemanager.png</icon>
 					</item>
 					<item>
 						<label>$LOCALIZE[24001]</label>
 						<onclick>ActivateWindow(addonbrowser)</onclick>
-						<icon>icons/settings/addons.png</icon>
+						<icon >icons/settings/addons.png</icon>
 					</item>
 					<item>
 						<label>$LOCALIZE[138]</label>
 						<onclick>ActivateWindow(systeminfo)</onclick>
-						<icon>icons/settings/sysinfo.png</icon>
+						<icon >icons/settings/sysinfo.png</icon>
 					</item>
 					<item>
 						<label>$LOCALIZE[31067]</label>
 						<onclick>ActivateWindow(eventlog)</onclick>
-						<icon>icons/settings/eventlog.png</icon>
+						<icon >icons/settings/eventlog.png</icon>
 					</item>
 				</content>
 			</control>
-			<control type="panel" id="9001">
+			<control type="panel"id="9001">
 				<left>0</left>
 				<right>0</right>
 				<top>470</top>
@@ -74,55 +74,55 @@
 					<item>
 						<label>$LOCALIZE[14200]</label>
 						<onclick>ActivateWindow(PlayerSettings)</onclick>
-						<icon>icons/settings/player.png</icon>
+						<icon >icons/settings/player.png</icon>
 					</item>
 					<item>
 						<label>$LOCALIZE[14211]</label>
 						<onclick>ActivateWindow(MediaSettings)</onclick>
-						<icon>icons/settings/media.png</icon>
+						<icon >icons/settings/media.png</icon>
 					</item>
 					<item>
 						<label>$LOCALIZE[14204]</label>
 						<onclick>ActivateWindow(PVRSettings)</onclick>
-						<icon>icons/settings/livetv.png</icon>
+						<icon >icons/settings/livetv.png</icon>
 					</item>
 					<item>
 						<label>$LOCALIZE[14036]</label>
 						<onclick>ActivateWindow(ServiceSettings)</onclick>
-						<icon>icons/settings/network.png</icon>
+						<icon >icons/settings/network.png</icon>
 					</item>
 					<item>
 						<label>$LOCALIZE[15016]</label>
 						<visible>System.GetBool(gamesgeneral.enable)</visible>
 						<onclick>ActivateWindow(GameSettings)</onclick>
-						<icon>icons/settings/games.png</icon>
+						<icon >icons/settings/games.png</icon>
 					</item>
 					<item>
 						<label>$LOCALIZE[14206]</label>
 						<onclick>ActivateWindow(InterfaceSettings)</onclick>
-						<icon>icons/settings/interface.png</icon>
+						<icon >icons/settings/interface.png</icon>
 					</item>
 					<item>
 						<label>$LOCALIZE[13200]</label>
 						<onclick>ActivateWindow(Profiles)</onclick>
-						<icon>icons/settings/profiles.png</icon>
+						<icon >icons/settings/profiles.png</icon>
 					</item>
 					<item>
 						<label>$LOCALIZE[13000]</label>
 						<onclick>ActivateWindow(SystemSettings)</onclick>
-						<icon>icons/settings/system.png</icon>
+						<icon >icons/settings/system.png</icon>
 					</item>
 					<item>
 						<label>LibreELEC</label>
 						<onclick>RunAddon(service.libreelec.settings)</onclick>
-						<icon>icons/settings/libreelec.png</icon>
+						<icon >icons/settings/libreelec.png</icon>
 						<visible>System.AddonIsEnabled(service.libreelec.settings)</visible>
 					</item>
 				</content>
 			</control>
 		</control>
 		<include content="TopBar">
-			<param name="breadcrumbs_label" value="$LOCALIZE[13000]" />
+			<param name="breadcrumbs_label"value="$LOCALIZE[13000]"/>
 		</include>
 		<include>BottomBar</include>
 	</controls>

@@ -1,6 +1,6 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0"encoding="utf-8"?>
 <window>
-    <include file="Includes.xml" />
+    <include file="Includes.xml"/>
 	<defaultcontrol always="true">9000</defaultcontrol>
 	<backgroundcolor>background</backgroundcolor>
 	<controls>
@@ -10,29 +10,29 @@
 			<include>FullScreenDimensions</include>
 			<aspectratio>scale</aspectratio>
 			<fadetime>600</fadetime>
-			<animation type="conditional" effect="zoom" center="auto" end="102,102" time="0" condition="Integer.IsGreater(System.StereoscopicMode,0)" />
-			<animation type="WindowOpen" effect="fade" start="0" end="100" time="400" />
-			<animation type="WindowClose" effect="fade" start="100" end="0" time="300" />
-			<animation type="VisibleChange" effect="fade" time="400" />
-			<imagepath background="true" colordiffuse="bg_overlay">$INFO[Skin.String(HomeFanart.path)]settings$INFO[Skin.String(HomeFanart.ext)]</imagepath>
+			<animation type="conditional"effect="zoom"center="auto"end="102,102"time="0"condition="Integer.IsGreater(System.StereoscopicMode,0)"/>
+			<animation type="WindowOpen"effect="fade"start="0"end="100"time="400"/>
+			<animation type="WindowClose"effect="fade"start="100"end="0"time="300"/>
+			<animation type="VisibleChange"effect="fade"time="400"/>
+			<imagepath background="true"colordiffuse="bg_overlay">$INFO[Skin.String(HomeFanart.path)]settings$INFO[Skin.String(HomeFanart.ext)]</imagepath>
 			<visible>!Player.HasMedia + !String.IsEmpty(Skin.String(HomeFanart.path))</visible>
 		</control>
-		<control type="group" id="9100">
+		<control type="group"id="9100">
 			<include>OpenClose_Right</include>
 			<left>472</left>
 			<control type="image">
 				<top>130</top>
 				<right>0</right>
 				<height>3</height>
-				<texture colordiffuse="button_focus" border="2">dialogs/separator-grey.png</texture>
+				<texture colordiffuse="button_focus"border="2">dialogs/separator- grey.png</texture>
 			</control>
 			<control type="image">
 				<bottom>134</bottom>
 				<right>0</right>
 				<height>3</height>
-				<texture colordiffuse="button_focus" border="2">dialogs/separator-grey.png</texture>
+				<texture colordiffuse="button_focus"border="2">dialogs/separator- grey.png</texture>
 			</control>
-			<control type="panel" id="2">
+			<control type="panel"id="2">
 				<top>148</top>
 				<left>30</left>
 				<visible>Container(9000).Hasfocus(2)</visible>
@@ -43,13 +43,13 @@
 				<onup>2</onup>
 				<ondown>2</ondown>
 				<scrolltime>200</scrolltime>
-				<itemlayout height="390" width="354">
+				<itemlayout height="390"width="354">
 					<control type="image">
 						<top>5</top>
 						<width>320</width>
 						<height>380</height>
-						<texture>dialogs/dialog-bg-nobo.png</texture>
-						<bordertexture border="21" infill="false">overlays/shadow.png</bordertexture>
+						<texture>dialogs/dialog-bg- nobo.png</texture>
+						<bordertexture border="21"infill="false">overlays/shadow.png</bordertexture>
 						<bordersize>20</bordersize>
 					</control>
 					<control type="image">
@@ -58,7 +58,7 @@
 						<width>215</width>
 						<height>215</height>
 						<aspectratio>scale</aspectratio>
-						<texture fallback="DefaultUser.png">$INFO[Listitem.Icon]</texture>
+						<texture fallback="defaultuser.png">$INFO[Listitem.Icon]</texture>
 					</control>
 					<control type="label">
 						<left>10</left>
@@ -92,16 +92,16 @@
 						<visible>!String.Contains(Listitem.Label,$LOCALIZE[20058])</visible>
 					</control>
 				</itemlayout>
-				<focusedlayout height="390" width="354">
+				<focusedlayout height="390"width="354">
 					<control type="group">
-						<animation type="Focus" effect="zoom" start="100" end="105" time="200" tween="sine" easing="inout" center="160,190" />
-						<animation type="UnFocus" effect="zoom" start="105" end="100" time="200" tween="sine" easing="inout" center="160,190" />
+						<animation type="Focus"effect="zoom"start="100"end="105"time="200"tween="sine"easing="inout"center="160,190"/>
+						<animation type="UnFocus"effect="zoom"start="105"end="100"time="200"tween="sine"easing="inout"center="160,190"/>
 						<control type="image">
 							<top>5</top>
 							<width>320</width>
 							<height>380</height>
-							<texture>dialogs/dialog-bg-nobo.png</texture>
-							<bordertexture border="21" infill="false">overlays/shadow.png</bordertexture>
+							<texture>dialogs/dialog-bg- nobo.png</texture>
+							<bordertexture border="21"infill="false">overlays/shadow.png</bordertexture>
 							<bordersize>20</bordersize>
 						</control>
 						<control type="image">
@@ -118,7 +118,7 @@
 							<width>215</width>
 							<height>215</height>
 							<aspectratio>scale</aspectratio>
-							<texture fallback="DefaultUser.png">$INFO[Listitem.Icon]</texture>
+							<texture fallback="defaultuser.png">$INFO[Listitem.Icon]</texture>
 						</control>
 						<control type="label">
 							<left>10</left>
@@ -154,7 +154,7 @@
 					</control>
 				</focusedlayout>
 			</control>
-			<control type="grouplist" id="9001">
+			<control type="grouplist"id="9001">
 				<visible>Container(9000).Hasfocus(1)</visible>
 				<right>0</right>
 				<height>735</height>
@@ -163,11 +163,11 @@
 				<onright>9000</onright>
 				<onup>9001</onup>
 				<ondown>9001</ondown>
-				<control type="radiobutton" id="4">
+				<control type="radiobutton"id="4">
 					<label>$LOCALIZE[31057]</label>
 					<include>DefaultSettingButton</include>
 				</control>
-				<control type="button" id="5">
+				<control type="button"id="5">
 					<label>$LOCALIZE[31058]</label>
 					<label2>[B]$INFO[System.ProfileAutoLogin][/B]</label2>
 					<include>DefaultSettingButton</include>
@@ -179,9 +179,9 @@
 			<depth>DepthContentPanel</depth>
 			<include>OpenClose_Left</include>
 			<include content="ContentPanel">
-				<param name="width" value="530" />
+				<param name="width"value="530"/>
 			</include>
-			<control type="list" id="9000">
+			<control type="list"id="9000">
 				<left>0</left>
 				<top>130</top>
 				<width>470</width>
@@ -191,7 +191,7 @@
 				<onup>9000</onup>
 				<ondown>9000</ondown>
 				<scrolltime>300</scrolltime>
-				<itemlayout height="85" width="470">
+				<itemlayout height="85"width="470">
 					<control type="label">
 						<left>30</left>
 						<right>30</right>
@@ -201,12 +201,12 @@
 						<aligny>center</aligny>
 					</control>
 				</itemlayout>
-				<focusedlayout height="85" width="470">
+				<focusedlayout height="85"width="470">
 					<control type="image">
 						<right>0</right>
 						<bottom>0</bottom>
 						<texture colordiffuse="button_focus">lists/focus.png</texture>
-						<animation type="Conditional" effect="fade" start="100" end="50" time="40" condition="!Control.HasFocus(9000)" />
+						<animation type="Conditional"effect="fade"start="100"end="50"time="40"condition="!Control.HasFocus(9000)"/>
 					</control>
 					<control type="label">
 						<left>30</left>
@@ -232,7 +232,7 @@
 			</control>
 		</control>
 		<include content="TopBar">
-			<param name="breadcrumbs_label" value="$LOCALIZE[10034]" />
+			<param name="breadcrumbs_label"value="$LOCALIZE[10034]"/>
 		</include>
 		<include>BottomBar</include>
 	</controls>

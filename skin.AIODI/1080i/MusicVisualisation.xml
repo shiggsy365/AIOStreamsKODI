@@ -1,11 +1,11 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0"encoding="utf-8"?>
 <window>
-    <include file="Includes.xml" />
+    <include file="Includes.xml"/>
 	<defaultcontrol></defaultcontrol>
 	<backgroundcolor>background</backgroundcolor>
 	<onload condition="System.AddonIsEnabled(script.artistslideshow) + !Skin.HasSetting(hide_background_fanart)">RunScript(script.artistslideshow)</onload>
 	<controls>
-		<control type="visualisation" id="2">
+		<control type="visualisation"id="2">
 			<include>FullScreenDimensions</include>
 			<visible>Player.HasAudio</visible>
 		</control>
@@ -13,23 +13,23 @@
 			<depth>DepthBackground</depth>
 			<include>FullScreenDimensions</include>
 			<visible>!Skin.HasSetting(hide_background_fanart)</visible>
-			<animation type="Conditional" effect="zoom" start="105" end="130" center="auto" time="10000" tween="sine" easing="inout" pulse="true" condition="Skin.HasSetting(animate_background_fanart)" />
-			<animation type="Conditional" effect="slide" start="-30,-30" end="30,30" time="6000" tween="sine" easing="inout" pulse="true" condition="Skin.HasSetting(animate_background_fanart)" />
+			<animation type="Conditional"effect="zoom"start="105"end="130"center="auto"time="10000"tween="sine"easing="inout"pulse="true"condition="Skin.HasSetting(animate_background_fanart)"/>
+			<animation type="Conditional"effect="slide"start="-30,-30"end="30,30"time="6000"tween="sine"easing="inout"pulse="true"condition="Skin.HasSetting(animate_background_fanart)"/>
 			<control type="image">
 				<aspectratio>scale</aspectratio>
 				<fadetime>400</fadetime>
-				<animation type="WindowOpen" effect="fade" start="0" end="100" time="400" />
-				<animation type="WindowClose" effect="fade" start="100" end="0" time="300" />
-				<animation type="Conditional" effect="fade" start="100" end="50" time="0" condition="Visualisation.Enabled" />
+				<animation type="WindowOpen"effect="fade"start="0"end="100"time="400"/>
+				<animation type="WindowClose"effect="fade"start="100"end="0"time="300"/>
+				<animation type="Conditional"effect="fade"start="100"end="50"time="0"condition="Visualisation.Enabled"/>
 				<texture background="true">$INFO[Player.Art(fanart)]</texture>
 				<visible>String.IsEmpty(Window(Visualisation).Property(ArtistSlideshow.Image))</visible>
 			</control>
 			<control type="image">
 				<aspectratio>scale</aspectratio>
 				<fadetime>400</fadetime>
-				<animation type="WindowOpen" effect="fade" start="0" end="100" time="400" />
-				<animation type="WindowClose" effect="fade" start="100" end="0" time="300" />
-				<animation type="Conditional" effect="fade" start="100" end="50" time="0" condition="Visualisation.Enabled" />
+				<animation type="WindowOpen"effect="fade"start="0"end="100"time="400"/>
+				<animation type="WindowClose"effect="fade"start="100"end="0"time="300"/>
+				<animation type="Conditional"effect="fade"start="100"end="50"time="0"condition="Visualisation.Enabled"/>
 				<texture background="true">$INFO[Window(Visualisation).Property(ArtistSlideshow.Image)]</texture>
 			</control>
 		</control>
@@ -47,7 +47,7 @@
 				<left>0</left>
 				<width>120%</width>
 				<height>280</height>
-				<texture colordiffuse="80FFFFFF">dialogs/dialog-bg-nobo.png</texture>
+				<texture colordiffuse="80FFFFFF">dialogs/dialog-bg- nobo.png</texture>
 			</control>
 			<control type="image">
 				<left>20</left>
@@ -58,7 +58,7 @@
 				<height>400</height>
 				<fadetime>400</fadetime>
 				<aspectratio aligny="bottom">keep</aspectratio>
-				<texture fallback="DefaultAlbumCover.png" border="2">$INFO[MusicPlayer.Cover]</texture>
+				<texture fallback="defaultalbumcover.png"border="2">$INFO[MusicPlayer.Cover]</texture>
 				<bordertexture colordiffuse="border_alpha">colors/black.png</bordertexture>
 				<bordersize>4</bordersize>
 			</control>
@@ -105,7 +105,7 @@
 						<visible>!String.IsEmpty(MusicPlayer.Year)</visible>
 					</control>
 					<control type="label">
-						<width min="0" max="1130">auto</width>
+						<width min="0"max="1130">auto</width>
 						<height>35</height>
 						<label>$INFO[MusicPlayer.Genre]</label>
 						<font>font37</font>

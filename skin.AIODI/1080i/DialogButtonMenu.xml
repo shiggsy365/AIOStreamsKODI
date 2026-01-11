@@ -1,6 +1,6 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0"encoding="UTF-8"?>
 <window>
-    <include file="Includes.xml" />
+    <include file="Includes.xml"/>
 	<defaultcontrol>9000</defaultcontrol>
 	<include>Animation_DialogPopupOpenClose</include>
 	<controls>
@@ -10,12 +10,12 @@
 			<centertop>50%</centertop>
 			<height>700</height>
 			<include content="DialogBackgroundCommons">
-				<param name="width" value="600" />
-				<param name="height" value="80" />
-				<param name="header_label" value="$LOCALIZE[31072]" />
-				<param name="header_id" value="2" />
+				<param name="width"value="600"/>
+				<param name="height"value="80"/>
+				<param name="header_label"value="$LOCALIZE[31072]"/>
+				<param name="header_id"value="2"/>
 			</include>
-			<control type="panel" id="9000">
+			<control type="panel"id="9000">
 				<include>ButtonMenuList</include>
 				<content>
 					<item>

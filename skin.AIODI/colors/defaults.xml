@@ -7,6 +7,12 @@
     <color name="main_fg_50">80ffffff</color>
     <color name="main_fg_30">4dffffff</color>
     <color name="main_fg_12">1fffffff</color>
+    <color name="white">ffffffff</color>
+    <color name="grey">ff808080</color>
+    <color name="gray">ff808080</color>
+    <color name="red">ffff0000</color>
+    <color name="ThemeColor">ffb3b3b3</color>
+    <color name="button_focus">ffffffff</color>
 
     <!-- Main Background Colors (Opacity Variations) -->
     <color name="main_bg_100">ff000000</color>

@@ -1,6 +1,6 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0"encoding="UTF-8"?>
 <window>
-    <include file="Includes.xml" />
+    <include file="Includes.xml"/>
 	<defaultcontrol>9000</defaultcontrol>
 	<backgroundcolor>background</backgroundcolor>
 	<onload condition="String.IsEmpty(Skin.String(background_overlay))">Skin.SetString(background_overlay,1)</onload>
@@ -28,7 +28,7 @@
                     <texture colordiffuse="CC000000">common/white.png</texture>
                 </control>
 
-                <control type="list" id="9000">
+                <control type="list"id="9000">
                     <left>20</left>
                     <top>40</top>
                     <width>410</width>
@@ -66,30 +66,30 @@
                     </focusedlayout>
                     <content>
                         <item id="1">
-                            <label>$LOCALIZE[128]</label> <!-- General -->
+                            <label>$LOCALIZE[128]</label ><!-- General -->
                         </item>
                         <item id="2">
-                            <label>$LOCALIZE[31061]</label> <!-- Background -->
+                            <label>$LOCALIZE[31061]</label ><!-- Background -->
                         </item>
                         <item id="3">
-                            <label>$LOCALIZE[31159]</label> <!-- Home Menu -->
+                            <label>$LOCALIZE[31159]</label ><!-- Home Menu -->
                         </item>
                         <item id="4">
-                            <label>$LOCALIZE[31170]</label> <!-- OSD -->
+                            <label>$LOCALIZE[31170]</label ><!-- OSD -->
                         </item>
                     </content>
                 </control>
             </control>
 
             <!-- Content Area (Settings Controls) -->
-            <control type="group" id="10000">
+            <control type="group"id="10000">
                 <left>500</left>
                 <top>40</top>
                 <width>1380</width>
                 <height>880</height>
 
                 <!-- General Settings -->
-                <control type="grouplist" id="700">
+                <control type="grouplist"id="700">
                     <visible>Container(9000).HasFocus(1)</visible>
                     <left>0</left>
                     <top>0</top>
@@ -98,7 +98,7 @@
                     <onleft>9000</onleft>
                     <onright>noop</onright>
                     <itemgap>10</itemgap>
-                    <control type="radiobutton" id="701">
+                    <control type="radiobutton"id="701">
                         <width>1300</width>
                         <height>70</height>
                         <font>font27</font>
@@ -108,7 +108,7 @@
                         <focusedcolor>ThemeColor</focusedcolor>
                         <texturefocus colordiffuse="ThemeColor">lists/focus.png</texturefocus>
                     </control>
-                    <control type="radiobutton" id="702">
+                    <control type="radiobutton"id="702">
                         <width>1300</width>
                         <height>70</height>
                         <font>font27</font>
@@ -121,7 +121,7 @@
                 </control>
 
                 <!-- Background Settings -->
-                <control type="grouplist" id="600">
+                <control type="grouplist"id="600">
                     <visible>Container(9000).HasFocus(2)</visible>
                     <left>0</left>
                     <top>0</top>
@@ -130,7 +130,7 @@
                     <onleft>9000</onleft>
                     <onright>noop</onright>
                     <itemgap>10</itemgap>
-                    <control type="radiobutton" id="605">
+                    <control type="radiobutton"id="605">
                         <width>1300</width>
                         <height>70</height>
                         <font>font27</font>
@@ -143,7 +143,7 @@
                 </control>
 
                 <!-- Home Menu Visibility -->
-                <control type="grouplist" id="610">
+                <control type="grouplist"id="610">
                     <visible>Container(9000).HasFocus(3)</visible>
                     <left>0</left>
                     <top>0</top>
@@ -153,7 +153,7 @@
                     <onright>noop</onright>
                     <itemgap>10</itemgap>
                     <!-- Show/Hide categories -->
-                    <control type="radiobutton" id="611">
+                    <control type="radiobutton"id="611">
                         <width>1300</width>
                         <height>70</height>
                         <font>font27</font>
@@ -163,7 +163,7 @@
                         <focusedcolor>ThemeColor</focusedcolor>
                         <texturefocus colordiffuse="ThemeColor">lists/focus.png</texturefocus>
                     </control>
-                    <control type="radiobutton" id="612">
+                    <control type="radiobutton"id="612">
                         <width>1300</width>
                         <height>70</height>
                         <font>font27</font>
