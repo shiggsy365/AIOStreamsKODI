@@ -6,7 +6,7 @@
         <param name="page">home</param>
         <definition>
             <control type="group">
-                <visible>!String.IsEmpty(Window(Home).Property(AIOStreams.$PARAM[page].Widget.$PARAM[widget_index].Label))</visible>
+                <!-- <visible>!String.IsEmpty(Window(Home).Property(AIOStreams.$PARAM[page].Widget.$PARAM[widget_index].Label))</visible> -->
                 <left>0</left>
                 <top>$PARAM[top_pos]</top>
                 <width>100%</width>
