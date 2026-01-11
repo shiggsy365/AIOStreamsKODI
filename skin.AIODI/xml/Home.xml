@@ -129,7 +129,8 @@
 				<texturenofocus />
 				<onup>9001</onup>
 				<ondown>9003</ondown>
-				<onright>SetFocus($VAR[CurrentWidgetListID])</onright>
+				<onright>12001</onright>
+
 				<onclick>ActivateWindow(Videos,plugin://plugin.video.aiostreams/?action=search&amp;content_type=both&amp;nonce=$VAR[SearchTimestamp],return)</onclick>
 			</control>
 			<control type="image">
@@ -175,7 +176,9 @@
 				<onup>9002</onup>
 				<ondown>9004</ondown>
 				<onfocus>Skin.SetString(SideMenuFocus,home)</onfocus>
+				<onright>12001</onright>
 				<onclick>ActivateWindow(Videos,plugin://plugin.video.aiostreams/,return)</onclick>
+
 			</control>
 			<control type="image">
 				<left>24</left>
@@ -207,6 +210,8 @@
 				<onup>9003</onup>
 				<ondown>9005</ondown>
 				<onfocus>Skin.SetString(SideMenuFocus,tvshows)</onfocus>
+				<onright>12001</onright>
+
 				<onclick>ActivateWindow(Videos,plugin://plugin.video.aiostreams/?action=series_lists,return)</onclick>
 			</control>
 			<control type="image">
@@ -239,6 +244,10 @@
 				<onup>9004</onup>
 				<ondown>9006</ondown>
 				<onfocus>Skin.SetString(SideMenuFocus,movies)</onfocus>
+				<onright>12001</onright>
+
+				<onright>12001</onright>
+
 				<onclick>ActivateWindow(Videos,plugin://plugin.video.aiostreams/?action=movie_lists,return)</onclick>
 			</control>
 			<control type="image">
@@ -622,6 +631,11 @@
 			<texture colordiffuse="88000000">colors/white.png</texture>
 		</control>
 
+	<!-- TOP LAYER DIAGNOSTICS v6.0.33 -->
+	<control type="group">
+		<zorder>10000</zorder>
+		
+		<!-- Labels -->
 		<control type="label">
 			<left>150</left>
 			<top>10</top>
@@ -629,7 +643,7 @@
 			<height>30</height>
 			<font>font12</font>
 			<textcolor>FFFFFF00</textcolor> <!-- Hex Yellow -->
-			<label>v6.0.32 | FOCUS: [ $INFO[Skin.String(SideMenuFocus)] ] | WIDGET_IDX: [ $INFO[Skin.String(Home_WidgetIndex)] ] | ACTIVE_ID: [ $VAR[CurrentWidgetListID] ]</label>
+			<label>v6.0.33 | FOCUS: [ $INFO[Skin.String(SideMenuFocus)] ] | WIDGET_IDX: [ $INFO[Skin.String(Home_WidgetIndex)] ] | ACTIVE_ID: [ $VAR[CurrentWidgetListID] ]</label>
 		</control>
 		<control type="label">
 			<left>150</left>
@@ -638,7 +652,7 @@
 			<height>30</height>
 			<font>font12</font>
 			<textcolor>FFFF0000</textcolor> <!-- Hex Red -->
-			<label>RED LABEL ALWAYS ON (v6.0.32)</label>
+			<label>RED LABEL ALWAYS ON (v6.0.33)</label>
 		</control>
 		<control type="label">
 			<left>150</left>
@@ -647,8 +661,24 @@
 			<height>30</height>
 			<font>font12</font>
 			<textcolor>FF00FFFF</textcolor> <!-- Hex Cyan -->
-			<visible>Control.HasFocus(12000)</visible>
-			<label>FOCUS DETECTED ON TEST BUTTON (12000)</label>
+			<visible>Control.HasFocus(12001) | Control.HasFocus(12000)</visible>
+			<label>FOCUS DETECTED ON TEST OBJECTS (12001/12000)</label>
+		</control>
+
+		<!-- PROXIMITY FOCUS TARGET -->
+		<control type="button" id="12001">
+			<left>130</left>
+			<top>400</top>
+			<width>200</width>
+			<height>60</height>
+			<label>GREEN (12001)</label>
+			<font>font13</font>
+			<textcolor>white</textcolor>
+			<focusedcolor>black</focusedcolor>
+			<texturefocus colordiffuse="FF00FF00">colors/white.png</texturefocus>
+			<texturenofocus colordiffuse="8800FF00">colors/white.png</texturenofocus>
+			<onleft>9000</onleft>
+			<onright>12000</onright>
 		</control>
 
 		<!-- GUARANTEED FOCUS TARGET -->
@@ -664,59 +694,9 @@
 			<focusedcolor>FF00FFFF</focusedcolor>
 			<texturefocus colordiffuse="FFFF00FF">colors/white.png</texturefocus>
 			<texturenofocus colordiffuse="88FF00FF">colors/white.png</texturenofocus>
-			<onleft>9000</onleft>
-		</control>
-
-		<control type="label">
-			<left>150</left>
-			<top>70</top>
-			<width>1500</width>
-			<height>30</height>
-			<font>font12</font>
-			<textcolor>FF00FFFF</textcolor> <!-- Hex Cyan -->
-			<visible>Control.HasFocus(11999)</visible>
-			<label>WIDGET AREA (11999) HAS FOCUS</label>
-		</control>
-
-		<!-- TOP LAYER TEST WIDGET -->
-		<control type="panel" id="11999">
-			<left>400</left>
-			<top>200</top>
-			<width>800</width>
-			<height>400</height>
-			<onleft>9000</onleft>
-			<orientation>horizontal</orientation>
-			<itemlayout width="200" height="200">
-				<control type="label">
-					<width>200</width>
-					<height>200</height>
-					<label>$INFO[ListItem.Label]</label>
-					<align>center</align>
-					<textcolor>white</textcolor>
-				</control>
-			</itemlayout>
-			<focusedlayout width="200" height="200">
-				<control type="label">
-					<width>200</width>
-					<height>200</height>
-					<label>$INFO[ListItem.Label]</label>
-					<align>center</align>
-					<textcolor>red</textcolor>
-				</control>
-			</focusedlayout>
-			<content>
-				<item>
-					<label>DUMMY 1</label>
-					<onclick>noop</onclick>
-				</item>
-				<item>
-					<label>DUMMY 2</label>
-					<onclick>noop</onclick>
-				</item>
-			</content>
+			<onleft>12001</onleft>
 		</control>
 	</control>
-
-
 </controls>
 </window>
+
