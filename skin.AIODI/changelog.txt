@@ -1,3 +1,9 @@
+[B]3.0.9[/B]
+• FIXED: Standardized all core window filenames to CamelCase for Linux compatibility.
+• FIXED: Standardized font filenames to lowercase and updated Font.xml.
+• FIXED: Discovered and corrected missing MediaFlags and plural naming discrepancies.
+• UPDATED: Expanded dummy includes to eliminate remaining GUI warnings.
+
 [B]3.0.7[/B]
 • FIXED: "Unable to load skin" error on Linux by standardizing resolution folder (1080i) and restore core CamelCase filenames.
 • UPDATED: Corrected missing inclusions of Variables.xml in Includes.xml.

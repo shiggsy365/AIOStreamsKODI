@@ -41,6 +41,7 @@
     <include name="PVRProgress"></include>
     <include name="PVRChannelNumberInput"></include>
     <include name="MediaFlag"></include>
+    <include name="MediaFlags"></include>
     <include name="CommonScrollbars"></include>
     <include name="MediaMenuMouseOverlay"></include>
     <include name="ListThumbInfoPanel"></include>
@@ -51,4 +52,9 @@
     <include name="MediaMenuItemsCommon"></include>
     <include name="LeftAlignedInfo"></include>
     <include name="SettingsPanel"></include>
+    <include name="FullScreenDimensions"></include>
+    <include name="ContentPanel"></include>
+    <include name="DialogBackgroundCommons"></include>
+    <include name="CommonBackground"></include>
+    <include name="NavigationBar"></include>
 </includes>
