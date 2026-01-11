@@ -22,7 +22,7 @@
 						<top>-10</top>
 						<width>100%</width>
 						<bottom>336</bottom>
-						<texture colordiffuse="E6FFFFFF">dialogs/dialog-bg- nobo.png</texture>
+						<texture colordiffuse="E6FFFFFF">dialogs/dialog-bg-nobo.png</texture>
 					</control>
 					<control type="group">
 						<visible>Control.IsVisible(50) | Control.IsVisible(51)</visible>

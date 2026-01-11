@@ -47,7 +47,7 @@
 				<left>0</left>
 				<width>120%</width>
 				<height>280</height>
-				<texture colordiffuse="80FFFFFF">dialogs/dialog-bg- nobo.png</texture>
+				<texture colordiffuse="80FFFFFF">dialogs/dialog-bg-nobo.png</texture>
 			</control>
 			<control type="image">
 				<left>20</left>

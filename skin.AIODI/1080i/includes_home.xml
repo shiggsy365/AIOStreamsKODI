@@ -114,8 +114,8 @@
 							<textoffsetx>40</textoffsetx>
 							<onclick>$PARAM[button_onclick]</onclick>
 							<align>center</align>
-							<texturefocus border="23"colordiffuse="button_focus">buttons/dialogbutton- fo.png</texturefocus>
-							<texturenofocus border="40">buttons/dialogbutton- nofo.png</texturenofocus>
+							<texturefocus border="23"colordiffuse="button_focus">buttons/dialogbutton-fo.png</texturefocus>
+							<texturenofocus border="40">buttons/dialogbutton-nofo.png</texturenofocus>
 							<visible>$PARAM[visible_1]</visible>
 						</control>
 						<control type="button"id="$PARAM[button_id]568">
@@ -126,8 +126,8 @@
 							<onclick>$PARAM[button2_onclick]</onclick>
 							<onclick>SetFocus(9000)</onclick>
 							<align>center</align>
-							<texturefocus border="23"colordiffuse="button_focus">buttons/dialogbutton- fo.png</texturefocus>
-							<texturenofocus border="40">buttons/dialogbutton- nofo.png</texturenofocus>
+							<texturefocus border="23"colordiffuse="button_focus">buttons/dialogbutton-fo.png</texturefocus>
+							<texturenofocus border="40">buttons/dialogbutton-nofo.png</texturenofocus>
 							<visible>$PARAM[visible_2]</visible>
 						</control>
 						<control type="button"id="$PARAM[button_id]569">
@@ -138,8 +138,8 @@
 							<onclick>$PARAM[button3_onclick]</onclick>
 							<onclick>SetFocus(9000)</onclick>
 							<align>center</align>
-							<texturefocus border="23"colordiffuse="button_focus">buttons/dialogbutton- fo.png</texturefocus>
-							<texturenofocus border="40">buttons/dialogbutton- nofo.png</texturenofocus>
+							<texturefocus border="23"colordiffuse="button_focus">buttons/dialogbutton-fo.png</texturefocus>
+							<texturenofocus border="40">buttons/dialogbutton-nofo.png</texturenofocus>
 							<visible>$PARAM[visible_3]</visible>
 						</control>
 					</control>
@@ -308,7 +308,7 @@
 						<control type="image">
 							<width>316</width>
 							<height>200</height>
-							<texture>dialogs/dialog-bg- nobo.png</texture>
+							<texture>dialogs/dialog-bg-nobo.png</texture>
 							<bordertexture border="21"infill="false">overlays/shadow.png</bordertexture>
 							<bordersize>20</bordersize>
 						</control>
@@ -346,7 +346,7 @@
 						<control type="image">
 							<width>316</width>
 							<height>200</height>
-							<texture>dialogs/dialog-bg- nobo.png</texture>
+							<texture>dialogs/dialog-bg-nobo.png</texture>
 							<bordertexture border="21"infill="false">overlays/shadow.png</bordertexture>
 							<bordersize>20</bordersize>
 						</control>
@@ -442,7 +442,7 @@
 						<control type="image">
 							<width>319</width>
 							<height>340</height>
-							<texture>dialogs/dialog-bg- nobo.png</texture>
+							<texture>dialogs/dialog-bg-nobo.png</texture>
 							<bordertexture border="21"infill="false">overlays/shadow.png</bordertexture>
 							<bordersize>20</bordersize>
 						</control>
@@ -533,7 +533,7 @@
 						<control type="image">
 							<width>319</width>
 							<height>340</height>
-							<texture>dialogs/dialog-bg- nobo.png</texture>
+							<texture>dialogs/dialog-bg-nobo.png</texture>
 							<bordertexture border="21"infill="false">overlays/shadow.png</bordertexture>
 							<bordersize>20</bordersize>
 						</control>
@@ -650,7 +650,7 @@
 							<top>20</top>
 							<width>254</width>
 							<height>280</height>
-							<texture>dialogs/dialog-bg- nobo.png</texture>
+							<texture>dialogs/dialog-bg-nobo.png</texture>
 							<bordertexture border="21"infill="false">overlays/shadow.png</bordertexture>
 							<bordersize>20</bordersize>
 						</control>
@@ -701,7 +701,7 @@
 							<top>20</top>
 							<width>254</width>
 							<height>280</height>
-							<texture>dialogs/dialog-bg- nobo.png</texture>
+							<texture>dialogs/dialog-bg-nobo.png</texture>
 							<bordertexture border="21"infill="false">overlays/shadow.png</bordertexture>
 							<bordersize>20</bordersize>
 						</control>
@@ -966,7 +966,7 @@
 				<top>100</top>
 				<width>1820</width>
 				<height>920</height>
-				<texture>dialogs/dialog-bg- nobo.png</texture>
+				<texture>dialogs/dialog-bg-nobo.png</texture>
 				<bordertexture border="21"infill="false">overlays/shadow.png</bordertexture>
 				<bordersize>20</bordersize>
 			</control>
@@ -992,7 +992,7 @@
 				<top>858</top>
 				<width>340</width>
 				<height>100</height>
-				<texture border="21">buttons/button- nofo.png</texture>
+				<texture border="21">buttons/button-nofo.png</texture>
 			</control>
 			<control type="image"id="700$PARAM[item_id]5">
 				<left>1340</left>
@@ -1040,7 +1040,7 @@
 					<width>100</width>
 					<height>100</height>
 					<aspectratio aligny="center">keep</aspectratio>
-					<texture colordiffuse="black">dialogs/extendedprogress/loading- back.png</texture>
+					<texture colordiffuse="black">dialogs/extendedprogress/loading-back.png</texture>
 				</control>
 				<control type="image">
 					<top>$PARAM[posy]</top>

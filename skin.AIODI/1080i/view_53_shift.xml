@@ -16,14 +16,14 @@
 					<top>760</top>
 					<width>100%</width>
 					<height>110</height>
-					<texture colordiffuse="E6FFFFFF">dialogs/dialog-bg- nobo.png</texture>
+					<texture colordiffuse="E6FFFFFF">dialogs/dialog-bg-nobo.png</texture>
 				</control>
 				<control type="image">
 					<left>0</left>
 					<top>35</top>
 					<width>100%</width>
 					<height>190</height>
-					<texture colordiffuse="E6FFFFFF">dialogs/dialog-bg- nobo.png</texture>
+					<texture colordiffuse="E6FFFFFF">dialogs/dialog-bg-nobo.png</texture>
 				</control>
 			</control>
 			<control type="group">
@@ -128,7 +128,7 @@
 			<width>334</width>
 			<height>480</height>
 			<aspectratio aligny="center">stretch</aspectratio>
-			<texture>dialogs/dialog-bg- nobo.png</texture>
+			<texture>dialogs/dialog-bg-nobo.png</texture>
 			<bordertexture border="21"infill="false">overlays/shadow.png</bordertexture>
 			<bordersize>20</bordersize>
 			<visible>String.IsEmpty(ListItem.Art(thumb)) + !Container.Content(albums) | String.IsEmpty(ListItem.Art(poster)) + [Container.Content(movies) | Container.Content(tvshows)]</visible>

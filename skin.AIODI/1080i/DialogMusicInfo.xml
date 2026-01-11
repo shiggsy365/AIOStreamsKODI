@@ -18,7 +18,7 @@
 					<width>620</width>
 					<height>620</height>
 					<aspectratio>scale</aspectratio>
-					<texture>dialogs/dialog-bg- nobo.png</texture>
+					<texture>dialogs/dialog-bg-nobo.png</texture>
 					<bordertexture border="21"infill="false">overlays/shadow.png</bordertexture>
 					<bordersize>20</bordersize>
 				</control>
@@ -57,7 +57,7 @@
 						<width>660</width>
 						<height>370</height>
 						<aspectratio aligny="top">scale</aspectratio>
-						<texture fallback="special://skin/extras/home- images/music.jpg">$INFO[ListItem.Art(fanart)]</texture>
+						<texture fallback="special://skin/extras/home-images/music.jpg">$INFO[ListItem.Art(fanart)]</texture>
 						<visible>String.IsEmpty(Control.GetLabel(400))</visible>
 					</control>
 					<control type="group">
@@ -94,7 +94,7 @@
 						<width>720</width>
 						<height>430</height>
 						<label></label>
-						<texturenofocus border="21">dialogs/dialog- bg.png</texturenofocus>
+						<texturenofocus border="21">dialogs/dialog-bg.png</texturenofocus>
 						<onclick>SetProperty(TextViewer_Header,$LOCALIZE[21821],home)</onclick>
 						<onclick>SetProperty(TextViewer_Text,$ESCVAR[MusicInfoTextboxVar],home)</onclick>
 						<onclick condition="[String.IsEqual(ListItem.DbType,song) + !String.IsEmpty(ListItem.Comment)] | [String.IsEqual(ListItem.DbType,album) + !String.IsEmpty(ListItem.Property(Album_Description))] | [String.IsEqual(ListItem.DbType,artist) + !String.IsEmpty(ListItem.Property(Artist_Description))]">ActivateWindow(1102)</onclick>
@@ -108,7 +108,7 @@
 							<width>660</width>
 							<height>370</height>
 							<aspectratio aligny="top">scale</aspectratio>
-							<texture fallback="special://skin/extras/home- images/music.jpg">$INFO[ListItem.Art(fanart)]</texture>
+							<texture fallback="special://skin/extras/home-images/music.jpg">$INFO[ListItem.Art(fanart)]</texture>
 						</control>
 						<control type="group">
 							<visible>String.IsEmpty(ListItem.Art(fanart))</visible>
@@ -141,7 +141,7 @@
 							<width>1154</width>
 							<height>277</height>
 							<aspectratio aligny="top">scale</aspectratio>
-							<texture fallback="special://skin/extras/home- images/music.jpg">$INFO[ListItem.Art(fanart)]</texture>
+							<texture fallback="special://skin/extras/home-images/music.jpg">$INFO[ListItem.Art(fanart)]</texture>
 						</control>
 						<control type="group">
 							<visible>String.IsEmpty(ListItem.Art(fanart))</visible>
@@ -194,7 +194,7 @@
 							<top>-10</top>
 							<width>595</width>
 							<height>100</height>
-							<texture border="21">buttons/button- nofo.png</texture>
+							<texture border="21">buttons/button-nofo.png</texture>
 						</control>
 						<control type="label">
 							<left>40</left>
@@ -211,7 +211,7 @@
 							<top>-10</top>
 							<width>595</width>
 							<height>100</height>
-							<texture border="21"colordiffuse="button_focus">buttons/button- fo.png</texture>
+							<texture border="21"colordiffuse="button_focus">buttons/button-fo.png</texture>
 						</control>
 						<control type="label">
 							<left>40</left>
@@ -228,7 +228,7 @@
 							<top>-10</top>
 							<width>595</width>
 							<height>100</height>
-							<texture border="21">buttons/button- nofo.png</texture>
+							<texture border="21">buttons/button-nofo.png</texture>
 						</control>
 						<control type="label">
 							<left>40</left>
@@ -251,7 +251,7 @@
 								<top>-10</top>
 								<width>595</width>
 								<height>100</height>
-								<texture border="21"colordiffuse="button_focus">buttons/button- fo.png</texture>
+								<texture border="21"colordiffuse="button_focus">buttons/button-fo.png</texture>
 							</control>
 							<control type="label">
 								<left>40</left>
@@ -274,7 +274,7 @@
 							<top>-10</top>
 							<width>250</width>
 							<height>312</height>
-							<texture border="21">buttons/button- nofo.png</texture>
+							<texture border="21">buttons/button-nofo.png</texture>
 						</control>
 						<control type="image">
 							<left>30</left>
@@ -310,7 +310,7 @@
 								<top>-10</top>
 								<width>250</width>
 								<height>312</height>
-								<texture border="21">buttons/button- nofo.png</texture>
+								<texture border="21">buttons/button-nofo.png</texture>
 							</control>
 							<control type="image">
 								<left>30</left>

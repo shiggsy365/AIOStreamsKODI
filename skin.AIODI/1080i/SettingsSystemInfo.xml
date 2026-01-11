@@ -115,7 +115,7 @@
 				<top>-3</top>
 				<right>0</right>
 				<height>3</height>
-				<texture colordiffuse="button_focus"border="2">dialogs/separator- grey.png</texture>
+				<texture colordiffuse="button_focus"border="2">dialogs/separator-grey.png</texture>
 			</control>
 			<control type="group"id="102">
 				<description>System Info page that shows a QR code linking to https://kodi.tv/donate/</description>
@@ -239,7 +239,7 @@
 				<top>30</top>
 				<right>0</right>
 				<height>3</height>
-				<texture colordiffuse="button_focus"border="2">dialogs/separator- grey.png</texture>
+				<texture colordiffuse="button_focus"border="2">dialogs/separator-grey.png</texture>
 			</control>
 			<control type="grouplist">
 				<left>420</left>

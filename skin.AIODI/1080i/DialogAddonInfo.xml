@@ -19,7 +19,7 @@
 					<width>755</width>
 					<height>435</height>
 					<label></label>
-					<texturenofocus border="21">dialogs/dialog- bg.png</texturenofocus>
+					<texturenofocus border="21">dialogs/dialog-bg.png</texturenofocus>
 					<onup>50</onup>
 					<ondown>9000</ondown>
 					<onclick>SetProperty(TextViewer_Header,$LOCALIZE[31141] $INFO[ListItem.AddonVersion],home)</onclick>
@@ -306,7 +306,7 @@
 					<width>540</width>
 					<height>540</height>
 					<aspectratio>scale</aspectratio>
-					<texture>dialogs/dialog-bg- nobo.png</texture>
+					<texture>dialogs/dialog-bg-nobo.png</texture>
 					<bordertexture border="21"infill="false">overlays/shadow.png</bordertexture>
 					<bordersize>20</bordersize>
 				</control>

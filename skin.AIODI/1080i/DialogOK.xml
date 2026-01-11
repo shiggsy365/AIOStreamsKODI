@@ -3,7 +3,7 @@
     <include file="Includes.xml"/>
     <defaultcontrol always="true">10</defaultcontrol>
     <controls>
-        <!-- Background -->
+        <!--Background -->
         <control type="image">
             <left>0</left>
             <top>0</top>
@@ -13,14 +13,14 @@
             <aspectratio>stretch</aspectratio>
         </control>
 
-        <!-- Dialog Box -->
+        <!--Dialog Box -->
         <control type="group">
             <left>560</left>
             <top>340</top>
             <width>800</width>
             <height>400</height>
 
-            <!-- Dialog Background -->
+            <!--Dialog Background -->
             <control type="image">
                 <left>0</left>
                 <top>0</top>
@@ -30,7 +30,7 @@
                 <aspectratio>stretch</aspectratio>
             </control>
 
-            <!-- Title -->
+            <!--Title -->
             <control type="label"id="1">
                 <left>40</left>
                 <top>40</top>
@@ -41,7 +41,7 @@
                 <align>center</align>
             </control>
 
-            <!-- Message -->
+            <!--Message -->
             <control type="textbox"id="9">
                 <left>40</left>
                 <top>120</top>
@@ -52,7 +52,7 @@
                 <align>center</align>
             </control>
 
-            <!-- OK Button -->
+            <!--OK Button -->
             <control type="button"id="10">
                 <left>300</left>
                 <top>320</top>

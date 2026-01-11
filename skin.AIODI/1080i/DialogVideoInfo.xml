@@ -97,7 +97,7 @@
 						<onleft>4000</onleft>
 						<onright>4000</onright>
 						<ondown>5000</ondown>
-						<texturenofocus border="21">dialogs/dialog- bg.png</texturenofocus>
+						<texturenofocus border="21">dialogs/dialog-bg.png</texturenofocus>
 						<visible>Integer.IsGreater(Container(4000).NumItems,0)</visible>
 					</control>
 					<control type="image">
@@ -105,7 +105,7 @@
 						<width>512</width>
 						<height>418</height>
 						<aligny>bottom</aligny>
-						<texture border="21">dialogs/dialog- bg.png</texture>
+						<texture border="21">dialogs/dialog-bg.png</texture>
 						<visible>Integer.IsGreater(Container(4000).NumItems,0)</visible>
 					</control>
 					<control type="button"id="139">
@@ -122,7 +122,7 @@
 						<onleft>4000</onleft>
 						<onright>4000</onright>
 						<ondown>5000</ondown>
-						<texturenofocus border="21">dialogs/dialog- bg.png</texturenofocus>
+						<texturenofocus border="21">dialogs/dialog-bg.png</texturenofocus>
 						<visible>!Integer.IsGreater(Container(4000).NumItems,0)</visible>
 					</control>
 					<control type="textbox">
@@ -278,7 +278,7 @@
 						<top>164</top>
 						<width>1245</width>
 						<height>328</height>
-						<texture border="21">dialogs/dialog- bg.png</texture>
+						<texture border="21">dialogs/dialog-bg.png</texture>
 					</control>
 					<control type="textbox">
 						<left>17</left>
@@ -713,7 +713,7 @@
 					<width>36</width>
 					<height>36</height>
 					<animation type="Conditional"effect="rotate"end="-90"center="36,19"time="0"condition="true"/>
-					<texture colordiffuse="grey">frame/menu- nofo.png</texture>
+					<texture colordiffuse="grey">frame/menu-nofo.png</texture>
 				</control>
 				<control type="label">
 					<left>74</left>
@@ -733,7 +733,7 @@
 					<left>17</left>
 					<width>36</width>
 					<height>36</height>
-					<texture colordiffuse="grey">lists/played- total.png</texture>
+					<texture colordiffuse="grey">lists/played-total.png</texture>
 				</control>
 				<control type="label">
 					<left>74</left>

@@ -3,7 +3,7 @@
     <include file="Defaults.xml"/>
     <include file="Variables.xml"/>
     
-    <!-- Dummy Includes to suppress Kodi warnings -->
+    <!--Dummy Includes to suppress Kodi warnings -->
     <include name="RatingCircle"><control type="group"/></include>
     <include name="MediaFlag"><control type="group"/></include>
     <include name="MediaFlags"><control type="group"/></include>
@@ -36,7 +36,7 @@
     <include name="LeftAlignedInfo"><control type="group"/></include>
     <include name="SettingsPanel"><control type="group"/></include>
 
-    <!-- Sub-Includes -->
+    <!--Sub-Includes -->
     <include file="includes_animations.xml"/>
     <include file="includes_buttons.xml"/>
     <include file="includes_dialogselect.xml"/>
@@ -46,7 +46,7 @@
     <include file="includes_musicinfo.xml"/>
     <include file="includes_pvr.xml"/>
     
-    <!-- Views -->
+    <!--Views -->
     <include file="view_50_list.xml"/>
     <include file="view_51_poster.xml"/>
     <include file="view_52_iconwall.xml"/>
@@ -58,6 +58,6 @@
     <include file="view_502_fanart.xml"/>
     <include file="view_503_nowplaying.xml"/>
 
-    <!-- Common Constants -->
+    <!--Common Constants -->
     <constant name="ThemeColor">ffb3b3b3</constant>
 </includes>

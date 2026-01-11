@@ -320,7 +320,7 @@
 				<left>0</left>
 				<width>100%</width>
 				<height>240</height>
-				<texture>dialogs/dialog-bg- nobo.png</texture>
+				<texture>dialogs/dialog-bg-nobo.png</texture>
 			</control>
 			<control type="image">
 				<left>20</left>
@@ -387,7 +387,7 @@
 				<left>0</left>
 				<width>100%</width>
 				<height>330</height>
-				<texture>dialogs/dialog-bg- nobo.png</texture>
+				<texture>dialogs/dialog-bg-nobo.png</texture>
 			</control>
 			<control type="image">
 				<depth>DepthOSD+</depth>

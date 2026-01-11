@@ -48,7 +48,7 @@
 				<top>184</top>
 				<width>1542</width>
 				<height>100</height>
-				<texture border="40">buttons/button-alt- nofo.png</texture>
+				<texture border="40">buttons/button-alt-nofo.png</texture>
 			</control>
 			<control type="edit"id="312">
 				<centerleft>50%</centerleft>
@@ -68,7 +68,7 @@
 				<width>1920</width>
 				<animation type="conditional"effect="slide"end="-60,0"time="200"tween="sine"easing="inout"condition="Control.IsVisible(110) | Control.IsVisible(130) | Control.IsVisible(150) | Control.IsVisible(170)"/>
 				<animation type="conditional"effect="slide"end="-110,0"time="200"tween="sine"easing="inout"condition="Control.IsVisible(111) | Control.IsVisible(131) | Control.IsVisible(151) | Control.IsVisible(171)"/>
-				<!-- 1st row -->
+				<!--1st row -->
 				<control type="grouplist">
 					<left>320</left>
 					<itemgap>-30</itemgap>
@@ -166,7 +166,7 @@
 						<include>KeyboardButton</include>
 					</control>
 				</control>
-				<!-- 2nd row -->
+				<!--2nd row -->
 				<control type="grouplist">
 					<left>320</left>
 					<top>90</top>
@@ -252,7 +252,7 @@
 						<include>KeyboardButton</include>
 					</control>
 				</control>
-				<!-- 3rd row -->
+				<!--3rd row -->
 				<control type="grouplist">
 					<left>320</left>
 					<top>180</top>
@@ -338,7 +338,7 @@
 						<include>KeyboardButton</include>
 					</control>
 				</control>
-				<!-- 4th row -->
+				<!--4th row -->
 				<control type="grouplist">
 					<left>320</left>
 					<top>270</top>
@@ -424,7 +424,7 @@
 						<include>KeyboardButton</include>
 					</control>
 				</control>
-				<!-- 5th row -->
+				<!--5th row -->
 				<control type="grouplist">
 					<left>320</left>
 					<top>360</top>
@@ -437,7 +437,7 @@
 						<height>120</height>
 						<onup>160</onup>
 						<ondown>100</ondown>
-						<texturefocus colordiffuse="button_focus">buttons/roundbutton- fo.png</texturefocus>
+						<texturefocus colordiffuse="button_focus">buttons/roundbutton-fo.png</texturefocus>
 						<texturenofocus />
 						<textureradioonfocus colordiffuse="FFFFFFFF">icons/keyboard/letters.png</textureradioonfocus>
 						<textureradioonnofocus colordiffuse="FFFFFFFF">icons/keyboard/letters.png</textureradioonnofocus>
@@ -453,7 +453,7 @@
 						<height>120</height>
 						<onup>161</onup>
 						<ondown>101</ondown>
-						<texturefocus colordiffuse="button_focus">buttons/roundbutton- fo.png</texturefocus>
+						<texturefocus colordiffuse="button_focus">buttons/roundbutton-fo.png</texturefocus>
 						<texturenofocus />
 						<textureradioonfocus colordiffuse="FFFFFFFF">icons/keyboard/capslock.png</textureradioonfocus>
 						<textureradioonnofocus colordiffuse="button_focus">icons/keyboard/capslock.png</textureradioonnofocus>
@@ -470,7 +470,7 @@
 						<height>120</height>
 						<onup>162</onup>
 						<ondown>102</ondown>
-						<texturefocus colordiffuse="button_focus">buttons/roundbutton- fo.png</texturefocus>
+						<texturefocus colordiffuse="button_focus">buttons/roundbutton-fo.png</texturefocus>
 						<texturenofocus />
 						<textureradioonfocus colordiffuse="FFFFFFFF">icons/keyboard/shift.png</textureradioonfocus>
 						<textureradioonnofocus colordiffuse="button_focus">icons/keyboard/shift.png</textureradioonnofocus>
@@ -502,7 +502,7 @@
 						<height>120</height>
 						<ondown>107</ondown>
 						<onup>167</onup>
-						<texturefocus colordiffuse="button_focus">buttons/roundbutton- fo.png</texturefocus>
+						<texturefocus colordiffuse="button_focus">buttons/roundbutton-fo.png</texturefocus>
 						<texturenofocus />
 						<textureradioonfocus colordiffuse="FFFFFFFF">icons/keyboard/arrowleft.png</textureradioonfocus>
 						<textureradioonnofocus colordiffuse="FFFFFFFF">icons/keyboard/arrowleft.png</textureradioonnofocus>
@@ -518,7 +518,7 @@
 						<height>120</height>
 						<ondown>108</ondown>
 						<onup>168</onup>
-						<texturefocus colordiffuse="button_focus">buttons/roundbutton- fo.png</texturefocus>
+						<texturefocus colordiffuse="button_focus">buttons/roundbutton-fo.png</texturefocus>
 						<texturenofocus />
 						<textureradioonfocus colordiffuse="FFFFFFFF">icons/keyboard/arrowright.png</textureradioonfocus>
 						<textureradioonnofocus colordiffuse="FFFFFFFF">icons/keyboard/arrowright.png</textureradioonnofocus>
@@ -534,7 +534,7 @@
 						<height>120</height>
 						<onup>169</onup>
 						<ondown>109</ondown>
-						<texturefocus colordiffuse="button_focus">buttons/roundbutton- fo.png</texturefocus>
+						<texturefocus colordiffuse="button_focus">buttons/roundbutton-fo.png</texturefocus>
 						<texturenofocus />
 						<textureradioonfocus colordiffuse="FFFFFFFF">icons/keyboard/backspace.png</textureradioonfocus>
 						<textureradioonnofocus colordiffuse="FFFFFFFF">icons/keyboard/backspace.png</textureradioonnofocus>
@@ -659,14 +659,14 @@
 					<top>290</top>
 					<width>1560</width>
 					<height>90</height>
-					<texture border="40">buttons/dialogbutton- nofo.png</texture>
+					<texture border="40">buttons/dialogbutton-nofo.png</texture>
 				</control>
 				<control type="image">
 					<centerleft>50%</centerleft>
 					<top>370</top>
 					<width>1560</width>
 					<height>90</height>
-					<texture border="40">buttons/dialogbutton- nofo.png</texture>
+					<texture border="40">buttons/dialogbutton-nofo.png</texture>
 				</control>
 				<control type="label"id="314">
 					<centerleft>50%</centerleft>

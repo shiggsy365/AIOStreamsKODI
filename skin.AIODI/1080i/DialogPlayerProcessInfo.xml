@@ -16,7 +16,7 @@
 				<top>-220</top>
 				<right>30</right>
 				<height>330</height>
-				<texture border="40">dialogs/dialog-bg- nobo.png</texture>
+				<texture border="40">dialogs/dialog-bg-nobo.png</texture>
 			</control>
 			<control type="grouplist">
 				<left>50</left>

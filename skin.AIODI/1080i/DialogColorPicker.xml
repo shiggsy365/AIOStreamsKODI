@@ -21,9 +21,9 @@
 				<top>80</top>
 				<width>920</width>
 				<bottom>2</bottom>
-				<texture border="40">buttons/dialogbutton- nofo.png</texture>
+				<texture border="40">buttons/dialogbutton-nofo.png</texture>
 			</control>
-			<!-- Color picker panel -->
+			<!--Color picker panel -->
 			<control type="panel"id="6">
 				<left>20</left>
 				<top>100</top>
@@ -43,7 +43,7 @@
 							<left>8</left>
 							<width>138</width>
 							<height>74</height>
-							<texture>buttons/color- back.png</texture>
+							<texture>buttons/color-back.png</texture>
 						</control>
 						<control type="image">
 							<top>3</top>
@@ -64,7 +64,7 @@
 							<left>8</left>
 							<width>138</width>
 							<height>74</height>
-							<texture>buttons/color- back.png</texture>
+							<texture>buttons/color-back.png</texture>
 						</control>
 						<control type="image">
 							<top>3</top>

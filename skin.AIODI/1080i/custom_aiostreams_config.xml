@@ -4,7 +4,7 @@
     <defaultcontrol always="true">100</defaultcontrol>
     <onload>RunScript(special://skin/scripts/widget_manager.py,action=load)</onload>
     <controls>
-        <!-- Background -->
+        <!--Background -->
         <control type="image">
             <left>0</left>
             <top>0</top>
@@ -24,14 +24,14 @@
             <aspectratio>scale</aspectratio>
         </control>
 
-        <!-- Main Dialog Container -->
+        <!--Main Dialog Container -->
         <control type="group">
             <left>240</left>
             <top>120</top>
             <width>1440</width>
             <height>840</height>
 
-            <!-- Dialog Background -->
+            <!--Dialog Background -->
             <control type="image">
                 <left>0</left>
                 <top>0</top>
@@ -41,7 +41,7 @@
                 <aspectratio>stretch</aspectratio>
             </control>
 
-            <!-- Title Bar -->
+            <!--Title Bar -->
             <control type="label">
                 <left>60</left>
                 <top>40</top>
@@ -52,7 +52,7 @@
                 <label>$LOCALIZE[30500]</label>
             </control>
 
-            <!-- Close Button -->
+            <!--Close Button -->
             <control type="button"id="9000">
                 <left>1340</left>
                 <top>40</top>
@@ -65,7 +65,7 @@
                 <onclick>Close</onclick>
             </control>
 
-            <!-- Page Selector -->
+            <!--Page Selector -->
             <control type="group">
                 <left>60</left>
                 <top>120</top>
@@ -122,7 +122,7 @@
                 </control>
             </control>
 
-            <!-- Section Labels -->
+            <!--Section Labels -->
             <control type="label">
                 <left>60</left>
                 <top>220</top>
@@ -143,7 +143,7 @@
                 <label>$LOCALIZE[30502]</label>
             </control>
 
-            <!-- Available Widgets List -->
+            <!--Available Widgets List -->
             <control type="list"id="100">
                 <left>60</left>
                 <top>280</top>
@@ -234,7 +234,7 @@
                 </content>
             </control>
 
-            <!-- Active Widgets List -->
+            <!--Active Widgets List -->
             <control type="list"id="300">
                 <left>720</left>
                 <top>280</top>
@@ -295,7 +295,7 @@
                 </focusedlayout>
             </control>
 
-            <!-- Action Buttons -->
+            <!--Action Buttons -->
             <control type="button"id="400">
                 <left>60</left>
                 <top>720</top>

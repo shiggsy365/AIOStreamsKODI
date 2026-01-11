@@ -4,7 +4,7 @@
     <defaultcontrol always="true">9001</defaultcontrol>
     <views>50</views>
     <controls>
-        <!-- Background -->
+        <!--Background -->
         <control type="image">
             <left>0</left>
             <top>0</top>
@@ -14,7 +14,7 @@
             <aspectratio>stretch</aspectratio>
         </control>
 
-        <!-- Top Navigation Bar -->
+        <!--Top Navigation Bar -->
         <control type="group">
             <left>0</left>
             <top>0</top>
@@ -101,7 +101,7 @@
             </control>
         </control>
 
-        <!-- Content Area -->
+        <!--Content Area -->
         <control type="list"id="50">
             <left>60</left>
             <top>180</top>
@@ -111,7 +111,7 @@
             <orientation>vertical</orientation>
             <scrolltime>200</scrolltime>
 
-            <!-- Item Layout -->
+            <!--Item Layout -->
             <itemlayout height="140"width="1800">
                 <control type="image">
                     <left>10</left>
@@ -141,7 +141,7 @@
                 </control>
             </itemlayout>
 
-            <!-- Focused Layout -->
+            <!--Focused Layout -->
             <focusedlayout height="140"width="1800">
                 <control type="image">
                     <left>0</left>

@@ -33,7 +33,7 @@
 					<top>10</top>
 					<width>672</width>
 					<height>910</height>
-					<texture border="40">buttons/dialogbutton- nofo.png</texture>
+					<texture border="40">buttons/dialogbutton-nofo.png</texture>
 				</control>
 				<control type="list"id="20">
 					<left>20</left>

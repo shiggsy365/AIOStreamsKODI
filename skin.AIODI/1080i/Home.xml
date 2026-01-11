@@ -3,7 +3,7 @@
     <include file="Includes.xml"/>
     <defaultcontrol always="true">9001</defaultcontrol>
     <controls>
-        <!-- Background -->
+        <!--Background -->
         <control type="image">
             <left>0</left>
             <top>0</top>
@@ -13,14 +13,14 @@
             <aspectratio>stretch</aspectratio>
         </control>
 
-        <!-- Top Navigation Bar -->
+        <!--Top Navigation Bar -->
         <control type="group">
             <left>0</left>
             <top>0</top>
             <width>1920</width>
             <height>120</height>
             
-            <!-- Navigation Background -->
+            <!--Navigation Background -->
             <control type="image">
                 <left>0</left>
                 <top>0</top>
@@ -30,7 +30,7 @@
                 <aspectratio>stretch</aspectratio>
             </control>
             
-            <!-- Logo/Title -->
+            <!--Logo/Title -->
             <control type="label">
                 <left>60</left>
                 <top>30</top>
@@ -41,7 +41,7 @@
                 <label>AIODI</label>
             </control>
             
-            <!-- Navigation Menu -->
+            <!--Navigation Menu -->
             <control type="grouplist"id="9000">
                 <left>500</left>
                 <top>30</top>
@@ -103,7 +103,7 @@
             </control>
         </control>
 
-        <!-- Home Dashboard Widgets -->
+        <!--Home Dashboard Widgets -->
         <control type="grouplist"id="50">
             <left>60</left>
             <top>150</top>
@@ -114,7 +114,7 @@
             <itemgap>20</itemgap>
             <scrolltime>200</scrolltime>
 
-            <!-- Widget: Next Up -->
+            <!--Widget: Next Up -->
             <control type="group">
                 <width>1800</width>
                 <height>280</height>
@@ -177,7 +177,7 @@
                 </control>
             </control>
 
-            <!-- Widget: Movie Watchlist -->
+            <!--Widget: Movie Watchlist -->
             <control type="group">
                 <width>1800</width>
                 <height>280</height>
@@ -240,7 +240,7 @@
                 </control>
             </control>
 
-            <!-- Widget: TV Watchlist -->
+            <!--Widget: TV Watchlist -->
             <control type="group">
                 <width>1800</width>
                 <height>280</height>

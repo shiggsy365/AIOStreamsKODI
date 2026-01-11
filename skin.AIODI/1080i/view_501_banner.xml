@@ -29,7 +29,7 @@
 							<top>0</top>
 							<width>860</width>
 							<height>195</height>
-							<texture fallback="dialogs/dialog-bg- nobo.png"background="true">$VAR[BannerArtVar]</texture>
+							<texture fallback="dialogs/dialog-bg-nobo.png"background="true">$VAR[BannerArtVar]</texture>
 							<aspectratio aligny="center">scale</aspectratio>
 							<bordertexture border="21"infill="false">overlays/shadow.png</bordertexture>
 							<bordersize>20</bordersize>
@@ -66,7 +66,7 @@
 							<top>0</top>
 							<width>860</width>
 							<height>195</height>
-							<texture fallback="dialogs/dialog-bg- nobo.png"background="true">$VAR[BannerArtVar]</texture>
+							<texture fallback="dialogs/dialog-bg-nobo.png"background="true">$VAR[BannerArtVar]</texture>
 							<aspectratio aligny="center">scale</aspectratio>
 							<bordertexture border="21"infill="false">overlays/shadow.png</bordertexture>
 							<bordersize>20</bordersize>
@@ -141,7 +141,7 @@
 								<top>143</top>
 								<width>22</width>
 								<height>22</height>
-								<texture>lists/played- total.png</texture>
+								<texture>lists/played-total.png</texture>
 								<visible>[String.IsEqual(Listitem.dbtype,tvshow) | String.IsEqual(Listitem.dbtype,season)] + !String.IsEmpty(ListItem.Property(TotalEpisodes))</visible>
 							</control>
 							<control type="label">

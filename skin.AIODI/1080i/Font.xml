@@ -1,7 +1,7 @@
 <?xml version="1.0"encoding="UTF-8"?>
 <fonts>
 	<fontset id="Default"idloc="15109">
-		<!-- Normal Fonts -->
+		<!--Normal Fonts -->
 		<font>
 			<name>font10</name>
 			<filename>notosans-regular.ttf</filename>
@@ -79,10 +79,10 @@
 		</font>
 		<font>
 			<name>font_clock</name>
-			<filename>roboto- thin.ttf</filename>
+			<filename>roboto-thin.ttf</filename>
 			<size>70</size>
 		</font>
-		<!-- Title Fonts -->
+		<!--Title Fonts -->
 		<font>
 			<name>font_flag</name>
 			<filename>notosans-regular.ttf</filename>
@@ -170,7 +170,7 @@
 		</font>
 	</fontset>
 	<fontset id="Arial"idloc="31053">
-		<!-- Arial Font better for non English -->
+		<!--Arial Font better for non English -->
 		<font>
 			<name>font10</name>
 			<filename >arial.ttf</filename>
@@ -241,7 +241,7 @@
 			<size>70</size>
 			<style>lighten</style>
 		</font>
-		<!-- Title Fonts -->
+		<!--Title Fonts -->
 		<font>
 			<name>font_flag</name>
 			<filename >arial.ttf</filename>

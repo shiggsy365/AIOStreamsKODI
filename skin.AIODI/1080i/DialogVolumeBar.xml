@@ -20,7 +20,7 @@
 				<top>5</top>
 				<width>88</width>
 				<height>88</height>
-				<texture>osd/buffer- bg.png</texture>
+				<texture>osd/buffer-bg.png</texture>
 				<visible>Window.IsActive(fullscreenvideo) | Window.IsActive(FullscreenGame) | Window.IsActive(slideshow)</visible>
 			</control>
 			<control type="image">
@@ -28,7 +28,7 @@
 				<top>15</top>
 				<width>68</width>
 				<height>68</height>
-				<texture>dialogs/extendedprogress/loading- back.png</texture>
+				<texture>dialogs/extendedprogress/loading-back.png</texture>
 				<animation type="Conditional"effect="fade"start="100"end="0"delay="300"time="500"tween="sine"condition="Player.Muted"/>
 			</control>
 			<control type="image">

@@ -1,6 +1,6 @@
 <?xml version="1.0"encoding="UTF-8"?>
 <includes>
-    <!-- Default Button -->
+    <!--Default Button -->
     <default type="button">
         <height>60</height>
         <width>200</width>
@@ -12,7 +12,7 @@
         <aligny>center</aligny>
     </default>
 
-    <!-- Default Label -->
+    <!--Default Label -->
     <default type="label">
         <height>40</height>
         <font>font27</font>
@@ -21,7 +21,7 @@
         <aligny>center</aligny>
     </default>
 
-    <!-- Default List -->
+    <!--Default List -->
     <default type="list">
         <height>500</height>
         <width>800</width>
@@ -30,19 +30,19 @@
         <scrolltime>200</scrolltime>
     </default>
 
-    <!-- Default Image -->
+    <!--Default Image -->
     <default type="image">
         <aspectratio>keep</aspectratio>
     </default>
 
-    <!-- Default Edit -->
+    <!--Default Edit -->
     <default type="edit">
         <height>60</height>
         <font>font27</font>
         <textcolor>FFFFFFFF</textcolor>
     </default>
 
-    <!-- Default RadioButton -->
+    <!--Default RadioButton -->
     <default type="radiobutton">
         <height>60</height>
         <width>300</width>
@@ -51,7 +51,7 @@
         <focusedcolor>ThemeColor</focusedcolor>
     </default>
 
-    <!-- Default Slider -->
+    <!--Default Slider -->
     <default type="slider">
         <height>60</height>
         <width>400</width>

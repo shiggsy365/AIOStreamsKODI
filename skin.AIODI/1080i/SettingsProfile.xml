@@ -24,13 +24,13 @@
 				<top>130</top>
 				<right>0</right>
 				<height>3</height>
-				<texture colordiffuse="button_focus"border="2">dialogs/separator- grey.png</texture>
+				<texture colordiffuse="button_focus"border="2">dialogs/separator-grey.png</texture>
 			</control>
 			<control type="image">
 				<bottom>134</bottom>
 				<right>0</right>
 				<height>3</height>
-				<texture colordiffuse="button_focus"border="2">dialogs/separator- grey.png</texture>
+				<texture colordiffuse="button_focus"border="2">dialogs/separator-grey.png</texture>
 			</control>
 			<control type="panel"id="2">
 				<top>148</top>
@@ -48,7 +48,7 @@
 						<top>5</top>
 						<width>320</width>
 						<height>380</height>
-						<texture>dialogs/dialog-bg- nobo.png</texture>
+						<texture>dialogs/dialog-bg-nobo.png</texture>
 						<bordertexture border="21"infill="false">overlays/shadow.png</bordertexture>
 						<bordersize>20</bordersize>
 					</control>
@@ -100,7 +100,7 @@
 							<top>5</top>
 							<width>320</width>
 							<height>380</height>
-							<texture>dialogs/dialog-bg- nobo.png</texture>
+							<texture>dialogs/dialog-bg-nobo.png</texture>
 							<bordertexture border="21"infill="false">overlays/shadow.png</bordertexture>
 							<bordersize>20</bordersize>
 						</control>

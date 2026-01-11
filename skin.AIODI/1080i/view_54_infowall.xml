@@ -7,7 +7,7 @@
 				<top>-10</top>
 				<width>376</width>
 				<height>380</height>
-				<texture>dialogs/dialog-bg- nobo.png</texture>
+				<texture>dialogs/dialog-bg-nobo.png</texture>
 				<bordertexture border="21"infill="false">overlays/shadow.png</bordertexture>
 				<bordersize>20</bordersize>
 			</control>
@@ -54,7 +54,7 @@
 				<top>0</top>
 				<width>316</width>
 				<height>386</height>
-				<texture>dialogs/dialog-bg- nobo.png</texture>
+				<texture>dialogs/dialog-bg-nobo.png</texture>
 				<bordertexture border="21"infill="false">overlays/shadow.png</bordertexture>
 				<bordersize>20</bordersize>
 			</control>
@@ -130,7 +130,7 @@
 				<top>10</top>
 				<width>316</width>
 				<height>288</height>
-				<texture>dialogs/dialog-bg- nobo.png</texture>
+				<texture>dialogs/dialog-bg-nobo.png</texture>
 				<bordertexture border="21"infill="false">overlays/shadow.png</bordertexture>
 				<bordersize>20</bordersize>
 			</control>
@@ -240,7 +240,7 @@
 					<top>-10</top>
 					<width>290</width>
 					<height>415</height>
-					<texture>dialogs/dialog-bg- nobo.png</texture>
+					<texture>dialogs/dialog-bg-nobo.png</texture>
 					<bordertexture border="21"infill="false">overlays/shadow.png</bordertexture>
 					<bordersize>20</bordersize>
 				</control>

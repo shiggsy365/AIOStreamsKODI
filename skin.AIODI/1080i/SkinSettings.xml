@@ -8,14 +8,14 @@
         <include>CommonBackground</include>
         <include>NavigationBar</include>
 
-        <!-- Main Settings Container -->
+        <!--Main Settings Container -->
         <control type="group">
             <left>0</left>
             <top>120</top>
             <width>1920</width>
             <height>960</height>
 
-            <!-- Sidebar (Category Selection) -->
+            <!--Sidebar (Category Selection) -->
             <control type="group">
                 <left>0</left>
                 <top>0</top>
@@ -66,29 +66,29 @@
                     </focusedlayout>
                     <content>
                         <item id="1">
-                            <label>$LOCALIZE[128]</label ><!-- General -->
+                            <label>$LOCALIZE[128]</label ><!--General -->
                         </item>
                         <item id="2">
-                            <label>$LOCALIZE[31061]</label ><!-- Background -->
+                            <label>$LOCALIZE[31061]</label ><!--Background -->
                         </item>
                         <item id="3">
-                            <label>$LOCALIZE[31159]</label ><!-- Home Menu -->
+                            <label>$LOCALIZE[31159]</label ><!--Home Menu -->
                         </item>
                         <item id="4">
-                            <label>$LOCALIZE[31170]</label ><!-- OSD -->
+                            <label>$LOCALIZE[31170]</label ><!--OSD -->
                         </item>
                     </content>
                 </control>
             </control>
 
-            <!-- Content Area (Settings Controls) -->
+            <!--Content Area (Settings Controls) -->
             <control type="group"id="10000">
                 <left>500</left>
                 <top>40</top>
                 <width>1380</width>
                 <height>880</height>
 
-                <!-- General Settings -->
+                <!--General Settings -->
                 <control type="grouplist"id="700">
                     <visible>Container(9000).HasFocus(1)</visible>
                     <left>0</left>
@@ -120,7 +120,7 @@
                     </control>
                 </control>
 
-                <!-- Background Settings -->
+                <!--Background Settings -->
                 <control type="grouplist"id="600">
                     <visible>Container(9000).HasFocus(2)</visible>
                     <left>0</left>
@@ -142,7 +142,7 @@
                     </control>
                 </control>
 
-                <!-- Home Menu Visibility -->
+                <!--Home Menu Visibility -->
                 <control type="grouplist"id="610">
                     <visible>Container(9000).HasFocus(3)</visible>
                     <left>0</left>
@@ -152,7 +152,7 @@
                     <onleft>9000</onleft>
                     <onright>noop</onright>
                     <itemgap>10</itemgap>
-                    <!-- Show/Hide categories -->
+                    <!--Show/Hide categories -->
                     <control type="radiobutton"id="611">
                         <width>1300</width>
                         <height>70</height>

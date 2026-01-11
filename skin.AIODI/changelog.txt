@@ -1,3 +1,8 @@
+[B]3.1.10[/B]
+• FIXED: Massive resource path repair - removed all accidental spaces inside filenames (e.g. "notosans- regular.ttf").
+• FIXED: Restored complete media subdirectory structure (dialogs/, lists/, overlays/) to match skin expectations.
+• FIXED: Pervasive fallback assets - every missing texture now has a "white.png" replacement to ensure layout always renders.
+
 [B]3.1.8[/B]
 • FIXED: Critical resource path cleanup - removed accidental spaces in filename references.
 • FIXED: Redirected failing legacy texture paths (colors/*, osd/*) to consolidated common assets.

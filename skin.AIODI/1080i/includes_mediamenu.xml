@@ -22,7 +22,7 @@
 				<align>center</align>
 				<aligny>center</aligny>
 				<font></font>
-				<texturefocus colordiffuse="button_focus">buttons/roundbutton- fo.png</texturefocus>
+				<texturefocus colordiffuse="button_focus">buttons/roundbutton-fo.png</texturefocus>
 				<texturenofocus />
 				<radioposx>26</radioposx>
 				<radioposy>0</radioposy>
@@ -109,12 +109,12 @@
 						<include content="PVRQuickNavItemsCommon">
 							<param name="control_id"value="104"/>
 							<param name="area"value="TimerRules"/>
-							<param name="icon"value="icons/submenu/timer- rules.png"/>
+							<param name="icon"value="icons/submenu/timer-rules.png"/>
 						</include>
 						<include content="PVRQuickNavItemsCommon">
 							<param name="control_id"value="105"/>
 							<param name="area"value="Search"/>
-							<param name="icon"value="icons/submenu/tv- search.png"/>
+							<param name="icon"value="icons/submenu/tv-search.png"/>
 						</include>
 					</control>
 				</control>
@@ -226,31 +226,31 @@
 						<include content="BottomMainMenuToggleItem">
 							<param name="control_id"value="14101"/>
 							<param name="onclick"value="PlayerControl(Play)"/>
-							<param name="icon_on"value="icons/now- playing/play.png"/>
-							<param name="icon_off"value="icons/now- playing/pause.png"/>
+							<param name="icon_on"value="icons/now-playing/play.png"/>
+							<param name="icon_off"value="icons/now-playing/pause.png"/>
 							<param name="selected"value="Player.Paused"/>
 						</include>
 						<include content="IconButton">
 							<param name="control_id"value="14102"/>
 							<param name="onclick"value="Stop"/>
-							<param name="icon"value="icons/now- playing/stop.png"/>
+							<param name="icon"value="icons/now-playing/stop.png"/>
 						</include>
 						<include content="IconButton">
 							<param name="control_id"value="14104"/>
 							<param name="onclick"value="Next"/>
-							<param name="icon"value="icons/now- playing/next.png"/>
+							<param name="icon"value="icons/now-playing/next.png"/>
 							<param name="visible"value="Integer.IsLess(Playlist.Position(video), Playlist.Length(video)) | MusicPlayer.HasNext"/>
 						</include>
 						<include content="IconButton">
 							<param name="control_id"value="14105"/>
 							<param name="onclick"value="Fullscreen"/>
-							<param name="icon"value="icons/now- playing/fullscreen.png"/>
+							<param name="icon"value="icons/now-playing/fullscreen.png"/>
 							<param name="visible"value="Player.HasMedia + [ !Player.IsRemote | Player.HasAudio ]"/>
 						</include>
 						<include content="IconButton">
 							<param name="control_id"value="14106"/>
 							<param name="onclick"value="ActivateWindow(playercontrols)"/>
-							<param name="icon"value="icons/now- playing/fullscreen.png"/>
+							<param name="icon"value="icons/now-playing/fullscreen.png"/>
 							<param name="label"value="$LOCALIZE[31000]"/>
 							<param name="visible"value="Player.HasMedia + Player.IsRemote"/>
 						</include>
@@ -289,7 +289,7 @@
 			<top>0</top>
 			<width>520</width>
 			<height>100%</height>
-			<texture border="0,0,52,0">lists/panel- mediamenu.png</texture>
+			<texture border="0,0,52,0">lists/panel-mediamenu.png</texture>
 		</control>
 		<control type="button"id="6131">
 			<left>0</left>
@@ -327,32 +327,32 @@
 				<include content="BottomMainMenuToggleItem">
 					<param name="control_id"value="14101"/>
 					<param name="onclick"value="PlayerControl(Play)"/>
-					<param name="icon_on"value="icons/now- playing/play.png"/>
-					<param name="icon_off"value="icons/now- playing/pause.png"/>
+					<param name="icon_on"value="icons/now-playing/play.png"/>
+					<param name="icon_off"value="icons/now-playing/pause.png"/>
 					<param name="selected"value="Player.Paused"/>
 				</include>
 				<include content="IconButton">
 					<param name="control_id"value="14102"/>
 					<param name="onclick"value="Stop"/>
 					<param name="onclick_2"value="SetFocus(50)"/>
-					<param name="icon"value="icons/now- playing/stop.png"/>
+					<param name="icon"value="icons/now-playing/stop.png"/>
 				</include>
 				<include content="IconButton">
 					<param name="control_id"value="14104"/>
 					<param name="onclick"value="PlayerControl(Next)"/>
-					<param name="icon"value="icons/now- playing/next.png"/>
+					<param name="icon"value="icons/now-playing/next.png"/>
 					<param name="visible"value="Integer.IsLess(Playlist.Position(video), Playlist.Length(video)) | MusicPlayer.HasNext"/>
 				</include>
 				<include content="IconButton">
 					<param name="control_id"value="14105"/>
 					<param name="onclick"value="Fullscreen"/>
-					<param name="icon"value="icons/now- playing/fullscreen.png"/>
+					<param name="icon"value="icons/now-playing/fullscreen.png"/>
 					<param name="visible"value="Player.HasMedia + [ !Player.IsRemote | Player.HasAudio ]"/>
 				</include>
 				<include content="IconButton">
 					<param name="control_id"value="14106"/>
 					<param name="onclick"value="ActivateWindow(playercontrols)"/>
-					<param name="icon"value="icons/now- playing/fullscreen.png"/>
+					<param name="icon"value="icons/now-playing/fullscreen.png"/>
 					<param name="visible"value="Player.HasMedia + Player.IsRemote + !Player.HasAudio"/>
 				</include>
 			</control>

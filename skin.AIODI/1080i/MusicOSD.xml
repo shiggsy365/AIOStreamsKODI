@@ -68,7 +68,7 @@
 						<height>74</height>
 						<label></label>
 						<font></font>
-						<texturefocus colordiffuse="button_focus">osd/fullscreen/buttons/button- fo.png</texturefocus>
+						<texturefocus colordiffuse="button_focus">osd/fullscreen/buttons/button-fo.png</texturefocus>
 						<texturenofocus />
 						<onleft>601</onleft>
 						<onright>603</onright>
@@ -107,11 +107,11 @@
 					<visible>Player.ChapterCount | MusicPlayer.HasNext | PVR.IsTimeShift</visible>
 				</control>
 				<control type="radiobutton"id="608">
-					<textureradioonfocus colordiffuse="white">osd/fullscreen/buttons/record- white.png</textureradioonfocus>
-					<textureradioonnofocus>osd/fullscreen/buttons/record- white.png</textureradioonnofocus>
+					<textureradioonfocus colordiffuse="white">osd/fullscreen/buttons/record-white.png</textureradioonfocus>
+					<textureradioonnofocus>osd/fullscreen/buttons/record-white.png</textureradioonnofocus>
 					<textureradioofffocus colordiffuse="white">osd/fullscreen/buttons/record.png</textureradioofffocus>
 					<textureradiooffnofocus >osd/fullscreen/buttons/record.png</textureradiooffnofocus>
-					<texturefocus colordiffuse="button_focus">osd/fullscreen/buttons/button- fo.png</texturefocus>
+					<texturefocus colordiffuse="button_focus">osd/fullscreen/buttons/button-fo.png</texturefocus>
 					<width>76</width>
 					<animation type="Focus"center="38,38"effect="zoom"end="100"reversible="false"start="95"time="480"tween="back"/>
 					<height>76</height>
@@ -189,7 +189,7 @@
 						<height>74</height>
 						<label></label>
 						<font></font>
-						<texturefocus colordiffuse="button_focus">osd/fullscreen/buttons/button- fo.png</texturefocus>
+						<texturefocus colordiffuse="button_focus">osd/fullscreen/buttons/button-fo.png</texturefocus>
 						<texturenofocus />
 						<onleft>70052</onleft>
 						<onright>70054</onright>
@@ -207,13 +207,13 @@
 					</control>
 				</control>
 				<control type="radiobutton"id="70054">
-					<textureradioonfocus colordiffuse="white">osd/fullscreen/buttons/random- on.png</textureradioonfocus>
-					<textureradioonnofocus>osd/fullscreen/buttons/random- on.png</textureradioonnofocus>
-					<textureradioofffocus colordiffuse="white">osd/fullscreen/buttons/random- off.png</textureradioofffocus>
-					<textureradiooffnofocus>osd/fullscreen/buttons/random- off.png</textureradiooffnofocus>
-					<textureradioondisabled colordiffuse="disabled">osd/fullscreen/buttons/random- on.png</textureradioondisabled>
-					<textureradiooffdisabled colordiffuse="disabled">osd/fullscreen/buttons/random- off.png</textureradiooffdisabled>
-					<texturefocus colordiffuse="button_focus">osd/fullscreen/buttons/button- fo.png</texturefocus>
+					<textureradioonfocus colordiffuse="white">osd/fullscreen/buttons/random-on.png</textureradioonfocus>
+					<textureradioonnofocus>osd/fullscreen/buttons/random-on.png</textureradioonnofocus>
+					<textureradioofffocus colordiffuse="white">osd/fullscreen/buttons/random-off.png</textureradioofffocus>
+					<textureradiooffnofocus>osd/fullscreen/buttons/random-off.png</textureradiooffnofocus>
+					<textureradioondisabled colordiffuse="disabled">osd/fullscreen/buttons/random-on.png</textureradioondisabled>
+					<textureradiooffdisabled colordiffuse="disabled">osd/fullscreen/buttons/random-off.png</textureradiooffdisabled>
+					<texturefocus colordiffuse="button_focus">osd/fullscreen/buttons/button-fo.png</texturefocus>
 					<width>76</width>
 					<animation type="Focus"center="38,38"effect="zoom"end="100"reversible="false"start="95"time="480"tween="back"/>
 					<height>76</height>
@@ -229,7 +229,7 @@
 				</control>
 				<control type="radiobutton"id="70055">
 					<include content="OSDButton">
-						<param name="texture"value="osd/fullscreen/buttons/settings- subtitle.png"/>
+						<param name="texture"value="osd/fullscreen/buttons/settings-subtitle.png"/>
 					</include>
 					<onclick>Close</onclick>
 					<onclick condition="!String.IsEmpty(Skin.String(LyricScript_Path))">RunScript($INFO[Skin.String(LyricScript_Path)])</onclick>

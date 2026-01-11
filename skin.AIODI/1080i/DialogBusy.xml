@@ -2,7 +2,7 @@
 <window type="dialog">
     <include file="Includes.xml"/>
     <controls>
-        <!-- Background -->
+        <!--Background -->
         <control type="image">
             <left>0</left>
             <top>0</top>
@@ -12,14 +12,14 @@
             <aspectratio>stretch</aspectratio>
         </control>
 
-        <!-- Loading Box -->
+        <!--Loading Box -->
         <control type="group">
             <left>760</left>
             <top>440</top>
             <width>400</width>
             <height>200</height>
 
-            <!-- Box Background -->
+            <!--Box Background -->
             <control type="image">
                 <left>0</left>
                 <top>0</top>
@@ -29,7 +29,7 @@
                 <aspectratio>stretch</aspectratio>
             </control>
 
-            <!-- Loading Text -->
+            <!--Loading Text -->
             <control type="label">
                 <left>0</left>
                 <top>80</top>

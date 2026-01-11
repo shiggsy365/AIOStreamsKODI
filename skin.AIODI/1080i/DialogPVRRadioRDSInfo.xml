@@ -21,7 +21,7 @@
 				<top>160</top>
 				<width>840</width>
 				<height>405</height>
-				<texture border="21">dialogs/dialog- bg.png</texture>
+				<texture border="21">dialogs/dialog-bg.png</texture>
 			</control>
 			<control type="label">
 				<left>150</left>
@@ -73,7 +73,7 @@
 				<top>575</top>
 				<width>840</width>
 				<height>225</height>
-				<texture border="21">dialogs/dialog- bg.png</texture>
+				<texture border="21">dialogs/dialog-bg.png</texture>
 			</control>
 			<control type="label">
 				<left>150</left>
@@ -109,7 +109,7 @@
 				<top>160</top>
 				<width>840</width>
 				<height>405</height>
-				<texture border="21">dialogs/dialog- bg.png</texture>
+				<texture border="21">dialogs/dialog-bg.png</texture>
 			</control>
 			<control type="label">
 				<left>1000</left>
@@ -161,7 +161,7 @@
 				<top>575</top>
 				<width>840</width>
 				<height>225</height>
-				<texture border="21">dialogs/dialog- bg.png</texture>
+				<texture border="21">dialogs/dialog-bg.png</texture>
 			</control>
 			<control type="label">
 				<left>1000</left>
@@ -193,7 +193,7 @@
 				<top>810</top>
 				<width>840</width>
 				<height>260</height>
-				<texture border="21">dialogs/dialog- bg.png</texture>
+				<texture border="21">dialogs/dialog-bg.png</texture>
 			</control>
 			<control type="group">
 				<left>150</left>
@@ -220,7 +220,7 @@
 				<top>810</top>
 				<width>840</width>
 				<height>260</height>
-				<texture border="21">dialogs/dialog- bg.png</texture>
+				<texture border="21">dialogs/dialog-bg.png</texture>
 			</control>
 			<control type="group">
 				<left>1000</left>

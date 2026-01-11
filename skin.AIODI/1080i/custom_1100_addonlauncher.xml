@@ -240,16 +240,16 @@
 					<label/>
 					<textoffsetx>40</textoffsetx>
 					<textwidth>230</textwidth>
-					<texturefocus colordiffuse="button_focus">buttons/roundbutton- fo.png</texturefocus>
+					<texturefocus colordiffuse="button_focus">buttons/roundbutton-fo.png</texturefocus>
 					<texturenofocus />
 					<radioposx>39</radioposx>
 					<radioposy>0</radioposy>
 					<radiowidth>40</radiowidth>
 					<radioheight>40</radioheight>
-					<textureradioonfocus>icons/submenu/add- ons.png</textureradioonfocus>
-					<textureradioonnofocus>icons/submenu/add- ons.png</textureradioonnofocus>
-					<textureradioofffocus>icons/submenu/add- ons.png</textureradioofffocus>
-					<textureradiooffnofocus>icons/submenu/add- ons.png</textureradiooffnofocus>
+					<textureradioonfocus>icons/submenu/add-ons.png</textureradioonfocus>
+					<textureradioonnofocus>icons/submenu/add-ons.png</textureradioonnofocus>
+					<textureradioofffocus>icons/submenu/add-ons.png</textureradioofffocus>
+					<textureradiooffnofocus>icons/submenu/add-ons.png</textureradiooffnofocus>
 				</control>
 				<control type="radiobutton"id="802">
 					<top>5</top>
@@ -262,7 +262,7 @@
 					<label/>
 					<textoffsetx>40</textoffsetx>
 					<textwidth>230</textwidth>
-					<texturefocus border="30"colordiffuse="button_focus">buttons/dialogbutton- fo.png</texturefocus>
+					<texturefocus border="30"colordiffuse="button_focus">buttons/dialogbutton-fo.png</texturefocus>
 					<texturenofocus />
 					<radioposx>35</radioposx>
 					<radioposy>0</radioposy>
@@ -286,7 +286,7 @@
 					<label/>
 					<textoffsetx>40</textoffsetx>
 					<textwidth>230</textwidth>
-					<texturefocus colordiffuse="button_focus">buttons/roundbutton- fo.png</texturefocus>
+					<texturefocus colordiffuse="button_focus">buttons/roundbutton-fo.png</texturefocus>
 					<texturenofocus />
 					<radioposx>40</radioposx>
 					<radioposy>0</radioposy>

@@ -46,14 +46,14 @@
 				<centertop>50%</centertop>
 				<width>110</width>
 				<height>110</height>
-				<texture colordiffuse="BFFFFFFF">osd/buffer- bg.png</texture>
+				<texture colordiffuse="BFFFFFFF">osd/buffer-bg.png</texture>
 			</control>
 			<control type="image"id="1">
 				<centerleft>50%</centerleft>
 				<centertop>50%</centertop>
 				<width>92</width>
 				<height>92</height>
-				<texture>dialogs/extendedprogress/loading- back.png</texture>
+				<texture>dialogs/extendedprogress/loading-back.png</texture>
 			</control>
 			<control type="image"id="1">
 				<centerleft>50%</centerleft>
