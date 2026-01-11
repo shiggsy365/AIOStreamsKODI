@@ -1,3 +1,8 @@
+[B]3.1.13[/B]
+• FIXED: Emergency restoration of texture paths stripped in v3.1.11.
+• FIXED: Standardized all window backgrounds to common/white.png.
+• FIXED: Verified all core UI textures (focus, shadow, dialogs) are restored.
+
 [B]3.1.12[/B]
 • FIXED: Emergency repair of Font.xml - restored filenames accidentally stripped in v3.11.
 • FIXED: Massive resource path sanitization - ensuring all texture references are clean and lowercase.
