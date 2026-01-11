@@ -9,7 +9,7 @@
             <top>0</top>
             <width>1920</width>
             <height>1080</height>
-            <texture>common/white.png</texture>
+            <texture colordiffuse="main_bg_100">common/white.png</texture>
             <aspectratio>stretch</aspectratio>
         </control>
 
