@@ -64,7 +64,7 @@
 			<onup>noop</onup>
 			<ondown>9002</ondown>
 			<onright>noop</onright>
-			<onclick>noop</onclick>
+			<onclick>ActivateWindow(Profiles)</onclick>
 		</control>
 
 		<!-- Search -->
@@ -80,7 +80,7 @@
 				<onup>9001</onup>
 				<ondown>9003</ondown>
 				<onright>SetFocus($INFO[Skin.String(Menu_WidgetID)])</onright>
-				<onclick>noop</onclick>
+				<onclick>ActivateWindow(Videos,plugin://plugin.video.aiostreams/?action=search&amp;content_type=both,return)</onclick>
 			</control>
 			<control type="image">
 				<left>24</left>
@@ -108,7 +108,7 @@
 		<width>120</width>
 		<bottom>180</bottom>
 		<align>center</align>
-		<itemgap>0</itemgap>
+		<itemgap>70</itemgap>
 		<onright>SetFocus($INFO[Skin.String(Menu_WidgetID)])</onright>
 
 		<!-- Home -->
@@ -124,7 +124,7 @@
 				<ondown>9004</ondown>
 				<onfocus>Skin.SetString(SideMenuFocus,home)</onfocus>
 				<onfocus>Skin.SetString(Menu_WidgetID,10000)</onfocus>
-				<onclick>noop</onclick>
+				<onclick>ActivateWindow(Videos,plugin://plugin.video.aiostreams/,return)</onclick>
 			</control>
 			<control type="image">
 				<left>24</left>
@@ -157,7 +157,7 @@
 				<ondown>9005</ondown>
 				<onfocus>Skin.SetString(SideMenuFocus,tvshows)</onfocus>
 				<onfocus>Skin.SetString(Menu_WidgetID,6000)</onfocus>
-				<onclick>ActivateWindow(Videos,videodb://tvshows/titles/,return)</onclick>
+				<onclick>ActivateWindow(Videos,plugin://plugin.video.aiostreams/?action=series_lists,return)</onclick>
 			</control>
 			<control type="image">
 				<left>24</left>
@@ -190,7 +190,7 @@
 				<ondown>9006</ondown>
 				<onfocus>Skin.SetString(SideMenuFocus,movies)</onfocus>
 				<onfocus>Skin.SetString(Menu_WidgetID,5000)</onfocus>
-				<onclick>ActivateWindow(Videos,videodb://movies/titles/,return)</onclick>
+				<onclick>ActivateWindow(Videos,plugin://plugin.video.aiostreams/?action=movie_lists,return)</onclick>
 			</control>
 			<control type="image">
 				<left>24</left>
