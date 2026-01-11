@@ -38,7 +38,7 @@
 					<bottom>list_bottom</bottom>
 					<onleft>11</onleft>
 					<onright>NextChannelGroup</onright>
-					<texture></texture>
+					<texture>common/white.png</texture>
 				</control>
 			</control>
 			<control type="group">
@@ -48,7 +48,7 @@
 					<left>0</left>
 					<width>970</width>
 					<height>110</height>
-					<texture></texture>
+					<texture>common/white.png</texture>
 				</control>
 				<control type="label" id="2">
 					<description>header label</description>

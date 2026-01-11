@@ -79,7 +79,7 @@
 					<top>100</top>
 					<width>95%</width>
 					<height>220</height>
-					<texture></texture>
+					<texture>common/white.png</texture>
 				</control>
 				<control type="label">
 					<top>310</top>
@@ -101,7 +101,7 @@
 					<aligny>center</aligny>
 					<textoffsetx>40</textoffsetx>
 					<textoffsety>0</textoffsety>
-					<texture></texture>
+					<texture>common/white.png</texture>
 				<include>FullScreenDimensions</include>
 				<animation type="Conditional" effect="fade" start="100" end="70" time="0" condition="true"/>
 			</control>
@@ -118,7 +118,7 @@
 					<height>80</height>
 					<aspectratio>keep</aspectratio>
 					<animation type="Conditional" effect="rotate" end="-45" center="auto" time="200" delay="600" loop="true" reversible="false" condition="true"/>
-					<texture></texture>
+					<texture>common/white.png</texture>
 				</control>
 				<control type="image">
 					<centerleft>50%</centerleft>
@@ -127,7 +127,7 @@
 					<height>50</height>
 					<aspectratio>keep</aspectratio>
 					<animation type="Conditional" effect="rotate" end="45" center="auto" time="200" delay="600" loop="true" reversible="false" condition="true"/>
-					<texture></texture>
+					<texture>common/white.png</texture>
 				</control>
 			</control>
 		</control>

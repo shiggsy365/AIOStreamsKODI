@@ -17,7 +17,7 @@
 				<top>10</top>
 				<width>60</width>
 				<height>60</height>
-				<texture></texture>
+				<texture>common/white.png</texture>
 			</control>
 			<control type="group">
 				<visible>!Window.IsActive(volumebar)</visible>
@@ -27,7 +27,7 @@
 					<top>10</top>
 					<width>60</width>
 					<height>60</height>
-					<texture></texture>
+					<texture>common/white.png</texture>
 					<animation type="Conditional" effect="fade" end="50" time="0" condition="true"/>
 				</control>
 				<control type="image">
@@ -35,7 +35,7 @@
 					<top>10</top>
 					<width>60</width>
 					<height>60</height>
-					<texture></texture>
+					<texture>common/white.png</texture>
 					<animation type="Conditional" effect="rotate" center="auto" start="360" end="0" time="1500" loop="true" condition="true"/>
 				</control>
 			</control>

@@ -20,8 +20,8 @@
 					<left>-16</left>
 					<width>566</width>
 					<height>841</height>
-					<texture></texture>
-					<bordertexture></bordertexture>
+					<texture>common/white.png</texture>
+					<bordertexture>common/white.png</bordertexture>
 					<bordersize>20</bordersize>
 				</control>
 				<control type="image">
@@ -31,7 +31,7 @@
 					<width>526</width>
 					<height>801</height>
 					<aspectratio>scale</aspectratio>
-					<texture></texture>
+					<texture>common/white.png</texture>
 				</control>
 				<control type="group">
 					<visible>String.IsEqual(ListItem.DBType,episode) | String.IsEqual(ListItem.DBType,video)</visible>
@@ -42,7 +42,7 @@
 						<width>526</width>
 						<height>801</height>
 						<aspectratio>stretch</aspectratio>
-						<texture></texture>
+						<texture>common/white.png</texture>
 					</control>
 					<control type="image">
 						<left>14</left>
@@ -50,8 +50,8 @@
 						<width>506</width>
 						<height>801</height>
 						<aspectratio>keep</aspectratio>
-						<texture></texture>
-						<bordertexture></bordertexture>
+						<texture>common/white.png</texture>
+						<bordertexture>common/white.png</bordertexture>
 						<bordersize>20</bordersize>
 					</control>
 				</control>
@@ -65,15 +65,15 @@
 					<width>526</width>
 					<height>801</height>
 					<aspectratio>stretch</aspectratio>
-					<texture></texture>
+					<texture>common/white.png</texture>
 				</control>
 				<control type="image">
 					<left>10</left>
 					<width>506</width>
 					<height>801</height>
 					<aspectratio>keep</aspectratio>
-					<texture></texture>
-					<bordertexture></bordertexture>
+					<texture>common/white.png</texture>
+					<bordertexture>common/white.png</bordertexture>
 					<bordersize>20</bordersize>
 				</control>
 			</control>
@@ -97,7 +97,7 @@
 						<onleft>4000</onleft>
 						<onright>4000</onright>
 						<ondown>5000</ondown>
-						<texture></texture>
+						<texture>common/white.png</texture>
 						<visible>Integer.IsGreater(Container(4000).NumItems,0)</visible>
 					</control>
 					<control type="button" id="139">
@@ -114,7 +114,7 @@
 						<onleft>4000</onleft>
 						<onright>4000</onright>
 						<ondown>5000</ondown>
-						<texture></texture>
+						<texture>common/white.png</texture>
 					</control>
 					<control type="textbox">
 						<left>17</left>
@@ -134,7 +134,7 @@
 					<height>283</height>
 					<fadetime>150</fadetime>
 					<aspectratio>keep</aspectratio>
-					<texture></texture>
+					<texture>common/white.png</texture>
 					<visible>Integer.IsEqual(Container(50).NumItems,0)</visible>
 				</control>
 				<control type="panel" id="50">
@@ -156,9 +156,9 @@
 								<top>0</top>
 								<width>264</width>
 								<height>317</height>
-								<texture></texture>
+								<texture>common/white.png</texture>
 								<aspectratio aligny="center">scale</aspectratio>
-								<bordertexture></bordertexture>
+								<bordertexture>common/white.png</bordertexture>
 								<bordersize>20</bordersize>
 							</control>
 							<control type="image">
@@ -166,7 +166,7 @@
 								<left>20</left>
 								<width>224</width>
 								<height>277</height>
-								<texture></texture>
+								<texture>common/white.png</texture>
 								<aspectratio aligny="center">scale</aspectratio>
 							</control>
 							<control type="image">
@@ -174,7 +174,7 @@
 								<width>224</width>
 								<height>80</height>
 								<bottom>10</bottom>
-								<texture></texture>
+								<texture>common/white.png</texture>
 								<animation type="Conditional" effect="fade" start="100" end="80" time="0" condition="true"/>
 							</control>
 							<control type="label">
@@ -208,9 +208,9 @@
 								<top>0</top>
 								<width>264</width>
 								<height>317</height>
-								<texture></texture>
+								<texture>common/white.png</texture>
 								<aspectratio aligny="center">scale</aspectratio>
-								<bordertexture></bordertexture>
+								<bordertexture>common/white.png</bordertexture>
 								<bordersize>20</bordersize>
 							</control>
 							<control type="image">
@@ -218,7 +218,7 @@
 								<left>20</left>
 								<width>224</width>
 								<height>277</height>
-								<texture></texture>
+								<texture>common/white.png</texture>
 								<aspectratio aligny="center">scale</aspectratio>
 							</control>
 							<control type="image">
@@ -226,7 +226,7 @@
 								<width>224</width>
 								<height>80</height>
 								<bottom>10</bottom>
-								<texture></texture>
+								<texture>common/white.png</texture>
 								<animation type="Conditional" effect="fade" start="100" end="80" time="0" condition="true"/>
 							</control>
 							<control type="label">
@@ -257,7 +257,7 @@
 								<top>16</top>
 								<width>232</width>
 								<height>285</height>
-								<texture></texture>
+								<texture>common/white.png</texture>
 							</control>
 						</control>
 					</focusedlayout>
@@ -269,9 +269,9 @@
 								<top>0</top>
 								<width>226</width>
 								<height>319</height>
-								<texture></texture>
+								<texture>common/white.png</texture>
 								<aspectratio aligny="center">scale</aspectratio>
-								<bordertexture></bordertexture>
+								<bordertexture>common/white.png</bordertexture>
 								<bordersize>20</bordersize>
 							</control>
 							<control type="image">
@@ -279,7 +279,7 @@
 								<left>20</left>
 								<width>186</width>
 								<height>279</height>
-								<texture></texture>
+								<texture>common/white.png</texture>
 								<aspectratio aligny="center">scale</aspectratio>
 							</control>
 							<control type="image">
@@ -287,7 +287,7 @@
 								<width>186</width>
 								<height>180</height>
 								<bottom>10</bottom>
-								<texture></texture>
+								<texture>common/white.png</texture>
 								<animation type="Conditional" effect="fade" start="100" end="80" time="0" condition="true"/>
 								<visible>String.IsEmpty(ListItem.Art(poster))</visible>
 							</control>
@@ -312,9 +312,9 @@
 								<top>0</top>
 								<width>226</width>
 								<height>319</height>
-								<texture></texture>
+								<texture>common/white.png</texture>
 								<aspectratio aligny="center">scale</aspectratio>
-								<bordertexture></bordertexture>
+								<bordertexture>common/white.png</bordertexture>
 								<bordersize>20</bordersize>
 							</control>
 							<control type="image">
@@ -322,7 +322,7 @@
 								<left>20</left>
 								<width>186</width>
 								<height>279</height>
-								<texture></texture>
+								<texture>common/white.png</texture>
 								<aspectratio aligny="center">scale</aspectratio>
 							</control>
 							<control type="image">
@@ -330,7 +330,7 @@
 								<width>186</width>
 								<height>180</height>
 								<bottom>10</bottom>
-								<texture></texture>
+								<texture>common/white.png</texture>
 								<animation type="Conditional" effect="fade" start="100" end="80" time="0" condition="true"/>
 								<visible>String.IsEmpty(ListItem.Art(poster))</visible>
 							</control>
@@ -350,7 +350,7 @@
 								<top>16</top>
 								<width>194</width>
 								<height>287</height>
-								<texture></texture>
+								<texture>common/white.png</texture>
 							</control>
 						</control>
 					</focusedlayout>
@@ -417,7 +417,7 @@
 							<align>center</align>
 						</control>
 						<control type="image">
-							<texture></texture>
+							<texture>common/white.png</texture>
 							<left>108</left>
 							<top>30</top>
 							<width>48</width>
@@ -549,7 +549,7 @@
 					<width>36</width>
 					<height>36</height>
 					<animation type="Conditional" effect="rotate" end="-90" center="36,19" time="0" condition="true"/>
-					<texture></texture>
+					<texture>common/white.png</texture>
 				</control>
 				<control type="label">
 					<left>74</left>
@@ -569,7 +569,7 @@
 					<left>17</left>
 					<width>36</width>
 					<height>36</height>
-					<texture></texture>
+					<texture>common/white.png</texture>
 				</control>
 				<control type="label">
 					<left>74</left>

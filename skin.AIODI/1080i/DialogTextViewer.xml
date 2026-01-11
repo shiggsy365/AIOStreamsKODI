@@ -41,8 +41,8 @@
 			<top>113</top>
 			<width>48</width>
 			<height>20</height>
-			<texturefocus></texturefocus>
-			<texturenofocus></texturenofocus>
+			<texturefocus>lists/focus.png</texturefocus>
+			<texturenofocus>common/white.png</texturenofocus>
 			<onclick>SetFocus(3000)</onclick>
 			<onclick>Up</onclick>
 		</control>
@@ -53,8 +53,8 @@
 			<height>20</height>
 			<onclick>SetFocus(3000)</onclick>
 			<onclick>Down</onclick>
-			<texturefocus></texturefocus>
-			<texturenofocus></texturenofocus>
+			<texturefocus>lists/focus.png</texturefocus>
+			<texturenofocus>common/white.png</texturenofocus>
 		</control>
 		<control type="label">
 			<left>1310</left>

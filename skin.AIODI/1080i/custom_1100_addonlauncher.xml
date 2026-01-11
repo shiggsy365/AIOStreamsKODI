@@ -97,7 +97,7 @@
 							<left>0</left>
 							<right>0</right>
 							<bottom>0</bottom>
-							<texture></texture>
+							<texture>common/white.png</texture>
 							<animation type="Conditional" effect="fade" start="100" end="0" time="0" condition="!Control.HasFocus(9000)"/>
 						</control>
 						<control type="image">
@@ -105,14 +105,14 @@
 							<top>0</top>
 							<width>95</width>
 							<bottom>0</bottom>
-							<texture></texture>
+							<texture>common/white.png</texture>
 							<animation type="Focus" effect="fade" start="0" end="100" time="300" reversible="false"/>
 						</control>
 						<control type="image">
 							<left>0</left>
 							<width>95</width>
 							<bottom>0</bottom>
-							<texture></texture>
+							<texture>common/white.png</texture>
 							<animation type="Conditional" effect="fade" start="100" end="0" time="0" condition="!Control.HasFocus(9000)"/>
 						</control>
 						<control type="image">
@@ -120,7 +120,7 @@
 							<top>0</top>
 							<width>95</width>
 							<bottom>0</bottom>
-							<texture></texture>
+							<texture>common/white.png</texture>
 						</control>
 						<control type="label">
 							<left>104</left>
@@ -147,14 +147,14 @@
 							<top>0</top>
 							<width>95</width>
 							<bottom>0</bottom>
-							<texture></texture>
+							<texture>common/white.png</texture>
 						</control>
 					</itemlayout>
 					<content>
 						<item id="1">
 							<label>$LOCALIZE[1037]</label>
 							<onclick>ActivateWindow(videos,addons://sources/video/,return)</onclick>
-							<thumb></thumb>
+							<thumb></thumb>
 							<property name="id">video</property>
 							<property name="path">addons://sources/video/</property>
 							<property name="menu_id">$NUMBER[500]</property>
@@ -162,7 +162,7 @@
 						<item id="2">
 							<label>$LOCALIZE[1038]</label>
 							<onclick>ActivateWindow(music,addons://sources/audio/,return)</onclick>
-							<thumb></thumb>
+							<thumb></thumb>
 							<property name="id">music</property>
 							<property name="path">addons://sources/audio/</property>
 							<property name="menu_id">$NUMBER[501]</property>
@@ -171,7 +171,7 @@
 							<label>$LOCALIZE[35049]</label>
 							<visible>System.GetBool(gamesgeneral.enable)</visible>
 							<onclick>ActivateWindow(games,addons://sources/game/,return)</onclick>
-							<thumb></thumb>
+							<thumb></thumb>
 							<property name="id">game</property>
 							<property name="path">addons://sources/game/</property>
 							<property name="menu_id">$NUMBER[509]</property>
@@ -179,7 +179,7 @@
 						<item id="3">
 							<label>$LOCALIZE[1043]</label>
 							<onclick>ActivateWindow(programs,addons://sources/executable/,return)</onclick>
-							<thumb></thumb>
+							<thumb></thumb>
 							<property name="id">addons</property>
 							<property name="path">addons://sources/executable/</property>
 							<property name="menu_id">$NUMBER[502]</property>
@@ -187,7 +187,7 @@
 						<item id="4">
 							<label>$LOCALIZE[20244]</label>
 							<onclick>ActivateWindow(programs,androidapp://sources/apps/,return)</onclick>
-							<thumb></thumb>
+							<thumb></thumb>
 							<property name="id">android</property>
 							<property name="path">androidapp://sources/apps/</property>
 							<property name="menu_id">$NUMBER[506]</property>
@@ -196,7 +196,7 @@
 						<item id="5">
 							<label>$LOCALIZE[1039]</label>
 							<onclick>ActivateWindow(pictures,addons://sources/image/,return)</onclick>
-							<thumb></thumb>
+							<thumb></thumb>
 							<property name="id">pictures</property>
 							<property name="path">addons://sources/image/</property>
 							<property name="menu_id">$NUMBER[503]</property>
@@ -204,7 +204,7 @@
 						<item id="7">
 							<label>$LOCALIZE[24998]</label>
 							<onclick>ActivateWindow(addonbrowser,addons://user/,return)</onclick>
-							<thumb></thumb>
+							<thumb></thumb>
 							<property name="id">manage</property>
 							<property name="path">addons://user/</property>
 							<property name="menu_id">$NUMBER[508]</property>
@@ -212,7 +212,7 @@
 						<item id="6">
 							<label>$LOCALIZE[33003]</label>
 							<onclick>ActivateWindow(addonbrowser,addons://all/,return)</onclick>
-							<thumb></thumb>
+							<thumb></thumb>
 							<property name="id">download</property>
 							<property name="path">addons://all/</property>
 							<property name="menu_id">$NUMBER[507]</property>
@@ -240,7 +240,7 @@
 					<label/>
 					<textoffsetx>40</textoffsetx>
 					<textwidth>230</textwidth>
-					<texturefocus></texturefocus>
+					<texturefocus>lists/focus.png</texturefocus>
 					<texturenofocus />
 					<radioposx>39</radioposx>
 					<radioposy>0</radioposy>
@@ -262,7 +262,7 @@
 					<label/>
 					<textoffsetx>40</textoffsetx>
 					<textwidth>230</textwidth>
-					<texturefocus></texturefocus>
+					<texturefocus>lists/focus.png</texturefocus>
 					<texturenofocus />
 					<radioposx>35</radioposx>
 					<radioposy>0</radioposy>
@@ -286,7 +286,7 @@
 					<label/>
 					<textoffsetx>40</textoffsetx>
 					<textwidth>230</textwidth>
-					<texturefocus></texturefocus>
+					<texturefocus>lists/focus.png</texturefocus>
 					<texturenofocus />
 					<radioposx>40</radioposx>
 					<radioposy>0</radioposy>

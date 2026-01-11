@@ -55,7 +55,7 @@
 							<bottom>0</bottom>
 							<left>0</left>
 							<right>0</right>
-							<texture></texture>
+							<texture>common/white.png</texture>
 								<visible>Control.HasFocus(1103)</visible>
 							</control>
 							<control type="image">
@@ -87,7 +87,7 @@
 						</focusedlayout>
 						<focusedlayout condition="Control.IsVisible(2200)" width="688" height="80">
 							<control type="image">
-								<texture></texture>
+								<texture>common/white.png</texture>
 								<visible>Control.HasFocus(1103)</visible>
 							</control>
 							<control type="image">
@@ -122,38 +122,38 @@
 								<description>Pause / Resume button</description>
 								<label>$LOCALIZE[35224]</label>
 								<label2>$FEATURE[select,game.controller.snes] + $FEATURE[x,game.controller.default]</label2>
-								<icon></icon>
+								<icon></icon>
 								<onclick>Play</onclick>
 							</item>
 							<item>
 								<description>Save / Load button</description>
 								<label>$LOCALIZE[35249]</label>
-								<icon></icon>
+								<icon></icon>
 								<onclick>ActivateWindow(InGameSaves)</onclick>
 							</item>
 							<item>
 								<description>Players button</description>
 								<label>$LOCALIZE[35172]</label>
-								<icon></icon>
+								<icon></icon>
 								<onclick>ActivateWindow(GameAgents)</onclick>
 							</item>
 							<item>
 								<description>Reset button</description>
 								<label>$LOCALIZE[13007]</label>
-								<icon></icon>
+								<icon></icon>
 								<onclick>PlayerControl(Reset)</onclick>
 							</item>
 							<item>
 								<description>Stop button</description>
 								<label>$LOCALIZE[35222]</label>
 								<label2>$FEATURE[select,game.controller.snes] + $FEATURE[start,game.controller.default]</label2>
-								<icon></icon>
+								<icon></icon>
 								<onclick>Stop</onclick>
 							</item>
 							<item>
 								<description>Settings button</description>
 								<label>$LOCALIZE[5]</label>
-								<icon></icon>
+								<icon></icon>
 								<onclick>SetProperty(settingslist_content,games,home)</onclick>
 								<onclick>SetProperty(settingslist_header,$LOCALIZE[5],home)</onclick>
 								<onclick>ActivateWindow(1101)</onclick>

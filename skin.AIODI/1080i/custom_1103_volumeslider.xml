@@ -11,8 +11,8 @@
 			<top>0</top>
 			<width>100%</width>
 			<bottom>0</bottom>
-			<texture></texture>
-				<bordertexture></bordertexture>
+			<texture>common/white.png</texture>
+				<bordertexture>common/white.png</bordertexture>
 				<bordersize>20</bordersize>
 			</control>
 			<control type="progress">
@@ -40,8 +40,8 @@
 				<top>65</top>
 				<width>28</width>
 				<height>28</height>
-				<texturefocus></texturefocus>
-				<texturenofocus></texturenofocus>
+				<texturefocus>lists/focus.png</texturefocus>
+				<texturenofocus>common/white.png</texturenofocus>
 				<animation type="WindowOpen" effect="zoom" start="0,100" end="100,100" delay="500" center="auto" time="200"/>
 				<animation type="WindowClose" effect="zoom" start="100,100" end="0,100" center="auto" time="200"/>
 				<hitrect x="-20" y="20" w="60" h="112"/>
@@ -52,8 +52,8 @@
 				<top>65</top>
 				<width>28</width>
 				<height>28</height>
-				<texturefocus></texturefocus>
-				<texturenofocus></texturenofocus>
+				<texturefocus>lists/focus.png</texturefocus>
+				<texturenofocus>common/white.png</texturenofocus>
 				<animation type="WindowOpen" effect="zoom" start="0,100" end="100,100" delay="500" center="auto" time="200"/>
 				<animation type="WindowClose" effect="zoom" start="100,100" end="0,100" center="auto" time="200"/>
 				<hitrect x="440" y="20" w="60" h="112"/>

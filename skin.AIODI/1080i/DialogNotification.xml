@@ -15,8 +15,8 @@
 				<top>0</top>
 				<width>640</width>
 				<height>160</height>
-				<texture></texture>
-				<bordertexture></bordertexture>
+				<texture>common/white.png</texture>
+				<bordertexture>common/white.png</bordertexture>
 				<bordersize>20</bordersize>
 			</control>
 			<control type="image" id="400">

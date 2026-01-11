@@ -114,8 +114,8 @@
 							<textoffsetx>40</textoffsetx>
 							<onclick>$PARAM[button_onclick]</onclick>
 							<align>center</align>
-							<texture></texture>
-							<bordertexture></bordertexture>
+							<texture>common/white.png</texture>
+							<bordertexture>common/white.png</bordertexture>
 							<bordersize>20</bordersize>
 						</control>
 						<control type="image">
@@ -123,7 +123,7 @@
 							<left>58</left>
 							<width>200</width>
 							<height>$PARAM[icon_height]</height>
-							<texture></texture>
+							<texture>common/white.png</texture>
 							<aspectratio>keep</aspectratio>
 						</control>
 						<control type="textbox">
@@ -152,14 +152,14 @@
 						<control type="image">
 							<width>316</width>
 							<height>200</height>
-							<texture></texture>
-							<bordertexture></bordertexture>
+							<texture>common/white.png</texture>
+							<bordertexture>common/white.png</bordertexture>
 							<bordersize>20</bordersize>
 						</control>
 						<control type="image">
 							<width>316</width>
 							<height>200</height>
-							<texture></texture>
+							<texture>common/white.png</texture>
 							<bordersize>20</bordersize>
 							<include>Animation_FocusTextureFade</include>
 						</control>
@@ -168,7 +168,7 @@
 							<left>58</left>
 							<width>200</width>
 							<height>$PARAM[icon_height]</height>
-							<texture></texture>
+							<texture>common/white.png</texture>
 							<aspectratio>keep</aspectratio>
 						</control>
 						<control type="textbox">
@@ -195,13 +195,13 @@
 			<item>
 				<label>$LOCALIZE[31146]</label>
 				<onclick>ActivateWindow(videos,plugin://script.embuary.info/movie/now_playing,return)</onclick>
-				<thumb></thumb>
+				<thumb></thumb>
 				<visible>System.AddonIsEnabled(script.embuary.info)</visible>
 			</item>
 			<item>
 				<label>$LOCALIZE[31147]</label>
 				<onclick>ActivateWindow(videos,plugin://script.embuary.info/movie/upcoming,return)</onclick>
-				<thumb></thumb>
+				<thumb></thumb>
 				<visible>System.AddonIsEnabled(script.embuary.info)</visible>
 			</item>
 		</content>
@@ -211,7 +211,7 @@
 			<item>
 				<label>$LOCALIZE[31027]</label>
 				<onclick>ActivateWindow(videos,plugin://script.embuary.info/nextaired,return)</onclick>
-				<thumb></thumb>
+				<thumb></thumb>
 				<visible>System.AddonIsEnabled(script.embuary.info)</visible>
 			</item>
 		</content>
@@ -248,8 +248,8 @@
 						<control type="image">
 							<width>319</width>
 							<height>340</height>
-							<texture></texture>
-							<bordertexture></bordertexture>
+							<texture>common/white.png</texture>
+							<bordertexture>common/white.png</bordertexture>
 							<bordersize>20</bordersize>
 						</control>
 						<control type="image">
@@ -257,7 +257,7 @@
 							<left>38</left>
 							<width>245</width>
 							<height>190</height>
-							<texture></texture>
+							<texture>common/white.png</texture>
 							<aspectratio>keep</aspectratio>
 						</control>
 						<control type="group">
@@ -302,21 +302,21 @@
 							<top>30</top>
 							<width>32</width>
 							<height>32</height>
-							<texture></texture>
+							<texture>common/white.png</texture>
 						</control>
 						<control type="progress">
 							<left>20</left>
 							<top>300</top>
 							<width>280</width>
 							<height>1</height>
-							<texture></texture>
-							<bordertexture></bordertexture>
+							<texture>common/white.png</texture>
+							<bordertexture>common/white.png</bordertexture>
 							<bordersize>20</bordersize>
 						</control>
 						<control type="image">
 							<width>319</width>
 							<height>340</height>
-							<texture></texture>
+							<texture>common/white.png</texture>
 							<bordersize>20</bordersize>
 							<include>Animation_FocusTextureFade</include>
 						</control>
@@ -325,7 +325,7 @@
 							<left>38</left>
 							<width>245</width>
 							<height>190</height>
-							<texture></texture>
+							<texture>common/white.png</texture>
 							<aspectratio>keep</aspectratio>
 						</control>
 						<control type="group">
@@ -373,15 +373,15 @@
 							<top>30</top>
 							<width>32</width>
 							<height>32</height>
-							<texture></texture>
+							<texture>common/white.png</texture>
 						</control>
 						<control type="progress">
 							<left>20</left>
 							<top>300</top>
 							<width>280</width>
 							<height>1</height>
-							<texture></texture>
-							<bordertexture></bordertexture>
+							<texture>common/white.png</texture>
+							<bordertexture>common/white.png</bordertexture>
 							<bordersize>20</bordersize>
 						</control>
 						<control type="image">
@@ -389,7 +389,7 @@
 							<top>108</top>
 							<width>130</width>
 							<height>130</height>
-							<texture></texture>
+							<texture>common/white.png</texture>
 						</control>
 						<control type="label">
 							<left>15</left>
@@ -431,8 +431,8 @@
 							<top>20</top>
 							<width>254</width>
 							<height>280</height>
-							<texture></texture>
-							<bordertexture></bordertexture>
+							<texture>common/white.png</texture>
+							<bordertexture>common/white.png</bordertexture>
 							<bordersize>20</bordersize>
 						</control>
 						<control type="image">
@@ -440,7 +440,7 @@
 							<top>20</top>
 							<width>254</width>
 							<height>280</height>
-							<texture></texture>
+							<texture>common/white.png</texture>
 							<bordersize>20</bordersize>
 							<include>Animation_FocusTextureFade</include>
 						</control>
@@ -449,7 +449,7 @@
 							<top>108</top>
 							<width>130</width>
 							<height>130</height>
-							<texture></texture>
+							<texture>common/white.png</texture>
 						</control>
 						<control type="label">
 							<left>15</left>
@@ -483,7 +483,7 @@
 	<include name="HourlyItems">
 		<content>
 			<item>
-				<icon></icon>
+				<icon></icon>
 				<onclick>noop</onclick>
 				<visible>String.IsEmpty(Window(weather).Property(Hourly.IsFetched))</visible>
 			</item>
@@ -564,7 +564,7 @@
 	<include name="DailyItems">
 		<content>
 			<item>
-				<icon></icon>
+				<icon></icon>
 				<onclick>noop</onclick>
 				<visible>!Weather.IsFetched</visible>
 			</item>
@@ -636,13 +636,13 @@
 	<include name="WeatherHourlyItem">
 		<item>
 			<label>$INFO[Window(weather).Property(Hourly.$PARAM[item_index].Time)]</label>
-			<label2>$INFO[Window(weather).Property(Hourly.$PARAM[item_index].Temperature)] ∙ $INFO[Window(weather).Property(Hourly.$PARAM[item_index].Precipitation)]</label2>
+			<label2>$INFO[Window(weather).Property(Hourly.$PARAM[item_index].Temperature)]  $INFO[Window(weather).Property(Hourly.$PARAM[item_index].Precipitation)]</label2>
 			<property name="Temperature">$INFO[Window(weather).Property(Hourly.$PARAM[item_index].Temperature)]</property>
 			<property name="Outlook">$INFO[Window(weather).Property(Hourly.$PARAM[item_id].Outlook)]</property>
 			<property name="Cloudiness">$INFO[Window(weather).Property(Hourly.$PARAM[item_index].Cloudiness)]</property>
 			<property name="ShortDate">$INFO[Window(weather).Property(Hourly.$PARAM[item_index].ShortDate)]</property>
 			<property name="FanartCode">$INFO[Window(weather).Property(Hourly.$PARAM[item_index].FanartCode)]</property>
-			<thumb></thumb>
+			<thumb></thumb>
 			<onclick>noop</onclick>
 			<visible>!String.IsEmpty(Window(weather).Property(Hourly.$PARAM[item_index].Outlook))</visible>
 		</item>
@@ -650,14 +650,14 @@
 	<include name="WeatherDailyItem">
 		<item>
 			<label>$INFO[Window(weather).Property(Daily.$PARAM[item_index].ShortDay)]</label>
-			<label2>[COLOR blue]$INFO[Window(weather).Property(Daily.$PARAM[item_index].LowTemperature)][/COLOR] ∙ [COLOR red]$INFO[Window(weather).Property(Daily.$PARAM[item_index].HighTemperature)][/COLOR]</label2>
+			<label2>[COLOR blue]$INFO[Window(weather).Property(Daily.$PARAM[item_index].LowTemperature)][/COLOR]  [COLOR red]$INFO[Window(weather).Property(Daily.$PARAM[item_index].HighTemperature)][/COLOR]</label2>
 			<property name="LongDay">$INFO[Window(weather).Property(Daily.$PARAM[item_index].LongDay)]</property>
 			<property name="TempDay">$INFO[Window(weather).Property(Daily.$PARAM[item_index].TempDay)]</property>
 			<property name="Cloudiness">$INFO[Window(weather).Property(Daily.$PARAM[item_index].Cloudiness)]</property>
 			<property name="Outlook">$INFO[Window(weather).Property(Daily.$PARAM[item_index].Outlook)]</property>
 			<property name="ShortDate">$INFO[Window(weather).Property(Daily.$PARAM[item_index].ShortDate)]</property>
 			<property name="FanartCode">$INFO[Window(weather).Property(Daily.$PARAM[item_index].FanartCode)]</property>
-			<thumb></thumb>
+			<thumb></thumb>
 			<onclick>noop</onclick>
 			<visible>!String.IsEmpty(Window(weather).Property(Daily.IsFetched)) + !String.IsEmpty(Window(weather).Property(Daily.$PARAM[item_index].Outlook))</visible>
 		</item>
@@ -665,14 +665,14 @@
 	<include name="WeatherDayItem">
 		<item>
 			<label>$INFO[Window(weather).Property(Day$PARAM[item_index].Title)]</label>
-			<label2>[COLOR blue]$INFO[Window(weather).Property(Day$PARAM[item_index].LowTemp)]$INFO[System.TemperatureUnits][/COLOR] ∙ [COLOR red]$INFO[Window(weather).Property(Day$PARAM[item_index].HighTemp)]$INFO[System.TemperatureUnits][/COLOR]</label2>
+			<label2>[COLOR blue]$INFO[Window(weather).Property(Day$PARAM[item_index].LowTemp)]$INFO[System.TemperatureUnits][/COLOR]  [COLOR red]$INFO[Window(weather).Property(Day$PARAM[item_index].HighTemp)]$INFO[System.TemperatureUnits][/COLOR]</label2>
 			<property name="LongDay"></property>
 			<property name="TempDay"></property>
 			<property name="Cloudiness"></property>
 			<property name="Outlook"></property>
 			<property name="ShortDate"></property>
 			<property name="FanartCode">$INFO[Window(weather).Property(Day$PARAM[item_index].FanartCode)]</property>
-			<thumb></thumb>
+			<thumb></thumb>
 			<onclick>noop</onclick>
 			<visible>String.IsEmpty(Window(weather).Property(Daily.IsFetched)) + !String.IsEmpty(Window(weather).Property(Day$PARAM[item_index].Outlook))</visible>
 		</item>
@@ -696,8 +696,8 @@
 				<top>100</top>
 				<width>1820</width>
 				<height>920</height>
-				<texture></texture>
-				<bordertexture></bordertexture>
+				<texture>common/white.png</texture>
+				<bordertexture>common/white.png</bordertexture>
 				<bordersize>20</bordersize>
 			</control>
 			<control type="image" id="700$PARAM[item_id]2">
@@ -705,7 +705,7 @@
 				<top>160</top>
 				<width>1680</width>
 				<height>800</height>
-				<texture></texture>
+				<texture>common/white.png</texture>
 				<aspectratio>scale</aspectratio>
 			</control>
 			<control type="image" id="700$PARAM[item_id]3">
@@ -713,7 +713,7 @@
 				<top>160</top>
 				<width>1680</width>
 				<height>800</height>
-				<texture></texture>
+				<texture>common/white.png</texture>
 				<aspectratio>scale</aspectratio>
 				<colordiffuse>B0FFFFFF</colordiffuse>
 			</control>
@@ -722,14 +722,14 @@
 				<top>858</top>
 				<width>340</width>
 				<height>100</height>
-				<texture></texture>
+				<texture>common/white.png</texture>
 			</control>
 			<control type="image" id="700$PARAM[item_id]5">
 				<left>1340</left>
 				<top>880</top>
 				<width>350</width>
 				<height>55</height>
-				<texture></texture>
+				<texture>common/white.png</texture>
 			</control>
 		</control>
 		<control type="label" id="700$PARAM[item_id]9">
@@ -770,14 +770,14 @@
 					<width>100</width>
 					<height>100</height>
 					<aspectratio aligny="center">keep</aspectratio>
-					<texture></texture>
+					<texture>common/white.png</texture>
 				</control>
 				<control type="image">
 					<top>$PARAM[posy]</top>
 					<width>100</width>
 					<height>100</height>
 					<aspectratio aligny="center">keep</aspectratio>
-					<texture></texture>
+					<texture>common/white.png</texture>
 					<animation type="Conditional" effect="rotate" center="auto" start="360" end="0" time="1500" loop="true" condition="true"/>
 				</control>
 			</control>

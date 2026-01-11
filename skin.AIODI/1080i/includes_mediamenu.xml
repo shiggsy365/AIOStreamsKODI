@@ -8,7 +8,7 @@
 		<radioposx>370</radioposx>
 		<aligny>center</aligny>
 		<invalidcolor>invalid</invalidcolor>
-		<texture></texture>
+		<texture>common/white.png</texture>
 			<visible>$EXP[sidebar_visible] + !System.HasActiveModalDialog</visible>
 			<animation type="VisibleChange" effect="fade" time="200"/>
 		</control>
@@ -17,7 +17,7 @@
 			<top>0</top>
 			<width>520</width>
 			<height>100%</height>
-			<texture></texture>
+			<texture>common/white.png</texture>
 		</control>
 		<control type="button" id="6131">
 			<left>0</left>

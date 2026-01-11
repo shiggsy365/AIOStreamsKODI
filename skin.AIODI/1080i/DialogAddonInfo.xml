@@ -19,27 +19,27 @@
 					<width>755</width>
 					<height>435</height>
 					<label></label>
-					<texture></texture>
+					<texture>common/white.png</texture>
 						<aspectratio>scale</aspectratio>
-						<bordertexture></bordertexture>
+						<bordertexture>common/white.png</bordertexture>
 						<bordersize>20</bordersize>
 					</control>
 					<control type="image">
 						<left>405</left>
 						<width>425</width>
 						<height>260</height>
-						<texture></texture>
+						<texture>common/white.png</texture>
 						<aspectratio>scale</aspectratio>
-						<bordertexture></bordertexture>
+						<bordertexture>common/white.png</bordertexture>
 						<bordersize>20</bordersize>
 					</control>
 					<control type="image">
 						<left>810</left>
 						<width>425</width>
 						<height>260</height>
-						<texture></texture>
+						<texture>common/white.png</texture>
 						<aspectratio>scale</aspectratio>
-						<bordertexture></bordertexture>
+						<bordertexture>common/white.png</bordertexture>
 						<bordersize>20</bordersize>
 					</control>
 				</control>
@@ -56,18 +56,18 @@
 							<left>-12</left>
 							<width>425</width>
 							<height>260</height>
-							<texture></texture>
+							<texture>common/white.png</texture>
 							<aspectratio>scale</aspectratio>
-							<bordertexture></bordertexture>
+							<bordertexture>common/white.png</bordertexture>
 							<bordersize>20</bordersize>
 						</control>
 						<control type="image">
 							<left>-12</left>
 							<width>425</width>
 							<height>260</height>
-							<texture></texture>
+							<texture>common/white.png</texture>
 							<aspectratio>scale</aspectratio>
-							<bordertexture></bordertexture>
+							<bordertexture>common/white.png</bordertexture>
 							<bordersize>20</bordersize>
 						</control>
 					</itemlayout>
@@ -76,18 +76,18 @@
 							<left>-12</left>
 							<width>425</width>
 							<height>260</height>
-							<texture></texture>
+							<texture>common/white.png</texture>
 							<aspectratio>scale</aspectratio>
-							<bordertexture></bordertexture>
+							<bordertexture>common/white.png</bordertexture>
 							<bordersize>20</bordersize>
 						</control>
 						<control type="image">
 							<left>-12</left>
 							<width>425</width>
 							<height>260</height>
-							<texture></texture>
+							<texture>common/white.png</texture>
 							<aspectratio>scale</aspectratio>
-							<bordertexture></bordertexture>
+							<bordertexture>common/white.png</bordertexture>
 							<bordersize>20</bordersize>
 						</control>
 						<control type="image">
@@ -95,7 +95,7 @@
 							<top>16</top>
 							<width>393</width>
 							<height>228</height>
-							<texture></texture>
+							<texture>common/white.png</texture>
 						</control>
 					</focusedlayout>
 				</control>
@@ -113,7 +113,7 @@
 						<width>450</width>
 						<height>396</height>
 						<aspectratio>scale</aspectratio>
-						<texture></texture>
+						<texture>common/white.png</texture>
 					</control>
 					<control type="group">
 						<left>1340</left>
@@ -146,7 +146,7 @@
 									<top>35</top>
 									<width>32</width>
 									<height>32</height>
-									<texture></texture>
+									<texture>common/white.png</texture>
 								</control>
 							</itemlayout>
 							<focusedlayout height="75">
@@ -173,7 +173,7 @@
 									<top>35</top>
 									<width>32</width>
 									<height>32</height>
-									<texture></texture>
+									<texture>common/white.png</texture>
 								</control>
 							</focusedlayout>
 							<content>
@@ -185,7 +185,7 @@
 								<item>
 									<label>$LOCALIZE[31150]:</label>
 									<label2>$INFO[ListItem.AddonOrigin]</label2>
-									<icon></icon>
+									<icon></icon>
 									<visible>!String.IsEmpty(ListItem.AddonOrigin)</visible>
 								</item>
 								<item>
@@ -283,8 +283,8 @@
 					<width>540</width>
 					<height>540</height>
 					<aspectratio>scale</aspectratio>
-					<texture></texture>
-					<bordertexture></bordertexture>
+					<texture>common/white.png</texture>
+					<bordertexture>common/white.png</bordertexture>
 					<bordersize>20</bordersize>
 				</control>
 				<control type="image">
@@ -294,7 +294,7 @@
 					<height>500</height>
 					<aspectratio aligny="top">scale</aspectratio>
 					<fadetime>300</fadetime>
-					<texture></texture>
+					<texture>common/white.png</texture>
 				</control>
 				<control type="group">
 					<visible>String.IsEqual(ListItem.AddonLifecycleType,$LOCALIZE[24170]) | String.IsEqual(ListItem.AddonLifecycleType,$LOCALIZE[24171])</visible>
@@ -303,7 +303,7 @@
 						<top>24</top>
 						<width>500</width>
 						<height>500</height>
-						<texture></texture>
+						<texture>common/white.png</texture>
 					</control>
 					<control type="textbox">
 						<left>25</left>

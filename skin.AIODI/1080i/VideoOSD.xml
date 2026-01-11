@@ -11,7 +11,7 @@
 			<top>0</top>
 			<width>100%</width>
 			<bottom>280</bottom>
-			<texture></texture>
+			<texture>common/white.png</texture>
 						</control>
 					</control>
 					<control type="radiobutton" id="603">
@@ -40,7 +40,7 @@
 						<textureradioonnofocus>osd/fullscreen/buttons/record-white.png</textureradioonnofocus>
 						<textureradioofffocus colordiffuse="white">osd/fullscreen/buttons/record.png</textureradioofffocus>
 						<textureradiooffnofocus >osd/fullscreen/buttons/record.png</textureradiooffnofocus>
-						<texturefocus></texturefocus>
+						<texturefocus>lists/focus.png</texturefocus>
 						<width>76</width>
 						<animation type="Focus" center="38,38" effect="zoom" end="100" reversible="false" start="95" time="480" tween="back"/>
 						<height>76</height>

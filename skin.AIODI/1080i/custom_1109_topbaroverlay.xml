@@ -17,7 +17,7 @@
 				<top>0</top>
 				<width>100%</width>
 				<height>55</height>
-				<texture></texture>
+				<texture>common/white.png</texture>
 			</control>
 			<control type="label">
 				<left>25</left>
@@ -64,7 +64,7 @@
 				<width>100%</width>
 				<height>16</height>
 				<info>Player.ProgressCache</info>
-				<texture></texture>
+				<texture>common/white.png</texture>
 			</control>
 			<control type="group">
 				<animation type="conditional" effect="slide" end="90,0" time="0" condition="Skin.HasSetting(touchmode)"/>
@@ -78,7 +78,7 @@
 					<orientation>horizontal</orientation>
 					<control type="image">
 						<width>300</width>
-						<texture></texture>
+						<texture>common/white.png</texture>
 						<aspectratio aligny="center" align="center">keep</aspectratio>
 					</control>
 					<control type="label">
@@ -156,7 +156,7 @@
 						<height>40</height>
 						<fadetime>300</fadetime>
 						<aspectratio aligny="center" align="right">keep</aspectratio>
-						<texture></texture>
+						<texture>common/white.png</texture>
 						<visible>Player.Muted</visible>
 					</control>
 				</control>

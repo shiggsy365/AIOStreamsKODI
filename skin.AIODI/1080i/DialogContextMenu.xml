@@ -15,14 +15,14 @@
 			<height>3240</height>
 			<animation type="WindowOpen" effect="fade" start="0" end="100" time="300"/>
 			<animation type="WindowClose" effect="fade" start="100" end="0" time="200"/>
-			<texture></texture>
+			<texture>common/white.png</texture>
 		</control>
 		<control type="button">
 			<left>-1920</left>
 			<top>-1080</top>
 			<width>5760</width>
 			<height>3240</height>
-			<texture></texture>
+			<texture>common/white.png</texture>
 			</control>
 			<control type="grouplist" id="996">
 				<description>grouplist for context buttons</description>
@@ -46,7 +46,7 @@
 			<width>450</width>
 			<height>65</height>
 			<align>center</align>
-			<texturefocus></texturefocus>
+			<texturefocus>lists/focus.png</texturefocus>
 			<texturenofocus />
 		</control>
 	</controls>

@@ -51,16 +51,16 @@
 				<width>260</width>
 				<height>380</height>
 				<aspectratio aligny="bottom">keep</aspectratio>
-				<bordertexture></bordertexture>
+				<bordertexture>common/white.png</bordertexture>
 				<bordersize>4</bordersize>
-				<texture></texture>
+				<texture>common/white.png</texture>
 			</control>
 			<control type="image">
 				<left>0</left>
 				<top>80</top>
 				<width>980</width>
 				<height>740</height>
-				<texture></texture>
+				<texture>common/white.png</texture>
 			</control>
 			<control type="panel" id="450">
 				<left>20</left>
@@ -79,7 +79,7 @@
 						<top>10</top>
 						<width>50</width>
 						<height>50</height>
-						<texture></texture>
+						<texture>common/white.png</texture>
 						<aspectratio>keep</aspectratio>
 					</control>
 					<control type="label">
@@ -98,14 +98,14 @@
 						<right>0</right>
 						<height>71</height>
 						<visible>Control.HasFocus(450)</visible>
-						<texture></texture>
+						<texture>common/white.png</texture>
 					</control>
 					<control type="image">
 						<left>10</left>
 						<top>10</top>
 						<width>50</width>
 						<height>50</height>
-						<texture></texture>
+						<texture>common/white.png</texture>
 						<aspectratio>keep</aspectratio>
 					</control>
 					<control type="label">
@@ -135,7 +135,7 @@
 						<top>10</top>
 						<width>50</width>
 						<height>50</height>
-						<texture></texture>
+						<texture>common/white.png</texture>
 						<aspectratio>keep</aspectratio>
 					</control>
 					<control type="label">
@@ -154,14 +154,14 @@
 						<right>0</right>
 						<height>71</height>
 						<visible>Control.HasFocus(451)</visible>
-						<texture></texture>
+						<texture>common/white.png</texture>
 					</control>
 					<control type="image">
 						<left>10</left>
 						<top>10</top>
 						<width>50</width>
 						<height>50</height>
-						<texture></texture>
+						<texture>common/white.png</texture>
 						<aspectratio>keep</aspectratio>
 					</control>
 					<control type="label">

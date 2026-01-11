@@ -31,9 +31,9 @@
 							<top>10</top>
 							<width>120</width>
 							<height>120</height>
-							<texture></texture>
+							<texture>common/white.png</texture>
 							<aspectratio>scale</aspectratio>
-							<bordertexture></bordertexture>
+							<bordertexture>common/white.png</bordertexture>
 							<bordersize>4</bordersize>
 						</control>
 						<control type="label">
@@ -70,7 +70,7 @@
 							<top>0</top>
 							<right>0</right>
 							<bottom>0</bottom>
-							<texture></texture>
+							<texture>common/white.png</texture>
 							<visible>Control.HasFocus(50)</visible>
 						</control>
 						<control type="image">
@@ -78,9 +78,9 @@
 							<top>10</top>
 							<width>120</width>
 							<height>120</height>
-							<texture></texture>
+							<texture>common/white.png</texture>
 							<aspectratio>scale</aspectratio>
-							<bordertexture></bordertexture>
+							<bordertexture>common/white.png</bordertexture>
 							<bordersize>4</bordersize>
 						</control>
 						<control type="label">
@@ -133,8 +133,8 @@
 						<height>110</height>
 						<aligny>top</aligny>
 						<textoffsetx>40</textoffsetx>
-						<texture></texture>
-					<bordertexture></bordertexture>
+						<texture>common/white.png</texture>
+					<bordertexture>common/white.png</bordertexture>
 					<bordersize>20</bordersize>
 				</control>
 			</control>

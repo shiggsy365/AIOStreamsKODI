@@ -32,7 +32,7 @@
 					<top>115</top>
 					<height>644</height>
 					<fadetime>300</fadetime>
-					<texture></texture>
+					<texture>common/white.png</texture>
 					<aspectratio align="center" aligny="bottom">scale</aspectratio>
 				</control>
 				<control type="group">

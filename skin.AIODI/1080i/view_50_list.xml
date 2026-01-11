@@ -61,7 +61,7 @@
 						<bottom>124</bottom>
 						<fadetime>200</fadetime>
 						<aspectratio aligny="bottom">keep</aspectratio>
-						<texture></texture>
+						<texture>common/white.png</texture>
 					</control>
 					<control type="group">
 						<left>291</left>
@@ -80,7 +80,7 @@
 						<height>470</height>
 						<aspectratio aligny="bottom">keep</aspectratio>
 						<fadetime>300</fadetime>
-						<texture></texture>
+						<texture>common/white.png</texture>
 					</control>
 					<control type="group">
 						<left>301</left>
@@ -143,7 +143,7 @@
 						<right>0</right>
 						<top>0</top>
 						<bottom>0</bottom>
-						<texture></texture>
+						<texture>common/white.png</texture>
 						<visible>Control.HasFocus($PARAM[list_id])</visible>
 					</control>
 					<control type="label">
@@ -174,7 +174,7 @@
 						<centertop>50%</centertop>
 						<width>32</width>
 						<height>32</height>
-						<texture></texture>
+						<texture>common/white.png</texture>
 						<animation type="Focus" effect="fade" start="30" end="100" time="300" reversible="false"/>
 					</control>
 					<control type="image">
@@ -182,7 +182,7 @@
 						<centertop>50%</centertop>
 						<width>32</width>
 						<height>32</height>
-						<texture></texture>
+						<texture>common/white.png</texture>
 						<animation type="Focus" effect="fade" start="0" end="100" time="300" reversible="false"/>
 						<animation type="VisibleChange" effect="fade" time="150"/>
 						<visible>!Control.HasFocus($PARAM[list_id])</visible>
@@ -216,7 +216,7 @@
 						<centertop>50%</centertop>
 						<width>32</width>
 						<height>32</height>
-						<texture></texture>
+						<texture>common/white.png</texture>
 					</control>
 				</itemlayout>
 			</control>
@@ -239,7 +239,7 @@
 					<height>470</height>
 					<aspectratio aligny="bottom">keep</aspectratio>
 					<fadetime>300</fadetime>
-					<texture></texture>
+					<texture>common/white.png</texture>
 					<visible>!String.IsEqual(ListItem.DbType,episode) + !String.IsEqual(ListItem.DBType,song)</visible>
 				</control>
 				<control type="image">
@@ -249,7 +249,7 @@
 					<height>330</height>
 					<aspectratio aligny="bottom">keep</aspectratio>
 					<fadetime>300</fadetime>
-					<texture></texture>
+					<texture>common/white.png</texture>
 					<visible>String.IsEqual(ListItem.DbType,episode)</visible>
 				</control>
 				<control type="image">
@@ -259,7 +259,7 @@
 					<height>470</height>
 					<aspectratio aligny="bottom">keep</aspectratio>
 					<fadetime>300</fadetime>
-					<texture></texture>
+					<texture>common/white.png</texture>
 					<visible>String.IsEqual(ListItem.DBType,song)</visible>
 				</control>
 				<control type="group">

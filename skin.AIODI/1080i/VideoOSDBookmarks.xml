@@ -10,7 +10,7 @@
 			<top>0</top>
 			<width>100%</width>
 			<bottom>546</bottom>
-			<texture></texture>
+			<texture>common/white.png</texture>
 			</control>
 			<control type="textbox">
 				<left>0</left>
@@ -68,8 +68,8 @@
 							<width>330</width>
 							<height>250</height>
 							<aspectratio>scale</aspectratio>
-							<texture></texture>
-							<bordertexture></bordertexture>
+							<texture>common/white.png</texture>
+							<bordertexture>common/white.png</bordertexture>
 							<bordersize>4</bordersize>
 						</control>
 						<control type="label">
@@ -93,8 +93,8 @@
 							<width>330</width>
 							<height>250</height>
 							<aspectratio>scale</aspectratio>
-							<texture></texture>
-							<bordertexture></bordertexture>
+							<texture>common/white.png</texture>
+							<bordertexture>common/white.png</bordertexture>
 							<bordersize>4</bordersize>
 						</control>
 						<control type="label">
@@ -112,7 +112,7 @@
 							<top>5</top>
 							<width>330</width>
 							<height>250</height>
-							<texture></texture>
+							<texture>common/white.png</texture>
 							<visible>Control.HasFocus(11)</visible>
 						</control>
 					</control>

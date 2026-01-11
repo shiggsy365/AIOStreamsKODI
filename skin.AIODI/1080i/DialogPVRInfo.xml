@@ -24,7 +24,7 @@
 				<width>461</width>
 				<height>461</height>
 				<aspectratio>keep</aspectratio>
-				<texture></texture>
+				<texture>common/white.png</texture>
 			</control>
 			<control type="group">
 				<top>230</top>

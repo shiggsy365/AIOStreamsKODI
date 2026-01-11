@@ -84,12 +84,12 @@
 					<visible>!VideoPlayer.Content(livetv)</visible>
 				</control>
 				<control type="radiobutton" id="602">
-					<texture></texture>
+					<texture>common/white.png</texture>
 					</control>
 				</control>
 				<control type="radiobutton" id="607">
-					<texture></texture>
-				<bordertexture></bordertexture>
+					<texture>common/white.png</texture>
+				<bordertexture>common/white.png</bordertexture>
 				<bordersize>4</bordersize>
 			</control>
 		</control>
