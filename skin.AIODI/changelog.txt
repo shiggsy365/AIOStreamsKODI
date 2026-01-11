@@ -1,3 +1,9 @@
+[B]4.0.7[/B]
+• RESTRUCTURED: Home screen now has fixed sidebar (non-collapsing).
+• ADDED: Home section with Trakt Next Up and Watchlist widgets.
+• ADDED: Movie and Series sections with AIOStreams Catalog widgets.
+• REMOVED: Unnecessary widgets from TV, Music, and other sections.
+
 [B]4.0.5[/B]
 • RESTORED: Sidebar visibility using stable width logic.
 • IMPROVED: Surgical label hiding for a cleaner icon-only collapse.
