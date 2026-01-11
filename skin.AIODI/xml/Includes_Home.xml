@@ -46,6 +46,8 @@
 				<onclick condition="$PARAM[onclick_condition]">$PARAM[onclick_action]</onclick>
 				<include content="WidgetListCommon">
 					<param name="list_id" value="$PARAM[list_id]"/>
+					<param name="onup_action" value="$PARAM[onup_action]"/>
+					<param name="ondown_action" value="$PARAM[ondown_action]"/>
 				</include>
 				<itemlayout width="310" height="486">
 					<control type="group">
@@ -172,6 +174,8 @@
 				<height>410</height>
 				<include content="WidgetListCommon">
 					<param name="list_id" value="$PARAM[list_id]"/>
+					<param name="onup_action" value="$PARAM[onup_action]"/>
+					<param name="ondown_action" value="$PARAM[ondown_action]"/>
 				</include>
 				<visible>$PARAM[visible]</visible>
 				<visible>Integer.IsGreater(Container($PARAM[list_id]).NumItems,0) | Container($PARAM[list_id]).IsUpdating</visible>
@@ -238,6 +242,8 @@
 				<onclick condition="$PARAM[onclick_condition]">$PARAM[onclick_action]</onclick>
 				<include content="WidgetListCommon">
 					<param name="list_id" value="$PARAM[list_id]"/>
+					<param name="onup_action" value="$PARAM[onup_action]"/>
+					<param name="ondown_action" value="$PARAM[ondown_action]"/>
 				</include>
 				<visible>$PARAM[visible]</visible>
 				<visible>Integer.IsGreater(Container($PARAM[list_id]).NumItems,0) | Container($PARAM[list_id]).IsUpdating</visible>
@@ -299,6 +305,8 @@
 				<height>290</height>
 				<include content="WidgetListCommon">
 					<param name="list_id" value="$PARAM[list_id]"/>
+					<param name="onup_action" value="$PARAM[onup_action]"/>
+					<param name="ondown_action" value="$PARAM[ondown_action]"/>
 				</include>
 				<visible>$PARAM[visible]</visible>
 				<visible>Integer.IsGreater(Container($PARAM[list_id]).NumItems,0) | Container($PARAM[list_id]).IsUpdating</visible>
@@ -434,6 +442,8 @@
 				<height>430</height>
 				<include content="WidgetListCommon">
 					<param name="list_id" value="$PARAM[list_id]"/>
+					<param name="onup_action" value="$PARAM[onup_action]"/>
+					<param name="ondown_action" value="$PARAM[ondown_action]"/>
 				</include>
 				<visible>Integer.IsGreater(Container($PARAM[list_id]).NumItems,$PARAM[item_treshold]) | [Container($PARAM[list_id]).IsUpdating + Integer.IsEqual(Container($PARAM[list_id]).NumItems,0)]</visible>
 				<itemlayout width="310" height="500" infoupdate="$PARAM[info_update]">
@@ -1020,6 +1030,8 @@
 		<orientation>horizontal</orientation>
 		<onleft>9000</onleft>
 		<onright>noop</onright>
+		<onup>$PARAM[onup_action]</onup>
+		<ondown>$PARAM[ondown_action]</ondown>
 		<onunfocus>SetProperty(listposition,$INFO[Container($PARAM[list_id]).Position],home)</onunfocus>
 		<onfocus>Control.Move($PARAM[list_id],-$INFO[Container($PARAM[list_id]).Position])</onfocus>
 		<onfocus>Control.Move($PARAM[list_id],$INFO[Window(home).Property(listposition)])</onfocus>

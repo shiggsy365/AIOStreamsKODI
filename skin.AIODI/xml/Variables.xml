@@ -919,6 +919,66 @@
 <value condition="!String.IsEmpty(Skin.String(SeriesRow4Index))">$INFO[Skin.String(SeriesRow4Index)]</value>
 <value>3</value>
 </variable>
+	<variable name="CurrentWidgetListID">
+		<!-- Home Page (3 widgets: 0-2) -->
+		<value condition="Skin.IsString(SideMenuFocus,home) + Skin.IsString(Home_WidgetIndex,0)">10100</value>
+		<value condition="Skin.IsString(SideMenuFocus,home) + Skin.IsString(Home_WidgetIndex,1)">10200</value>
+		<value condition="Skin.IsString(SideMenuFocus,home) + Skin.IsString(Home_WidgetIndex,2)">10300</value>
+		<!-- Movies Page (4 widgets: 0-3) -->
+		<value condition="Skin.IsString(SideMenuFocus,movies) + Skin.IsString(Movies_WidgetIndex,0)">5100</value>
+		<value condition="Skin.IsString(SideMenuFocus,movies) + Skin.IsString(Movies_WidgetIndex,1)">5200</value>
+		<value condition="Skin.IsString(SideMenuFocus,movies) + Skin.IsString(Movies_WidgetIndex,2)">5300</value>
+		<value condition="Skin.IsString(SideMenuFocus,movies) + Skin.IsString(Movies_WidgetIndex,3)">5400</value>
+		<!-- TV Shows Page (4 widgets: 0-3) -->
+		<value condition="Skin.IsString(SideMenuFocus,tvshows) + Skin.IsString(TV_WidgetIndex,0)">6100</value>
+		<value condition="Skin.IsString(SideMenuFocus,tvshows) + Skin.IsString(TV_WidgetIndex,1)">6200</value>
+		<value condition="Skin.IsString(SideMenuFocus,tvshows) + Skin.IsString(TV_WidgetIndex,2)">6300</value>
+		<value condition="Skin.IsString(SideMenuFocus,tvshows) + Skin.IsString(TV_WidgetIndex,3)">6400</value>
+	</variable>
+
+	<!-- Cycling Variables for Navigation Updates -->
+	<variable name="Home_Next_Index">
+		<value condition="Skin.IsString(Home_WidgetIndex,0)">1</value>
+		<value condition="Skin.IsString(Home_WidgetIndex,1)">2</value>
+		<value condition="Skin.IsString(Home_WidgetIndex,2)">0</value>
+		<value>0</value>
+	</variable>
+	<variable name="Home_Prev_Index">
+		<value condition="Skin.IsString(Home_WidgetIndex,0)">2</value>
+		<value condition="Skin.IsString(Home_WidgetIndex,1)">0</value>
+		<value condition="Skin.IsString(Home_WidgetIndex,2)">1</value>
+		<value>0</value>
+	</variable>
+
+	<variable name="Movies_Next_Index">
+		<value condition="Skin.IsString(Movies_WidgetIndex,0)">1</value>
+		<value condition="Skin.IsString(Movies_WidgetIndex,1)">2</value>
+		<value condition="Skin.IsString(Movies_WidgetIndex,2)">3</value>
+		<value condition="Skin.IsString(Movies_WidgetIndex,3)">0</value>
+		<value>0</value>
+	</variable>
+	<variable name="Movies_Prev_Index">
+		<value condition="Skin.IsString(Movies_WidgetIndex,0)">3</value>
+		<value condition="Skin.IsString(Movies_WidgetIndex,1)">0</value>
+		<value condition="Skin.IsString(Movies_WidgetIndex,2)">1</value>
+		<value condition="Skin.IsString(Movies_WidgetIndex,3)">2</value>
+		<value>0</value>
+	</variable>
+
+	<variable name="TV_Next_Index">
+		<value condition="Skin.IsString(TV_WidgetIndex,0)">1</value>
+		<value condition="Skin.IsString(TV_WidgetIndex,1)">2</value>
+		<value condition="Skin.IsString(TV_WidgetIndex,2)">3</value>
+		<value condition="Skin.IsString(TV_WidgetIndex,3)">0</value>
+		<value>0</value>
+	</variable>
+	<variable name="TV_Prev_Index">
+		<value condition="Skin.IsString(TV_WidgetIndex,0)">3</value>
+		<value condition="Skin.IsString(TV_WidgetIndex,1)">0</value>
+		<value condition="Skin.IsString(TV_WidgetIndex,2)">1</value>
+		<value condition="Skin.IsString(TV_WidgetIndex,3)">2</value>
+		<value>0</value>
+	</variable>
 </includes>
 
 <!-- Netflix UI Status Icons -->
