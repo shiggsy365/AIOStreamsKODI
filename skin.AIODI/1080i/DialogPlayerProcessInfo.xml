@@ -16,7 +16,7 @@
 				<top>-220</top>
 				<right>30</right>
 				<height>330</height>
-				<texture>common/white.png</texture>
+				<texture colordiffuse="main_bg_90">common/white.png</texture>
 			</control>
 			<control type="grouplist">
 				<left>50</left>

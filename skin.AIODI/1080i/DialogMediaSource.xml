@@ -31,7 +31,7 @@
 			<top>145</top>
 			<width>860</width>
 			<height>285</height>
-			<texture>common/white.png</texture>
+			<texture colordiffuse="main_bg_90">common/white.png</texture>
 		</control>
 		<control type="list" id="10">
 			<left>45</left>
@@ -61,7 +61,7 @@
 					<top>0</top>
 					<bottom>0</bottom>
 					<right>0</right>
-					<texture>common/white.png</texture>
+					<texture colordiffuse="main_bg_90">common/white.png</texture>
 					<animation type="UnFocus" effect="fade" start="100" end="50" time="0"/>
 				</control>
 				<control type="label">

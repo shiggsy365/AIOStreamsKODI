@@ -34,7 +34,7 @@
 					<top>55</top>
 					<width>440</width>
 					<height>855</height>
-					<texture>common/white.png</texture>
+					<texture colordiffuse="main_bg_90">common/white.png</texture>
 				</control>
 				<control type="list" id="13">
 					<left>20</left>
@@ -62,7 +62,7 @@
 							<height>60</height>
 							<right>5</right>
 							<top>5</top>
-							<texture>common/white.png</texture>
+							<texture colordiffuse="main_bg_90">common/white.png</texture>
 							<bordertexture>common/white.png</bordertexture>
 							<bordersize>2</bordersize>
 							<aspectratio>keep</aspectratio>
@@ -74,7 +74,7 @@
 							<top>0</top>
 							<right>0</right>
 							<bottom>0</bottom>
-							<texture>common/white.png</texture>
+							<texture colordiffuse="main_bg_90">common/white.png</texture>
 							<visible>Control.HasFocus(13)</visible>
 						</control>
 						<control type="label">
@@ -102,7 +102,7 @@
 							<height>60</height>
 							<right>5</right>
 							<top>5</top>
-							<texture>common/white.png</texture>
+							<texture colordiffuse="main_bg_90">common/white.png</texture>
 							<bordertexture>common/white.png</bordertexture>
 							<bordersize>2</bordersize>
 							<aspectratio>keep</aspectratio>
@@ -216,7 +216,7 @@
 				<bottom>50</bottom>
 				<width>370</width>
 				<height>200</height>
-				<texture>common/white.png</texture>
+				<texture colordiffuse="main_bg_90">common/white.png</texture>
 				<bordertexture>common/white.png</bordertexture>
 				<bordersize>2</bordersize>
 				<aspectratio>keep</aspectratio>

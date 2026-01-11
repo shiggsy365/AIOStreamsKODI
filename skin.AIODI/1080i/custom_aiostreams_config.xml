@@ -37,7 +37,7 @@
                 <top>0</top>
                 <width>1440</width>
                 <height>840</height>
-                <texture>common/white.png</texture>
+                <texture colordiffuse="main_bg_90">common/white.png</texture>
                 <aspectratio>stretch</aspectratio>
             </control>
 
@@ -170,7 +170,7 @@
                         <top>0</top>
                         <width>600</width>
                         <height>60</height>
-                        <texture>common/white.png</texture>
+                        <texture colordiffuse="main_bg_90">common/white.png</texture>
                     </control>
                     <control type="label">
                         <left>20</left>
@@ -271,7 +271,7 @@
                         <top>0</top>
                         <width>660</width>
                         <height>60</height>
-                        <texture>common/white.png</texture>
+                        <texture colordiffuse="main_bg_90">common/white.png</texture>
                     </control>
                     <control type="label">
                         <left>20</left>

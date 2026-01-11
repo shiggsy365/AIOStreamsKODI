@@ -7,7 +7,7 @@
 				<top>-10</top>
 				<width>376</width>
 				<height>380</height>
-				<texture>common/white.png</texture>
+				<texture colordiffuse="main_bg_90">common/white.png</texture>
 				<bordertexture>common/white.png</bordertexture>
 				<bordersize>20</bordersize>
 			</control>
@@ -16,7 +16,7 @@
 				<left>-4</left>
 				<width>384</width>
 				<height>388</height>
-				<texture>common/white.png</texture>
+				<texture colordiffuse="main_bg_90">common/white.png</texture>
 				<bordertexture>common/white.png</bordertexture>
 				<bordersize>20</bordersize>
 				<visible>$PARAM[focused]</visible>
@@ -27,7 +27,7 @@
 				<top>10</top>
 				<width>336</width>
 				<height>300</height>
-				<texture>common/white.png</texture>
+				<texture colordiffuse="main_bg_90">common/white.png</texture>
 				<aspectratio>keep</aspectratio>
 			</control>
 			<control type="label">
@@ -54,7 +54,7 @@
 				<top>0</top>
 				<width>316</width>
 				<height>386</height>
-				<texture>common/white.png</texture>
+				<texture colordiffuse="main_bg_90">common/white.png</texture>
 				<bordertexture>common/white.png</bordertexture>
 				<bordersize>20</bordersize>
 			</control>
@@ -63,7 +63,7 @@
 				<left>-4</left>
 				<width>324</width>
 				<height>394</height>
-				<texture>common/white.png</texture>
+				<texture colordiffuse="main_bg_90">common/white.png</texture>
 				<bordertexture>common/white.png</bordertexture>
 				<bordersize>20</bordersize>
 				<visible>$PARAM[focused]</visible>
@@ -74,7 +74,7 @@
 				<top>0</top>
 				<width>316</width>
 				<height>316</height>
-				<texture>common/white.png</texture>
+				<texture colordiffuse="main_bg_90">common/white.png</texture>
 				<aspectratio>keep</aspectratio>
 				<bordersize>20</bordersize>
 			</control>
@@ -130,7 +130,7 @@
 				<top>10</top>
 				<width>316</width>
 				<height>288</height>
-				<texture>common/white.png</texture>
+				<texture colordiffuse="main_bg_90">common/white.png</texture>
 				<bordertexture>common/white.png</bordertexture>
 				<bordersize>20</bordersize>
 			</control>
@@ -139,7 +139,7 @@
 				<left>-4</left>
 				<width>324</width>
 				<height>296</height>
-				<texture>common/white.png</texture>
+				<texture colordiffuse="main_bg_90">common/white.png</texture>
 				<bordertexture>common/white.png</bordertexture>
 				<bordersize>20</bordersize>
 				<visible>$PARAM[focused]</visible>
@@ -150,7 +150,7 @@
 				<top>10</top>
 				<width>316</width>
 				<height>218</height>
-				<texture>common/white.png</texture>
+				<texture colordiffuse="main_bg_90">common/white.png</texture>
 				<aspectratio>scale</aspectratio>
 				<bordersize>20</bordersize>
 			</control>
@@ -159,7 +159,7 @@
 				<top>138</top>
 				<width>276</width>
 				<height>70</height>
-				<texture>common/white.png</texture>
+				<texture colordiffuse="main_bg_90">common/white.png</texture>
 				<visible>!ListItem.IsParentFolder</visible>
 			</control>
 			<control type="label">
@@ -177,7 +177,7 @@
 				<width>32</width>
 				<height>32</height>
 				<align>right</align>
-				<texture>common/white.png</texture>
+				<texture colordiffuse="main_bg_90">common/white.png</texture>
 			</control>
 			<control type="textbox">
 				<left>28</left>
@@ -218,7 +218,7 @@
 				<top>258</top>
 				<width>276</width>
 				<height>1</height>
-				<texture>common/white.png</texture>
+				<texture colordiffuse="main_bg_90">common/white.png</texture>
 					<bordertexture>common/white.png</bordertexture>
 					<bordersize>20</bordersize>
 				</control>
@@ -227,7 +227,7 @@
 					<top>-10</top>
 					<width>290</width>
 					<height>415</height>
-					<texture>common/white.png</texture>
+					<texture colordiffuse="main_bg_90">common/white.png</texture>
 					<bordersize>20</bordersize>
 					<visible>$PARAM[focused]</visible>
 					<include condition="$PARAM[focused]">Animation_FocusTextureFade</include>
@@ -249,7 +249,7 @@
 					<top>-1</top>
 					<width>272</width>
 					<height>270</height>
-					<texture>common/white.png</texture>
+					<texture colordiffuse="main_bg_90">common/white.png</texture>
 					<aspectratio>scale</aspectratio>
 					<bordersize>20</bordersize>
 				</control>
@@ -261,7 +261,7 @@
 					<top>-14</top>
 					<width>298</width>
 					<height>423</height>
-					<texture>common/white.png</texture>
+					<texture colordiffuse="main_bg_90">common/white.png</texture>
 					<bordertexture>common/white.png</bordertexture>
 					<bordersize>20</bordersize>
 					<visible>$PARAM[focused]</visible>
@@ -272,7 +272,7 @@
 					<top>-10</top>
 					<width>290</width>
 					<height>415</height>
-					<texture>common/white.png</texture>
+					<texture colordiffuse="main_bg_90">common/white.png</texture>
 					<aspectratio>scale</aspectratio>
 					<bordertexture>common/white.png</bordertexture>
 					<bordersize>20</bordersize>
@@ -285,7 +285,7 @@
 					<top>335</top>
 					<width>250</width>
 					<height>50</height>
-					<texture>common/white.png</texture>
+					<texture colordiffuse="main_bg_90">common/white.png</texture>
 					<visible>!String.IsEmpty(ListItem.Art(poster))</visible>
 				</control>
 				<control type="image">
@@ -295,7 +295,7 @@
 					<height>24</height>
 					<align>left</align>
 					<aligny>center</aligny>
-					<texture>common/white.png</texture>
+					<texture colordiffuse="main_bg_90">common/white.png</texture>
 				</control>
 				<control type="image">
 					<left>70</left>
@@ -304,7 +304,7 @@
 					<height>24</height>
 					<align>left</align>
 					<aligny>center</aligny>
-					<texture>common/white.png</texture>
+					<texture colordiffuse="main_bg_90">common/white.png</texture>
 					<visible>ListItem.HasVideoVersions + ListItem.HasVideoExtras</visible>
 				</control>
 				<control type="label">
@@ -322,7 +322,7 @@
 					<top>358</top>
 					<width>24</width>
 					<height>24</height>
-					<texture>common/white.png</texture>
+					<texture colordiffuse="main_bg_90">common/white.png</texture>
 				</control>
 			</control>
 			<control type="group">

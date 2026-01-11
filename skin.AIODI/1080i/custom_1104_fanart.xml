@@ -8,12 +8,12 @@
 		<control type="image">
 			<include>FullScreenDimensions</include>
 			<aspectratio>scale</aspectratio>
-			<texture>common/white.png</texture>
+			<texture background="true">$INFO[ListItem.Art(poster)]</texture>
 		</control>
 		<control type="image">
 			<include>FullScreenDimensions</include>
 			<aspectratio>keep</aspectratio>
-			<texture>common/white.png</texture>
+			<texture>$INFO[ListItem.Icon]</texture>
 		</control>
 		<control type="button" id="3000">
 			<include>HiddenObject</include>

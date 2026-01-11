@@ -18,7 +18,7 @@
 					<width>620</width>
 					<height>620</height>
 					<aspectratio>scale</aspectratio>
-					<texture>common/white.png</texture>
+					<texture background="true">$INFO[ListItem.Art(poster)]</texture>
 					<bordertexture>common/white.png</bordertexture>
 					<bordersize>20</bordersize>
 				</control>
@@ -30,7 +30,7 @@
 					<height>570</height>
 					<aspectratio aligny="top">scale</aspectratio>
 					<fadetime>300</fadetime>
-					<texture>common/white.png</texture>
+					<texture colordiffuse="main_bg_90">common/white.png</texture>
 				</control>
 			</control>
 			<control type="group">
@@ -57,7 +57,7 @@
 						<width>660</width>
 						<height>370</height>
 						<aspectratio aligny="top">scale</aspectratio>
-						<texture>common/white.png</texture>
+						<texture colordiffuse="main_bg_90">common/white.png</texture>
 						<visible>String.IsEmpty(Control.GetLabel(400))</visible>
 					</control>
 					<control type="group">
@@ -68,7 +68,7 @@
 							<width>680</width>
 							<height>390</height>
 							<aspectratio>scale</aspectratio>
-							<texture>common/white.png</texture>
+							<texture background="true">$INFO[ListItem.Art(poster)]</texture>
 						</control>
 						<control type="textbox">
 							<left>16</left>
@@ -94,7 +94,7 @@
 						<width>720</width>
 						<height>430</height>
 						<label></label>
-						<texture>common/white.png</texture>
+						<texture colordiffuse="main_bg_90">common/white.png</texture>
 						</control>
 						<control type="group">
 							<visible>String.IsEmpty(ListItem.Art(fanart))</visible>
@@ -104,7 +104,7 @@
 								<width>670</width>
 								<height>380</height>
 								<aspectratio>scale</aspectratio>
-								<texture>common/white.png</texture>
+								<texture background="true">$INFO[ListItem.Art(poster)]</texture>
 							</control>
 							<control type="textbox">
 								<left>-14</left>
@@ -127,7 +127,7 @@
 							<width>1154</width>
 							<height>277</height>
 							<aspectratio aligny="top">scale</aspectratio>
-							<texture>common/white.png</texture>
+							<texture colordiffuse="main_bg_90">common/white.png</texture>
 						</control>
 						<control type="group">
 							<visible>String.IsEmpty(ListItem.Art(fanart))</visible>
@@ -137,7 +137,7 @@
 								<width>670</width>
 								<height>380</height>
 								<aspectratio>scale</aspectratio>
-								<texture>common/white.png</texture>
+								<texture background="true">$INFO[ListItem.Art(poster)]</texture>
 							</control>
 							<control type="textbox">
 								<left>-14</left>
@@ -180,7 +180,7 @@
 							<top>-10</top>
 							<width>595</width>
 							<height>100</height>
-							<texture>common/white.png</texture>
+							<texture colordiffuse="main_bg_90">common/white.png</texture>
 						</control>
 						<control type="label">
 							<left>40</left>
@@ -197,7 +197,7 @@
 							<top>-10</top>
 							<width>595</width>
 							<height>100</height>
-							<texture>common/white.png</texture>
+							<texture colordiffuse="main_bg_90">common/white.png</texture>
 						</control>
 						<control type="label">
 							<left>40</left>
@@ -214,7 +214,7 @@
 							<top>-10</top>
 							<width>595</width>
 							<height>100</height>
-							<texture>common/white.png</texture>
+							<texture colordiffuse="main_bg_90">common/white.png</texture>
 						</control>
 						<control type="label">
 							<left>40</left>
@@ -237,7 +237,7 @@
 								<top>-10</top>
 								<width>595</width>
 								<height>100</height>
-								<texture>common/white.png</texture>
+								<texture colordiffuse="main_bg_90">common/white.png</texture>
 							</control>
 							<control type="label">
 								<left>40</left>
@@ -260,14 +260,14 @@
 							<top>-10</top>
 							<width>250</width>
 							<height>312</height>
-							<texture>common/white.png</texture>
+							<texture colordiffuse="main_bg_90">common/white.png</texture>
 						</control>
 						<control type="image">
 							<left>30</left>
 							<top>21</top>
 							<width>190</width>
 							<height>190</height>
-							<texture>common/white.png</texture>
+							<texture colordiffuse="main_bg_90">common/white.png</texture>
 							<aspectratio>keep</aspectratio>
 							<bordertexture>common/white.png</bordertexture>
 							<bordersize>4</bordersize>
@@ -296,14 +296,14 @@
 								<top>-10</top>
 								<width>250</width>
 								<height>312</height>
-								<texture>common/white.png</texture>
+								<texture colordiffuse="main_bg_90">common/white.png</texture>
 							</control>
 							<control type="image">
 								<left>30</left>
 								<top>21</top>
 								<width>190</width>
 								<height>190</height>
-								<texture>common/white.png</texture>
+								<texture colordiffuse="main_bg_90">common/white.png</texture>
 								<aspectratio>keep</aspectratio>
 								<bordertexture>common/white.png</bordertexture>
 								<bordersize>4</bordersize>
@@ -329,7 +329,7 @@
 								<top>6</top>
 								<width>218</width>
 								<height>280</height>
-								<texture>common/white.png</texture>
+								<texture colordiffuse="main_bg_90">common/white.png</texture>
 								<animation type="Unfocus" effect="fade" start="100" end="0" time="200"/>
 							</control>
 						</control>
@@ -370,7 +370,7 @@
 							<align>center</align>
 						</control>
 						<control type="image">
-							<texture>common/white.png</texture>
+							<texture colordiffuse="main_bg_90">common/white.png</texture>
 							<left>108</left>
 							<top>30</top>
 							<width>48</width>
@@ -424,7 +424,7 @@
 						<width>450</width>
 						<height>390</height>
 						<aspectratio>scale</aspectratio>
-						<texture>common/white.png</texture>
+						<texture background="true">$INFO[ListItem.Art(poster)]</texture>
 					</control>
 					<control type="group">
 						<left>1275</left>
@@ -456,7 +456,7 @@
 									<top>1</top>
 									<width>446</width>
 									<height>33</height>
-									<texture>common/white.png</texture>
+									<texture colordiffuse="main_bg_90">common/white.png</texture>
 									<visible>Control.HasFocus(41)</visible>
 								</control>
 								<control type="label">

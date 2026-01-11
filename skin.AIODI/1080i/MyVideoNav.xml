@@ -119,7 +119,7 @@
                     <width>90</width>
                     <height>120</height>
                     <aspectratio>scale</aspectratio>
-                    <texture>common/white.png</texture>
+                    <texture background="true">$INFO[ListItem.Art(poster)]</texture>
                 </control>
                 <control type="label">
                     <left>120</left>
@@ -148,7 +148,7 @@
                     <top>0</top>
                     <width>1800</width>
                     <height>140</height>
-                    <texture>common/white.png</texture>
+                    <texture colordiffuse="ThemeColor">lists/focus.png</texture>
                 </control>
                 <control type="image">
                     <left>10</left>
@@ -156,7 +156,7 @@
                     <width>90</width>
                     <height>120</height>
                     <aspectratio>scale</aspectratio>
-                    <texture>common/white.png</texture>
+                    <texture background="true">$INFO[ListItem.Art(poster)]</texture>
                     <bordertexture>common/white.png</bordertexture>
                     <bordersize>2</bordersize>
                 </control>

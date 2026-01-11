@@ -19,7 +19,7 @@
 					<width>755</width>
 					<height>435</height>
 					<label></label>
-					<texture>common/white.png</texture>
+					<texture colordiffuse="main_bg_90">common/white.png</texture>
 						<aspectratio>scale</aspectratio>
 						<bordertexture>common/white.png</bordertexture>
 						<bordersize>20</bordersize>
@@ -28,7 +28,7 @@
 						<left>405</left>
 						<width>425</width>
 						<height>260</height>
-						<texture>common/white.png</texture>
+						<texture colordiffuse="main_bg_90">common/white.png</texture>
 						<aspectratio>scale</aspectratio>
 						<bordertexture>common/white.png</bordertexture>
 						<bordersize>20</bordersize>
@@ -37,7 +37,7 @@
 						<left>810</left>
 						<width>425</width>
 						<height>260</height>
-						<texture>common/white.png</texture>
+						<texture colordiffuse="main_bg_90">common/white.png</texture>
 						<aspectratio>scale</aspectratio>
 						<bordertexture>common/white.png</bordertexture>
 						<bordersize>20</bordersize>
@@ -56,7 +56,7 @@
 							<left>-12</left>
 							<width>425</width>
 							<height>260</height>
-							<texture>common/white.png</texture>
+							<texture colordiffuse="main_bg_90">common/white.png</texture>
 							<aspectratio>scale</aspectratio>
 							<bordertexture>common/white.png</bordertexture>
 							<bordersize>20</bordersize>
@@ -65,7 +65,7 @@
 							<left>-12</left>
 							<width>425</width>
 							<height>260</height>
-							<texture>common/white.png</texture>
+							<texture colordiffuse="main_bg_90">common/white.png</texture>
 							<aspectratio>scale</aspectratio>
 							<bordertexture>common/white.png</bordertexture>
 							<bordersize>20</bordersize>
@@ -76,7 +76,7 @@
 							<left>-12</left>
 							<width>425</width>
 							<height>260</height>
-							<texture>common/white.png</texture>
+							<texture colordiffuse="main_bg_90">common/white.png</texture>
 							<aspectratio>scale</aspectratio>
 							<bordertexture>common/white.png</bordertexture>
 							<bordersize>20</bordersize>
@@ -85,7 +85,7 @@
 							<left>-12</left>
 							<width>425</width>
 							<height>260</height>
-							<texture>common/white.png</texture>
+							<texture colordiffuse="main_bg_90">common/white.png</texture>
 							<aspectratio>scale</aspectratio>
 							<bordertexture>common/white.png</bordertexture>
 							<bordersize>20</bordersize>
@@ -95,7 +95,7 @@
 							<top>16</top>
 							<width>393</width>
 							<height>228</height>
-							<texture>common/white.png</texture>
+							<texture colordiffuse="main_bg_90">common/white.png</texture>
 						</control>
 					</focusedlayout>
 				</control>
@@ -113,7 +113,7 @@
 						<width>450</width>
 						<height>396</height>
 						<aspectratio>scale</aspectratio>
-						<texture>common/white.png</texture>
+						<texture background="true">$INFO[ListItem.Art(poster)]</texture>
 					</control>
 					<control type="group">
 						<left>1340</left>
@@ -146,7 +146,7 @@
 									<top>35</top>
 									<width>32</width>
 									<height>32</height>
-									<texture>common/white.png</texture>
+									<texture colordiffuse="main_bg_90">common/white.png</texture>
 								</control>
 							</itemlayout>
 							<focusedlayout height="75">
@@ -173,7 +173,7 @@
 									<top>35</top>
 									<width>32</width>
 									<height>32</height>
-									<texture>common/white.png</texture>
+									<texture colordiffuse="main_bg_90">common/white.png</texture>
 								</control>
 							</focusedlayout>
 							<content>
@@ -283,7 +283,7 @@
 					<width>540</width>
 					<height>540</height>
 					<aspectratio>scale</aspectratio>
-					<texture>common/white.png</texture>
+					<texture background="true">$INFO[ListItem.Art(poster)]</texture>
 					<bordertexture>common/white.png</bordertexture>
 					<bordersize>20</bordersize>
 				</control>
@@ -294,7 +294,7 @@
 					<height>500</height>
 					<aspectratio aligny="top">scale</aspectratio>
 					<fadetime>300</fadetime>
-					<texture>common/white.png</texture>
+					<texture colordiffuse="main_bg_90">common/white.png</texture>
 				</control>
 				<control type="group">
 					<visible>String.IsEqual(ListItem.AddonLifecycleType,$LOCALIZE[24170]) | String.IsEqual(ListItem.AddonLifecycleType,$LOCALIZE[24171])</visible>
@@ -303,7 +303,7 @@
 						<top>24</top>
 						<width>500</width>
 						<height>500</height>
-						<texture>common/white.png</texture>
+						<texture colordiffuse="main_bg_90">common/white.png</texture>
 					</control>
 					<control type="textbox">
 						<left>25</left>

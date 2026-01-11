@@ -61,7 +61,7 @@
 							<top>9</top>
 							<width>40</width>
 							<height>40</height>
-							<texture>common/white.png</texture>
+							<texture colordiffuse="main_bg_90">common/white.png</texture>
 						</control>
 						<control type="label">
 							<left>105</left>
@@ -102,7 +102,7 @@
 							<top>0</top>
 							<right>0</right>
 							<height>70</height>
-							<texture>common/white.png</texture>
+							<texture colordiffuse="main_bg_90">common/white.png</texture>
 							<visible>Control.HasFocus(51)</visible>
 						</control>
 						<control type="progress">
@@ -120,7 +120,7 @@
 							<top>9</top>
 							<width>40</width>
 							<height>40</height>
-							<texture>common/white.png</texture>
+							<texture colordiffuse="main_bg_90">common/white.png</texture>
 						</control>
 						<control type="label">
 							<left>105</left>

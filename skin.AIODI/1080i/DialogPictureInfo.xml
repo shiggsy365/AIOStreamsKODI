@@ -19,7 +19,7 @@
 					<left>70</left>
 					<width>1280</width>
 					<height>820</height>
-					<texture>common/white.png</texture>
+					<texture colordiffuse="main_bg_90">common/white.png</texture>
 				</control>
 				<control type="image">
 					<left>120</left>
@@ -29,7 +29,7 @@
 					<aspectratio aligny="center">keep</aspectratio>
 					<bordertexture>common/white.png</bordertexture>
 					<bordersize>4</bordersize>
-					<texture>common/white.png</texture>
+					<texture colordiffuse="main_bg_90">common/white.png</texture>
 				</control>
 			</control>
 			<control type="group">
@@ -40,7 +40,7 @@
 					<right>70</right>
 					<width>510</width>
 					<height>820</height>
-					<texture>common/white.png</texture>
+					<texture colordiffuse="main_bg_90">common/white.png</texture>
 				</control>
 				<include content="UpDownArrows">
 					<param name="container_id" value="5"/>

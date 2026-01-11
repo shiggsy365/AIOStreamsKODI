@@ -34,7 +34,7 @@
 					<bottom>-20</bottom>
 					<left>-20</left>
 					<right>0</right>
-					<texture>common/white.png</texture>
+					<texture colordiffuse="main_bg_90">common/white.png</texture>
 				</control>
 				<control type="grouplist" id="3">
 					<description>Controller profiles grouplist</description>
@@ -59,7 +59,7 @@
 					<align>center</align>
 					<aligny>center</aligny>
 					<font>font25_title</font>
-					<texture>common/white.png</texture>
+					<texture colordiffuse="main_bg_90">common/white.png</texture>
 				</control>
 				<control type="grouplist" id="5">
 					<description>Features grouplist</description>
@@ -86,7 +86,7 @@
 					<align>center</align>
 					<aligny>center</aligny>
 					<font>font27</font>
-					<texture>common/white.png</texture>
+					<texture colordiffuse="main_bg_90">common/white.png</texture>
 				</control>
 			</control>
 			<control type="grouplist" id="9001">
@@ -139,7 +139,7 @@
 					<bottom>-20</bottom>
 					<left>-20</left>
 					<right>-20</right>
-					<texture>common/white.png</texture>
+					<texture colordiffuse="main_bg_90">common/white.png</texture>
 				</control>
 				<control type="textbox" id="32">
 					<top>5</top>
@@ -180,7 +180,7 @@
 						<bottom>-20</bottom>
 						<left>-20</left>
 						<right>-20</right>
-						<texture>common/white.png</texture>
+						<texture colordiffuse="main_bg_90">common/white.png</texture>
 					</control>
 					<control type="list" id="3">
 						<description>Port item list</description>
@@ -211,7 +211,7 @@
 								<control type="gamecontroller">
 									<right>12</right>
 									<width>100</width>
-									<texture>common/white.png</texture>
+									<texture colordiffuse="main_bg_90">common/white.png</texture>
 									<portaddress>$INFO[ListItem.FilenameAndPath]</portaddress>
 									<controllerdiffuse>button_focus</controllerdiffuse>
 								</control>
@@ -224,7 +224,7 @@
 									<bottom>-20</bottom>
 									<left>-20</left>
 									<right>-20</right>
-									<texture>common/white.png</texture>
+									<texture colordiffuse="main_bg_90">common/white.png</texture>
 									<visible>Control.HasFocus(3)</visible>
 								</control>
 								<control type="label">
@@ -246,7 +246,7 @@
 								<control type="gamecontroller">
 									<right>12</right>
 									<width>100</width>
-									<texture>common/white.png</texture>
+									<texture colordiffuse="main_bg_90">common/white.png</texture>
 									<portaddress>$INFO[ListItem.FilenameAndPath]</portaddress>
 									<controllerdiffuse>button_focus</controllerdiffuse>
 								</control>
@@ -312,7 +312,7 @@
 						<textoffsetx>36</textoffsetx>
 						<align>left</align>
 						<aligny>center</aligny>
-						<texture>common/white.png</texture>
+						<texture colordiffuse="main_bg_90">common/white.png</texture>
 								<controllerid>$INFO[ListItem.Property(game.controllerid)]</controllerid>
 								<controlleraddress>$INFO[ListItem.FilenameAndPath]</controlleraddress>
 								<controllerdiffuse>button_focus</controllerdiffuse>
@@ -320,7 +320,7 @@
 						</itemlayout>
 						<focusedlayout width="96" height="96">
 							<control type="gamecontroller">
-								<texture>common/white.png</texture>
+								<texture colordiffuse="main_bg_90">common/white.png</texture>
 								<controllerid>$INFO[ListItem.Property(game.controllerid)]</controllerid>
 								<controlleraddress>$INFO[ListItem.FilenameAndPath]</controlleraddress>
 								<controllerdiffuse>button_focus</controllerdiffuse>
@@ -382,7 +382,7 @@
 						<bottom>-20</bottom>
 						<left>-20</left>
 						<right>-20</right>
-						<texture>common/white.png</texture>
+						<texture colordiffuse="main_bg_90">common/white.png</texture>
 					</control>
 					<control type="list" id="7">
 						<description>Controller list</description>
@@ -400,7 +400,7 @@
 								<bottom>-20</bottom>
 								<left>-20</left>
 								<right>-20</right>
-								<texture>common/white.png</texture>
+								<texture colordiffuse="main_bg_90">common/white.png</texture>
 								<visible>Control.HasFocus(7)</visible>
 							</control>
 							<include>AgentControllerList</include>
@@ -493,7 +493,7 @@
 			<enable>false</enable>
 			<itemlayout width="96" height="96">
 				<control type="gamecontroller">
-					<texture>common/white.png</texture>
+					<texture colordiffuse="main_bg_90">common/white.png</texture>
 					<controllerid>$INFO[ListItem.Property(game.controllerid)]</controllerid>
 					<peripherallocation>$INFO[ListItem.FilenameAndPath]</peripherallocation>
 					<controllerdiffuse>button_focus</controllerdiffuse>
@@ -501,7 +501,7 @@
 			</itemlayout>
 			<focusedlayout width="96" height="96">
 				<control type="gamecontroller">
-					<texture>common/white.png</texture>
+					<texture colordiffuse="main_bg_90">common/white.png</texture>
 					<controllerid>$INFO[ListItem.Property(game.controllerid)]</controllerid>
 					<peripherallocation>$INFO[ListItem.FilenameAndPath]</peripherallocation>
 					<controllerdiffuse>button_focus</controllerdiffuse>

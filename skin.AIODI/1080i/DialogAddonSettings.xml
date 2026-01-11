@@ -36,7 +36,7 @@
 				<align>center</align>
 				<aligny>center</aligny>
 				<font>font25_title</font>
-				<texture>common/white.png</texture>
+				<texture colordiffuse="main_bg_90">common/white.png</texture>
 			</control>
 			<control type="grouplist" id="5">
 				<description>control area</description>
@@ -77,7 +77,7 @@
 			<control type="image" id="11">
 				<description>separator image</description>
 				<height>3</height>
-				<texture>common/white.png</texture>
+				<texture colordiffuse="main_bg_90">common/white.png</texture>
 			</control>
 			<control type="edit" id="12">
 				<include>DefaultSettingButton</include>

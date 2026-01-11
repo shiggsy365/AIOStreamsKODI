@@ -21,7 +21,7 @@
 				<animation type="WindowOpen" effect="fade" start="0" end="100" time="300"/>
 				<animation type="WindowClose" effect="fade" start="100" end="0" time="300"/>
 				<animation type="VisibleChange" effect="fade" time="200"/>
-				<texture>common/white.png</texture>
+				<texture colordiffuse="main_bg_90">common/white.png</texture>
 				<visible>Control.IsVisible(51)</visible>
 			</control>
 			<control type="group">
@@ -123,7 +123,7 @@
 				<left>-16</left>
 				<width>516</width>
 				<height>756</height>
-				<texture>common/white.png</texture>
+				<texture colordiffuse="main_bg_90">common/white.png</texture>
 				<bordertexture>common/white.png</bordertexture>
 				<bordersize>20</bordersize>
 			</control>
@@ -134,7 +134,7 @@
 				<height>716</height>
 				<fadetime>200</fadetime>
 				<aspectratio>scale</aspectratio>
-				<texture>common/white.png</texture>
+				<texture background="true">$INFO[ListItem.Art(poster)]</texture>
 			</control>
 			<control type="group">
 				<visible>String.IsEqual(ListItem.DBtype,tvshow) | String.IsEqual(ListItem.DBType,season) | ListItem.IsRecording | ListItem.HasReminder | ListItem.HasTimer | ListItem.IsCollection | ListItem.HasVideoVersions | ListItem.IsPlaying | ListItem.IsResumable | ListItem.HasVideoExtras | ListItem.HasArchive | Integer.IsGreater(ListItem.Playcount,0)</visible>
@@ -143,7 +143,7 @@
 					<top>670</top>
 					<width>476</width>
 					<height>50</height>
-					<texture>common/white.png</texture>
+					<texture colordiffuse="main_bg_90">common/white.png</texture>
 					<visible>!String.IsEmpty(ListItem.Art(poster))</visible>
 				</control>
 				<control type="image">
@@ -153,7 +153,7 @@
 					<height>32</height>
 					<align>left</align>
 					<aligny>center</aligny>
-					<texture>common/white.png</texture>
+					<texture colordiffuse="main_bg_90">common/white.png</texture>
 				</control>
 				<control type="image">
 					<left>45</left>
@@ -162,7 +162,7 @@
 					<height>32</height>
 					<align>left</align>
 					<aligny>center</aligny>
-					<texture>common/white.png</texture>
+					<texture colordiffuse="main_bg_90">common/white.png</texture>
 					<visible>ListItem.HasVideoVersions + ListItem.HasVideoExtras</visible>
 				</control>
 				<control type="label">
@@ -182,7 +182,7 @@
 					<top>684</top>
 					<width>32</width>
 					<height>32</height>
-					<texture>common/white.png</texture>
+					<texture colordiffuse="main_bg_90">common/white.png</texture>
 					<align>right</align>
 					<aligny>center</aligny>
 				</control>
@@ -192,7 +192,7 @@
 				<top>702</top>
 				<width>476</width>
 				<height>1</height>
-				<texture>common/white.png</texture>
+				<texture colordiffuse="main_bg_90">common/white.png</texture>
 			</control>
 			<control type="group">
 				<left>216</left>

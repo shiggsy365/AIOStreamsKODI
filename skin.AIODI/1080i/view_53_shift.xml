@@ -16,14 +16,14 @@
 					<top>760</top>
 					<width>100%</width>
 					<height>110</height>
-					<texture>common/white.png</texture>
+					<texture colordiffuse="main_bg_90">common/white.png</texture>
 				</control>
 				<control type="image">
 					<left>0</left>
 					<top>35</top>
 					<width>100%</width>
 					<height>190</height>
-					<texture>common/white.png</texture>
+					<texture colordiffuse="main_bg_90">common/white.png</texture>
 				</control>
 			</control>
 			<control type="group">
@@ -38,7 +38,7 @@
 					<height>110</height>
 					<visible>Control.HasFocus(53)</visible>
 					<animation type="VisibleChange" effect="fade" time="200"/>
-					<texture>common/white.png</texture>
+					<texture colordiffuse="main_bg_90">common/white.png</texture>
 					<animation type="Conditional" effect="slide" start="0,0" end="-364,0" time="300" tween="sine" easing="inout" condition="Integer.IsEqual(Container.Position,1) | Integer.IsEqual(Container.Position,0)"/>
 					<animation type="Conditional" effect="slide" start="0,0" end="-364,0" time="300" tween="sine" easing="inout" condition="Integer.IsEqual(Container.Position,0)"/>
 					<animation type="Conditional" effect="slide" start="0,0" end="364,0" time="300" tween="sine" easing="inout" condition="Integer.IsEqual(Container.Position,3) | Integer.IsEqual(Container.Position,4)"/>
@@ -128,7 +128,7 @@
 			<width>334</width>
 			<height>480</height>
 			<aspectratio aligny="center">stretch</aspectratio>
-			<texture>common/white.png</texture>
+			<texture colordiffuse="main_bg_90">common/white.png</texture>
 			<bordertexture>common/white.png</bordertexture>
 			<bordersize>20</bordersize>
 			<visible>String.IsEmpty(ListItem.Art(thumb)) + !Container.Content(albums) | String.IsEmpty(ListItem.Art(poster)) + [Container.Content(movies) | Container.Content(tvshows)]</visible>
@@ -140,7 +140,7 @@
 			<width>334</width>
 			<height>480</height>
 			<aspectratio aligny="center">keep</aspectratio>
-			<texture>common/white.png</texture>
+			<texture colordiffuse="main_bg_90">common/white.png</texture>
 			<bordertexture>common/white.png</bordertexture>
 			<bordersize>20</bordersize>
 			<visible>String.IsEmpty(ListItem.Art(poster))</visible>
@@ -152,7 +152,7 @@
 			<width>334</width>
 			<height>480</height>
 			<aspectratio aligny="center">scale</aspectratio>
-			<texture>common/white.png</texture>
+			<texture colordiffuse="main_bg_90">common/white.png</texture>
 			<bordertexture>common/white.png</bordertexture>
 			<bordersize>20</bordersize>
 			<visible>!String.IsEmpty(ListItem.Art(poster))</visible>
@@ -177,7 +177,7 @@
 			<top>530</top>
 			<width>298</width>
 			<height>1</height>
-			<texture>common/white.png</texture>
+			<texture colordiffuse="main_bg_90">common/white.png</texture>
 				<visible>!String.IsEmpty(ListItem.Art(poster))</visible>
 			</control>
 			<control type="image">
@@ -187,7 +187,7 @@
 				<height>24</height>
 				<align>left</align>
 				<aligny>center</aligny>
-				<texture>common/white.png</texture>
+				<texture colordiffuse="main_bg_90">common/white.png</texture>
 			</control>
 			<control type="image">
 				<left>75</left>
@@ -196,7 +196,7 @@
 				<height>24</height>
 				<align>left</align>
 				<aligny>center</aligny>
-				<texture>common/white.png</texture>
+				<texture colordiffuse="main_bg_90">common/white.png</texture>
 				<visible>ListItem.HasVideoVersions + ListItem.HasVideoExtras</visible>
 			</control>
 			<control type="label">
@@ -216,7 +216,7 @@
 				<top>522</top>
 				<width>24</width>
 				<height>24</height>
-				<texture>common/white.png</texture>
+				<texture colordiffuse="main_bg_90">common/white.png</texture>
 				<align>right</align>
 				<aligny>center</aligny>
 			</control>

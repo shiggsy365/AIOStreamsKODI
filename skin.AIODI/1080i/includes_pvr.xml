@@ -23,7 +23,7 @@
 					<height>32</height>
 					<aspectratio align="center">keep</aspectratio>
 					<visible>$PARAM[has_info_icon]</visible>
-					<texture>common/white.png</texture>
+					<texture colordiffuse="main_bg_90">common/white.png</texture>
 				</control>
 				<control type="label">
 					<left>10</left>
@@ -82,7 +82,7 @@
 				<width>32</width>
 				<aligny>center</aligny>
 				<aspectratio align="center">keep</aspectratio>
-				<texture>common/white.png</texture>
+				<texture colordiffuse="main_bg_90">common/white.png</texture>
 				<visible>$PARAM[has_status_icon]</visible>
 			</control>
 			<control type="image">
@@ -92,7 +92,7 @@
 				<aligny>center</aligny>
 				<aspectratio align="center">keep</aspectratio>
 				<visible>!$PARAM[only_label_condition] | ListItem.IsParentFolder</visible>
-				<texture>common/white.png</texture>
+				<texture colordiffuse="main_bg_90">common/white.png</texture>
 			</control>
 		</definition>
 	</include>
@@ -132,7 +132,7 @@
 					<top>0</top>
 					<right>0</right>
 					<animation type="UnFocus" effect="fade" start="100" end="0" time="0"/>
-					<texture>common/white.png</texture>
+					<texture colordiffuse="main_bg_90">common/white.png</texture>
 					<visible>Control.HasFocus($PARAM[list_id])</visible>
 				</control>
 				<control type="progress">
@@ -187,7 +187,7 @@
 			<top>55</top>
 			<width>510</width>
 			<height>855</height>
-			<texture>common/white.png</texture>
+			<texture colordiffuse="main_bg_90">common/white.png</texture>
 		</control>
 		<control type="list" id="$PARAM[list_id]">
 			<left>20</left>
@@ -206,7 +206,7 @@
 					<height>60</height>
 					<right>5</right>
 					<top>5</top>
-					<texture>common/white.png</texture>
+					<texture colordiffuse="main_bg_90">common/white.png</texture>
 					<bordertexture>common/white.png</bordertexture>
 					<bordersize>2</bordersize>
 					<aspectratio>keep</aspectratio>
@@ -226,7 +226,7 @@
 					<left>0</left>
 					<right>0</right>
 					<bottom>0</bottom>
-					<texture>common/white.png</texture>
+					<texture colordiffuse="main_bg_90">common/white.png</texture>
 					<visible>Control.HasFocus($PARAM[list_id])</visible>
 				</control>
 				<control type="image">
@@ -234,7 +234,7 @@
 					<height>60</height>
 					<right>5</right>
 					<top>5</top>
-					<texture>common/white.png</texture>
+					<texture colordiffuse="main_bg_90">common/white.png</texture>
 					<bordertexture>common/white.png</bordertexture>
 					<bordersize>2</bordersize>
 					<aspectratio>keep</aspectratio>
@@ -309,7 +309,7 @@
 					<height>$PARAM[epg_bar_height]</height>
 					<info2>PVR.TimeshiftProgressEpgStart</info2>
 					<info>PVR.TimeshiftProgressPlayPos</info>
-					<texture>common/white.png</texture>
+					<texture colordiffuse="main_bg_90">common/white.png</texture>
 				<visible>!String.IsEmpty(ListItem.ChannelName)</visible>
 				<fadetime>200</fadetime>
 			</control>
@@ -545,7 +545,7 @@
 					<control type="image" id="2">
 						<width>58</width>
 						<height>58</height>
-						<texture>common/white.png</texture>
+						<texture colordiffuse="main_bg_90">common/white.png</texture>
 					</control>
 					<control type="label" id="1">
 						<left>6</left>
@@ -562,14 +562,14 @@
 						<width>16</width>
 						<height>16</height>
 						<aspectratio>keep</aspectratio>
-						<texture>common/white.png</texture>
+						<texture>$INFO[ListItem.Icon]</texture>
 					</control>
 					<control type="image">
 						<left>6</left>
 						<top>35</top>
 						<width>16</width>
 						<height>16</height>
-						<texture>common/white.png</texture>
+						<texture colordiffuse="main_bg_90">common/white.png</texture>
 						<animation type="Conditional" effect="slide" start="0,0" end="19,0" condition="ListItem.IsNew | ListItem.IsPremiere | ListItem.IsFinale | ListItem.IsLive"/>
 					</control>
 				</itemlayout>
@@ -579,19 +579,19 @@
 						<left>2</left>
 						<width>54</width>
 						<height>54</height>
-						<texture>common/white.png</texture>
+						<texture colordiffuse="main_bg_90">common/white.png</texture>
 						<visible>Control.HasFocus($PARAM[control_id])</visible>
 					</control>
 					<control type="image" id="2">
 						<width>58</width>
 						<height>58</height>
-						<texture>common/white.png</texture>
+						<texture colordiffuse="main_bg_90">common/white.png</texture>
 					</control>
 					<control type="image" id="2">
 						<width>58</width>
 						<height>58</height>
 						<top>0</top>
-						<texture>common/white.png</texture>
+						<texture colordiffuse="main_bg_90">common/white.png</texture>
 						<visible>!Control.HasFocus($PARAM[control_id])</visible>
 					</control>
 					<control type="label" id="1">
@@ -609,14 +609,14 @@
 						<width>16</width>
 						<height>16</height>
 						<aspectratio>keep</aspectratio>
-						<texture>common/white.png</texture>
+						<texture>$INFO[ListItem.Icon]</texture>
 					</control>
 					<control type="image">
 						<left>6</left>
 						<top>35</top>
 						<width>16</width>
 						<height>16</height>
-						<texture>common/white.png</texture>
+						<texture colordiffuse="main_bg_90">common/white.png</texture>
 						<animation type="Conditional" effect="slide" start="0,0" end="19,0" condition="ListItem.IsNew | ListItem.IsPremiere | ListItem.IsFinale | ListItem.IsLive"/>
 					</control>
 				</focusedlayout>

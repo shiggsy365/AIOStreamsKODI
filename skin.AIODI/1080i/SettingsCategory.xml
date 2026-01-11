@@ -35,14 +35,14 @@
 				<top>130</top>
 				<right>0</right>
 				<height>2</height>
-				<texture>common/white.png</texture>
+				<texture colordiffuse="main_bg_90">common/white.png</texture>
 			</control>
 			<control type="image">
 				<left>470</left>
 				<bottom>135</bottom>
 				<right>0</right>
 				<height>2</height>
-				<texture>common/white.png</texture>
+				<texture colordiffuse="main_bg_90">common/white.png</texture>
 			</control>
 		</control>
 		<control type="button" id="7">
@@ -66,7 +66,7 @@
 		<control type="image" id="11">
 			<description>separator image</description>
 			<height>3</height>
-			<texture>common/white.png</texture>
+			<texture colordiffuse="main_bg_90">common/white.png</texture>
 		</control>
 		<control type="label" id="14">
 			<description>Default Label</description>

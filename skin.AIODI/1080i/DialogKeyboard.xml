@@ -16,14 +16,14 @@
 				<bottom>0</bottom>
 				<width>100%</width>
 				<height>300%</height>
-				<texture>common/white.png</texture>
+				<texture colordiffuse="main_bg_90">common/white.png</texture>
 			</control>
 			<control type="image">
 				<left>0</left>
 				<bottom>0</bottom>
 				<width>100%</width>
 				<height>470</height>
-				<texture>common/white.png</texture>
+				<texture colordiffuse="main_bg_90">common/white.png</texture>
 			</control>
 			<control type="label" id="311">
 				<centerleft>50%</centerleft>
@@ -41,14 +41,14 @@
 				<top>184</top>
 				<width>1542</width>
 				<height>100</height>
-				<texture>common/white.png</texture>
+				<texture colordiffuse="main_bg_90">common/white.png</texture>
 			</control>
 			<control type="image">
 				<centerleft>50%</centerleft>
 				<top>184</top>
 				<width>1542</width>
 				<height>100</height>
-				<texture>common/white.png</texture>
+				<texture colordiffuse="main_bg_90">common/white.png</texture>
 			</control>
 			<control type="edit" id="312">
 				<centerleft>50%</centerleft>
@@ -58,7 +58,7 @@
 				<font>font37</font>
 				<align>center</align>
 				<aligny>center</aligny>
-				<texture>common/white.png</texture>
+				<texture colordiffuse="main_bg_90">common/white.png</texture>
 					</control>
 					<control type="label">
 						<textoffsetx>30</textoffsetx>
@@ -78,13 +78,13 @@
 							<top>0</top>
 							<width>480</width>
 							<height>50</height>
-							<texture>common/white.png</texture>
+							<texture colordiffuse="main_bg_90">common/white.png</texture>
 						</control>
 						<control type="image">
 							<left>10</left>
 							<width>480</width>
 							<height>50</height>
-							<texture>common/white.png</texture>
+							<texture colordiffuse="main_bg_90">common/white.png</texture>
 							<include>Animation_FocusTextureFade</include>
 						</control>
 						<control type="label">
@@ -117,14 +117,14 @@
 					<top>290</top>
 					<width>1560</width>
 					<height>90</height>
-					<texture>common/white.png</texture>
+					<texture colordiffuse="main_bg_90">common/white.png</texture>
 				</control>
 				<control type="image">
 					<centerleft>50%</centerleft>
 					<top>370</top>
 					<width>1560</width>
 					<height>90</height>
-					<texture>common/white.png</texture>
+					<texture colordiffuse="main_bg_90">common/white.png</texture>
 				</control>
 				<control type="label" id="314">
 					<centerleft>50%</centerleft>

@@ -17,7 +17,7 @@
 				<top>80</top>
 				<width>920</width>
 				<bottom>2</bottom>
-				<texture>common/white.png</texture>
+				<texture colordiffuse="main_bg_90">common/white.png</texture>
 			</control>
 			<control type="list" id="3">
 				<left>20</left>
@@ -52,7 +52,7 @@
 						<top>7</top>
 						<width>110</width>
 						<height>110</height>
-						<texture>common/white.png</texture>
+						<texture colordiffuse="main_bg_90">common/white.png</texture>
 						<aspectratio>keep</aspectratio>
 						<visible>!ListItem.Property(PVR.IsRecordingTimer) + !ListItem.Property(PVR.IsRemindingTimer)</visible>
 					</control>
@@ -63,7 +63,7 @@
 						<height>80</height>
 						<aspectratio align="top">keep</aspectratio>
 						<aligny>center</aligny>
-						<texture>common/white.png</texture>
+						<texture colordiffuse="main_bg_90">common/white.png</texture>
 						<visible>ListItem.Property(PVR.IsRecordingTimer)</visible>
 					</control>
 					<control type="image">
@@ -73,7 +73,7 @@
 						<height>80</height>
 						<aspectratio align="top">keep</aspectratio>
 						<aligny>center</aligny>
-						<texture>common/white.png</texture>
+						<texture colordiffuse="main_bg_90">common/white.png</texture>
 						<visible>ListItem.Property(PVR.IsRemindingTimer)</visible>
 					</control>
 					<control type="label">
@@ -101,7 +101,7 @@
 						<top>0</top>
 						<right>0</right>
 						<bottom>0</bottom>
-						<texture>common/white.png</texture>
+						<texture colordiffuse="main_bg_90">common/white.png</texture>
 						<animation type="UnFocus" effect="fade" start="100" end="50" time="0"/>
 					</control>
 					<control type="image">
@@ -109,7 +109,7 @@
 						<top>7</top>
 						<width>110</width>
 						<height>110</height>
-						<texture>common/white.png</texture>
+						<texture colordiffuse="main_bg_90">common/white.png</texture>
 						<aspectratio>keep</aspectratio>
 						<visible>!ListItem.Property(PVR.IsRecordingTimer) + !ListItem.Property(PVR.IsRemindingTimer)</visible>
 					</control>
@@ -120,7 +120,7 @@
 						<height>80</height>
 						<aspectratio align="top">keep</aspectratio>
 						<aligny>center</aligny>
-						<texture>common/white.png</texture>
+						<texture colordiffuse="main_bg_90">common/white.png</texture>
 						<visible>ListItem.Property(PVR.IsRecordingTimer)</visible>
 					</control>
 					<control type="image">
@@ -130,7 +130,7 @@
 						<height>80</height>
 						<aspectratio align="top">keep</aspectratio>
 						<aligny>center</aligny>
-						<texture>common/white.png</texture>
+						<texture colordiffuse="main_bg_90">common/white.png</texture>
 						<visible>ListItem.Property(PVR.IsRemindingTimer)</visible>
 					</control>
 					<control type="label">
@@ -221,7 +221,7 @@
 						<right>-20</right>
 						<top>-20</top>
 						<bottom>-20</bottom>
-						<texture>common/white.png</texture>
+						<texture colordiffuse="main_bg_90">common/white.png</texture>
 					</control>
 					<control type="panel" id="3">
 						<onright>9001</onright>
@@ -233,7 +233,7 @@
 								<right>10</right>
 								<top>10</top>
 								<height>256</height>
-								<texture>common/white.png</texture>
+								<texture colordiffuse="main_bg_90">common/white.png</texture>
 								<aspectratio>keep</aspectratio>
 							</control>
 							<control type="label">
@@ -263,7 +263,7 @@
 						</itemlayout>
 						<focusedlayout width="408" height="374">
 							<control type="image">
-								<texture>common/white.png</texture>
+								<texture colordiffuse="main_bg_90">common/white.png</texture>
 								<visible>Control.HasFocus(3)</visible>
 							</control>
 							<control type="image">
@@ -271,7 +271,7 @@
 								<right>10</right>
 								<top>10</top>
 								<height>256</height>
-								<texture>common/white.png</texture>
+								<texture colordiffuse="main_bg_90">common/white.png</texture>
 								<aspectratio>keep</aspectratio>
 							</control>
 							<control type="label">
@@ -336,7 +336,7 @@
 							<right>-20</right>
 							<top>-20</top>
 							<bottom>-20</bottom>
-							<texture>common/white.png</texture>
+							<texture colordiffuse="main_bg_90">common/white.png</texture>
 						</control>
 						<control type="label">
 							<description>Label for Saved with: text</description>
@@ -399,7 +399,7 @@
 			<top>0</top>
 			<width>100%</width>
 			<bottom>540</bottom>
-			<texture>common/white.png</texture>
+			<texture colordiffuse="main_bg_90">common/white.png</texture>
 			</control>
 			<control type="panel" id="10811">
 				<top>30</top>
@@ -414,7 +414,7 @@
 							<width>444</width>
 							<height>250</height>
 							<aspectratio>scale</aspectratio>
-							<texture>common/white.png</texture>
+							<texture background="true">$INFO[ListItem.Art(poster)]</texture>
 							<bordertexture>common/white.png</bordertexture>
 							<bordersize>4</bordersize>
 						</control>
@@ -445,7 +445,7 @@
 							<width>444</width>
 							<height>250</height>
 							<aspectratio>scale</aspectratio>
-							<texture>common/white.png</texture>
+							<texture background="true">$INFO[ListItem.Art(poster)]</texture>
 							<bordertexture>common/white.png</bordertexture>
 							<bordersize>4</bordersize>
 						</control>
@@ -468,7 +468,7 @@
 						<control type="image">
 							<width>444</width>
 							<height>250</height>
-							<texture>common/white.png</texture>
+							<texture colordiffuse="main_bg_90">common/white.png</texture>
 							<visible>Control.HasFocus(10811)</visible>
 						</control>
 					</control>
@@ -494,7 +494,7 @@
 			<top>0</top>
 			<width>100%</width>
 			<bottom>410</bottom>
-			<texture>common/white.png</texture>
+			<texture colordiffuse="main_bg_90">common/white.png</texture>
 			</control>
 			<control type="panel" id="10811">
 				<top>30</top>
@@ -509,7 +509,7 @@
 							<width>444</width>
 							<height>250</height>
 							<aspectratio>scale</aspectratio>
-							<texture>common/white.png</texture>
+							<texture background="true">$INFO[ListItem.Art(poster)]</texture>
 							<bordertexture>common/white.png</bordertexture>
 							<bordersize>4</bordersize>
 						</control>
@@ -540,7 +540,7 @@
 							<width>444</width>
 							<height>250</height>
 							<aspectratio>scale</aspectratio>
-							<texture>common/white.png</texture>
+							<texture background="true">$INFO[ListItem.Art(poster)]</texture>
 							<bordertexture>common/white.png</bordertexture>
 							<bordersize>4</bordersize>
 						</control>
@@ -563,7 +563,7 @@
 						<control type="image">
 							<width>444</width>
 							<height>250</height>
-							<texture>common/white.png</texture>
+							<texture colordiffuse="main_bg_90">common/white.png</texture>
 							<visible>Control.HasFocus(10811)</visible>
 						</control>
 					</control>
@@ -578,7 +578,7 @@
 			<top>0</top>
 			<width>100%</width>
 			<bottom>540</bottom>
-			<texture>common/white.png</texture>
+			<texture colordiffuse="main_bg_90">common/white.png</texture>
 			</control>
 			<control type="panel" id="10811">
 				<top>30</top>
@@ -593,7 +593,7 @@
 							<width>444</width>
 							<height>250</height>
 							<aspectratio>scale</aspectratio>
-							<texture>common/white.png</texture>
+							<texture background="true">$INFO[ListItem.Art(poster)]</texture>
 							<bordertexture>common/white.png</bordertexture>
 							<bordersize>4</bordersize>
 						</control>
@@ -601,7 +601,7 @@
 							<width>444</width>
 							<height>250</height>
 							<aspectratio>scale</aspectratio>
-							<texture>common/white.png</texture>
+							<texture background="true">$INFO[ListItem.Art(poster)]</texture>
 							<bordertexture>common/white.png</bordertexture>
 							<bordersize>4</bordersize>
 						</control>
@@ -630,7 +630,7 @@
 							<width>444</width>
 							<height>250</height>
 							<aspectratio>scale</aspectratio>
-							<texture>common/white.png</texture>
+							<texture background="true">$INFO[ListItem.Art(poster)]</texture>
 							<bordertexture>common/white.png</bordertexture>
 							<bordersize>4</bordersize>
 						</control>
@@ -638,7 +638,7 @@
 							<width>444</width>
 							<height>250</height>
 							<aspectratio>scale</aspectratio>
-							<texture>common/white.png</texture>
+							<texture background="true">$INFO[ListItem.Art(poster)]</texture>
 							<bordertexture>common/white.png</bordertexture>
 							<bordersize>4</bordersize>
 						</control>
@@ -659,7 +659,7 @@
 						<control type="image">
 							<width>444</width>
 							<height>250</height>
-							<texture>common/white.png</texture>
+							<texture colordiffuse="main_bg_90">common/white.png</texture>
 						</control>
 					</control>
 				</focusedlayout>
@@ -694,7 +694,7 @@
 				<width>400</width>
 				<height>630</height>
 				<top>100</top>
-				<texture>common/white.png</texture>
+				<texture colordiffuse="main_bg_90">common/white.png</texture>
 				<aspectratio aligny="top">keep</aspectratio>
 			</control>
 			<control type="image">
@@ -702,7 +702,7 @@
 				<top>80</top>
 				<width>920</width>
 				<height>665</height>
-				<texture>common/white.png</texture>
+				<texture colordiffuse="main_bg_90">common/white.png</texture>
 			</control>
 			<control type="list" id="3">
 			</control>

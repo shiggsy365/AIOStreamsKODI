@@ -100,7 +100,7 @@
 				<width>12</width>
 				<bottom>340</bottom>
 				<orientation>vertical</orientation>
-				<texture>common/white.png</texture>
+				<texture colordiffuse="main_bg_90">common/white.png</texture>
 			</control>
 			<control type="group" id="102">
 				<description>System Info page that shows a QR code linking to https://kodi.tv/donate/</description>
@@ -224,7 +224,7 @@
 				<top>30</top>
 				<right>0</right>
 				<height>3</height>
-				<texture>common/white.png</texture>
+				<texture colordiffuse="main_bg_90">common/white.png</texture>
 			</control>
 			<control type="grouplist">
 				<left>420</left>

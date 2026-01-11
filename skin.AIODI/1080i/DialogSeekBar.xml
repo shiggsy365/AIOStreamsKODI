@@ -19,7 +19,7 @@
 				<left>-40</left>
 				<width>120%</width>
 				<height>200</height>
-				<texture>common/white.png</texture>
+				<texture colordiffuse="main_bg_90">common/white.png</texture>
 			</control>
 			<control type="group">
 				<visible>!Window.IsVisible(videoosd) + !Window.IsVisible(musicosd)</visible>
@@ -38,7 +38,7 @@
 						<width>60</width>
 						<height>60</height>
 						<aligny>center</aligny>
-						<texture>common/white.png</texture>
+						<texture colordiffuse="main_bg_90">common/white.png</texture>
 					</control>
 					<control type="label">
 						<top>110</top>
@@ -213,7 +213,7 @@
 					<top>65</top>
 					<width>100%</width>
 					<height>26</height>
-					<texture>common/white.png</texture>
+					<texture colordiffuse="main_bg_90">common/white.png</texture>
 			</control>
 			<control type="image">
 				<left>20</left>
@@ -221,7 +221,7 @@
 				<width>200</width>
 				<height>200</height>
 				<aspectratio aligny="center">keep</aspectratio>
-				<texture>common/white.png</texture>
+				<texture colordiffuse="main_bg_90">common/white.png</texture>
 			</control>
 			<control type="textbox">
 				<left>240</left>
@@ -249,7 +249,7 @@
 				<width>200</width>
 				<height>200</height>
 				<aspectratio aligny="center">keep</aspectratio>
-				<texture>common/white.png</texture>
+				<texture colordiffuse="main_bg_90">common/white.png</texture>
 				<visible>!String.IsEmpty(PVR.EpgEventIcon)</visible>
 			</control>
 			<control type="label">
@@ -280,7 +280,7 @@
 				<left>0</left>
 				<width>100%</width>
 				<height>330</height>
-				<texture>common/white.png</texture>
+				<texture colordiffuse="main_bg_90">common/white.png</texture>
 			</control>
 			<control type="image">
 				<depth>DepthOSD+</depth>
@@ -289,7 +289,7 @@
 				<width>400</width>
 				<height>600</height>
 				<aspectratio aligny="bottom">keep</aspectratio>
-				<texture>common/white.png</texture>
+				<texture colordiffuse="main_bg_90">common/white.png</texture>
 				<bordertexture>common/white.png</bordertexture>
 				<bordersize>20</bordersize>
 				<include>OpenClose_Left</include>

@@ -24,13 +24,13 @@
 				<top>130</top>
 				<right>0</right>
 				<height>3</height>
-				<texture>common/white.png</texture>
+				<texture colordiffuse="main_bg_90">common/white.png</texture>
 			</control>
 			<control type="image">
 				<bottom>134</bottom>
 				<right>0</right>
 				<height>3</height>
-				<texture>common/white.png</texture>
+				<texture colordiffuse="main_bg_90">common/white.png</texture>
 			</control>
 			<control type="panel" id="2">
 				<top>148</top>
@@ -48,7 +48,7 @@
 						<top>5</top>
 						<width>320</width>
 						<height>380</height>
-						<texture>common/white.png</texture>
+						<texture colordiffuse="main_bg_90">common/white.png</texture>
 						<bordertexture>common/white.png</bordertexture>
 						<bordersize>20</bordersize>
 					</control>
@@ -58,7 +58,7 @@
 						<width>215</width>
 						<height>215</height>
 						<aspectratio>scale</aspectratio>
-						<texture>common/white.png</texture>
+						<texture background="true">$INFO[ListItem.Art(poster)]</texture>
 					</control>
 					<control type="label">
 						<left>10</left>
@@ -100,7 +100,7 @@
 							<top>5</top>
 							<width>320</width>
 							<height>380</height>
-							<texture>common/white.png</texture>
+							<texture colordiffuse="main_bg_90">common/white.png</texture>
 							<bordertexture>common/white.png</bordertexture>
 							<bordersize>20</bordersize>
 						</control>
@@ -108,7 +108,7 @@
 							<top>5</top>
 							<width>320</width>
 							<height>380</height>
-							<texture>common/white.png</texture>
+							<texture colordiffuse="main_bg_90">common/white.png</texture>
 							<bordersize>20</bordersize>
 							<include>Animation_FocusTextureFade</include>
 						</control>
@@ -118,7 +118,7 @@
 							<width>215</width>
 							<height>215</height>
 							<aspectratio>scale</aspectratio>
-							<texture>common/white.png</texture>
+							<texture background="true">$INFO[ListItem.Art(poster)]</texture>
 						</control>
 						<control type="label">
 							<left>10</left>
@@ -205,7 +205,7 @@
 					<control type="image">
 						<right>0</right>
 						<bottom>0</bottom>
-						<texture>common/white.png</texture>
+						<texture colordiffuse="main_bg_90">common/white.png</texture>
 						<animation type="Conditional" effect="fade" start="100" end="50" time="40" condition="!Control.HasFocus(9000)"/>
 					</control>
 					<control type="label">
