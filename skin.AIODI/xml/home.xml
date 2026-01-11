@@ -1,0 +1,273 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<window>
+    <defaultcontrol always="true">51</defaultcontrol>
+    <controls>
+        <!-- Background -->
+        <control type="image">
+            <left>0</left>
+            <top>0</top>
+            <width>1920</width>
+            <height>1080</height>
+            <texture colordiffuse="main_bg_100">common/white.png</texture>
+            <aspectratio>stretch</aspectratio>
+        </control>
+
+        <!-- Top Navigation Bar -->
+        <control type="group">
+            <left>0</left>
+            <top>0</top>
+            <width>1920</width>
+            <height>120</height>
+            
+            <!-- Navigation Background -->
+            <control type="image">
+                <left>0</left>
+                <top>0</top>
+                <width>1920</width>
+                <height>120</height>
+                <texture colordiffuse="main_bg_90">common/white.png</texture>
+                <aspectratio>stretch</aspectratio>
+            </control>
+            
+            <!-- Logo/Title -->
+            <control type="label">
+                <left>60</left>
+                <top>30</top>
+                <width>300</width>
+                <height>60</height>
+                <font>font37_title</font>
+                <textcolor>main_fg_100</textcolor>
+                <label>AIODI</label>
+            </control>
+            
+            <!-- Navigation Menu -->
+            <control type="grouplist" id="9000">
+                <left>500</left>
+                <top>30</top>
+                <width>1200</width>
+                <height>60</height>
+                <ondown>51</ondown>
+                <orientation>horizontal</orientation>
+                <itemgap>20</itemgap>
+                
+                <control type="button" id="9001">
+                    <width>150</width>
+                    <height>60</height>
+                    <font>font30</font>
+                    <label>Home</label>
+                    <textcolor>main_fg_70</textcolor>
+                    <focusedcolor>main_fg_100</focusedcolor>
+                    <onclick>ActivateWindow(Home)</onclick>
+                </control>
+                
+                <control type="button" id="9002">
+                    <width>150</width>
+                    <height>60</height>
+                    <font>font30</font>
+                    <label>Movies</label>
+                    <textcolor>main_fg_70</textcolor>
+                    <focusedcolor>main_fg_100</focusedcolor>
+                    <onclick>ActivateWindow(Videos,plugin://plugin.video.aiostreams/?action=movie_lists,return)</onclick>
+                </control>
+                
+                <control type="button" id="9003">
+                    <width>150</width>
+                    <height>60</height>
+                    <font>font30</font>
+                    <label>TV Shows</label>
+                    <textcolor>main_fg_70</textcolor>
+                    <focusedcolor>main_fg_100</focusedcolor>
+                    <onclick>ActivateWindow(Videos,plugin://plugin.video.aiostreams/?action=series_lists,return)</onclick>
+                </control>
+                
+                <control type="button" id="9004">
+                    <width>150</width>
+                    <height>60</height>
+                    <font>font30</font>
+                    <label>Search</label>
+                    <textcolor>main_fg_70</textcolor>
+                    <focusedcolor>main_fg_100</focusedcolor>
+                    <onclick>ActivateWindow(Videos,plugin://plugin.video.aiostreams/?action=search_unified,return)</onclick>
+                </control>
+                
+                <control type="button" id="9005">
+                    <width>150</width>
+                    <height>60</height>
+                    <font>font30</font>
+                    <label>Settings</label>
+                    <textcolor>main_fg_70</textcolor>
+                    <focusedcolor>main_fg_100</focusedcolor>
+                    <onclick>ActivateWindow(skinsettings)</onclick>
+                </control>
+            </control>
+        </control>
+
+        <!-- Home Dashboard Widgets -->
+        <control type="grouplist" id="50">
+            <left>60</left>
+            <top>150</top>
+            <width>1800</width>
+            <height>900</height>
+            <onup>9000</onup>
+            <orientation>vertical</orientation>
+            <itemgap>20</itemgap>
+            <scrolltime>200</scrolltime>
+
+            <!-- Widget: Next Up -->
+            <control type="group">
+                <width>1800</width>
+                <height>280</height>
+                <control type="label">
+                    <left>0</left>
+                    <top>0</top>
+                    <width>1800</width>
+                    <height>40</height>
+                    <font>font30_title</font>
+                    <label>Next Up</label>
+                    <textcolor>main_fg_100</textcolor>
+                </control>
+                <control type="list" id="51">
+                    <left>0</left>
+                    <top>50</top>
+                    <width>1800</width>
+                    <height>230</height>
+                    <onup>9000</onup>
+                    <ondown>52</ondown>
+                    <orientation>horizontal</orientation>
+                    <itemlayout width="160" height="230">
+                        <control type="image">
+                            <left>5</left>
+                            <top>5</top>
+                            <width>150</width>
+                            <height>220</height>
+                            <aspectratio>scale</aspectratio>
+                            <texture background="true">$INFO[ListItem.Art(poster)]</texture>
+                        </control>
+                    </itemlayout>
+                    <focusedlayout width="160" height="230">
+                        <control type="image">
+                            <left>0</left>
+                            <top>0</top>
+                            <width>160</width>
+                            <height>230</height>
+                            <texture colordiffuse="ThemeColor">common/white.png</texture>
+                        </control>
+                        <control type="image">
+                            <left>5</left>
+                            <top>5</top>
+                            <width>150</width>
+                            <height>220</height>
+                            <aspectratio>scale</aspectratio>
+                            <texture background="true">$INFO[ListItem.Art(poster)]</texture>
+                        </control>
+                    </focusedlayout>
+                    <content>plugin://plugin.video.aiostreams/?action=trakt_next_up</content>
+                </control>
+            </control>
+
+            <!-- Widget: Movie Watchlist -->
+            <control type="group">
+                <width>1800</width>
+                <height>280</height>
+                <control type="label">
+                    <left>0</left>
+                    <top>0</top>
+                    <width>1800</width>
+                    <height>40</height>
+                    <font>font30_title</font>
+                    <label>Movie Watchlist</label>
+                    <textcolor>main_fg_100</textcolor>
+                </control>
+                <control type="list" id="52">
+                    <left>0</left>
+                    <top>50</top>
+                    <width>1800</width>
+                    <height>230</height>
+                    <onup>51</onup>
+                    <ondown>53</ondown>
+                    <orientation>horizontal</orientation>
+                    <itemlayout width="160" height="230">
+                        <control type="image">
+                            <left>5</left>
+                            <top>5</top>
+                            <width>150</width>
+                            <height>220</height>
+                            <aspectratio>scale</aspectratio>
+                            <texture background="true">$INFO[ListItem.Art(poster)]</texture>
+                        </control>
+                    </itemlayout>
+                    <focusedlayout width="160" height="230">
+                        <control type="image">
+                            <left>0</left>
+                            <top>0</top>
+                            <width>160</width>
+                            <height>230</height>
+                            <texture colordiffuse="ThemeColor">common/white.png</texture>
+                        </control>
+                        <control type="image">
+                            <left>5</left>
+                            <top>5</top>
+                            <width>150</width>
+                            <height>220</height>
+                            <aspectratio>scale</aspectratio>
+                            <texture background="true">$INFO[ListItem.Art(poster)]</texture>
+                        </control>
+                    </focusedlayout>
+                    <content>plugin://plugin.video.aiostreams/?action=trakt_watchlist&amp;content_type=movie</content>
+                </control>
+            </control>
+
+            <!-- Widget: TV Watchlist -->
+            <control type="group">
+                <width>1800</width>
+                <height>280</height>
+                <control type="label">
+                    <left>0</left>
+                    <top>0</top>
+                    <width>1800</width>
+                    <height>40</height>
+                    <font>font30_title</font>
+                    <label>TV Watchlist</label>
+                    <textcolor>main_fg_100</textcolor>
+                </control>
+                <control type="list" id="53">
+                    <left>0</left>
+                    <top>50</top>
+                    <width>1800</width>
+                    <height>230</height>
+                    <onup>52</onup>
+                    <orientation>horizontal</orientation>
+                    <itemlayout width="160" height="230">
+                        <control type="image">
+                            <left>5</left>
+                            <top>5</top>
+                            <width>150</width>
+                            <height>220</height>
+                            <aspectratio>scale</aspectratio>
+                            <texture background="true">$INFO[ListItem.Art(poster)]</texture>
+                        </control>
+                    </itemlayout>
+                    <focusedlayout width="160" height="230">
+                        <control type="image">
+                            <left>0</left>
+                            <top>0</top>
+                            <width>160</width>
+                            <height>230</height>
+                            <texture colordiffuse="ThemeColor">common/white.png</texture>
+                        </control>
+                        <control type="image">
+                            <left>5</left>
+                            <top>5</top>
+                            <width>150</width>
+                            <height>220</height>
+                            <aspectratio>scale</aspectratio>
+                            <texture background="true">$INFO[ListItem.Art(poster)]</texture>
+                        </control>
+                    </focusedlayout>
+                    <content>plugin://plugin.video.aiostreams/?action=trakt_watchlist&amp;content_type=series</content>
+                </control>
+            </control>
+        </control>
+
+    </controls>
+</window>

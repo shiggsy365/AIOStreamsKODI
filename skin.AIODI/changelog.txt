@@ -1,3 +1,9 @@
+[B]3.0.3[/B]
+• FIXED: Black screen and missing content issues
+• FIXED: Case-sensitivity issues (full lowercase refactor)
+• NEW: Home screen redesign with Trakt widgets (Next Up, Watchlists)
+• UPDATED: Corrected navigation for Movie and TV Show catalogs
+
 [B]3.0.1[/B]
 • Maintenance release - No functional changes
 • Rebuilt package via Repo_Update.sh for proper deployment

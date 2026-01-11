@@ -151,9 +151,22 @@
 			<style>bold</style>
 		</font>
 		<font>
-			<name>Mono26</name>
-			<filename>NotoMono-Regular.ttf</filename>
-			<size>26</size>
+			<name>font20</name>
+			<filename>NotoSans-Regular.ttf</filename>
+			<size>20</size>
+			<style>lighten</style>
+		</font>
+		<font>
+			<name>font30</name>
+			<filename>NotoSans-Regular.ttf</filename>
+			<size>30</size>
+			<style>lighten</style>
+		</font>
+		<font>
+			<name>font37_title</name>
+			<filename>NotoSans-Regular.ttf</filename>
+			<size>37</size>
+			<style>bold</style>
 		</font>
 	</fontset>
 	<fontset id="Arial" idloc="31053">
