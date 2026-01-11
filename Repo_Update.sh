@@ -109,7 +109,7 @@ build_skin_zip() {
     fi
 
     local temp_dir=$(mktemp -d)
-    local skin_dir="$temp_dir/skin.aiodi"
+    local skin_dir="$temp_dir/skin.AIODI"
     mkdir -p "$skin_dir"
 
     rsync -a --exclude='CUSTOM_SKIN_PLAN.md' \
@@ -117,7 +117,7 @@ build_skin_zip() {
              --exclude='TESTING_INSTRUCTIONS.md' \
              "$source_dir/" "$skin_dir/"
 
-    (cd "$temp_dir" && zip -r -q "$destination" skin.aiodi/)
+    (cd "$temp_dir" && zip -r -q "$destination" skin.AIODI/)
     rm -rf "$temp_dir"
 
     local zip_size=$(du -k "$destination" | cut -f1)
@@ -271,12 +271,12 @@ update_skin() {
 
     local xml_paths=(
         "$BASE_DIR/skin.AIODI/addon.xml"
-        "$BASE_DIR/docs/skin.aiodi/addon.xml"
+        "$BASE_DIR/docs/skin.AIODI/addon.xml"
         "$BASE_DIR/docs/repository.aiostreams/addon.xml"
     )
 
-    local zip_dest_repo="$BASE_DIR/docs/repository.aiostreams/zips/skin.aiodi/skin.aiodi-$new_version.zip"
-    local zip_dest_docs="$BASE_DIR/docs/skin.aiodi/skin.aiodi-$new_version.zip"
+    local zip_dest_repo="$BASE_DIR/docs/repository.aiostreams/zips/skin.AIODI/skin.AIODI-$new_version.zip"
+    local zip_dest_docs="$BASE_DIR/docs/skin.AIODI/skin.AIODI-$new_version.zip"
 
     echo -e "\n${CYAN}[1/4] Updating version numbers...${NC}"
     for xml_path in "${xml_paths[@]}"; do
@@ -291,10 +291,10 @@ update_skin() {
     write_md5 "$zip_dest_docs" "$zip_dest_docs.md5"
 
     echo -e "  ${GREEN}[+]${GRAY} Copying assets to repository directory${NC}"
-    mkdir -p "$BASE_DIR/docs/repository.aiostreams/zips/skin.aiodi/"
-    cp "$BASE_DIR/skin.AIODI/resources/icon.png" "$BASE_DIR/docs/repository.aiostreams/zips/skin.aiodi/" 2>/dev/null || true
-    cp "$BASE_DIR/skin.AIODI/resources/fanart.jpg" "$BASE_DIR/docs/repository.aiostreams/zips/skin.aiodi/" 2>/dev/null || true
-    cp "$BASE_DIR/skin.AIODI/addon.xml" "$BASE_DIR/docs/repository.aiostreams/zips/skin.aiodi/addon.xml"
+    mkdir -p "$BASE_DIR/docs/repository.aiostreams/zips/skin.AIODI/"
+    cp "$BASE_DIR/skin.AIODI/resources/icon.png" "$BASE_DIR/docs/repository.aiostreams/zips/skin.AIODI/" 2>/dev/null || true
+    cp "$BASE_DIR/skin.AIODI/resources/fanart.jpg" "$BASE_DIR/docs/repository.aiostreams/zips/skin.AIODI/" 2>/dev/null || true
+    cp "$BASE_DIR/skin.AIODI/addon.xml" "$BASE_DIR/docs/repository.aiostreams/zips/skin.AIODI/addon.xml"
 
     local repo_xml="$BASE_DIR/docs/repository.aiostreams/addon.xml"
     local repo_version=$(grep -m 1 "id=\"repository.aiostreams\"" "$repo_xml" | sed -n 's/.*version="\([^"]*\)".*/\1/p')
@@ -318,8 +318,8 @@ update_skin() {
     done
 
     echo -e "\n${CYAN}[4/4] Checking for old version files...${NC}"
-    local old_zip_path_repo="$BASE_DIR/docs/repository.aiostreams/zips/skin.aiodi/skin.aiodi-$old_version.zip"
-    local old_zip_path_docs="$BASE_DIR/docs/skin.aiodi/skin.aiodi-$old_version.zip"
+    local old_zip_path_repo="$BASE_DIR/docs/repository.aiostreams/zips/skin.AIODI/skin.AIODI-$old_version.zip"
+    local old_zip_path_docs="$BASE_DIR/docs/skin.AIODI/skin.AIODI-$old_version.zip"
 
     if [[ -f "$old_zip_path_repo" ]] || [[ -f "$old_zip_path_docs" ]]; then
         read -p "Found old skin version $old_version. Delete old ZIP files? (y/n) " cleanup
@@ -336,6 +336,21 @@ update_skin() {
     fi
 
     echo -e "\n${GREEN}[+] Skin update complete: $new_version${NC}"
+}
+
+
+push_to_git() {
+    echo -e "\n${CYAN}[*] Pushing changes to main branch...${NC}"
+    git add .
+    local plugin_v=$(get_source_version "$BASE_DIR/plugin.video.aiostreams/addon.xml")
+    local skin_v=$(get_source_version "$BASE_DIR/skin.AIODI/addon.xml")
+    git commit -m "Repository Update: Plugin $plugin_v, Skin $skin_v"
+    git push origin main
+    if [ $? -eq 0 ]; then
+        echo -e "  ${GREEN}[+]${GRAY} Successfully pushed to main branch${NC}"
+    else
+        echo -e "  ${RED}[!] Error: Failed to push to main branch${NC}"
+    fi
 }
 
 # Main Script
@@ -426,8 +441,11 @@ esac
 echo -e "\n${CYAN}========================================${NC}"
 echo -e "${GREEN}[+] Update process complete!${NC}"
 echo -e "${CYAN}========================================${NC}"
-echo -e "\n${YELLOW}Next Steps:${NC}"
-echo -e "  ${WHITE}1. Review changes in Git${NC}"
-echo -e "  ${WHITE}2. Test the new ZIP files in Kodi${NC}"
-echo -e "  ${WHITE}3. Commit and push changes${NC}"
+
+echo -e "\n${YELLOW}Would you like to push these changes to GitHub main branch? (y/n)${NC}"
+read -p "Choice: " push_confirm
+if [[ "$push_confirm" == "y" ]] || [[ "$push_confirm" == "Y" ]]; then
+    push_to_git
+fi
+
 echo ""
