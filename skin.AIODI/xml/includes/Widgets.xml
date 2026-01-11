@@ -81,7 +81,7 @@
                     </focusedlayout>
 
                     <content target="video">
-                        <path>$INFO[Window(Home).Property(AIOStreams.$PARAM[page].Widget.$PARAM[widget_index].Action)]</path>
+                        <path>plugin://plugin.video.aiostreams/?action=movie_lists</path>
                     </content>
                 </control>
             </control>
