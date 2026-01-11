@@ -159,7 +159,8 @@
 		<bottom>180</bottom>
 		<align>center</align>
 		<itemgap>70</itemgap>
-		<onright>SetFocus(11999)</onright>
+		<onright>12000</onright>
+
 
 
 		<!-- Home -->
@@ -628,8 +629,44 @@
 			<height>30</height>
 			<font>font12</font>
 			<textcolor>FFFFFF00</textcolor> <!-- Hex Yellow -->
-			<label>v6.0.27 | FOCUS: [ $INFO[Skin.String(SideMenuFocus)] ] | WIDGET_IDX: [ $INFO[Skin.String(Home_WidgetIndex)] ] | ACTIVE_ID: [ $VAR[CurrentWidgetListID] ]</label>
+			<label>v6.0.32 | FOCUS: [ $INFO[Skin.String(SideMenuFocus)] ] | WIDGET_IDX: [ $INFO[Skin.String(Home_WidgetIndex)] ] | ACTIVE_ID: [ $VAR[CurrentWidgetListID] ]</label>
 		</control>
+		<control type="label">
+			<left>150</left>
+			<top>40</top>
+			<width>1500</width>
+			<height>30</height>
+			<font>font12</font>
+			<textcolor>FFFF0000</textcolor> <!-- Hex Red -->
+			<label>RED LABEL ALWAYS ON (v6.0.32)</label>
+		</control>
+		<control type="label">
+			<left>150</left>
+			<top>70</top>
+			<width>1500</width>
+			<height>30</height>
+			<font>font12</font>
+			<textcolor>FF00FFFF</textcolor> <!-- Hex Cyan -->
+			<visible>Control.HasFocus(12000)</visible>
+			<label>FOCUS DETECTED ON TEST BUTTON (12000)</label>
+		</control>
+
+		<!-- GUARANTEED FOCUS TARGET -->
+		<control type="button" id="12000">
+			<left>500</left>
+			<top>300</top>
+			<width>400</width>
+			<height>100</height>
+			<label>FOCUS ME (PINK BUTTON)</label>
+			<font>font13</font>
+			<align>center</align>
+			<textcolor>white</textcolor>
+			<focusedcolor>FF00FFFF</focusedcolor>
+			<texturefocus colordiffuse="FFFF00FF">colors/white.png</texturefocus>
+			<texturenofocus colordiffuse="88FF00FF">colors/white.png</texturenofocus>
+			<onleft>9000</onleft>
+		</control>
+
 		<control type="label">
 			<left>150</left>
 			<top>70</top>
