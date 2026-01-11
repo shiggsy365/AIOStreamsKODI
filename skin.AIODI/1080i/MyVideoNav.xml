@@ -10,7 +10,7 @@
             <top>0</top>
             <width>1920</width>
             <height>1080</height>
-            <texture colordiffuse="main_bg_100">common/white.png</texture>
+            <texture></texture>
             <aspectratio>stretch</aspectratio>
         </control>
 
@@ -26,7 +26,7 @@
                 <top>0</top>
                 <width>1920</width>
                 <height>120</height>
-                <texture colordiffuse="main_bg_90">common/white.png</texture>
+                <texture></texture>
                 <aspectratio>stretch</aspectratio>
             </control>
             
@@ -119,7 +119,7 @@
                     <width>90</width>
                     <height>120</height>
                     <aspectratio>scale</aspectratio>
-                    <texture background="true">$INFO[ListItem.Art(poster)]</texture>
+                    <texture></texture>
                 </control>
                 <control type="label">
                     <left>120</left>
@@ -148,7 +148,7 @@
                     <top>0</top>
                     <width>1800</width>
                     <height>140</height>
-                    <texture colordiffuse="main_bg_70">common/white.png</texture>
+                    <texture></texture>
                 </control>
                 <control type="image">
                     <left>10</left>
@@ -156,8 +156,8 @@
                     <width>90</width>
                     <height>120</height>
                     <aspectratio>scale</aspectratio>
-                    <texture background="true">$INFO[ListItem.Art(poster)]</texture>
-                    <bordertexture border="4"colordiffuse="main_fg_100">common/white.png</bordertexture>
+                    <texture></texture>
+                    <bordertexture></bordertexture>
                     <bordersize>2</bordersize>
                 </control>
                 <control type="label">

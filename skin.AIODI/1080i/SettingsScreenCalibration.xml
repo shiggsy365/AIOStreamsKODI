@@ -10,8 +10,8 @@
 			<top>0</top>
 			<width>128</width>
 			<height>128</height>
-			<texturefocus colordiffuse="button_focus">calibrate/cal_tl.png</texturefocus>
-			<texturenofocus >calibrate/cal_tl.png</texturenofocus>
+			<texturefocus></texturefocus>
+			<texturenofocus></texturenofocus>
 			<movingspeed acceleration="180"maxvelocity="300"resettimeout="200"delta="1">
 				<eventconfig type="up"/>
 				<eventconfig type="down"/>
@@ -25,8 +25,8 @@
 			<top>500</top>
 			<width>128</width>
 			<height>128</height>
-			<texturefocus colordiffuse="button_focus">calibrate/cal_br.png</texturefocus>
-			<texturenofocus >calibrate/cal_br.png</texturenofocus>
+			<texturefocus></texturefocus>
+			<texturenofocus></texturenofocus>
 			<movingspeed acceleration="180"maxvelocity="300"resettimeout="200"delta="1">
 				<eventconfig type="up"/>
 				<eventconfig type="down"/>
@@ -40,8 +40,8 @@
 			<top>390</top>
 			<width>500</width>
 			<height>500</height>
-			<texturefocus colordiffuse="button_focus">calibrate/cal_ratio.png</texturefocus>
-			<texturenofocus >calibrate/cal_ratio.png</texturenofocus>
+			<texturefocus></texturefocus>
+			<texturenofocus></texturenofocus>
 			<movingspeed acceleration="140"maxvelocity="300"resettimeout="180"delta="1">
 				<eventconfig type="left"/>
 				<eventconfig type="right"/>
@@ -54,8 +54,8 @@
 			<width>380</width>
 			<height>90</height>
 			<!--NOTE: The image must have 40px of trasparent on top and bottom the bar -->
-			<texturefocus colordiffuse="button_focus">calibrate/cal_sub.png</texturefocus>
-			<texturenofocus >calibrate/cal_sub.png</texturenofocus>
+			<texturefocus></texturefocus>
+			<texturenofocus></texturenofocus>
 			<movingspeed acceleration="180"maxvelocity="300"resettimeout="200"delta="1">
 				<eventconfig type="up"/>
 				<eventconfig type="down"/>
@@ -67,8 +67,8 @@
 			<top>900</top>
 			<width>100</width>
 			<height>100</height>
-			<texturefocus colordiffuse="button_focus">calibrate/reset.png</texturefocus>
-			<texturenofocus >calibrate/reset.png</texturenofocus>
+			<texturefocus></texturefocus>
+			<texturenofocus></texturenofocus>
 		</control>
 		<control type="label">
 			<description>window title</description>

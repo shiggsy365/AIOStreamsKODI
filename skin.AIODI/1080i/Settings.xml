@@ -43,22 +43,22 @@
 					<item>
 						<label>$LOCALIZE[10003]</label>
 						<onclick>ActivateWindow(filemanager)</onclick>
-						<icon >icons/settings/filemanager.png</icon>
+						<icon></icon>
 					</item>
 					<item>
 						<label>$LOCALIZE[24001]</label>
 						<onclick>ActivateWindow(addonbrowser)</onclick>
-						<icon >icons/settings/addons.png</icon>
+						<icon></icon>
 					</item>
 					<item>
 						<label>$LOCALIZE[138]</label>
 						<onclick>ActivateWindow(systeminfo)</onclick>
-						<icon >icons/settings/sysinfo.png</icon>
+						<icon></icon>
 					</item>
 					<item>
 						<label>$LOCALIZE[31067]</label>
 						<onclick>ActivateWindow(eventlog)</onclick>
-						<icon >icons/settings/eventlog.png</icon>
+						<icon></icon>
 					</item>
 				</content>
 			</control>
@@ -74,48 +74,48 @@
 					<item>
 						<label>$LOCALIZE[14200]</label>
 						<onclick>ActivateWindow(PlayerSettings)</onclick>
-						<icon >icons/settings/player.png</icon>
+						<icon></icon>
 					</item>
 					<item>
 						<label>$LOCALIZE[14211]</label>
 						<onclick>ActivateWindow(MediaSettings)</onclick>
-						<icon >icons/settings/media.png</icon>
+						<icon></icon>
 					</item>
 					<item>
 						<label>$LOCALIZE[14204]</label>
 						<onclick>ActivateWindow(PVRSettings)</onclick>
-						<icon >icons/settings/livetv.png</icon>
+						<icon></icon>
 					</item>
 					<item>
 						<label>$LOCALIZE[14036]</label>
 						<onclick>ActivateWindow(ServiceSettings)</onclick>
-						<icon >icons/settings/network.png</icon>
+						<icon></icon>
 					</item>
 					<item>
 						<label>$LOCALIZE[15016]</label>
 						<visible>System.GetBool(gamesgeneral.enable)</visible>
 						<onclick>ActivateWindow(GameSettings)</onclick>
-						<icon >icons/settings/games.png</icon>
+						<icon></icon>
 					</item>
 					<item>
 						<label>$LOCALIZE[14206]</label>
 						<onclick>ActivateWindow(InterfaceSettings)</onclick>
-						<icon >icons/settings/interface.png</icon>
+						<icon></icon>
 					</item>
 					<item>
 						<label>$LOCALIZE[13200]</label>
 						<onclick>ActivateWindow(Profiles)</onclick>
-						<icon >icons/settings/profiles.png</icon>
+						<icon></icon>
 					</item>
 					<item>
 						<label>$LOCALIZE[13000]</label>
 						<onclick>ActivateWindow(SystemSettings)</onclick>
-						<icon >icons/settings/system.png</icon>
+						<icon></icon>
 					</item>
 					<item>
 						<label>LibreELEC</label>
 						<onclick>RunAddon(service.libreelec.settings)</onclick>
-						<icon >icons/settings/libreelec.png</icon>
+						<icon></icon>
 						<visible>System.AddonIsEnabled(service.libreelec.settings)</visible>
 					</item>
 				</content>

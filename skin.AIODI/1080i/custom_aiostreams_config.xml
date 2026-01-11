@@ -10,7 +10,7 @@
             <top>0</top>
             <width>1920</width>
             <height>1080</height>
-            <texture colordiffuse="FF000000">common/white.png</texture>
+            <texture></texture>
             <aspectratio>stretch</aspectratio>
         </control>
 
@@ -19,7 +19,7 @@
             <top>0</top>
             <width>1920</width>
             <height>1080</height>
-            <texture background="true">$INFO[Window(Home).Property(Fanart_Image)]</texture>
+            <texture></texture>
             <colordiffuse>40FFFFFF</colordiffuse>
             <aspectratio>scale</aspectratio>
         </control>
@@ -37,7 +37,7 @@
                 <top>0</top>
                 <width>1440</width>
                 <height>840</height>
-                <texture colordiffuse="DD000000">common/white.png</texture>
+                <texture></texture>
                 <aspectratio>stretch</aspectratio>
             </control>
 
@@ -170,7 +170,7 @@
                         <top>0</top>
                         <width>600</width>
                         <height>60</height>
-                        <texture colordiffuse="ThemeColor">common/white.png</texture>
+                        <texture></texture>
                     </control>
                     <control type="label">
                         <left>20</left>
@@ -271,7 +271,7 @@
                         <top>0</top>
                         <width>660</width>
                         <height>60</height>
-                        <texture colordiffuse="FF00AA00">common/white.png</texture>
+                        <texture></texture>
                     </control>
                     <control type="label">
                         <left>20</left>

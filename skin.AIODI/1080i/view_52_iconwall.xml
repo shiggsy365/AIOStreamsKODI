@@ -25,8 +25,8 @@
 						<control type="image">
 							<width>396</width>
 							<height>245</height>
-							<texture>dialogs/dialog-bg-nobo.png</texture>
-							<bordertexture border="21"infill="false">overlays/shadow.png</bordertexture>
+							<texture></texture>
+							<bordertexture></bordertexture>
 							<bordersize>20</bordersize>
 						</control>
 						<control type="image">
@@ -34,7 +34,7 @@
 							<top>20</top>
 							<width>160</width>
 							<height>130</height>
-							<texture fallback="defaultstudios.png">$VAR[IconWallThumbVar]</texture>
+							<texture></texture>
 							<aspectratio>keep</aspectratio>
 							<align>center</align>
 						</control>
@@ -43,7 +43,7 @@
 							<top>150</top>
 							<width>356</width>
 							<height>75</height>
-							<texture colordiffuse="border_alpha">common/black.png</texture>
+							<texture></texture>
 						</control>
 						<control type="textbox">
 							<left>25</left>
@@ -70,14 +70,14 @@
 						<control type="image">
 							<width>396</width>
 							<height>245</height>
-							<texture>dialogs/dialog-bg-nobo.png</texture>
-							<bordertexture border="21"infill="false">overlays/shadow.png</bordertexture>
+							<texture></texture>
+							<bordertexture></bordertexture>
 							<bordersize>20</bordersize>
 						</control>
 						<control type="image">
 							<width>396</width>
 							<height>245</height>
-							<texture colordiffuse="button_focus">common/grey.png</texture>
+							<texture></texture>
 							<bordersize>20</bordersize>
 							<include>Animation_FocusTextureFade</include>
 						</control>
@@ -86,7 +86,7 @@
 							<top>20</top>
 							<width>160</width>
 							<height>130</height>
-							<texture fallback="defaultstudios.png">$VAR[IconWallThumbVar]</texture>
+							<texture></texture>
 							<aspectratio>keep</aspectratio>
 							<align>center</align>
 						</control>
@@ -95,7 +95,7 @@
 							<top>150</top>
 							<width>356</width>
 							<height>75</height>
-							<texture colordiffuse="border_alpha">common/black.png</texture>
+							<texture></texture>
 						</control>
 						<control type="textbox">
 							<left>25</left>
@@ -115,8 +115,8 @@
 						<control type="image">
 							<width>330</width>
 							<height>140</height>
-							<texture>dialogs/dialog-bg-nobo.png</texture>
-							<bordertexture border="21"infill="false">overlays/shadow.png</bordertexture>
+							<texture></texture>
+							<bordertexture></bordertexture>
 							<bordersize>20</bordersize>
 						</control>
 						<control type="textbox">
@@ -143,14 +143,14 @@
 						<control type="image">
 							<width>330</width>
 							<height>140</height>
-							<texture>dialogs/dialog-bg-nobo.png</texture>
-							<bordertexture border="21"infill="false">overlays/shadow.png</bordertexture>
+							<texture></texture>
+							<bordertexture></bordertexture>
 							<bordersize>20</bordersize>
 						</control>
 						<control type="image">
 							<width>330</width>
 							<height>140</height>
-							<texture colordiffuse="button_focus">common/grey.png</texture>
+							<texture></texture>
 							<bordersize>20</bordersize>
 							<include>Animation_FocusTextureFade</include>
 						</control>

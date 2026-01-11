@@ -17,7 +17,7 @@
 				<top>0</top>
 				<width>100%</width>
 				<height>55</height>
-				<texture colordiffuse="D0FFFFFF"border="0,55,0,0">frame/osdfade.png</texture>
+				<texture></texture>
 			</control>
 			<control type="label">
 				<left>25</left>
@@ -64,118 +64,7 @@
 				<width>100%</width>
 				<height>16</height>
 				<info>Player.ProgressCache</info>
-				<texturebg border="3"colordiffuse="60FFFFFF">common/white50.png</texturebg>
-				<midtexture >common/white50.png</midtexture>
-				<visible>!VideoPlayer.Content(LiveTV)</visible>
-			</control>
-			<control type="progress">
-				<left>0</left>
-				<top>55</top>
-				<width>100%</width>
-				<height>16</height>
-				<info>Player.Progress</info>
-				<texturebg border="3"colordiffuse="60FFFFFF">common/white50.png</texturebg>
-				<midtexture colordiffuse="button_focus">common/white.png</midtexture>
-				<visible>!VideoPlayer.Content(LiveTV)</visible>
-			</control>
-			<control type="slider">
-				<left>0</left>
-				<top>50</top>
-				<width>100%</width>
-				<height>26</height>
-				<texturesliderbar colordiffuse="00FFFFFF">common/nub_bar.png</texturesliderbar>
-				<textureslidernib colordiffuse="button_focus">common/nub_bar.png</textureslidernib>
-				<textureslidernibfocus colordiffuse="button_focus">common/white.png</textureslidernibfocus>
-				<info>Player.Seekbar</info>
-				<visible>!VideoPlayer.Content(LiveTV) + [Player.Seeking | Player.HasPerformedSeek(3) | Player.Paused]</visible>
-			</control>
-			<control type="group">
-				<visible>VideoPlayer.Content(LiveTV)</visible>
-				<control type="group">
-					<visible>Player.SeekEnabled + VideoPlayer.HasEPG</visible>
-					<include content="PVRProgress">
-						<param name="ts_bar_top"value="55"/>
-						<param name="epg_bar_top"value="63"/>
-						<param name="ts_bar_height"value="8"/>
-						<param name="epg_bar_height"value="8"/>
-					</include>
-				</control>
-				<control type="group">
-					<visible>Player.SeekEnabled + !VideoPlayer.HasEPG</visible>
-					<include content="PVRProgress">
-						<param name="ts_bar_top"value="55"/>
-						<param name="ts_bar_height"value="16"/>
-					</include>
-				</control>
-				<control type="group">
-					<visible>!Player.SeekEnabled + VideoPlayer.HasEPG</visible>
-					<include content="PVRProgress">
-						<param name="epg_bar_top"value="55"/>
-						<param name="epg_bar_height"value="16"/>
-					</include>
-				</control>
-			</control>
-			<control type="slider">
-				<left>0</left>
-				<top>50</top>
-				<width>100%</width>
-				<height>26</height>
-				<texturesliderbar colordiffuse="00FFFFFF">common/nub_bar.png</texturesliderbar>
-				<textureslidernib colordiffuse="button_focus">common/nub_bar.png</textureslidernib>
-				<textureslidernibfocus colordiffuse="button_focus">common/white.png</textureslidernibfocus>
-				<info>PVR.TimeShiftSeekbar</info>
-				<visible>VideoPlayer.Content(LiveTV) + [Player.Seeking | Player.HasPerformedSeek(3) | Player.Paused] + !Player.ChannelPreviewActive</visible>
-			</control>
-			<control type="ranges">
-				<left>0</left>
-				<top>55</top>
-				<width>100%</width>
-				<height>8</height>
-				<texturebg border="3"colordiffuse="00FFFFFF">common/white50.png</texturebg>
-				<lefttexture >common/white.png</lefttexture>
-				<midtexture colordiffuse="FFFF0000">common/white.png</midtexture>
-				<righttexture >common/white.png</righttexture>
-				<info>Player.Editlist</info>
-			</control>
-			<control type="ranges">
-				<left>0</left>
-				<top>67</top>
-				<width>100%</width>
-				<height>8</height>
-				<texturebg border="3"colordiffuse="00FFFFFF">common/red50.png</texturebg>
-				<righttexture >common/red.png</righttexture>
-				<info>Player.Cuts</info>
-			</control>
-			<control type="ranges">
-				<left>0</left>
-				<top>67</top>
-				<width>100%</width>
-				<height>4</height>
-				<texturebg border="3"colordiffuse="00FFFFFF">common/white50.png</texturebg>
-				<righttexture >common/white.png</righttexture>
-				<info>Player.SceneMarkers</info>
-			</control>
-			<control type="ranges">
-				<left>0</left>
-				<top>67</top>
-				<width>100%</width>
-				<height>4</height>
-				<texturebg border="3"colordiffuse="00FFFFFF">common/white50.png</texturebg>
-				<righttexture >common/white.png</righttexture>
-				<info>Player.Chapters</info>
-			</control>
-		</control>
-		<control type="group">
-			<animation type="conditional"effect="slide"end="0,-200"time="300"tween="sine"easing="inout"condition="$EXP[infodialog_active]"/>
-			<animation type="VisibleChange"effect="slide"start="0,-200"end="0,0"time="300"tween="cubic"easing="out"/>
-			<visible>Player.ShowInfo | Window.IsActive(fullscreeninfo) | Player.ShowTime | Window.IsActive(videoosd) | Window.IsActive(musicosd) | Window.IsActive(playerprocessinfo) | Window.IsActive(pvrosdchannels) | Window.IsActive(pvrchannelguide) + ![Player.Seeking | Player.HasPerformedSeek(3) | Player.Forwarding | Player.Rewinding | Player.Paused] | !String.IsEmpty(PVR.ChannelNumberInput)</visible>
-			<depth>DepthBars</depth>
-			<control type="image">
-				<left>0</left>
-				<top>0</top>
-				<width>100%</width>
-				<height>170</height>
-				<texture >frame/osdfade.png</texture>
+				<texture></texture>
 			</control>
 			<control type="group">
 				<animation type="conditional"effect="slide"end="90,0"time="0"condition="Skin.HasSetting(touchmode)"/>
@@ -189,7 +78,7 @@
 					<orientation>horizontal</orientation>
 					<control type="image">
 						<width>300</width>
-						<texture>$VAR[PlayerClearLogoVar]</texture>
+						<texture></texture>
 						<aspectratio aligny="center"align="center">keep</aspectratio>
 					</control>
 					<control type="label">
@@ -267,7 +156,7 @@
 						<height>40</height>
 						<fadetime>300</fadetime>
 						<aspectratio aligny="center"align="right">keep</aspectratio>
-						<texture >dialogs/volume/mute.png</texture>
+						<texture></texture>
 						<visible>Player.Muted</visible>
 					</control>
 				</control>

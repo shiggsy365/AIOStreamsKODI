@@ -14,8 +14,8 @@
 				<top>-30</top>
 				<width>840</width>
 				<height>155</height>
-				<texture>dialogs/dialog-bg-nobo.png</texture>
-				<bordertexture border="21"infill="false">overlays/shadow.png</bordertexture>
+				<texture></texture>
+				<bordertexture></bordertexture>
 				<bordersize>20</bordersize>
 			</control>
 			<control type="label"id="10">
@@ -54,7 +54,7 @@
 				<top>65</top>
 				<width>28</width>
 				<height>28</height>
-				<texture flipx="true"colordiffuse="button_focus">overlays/arrowright.png</texture>
+				<texture></texture>
 				<animation type="WindowOpen"effect="zoom"start="0,100"end="100,100"delay="500"center="auto"time="200"/>
 				<animation type="WindowClose"effect="zoom"start="100,100"end="0,100"center="auto"time="200"/>
 			</control>
@@ -63,7 +63,7 @@
 				<top>65</top>
 				<width>28</width>
 				<height>28</height>
-				<texture colordiffuse="button_focus">overlays/arrowright.png</texture>
+				<texture></texture>
 				<animation type="WindowOpen"effect="zoom"start="0,100"end="100,100"delay="500"center="auto"time="200"/>
 				<animation type="WindowClose"effect="zoom"start="100,100"end="0,100"center="auto"time="200"/>
 			</control>

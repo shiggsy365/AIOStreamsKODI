@@ -9,7 +9,7 @@
             <top>0</top>
             <width>1920</width>
             <height>1080</height>
-            <texture colordiffuse="main_bg_100">common/white.png</texture>
+            <texture></texture>
             <aspectratio>stretch</aspectratio>
         </control>
 
@@ -26,7 +26,7 @@
                 <top>0</top>
                 <width>1920</width>
                 <height>120</height>
-                <texture colordiffuse="main_bg_90">common/white.png</texture>
+                <texture></texture>
                 <aspectratio>stretch</aspectratio>
             </control>
             
@@ -142,7 +142,7 @@
                             <width>150</width>
                             <height>220</height>
                             <aspectratio>scale</aspectratio>
-                            <texture background="true">$INFO[ListItem.Art(poster)]</texture>
+                            <texture></texture>
                         </control>
                     </itemlayout>
                     <focusedlayout width="160"height="230">
@@ -151,7 +151,7 @@
                             <top>0</top>
                             <width>160</width>
                             <height>230</height>
-                            <texture colordiffuse="ThemeColor">common/white.png</texture>
+                            <texture></texture>
                         </control>
                         <control type="image">
                             <left>5</left>
@@ -159,7 +159,7 @@
                             <width>150</width>
                             <height>220</height>
                             <aspectratio>scale</aspectratio>
-                            <texture background="true">$INFO[ListItem.Art(poster)]</texture>
+                            <texture></texture>
                         </control>
                     </focusedlayout>
                     <content>plugin://plugin.video.aiostreams/?action=trakt_next_up</content>
@@ -205,7 +205,7 @@
                             <width>150</width>
                             <height>220</height>
                             <aspectratio>scale</aspectratio>
-                            <texture background="true">$INFO[ListItem.Art(poster)]</texture>
+                            <texture></texture>
                         </control>
                     </itemlayout>
                     <focusedlayout width="160"height="230">
@@ -214,7 +214,7 @@
                             <top>0</top>
                             <width>160</width>
                             <height>230</height>
-                            <texture colordiffuse="ThemeColor">common/white.png</texture>
+                            <texture></texture>
                         </control>
                         <control type="image">
                             <left>5</left>
@@ -222,7 +222,7 @@
                             <width>150</width>
                             <height>220</height>
                             <aspectratio>scale</aspectratio>
-                            <texture background="true">$INFO[ListItem.Art(poster)]</texture>
+                            <texture></texture>
                         </control>
                     </focusedlayout>
                     <content>plugin://plugin.video.aiostreams/?action=trakt_watchlist&amp;content_type=movie</content>
@@ -267,7 +267,7 @@
                             <width>150</width>
                             <height>220</height>
                             <aspectratio>scale</aspectratio>
-                            <texture background="true">$INFO[ListItem.Art(poster)]</texture>
+                            <texture></texture>
                         </control>
                     </itemlayout>
                     <focusedlayout width="160"height="230">
@@ -276,7 +276,7 @@
                             <top>0</top>
                             <width>160</width>
                             <height>230</height>
-                            <texture colordiffuse="ThemeColor">common/white.png</texture>
+                            <texture></texture>
                         </control>
                         <control type="image">
                             <left>5</left>
@@ -284,7 +284,7 @@
                             <width>150</width>
                             <height>220</height>
                             <aspectratio>scale</aspectratio>
-                            <texture background="true">$INFO[ListItem.Art(poster)]</texture>
+                            <texture></texture>
                         </control>
                     </focusedlayout>
                     <content>plugin://plugin.video.aiostreams/?action=trakt_watchlist&amp;content_type=series</content>

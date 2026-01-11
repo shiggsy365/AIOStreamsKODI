@@ -1,3 +1,8 @@
+[B]3.1.11[/B]
+• FIXED: Extreme resource resolution pass - verified all media filenames and folders are strictly lowercase on disk.
+• FIXED: Aggressive space stripping from all texture tags to prevent path corruption.
+• FIXED: Reinforced fallback textures for dialogs and lists.
+
 [B]3.1.10[/B]
 • FIXED: Massive resource path repair - removed all accidental spaces inside filenames (e.g. "notosans- regular.ttf").
 • FIXED: Restored complete media subdirectory structure (dialogs/, lists/, overlays/) to match skin expectations.

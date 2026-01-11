@@ -18,8 +18,8 @@
 					<width>620</width>
 					<height>620</height>
 					<aspectratio>scale</aspectratio>
-					<texture>dialogs/dialog-bg-nobo.png</texture>
-					<bordertexture border="21"infill="false">overlays/shadow.png</bordertexture>
+					<texture></texture>
+					<bordertexture></bordertexture>
 					<bordersize>20</bordersize>
 				</control>
 				<control type="image">
@@ -30,7 +30,7 @@
 					<height>570</height>
 					<aspectratio aligny="top">scale</aspectratio>
 					<fadetime>300</fadetime>
-					<texture background="true">$VAR[MusicInfoThumbVar]</texture>
+					<texture></texture>
 				</control>
 			</control>
 			<control type="group">
@@ -57,7 +57,7 @@
 						<width>660</width>
 						<height>370</height>
 						<aspectratio aligny="top">scale</aspectratio>
-						<texture fallback="special://skin/extras/home-images/music.jpg">$INFO[ListItem.Art(fanart)]</texture>
+						<texture></texture>
 						<visible>String.IsEmpty(Control.GetLabel(400))</visible>
 					</control>
 					<control type="group">
@@ -68,7 +68,7 @@
 							<width>680</width>
 							<height>390</height>
 							<aspectratio>scale</aspectratio>
-							<texture colordiffuse="AAFFFFFF">common/black.png</texture>
+							<texture></texture>
 						</control>
 						<control type="textbox">
 							<left>16</left>
@@ -94,21 +94,7 @@
 						<width>720</width>
 						<height>430</height>
 						<label></label>
-						<texturenofocus border="21">dialogs/dialog-bg.png</texturenofocus>
-						<onclick>SetProperty(TextViewer_Header,$LOCALIZE[21821],home)</onclick>
-						<onclick>SetProperty(TextViewer_Text,$ESCVAR[MusicInfoTextboxVar],home)</onclick>
-						<onclick condition="[String.IsEqual(ListItem.DbType,song) + !String.IsEmpty(ListItem.Comment)] | [String.IsEqual(ListItem.DbType,album) + !String.IsEmpty(ListItem.Property(Album_Description))] | [String.IsEqual(ListItem.DbType,artist) + !String.IsEmpty(ListItem.Property(Artist_Description))]">ActivateWindow(1102)</onclick>
-					</control>
-					<control type="group">
-						<animation type="Conditional"effect="slide"start="0,0"end="0,-295"time="0"condition="Integer.IsEqual(Container(50).NumItems,0)"/>
-						<visible>[!Integer.IsEqual(Container(50).NumItems,0) + String.IsEmpty(Control.GetLabel(400))]</visible>
-						<control type="image">
-							<left>-4</left>
-							<top>30</top>
-							<width>660</width>
-							<height>370</height>
-							<aspectratio aligny="top">scale</aspectratio>
-							<texture fallback="special://skin/extras/home-images/music.jpg">$INFO[ListItem.Art(fanart)]</texture>
+						<texture></texture>
 						</control>
 						<control type="group">
 							<visible>String.IsEmpty(ListItem.Art(fanart))</visible>
@@ -118,7 +104,7 @@
 								<width>670</width>
 								<height>380</height>
 								<aspectratio>scale</aspectratio>
-								<texture colordiffuse="AAFFFFFF">common/black.png</texture>
+								<texture></texture>
 							</control>
 							<control type="textbox">
 								<left>-14</left>
@@ -141,7 +127,7 @@
 							<width>1154</width>
 							<height>277</height>
 							<aspectratio aligny="top">scale</aspectratio>
-							<texture fallback="special://skin/extras/home-images/music.jpg">$INFO[ListItem.Art(fanart)]</texture>
+							<texture></texture>
 						</control>
 						<control type="group">
 							<visible>String.IsEmpty(ListItem.Art(fanart))</visible>
@@ -151,7 +137,7 @@
 								<width>670</width>
 								<height>380</height>
 								<aspectratio>scale</aspectratio>
-								<texture colordiffuse="AAFFFFFF">common/black.png</texture>
+								<texture></texture>
 							</control>
 							<control type="textbox">
 								<left>-14</left>
@@ -194,7 +180,7 @@
 							<top>-10</top>
 							<width>595</width>
 							<height>100</height>
-							<texture border="21">buttons/button-nofo.png</texture>
+							<texture></texture>
 						</control>
 						<control type="label">
 							<left>40</left>
@@ -211,7 +197,7 @@
 							<top>-10</top>
 							<width>595</width>
 							<height>100</height>
-							<texture border="21"colordiffuse="button_focus">buttons/button-fo.png</texture>
+							<texture></texture>
 						</control>
 						<control type="label">
 							<left>40</left>
@@ -228,7 +214,7 @@
 							<top>-10</top>
 							<width>595</width>
 							<height>100</height>
-							<texture border="21">buttons/button-nofo.png</texture>
+							<texture></texture>
 						</control>
 						<control type="label">
 							<left>40</left>
@@ -251,7 +237,7 @@
 								<top>-10</top>
 								<width>595</width>
 								<height>100</height>
-								<texture border="21"colordiffuse="button_focus">buttons/button-fo.png</texture>
+								<texture></texture>
 							</control>
 							<control type="label">
 								<left>40</left>
@@ -274,16 +260,16 @@
 							<top>-10</top>
 							<width>250</width>
 							<height>312</height>
-							<texture border="21">buttons/button-nofo.png</texture>
+							<texture></texture>
 						</control>
 						<control type="image">
 							<left>30</left>
 							<top>21</top>
 							<width>190</width>
 							<height>190</height>
-							<texture border="2"fallback="defaultaudio.png"background="true">$INFO[ListItem.Thumb]</texture>
+							<texture></texture>
 							<aspectratio>keep</aspectratio>
-							<bordertexture colordiffuse="border_alpha">common/black.png</bordertexture>
+							<bordertexture></bordertexture>
 							<bordersize>4</bordersize>
 						</control>
 						<control type="textbox">
@@ -310,16 +296,16 @@
 								<top>-10</top>
 								<width>250</width>
 								<height>312</height>
-								<texture border="21">buttons/button-nofo.png</texture>
+								<texture></texture>
 							</control>
 							<control type="image">
 								<left>30</left>
 								<top>21</top>
 								<width>190</width>
 								<height>190</height>
-								<texture border="2"fallback="defaultaudio.png"background="true">$INFO[ListItem.Thumb]</texture>
+								<texture></texture>
 								<aspectratio>keep</aspectratio>
-								<bordertexture colordiffuse="border_alpha">common/black.png</bordertexture>
+								<bordertexture></bordertexture>
 								<bordersize>4</bordersize>
 							</control>
 							<control type="textbox">
@@ -343,7 +329,7 @@
 								<top>6</top>
 								<width>218</width>
 								<height>280</height>
-								<texture border="8"colordiffuse="button_focus">buttons/thumbnail_focused.png</texture>
+								<texture></texture>
 								<animation type="Unfocus"effect="fade"start="100"end="0"time="200"/>
 							</control>
 						</control>
@@ -384,7 +370,7 @@
 							<align>center</align>
 						</control>
 						<control type="image">
-							<texture >icons/infodialogs/rating.png</texture>
+							<texture></texture>
 							<left>108</left>
 							<top>30</top>
 							<width>48</width>
@@ -438,7 +424,7 @@
 						<width>450</width>
 						<height>390</height>
 						<aspectratio>scale</aspectratio>
-						<texture colordiffuse="AAFFFFFF">common/black.png</texture>
+						<texture></texture>
 					</control>
 					<control type="group">
 						<left>1275</left>
@@ -470,7 +456,7 @@
 									<top>1</top>
 									<width>446</width>
 									<height>33</height>
-									<texture colordiffuse="button_focus">lists/focus.png</texture>
+									<texture></texture>
 									<visible>Control.HasFocus(41)</visible>
 								</control>
 								<control type="label">

@@ -34,7 +34,7 @@
 					<top>55</top>
 					<width>440</width>
 					<height>855</height>
-					<texture border="40">buttons/dialogbutton-nofo.png</texture>
+					<texture></texture>
 				</control>
 				<control type="list"id="13">
 					<left>20</left>
@@ -62,8 +62,8 @@
 							<height>60</height>
 							<right>5</right>
 							<top>5</top>
-							<texture>$INFO[ListItem.Icon]</texture>
-							<bordertexture colordiffuse="border_alpha">common/black.png</bordertexture>
+							<texture></texture>
+							<bordertexture></bordertexture>
 							<bordersize>2</bordersize>
 							<aspectratio>keep</aspectratio>
 						</control>
@@ -74,7 +74,7 @@
 							<top>0</top>
 							<right>0</right>
 							<bottom>0</bottom>
-							<texture colordiffuse="button_focus">lists/focus.png</texture>
+							<texture></texture>
 							<visible>Control.HasFocus(13)</visible>
 						</control>
 						<control type="label">
@@ -102,8 +102,8 @@
 							<height>60</height>
 							<right>5</right>
 							<top>5</top>
-							<texture>$INFO[ListItem.Icon]</texture>
-							<bordertexture colordiffuse="border_alpha">common/black.png</bordertexture>
+							<texture></texture>
+							<bordertexture></bordertexture>
 							<bordersize>2</bordersize>
 							<aspectratio>keep</aspectratio>
 						</control>
@@ -216,8 +216,8 @@
 				<bottom>50</bottom>
 				<width>370</width>
 				<height>200</height>
-				<texture>$INFO[Container(13).ListItem.Icon]</texture>
-				<bordertexture colordiffuse="border_alpha">common/black.png</bordertexture>
+				<texture></texture>
+				<bordertexture></bordertexture>
 				<bordersize>2</bordersize>
 				<aspectratio>keep</aspectratio>
 			</control>

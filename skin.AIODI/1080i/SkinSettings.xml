@@ -25,7 +25,7 @@
                 <control type="image">
                     <width>450</width>
                     <height>100%</height>
-                    <texture colordiffuse="CC000000">common/white.png</texture>
+                    <texture></texture>
                 </control>
 
                 <control type="list"id="9000">
@@ -52,7 +52,7 @@
                         <control type="image">
                             <width>410</width>
                             <height>80</height>
-                            <texture colordiffuse="ThemeColor">lists/focus.png</texture>
+                            <texture></texture>
                         </control>
                         <control type="label">
                             <left>20</left>
@@ -106,7 +106,7 @@
                         <selected>!Skin.HasSetting(no_slide_animations)</selected>
                         <onclick>Skin.ToggleSetting(no_slide_animations)</onclick>
                         <focusedcolor>ThemeColor</focusedcolor>
-                        <texturefocus colordiffuse="ThemeColor">lists/focus.png</texturefocus>
+                        <texturefocus></texturefocus>
                     </control>
                     <control type="radiobutton"id="702">
                         <width>1300</width>
@@ -116,7 +116,7 @@
                         <onclick>Skin.ToggleSetting(autoscroll)</onclick>
                         <selected>Skin.HasSetting(autoscroll)</selected>
                         <focusedcolor>ThemeColor</focusedcolor>
-                        <texturefocus colordiffuse="ThemeColor">lists/focus.png</texturefocus>
+                        <texturefocus></texturefocus>
                     </control>
                 </control>
 
@@ -138,7 +138,7 @@
                         <onclick>Skin.ToggleSetting(no_fanart)</onclick>
                         <selected>!Skin.HasSetting(no_fanart)</selected>
                         <focusedcolor>ThemeColor</focusedcolor>
-                        <texturefocus colordiffuse="ThemeColor">lists/focus.png</texturefocus>
+                        <texturefocus></texturefocus>
                     </control>
                 </control>
 
@@ -161,7 +161,7 @@
                         <selected>!Skin.HasSetting(HomeMenuNoMovieButton)</selected>
                         <onclick>Skin.ToggleSetting(HomeMenuNoMovieButton)</onclick>
                         <focusedcolor>ThemeColor</focusedcolor>
-                        <texturefocus colordiffuse="ThemeColor">lists/focus.png</texturefocus>
+                        <texturefocus></texturefocus>
                     </control>
                     <control type="radiobutton"id="612">
                         <width>1300</width>
@@ -171,7 +171,7 @@
                         <selected>!Skin.HasSetting(HomeMenuNoTVShowButton)</selected>
                         <onclick>Skin.ToggleSetting(HomeMenuNoTVShowButton)</onclick>
                         <focusedcolor>ThemeColor</focusedcolor>
-                        <texturefocus colordiffuse="ThemeColor">lists/focus.png</texturefocus>
+                        <texturefocus></texturefocus>
                     </control>
                 </control>
             </control>

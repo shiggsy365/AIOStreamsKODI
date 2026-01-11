@@ -23,7 +23,7 @@
 					<height>32</height>
 					<aspectratio align="center">keep</aspectratio>
 					<visible>$PARAM[has_info_icon]</visible>
-					<texture>$PARAM[info_icon]</texture>
+					<texture></texture>
 				</control>
 				<control type="label">
 					<left>10</left>
@@ -82,7 +82,7 @@
 				<width>32</width>
 				<aligny>center</aligny>
 				<aspectratio align="center">keep</aspectratio>
-				<texture>$VAR[PVRStatusImageVar]</texture>
+				<texture></texture>
 				<visible>$PARAM[has_status_icon]</visible>
 			</control>
 			<control type="image">
@@ -92,7 +92,7 @@
 				<aligny>center</aligny>
 				<aspectratio align="center">keep</aspectratio>
 				<visible>!$PARAM[only_label_condition] | ListItem.IsParentFolder</visible>
-				<texture>$INFO[ListItem.ActualIcon]</texture>
+				<texture></texture>
 			</control>
 		</definition>
 	</include>
@@ -132,7 +132,7 @@
 					<top>0</top>
 					<right>0</right>
 					<animation type="UnFocus"effect="fade"start="100"end="0"time="0"/>
-					<texture colordiffuse="button_focus">lists/focus.png</texture>
+					<texture></texture>
 					<visible>Control.HasFocus($PARAM[list_id])</visible>
 				</control>
 				<control type="progress">
@@ -187,7 +187,7 @@
 			<top>55</top>
 			<width>510</width>
 			<height>855</height>
-			<texture border="40">buttons/dialogbutton-nofo.png</texture>
+			<texture></texture>
 		</control>
 		<control type="list"id="$PARAM[list_id]">
 			<left>20</left>
@@ -206,8 +206,8 @@
 					<height>60</height>
 					<right>5</right>
 					<top>5</top>
-					<texture>$INFO[ListItem.ActualIcon]</texture>
-					<bordertexture colordiffuse="border_alpha">common/black.png</bordertexture>
+					<texture></texture>
+					<bordertexture></bordertexture>
 					<bordersize>2</bordersize>
 					<aspectratio>keep</aspectratio>
 				</control>
@@ -226,7 +226,7 @@
 					<left>0</left>
 					<right>0</right>
 					<bottom>0</bottom>
-					<texture colordiffuse="button_focus">lists/focus.png</texture>
+					<texture></texture>
 					<visible>Control.HasFocus($PARAM[list_id])</visible>
 				</control>
 				<control type="image">
@@ -234,8 +234,8 @@
 					<height>60</height>
 					<right>5</right>
 					<top>5</top>
-					<texture>$INFO[ListItem.ActualIcon]</texture>
-					<bordertexture colordiffuse="border_alpha">common/black.png</bordertexture>
+					<texture></texture>
+					<bordertexture></bordertexture>
 					<bordersize>2</bordersize>
 					<aspectratio>keep</aspectratio>
 				</control>
@@ -309,76 +309,7 @@
 					<height>$PARAM[epg_bar_height]</height>
 					<info2>PVR.TimeshiftProgressEpgStart</info2>
 					<info>PVR.TimeshiftProgressPlayPos</info>
-					<texturebg border="3"colordiffuse="60FFFFFF">common/white50.png</texturebg>
-					<midtexture colordiffuse="button_focus">common/white.png</midtexture>
-				</control>
-				<control type="progress">
-					<left>0</left>
-					<top>$PARAM[epg_bar_top]</top>
-					<width>100%</width>
-					<height>$PARAM[epg_bar_height]</height>
-					<info2>PVR.TimeshiftProgressPlayPos</info2>
-					<info>PVR.TimeshiftProgressEpgEnd</info>
-					<texturebg border="3"colordiffuse="00FFFFFF">common/white50.png</texturebg>
-					<midtexture >common/white50.png</midtexture>
-				</control>
-			</control>
-			<control type="progress">
-				<left>0</left>
-				<top>$PARAM[ts_bar_top]</top>
-				<width>100%</width>
-				<height>$PARAM[ts_bar_height]</height>
-				<info2>PVR.TimeshiftProgressBufferStart</info2>
-				<info>PVR.TimeshiftProgressBufferEnd</info>
-				<texturebg border="3"colordiffuse="60FFFFFF">common/white50.png</texturebg>
-				<midtexture >common/white70.png</midtexture>
-				<visible>Player.SeekEnabled</visible>
-			</control>
-		</control>
-		<control type="group">
-			<animation type="VisibleChange"effect="fade"time="400"/>
-			<visible>Player.ChannelPreviewActive</visible>
-			<control type="label">
-				<top>22</top>
-				<right>20</right>
-				<width>400</width>
-				<height>50</height>
-				<align>right</align>
-				<aligny>center</aligny>
-				<font>font13</font>
-				<label>$INFO[VideoPlayer.EndTime]</label>
-			</control>
-			<control type="label">
-				<top>22</top>
-				<left>20</left>
-				<width>400</width>
-				<height>50</height>
-				<align>left</align>
-				<aligny>center</aligny>
-				<font>font13</font>
-				<label>$INFO[VideoPlayer.StartTime]</label>
-			</control>
-			<control type="progress">
-				<left>0</left>
-				<top>70</top>
-				<width>100%</width>
-				<height>16</height>
-				<info>PVR.EpgEventProgress</info>
-				<texturebg border="3"colordiffuse="60FFFFFF">common/white50.png</texturebg>
-				<midtexture colordiffuse="button_focus">common/white.png</midtexture>
-			</control>
-		</control>
-	</include>
-	<include name="PVRInfoPanel">
-		<control type="group">
-			<visible>!ListItem.IsFolder</visible>
-			<control type="image">
-				<top>135</top>
-				<left>630</left>
-				<width>200</width>
-				<height>200</height>
-				<aspectratio align="center"aligny="center">keep</aspectratio>
-				<texture fallback="defaulttvshows.png">$VAR[ChannelListEPGIconVar]</texture>
+					<texture></texture>
 				<visible>!String.IsEmpty(ListItem.ChannelName)</visible>
 				<fadetime>200</fadetime>
 			</control>
@@ -614,7 +545,7 @@
 					<control type="image"id="2">
 						<width>58</width>
 						<height>58</height>
-						<texture border="3"fallback="windows/pvr/epg-genres/0.png">$INFO[ListItem.Property(GenreType),windows/pvr/epg-genres/,.png]</texture>
+						<texture></texture>
 					</control>
 					<control type="label"id="1">
 						<left>6</left>
@@ -631,14 +562,14 @@
 						<width>16</width>
 						<height>16</height>
 						<aspectratio>keep</aspectratio>
-						<texture colordiffuse="button_focus">icons/pvr/premiere.png</texture>
+						<texture></texture>
 					</control>
 					<control type="image">
 						<left>6</left>
 						<top>35</top>
 						<width>16</width>
 						<height>16</height>
-						<texture>$VAR[PVRTimerIcon]</texture>
+						<texture></texture>
 						<animation type="Conditional"effect="slide"start="0,0"end="19,0"condition="ListItem.IsNew | ListItem.IsPremiere | ListItem.IsFinale | ListItem.IsLive"/>
 					</control>
 				</itemlayout>
@@ -648,19 +579,19 @@
 						<left>2</left>
 						<width>54</width>
 						<height>54</height>
-						<texture colordiffuse="button_focus">lists/focus.png</texture>
+						<texture></texture>
 						<visible>Control.HasFocus($PARAM[control_id])</visible>
 					</control>
 					<control type="image"id="2">
 						<width>58</width>
 						<height>58</height>
-						<texture border="8"colordiffuse="button_focus">buttons/thumbnail_focused.png</texture>
+						<texture></texture>
 					</control>
 					<control type="image"id="2">
 						<width>58</width>
 						<height>58</height>
 						<top>0</top>
-						<texture border="3"fallback="windows/pvr/epg-genres/0.png">$INFO[ListItem.Property(GenreType),windows/pvr/epg-genres/,.png]</texture>
+						<texture></texture>
 						<visible>!Control.HasFocus($PARAM[control_id])</visible>
 					</control>
 					<control type="label"id="1">
@@ -678,14 +609,14 @@
 						<width>16</width>
 						<height>16</height>
 						<aspectratio>keep</aspectratio>
-						<texture colordiffuse="button_focus">icons/pvr/premiere.png</texture>
+						<texture></texture>
 					</control>
 					<control type="image">
 						<left>6</left>
 						<top>35</top>
 						<width>16</width>
 						<height>16</height>
-						<texture>$VAR[PVRTimerIcon]</texture>
+						<texture></texture>
 						<animation type="Conditional"effect="slide"start="0,0"end="19,0"condition="ListItem.IsNew | ListItem.IsPremiere | ListItem.IsFinale | ListItem.IsLive"/>
 					</control>
 				</focusedlayout>

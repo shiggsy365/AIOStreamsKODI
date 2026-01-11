@@ -31,9 +31,9 @@
 							<top>10</top>
 							<width>120</width>
 							<height>120</height>
-							<texture fallback="defaultaddon.png">$INFO[Listitem.Icon]</texture>
+							<texture></texture>
 							<aspectratio>scale</aspectratio>
-							<bordertexture colordiffuse="border_alpha">common/black.png</bordertexture>
+							<bordertexture></bordertexture>
 							<bordersize>4</bordersize>
 						</control>
 						<control type="label">
@@ -70,7 +70,7 @@
 							<top>0</top>
 							<right>0</right>
 							<bottom>0</bottom>
-							<texture colordiffuse="button_focus">lists/focus.png</texture>
+							<texture></texture>
 							<visible>Control.HasFocus(50)</visible>
 						</control>
 						<control type="image">
@@ -78,9 +78,9 @@
 							<top>10</top>
 							<width>120</width>
 							<height>120</height>
-							<texture fallback="defaultaddon.png">$INFO[Listitem.Icon]</texture>
+							<texture></texture>
 							<aspectratio>scale</aspectratio>
-							<bordertexture colordiffuse="border_alpha">common/black.png</bordertexture>
+							<bordertexture></bordertexture>
 							<bordersize>4</bordersize>
 						</control>
 						<control type="label">
@@ -133,47 +133,8 @@
 						<height>110</height>
 						<aligny>top</aligny>
 						<textoffsetx>40</textoffsetx>
-						<texturenofocus />
-						<texturefocus colordiffuse="button_focus">lists/focus.png</texturefocus>
-						<alttexturenofocus></alttexturenofocus>
-						<alttexturefocus colordiffuse="button_focus">lists/focus.png</alttexturefocus>
-						<textoffsety>35</textoffsety>
-						<label>$LOCALIZE[31032]: $LOCALIZE[584]</label>
-						<altlabel>$LOCALIZE[31032]: $LOCALIZE[585]</altlabel>
-					</control>
-					<include content="PlaylistWindowButton">
-						<param name="control_id"value="21"/>
-						<param name="onclick"value=""/>
-						<param name="label"value=""/>
-					</include>
-					<control type="radiobutton"id="22">
-						<height>110</height>
-						<aligny>top</aligny>
-						<texturenofocus />
-						<texturefocus colordiffuse="button_focus">lists/focus.png</texturefocus>
-						<textoffsetx>40</textoffsetx>
-						<textoffsety>35</textoffsety>
-					</control>
-					<include content="PlaylistWindowButton">
-						<param name="control_id"value="20"/>
-						<param name="onclick"value=""/>
-						<param name="label"value="$LOCALIZE[192]"/>
-					</include>
-					<include content="PlaylistWindowButton">
-						<param name="control_id"value="501"/>
-						<param name="onclick"value="ActivateWindow(systemsettings,logging)"/>
-						<param name="label"value="$LOCALIZE[5]"/>
-					</include>
-				</control>
-				<control type="image">
-					<left>70</left>
-					<bottom>90</bottom>
-					<width>300</width>
-					<height>300</height>
-					<fadetime>300</fadetime>
-					<aspectratio aligny="bottom">keep</aspectratio>
-					<texture fallback="defaultaddon.png">$INFO[ListItem.Icon]</texture>
-					<bordertexture border="21"infill="false">overlays/shadow.png</bordertexture>
+						<texture></texture>
+					<bordertexture></bordertexture>
 					<bordersize>20</bordersize>
 				</control>
 			</control>

@@ -11,21 +11,7 @@
 			<top>0</top>
 			<width>100%</width>
 			<bottom>280</bottom>
-			<texturefocus />
-			<texturenofocus />
-			<onclick>Action(close)</onclick>
-		</control>
-		<control type="group">
-			<bottom>0</bottom>
-			<height>150</height>
-			<animation type="VisibleChange"effect="fade"time="200"/>
-			<control type="group"id="200">
-				<control type="image">
-					<left>0</left>
-					<top>0</top>
-					<width>100%</width>
-					<height>100%</height>
-					<texture>dialogs/dialog-bg-nobo.png</texture>
+			<texture></texture>
 				</control>
 				<control type="group">
 					<left>20</left>

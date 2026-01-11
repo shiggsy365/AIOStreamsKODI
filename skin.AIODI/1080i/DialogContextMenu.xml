@@ -15,26 +15,14 @@
 			<height>3240</height>
 			<animation type="WindowOpen"effect="fade"start="0"end="100"time="300"/>
 			<animation type="WindowClose"effect="fade"start="100"end="0"time="200"/>
-			<texture colordiffuse="B0FFFFFF">common/black.png</texture>
+			<texture></texture>
 		</control>
 		<control type="button">
 			<left>-1920</left>
 			<top>-1080</top>
 			<width>5760</width>
 			<height>3240</height>
-			<texturefocus />
-			<texturenofocus />
-			<onclick>Action(close)</onclick>
-		</control>
-		<control type="group">
-			<animation type="conditional"effect="slide"end="0,175"time="0"condition="Window.IsActive(home)"/>
-			<control type="image"id="999">
-				<description>background image</description>
-				<left>0</left>
-				<top>0</top>
-				<width>450</width>
-				<height>780</height>
-				<texture colordiffuse="dialog_tint">common/white.png</texture>
+			<texture></texture>
 			</control>
 			<control type="grouplist"id="996">
 				<description>grouplist for context buttons</description>
@@ -58,7 +46,7 @@
 			<width>450</width>
 			<height>65</height>
 			<align>center</align>
-			<texturefocus colordiffuse="button_focus">lists/focus.png</texturefocus>
+			<texturefocus></texturefocus>
 			<texturenofocus />
 		</control>
 	</controls>

@@ -32,7 +32,7 @@
 						<top>109</top>
 						<width>472</width>
 						<height>472</height>
-						<texture colordiffuse="AAFFFFFF">common/black.png</texture>
+						<texture></texture>
 					</control>
 					<control type="textbox">
 						<left>75</left>

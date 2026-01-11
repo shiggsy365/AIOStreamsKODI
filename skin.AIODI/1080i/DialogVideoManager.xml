@@ -19,7 +19,7 @@
 				<width>400</width>
 				<height>630</height>
 				<top>100</top>
-				<texture>$VAR[VideoListPosterVar]</texture>
+				<texture></texture>
 				<aspectratio aligny="top">keep</aspectratio>
 			</control>
 			<control type="label">
@@ -53,7 +53,7 @@
 					<top>0</top>
 					<width>920</width>
 					<height>665</height>
-					<texture border="40">buttons/dialogbutton-nofo.png</texture>
+					<texture></texture>
 				</control>
 				<control type="list"id="50">
 					<description>version list</description>

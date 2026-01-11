@@ -24,13 +24,13 @@
 				<top>130</top>
 				<right>0</right>
 				<height>3</height>
-				<texture colordiffuse="button_focus"border="2">dialogs/separator-grey.png</texture>
+				<texture></texture>
 			</control>
 			<control type="image">
 				<bottom>134</bottom>
 				<right>0</right>
 				<height>3</height>
-				<texture colordiffuse="button_focus"border="2">dialogs/separator-grey.png</texture>
+				<texture></texture>
 			</control>
 			<control type="panel"id="2">
 				<top>148</top>
@@ -48,8 +48,8 @@
 						<top>5</top>
 						<width>320</width>
 						<height>380</height>
-						<texture>dialogs/dialog-bg-nobo.png</texture>
-						<bordertexture border="21"infill="false">overlays/shadow.png</bordertexture>
+						<texture></texture>
+						<bordertexture></bordertexture>
 						<bordersize>20</bordersize>
 					</control>
 					<control type="image">
@@ -58,7 +58,7 @@
 						<width>215</width>
 						<height>215</height>
 						<aspectratio>scale</aspectratio>
-						<texture fallback="defaultuser.png">$INFO[Listitem.Icon]</texture>
+						<texture></texture>
 					</control>
 					<control type="label">
 						<left>10</left>
@@ -100,15 +100,15 @@
 							<top>5</top>
 							<width>320</width>
 							<height>380</height>
-							<texture>dialogs/dialog-bg-nobo.png</texture>
-							<bordertexture border="21"infill="false">overlays/shadow.png</bordertexture>
+							<texture></texture>
+							<bordertexture></bordertexture>
 							<bordersize>20</bordersize>
 						</control>
 						<control type="image">
 							<top>5</top>
 							<width>320</width>
 							<height>380</height>
-							<texture colordiffuse="button_focus">common/grey.png</texture>
+							<texture></texture>
 							<bordersize>20</bordersize>
 							<include>Animation_FocusTextureFade</include>
 						</control>
@@ -118,7 +118,7 @@
 							<width>215</width>
 							<height>215</height>
 							<aspectratio>scale</aspectratio>
-							<texture fallback="defaultuser.png">$INFO[Listitem.Icon]</texture>
+							<texture></texture>
 						</control>
 						<control type="label">
 							<left>10</left>
@@ -205,7 +205,7 @@
 					<control type="image">
 						<right>0</right>
 						<bottom>0</bottom>
-						<texture colordiffuse="button_focus">lists/focus.png</texture>
+						<texture></texture>
 						<animation type="Conditional"effect="fade"start="100"end="50"time="40"condition="!Control.HasFocus(9000)"/>
 					</control>
 					<control type="label">
@@ -221,12 +221,12 @@
 					<item id="1">
 						<label>$LOCALIZE[128]</label>
 						<onclick>noop</onclick>
-						<icon></icon>
+						<icon></icon>
 					</item>
 					<item id="2">
 						<label>$LOCALIZE[13200]</label>
 						<onclick>noop</onclick>
-						<icon></icon>
+						<icon></icon>
 					</item>
 				</content>
 			</control>

@@ -10,20 +10,7 @@
 			<top>0</top>
 			<width>100%</width>
 			<bottom>546</bottom>
-			<texturefocus />
-			<texturenofocus />
-			<onclick>Action(close)</onclick>
-		</control>
-		<control type="group">
-			<bottom>0</bottom>
-			<height>550</height>
-			<control type="image">
-				<left>0</left>
-				<width>100%</width>
-				<height>410</height>
-				<animation type="WindowOpen"effect="fade"start="0"end="100"time="300"/>
-				<animation type="WindowClose"effect="fade"start="100"end="0"time="300"/>
-				<texture colordiffuse="E6FFFFFF">dialogs/dialog-bg-nobo.png</texture>
+			<texture></texture>
 			</control>
 			<control type="textbox">
 				<left>0</left>
@@ -81,8 +68,8 @@
 							<width>330</width>
 							<height>250</height>
 							<aspectratio>scale</aspectratio>
-							<texture border="4"fallback="defaultvideo.png">$INFO[ListItem.Art(thumb)]</texture>
-							<bordertexture colordiffuse="border_alpha">common/black.png</bordertexture>
+							<texture></texture>
+							<bordertexture></bordertexture>
 							<bordersize>4</bordersize>
 						</control>
 						<control type="label">
@@ -106,8 +93,8 @@
 							<width>330</width>
 							<height>250</height>
 							<aspectratio>scale</aspectratio>
-							<texture border="4"fallback="defaultvideo.png">$INFO[ListItem.Art(thumb)]</texture>
-							<bordertexture colordiffuse="border_alpha">common/black.png</bordertexture>
+							<texture></texture>
+							<bordertexture></bordertexture>
 							<bordersize>4</bordersize>
 						</control>
 						<control type="label">
@@ -125,7 +112,7 @@
 							<top>5</top>
 							<width>330</width>
 							<height>250</height>
-							<texture border="8"colordiffuse="button_focus">buttons/thumbnail_focused.png</texture>
+							<texture></texture>
 							<visible>Control.HasFocus(11)</visible>
 						</control>
 					</control>

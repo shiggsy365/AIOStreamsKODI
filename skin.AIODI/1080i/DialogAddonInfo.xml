@@ -19,50 +19,27 @@
 					<width>755</width>
 					<height>435</height>
 					<label></label>
-					<texturenofocus border="21">dialogs/dialog-bg.png</texturenofocus>
-					<onup>50</onup>
-					<ondown>9000</ondown>
-					<onclick>SetProperty(TextViewer_Header,$LOCALIZE[31141] $INFO[ListItem.AddonVersion],home)</onclick>
-					<onclick>SetProperty(TextViewer_Text,$ESCINFO[ListItem.AddonNews],home)</onclick>
-					<onclick>ActivateWindow(1102)</onclick>
-					<enable>!String.IsEmpty(ListItem.AddonNews)</enable>
-				</control>
-				<control type="textbox">
-					<left>650</left>
-					<top>430</top>
-					<width>665</width>
-					<height>375</height>
-					<label>$INFO[ListItem.AddonSummary,[B],[/B][CR]]$INFO[ListItem.AddonDescription][CR]$VAR[AddonNewsVar,[I][CR][CR],[/I]]</label>
-					<autoscroll delay="5000"repeat="7500"time="5000">true</autoscroll>
-				</control>
-				<control type="group">
-					<left>606</left>
-					<top>160</top>
-					<visible>Integer.IsEqual(Container(50).NumItems,0)</visible>
-					<control type="image">
-						<width>425</width>
-						<height>260</height>
-						<texture background="true">defaultnopreview.png</texture>
+					<texture></texture>
 						<aspectratio>scale</aspectratio>
-						<bordertexture border="21"infill="false">overlays/shadow.png</bordertexture>
+						<bordertexture></bordertexture>
 						<bordersize>20</bordersize>
 					</control>
 					<control type="image">
 						<left>405</left>
 						<width>425</width>
 						<height>260</height>
-						<texture background="true">defaultnopreview.png</texture>
+						<texture></texture>
 						<aspectratio>scale</aspectratio>
-						<bordertexture border="21"infill="false">overlays/shadow.png</bordertexture>
+						<bordertexture></bordertexture>
 						<bordersize>20</bordersize>
 					</control>
 					<control type="image">
 						<left>810</left>
 						<width>425</width>
 						<height>260</height>
-						<texture background="true">defaultnopreview.png</texture>
+						<texture></texture>
 						<aspectratio>scale</aspectratio>
-						<bordertexture border="21"infill="false">overlays/shadow.png</bordertexture>
+						<bordertexture></bordertexture>
 						<bordersize>20</bordersize>
 					</control>
 				</control>
@@ -79,18 +56,18 @@
 							<left>-12</left>
 							<width>425</width>
 							<height>260</height>
-							<texture background="true">defaultnopreview.png</texture>
+							<texture></texture>
 							<aspectratio>scale</aspectratio>
-							<bordertexture border="21"infill="false">overlays/shadow.png</bordertexture>
+							<bordertexture></bordertexture>
 							<bordersize>20</bordersize>
 						</control>
 						<control type="image">
 							<left>-12</left>
 							<width>425</width>
 							<height>260</height>
-							<texture background="true">$INFO[ListItem.Icon]</texture>
+							<texture></texture>
 							<aspectratio>scale</aspectratio>
-							<bordertexture border="21"infill="false">overlays/shadow.png</bordertexture>
+							<bordertexture></bordertexture>
 							<bordersize>20</bordersize>
 						</control>
 					</itemlayout>
@@ -99,18 +76,18 @@
 							<left>-12</left>
 							<width>425</width>
 							<height>260</height>
-							<texture background="true">defaultnopreview.png</texture>
+							<texture></texture>
 							<aspectratio>scale</aspectratio>
-							<bordertexture border="21"infill="false">overlays/shadow.png</bordertexture>
+							<bordertexture></bordertexture>
 							<bordersize>20</bordersize>
 						</control>
 						<control type="image">
 							<left>-12</left>
 							<width>425</width>
 							<height>260</height>
-							<texture background="true">$INFO[ListItem.Icon]</texture>
+							<texture></texture>
 							<aspectratio>scale</aspectratio>
-							<bordertexture border="21"infill="false">overlays/shadow.png</bordertexture>
+							<bordertexture></bordertexture>
 							<bordersize>20</bordersize>
 						</control>
 						<control type="image">
@@ -118,7 +95,7 @@
 							<top>16</top>
 							<width>393</width>
 							<height>228</height>
-							<texture border="8"colordiffuse="button_focus">buttons/thumbnail_focused.png</texture>
+							<texture></texture>
 						</control>
 					</focusedlayout>
 				</control>
@@ -136,7 +113,7 @@
 						<width>450</width>
 						<height>396</height>
 						<aspectratio>scale</aspectratio>
-						<texture colordiffuse="AAFFFFFF">common/black.png</texture>
+						<texture></texture>
 					</control>
 					<control type="group">
 						<left>1340</left>
@@ -169,7 +146,7 @@
 									<top>35</top>
 									<width>32</width>
 									<height>32</height>
-									<texture>$INFO[ListItem.Icon]</texture>
+									<texture></texture>
 								</control>
 							</itemlayout>
 							<focusedlayout height="75">
@@ -196,7 +173,7 @@
 									<top>35</top>
 									<width>32</width>
 									<height>32</height>
-									<texture>$INFO[ListItem.Icon]</texture>
+									<texture></texture>
 								</control>
 							</focusedlayout>
 							<content>
@@ -208,7 +185,7 @@
 								<item>
 									<label>$LOCALIZE[31150]:</label>
 									<label2>$INFO[ListItem.AddonOrigin]</label2>
-									<icon>$VAR[AddonsOriginVar]</icon>
+									<icon></icon>
 									<visible>!String.IsEmpty(ListItem.AddonOrigin)</visible>
 								</item>
 								<item>
@@ -306,8 +283,8 @@
 					<width>540</width>
 					<height>540</height>
 					<aspectratio>scale</aspectratio>
-					<texture>dialogs/dialog-bg-nobo.png</texture>
-					<bordertexture border="21"infill="false">overlays/shadow.png</bordertexture>
+					<texture></texture>
+					<bordertexture></bordertexture>
 					<bordersize>20</bordersize>
 				</control>
 				<control type="image">
@@ -317,7 +294,7 @@
 					<height>500</height>
 					<aspectratio aligny="top">scale</aspectratio>
 					<fadetime>300</fadetime>
-					<texture fallback="defaultaddon.png"background="true">$INFO[ListItem.Art(thumb)]</texture>
+					<texture></texture>
 				</control>
 				<control type="group">
 					<visible>String.IsEqual(ListItem.AddonLifecycleType,$LOCALIZE[24170]) | String.IsEqual(ListItem.AddonLifecycleType,$LOCALIZE[24171])</visible>
@@ -326,7 +303,7 @@
 						<top>24</top>
 						<width>500</width>
 						<height>500</height>
-						<texture colordiffuse="AAFFFFFF">common/black.png</texture>
+						<texture></texture>
 					</control>
 					<control type="textbox">
 						<left>25</left>

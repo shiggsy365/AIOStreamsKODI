@@ -49,7 +49,7 @@
 							<width>380</width>
 							<height>50</height>
 							<aspectratio align="center">keep</aspectratio>
-							<texture >defaulticoninfo.png</texture>
+							<texture></texture>
 						</control>
 						<control type="label">
 							<description>notification</description>
@@ -70,7 +70,7 @@
 					<top>-20</top>
 					<width>960</width>
 					<height>640</height>
-					<texture border="40">buttons/dialogbutton-nofo.png</texture>
+					<texture></texture>
 				</control>
 				<control type="label">
 					<description>Video label</description>
@@ -100,7 +100,7 @@
 							<top>5</top>
 							<width>50</width>
 							<height>50</height>
-							<texture>$INFO[ListItem.Thumb,windows/subtitles/flags/,.png]</texture>
+							<texture></texture>
 							<aspectratio>keep</aspectratio>
 						</control>
 						<control type="label">
@@ -119,7 +119,7 @@
 							<top>60</top>
 							<width>30</width>
 							<height>20</height>
-							<texture >windows/subtitles/icon_close_caption.png</texture>
+							<texture></texture>
 							<visible>ListItem.property(hearing_imp)</visible>
 						</control>
 						<control type="image">
@@ -127,7 +127,7 @@
 							<top>60</top>
 							<width>60</width>
 							<height>20</height>
-							<texture >windows/subtitles/icon_sync.png</texture>
+							<texture></texture>
 							<visible>ListItem.property(sync)</visible>
 						</control>
 						<control type="textbox">
@@ -143,7 +143,7 @@
 							<top>10</top>
 							<width>100</width>
 							<height>45</height>
-							<texture fallback="flags/starrating/rating0.png">$INFO[ListItem.ActualIcon,flags/starrating/rating,.png]</texture>
+							<texture></texture>
 							<aspectratio>keep</aspectratio>
 						</control>
 					</itemlayout>
@@ -152,7 +152,7 @@
 							<left>0</left>
 							<right>0</right>
 							<bottom>0</bottom>
-							<texture colordiffuse="button_focus">lists/focus.png</texture>
+							<texture></texture>
 							<visible>Control.HasFocus(120)</visible>
 						</control>
 						<control type="image">
@@ -160,7 +160,7 @@
 							<top>5</top>
 							<width>50</width>
 							<height>50</height>
-							<texture>$INFO[ListItem.Thumb,windows/subtitles/flags/,.png]</texture>
+							<texture></texture>
 							<aspectratio>keep</aspectratio>
 						</control>
 						<control type="label">
@@ -179,7 +179,7 @@
 							<top>60</top>
 							<width>30</width>
 							<height>20</height>
-							<texture >windows/subtitles/icon_close_caption.png</texture>
+							<texture></texture>
 							<visible>ListItem.property(hearing_imp)</visible>
 						</control>
 						<control type="image">
@@ -187,7 +187,7 @@
 							<top>60</top>
 							<width>60</width>
 							<height>20</height>
-							<texture >windows/subtitles/icon_sync.png</texture>
+							<texture></texture>
 							<visible>ListItem.property(sync)</visible>
 						</control>
 						<control type="textbox">
@@ -203,7 +203,7 @@
 							<top>10</top>
 							<width>100</width>
 							<height>45</height>
-							<texture fallback="flags/starrating/rating0.png">$INFO[ListItem.ActualIcon,flags/starrating/rating,.png]</texture>
+							<texture></texture>
 							<aspectratio>keep</aspectratio>
 						</control>
 					</focusedlayout>
@@ -227,7 +227,7 @@
 					<top>-20</top>
 					<width>360</width>
 					<height>520</height>
-					<texture border="40">buttons/dialogbutton-nofo.png</texture>
+					<texture></texture>
 				</control>
 				<control type="label">
 					<left>0</left>

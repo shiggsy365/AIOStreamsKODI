@@ -21,7 +21,7 @@
 				<animation type="WindowOpen"effect="fade"start="0"end="100"time="400"/>
 				<animation type="WindowClose"effect="fade"start="100"end="0"time="300"/>
 				<animation type="Conditional"effect="fade"start="100"end="50"time="0"condition="Visualisation.Enabled"/>
-				<texture background="true">$INFO[Player.Art(fanart)]</texture>
+				<texture></texture>
 				<visible>String.IsEmpty(Window(Visualisation).Property(ArtistSlideshow.Image))</visible>
 			</control>
 			<control type="image">
@@ -30,7 +30,7 @@
 				<animation type="WindowOpen"effect="fade"start="0"end="100"time="400"/>
 				<animation type="WindowClose"effect="fade"start="100"end="0"time="300"/>
 				<animation type="Conditional"effect="fade"start="100"end="50"time="0"condition="Visualisation.Enabled"/>
-				<texture background="true">$INFO[Window(Visualisation).Property(ArtistSlideshow.Image)]</texture>
+				<texture></texture>
 			</control>
 		</control>
 		<control type="group">
@@ -47,7 +47,7 @@
 				<left>0</left>
 				<width>120%</width>
 				<height>280</height>
-				<texture colordiffuse="80FFFFFF">dialogs/dialog-bg-nobo.png</texture>
+				<texture></texture>
 			</control>
 			<control type="image">
 				<left>20</left>
@@ -58,8 +58,8 @@
 				<height>400</height>
 				<fadetime>400</fadetime>
 				<aspectratio aligny="bottom">keep</aspectratio>
-				<texture fallback="defaultalbumcover.png"border="2">$INFO[MusicPlayer.Cover]</texture>
-				<bordertexture colordiffuse="border_alpha">common/black.png</bordertexture>
+				<texture></texture>
+				<bordertexture></bordertexture>
 				<bordersize>4</bordersize>
 			</control>
 			<control type="group">
@@ -118,7 +118,7 @@
 					<control type="image">
 						<width>190</width>
 						<height>40</height>
-						<texture fallback="flags/starrating/0.png">$INFO[MusicPlayer.UserRating,flags/starrating/,.png]</texture>
+						<texture></texture>
 						<aspectratio>keep</aspectratio>
 						<aligny>center</aligny>
 						<align>left</align>

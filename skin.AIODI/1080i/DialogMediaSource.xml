@@ -31,7 +31,7 @@
 			<top>145</top>
 			<width>860</width>
 			<height>285</height>
-			<texture border="40">buttons/dialogbutton-nofo.png</texture>
+			<texture></texture>
 		</control>
 		<control type="list"id="10">
 			<left>45</left>
@@ -61,7 +61,7 @@
 					<top>0</top>
 					<bottom>0</bottom>
 					<right>0</right>
-					<texture colordiffuse="button_focus">lists/focus.png</texture>
+					<texture></texture>
 					<animation type="UnFocus"effect="fade"start="100"end="50"time="0"/>
 				</control>
 				<control type="label">

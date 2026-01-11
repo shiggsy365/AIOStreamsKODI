@@ -11,22 +11,8 @@
 			<top>0</top>
 			<width>100%</width>
 			<bottom>0</bottom>
-			<texturefocus />
-			<texturenofocus />
-			<onclick>Action(close)</onclick>
-		</control>
-		<control type="group">
-			<bottom>0</bottom>
-			<height>250</height>
-			<left>30</left>
-			<width>840</width>
-			<control type="image">
-				<left>-20</left>
-				<top>0</top>
-				<width>525</width>
-				<height>152</height>
-				<texture>dialogs/dialog-bg-nobo.png</texture>
-				<bordertexture border="21"infill="false">overlays/shadow.png</bordertexture>
+			<texture></texture>
+				<bordertexture></bordertexture>
 				<bordersize>20</bordersize>
 			</control>
 			<control type="progress">
@@ -54,8 +40,8 @@
 				<top>65</top>
 				<width>28</width>
 				<height>28</height>
-				<texturefocus flipx="true"colordiffuse="button_focus">overlays/arrowright.png</texturefocus>
-				<texturenofocus flipx="true"colordiffuse="button_focus">overlays/arrowright.png</texturenofocus>
+				<texturefocus></texturefocus>
+				<texturenofocus></texturenofocus>
 				<animation type="WindowOpen"effect="zoom"start="0,100"end="100,100"delay="500"center="auto"time="200"/>
 				<animation type="WindowClose"effect="zoom"start="100,100"end="0,100"center="auto"time="200"/>
 				<hitrect x="-20"y="20"w="60"h="112"/>
@@ -66,8 +52,8 @@
 				<top>65</top>
 				<width>28</width>
 				<height>28</height>
-				<texturefocus colordiffuse="button_focus">overlays/arrowright.png</texturefocus>
-				<texturenofocus colordiffuse="button_focus">overlays/arrowright.png</texturenofocus>
+				<texturefocus></texturefocus>
+				<texturenofocus></texturenofocus>
 				<animation type="WindowOpen"effect="zoom"start="0,100"end="100,100"delay="500"center="auto"time="200"/>
 				<animation type="WindowClose"effect="zoom"start="100,100"end="0,100"center="auto"time="200"/>
 				<hitrect x="440"y="20"w="60"h="112"/>

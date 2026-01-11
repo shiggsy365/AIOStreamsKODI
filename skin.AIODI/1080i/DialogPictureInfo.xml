@@ -19,7 +19,7 @@
 					<left>70</left>
 					<width>1280</width>
 					<height>820</height>
-					<texture border="21">dialogs/dialog-bg.png</texture>
+					<texture></texture>
 				</control>
 				<control type="image">
 					<left>120</left>
@@ -27,9 +27,9 @@
 					<width>1180</width>
 					<height>720</height>
 					<aspectratio aligny="center">keep</aspectratio>
-					<bordertexture colordiffuse="border_alpha">common/black.png</bordertexture>
+					<bordertexture></bordertexture>
 					<bordersize>4</bordersize>
-					<texture border="4"background="true"fallback="common/black.png">$INFO[ListItem.FolderPath]</texture>
+					<texture></texture>
 				</control>
 			</control>
 			<control type="group">
@@ -40,7 +40,7 @@
 					<right>70</right>
 					<width>510</width>
 					<height>820</height>
-					<texture border="22">dialogs/dialog-bg.png</texture>
+					<texture></texture>
 				</control>
 				<include content="UpDownArrows">
 					<param name="container_id"value="5"/>

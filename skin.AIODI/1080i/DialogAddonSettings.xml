@@ -36,14 +36,7 @@
 				<align>center</align>
 				<aligny>center</aligny>
 				<font>font25_title</font>
-				<texturenofocus border="40">buttons/dialogbutton-nofo.png</texturenofocus>
-			</control>
-			<control type="image">
-				<left>410</left>
-				<top>80</top>
-				<width>1100</width>
-				<height>740</height>
-				<texture border="40">buttons/dialogbutton-nofo.png</texture>
+				<texture></texture>
 			</control>
 			<control type="grouplist"id="5">
 				<description>control area</description>
@@ -84,7 +77,7 @@
 			<control type="image"id="11">
 				<description>separator image</description>
 				<height>3</height>
-				<texture colordiffuse="AAAAAAAA"border="3">dialogs/separator-grey.png</texture>
+				<texture></texture>
 			</control>
 			<control type="edit"id="12">
 				<include>DefaultSettingButton</include>
