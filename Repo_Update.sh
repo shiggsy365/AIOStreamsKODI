@@ -183,10 +183,9 @@ rebuild_addons_xml() {
     
     for f in \"${source_files[@]}\"; do
         if [[ -f \"$f\" ]]; then
-            # Extract only the \u003caddon\u003e...\u003c/addon\u003e block
             # Extract only the <addon>...</addon> block
-            sed -n '/<addon/,/<\/addon>/p' \"$f\" \u003e\u003e \"$addons_xml\"
-            echo \"\" \u003e\u003e \"$addons_xml\"
+            sed -n '/<addon/,/<\/addon>/p' \"$f\" >> \"$addons_xml\"
+            echo \"\" >> \"$addons_xml\"
             echo -e \"  ${GREEN}[+]${GRAY} Added: $(grep -m 1 \"id=\" \"$f\" | sed -n 's/.*id=\"\\([^\"]*\\)\".*/\\1/p')${NC}\"
         else
             echo -e \"  ${YELLOW}[!] Warning: Source addon.xml not found: $f${NC}\"
