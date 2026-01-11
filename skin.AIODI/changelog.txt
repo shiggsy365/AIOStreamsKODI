@@ -1,3 +1,8 @@
+[B]4.0.8[/B]
+• NEW: Minimalist icon-only side menu with collapse animation.
+• FIXED: AIOStreams widgets now skip genre selection and default to "All".
+• CLEANUP: Removed menu text labels and redundant branding.
+
 [B]4.0.7[/B]
 • RESTRUCTURED: Home screen now has fixed sidebar (non-collapsing).
 • ADDED: Home section with Trakt Next Up and Watchlist widgets.

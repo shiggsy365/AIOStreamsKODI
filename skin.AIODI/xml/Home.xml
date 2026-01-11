@@ -34,7 +34,7 @@
 			<animation effect="fade" start="100" end="0" time="200" tween="sine" condition="$EXP[infodialog_active]">Conditional</animation>
 
 <control type="group" id="2000">
-<left>462</left>
+<left>120</left>
 <include>OpenClose_Right</include>
 <control type="group" id="10000">
 <visible>String.IsEqual(Container(9000).ListItem.Property(id),home)</visible>
@@ -71,7 +71,7 @@
 <control type="grouplist" id="5001">
 <include>WidgetGroupListCommon</include>
 <include content="WidgetListPoster">
-<param name="content_path" value="plugin://plugin.video.aiostreams/?action=catalogs&amp;content_type=movie"/>
+<param name="content_path" value="plugin://plugin.video.aiostreams/?action=catalogs&amp;widget=true&amp;content_type=movie"/>
 <param name="widget_header" value="AIOStreams Movie Catalogs"/>
 <param name="widget_target" value="videos"/>
 <param name="list_id" value="5100"/>
@@ -86,7 +86,7 @@
 <control type="grouplist" id="6001">
 <include>WidgetGroupListCommon</include>
 <include content="WidgetListPoster">
-<param name="content_path" value="plugin://plugin.video.aiostreams/?action=catalogs&amp;content_type=series"/>
+<param name="content_path" value="plugin://plugin.video.aiostreams/?action=catalogs&amp;widget=true&amp;content_type=series"/>
 <param name="widget_header" value="AIOStreams Series Catalogs"/>
 <param name="widget_target" value="videos"/>
 <param name="list_id" value="6100"/>
@@ -97,13 +97,14 @@
 			<control type="group">
 				<depth>DepthContentPanel</depth>
 				<include>OpenClose_Left</include>
+				<animation effect="slide" start="0,0" end="-100,0" time="300" tween="sine" easing="inout" condition="!ControlGroup(9000).HasFocus">Conditional</animation>
 				<include content="ContentPanel">
-					<param name="width" value="462" />
+					<param name="width" value="120" />
 				</include>
 				<control type="fixedlist" id="9000">
 					<left>0</left>
 					<top>240</top>
-					<width>462</width>
+					<width>120</width>
 					<bottom>-10</bottom>
 					<movement>7</movement>
 					<focusposition>0</focusposition>
@@ -118,13 +119,13 @@
 							<control type="image">
 								<left>0</left>
 								<top>0</top>
-								<width>462</width>
+								<width>120</width>
 								<height>95</height>
 								<texture colordiffuse="button_focus">lists/focus.png</texture>
 								<animation effect="fade" start="100" end="0" time="0" condition="[!Control.HasFocus(9000) + !ControlGroup(700).HasFocus] | System.HasActiveModalDialog">Conditional</animation>
 							</control>
 							<control type="image">
-								<left>-3</left>
+								<left>12</left>
 								<top>1</top>
 								<width>95</width>
 								<height>95</height>
@@ -141,41 +142,23 @@
 							</control>
 						</control>
 						<control type="image">
-							<left>-3</left>
+							<left>12</left>
 							<top>1</top>
 							<width>95</width>
 							<height>95</height>
 							<texture>$INFO[ListItem.Art(thumb)]</texture>
 						</control>
-						<control type="label">
-							<left>104</left>
-							<top>0</top>
-							<height>95</height>
-							<width>560</width>
-							<aligny>center</aligny>
-							<font>font37</font>
-							<label>$INFO[ListItem.Label]</label>
-							<shadowcolor>text_shadow</shadowcolor>
-						</control>
+						
 					</focusedlayout>
 					<itemlayout height="95">
 						<control type="image">
-							<left>-3</left>
+							<left>12</left>
 							<top>1</top>
 							<width>95</width>
 							<height>95</height>
 							<texture colordiffuse="44FFFFFF">$INFO[ListItem.Art(thumb)]</texture>
 						</control>
-						<control type="label">
-							<left>104</left>
-							<top>0</top>
-							<height>95</height>
-							<width>560</width>
-							<aligny>center</aligny>
-							<font>font37</font>
-							<label>$INFO[ListItem.Label]</label>
-							<shadowcolor>text_shadow</shadowcolor>
-						</control>
+						
 					</itemlayout>
 					<content>
 <item>
@@ -237,14 +220,7 @@
 </content>
 				</control>
 				
-		                <control type="image">
-			          <left>140</left>
-				  <top>71</top>
-			          <width>250</width>
-				  <height>56</height>
-			          <aspectratio>keep</aspectratio>
-			          <texture>from-debian-logo.png</texture>
-		                </control>
+		                
 			</control>
 			<include>BottomBar</include>
 			<control type="group">

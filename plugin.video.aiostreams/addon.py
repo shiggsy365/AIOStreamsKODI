@@ -1725,6 +1725,7 @@ def list_catalogs():
     """List all available catalogs from manifest."""
     params = dict(parse_qsl(sys.argv[2][1:]))
     filter_type = params.get('content_type')  # 'movie' or 'series'
+    is_widget = params.get('widget') == 'true'
     
     manifest = get_manifest()
     if not manifest or 'catalogs' not in manifest:
@@ -1752,8 +1753,12 @@ def list_catalogs():
         extras = catalog.get('extra', [])
         genre_extra = next((e for e in extras if e.get('name') == 'genre'), None)
         
-        if genre_extra and genre_extra.get('options'):
+        if not is_widget and genre_extra and genre_extra.get('options'):
             url = get_url(action='catalog_genres', catalog_id=catalog_id, content_type=content_type, catalog_name=catalog_name)
+            is_folder = True
+        elif is_widget and genre_extra and genre_extra.get('options'):
+            # widget=true skips genre selection and goes to "All"
+            url = get_url(action='browse_catalog', catalog_id=catalog_id, content_type=content_type, catalog_name=catalog_name, genre='All')
             is_folder = True
         else:
             url = get_url(action='browse_catalog', catalog_id=catalog_id, content_type=content_type, catalog_name=catalog_name)
