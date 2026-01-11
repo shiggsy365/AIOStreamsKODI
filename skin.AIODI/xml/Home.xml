@@ -43,39 +43,29 @@
 <include>OpenClose_Right</include>
 <control type="group" id="10000">
 <visible>String.IsEqual(Container(9000).ListItem.Property(id),home)</visible>
-<include content="Visible_Right_Delayed">
-<param name="id" value="home"/>
-</include>
+<include content="Visible_Right_Delayed"><param name="id" value="home"/></include>
 <control type="grouplist" id="10001">
 <include>WidgetGroupListCommon</include>
+<control type="group">
+<visible>!Skin.HasSetting(HideRow1)</visible>
 <include content="WidgetListEpisodes">
 <param name="content_path" value="plugin://plugin.video.aiostreams/?action=trakt_next_up"/>
 <param name="widget_header" value="Trakt Next Up"/>
 <param name="widget_target" value="videos"/>
 <param name="list_id" value="10100"/>
 </include>
-<control type="group">
-<visible>!Skin.HasSetting(HideRow1)</visible>
-<control type="group">
-<visible>!Skin.HasSetting(HideRow2)</visible>
-<control type="group">
-<visible>!Skin.HasSetting(HideRow3)</visible>
-<control type="group">
-<visible>!Skin.HasSetting(HideRow4)</visible>
-<control type="group">
-<visible>!Skin.HasSetting(HideRow1)</visible>
+</control>
 <control type="group">
 <visible>!Skin.HasSetting(HideRow2)</visible>
-<control type="group">
-<visible>!Skin.HasSetting(HideRow3)</visible>
-<control type="group">
-<visible>!Skin.HasSetting(HideRow4)</visible>
 <include content="WidgetListPoster">
 <param name="content_path" value="plugin://plugin.video.aiostreams/?action=trakt_watchlist&amp;media_type=movies"/>
 <param name="widget_header" value="Trakt Watchlist Movies"/>
 <param name="widget_target" value="videos"/>
 <param name="list_id" value="10200"/>
 </include>
+</control>
+<control type="group">
+<visible>!Skin.HasSetting(HideRow3)</visible>
 <include content="WidgetListPoster">
 <param name="content_path" value="plugin://plugin.video.aiostreams/?action=trakt_watchlist&amp;media_type=shows"/>
 <param name="widget_header" value="Trakt Watchlist Series"/>
@@ -83,15 +73,14 @@
 <param name="list_id" value="10300"/>
 </include>
 </control>
-</control>
-
+</control></control>
 <control type="group" id="5000">
 <visible>String.IsEqual(Container(9000).ListItem.Property(id),movies)</visible>
-<include content="Visible_Right_Delayed">
-<param name="id" value="movies"/>
-</include>
+<include content="Visible_Right_Delayed"><param name="id" value="movies"/></include>
 <control type="grouplist" id="5001">
 <include>WidgetGroupListCommon</include>
+<control type="group">
+<visible>!Skin.HasSetting(HideRow1)</visible>
 <include content="WidgetListPoster">
 <param name="content_path" value="plugin://plugin.video.aiostreams/?action=smart_widget&amp;index=$VAR[Row1IndexVar]&amp;content_type=movie"/>
 <param name="widget_header" value="$INFO[Window(Home).Property(movie_catalog_0_name)]"/>
@@ -99,6 +88,8 @@
 <param name="list_id" value="5100"/>
 </include>
 </control>
+<control type="group">
+<visible>!Skin.HasSetting(HideRow2)</visible>
 <include content="WidgetListPoster">
 <param name="content_path" value="plugin://plugin.video.aiostreams/?action=smart_widget&amp;index=$VAR[Row2IndexVar]&amp;content_type=movie"/>
 <param name="widget_header" value="$INFO[Window(Home).Property(movie_catalog_1_name)]"/>
@@ -106,6 +97,8 @@
 <param name="list_id" value="5200"/>
 </include>
 </control>
+<control type="group">
+<visible>!Skin.HasSetting(HideRow3)</visible>
 <include content="WidgetListPoster">
 <param name="content_path" value="plugin://plugin.video.aiostreams/?action=smart_widget&amp;index=$VAR[Row3IndexVar]&amp;content_type=movie"/>
 <param name="widget_header" value="$INFO[Window(Home).Property(movie_catalog_2_name)]"/>
@@ -113,6 +106,8 @@
 <param name="list_id" value="5300"/>
 </include>
 </control>
+<control type="group">
+<visible>!Skin.HasSetting(HideRow4)</visible>
 <include content="WidgetListPoster">
 <param name="content_path" value="plugin://plugin.video.aiostreams/?action=smart_widget&amp;index=$VAR[Row4IndexVar]&amp;content_type=movie"/>
 <param name="widget_header" value="$INFO[Window(Home).Property(movie_catalog_3_name)]"/>
@@ -120,17 +115,14 @@
 <param name="list_id" value="5400"/>
 </include>
 </control>
-</control>
-</control>
-
-
+</control></control>
 <control type="group" id="6000">
 <visible>String.IsEqual(Container(9000).ListItem.Property(id),tvshows)</visible>
-<include content="Visible_Right_Delayed">
-<param name="id" value="tvshows"/>
-</include>
+<include content="Visible_Right_Delayed"><param name="id" value="tvshows"/></include>
 <control type="grouplist" id="6001">
 <include>WidgetGroupListCommon</include>
+<control type="group">
+<visible>!Skin.HasSetting(HideRow1)</visible>
 <include content="WidgetListPoster">
 <param name="content_path" value="plugin://plugin.video.aiostreams/?action=smart_widget&amp;index=$VAR[Row1IndexVar]&amp;content_type=series"/>
 <param name="widget_header" value="$INFO[Window(Home).Property(series_catalog_0_name)]"/>
@@ -138,6 +130,8 @@
 <param name="list_id" value="6100"/>
 </include>
 </control>
+<control type="group">
+<visible>!Skin.HasSetting(HideRow2)</visible>
 <include content="WidgetListPoster">
 <param name="content_path" value="plugin://plugin.video.aiostreams/?action=smart_widget&amp;index=$VAR[Row2IndexVar]&amp;content_type=series"/>
 <param name="widget_header" value="$INFO[Window(Home).Property(series_catalog_1_name)]"/>
@@ -145,6 +139,8 @@
 <param name="list_id" value="6200"/>
 </include>
 </control>
+<control type="group">
+<visible>!Skin.HasSetting(HideRow3)</visible>
 <include content="WidgetListPoster">
 <param name="content_path" value="plugin://plugin.video.aiostreams/?action=smart_widget&amp;index=$VAR[Row3IndexVar]&amp;content_type=series"/>
 <param name="widget_header" value="$INFO[Window(Home).Property(series_catalog_2_name)]"/>
@@ -152,6 +148,8 @@
 <param name="list_id" value="6300"/>
 </include>
 </control>
+<control type="group">
+<visible>!Skin.HasSetting(HideRow4)</visible>
 <include content="WidgetListPoster">
 <param name="content_path" value="plugin://plugin.video.aiostreams/?action=smart_widget&amp;index=$VAR[Row4IndexVar]&amp;content_type=series"/>
 <param name="widget_header" value="$INFO[Window(Home).Property(series_catalog_3_name)]"/>
@@ -159,167 +157,9 @@
 <param name="list_id" value="6400"/>
 </include>
 </control>
-</control>
-</control>
+</control></control>
 
-</control>
-			<control type="group">
-				<depth>DepthContentPanel</depth>
-				<include>OpenClose_Left</include>
-				<animation effect="slide" start="0,0" end="-100,0" time="300" tween="sine" easing="inout" condition="!Control.HasFocus(9000)">Conditional</animation>
-				<include content="ContentPanel">
-					<param name="width" value="120" />
-				</include>
-				
-<control type="image">
-<left>10</left>
-<top>50</top>
-<width>100</width>
-<height>100</height>
-<texture>plugin://plugin.video.aiostreams/resources/icon.png</texture>
-<aspectratio>keep</aspectratio>
-<visible>Control.HasFocus(9000)</visible>
-<animation effect="fade" start="0" end="100" time="300">Visible</animation>
-<animation effect="fade" start="100" end="0" time="300">Hidden</animation>
-</control>
-				<control type="fixedlist" id="9000">
-					<left>0</left>
-					<top>240</top>
-					<width>120</width>
-					<bottom>-10</bottom>
-					<movement>7</movement>
-					<focusposition>0</focusposition>
-					<onfocus>ClearProperty(listposition,home)</onfocus>
-					<oncontextmenu>ActivateWindow(1115)</oncontextmenu>
-					<onrightclick>ActivateWindow(1115)</onrightclick>
-					<onright>SetFocus($INFO[Container(9000).ListItem.Property(menu_id)])</onright>
-					<onup>700</onup>
-					<ondown>700</ondown>
-					<scrolltime tween="cubic" easing="out">500</scrolltime>
-					<focusedlayout height="95">
-						<control type="group">
-							<animation effect="fade" start="100" end="0" time="0">UnFocus</animation>
-							<control type="image">
-								<left>0</left>
-								<top>0</top>
-								<width>120</width>
-								<height>95</height>
-								<texture colordiffuse="button_focus">lists/focus.png</texture>
-								<animation effect="fade" start="100" end="0" time="0" condition="[!Control.HasFocus(9000)] | System.HasActiveModalDialog">Conditional</animation>
-							</control>
-							<control type="image">
-								<left>12</left>
-								<top>1</top>
-								<width>95</width>
-								<height>95</height>
-								<texture colordiffuse="button_focus">$INFO[ListItem.Thumb]</texture>
-								<animation effect="fade" start="0" end="100" time="300" reversible="false">Focus</animation>
-							</control>
-							<control type="image">
-								<left>0</left>
-								<top>0</top>
-								<width>95</width>
-								<height>95</height>
-								<texture colordiffuse="51FFFFFF">colors/black.png</texture>
-								<animation effect="fade" start="100" end="0" time="0" condition="[!Control.HasFocus(9000)] | System.HasActiveModalDialog">Conditional</animation>
-							</control>
-						</control>
-						<control type="image">
-							<left>12</left>
-							<top>1</top>
-							<width>95</width>
-							<height>95</height>
-							<texture>$INFO[ListItem.Thumb]</texture>
-						</control>
-						
-					</focusedlayout>
-					<itemlayout height="95">
-						<control type="image">
-							<left>12</left>
-							<top>1</top>
-							<width>95</width>
-							<height>95</height>
-							<texture colordiffuse="44FFFFFF">$INFO[ListItem.Thumb]</texture>
-						</control>
-						
-					</itemlayout>
-					<content>
-<item>
-<label>$LOCALIZE[10000]</label>
-<visible>!Skin.HasSetting(HideHome)</visible>
-<onclick>noop</onclick>
-<property name="menu_id">10000</property>
-<thumb>icons/sidemenu/home.png</thumb>
-<property name="id">home</property>
-</item>
-<item>
-<label>[342]</label>
-<visible>!Skin.HasSetting(HideMovies)</visible>
-<onclick>ActivateWindow(Videos,videodb://movies/titles/,return)</onclick>
-<property name="menu_id">5000</property>
-<thumb>icons/sidemenu/movies.png</thumb>
-<property name="id">movies</property>
-</item>
-<item>
-<label>[20343]</label>
-<visible>!Skin.HasSetting(HideSeries)</visible>
-<onclick>ActivateWindow(Videos,videodb://tvshows/titles/,return)</onclick>
-<property name="menu_id">6000</property>
-<thumb>icons/sidemenu/tv.png</thumb>
-<property name="id">tvshows</property>
-</item>
-<item>
-<label>TV</label>
-<visible>!Skin.HasSetting(HideTV)</visible>
-<onclick>ActivateWindow(TVChannels)</onclick>
-<property name="menu_id">12000</property>
-<thumb>icons/sidemenu/livetv.png</thumb>
-<property name="id">livetv</property>
-</item>
-<item>
-<label>[2]</label>
-<visible>!Skin.HasSetting(HideMusic)</visible>
-<onclick>ActivateWindow(Music,root,return)</onclick>
-<property name="menu_id">7000</property>
-<thumb>icons/sidemenu/music.png</thumb>
-<property name="id">music</property>
-</item>
-<item>
-<label>[24001]</label>
-<visible>!Skin.HasSetting(HideAddons)</visible>
-<onclick>ActivateWindow(1100)</onclick>
-<property name="menu_id">8000</property>
-<thumb>icons/sidemenu/addons.png</thumb>
-<property name="id">addons</property>
-</item>
-<item>
-<label>[8]</label>
-<onclick>ActivateWindow(Weather)</onclick>
-<property name="menu_id">15000</property>
-<thumb>icons/sidemenu/weather.png</thumb>
-<property name="id">weather</property>
-</item>
-<item>
-<label>[5]</label>
-<onclick>ActivateWindow(settings)</onclick>
-<property name="menu_id">20000</property>
-<thumb>icons/sidemenu/settings.png</thumb>
-<property name="id">settings</property>
-</item>
-
-<item>
-<label>Customise AIODI</label>
-<onclick>ActivateWindow(1115)</onclick>
-<property name="menu_id">20000</property>
-<thumb>icons/sidemenu/settings.png</thumb>
-<property name="id">customise</property>
-</item>
-					</content>
-				</control>
-				
-		                
-			</control>
-			<include>BottomBar</include>
+<include>BottomBar</include>
 			<control type="group">
 				<depth>DepthBars</depth>
 				<bottom>0</bottom>

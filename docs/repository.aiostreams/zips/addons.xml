@@ -18,7 +18,7 @@
     </extension>
 </addon>
 
-<addon id="plugin.video.aiostreams" name="AIOStreams" version="1.1.33" provider-name="Jon">
+<addon id="plugin.video.aiostreams" name="AIOStreams" version="1.1.35" provider-name="Jon">
     <requires>
         <import addon="xbmc.python" version="3.0.0"/>
         <import addon="script.module.requests" version="2.25.1"/>
@@ -39,7 +39,7 @@
         </assets>
     </extension>
 </addon>
-<addon id="skin.AIODI" version="4.0.15" name="AIODI" provider-name="Jon">
+<addon id="skin.AIODI" version="4.0.17" name="AIODI" provider-name="Jon">
 	<requires>
 		<import addon="xbmc.gui" version="5.17.0"/>
 	</requires>

@@ -1,3 +1,10 @@
+[B]4.0.16[/B]
+• FIXED: Overlapping widgets on Home page.
+• FIXED: Missing icons for Home and Settings.
+• FIXED: AIOStreams script error in smart_widget.
+• REMOVED: Weather and Add-ons from sidebar.
+• IMPROVED: Customization access.
+
 [B]4.0.14[/B]
 • FIXED: Widget loading error (Indentation fixed).
 • FIXED: Sidebar navigation restored.
