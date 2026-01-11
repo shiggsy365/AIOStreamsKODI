@@ -1,3 +1,9 @@
+[B]4.0.2[/B]
+• MODIFIED: Sidebar now collapses to icon-only view when not focused.
+• ADDED: Search and Settings as main menu items.
+• REMOVED: Power button, Weather item, and Kodi logo.
+• UPDATED: Branding set to AIOStreams logo.
+
 [B]4.0.1[/B]
 • REMOVED: Home menu items for Music Videos, Radio, Games, Pictures, and Videos.
 
