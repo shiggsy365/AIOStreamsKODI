@@ -80,49 +80,49 @@
 <label>$LOCALIZE[10000]</label>
 <onclick>noop</onclick>
 <property name="menu_id">10000</property>
-<thumb>icons/sidemenu/home.png</thumb>
+<thumb>icons/sidemenu/home_svg.png</thumb>
 <property name="id">home</property>
 </item>
 <item>
 <label>[342]</label>
 <onclick>ActivateWindow(Videos,videodb://movies/titles/,return)</onclick>
 <property name="menu_id">5000</property>
-<thumb>icons/sidemenu/movies.png</thumb>
+<thumb>icons/sidemenu/movies_svg.png</thumb>
 <property name="id">movies</property>
 </item>
 <item>
 <label>[20343]</label>
 <onclick>ActivateWindow(Videos,videodb://tvshows/titles/,return)</onclick>
 <property name="menu_id">6000</property>
-<thumb>icons/sidemenu/tv.png</thumb>
+<thumb>icons/sidemenu/tv_svg.png</thumb>
 <property name="id">tvshows</property>
 </item>
 <item>
 <label>TV</label>
 <onclick>ActivateWindow(TVChannels)</onclick>
 <property name="menu_id">12000</property>
-<thumb>icons/sidemenu/livetv.png</thumb>
+<thumb>icons/sidemenu/livetv_svg.png</thumb>
 <property name="id">livetv</property>
 </item>
 <item>
 <label>[2]</label>
 <onclick>ActivateWindow(Music,root,return)</onclick>
 <property name="menu_id">7000</property>
-<thumb>icons/sidemenu/music.png</thumb>
+<thumb>icons/sidemenu/music_svg.png</thumb>
 <property name="id">music</property>
 </item>
 <item>
 <label>[5]</label>
 <onclick>ActivateWindow(settings)</onclick>
 <property name="menu_id">20000</property>
-<thumb>icons/sidemenu/settings.png</thumb>
+<thumb>icons/sidemenu/settings_svg.png</thumb>
 <property name="id">settings</property>
 </item>
 <item>
 <label>Customise AIODI</label>
 <onclick>ActivateWindow(1115)</onclick>
 <property name="menu_id">20000</property>
-<thumb>icons/sidemenu/settings.png</thumb>
+<thumb>icons/sidemenu/settings_svg.png</thumb>
 <property name="id">customise</property>
 </item>
 </content>
@@ -135,10 +135,25 @@
 
 <!-- Home Widgets -->
 <control type="group" id="10000">
+					<top>650</top>
 <visible>String.IsEqual(Container(9000).ListItem.Property(id),home)</visible>
 <include content="Visible_Right_Delayed"><param name="id" value="home"/></include>
 <control type="grouplist" id="10001">
+						
 <include>WidgetGroupListCommon</include>
+<control type="button" id="1115">
+<width>300</width>
+<height>60</height>
+<label>Customise this page</label>
+<onclick>ActivateWindow(1115)</onclick>
+<texturefocus colordiffuse="button_focus">colors/white.png</texturefocus>
+<texturenofocus colordiffuse="44FFFFFF">colors/black.png</texturenofocus>
+<font>font13_title</font>
+<textcolor>white</textcolor>
+<focusedcolor>black</focusedcolor>
+<visible>!Skin.HasSetting(HideCustomiseButtons)</visible>
+</control>
+
 <control type="group">
 <visible>!Skin.HasSetting(HideRow1)</visible>
 <include content="WidgetListEpisodes">
@@ -171,10 +186,25 @@
 
 <!-- Movie Widgets -->
 <control type="group" id="5000">
+					<top>650</top>
 <visible>String.IsEqual(Container(9000).ListItem.Property(id),movies)</visible>
 <include content="Visible_Right_Delayed"><param name="id" value="movies"/></include>
 <control type="grouplist" id="5001">
+						
 <include>WidgetGroupListCommon</include>
+<control type="button" id="1115">
+<width>300</width>
+<height>60</height>
+<label>Customise this page</label>
+<onclick>ActivateWindow(1115)</onclick>
+<texturefocus colordiffuse="button_focus">colors/white.png</texturefocus>
+<texturenofocus colordiffuse="44FFFFFF">colors/black.png</texturenofocus>
+<font>font13_title</font>
+<textcolor>white</textcolor>
+<focusedcolor>black</focusedcolor>
+<visible>!Skin.HasSetting(HideCustomiseButtons)</visible>
+</control>
+
 <control type="group">
 <visible>!Skin.HasSetting(HideRow1)</visible>
 <include content="WidgetListPoster">
@@ -216,10 +246,25 @@
 
 <!-- TV Series Widgets -->
 <control type="group" id="6000">
+					<top>650</top>
 <visible>String.IsEqual(Container(9000).ListItem.Property(id),tvshows)</visible>
 <include content="Visible_Right_Delayed"><param name="id" value="tvshows"/></include>
 <control type="grouplist" id="6001">
+						
 <include>WidgetGroupListCommon</include>
+<control type="button" id="1115">
+<width>300</width>
+<height>60</height>
+<label>Customise this page</label>
+<onclick>ActivateWindow(1115)</onclick>
+<texturefocus colordiffuse="button_focus">colors/white.png</texturefocus>
+<texturenofocus colordiffuse="44FFFFFF">colors/black.png</texturenofocus>
+<font>font13_title</font>
+<textcolor>white</textcolor>
+<focusedcolor>black</focusedcolor>
+<visible>!Skin.HasSetting(HideCustomiseButtons)</visible>
+</control>
+
 <control type="group">
 <visible>!Skin.HasSetting(HideRow1)</visible>
 <include content="WidgetListPoster">

@@ -1,3 +1,9 @@
+[B]4.0.20[/B]
+• NEW: Custom minimalist SVG icons for all menu items.
+• IMPROVED: Widget positioning (Lower 40% of screen).
+• NEW: "Customise this page" button in widget sections (Submenu fallback).
+• FIXED: Sidebar icon resolution.
+
 [B]4.0.18[/B]
 • CRITICAL: Fixed Home.xml structural error (Black Screen fix).
 • RESTORED: Sidebar menu items and layout.
