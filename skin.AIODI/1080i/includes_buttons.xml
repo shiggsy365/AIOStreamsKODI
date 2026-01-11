@@ -1,4 +1,4 @@
-<?xml version="1.0"encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <includes>
 	<include name="OSDButton">
 		<texture></texture>
@@ -15,7 +15,7 @@
 				<label>$INFO[ListItem.Label]</label>
 			</control>
 		</itemlayout>
-		<focusedlayout height="70"width="600">
+		<focusedlayout height="70" width="600">
 			<control type="image">
 				<left>0</left>
 				<top>0</top>

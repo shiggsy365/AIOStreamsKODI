@@ -1,4 +1,4 @@
-<?xml version="1.0"encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <includes>
 	<include name="View_503_NowPlaying">
 		<control type="group">
@@ -7,9 +7,9 @@
 			<visible>Control.IsVisible(503)</visible>
 			<include>Visible_Right</include>
 			<include content="ListContainer">
-				<param name="list_id"value="503"/>
-				<param name="right"value="594"/>
-				<param name="viewtype_label"value="$LOCALIZE[31000]"/>
+				<param name="list_id" value="503"/>
+				<param name="right" value="594"/>
+				<param name="viewtype_label" value="$LOCALIZE[31000]"/>
 			</include>
 			<control type="group">
 				<depth>DepthContentPanel</depth>
@@ -17,15 +17,15 @@
 					<right>-20</right>
 					<width>634</width>
 					<include content="ContentPanel">
-						<param name="left"value="0"/>
-						<param name="top"value="-20"/>
-						<param name="width"value="656"/>
-						<param name="flipx"value="true"/>
+						<param name="left" value="0"/>
+						<param name="top" value="-20"/>
+						<param name="width" value="656"/>
+						<param name="flipx" value="true"/>
 					</include>
 					<include content="RightListPanel">
-						<param name="list_id"value="503"/>
+						<param name="list_id" value="503"/>
 					</include>
-					<control type="scrollbar"id="503600">
+					<control type="scrollbar" id="503600">
 						<left>20</left>
 						<top>list_top_offset</top>
 						<width>12</width>
@@ -33,7 +33,7 @@
 						<onleft>503</onleft>
 						<onright>503</onright>
 						<orientation>vertical</orientation>
-						<animation type="conditional"effect="zoom"end="50,100"time="300"tween="sine"center="20,0"easing="inout"condition="!Control.HasFocus(503600)"/>
+						<animation type="conditional" effect="zoom" end="50,100" time="300" tween="sine" center="20,0" easing="inout" condition="!Control.HasFocus(503600)"/>
 					</control>
 				</control>
 			</control>

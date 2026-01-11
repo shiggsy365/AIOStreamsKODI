@@ -1,5 +1,5 @@
-<?xml version="1.0"encoding="UTF-8"?>
-<window type="dialog"id="1107">
+<?xml version="1.0" encoding="UTF-8"?>
+<window type="dialog" id="1107">
     <include file="Includes.xml"/>
 	<defaultcontrol always="true">9000</defaultcontrol>
 	<include>Animation_DialogPopupOpenClose</include>
@@ -10,12 +10,12 @@
 			<centertop>60%</centertop>
 			<height>700</height>
 			<include content="DialogBackgroundCommons">
-				<param name="width"value="600"/>
-				<param name="height"value="80"/>
-				<param name="header_label"value="$LOCALIZE[137]"/>
-				<param name="header_id"value=""/>
+				<param name="width" value="600"/>
+				<param name="height" value="80"/>
+				<param name="header_label" value="$LOCALIZE[137]"/>
+				<param name="header_id" value=""/>
 			</include>
-			<control type="panel"id="9000">
+			<control type="panel" id="9000">
 				<include>ButtonMenuList</include>
 				<content>
 					<item>
@@ -33,7 +33,7 @@
 					<item>
 						<label>$LOCALIZE[31114]</label>
 						<onclick>Dialog.Close(all)</onclick>
-						<onclick condition="System.AddonIsEnabled(plugin.video.youtube)">ActivateWindow(videos,"plugin://plugin.video.youtube/kodion/search/list/",return)</onclick>
+						<onclick condition="System.AddonIsEnabled(plugin.video.youtube)">ActivateWindow(videos," plugin://plugin.video.youtube/kodion/search/list/",return)</onclick>
 						<onclick condition="System.HasAddon(plugin.video.youtube) + !System.AddonIsEnabled(plugin.video.youtube)">EnableAddon(plugin.video.youtube)</onclick>
 						<onclick condition="!System.HasAddon(plugin.video.youtube)">InstallAddon(plugin.video.youtube)</onclick>
 					</item>

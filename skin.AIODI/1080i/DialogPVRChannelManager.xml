@@ -1,4 +1,4 @@
-<?xml version="1.0"encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <window>
     <include file="Includes.xml"/>
 	<defaultcontrol always="true">4</defaultcontrol>
@@ -10,15 +10,15 @@
 			<centerleft>50%</centerleft>
 			<width>1820</width>
 			<include content="DialogBackgroundCommons">
-				<param name="width"value="1820"/>
-				<param name="height"value="995"/>
-				<param name="header_label"value="$VAR[PVRChannelMgrHeader]$INFO[Container(20).NumItems, (,)]"/>
-				<param name="header_id"value="2"/>
+				<param name="width" value="1820"/>
+				<param name="height" value="995"/>
+				<param name="header_label" value="$VAR[PVRChannelMgrHeader]$INFO[Container(20).NumItems, (,)]"/>
+				<param name="header_id" value="2"/>
 			</include>
 			<control type="group">
 				<left>10</left>
 				<top>70</top>
-				<control type="scrollbar"id="60">
+				<control type="scrollbar" id="60">
 					<left>660</left>
 					<top>30</top>
 					<width>12</width>
@@ -35,7 +35,7 @@
 					<height>910</height>
 					<texture></texture>
 				</control>
-				<control type="list"id="20">
+				<control type="list" id="20">
 					<left>20</left>
 					<top>30</top>
 					<width>630</width>
@@ -46,15 +46,15 @@
 					<onright>60</onright>
 					<pagecontrol>60</pagecontrol>
 					<scrolltime>200</scrolltime>
-					<itemlayout height="70"width="630">
+					<itemlayout height="70" width="630">
 						<control type="group">
-							<animation type="Conditional"effect="fade"start="100"end="50"time="0"condition="!ListItem.Property(ActiveChannel)"/>
+							<animation type="Conditional" effect="fade" start="100" end="50" time="0" condition="!ListItem.Property(ActiveChannel)"/>
 							<control type="image">
 								<left>0</left>
 								<right>0</right>
 								<bottom>0</bottom>
 								<texture></texture>
-								<animation type="Conditional"effect="fade"end="20"time="0"condition="true"/>
+								<animation type="Conditional" effect="fade" end="20" time="0" condition="true"/>
 								<visible>ListItem.Property(Changed)</visible>
 							</control>
 							<control type="image">
@@ -83,13 +83,13 @@
 							</control>
 						</control>
 					</itemlayout>
-					<focusedlayout height="70"width="630">
+					<focusedlayout height="70" width="630">
 						<control type="image">
 							<left>0</left>
 							<right>0</right>
 							<bottom>0</bottom>
 							<texture></texture>
-							<animation type="Conditional"effect="fade"end="20"time="0"condition="true"/>
+							<animation type="Conditional" effect="fade" end="20" time="0" condition="true"/>
 							<visible>ListItem.Property(Changed)</visible>
 						</control>
 						<control type="image">
@@ -97,7 +97,7 @@
 							<right>0</right>
 							<bottom>0</bottom>
 							<texture></texture>
-							<animation type="conditional"effect="fade"start="100"end="30"time="0"condition="!Control.HasFocus(20)"/>
+							<animation type="conditional" effect="fade" start="100" end="30" time="0" condition="!Control.HasFocus(20)"/>
 						</control>
 						<control type="image">
 							<left>15</left>
@@ -139,14 +139,14 @@
 			</control>
 			<control type="group">
 				<left>700</left>
-				<control type="grouplist"id="9002">
+				<control type="grouplist" id="9002">
 					<top>80</top>
 					<onleft>60</onleft>
 					<onright>9000</onright>
 					<onup>34</onup>
 					<ondown>35</ondown>
 					<itemgap>-22</itemgap>
-					<control type="label"id="9001">
+					<control type="label" id="9001">
 						<description>channel options Header</description>
 						<width>700</width>
 						<height>60</height>
@@ -157,37 +157,37 @@
 						<textcolor>button_focus</textcolor>
 						<shadowcolor>black</shadowcolor>
 					</control>
-					<control type="radiobutton"id="7">
+					<control type="radiobutton" id="7">
 						<description>Channel activated</description>
 						<width>700</width>
 						<include>SettingsItemCommon</include>
 						<label>$LOCALIZE[19074]</label>
 					</control>
-					<control type="edit"id="8">
+					<control type="edit" id="8">
 						<description>Channel name</description>
 						<width>700</width>
 						<include>SettingsItemCommon</include>
 						<label>$LOCALIZE[19201]</label>
 					</control>
-					<control type="button"id="9">
+					<control type="button" id="9">
 						<description>Channel logo Button</description>
 						<width>700</width>
 						<include>SettingsItemCommon</include>
 						<label>$LOCALIZE[19202]</label>
 					</control>
-					<control type="radiobutton"id="12">
+					<control type="radiobutton" id="12">
 						<description>EPG activated</description>
 						<width>700</width>
 						<include>SettingsItemCommon</include>
 						<label>$LOCALIZE[19206]</label>
 					</control>
-					<control type="spincontrolex"id="13">
+					<control type="spincontrolex" id="13">
 						<description>EPG source</description>
 						<width>700</width>
 						<include>SettingsItemCommon</include>
 						<label>$LOCALIZE[19200]</label>
 					</control>
-					<control type="radiobutton"id="14">
+					<control type="radiobutton" id="14">
 						<description>Parental locked</description>
 						<width>700</width>
 						<include>SettingsItemCommon</include>
@@ -202,7 +202,7 @@
 					<aspectratio>keep</aspectratio>
 					<texture></texture>
 				</control>
-				<control type="grouplist"id="9003">
+				<control type="grouplist" id="9003">
 					<top>590</top>
 					<itemgap>-18</itemgap>
 					<onleft>60</onleft>
@@ -220,7 +220,7 @@
 						<textcolor>button_focus</textcolor>
 						<shadowcolor>black</shadowcolor>
 					</control>
-					<control type="button"id="35">
+					<control type="button" id="35">
 						<description>Refresh channel logos Button</description>
 						<width>700</width>
 						<height>100</height>
@@ -228,7 +228,7 @@
 						<align>center</align>
 						<label>$LOCALIZE[19041]</label>
 					</control>
-					<control type="button"id="31">
+					<control type="button" id="31">
 						<description>New channel Button</description>
 						<width>700</width>
 						<height>100</height>
@@ -236,7 +236,7 @@
 						<align>center</align>
 						<label>$LOCALIZE[19204]</label>
 					</control>
-					<control type="button"id="30">
+					<control type="button" id="30">
 						<description>Group Manager Button</description>
 						<width>700</width>
 						<height>100</height>
@@ -244,7 +244,7 @@
 						<align>center</align>
 						<label>$LOCALIZE[19205]</label>
 					</control>
-					<control type="togglebutton"id="34">
+					<control type="togglebutton" id="34">
 						<description>TV/Radio toggle</description>
 						<width>700</width>
 						<height>100</height>
@@ -257,7 +257,7 @@
 					</control>
 				</control>
 			</control>
-			<control type="grouplist"id="9000">
+			<control type="grouplist" id="9000">
 				<right>20</right>
 				<top>90</top>
 				<onleft condition="Integer.IsGreater(Container(20).NumItems, 0)">9002</onleft>
@@ -266,19 +266,19 @@
 				<itemgap>dialogbuttons_itemgap</itemgap>
 				<width>400</width>
 				<include content="DefaultDialogButton">
-					<param name="width"value="400"/>
-					<param name="id"value="4"/>
-					<param name="label"value="$LOCALIZE[186]"/>
+					<param name="width" value="400"/>
+					<param name="id" value="4"/>
+					<param name="label" value="$LOCALIZE[186]"/>
 				</include>
 				<include content="DefaultDialogButton">
-					<param name="width"value="400"/>
-					<param name="id"value="5"/>
-					<param name="label"value="$LOCALIZE[14070]"/>
+					<param name="width" value="400"/>
+					<param name="id" value="5"/>
+					<param name="label" value="$LOCALIZE[14070]"/>
 				</include>
 				<include content="DefaultDialogButton">
-					<param name="width"value="400"/>
-					<param name="id"value="6"/>
-					<param name="label"value="$LOCALIZE[222]"/>
+					<param name="width" value="400"/>
+					<param name="id" value="6"/>
+					<param name="label" value="$LOCALIZE[222]"/>
 				</include>
 			</control>
 		</control>

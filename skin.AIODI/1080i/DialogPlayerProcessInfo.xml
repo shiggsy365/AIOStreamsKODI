@@ -1,16 +1,16 @@
-<?xml version="1.0"encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <window>
     <include file="Includes.xml"/>
 	<depth>DepthOSD</depth>
 	<defaultcontrol always="true">5553</defaultcontrol>
-	<animation type="WindowOpen"effect="fade"start="0"end="100"time="300"/>
-	<animation type="WindowClose"effect="fade"start="100"end="0"time="200"/>
+	<animation type="WindowOpen" effect="fade" start="0" end="100" time="300"/>
+	<animation type="WindowClose" effect="fade" start="100" end="0" time="200"/>
 	<onunload>ClearProperty(PlayerInfoDialogFocus,Home)</onunload>
 	<controls>
 		<control type="group">
 			<bottom>0</bottom>
 			<height>250</height>
-			<animation type="conditional"effect="slide"end="0,-20"time="150"condition="VideoPlayer.Content(LiveTV)"/>
+			<animation type="conditional" effect="slide" end="0,-20" time="150" condition="VideoPlayer.Content(LiveTV)"/>
 			<control type="image">
 				<left>30</left>
 				<top>-220</top>
@@ -300,7 +300,7 @@
 					<visible>!System.SupportsCPUUsage</visible>
 				</control>
 			</control>
-			<control type="grouplist"id="5550">
+			<control type="grouplist" id="5550">
 				<right>15</right>
 				<top>-310</top>
 				<width>1000</width>
@@ -311,7 +311,7 @@
 				<onup>Close</onup>
 				<ondown>Close</ondown>
 				<usecontrolcoords>true</usecontrolcoords>
-				<control type="button"id="5551">
+				<control type="button" id="5551">
 					<width>auto</width>
 					<height>100</height>
 					<textoffsetx>40</textoffsetx>
@@ -319,21 +319,21 @@
 					<visible>VideoPlayer.Content(livetv)</visible>
 					<onfocus>SetProperty(PlayerInfoDialogFocus,5551,Home)</onfocus>
 				</control>
-				<control type="button"id="5552">
+				<control type="button" id="5552">
 					<width>auto</width>
 					<height>100</height>
 					<textoffsetx>40</textoffsetx>
 					<label>$LOCALIZE[31610]</label>
 					<onfocus>SetProperty(PlayerInfoDialogFocus,5552,Home)</onfocus>
 				</control>
-				<control type="button"id="5553">
+				<control type="button" id="5553">
 					<width>auto</width>
 					<height>100</height>
 					<textoffsetx>40</textoffsetx>
 					<label>$LOCALIZE[31138]</label>
 					<onfocus>SetProperty(PlayerInfoDialogFocus,5553,Home)</onfocus>
 				</control>
-				<control type="button"id="5554">
+				<control type="button" id="5554">
 					<width>auto</width>
 					<height>100</height>
 					<textoffsetx>40</textoffsetx>

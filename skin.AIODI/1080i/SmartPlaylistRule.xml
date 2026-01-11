@@ -1,4 +1,4 @@
-<?xml version="1.0"encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <window>
     <include file="Includes.xml"/>
 	<defaultcontrol always="true">9001</defaultcontrol>
@@ -9,10 +9,10 @@
 			<width>960</width>
 			<top>330</top>
 			<include content="DialogBackgroundCommons">
-				<param name="width"value="960"/>
-				<param name="height"value="500"/>
-				<param name="header_label"value="$LOCALIZE[21421]"/>
-				<param name="header_id"value="2"/>
+				<param name="width" value="960"/>
+				<param name="height" value="500"/>
+				<param name="header_label" value="$LOCALIZE[21421]"/>
+				<param name="header_id" value="2"/>
 			</include>
 			<control type="label">
 				<description>Rule match label</description>
@@ -22,33 +22,33 @@
 				<include>SettingsLabelCommon</include>
 				<label>$LOCALIZE[21422]</label>
 			</control>
-			<control type="grouplist"id="9001">
+			<control type="grouplist" id="9001">
 				<left>30</left>
 				<top>100</top>
 				<orientation>vertical</orientation>
 				<onup>9000</onup>
 				<ondown>9000</ondown>
-				<control type="button"id="15">
+				<control type="button" id="15">
 					<description>Rule Field</description>
 					<include>SettingsItemCommon</include>
 					<width>900</width>
 				</control>
-				<control type="button"id="16">
+				<control type="button" id="16">
 					<description>Rule operator</description>
 					<width>900</width>
 					<include>SettingsItemCommon</include>
 				</control>
-				<control type="grouplist"id="9002">
+				<control type="grouplist" id="9002">
 					<left>30</left>
 					<top>200</top>
 					<orientation>horizontal</orientation>
-					<control type="edit"id="17">
+					<control type="edit" id="17">
 						<description>Value Button</description>
 						<width>600</width>
 						<include>SettingsItemCommon</include>
 						<hinttext>$LOCALIZE[31103]</hinttext>
 					</control>
-					<control type="button"id="20">
+					<control type="button" id="20">
 						<description>Browse Button</description>
 						<width>300</width>
 						<include>SettingsItemCommon</include>
@@ -57,7 +57,7 @@
 					</control>
 				</control>
 			</control>
-			<control type="grouplist"id="9000">
+			<control type="grouplist" id="9000">
 				<orientation>horizontal</orientation>
 				<left>0</left>
 				<top>410</top>
@@ -66,12 +66,12 @@
 				<onup>9002</onup>
 				<ondown>15</ondown>
 				<include content="DefaultDialogButton">
-					<param name="id"value="18"/>
-					<param name="label"value="$LOCALIZE[186]"/>
+					<param name="id" value="18"/>
+					<param name="label" value="$LOCALIZE[186]"/>
 				</include>
 				<include content="DefaultDialogButton">
-					<param name="id"value="19"/>
-					<param name="label"value="$LOCALIZE[222]"/>
+					<param name="id" value="19"/>
+					<param name="label" value="$LOCALIZE[222]"/>
 				</include>
 			</control>
 		</control>

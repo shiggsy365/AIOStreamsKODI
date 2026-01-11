@@ -1,4 +1,4 @@
-<?xml version="1.0"encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <window>
     <include file="Includes.xml"/>
 	<defaultcontrol>996</defaultcontrol>
@@ -13,8 +13,8 @@
 			<top>-1080</top>
 			<width>5760</width>
 			<height>3240</height>
-			<animation type="WindowOpen"effect="fade"start="0"end="100"time="300"/>
-			<animation type="WindowClose"effect="fade"start="100"end="0"time="200"/>
+			<animation type="WindowOpen" effect="fade" start="0" end="100" time="300"/>
+			<animation type="WindowClose" effect="fade" start="100" end="0" time="200"/>
 			<texture></texture>
 		</control>
 		<control type="button">
@@ -24,7 +24,7 @@
 			<height>3240</height>
 			<texture></texture>
 			</control>
-			<control type="grouplist"id="996">
+			<control type="grouplist" id="996">
 				<description>grouplist for context buttons</description>
 				<left>0</left>
 				<top>0</top>
@@ -33,13 +33,13 @@
 				<usecontrolcoords>true</usecontrolcoords>
 			</control>
 			<include content="UpDownArrows">
-				<param name="container_id"value="996"/>
-				<param name="posx"value="201"/>
-				<param name="up_posy"value="-40"/>
-				<param name="down_posy"value="798"/>
+				<param name="container_id" value="996"/>
+				<param name="posx" value="201"/>
+				<param name="up_posy" value="-40"/>
+				<param name="down_posy" value="798"/>
 			</include>
 		</control>
-		<control type="button"id="1000">
+		<control type="button" id="1000">
 			<description>button template</description>
 			<left>0</left>
 			<top></top>

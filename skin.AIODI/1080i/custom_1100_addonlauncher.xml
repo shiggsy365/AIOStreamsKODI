@@ -1,4 +1,4 @@
-<?xml version="1.0"encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <window id="1100">
     <include file="Includes.xml"/>
 	<defaultcontrol always="true">9000</defaultcontrol>
@@ -10,77 +10,77 @@
 			<include>FullScreenDimensions</include>
 			<aspectratio>scale</aspectratio>
 			<fadetime>600</fadetime>
-			<animation type="conditional"effect="zoom"center="auto"end="102,102"time="0"condition="Integer.IsGreater(System.StereoscopicMode,0)"/>
-			<animation type="WindowOpen"effect="fade"start="0"end="100"time="400"/>
-			<animation type="WindowClose"effect="fade"start="100"end="0"time="300"/>
-			<animation type="VisibleChange"effect="fade"time="400"/>
-			<imagepath background="true"colordiffuse="bg_overlay">$VAR[AddonsFanartVar]</imagepath>
+			<animation type="conditional" effect="zoom" center="auto" end="102,102" time="0" condition="Integer.IsGreater(System.StereoscopicMode,0)"/>
+			<animation type="WindowOpen" effect="fade" start="0" end="100" time="400"/>
+			<animation type="WindowClose" effect="fade" start="100" end="0" time="300"/>
+			<animation type="VisibleChange" effect="fade" time="400"/>
+			<imagepath background="true" colordiffuse="bg_overlay">$VAR[AddonsFanartVar]</imagepath>
 			<visible>!Player.HasMedia</visible>
 		</control>
 		<control type="group">
-			<animation type="Conditional"effect="fade"start="100"end="0"time="200"tween="sine"condition="$EXP[infodialog_active]"/>
-			<control type="group"id="400">
+			<animation type="Conditional" effect="fade" start="100" end="0" time="200" tween="sine" condition="$EXP[infodialog_active]"/>
+			<control type="group" id="400">
 				<include>OpenClose_Right</include>
 				<include content="AddonLauncherPanel">
-					<param name="group_id"value="500"/>
-					<param name="id"value="video"/>
-					<param name="container_path"value="addons://sources/video/"/>
-					<param name="container_target"value="videos"/>
-					<param name="imagewidget_onclick"value="ActivateWindow(addonbrowser,addons://all/xbmc.addon.video,return)"/>
+					<param name="group_id" value="500"/>
+					<param name="id" value="video"/>
+					<param name="container_path" value="addons://sources/video/"/>
+					<param name="container_target" value="videos"/>
+					<param name="imagewidget_onclick" value="ActivateWindow(addonbrowser,addons://all/xbmc.addon.video,return)"/>
 				</include>
 				<include content="AddonLauncherPanel">
-					<param name="group_id"value="501"/>
-					<param name="id"value="music"/>
-					<param name="container_path"value="addons://sources/audio/"/>
-					<param name="container_target"value="music"/>
-					<param name="imagewidget_onclick"value="ActivateWindow(addonbrowser,addons://all/xbmc.addon.audio,return)"/>
+					<param name="group_id" value="501"/>
+					<param name="id" value="music"/>
+					<param name="container_path" value="addons://sources/audio/"/>
+					<param name="container_target" value="music"/>
+					<param name="imagewidget_onclick" value="ActivateWindow(addonbrowser,addons://all/xbmc.addon.audio,return)"/>
 				</include>
 				<include content="AddonLauncherPanel">
-					<param name="group_id"value="509"/>
-					<param name="id"value="game"/>
-					<param name="container_path"value="addons://sources/game/"/>
-					<param name="container_target"value="games"/>
-					<param name="imagewidget_onclick"value="ActivateWindow(addonbrowser,addons://all/category.standalonegames,return)"/>
+					<param name="group_id" value="509"/>
+					<param name="id" value="game"/>
+					<param name="container_path" value="addons://sources/game/"/>
+					<param name="container_target" value="games"/>
+					<param name="imagewidget_onclick" value="ActivateWindow(addonbrowser,addons://all/category.standalonegames,return)"/>
 				</include>
 				<include content="AddonLauncherPanel">
-					<param name="group_id"value="502"/>
-					<param name="id"value="addons"/>
-					<param name="container_path"value="addons://sources/executable/"/>
-					<param name="container_target"value="programs"/>
-					<param name="imagewidget_onclick"value="ActivateWindow(addonbrowser,addons://all/xbmc.addon.executable,return)"/>
+					<param name="group_id" value="502"/>
+					<param name="id" value="addons"/>
+					<param name="container_path" value="addons://sources/executable/"/>
+					<param name="container_target" value="programs"/>
+					<param name="imagewidget_onclick" value="ActivateWindow(addonbrowser,addons://all/xbmc.addon.executable,return)"/>
 				</include>
-				<include content="AddonLauncherPanel"condition="System.Platform.Android">
-					<param name="group_id"value="506"/>
-					<param name="id"value="android"/>
-					<param name="container_path"value="androidapp://sources/apps/"/>
-					<param name="container_target"value="programs"/>
-				</include>
-				<include content="AddonLauncherPanel">
-					<param name="group_id"value="503"/>
-					<param name="id"value="pictures"/>
-					<param name="container_path"value="addons://sources/image/"/>
-					<param name="container_target"value="pictures"/>
-					<param name="imagewidget_onclick"value="ActivateWindow(addonbrowser,addons://all/xbmc.addon.image,return)"/>
+				<include content="AddonLauncherPanel" condition="System.Platform.Android">
+					<param name="group_id" value="506"/>
+					<param name="id" value="android"/>
+					<param name="container_path" value="androidapp://sources/apps/"/>
+					<param name="container_target" value="programs"/>
 				</include>
 				<include content="AddonLauncherPanel">
-					<param name="group_id"value="507"/>
-					<param name="id"value="download"/>
-					<param name="container_path"value="addons://all/"/>
-					<param name="container_target"value="addonbrowser"/>
+					<param name="group_id" value="503"/>
+					<param name="id" value="pictures"/>
+					<param name="container_path" value="addons://sources/image/"/>
+					<param name="container_target" value="pictures"/>
+					<param name="imagewidget_onclick" value="ActivateWindow(addonbrowser,addons://all/xbmc.addon.image,return)"/>
 				</include>
 				<include content="AddonLauncherPanel">
-					<param name="group_id"value="508"/>
-					<param name="id"value="manage"/>
-					<param name="container_path"value="addons://user"/>
-					<param name="container_target"value="addonbrowser"/>
+					<param name="group_id" value="507"/>
+					<param name="id" value="download"/>
+					<param name="container_path" value="addons://all/"/>
+					<param name="container_target" value="addonbrowser"/>
+				</include>
+				<include content="AddonLauncherPanel">
+					<param name="group_id" value="508"/>
+					<param name="id" value="manage"/>
+					<param name="container_path" value="addons://user"/>
+					<param name="container_target" value="addonbrowser"/>
 				</include>
 			</control>
 			<control type="group">
 				<include>OpenClose_Left</include>
 				<include content="ContentPanel">
-					<param name="width"value="523"/>
+					<param name="width" value="523"/>
 				</include>
-				<control type="fixedlist"id="9000">
+				<control type="fixedlist" id="9000">
 					<left>1</left>
 					<top>300</top>
 					<width>462</width>
@@ -91,14 +91,14 @@
 					<onup>700</onup>
 					<ondown>700</ondown>
 					<onright>SetFocus($INFO[Container(9000).ListItem.Property(menu_id)])</onright>
-					<scrolltime tween="cubic"easing="out">500</scrolltime>
-					<focusedlayout height="95"width="462">
+					<scrolltime tween="cubic" easing="out">500</scrolltime>
+					<focusedlayout height="95" width="462">
 						<control type="image">
 							<left>0</left>
 							<right>0</right>
 							<bottom>0</bottom>
 							<texture></texture>
-							<animation type="Conditional"effect="fade"start="100"end="0"time="0"condition="!Control.HasFocus(9000)"/>
+							<animation type="Conditional" effect="fade" start="100" end="0" time="0" condition="!Control.HasFocus(9000)"/>
 						</control>
 						<control type="image">
 							<left>-3</left>
@@ -106,14 +106,14 @@
 							<width>95</width>
 							<bottom>0</bottom>
 							<texture></texture>
-							<animation type="Focus"effect="fade"start="0"end="100"time="300"reversible="false"/>
+							<animation type="Focus" effect="fade" start="0" end="100" time="300" reversible="false"/>
 						</control>
 						<control type="image">
 							<left>0</left>
 							<width>95</width>
 							<bottom>0</bottom>
 							<texture></texture>
-							<animation type="Conditional"effect="fade"start="100"end="0"time="0"condition="!Control.HasFocus(9000)"/>
+							<animation type="Conditional" effect="fade" start="100" end="0" time="0" condition="!Control.HasFocus(9000)"/>
 						</control>
 						<control type="image">
 							<left>-3</left>
@@ -132,7 +132,7 @@
 							<shadowcolor>text_shadow</shadowcolor>
 						</control>
 					</focusedlayout>
-					<itemlayout height="95"width="462">
+					<itemlayout height="95" width="462">
 						<control type="label">
 							<left>104</left>
 							<bottom>0</bottom>
@@ -220,7 +220,7 @@
 					</content>
 				</control>
 			</control>
-			<control type="grouplist"id="700">
+			<control type="grouplist" id="700">
 				<orientation>horizontal</orientation>
 				<left>32</left>
 				<top>135</top>
@@ -230,7 +230,7 @@
 				<include>OpenClose_Left</include>
 				<onright>400</onright>
 				<usecontrolcoords>true</usecontrolcoords>
-				<control type="radiobutton"id="801">
+				<control type="radiobutton" id="801">
 					<width>120</width>
 					<height>120</height>
 					<align>right</align>
@@ -251,7 +251,7 @@
 					<textureradioofffocus>icons/submenu/add-ons.png</textureradioofffocus>
 					<textureradiooffnofocus>icons/submenu/add-ons.png</textureradiooffnofocus>
 				</control>
-				<control type="radiobutton"id="802">
+				<control type="radiobutton" id="802">
 					<top>5</top>
 					<width>157</width>
 					<height>110</height>
@@ -276,7 +276,7 @@
 					<textureradioondisabled colordiffuse="disabled">icons/submenu/updatelibrary.png</textureradioondisabled>
 					<textureradiooffdisabled colordiffuse="disabled">icons/submenu/updatelibrary.png</textureradiooffdisabled>
 				</control>
-				<control type="radiobutton"id="803">
+				<control type="radiobutton" id="803">
 					<width>120</width>
 					<height>120</height>
 					<align>right</align>
@@ -297,7 +297,7 @@
 					<textureradioofffocus >icons/settings.png</textureradioofffocus>
 					<textureradiooffnofocus >icons/settings.png</textureradiooffnofocus>
 				</control>
-				<control type="label"id="804">
+				<control type="label" id="804">
 					<left>-217</left>
 					<top>22</top>
 					<height>70</height>
@@ -310,17 +310,17 @@
 				</control>
 			</control>
 			<include content="TopBar">
-				<param name="breadcrumbs_label"value="$LOCALIZE[24001]"/>
+				<param name="breadcrumbs_label" value="$LOCALIZE[24001]"/>
 			</include>
 			<include>BottomBar</include>
 			<control type="group">
 				<left>-10000</left>
 				<include content="InfoList">
-					<param name="path"value="addons://outdated/"/>
-					<param name="bottom"value="1"/>
-					<param name="width"value="1"/>
-					<param name="list_id"value="8000"/>
-					<param name="item_label"value=""/>
+					<param name="path" value="addons://outdated/"/>
+					<param name="bottom" value="1"/>
+					<param name="width" value="1"/>
+					<param name="list_id" value="8000"/>
+					<param name="item_label" value=""/>
 				</include>
 			</control>
 		</control>

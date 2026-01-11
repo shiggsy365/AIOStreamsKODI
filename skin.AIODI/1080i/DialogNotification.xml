@@ -1,4 +1,4 @@
-<?xml version="1.0"encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <window>
     <include file="Includes.xml"/>
 	<zorder>3</zorder>
@@ -19,7 +19,7 @@
 				<bordertexture></bordertexture>
 				<bordersize>20</bordersize>
 			</control>
-			<control type="image"id="400">
+			<control type="image" id="400">
 				<description>avatar</description>
 				<left>25</left>
 				<top>25</top>
@@ -27,7 +27,7 @@
 				<height>110</height>
 				<aspectratio>stretch</aspectratio>
 			</control>
-			<control type="fadelabel"id="401">
+			<control type="fadelabel" id="401">
 				<description>Line 1 Label</description>
 				<left>150</left>
 				<top>40</top>
@@ -38,7 +38,7 @@
 				<scrollout>false</scrollout>
 				<pauseatend>2000</pauseatend>
 			</control>
-			<control type="fadelabel"id="402">
+			<control type="fadelabel" id="402">
 				<description>Line 2 Label</description>
 				<left>151</left>
 				<top>68</top>

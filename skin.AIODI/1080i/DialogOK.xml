@@ -1,4 +1,4 @@
-<?xml version="1.0"encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <window type="dialog">
     <include file="Includes.xml"/>
     <defaultcontrol always="true">10</defaultcontrol>
@@ -31,7 +31,7 @@
             </control>
 
             <!--Title -->
-            <control type="label"id="1">
+            <control type="label" id="1">
                 <left>40</left>
                 <top>40</top>
                 <width>720</width>
@@ -42,7 +42,7 @@
             </control>
 
             <!--Message -->
-            <control type="textbox"id="9">
+            <control type="textbox" id="9">
                 <left>40</left>
                 <top>120</top>
                 <width>720</width>
@@ -53,7 +53,7 @@
             </control>
 
             <!--OK Button -->
-            <control type="button"id="10">
+            <control type="button" id="10">
                 <left>300</left>
                 <top>320</top>
                 <width>200</width>

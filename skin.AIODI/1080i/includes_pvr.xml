@@ -1,4 +1,4 @@
-<?xml version="1.0"encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <includes>
 	<expression name="listitem_has_episode_info">!String.IsEmpty(ListItem.Episode) | !String.IsEmpty(ListItem.EpisodeName) | !String.IsEmpty(ListItem.Season)</expression>
 	<expression name="listitem_has_epg_event_info">!String.IsEmpty(ListItem.EpgEventTitle) | $EXP[listitem_has_episode_info]</expression>
@@ -15,7 +15,7 @@
 			</control>
 			<control type="group">
 				<visible>!$PARAM[only_label_condition]</visible>
-				<animation type="Conditional"effect="slide"start="0,0"end="0,16"time="0"condition="!$EXP[listitem_has_epg_event_info]"/>
+				<animation type="Conditional" effect="slide" start="0,0" end="0,16" time="0" condition="!$EXP[listitem_has_epg_event_info]"/>
 				<control type="image">
 					<left>29</left>
 					<top>17</top>
@@ -102,7 +102,7 @@
 		<param name="has_status_icon">false</param>
 		<param name="info_update">0</param>
 		<definition>
-			<itemlayout height="100"infoupdate="$PARAM[info_update]">
+			<itemlayout height="100" infoupdate="$PARAM[info_update]">
 				<control type="progress">
 					<left>20</left>
 					<top>66</top>
@@ -115,23 +115,23 @@
 					<info>ListItem.Progress</info>
 				</control>
 				<include content="PVRListItemLayout">
-					<param name="only_label_condition"value="$PARAM[only_label_condition]"/>
-					<param name="info_icon"value="$PARAM[info_icon]"/>
-					<param name="has_info_icon"value="$PARAM[has_info_icon]"/>
-					<param name="has_status_icon"value="$PARAM[has_status_icon]"/>
-					<param name="label0"value="[COLOR grey]$INFO[ListItem.ChannelNumberLabel][/COLOR]"/>
-					<param name="label1"value="$PARAM[label1]"/>
-					<param name="label2"value="$PARAM[label2]"/>
-					<param name="label3"value="$VAR[PVRListItemSubLabel]"/>
-					<param name="label4"value="[COLOR grey]$INFO[ListItem.Comment][/COLOR]"/>
+					<param name="only_label_condition" value="$PARAM[only_label_condition]"/>
+					<param name="info_icon" value="$PARAM[info_icon]"/>
+					<param name="has_info_icon" value="$PARAM[has_info_icon]"/>
+					<param name="has_status_icon" value="$PARAM[has_status_icon]"/>
+					<param name="label0" value="[COLOR grey]$INFO[ListItem.ChannelNumberLabel][/COLOR]"/>
+					<param name="label1" value="$PARAM[label1]"/>
+					<param name="label2" value="$PARAM[label2]"/>
+					<param name="label3" value="$VAR[PVRListItemSubLabel]"/>
+					<param name="label4" value="[COLOR grey]$INFO[ListItem.Comment][/COLOR]"/>
 				</include>
 			</itemlayout>
-			<focusedlayout height="100"infoupdate="$PARAM[info_update]">
+			<focusedlayout height="100" infoupdate="$PARAM[info_update]">
 				<control type="image">
 					<left>0</left>
 					<top>0</top>
 					<right>0</right>
-					<animation type="UnFocus"effect="fade"start="100"end="0"time="0"/>
+					<animation type="UnFocus" effect="fade" start="100" end="0" time="0"/>
 					<texture></texture>
 					<visible>Control.HasFocus($PARAM[list_id])</visible>
 				</control>
@@ -147,15 +147,15 @@
 					<info>ListItem.Progress</info>
 				</control>
 				<include content="PVRListItemLayout">
-					<param name="only_label_condition"value="$PARAM[only_label_condition]"/>
-					<param name="info_icon"value="$PARAM[info_icon]"/>
-					<param name="has_info_icon"value="$PARAM[has_info_icon]"/>
-					<param name="has_status_icon"value="$PARAM[has_status_icon]"/>
-					<param name="label0"value="$INFO[ListItem.ChannelNumberLabel]"/>
-					<param name="label1"value="$PARAM[label1]"/>
-					<param name="label2"value="$PARAM[label2]"/>
-					<param name="label3"value="$VAR[PVRListItemSubLabelFocused]"/>
-					<param name="label4"value="$INFO[ListItem.Comment]"/>
+					<param name="only_label_condition" value="$PARAM[only_label_condition]"/>
+					<param name="info_icon" value="$PARAM[info_icon]"/>
+					<param name="has_info_icon" value="$PARAM[has_info_icon]"/>
+					<param name="has_status_icon" value="$PARAM[has_status_icon]"/>
+					<param name="label0" value="$INFO[ListItem.ChannelNumberLabel]"/>
+					<param name="label1" value="$PARAM[label1]"/>
+					<param name="label2" value="$PARAM[label2]"/>
+					<param name="label3" value="$VAR[PVRListItemSubLabelFocused]"/>
+					<param name="label4" value="$INFO[ListItem.Comment]"/>
 				</include>
 			</focusedlayout>
 		</definition>
@@ -166,7 +166,7 @@
 			<left>0</left>
 			<align>center</align>
 			<width>510</width>
-			<control type="label"id="$PARAM[header_id]">
+			<control type="label" id="$PARAM[header_id]">
 				<width>auto</width>
 				<height>70</height>
 				<align>center</align>
@@ -189,7 +189,7 @@
 			<height>855</height>
 			<texture></texture>
 		</control>
-		<control type="list"id="$PARAM[list_id]">
+		<control type="list" id="$PARAM[list_id]">
 			<left>20</left>
 			<top>75</top>
 			<width>470</width>
@@ -200,7 +200,7 @@
 			<onright>$PARAM[scrollbar_id]</onright>
 			<pagecontrol>$PARAM[scrollbar_id]</pagecontrol>
 			<scrolltime>200</scrolltime>
-			<itemlayout height="70"width="470">
+			<itemlayout height="70" width="470">
 				<control type="image">
 					<width>60</width>
 					<height>60</height>
@@ -221,7 +221,7 @@
 					<label>$INFO[ListItem.ChannelNumberLabel,[B],[/B] - ]$INFO[ListItem.ChannelName]</label>
 				</control>
 			</itemlayout>
-			<focusedlayout height="70"width="470">
+			<focusedlayout height="70" width="470">
 				<control type="image">
 					<left>0</left>
 					<right>0</right>
@@ -249,7 +249,7 @@
 				</control>
 			</focusedlayout>
 		</control>
-		<control type="scrollbar"id="$PARAM[scrollbar_id]">
+		<control type="scrollbar" id="$PARAM[scrollbar_id]">
 			<left>495</left>
 			<top>75</top>
 			<width>12</width>
@@ -263,7 +263,7 @@
 	</include>
 	<include name="PVRProgress">
 		<control type="group">
-			<animation type="VisibleChange"effect="fade"time="400"/>
+			<animation type="VisibleChange" effect="fade" time="400"/>
 			<visible>!Player.ChannelPreviewActive</visible>
 			<control type="group">
 				<visible>Player.SeekEnabled | VideoPlayer.HasEPG</visible>
@@ -372,7 +372,7 @@
 				<width>830</width>
 				<bottom>list_bottom_offset</bottom>
 				<label>$VAR[FlagLabel,,[CR]]$INFO[ListItem.Genre,[COLOR grey]$LOCALIZE[515]:[/COLOR] ,[CR]]$INFO[ListItem.ParentalRatingCode,[COLOR grey]$LOCALIZE[31017]: [/COLOR],[CR]]$INFO[ListItem.TimerType,[COLOR grey]$LOCALIZE[803]:[/COLOR] ,[CR]]$VAR[RecordingSizeLabel]$VAR[ExpirationDateTimeLabel]$INFO[ListItem.Plot,[CR]]</label>
-				<autoscroll delay="10000"time="3000"repeat="10000">Skin.HasSetting(AutoScroll)</autoscroll>
+				<autoscroll delay="10000" time="3000" repeat="10000">Skin.HasSetting(AutoScroll)</autoscroll>
 			</control>
 		</control>
 		<control type="group">
@@ -390,12 +390,12 @@
 				<left>-10</left>
 				<top>60</top>
 				<visible>!ListItem.IsParentFolder</visible>
-				<control type="panel"id="5000">
+				<control type="panel" id="5000">
 					<top>20</top>
 					<width>830</width>
 					<bottom>100</bottom>
 					<orientation>vertical</orientation>
-					<focusedlayout height="100"width="780">
+					<focusedlayout height="100" width="780">
 						<control type="label">
 							<left>10</left>
 							<height>90</height>
@@ -405,7 +405,7 @@
 							<shadowcolor>text_shadow</shadowcolor>
 						</control>
 					</focusedlayout>
-					<itemlayout height="100"width="780">
+					<itemlayout height="100" width="780">
 						<control type="label">
 							<left>10</left>
 							<height>90</height>
@@ -415,7 +415,7 @@
 							<shadowcolor>text_shadow</shadowcolor>
 						</control>
 					</itemlayout>
-					<content sortby="date"sortorder="$PARAM[folder_sortorder]">$INFO[ListItem.FilenameAndPath]</content>
+					<content sortby="date" sortorder="$PARAM[folder_sortorder]">$INFO[ListItem.FilenameAndPath]</content>
 				</control>
 			</control>
 		</control>
@@ -459,14 +459,14 @@
 	</include>
 	<include name="EpgGrid">
 		<definition>
-			<control type="epggrid"id="$PARAM[control_id]">
+			<control type="epggrid" id="$PARAM[control_id]">
 				<left>0</left>
 				<top>$PARAM[control_top]</top>
 				<right>20</right>
 				<bottom>333</bottom>
 				<orientation>$PARAM[control_orientation]</orientation>
 				<pagecontrol>60</pagecontrol>
-				<scrolltime tween="quadratic"easing="out">300</scrolltime>
+				<scrolltime tween="quadratic" easing="out">300</scrolltime>
 				<timeblocks>34</timeblocks>
 				<rulerunit>6</rulerunit>
 				<onleft>9000</onleft>
@@ -474,8 +474,8 @@
 				<onup>$PARAM[control_onupdown_id]</onup>
 				<ondown>$PARAM[control_onupdown_id]</ondown>
 				<viewtype label="$PARAM[viewtype_label]">list</viewtype>
-				<progresstexture border="$PARAM[progress_texture_border]"colordiffuse="button_focus">$PARAM[progress_texture]</progresstexture>
-				<rulerdatelayout width="1700"height="45"condition="$PARAM[has_rulerdate_layout]">
+				<progresstexture border="$PARAM[progress_texture_border]" colordiffuse="button_focus">$PARAM[progress_texture]</progresstexture>
+				<rulerdatelayout width="1700" height="45" condition="$PARAM[has_rulerdate_layout]">
 					<control type="label">
 						<width>1700</width>
 						<height>45</height>
@@ -486,7 +486,7 @@
 						<aligny>center</aligny>
 					</control>
 				</rulerdatelayout>
-				<rulerlayout height="45"width="$PARAM[ruler_width]">
+				<rulerlayout height="45" width="$PARAM[ruler_width]">
 					<control type="label">
 						<width>$PARAM[ruler_label_width]</width>
 						<height>45</height>
@@ -496,7 +496,7 @@
 						<textcolor>button_focus</textcolor>
 					</control>
 				</rulerlayout>
-				<channellayout height="62"width="$PARAM[channel_width]">
+				<channellayout height="62" width="$PARAM[channel_width]">
 					<control type="label">
 						<left>2</left>
 						<top>-2</top>
@@ -507,7 +507,7 @@
 						<align>center</align>
 						<aligny>center</aligny>
 					</control>
-					<control type="label"id="1">
+					<control type="label" id="1">
 						<left>83</left>
 						<top>-2</top>
 						<height>60</height>
@@ -517,7 +517,7 @@
 						<textoffsetx>10</textoffsetx>
 					</control>
 				</channellayout>
-				<focusedchannellayout height="62"width="$PARAM[channel_width]">
+				<focusedchannellayout height="62" width="$PARAM[channel_width]">
 					<control type="label">
 						<left>2</left>
 						<top>-2</top>
@@ -529,7 +529,7 @@
 						<align>center</align>
 						<aligny>center</aligny>
 					</control>
-					<control type="label"id="1">
+					<control type="label" id="1">
 						<left>83</left>
 						<top>-2</top>
 						<height>60</height>
@@ -541,13 +541,13 @@
 						<scroll>true</scroll>
 					</control>
 				</focusedchannellayout>
-				<itemlayout height="62"width="60">
-					<control type="image"id="2">
+				<itemlayout height="62" width="60">
+					<control type="image" id="2">
 						<width>58</width>
 						<height>58</height>
 						<texture></texture>
 					</control>
-					<control type="label"id="1">
+					<control type="label" id="1">
 						<left>6</left>
 						<top>0</top>
 						<height>36</height>
@@ -570,11 +570,11 @@
 						<width>16</width>
 						<height>16</height>
 						<texture></texture>
-						<animation type="Conditional"effect="slide"start="0,0"end="19,0"condition="ListItem.IsNew | ListItem.IsPremiere | ListItem.IsFinale | ListItem.IsLive"/>
+						<animation type="Conditional" effect="slide" start="0,0" end="19,0" condition="ListItem.IsNew | ListItem.IsPremiere | ListItem.IsFinale | ListItem.IsLive"/>
 					</control>
 				</itemlayout>
-				<focusedlayout height="62"width="60">
-					<control type="image"id="2">
+				<focusedlayout height="62" width="60">
+					<control type="image" id="2">
 						<top>2</top>
 						<left>2</left>
 						<width>54</width>
@@ -582,19 +582,19 @@
 						<texture></texture>
 						<visible>Control.HasFocus($PARAM[control_id])</visible>
 					</control>
-					<control type="image"id="2">
+					<control type="image" id="2">
 						<width>58</width>
 						<height>58</height>
 						<texture></texture>
 					</control>
-					<control type="image"id="2">
+					<control type="image" id="2">
 						<width>58</width>
 						<height>58</height>
 						<top>0</top>
 						<texture></texture>
 						<visible>!Control.HasFocus($PARAM[control_id])</visible>
 					</control>
-					<control type="label"id="1">
+					<control type="label" id="1">
 						<left>6</left>
 						<top>0</top>
 						<height>36</height>
@@ -617,11 +617,11 @@
 						<width>16</width>
 						<height>16</height>
 						<texture></texture>
-						<animation type="Conditional"effect="slide"start="0,0"end="19,0"condition="ListItem.IsNew | ListItem.IsPremiere | ListItem.IsFinale | ListItem.IsLive"/>
+						<animation type="Conditional" effect="slide" start="0,0" end="19,0" condition="ListItem.IsNew | ListItem.IsPremiere | ListItem.IsFinale | ListItem.IsLive"/>
 					</control>
 				</focusedlayout>
 			</control>
-			<control type="scrollbar"id="60">
+			<control type="scrollbar" id="60">
 				<right>0</right>
 				<top>$PARAM[scrollbar_top]</top>
 				<width>12</width>
@@ -630,7 +630,7 @@
 				<onright>10</onright>
 				<orientation>vertical</orientation>
 				<texturesliderbackground colordiffuse="22FFFFFF">common/white.png</texturesliderbackground>
-				<animation type="Conditional"effect="fade"start="100"end="40"time="0"condition="!system.getbool(input.enablemouse)"/>
+				<animation type="Conditional" effect="fade" start="100" end="40" time="0" condition="!system.getbool(input.enablemouse)"/>
 				<visible>Control.IsVisible($PARAM[control_id])</visible>
 			</control>
 		</definition>

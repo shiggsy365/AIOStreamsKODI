@@ -1,4 +1,4 @@
-<?xml version="1.0"encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <window>
     <include file="Includes.xml"/>
 	<defaultcontrol always="true">8</defaultcontrol>
@@ -10,7 +10,7 @@
 			<height>1080</height>
 			<centerleft>50%</centerleft>
 			<width>1920</width>
-			<animation type="Conditional"effect="fade"start="100"end="0"time="200"tween="sine"condition="Window.IsVisible(script-embuary-video.xml) | Window.IsVisible(script-embuary-person.xml) | Window.IsVisible(script-embuary-image.xml)"/>
+			<animation type="Conditional" effect="fade" start="100" end="0" time="200" tween="sine" condition="Window.IsVisible(script-embuary-video.xml) | Window.IsVisible(script-embuary-person.xml) | Window.IsVisible(script-embuary-image.xml)"/>
 			<control type="group">
 				<top>150</top>
 				<left>66</left>
@@ -81,9 +81,9 @@
 				<include>OpenClose_Right</include>
 				<left>620</left>
 				<top>-30</top>
-				<control type="group"id="140">
+				<control type="group" id="140">
 					<top>468</top>
-					<control type="button"id="138">
+					<control type="button" id="138">
 						<width>754</width>
 						<height>418</height>
 						<textoffsetx>40</textoffsetx>
@@ -100,7 +100,7 @@
 						<texture></texture>
 						<visible>Integer.IsGreater(Container(4000).NumItems,0)</visible>
 					</control>
-					<control type="button"id="139">
+					<control type="button" id="139">
 						<width>1245</width>
 						<height>418</height>
 						<textoffsetx>40</textoffsetx>
@@ -137,7 +137,7 @@
 					<texture></texture>
 					<visible>Integer.IsEqual(Container(50).NumItems,0)</visible>
 				</control>
-				<control type="panel"id="50">
+				<control type="panel" id="50">
 					<top>158</top>
 					<width>1235</width>
 					<height>370</height>
@@ -149,7 +149,7 @@
 					<ondown>140</ondown>
 					<scrolltime>200</scrolltime>
 					<orientation>horizontal</orientation>
-					<itemlayout height="317"width="245"condition="!Container.Content(Sets)">
+					<itemlayout height="317" width="245" condition="!Container.Content(Sets)">
 						<control type="group">
 							<top>10</top>
 							<control type="image">
@@ -175,7 +175,7 @@
 								<height>80</height>
 								<bottom>10</bottom>
 								<texture></texture>
-								<animation type="Conditional"effect="fade"start="100"end="80"time="0"condition="true"/>
+								<animation type="Conditional" effect="fade" start="100" end="80" time="0" condition="true"/>
 							</control>
 							<control type="label">
 								<left>25</left>
@@ -200,7 +200,7 @@
 							</control>
 						</control>
 					</itemlayout>
-					<focusedlayout height="317"width="245"condition="!Container.Content(Sets)">
+					<focusedlayout height="317" width="245" condition="!Container.Content(Sets)">
 						<control type="group">
 							<left>0</left>
 							<top>10</top>
@@ -227,7 +227,7 @@
 								<height>80</height>
 								<bottom>10</bottom>
 								<texture></texture>
-								<animation type="Conditional"effect="fade"start="100"end="80"time="0"condition="true"/>
+								<animation type="Conditional" effect="fade" start="100" end="80" time="0" condition="true"/>
 							</control>
 							<control type="label">
 								<left>25</left>
@@ -261,7 +261,7 @@
 							</control>
 						</control>
 					</focusedlayout>
-					<itemlayout height="319"width="205"condition="Container.Content(Sets)">
+					<itemlayout height="319" width="205" condition="Container.Content(Sets)">
 						<control type="group">
 							<left>0</left>
 							<top>10</top>
@@ -288,7 +288,7 @@
 								<height>180</height>
 								<bottom>10</bottom>
 								<texture></texture>
-								<animation type="Conditional"effect="fade"start="100"end="80"time="0"condition="true"/>
+								<animation type="Conditional" effect="fade" start="100" end="80" time="0" condition="true"/>
 								<visible>String.IsEmpty(ListItem.Art(poster))</visible>
 							</control>
 							<control type="textbox">
@@ -304,7 +304,7 @@
 							</control>
 						</control>
 					</itemlayout>
-					<focusedlayout height="319"width="205"condition="Container.Content(Sets)">
+					<focusedlayout height="319" width="205" condition="Container.Content(Sets)">
 						<control type="group">
 							<left>0</left>
 							<top>10</top>
@@ -331,7 +331,7 @@
 								<height>180</height>
 								<bottom>10</bottom>
 								<texture></texture>
-								<animation type="Conditional"effect="fade"start="100"end="80"time="0"condition="true"/>
+								<animation type="Conditional" effect="fade" start="100" end="80" time="0" condition="true"/>
 								<visible>String.IsEmpty(ListItem.Art(poster))</visible>
 							</control>
 							<control type="textbox">
@@ -355,7 +355,7 @@
 						</control>
 					</focusedlayout>
 				</control>
-				<control type="grouplist"id="5000">
+				<control type="grouplist" id="5000">
 					<left>0</left>
 					<top>864</top>
 					<width>1246</width>
@@ -370,32 +370,32 @@
 					<orientation>horizontal</orientation>
 					<scrolltime tween="quadratic">200</scrolltime>
 					<include content="InfoDialogToggleButton">
-						<param name="id"value="8"/>
-						<param name="icon_on"value="icons/filemanager.png"/>
-						<param name="icon_off"value="icons/infodialogs/play.png"/>
-						<param name="selected"value="String.IsEqual(ListItem.DBType,tvshow) | String.IsEqual(ListItem.DBType,season) | String.IsEqual(ListItem.DBType,set)"/>
-						<param name="label"value="$VAR[VideoInfoPlayButtonLabelVar]"/>
+						<param name="id" value="8"/>
+						<param name="icon_on" value="icons/filemanager.png"/>
+						<param name="icon_off" value="icons/infodialogs/play.png"/>
+						<param name="selected" value="String.IsEqual(ListItem.DBType,tvshow) | String.IsEqual(ListItem.DBType,season) | String.IsEqual(ListItem.DBType,set)"/>
+						<param name="label" value="$VAR[VideoInfoPlayButtonLabelVar]"/>
 					</include>
 					<include content="InfoDialogButton">
-						<param name="id"value="11"/>
-						<param name="icon"value="icons/infodialogs/trailer.png"/>
-						<param name="label"value="$LOCALIZE[20410]"/>
-						<param name="visible"value="!String.IsEmpty(ListItem.Trailer) + ![String.StartsWith(Container.FolderPath,plugin://) + String.Contains(Container.FolderPath,trailer)]"/>
+						<param name="id" value="11"/>
+						<param name="icon" value="icons/infodialogs/trailer.png"/>
+						<param name="label" value="$LOCALIZE[20410]"/>
+						<param name="visible" value="!String.IsEmpty(ListItem.Trailer) + ![String.StartsWith(Container.FolderPath,plugin://) + String.Contains(Container.FolderPath,trailer)]"/>
 					</include>
 					<include content="InfoDialogButton">
-						<param name="id"value="441"/>
-						<param name="icon"value="icons/infodialogs/cinema.png"/>
-						<param name="onclick_1"value="Dialog.Close(MovieInformation)"/>
-						<param name="onclick_2"value="RunScript(script.cinemavision,experience)"/>
-						<param name="label"value="$LOCALIZE[31003]"/>
-						<param name="visible"value="System.AddonIsEnabled(script.cinemavision) + [String.IsEqual(ListItem.DBType,movie) | String.IsEqual(ListItem.DBType,tvshow) | String.IsEqual(ListItem.DBType,season) | String.IsEqual(ListItem.DBType,episode)]"/>
+						<param name="id" value="441"/>
+						<param name="icon" value="icons/infodialogs/cinema.png"/>
+						<param name="onclick_1" value="Dialog.Close(MovieInformation)"/>
+						<param name="onclick_2" value="RunScript(script.cinemavision,experience)"/>
+						<param name="label" value="$LOCALIZE[31003]"/>
+						<param name="visible" value="System.AddonIsEnabled(script.cinemavision) + [String.IsEqual(ListItem.DBType,movie) | String.IsEqual(ListItem.DBType,tvshow) | String.IsEqual(ListItem.DBType,season) | String.IsEqual(ListItem.DBType,episode)]"/>
 					</include>
-					<control type="group"id="400">
+					<control type="group" id="400">
 						<width>264</width>
 						<visible>Control.IsEnabled(7) | !String.IsEmpty(ListItem.UserRating)</visible>
-						<control type="button"id="7">
+						<control type="button" id="7">
 							<include content="VideoInfoButtonsCommon">
-								<param name="icon"value=""/>
+								<param name="icon" value=""/>
 							</include>
 							<label>$LOCALIZE[31033]</label>
 							<onleft>441</onleft>
@@ -427,85 +427,85 @@
 						</control>
 					</control>
 					<include content="InfoDialogButton">
-						<param name="id"value="101"/>
-						<param name="icon"value="icons/infodialogs/info.png"/>
-						<param name="label"value="$LOCALIZE[31034]"/>
-						<param name="onclick_1_condition"value="!String.IsEmpty(ListItem.DBID) + String.IsEqual(ListItem.DBType,movie)"/>
-						<param name="onclick_1"value="RunScript(script.embuary.info,call=movie,dbid=$INFO[ListItem.DBID])"/>
-						<param name="onclick_2_condition"value="!String.IsEmpty(ListItem.DBID) + String.IsEqual(ListItem.DBType,tvshow)"/>
-						<param name="onclick_2"value="RunScript(script.embuary.info,call=tv,dbid=$INFO[ListItem.DBID])"/>
-						<param name="onclick_3_condition"value="!String.IsEmpty(ListItem.DBID) + String.IsEqual(ListItem.DBType,episode)"/>
-						<param name="onclick_3"value="RunScript(script.embuary.info,call=tv,query='$ESCINFO[ListItem.TVShowTitle]',year=$INFO[ListItem.Year])"/>
-						<param name="visible"value="System.AddonIsEnabled(script.embuary.info) + !String.IsEmpty(ListItem.DBID) + [String.IsEqual(ListItem.DbType,movie) | String.IsEqual(ListItem.DbType,tvshow) | String.IsEqual(ListItem.DbType,episode)]"/>
+						<param name="id" value="101"/>
+						<param name="icon" value="icons/infodialogs/info.png"/>
+						<param name="label" value="$LOCALIZE[31034]"/>
+						<param name="onclick_1_condition" value="!String.IsEmpty(ListItem.DBID) + String.IsEqual(ListItem.DBType,movie)"/>
+						<param name="onclick_1" value="RunScript(script.embuary.info,call=movie,dbid=$INFO[ListItem.DBID])"/>
+						<param name="onclick_2_condition" value="!String.IsEmpty(ListItem.DBID) + String.IsEqual(ListItem.DBType,tvshow)"/>
+						<param name="onclick_2" value="RunScript(script.embuary.info,call=tv,dbid=$INFO[ListItem.DBID])"/>
+						<param name="onclick_3_condition" value="!String.IsEmpty(ListItem.DBID) + String.IsEqual(ListItem.DBType,episode)"/>
+						<param name="onclick_3" value="RunScript(script.embuary.info,call=tv,query='$ESCINFO[ListItem.TVShowTitle]',year=$INFO[ListItem.Year])"/>
+						<param name="visible" value="System.AddonIsEnabled(script.embuary.info) + !String.IsEmpty(ListItem.DBID) + [String.IsEqual(ListItem.DbType,movie) | String.IsEqual(ListItem.DbType,tvshow) | String.IsEqual(ListItem.DbType,episode)]"/>
 					</include>
 					<include content="InfoDialogButton">
-						<param name="id"value="102"/>
-						<param name="icon"value="icons/infodialogs/image.png"/>
-						<param name="label"value="$LOCALIZE[31028]"/>
-						<param name="onclick_1"value="SetProperty(fanart,$ESCINFO[ListItem.Art(fanart)],home)"/>
-						<param name="onclick_2"value="ActivateWindow(1104)"/>
-						<param name="visible"value="!String.IsEmpty(ListItem.Art(fanart))"/>
+						<param name="id" value="102"/>
+						<param name="icon" value="icons/infodialogs/image.png"/>
+						<param name="label" value="$LOCALIZE[31028]"/>
+						<param name="onclick_1" value="SetProperty(fanart,$ESCINFO[ListItem.Art(fanart)],home)"/>
+						<param name="onclick_2" value="ActivateWindow(1104)"/>
+						<param name="visible" value="!String.IsEmpty(ListItem.Art(fanart))"/>
 					</include>
 					<include content="InfoDialogButton">
-						<param name="id"value="13"/>
-						<param name="icon"value="icons/infodialogs/director.png"/>
-						<param name="label"value="$LOCALIZE[31123]"/>
-						<param name="visible"value="!String.IsEmpty(ListItem.Director)"/>
+						<param name="id" value="13"/>
+						<param name="icon" value="icons/infodialogs/director.png"/>
+						<param name="label" value="$LOCALIZE[31123]"/>
+						<param name="visible" value="!String.IsEmpty(ListItem.Director)"/>
 					</include>
 					<include content="InfoDialogButton">
-						<param name="id"value="999"/>
-						<param name="icon"value="defaultmusicalbums.png"/>
-						<param name="onclick_1"value="Dialog.Close(all,true)"/>
-						<param name="onclick_2"value="ActivateWindow(Music,musicdb://albums/?artist=$INFO[ListItem.Artist]&amp;albumartistonly=true&amp;compilation=false)"/>
-						<param name="label"value="$LOCALIZE[132]"/>
-						<param name="visible"value="String.IsEqual(ListItem.DBType,musicvideo)"/>
+						<param name="id" value="999"/>
+						<param name="icon" value="defaultmusicalbums.png"/>
+						<param name="onclick_1" value="Dialog.Close(all,true)"/>
+						<param name="onclick_2" value="ActivateWindow(Music,musicdb://albums/?artist=$INFO[ListItem.Artist]&amp;albumartistonly=true&amp;compilation=false)"/>
+						<param name="label" value="$LOCALIZE[132]"/>
+						<param name="visible" value="String.IsEqual(ListItem.DBType,musicvideo)"/>
 					</include>
 					<include content="InfoDialogButton">
-						<param name="id"value="14"/>
-						<param name="icon"value="icons/infodialogs/versions.png"/>
-						<param name="label"value="$LOCALIZE[40000]"/>
-						<param name="visible"value="String.IsEqual(ListItem.DBType,movie)"/>
+						<param name="id" value="14"/>
+						<param name="icon" value="icons/infodialogs/versions.png"/>
+						<param name="label" value="$LOCALIZE[40000]"/>
+						<param name="visible" value="String.IsEqual(ListItem.DBType,movie)"/>
 					</include>
 					<include content="InfoDialogButton">
-						<param name="id"value="15"/>
-						<param name="icon"value="icons/infodialogs/extras.png"/>
-						<param name="label"value="$LOCALIZE[40211]"/>
-						<param name="visible"value="String.IsEqual(ListItem.DBType,movie)"/>
+						<param name="id" value="15"/>
+						<param name="icon" value="icons/infodialogs/extras.png"/>
+						<param name="label" value="$LOCALIZE[40211]"/>
+						<param name="visible" value="String.IsEqual(ListItem.DBType,movie)"/>
 					</include>
 					<include content="InfoDialogButton">
-						<param name="id"value="443"/>
-						<param name="icon"value="icons/infodialogs/set.png"/>
-						<param name="label"value="$LOCALIZE[20457]"/>
-						<param name="onclick_1"value="Dialog.Close(all,true)"/>
-						<param name="onclick_2"value="ActivateWindow(Videos,videodb://movies/sets/$INFO[ListItem.SetId]/?setid=$INFO[ListItem.SetId])"/>
-						<param name="visible"value="!String.IsEmpty(ListItem.SetID)"/>
+						<param name="id" value="443"/>
+						<param name="icon" value="icons/infodialogs/set.png"/>
+						<param name="label" value="$LOCALIZE[20457]"/>
+						<param name="onclick_1" value="Dialog.Close(all,true)"/>
+						<param name="onclick_2" value="ActivateWindow(Videos,videodb://movies/sets/$INFO[ListItem.SetId]/?setid=$INFO[ListItem.SetId])"/>
+						<param name="visible" value="!String.IsEmpty(ListItem.SetID)"/>
 					</include>
 					<include content="InfoDialogButton">
-						<param name="id"value="10"/>
-						<param name="icon"value="icons/infodialogs/choose_image.png"/>
-						<param name="label"value="$LOCALIZE[13511]"/>
-						<param name="visible"value="Control.IsEnabled(10)"/>
+						<param name="id" value="10"/>
+						<param name="icon" value="icons/infodialogs/choose_image.png"/>
+						<param name="label" value="$LOCALIZE[13511]"/>
+						<param name="visible" value="Control.IsEnabled(10)"/>
 					</include>
 					<include content="InfoDialogButton">
-						<param name="id"value="6"/>
-						<param name="icon"value="icons/infodialogs/update.png"/>
-						<param name="label"value="$LOCALIZE[184]"/>
-						<param name="visible"value="Control.IsEnabled(6)"/>
+						<param name="id" value="6"/>
+						<param name="icon" value="icons/infodialogs/update.png"/>
+						<param name="label" value="$LOCALIZE[184]"/>
+						<param name="visible" value="Control.IsEnabled(6)"/>
 					</include>
 				</control>
 				<include content="LeftRightArrows">
-					<param name="list_id"value="5000"/>
-					<param name="left_posx"value="-15"/>
-					<param name="right_posx"value="1240"/>
-					<param name="posy"value="924"/>
-					<param name="visible"value="true"/>
+					<param name="list_id" value="5000"/>
+					<param name="left_posx" value="-15"/>
+					<param name="right_posx" value="1240"/>
+					<param name="posy" value="924"/>
+					<param name="visible" value="true"/>
 				</include>
 				<include content="LeftRightArrows">
-					<param name="list_id"value="50"/>
-					<param name="left_posx"value="-15"/>
-					<param name="right_posx"value="1240"/>
-					<param name="posy"value="320"/>
-					<param name="visible"value="true"/>
+					<param name="list_id" value="50"/>
+					<param name="left_posx" value="-15"/>
+					<param name="right_posx" value="1240"/>
+					<param name="posy" value="320"/>
+					<param name="visible" value="true"/>
 				</include>
 			</control>
 			<control type="label">
@@ -520,20 +520,20 @@
 				<haspath>true</haspath>
 				<label>$VAR[VideoInfoBottomLabelVar]</label>
 				<visible>Control.HasFocus(6)</visible>
-				<animation type="WindowOpen"effect="fade"start="0"end="100"time="300"delay="300"/>
-				<animation type="WindowClose"effect="fade"start="100"end="0"time="200"/>
-				<animation type="Visible"effect="fade"start="0"end="100"time="300"/>
-				<animation type="Hidden"effect="fade"start="100"end="0"time="200"/>
+				<animation type="WindowOpen" effect="fade" start="0" end="100" time="300" delay="300"/>
+				<animation type="WindowClose" effect="fade" start="100" end="0" time="200"/>
+				<animation type="Visible" effect="fade" start="0" end="100" time="300"/>
+				<animation type="Hidden" effect="fade" start="100" end="0" time="200"/>
 			</control>
 			<include content="InfoDialogTopBarInfo">
-				<param name="main_label"value="$VAR[VideoInfoMainLabelVar]"/>
-				<param name="sub_label"value="$VAR[VideoInfoSubLabelVar]"/>
+				<param name="main_label" value="$VAR[VideoInfoMainLabelVar]"/>
+				<param name="sub_label" value="$VAR[VideoInfoSubLabelVar]"/>
 			</include>
 		</control>
 		<control type="group">
-			<animation type="WindowOpen"effect="fade"start="0"end="100"time="300"delay="300"/>
-			<animation type="WindowClose"effect="fade"start="100"end="0"time="200"/>
-			<animation type="Conditional"effect="fade"start="100"end="0"time="200"tween="sine"condition="Window.IsVisible(script-embuary-video.xml) | Window.IsVisible(script-embuary-person.xml) | Window.IsVisible(script-embuary-image.xml)"/>
+			<animation type="WindowOpen" effect="fade" start="0" end="100" time="300" delay="300"/>
+			<animation type="WindowClose" effect="fade" start="100" end="0" time="200"/>
+			<animation type="Conditional" effect="fade" start="100" end="0" time="200" tween="sine" condition="Window.IsVisible(script-embuary-video.xml) | Window.IsVisible(script-embuary-person.xml) | Window.IsVisible(script-embuary-image.xml)"/>
 			<centerleft>50%</centerleft>
 			<width>1920</width>
 			<bottom>0</bottom>
@@ -541,14 +541,14 @@
 			<include>MediaFlags</include>
 			<control type="group">
 				<visible>Control.HasFocus(50) + !String.IsEqual(ListItem.DBType,set)</visible>
-				<animation type="VisibleChange"effect="fade"time="200"/>
+				<animation type="VisibleChange" effect="fade" time="200"/>
 				<top>10</top>
 				<left>0</left>
 				<control type="image">
 					<left>21</left>
 					<width>36</width>
 					<height>36</height>
-					<animation type="Conditional"effect="rotate"end="-90"center="36,19"time="0"condition="true"/>
+					<animation type="Conditional" effect="rotate" end="-90" center="36,19" time="0" condition="true"/>
 					<texture></texture>
 				</control>
 				<control type="label">
@@ -561,7 +561,7 @@
 			</control>
 			<control type="group">
 				<visible>Control.HasFocus(138)</visible>
-				<animation type="VisibleChange"effect="fade"time="200"/>
+				<animation type="VisibleChange" effect="fade" time="200"/>
 				<top>10</top>
 				<left>0</left>
 				<control type="image">

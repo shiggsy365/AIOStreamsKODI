@@ -1,4 +1,4 @@
-<?xml version="1.0"encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <window>
     <include file="Includes.xml"/>
 	<defaultcontrol always="true">9000</defaultcontrol>
@@ -41,7 +41,7 @@
 				<control type="group">
 					<visible>Integer.IsEqual(Container(50).NumItems,0) + String.IsEmpty(Control.GetLabel(400))</visible>
 					<top>455</top>
-					<control type="button"id="130">
+					<control type="button" id="130">
 						<left>-36</left>
 						<width>720</width>
 						<height>430</height>
@@ -85,7 +85,7 @@
 				<control type="group">
 					<visible>!Integer.IsEqual(Container(50).NumItems,0) | !String.IsEmpty(Control.GetLabel(400))</visible>
 					<top>454</top>
-					<control type="button"id="130">
+					<control type="button" id="130">
 						<onleft>41</onleft>
 						<onright>41</onright>
 						<onup>50</onup>
@@ -119,7 +119,7 @@
 						</control>
 					</control>
 					<control type="group">
-						<animation type="Conditional"effect="slide"start="0,0"end="0,-295"time="0"condition="Integer.IsEqual(Container(50).NumItems,0)"/>
+						<animation type="Conditional" effect="slide" start="0,0" end="0,-295" time="0" condition="Integer.IsEqual(Container(50).NumItems,0)"/>
 						<visible>[Integer.IsEqual(Container(50).NumItems,0) + !String.IsEmpty(Control.GetLabel(400))]</visible>
 						<control type="image">
 							<left>-18</left>
@@ -152,7 +152,7 @@
 						</control>
 					</control>
 				</control>
-				<control type="label"id="400">
+				<control type="label" id="400">
 					<left>10</left>
 					<top>485</top>
 					<width>645</width>
@@ -167,7 +167,7 @@
 				<include>Visible_Right</include>
 				<left>80</left>
 				<visible>![Window.Is(songinformation) + Window.IsActive(musicinformation)]</visible>
-				<control type="panel"id="50">
+				<control type="panel" id="50">
 					<left>590</left>
 					<top>170</top>
 					<width>1180</width>
@@ -175,7 +175,7 @@
 					<ondown>130</ondown>
 					<onup>9000</onup>
 					<orientation>horizontal</orientation>
-					<itemlayout height="72.5"width="595"condition="Container.Content(songs)">
+					<itemlayout height="72.5" width="595" condition="Container.Content(songs)">
 						<control type="image">
 							<top>-10</top>
 							<width>595</width>
@@ -192,7 +192,7 @@
 							<label>$INFO[ListItem.Label,[COLOR grey], - [/COLOR]]$INFO[ListItem.Label2]</label>
 						</control>
 					</itemlayout>
-					<focusedlayout height="72.5"width="595"condition="Container.Content(songs)">
+					<focusedlayout height="72.5" width="595" condition="Container.Content(songs)">
 						<control type="image">
 							<top>-10</top>
 							<width>595</width>
@@ -209,7 +209,7 @@
 							<label>$INFO[ListItem.Label,[COLOR white], - [/COLOR]]$INFO[ListItem.Label2]</label>
 						</control>
 					</focusedlayout>
-					<itemlayout height="72.5"width="595"condition="Container.Content(albums)">
+					<itemlayout height="72.5" width="595" condition="Container.Content(albums)">
 						<control type="image">
 							<top>-10</top>
 							<width>595</width>
@@ -231,7 +231,7 @@
 							<include condition="Skin.HasSetting(circle_rating) | Skin.HasSetting(circle_userrating)">RatingCircle</include>
 						</control>
 					</itemlayout>
-					<focusedlayout height="72.5"width="595"condition="Container.Content(albums)">
+					<focusedlayout height="72.5" width="595" condition="Container.Content(albums)">
 						<control type="group">
 							<control type="image">
 								<top>-10</top>
@@ -255,7 +255,7 @@
 							</control>
 						</control>
 					</focusedlayout>
-					<itemlayout height="360"width="236"condition="Container.Content(artists)">
+					<itemlayout height="360" width="236" condition="Container.Content(artists)">
 						<control type="image">
 							<top>-10</top>
 							<width>250</width>
@@ -288,10 +288,10 @@
 							<include condition="Skin.HasSetting(circle_rating) | Skin.HasSetting(circle_userrating)">RatingCircle</include>
 						</control>
 					</itemlayout>
-					<focusedlayout height="360"width="236"condition="Container.Content(artists)">
+					<focusedlayout height="360" width="236" condition="Container.Content(artists)">
 						<control type="group">
-							<animation type="Focus"effect="zoom"start="100"end="105"time="200"tween="sine"easing="inout"center="160,180"/>
-							<animation type="UnFocus"effect="zoom"start="105"end="100"time="200"tween="sine"easing="inout"center="160,180"/>
+							<animation type="Focus" effect="zoom" start="100" end="105" time="200" tween="sine" easing="inout" center="160,180"/>
+							<animation type="UnFocus" effect="zoom" start="105" end="100" time="200" tween="sine" easing="inout" center="160,180"/>
 							<control type="image">
 								<top>-10</top>
 								<width>250</width>
@@ -316,7 +316,7 @@
 								<font>font27_narrow</font>
 								<align>center</align>
 								<aligny>center</aligny>
-								<autoscroll delay="1000"time="1000"repeat="1000">true</autoscroll>
+								<autoscroll delay="1000" time="1000" repeat="1000">true</autoscroll>
 								<label>$INFO[ListItem.Label2,[COLOR button_focus], - [/COLOR]]$INFO[ListItem.Label]</label>
 							</control>
 							<control type="group">
@@ -330,12 +330,12 @@
 								<width>218</width>
 								<height>280</height>
 								<texture></texture>
-								<animation type="Unfocus"effect="fade"start="100"end="0"time="200"/>
+								<animation type="Unfocus" effect="fade" start="100" end="0" time="200"/>
 							</control>
 						</control>
 					</focusedlayout>
 				</control>
-				<control type="grouplist"id="9000">
+				<control type="grouplist" id="9000">
 					<left>-80</left>
 					<top>864</top>
 					<width>1920</width>
@@ -347,12 +347,12 @@
 					<align>center</align>
 					<itemgap>-15</itemgap>
 					<orientation>horizontal</orientation>
-					<control type="group"id="420">
+					<control type="group" id="420">
 						<width>264</width>
 						<visible>String.IsEqual(ListItem.DBType,album) | String.IsEqual(ListItem.DBType,song)</visible>
-						<control type="button"id="7">
+						<control type="button" id="7">
 							<include content="VideoInfoButtonsCommon">
-								<param name="icon"value=""/>
+								<param name="icon" value=""/>
 							</include>
 							<label>$LOCALIZE[31033]</label>
 							<onup>130</onup>
@@ -379,9 +379,9 @@
 							<visible>String.IsEmpty(ListItem.UserRating)</visible>
 						</control>
 					</control>
-					<control type="radiobutton"id="120">
+					<control type="radiobutton" id="120">
 						<include content="VideoInfoButtonsCommon">
-							<param name="icon"value="icons/infodialogs/image.png"/>
+							<param name="icon" value="icons/infodialogs/image.png"/>
 						</include>
 						<label>$LOCALIZE[31028]</label>
 						<enable>!String.IsEmpty(ListItem.Art(fanart))</enable>
@@ -390,32 +390,32 @@
 						<visible>String.IsEqual(ListItem.DBType,artist) | String.IsEqual(ListItem.DBType,album)</visible>
 					</control>
 					<include content="InfoDialogButton">
-						<param name="id"value="8"/>
-						<param name="icon"value="icons/infodialogs/play.png"/>
-						<param name="label"value="$LOCALIZE[208]"/>
+						<param name="id" value="8"/>
+						<param name="icon" value="icons/infodialogs/play.png"/>
+						<param name="label" value="$LOCALIZE[208]"/>
 					</include>
 					<include content="InfoDialogButton">
-						<param name="id"value="6"/>
-						<param name="icon"value="icons/infodialogs/update.png"/>
-						<param name="label"value="$LOCALIZE[184]"/>
+						<param name="id" value="6"/>
+						<param name="icon" value="icons/infodialogs/update.png"/>
+						<param name="label" value="$LOCALIZE[184]"/>
 					</include>
 					<include content="InfoDialogButton">
-						<param name="id"value="10"/>
-						<param name="icon"value="icons/infodialogs/choose_image.png"/>
-						<param name="label"value="$LOCALIZE[13405]"/>
+						<param name="id" value="10"/>
+						<param name="icon" value="icons/infodialogs/choose_image.png"/>
+						<param name="label" value="$LOCALIZE[13405]"/>
 					</include>
 					<include content="InfoDialogButton">
-						<param name="id"value="12"/>
-						<param name="icon"value="icons/infodialogs/info.png"/>
-						<param name="label"value=""/>
+						<param name="id" value="12"/>
+						<param name="icon" value="icons/infodialogs/info.png"/>
+						<param name="label" value=""/>
 					</include>
 				</control>
 				<include content="LeftRightArrows">
-					<param name="list_id"value="50"/>
-					<param name="left_posx"value="565"/>
-					<param name="right_posx"value="1790"/>
-					<param name="posy"value="300"/>
-					<param name="visible"value="true"/>
+					<param name="list_id" value="50"/>
+					<param name="left_posx" value="565"/>
+					<param name="right_posx" value="1790"/>
+					<param name="posy" value="300"/>
+					<param name="visible" value="true"/>
 				</include>
 				<control type="group">
 					<control type="image">
@@ -429,7 +429,7 @@
 					<control type="group">
 						<left>1275</left>
 						<top>480</top>
-						<control type="list"id="41">
+						<control type="list" id="41">
 							<left>42</left>
 							<top>0</top>
 							<width>446</width>
@@ -492,25 +492,25 @@
 			<control type="group">
 				<visible>String.IsEqual(ListItem.DBType,artist)</visible>
 				<include content="InfoDialogTopBarInfo">
-					<param name="main_label"value="$INFO[ListItem.Artist]"/>
-					<param name="sub_label"value="$INFO[ListItem.Genre]"/>
-					<param name="id"value="33333"/>
+					<param name="main_label" value="$INFO[ListItem.Artist]"/>
+					<param name="sub_label" value="$INFO[ListItem.Genre]"/>
+					<param name="id" value="33333"/>
 				</include>
 			</control>
 			<control type="group">
 				<visible>String.IsEqual(ListItem.DBType,album)</visible>
 				<include content="InfoDialogTopBarInfo">
-					<param name="main_label"value="$INFO[ListItem.Album]$INFO[ListItem.Year, ([COLOR grey],[/COLOR])]"/>
-					<param name="sub_label"value="$INFO[ListItem.Artist]"/>
-					<param name="id"value="33334"/>
+					<param name="main_label" value="$INFO[ListItem.Album]$INFO[ListItem.Year, ([COLOR grey],[/COLOR])]"/>
+					<param name="sub_label" value="$INFO[ListItem.Artist]"/>
+					<param name="id" value="33334"/>
 				</include>
 			</control>
 			<control type="group">
 				<visible>String.IsEqual(ListItem.DBType,song) + !Window.IsActive(musicinformation)</visible>
 				<include content="InfoDialogTopBarInfo">
-					<param name="main_label"value="[COLOR button_focus]$INFO[ListItem.TrackNumber]. [/COLOR]$INFO[ListItem.Title]"/>
-					<param name="sub_label"value="$INFO[ListItem.Artist,, - ]$INFO[ListItem.Album]$INFO[ListItem.Year, ([COLOR grey],[/COLOR])]"/>
-					<param name="id"value="33335"/>
+					<param name="main_label" value="[COLOR button_focus]$INFO[ListItem.TrackNumber]. [/COLOR]$INFO[ListItem.Title]"/>
+					<param name="sub_label" value="$INFO[ListItem.Artist,, - ]$INFO[ListItem.Album]$INFO[ListItem.Year, ([COLOR grey],[/COLOR])]"/>
+					<param name="id" value="33335"/>
 				</include>
 			</control>
 		</control>

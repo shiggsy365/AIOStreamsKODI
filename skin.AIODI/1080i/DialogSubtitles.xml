@@ -1,4 +1,4 @@
-<?xml version="1.0"encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <window>
     <include file="Includes.xml"/>
 	<include>Animation_DialogPopupOpenClose</include>
@@ -8,12 +8,12 @@
 			<height>750</height>
 			<centerleft>50%</centerleft>
 			<width>1720</width>
-			<control type="group"id="250">
+			<control type="group" id="250">
 				<include content="DialogBackgroundCommons">
-					<param name="width"value="1720"/>
-					<param name="height"value="750"/>
-					<param name="header_label"value="$LOCALIZE[24012]"/>
-					<param name="header_id"value="100"/>
+					<param name="width" value="1720"/>
+					<param name="height" value="750"/>
+					<param name="header_label" value="$LOCALIZE[24012]"/>
+					<param name="header_id" value="100"/>
 				</include>
 				<control type="group">
 					<left>1320</left>
@@ -24,13 +24,13 @@
 						<onleft>73</onleft>
 						<orientation>vertical</orientation>
 						<include content="DefaultDialogButton">
-							<param name="id"value="160"/>
-							<param name="label"value="$LOCALIZE[24120]"/>
-							<param name="width"value="420"/>
-							<param name="height"value="150"/>
+							<param name="id" value="160"/>
+							<param name="label" value="$LOCALIZE[24120]"/>
+							<param name="width" value="420"/>
+							<param name="height" value="150"/>
 						</include>
 					</control>
-					<control type="label"id="140">
+					<control type="label" id="140">
 						<description>textarea</description>
 						<top>280</top>
 						<width>380</width>
@@ -39,7 +39,7 @@
 						<aligny>center</aligny>
 						<wrapmultiline>true</wrapmultiline>
 					</control>
-					<control type="grouplist"id="130">
+					<control type="grouplist" id="130">
 						<top>630</top>
 						<width>380</width>
 						<height>300</height>
@@ -85,7 +85,7 @@
 					<shadowcolor>black</shadowcolor>
 					<scroll>true</scroll>
 				</control>
-				<control type="list"id="120">
+				<control type="list" id="120">
 					<width>920</width>
 					<height>600</height>
 					<onleft>150</onleft>
@@ -94,7 +94,7 @@
 					<ondown>120</ondown>
 					<pagecontrol>73</pagecontrol>
 					<scrolltime>200</scrolltime>
-					<itemlayout width="920"height="100">
+					<itemlayout width="920" height="100">
 						<control type="image">
 							<left>25</left>
 							<top>5</top>
@@ -147,7 +147,7 @@
 							<aspectratio>keep</aspectratio>
 						</control>
 					</itemlayout>
-					<focusedlayout width="920"height="100">
+					<focusedlayout width="920" height="100">
 						<control type="image">
 							<left>0</left>
 							<right>0</right>
@@ -208,7 +208,7 @@
 						</control>
 					</focusedlayout>
 				</control>
-				<control type="scrollbar"id="73">
+				<control type="scrollbar" id="73">
 					<left>925</left>
 					<width>12</width>
 					<height>600</height>
@@ -242,7 +242,7 @@
 					<shadowcolor>black</shadowcolor>
 					<wrapmultiline>true</wrapmultiline>
 				</control>
-				<control type="image"id="110">
+				<control type="image" id="110">
 					<description>Service Logo</description>
 					<top>500</top>
 					<width>320</width>
@@ -250,7 +250,7 @@
 					<fadetime>200</fadetime>
 					<aspectratio>keep</aspectratio>
 				</control>
-				<control type="list"id="150">
+				<control type="list" id="150">
 					<width>320</width>
 					<height>480</height>
 					<onleft>160</onleft>
@@ -259,10 +259,10 @@
 					<ondown>150</ondown>
 					<scrolltime>200</scrolltime>
 					<include content="DefaultSimpleListLayout">
-						<param name="width"value="320"/>
-						<param name="height"value="80"/>
-						<param name="list_id"value="150"/>
-						<param name="align"value="center"/>
+						<param name="width" value="320"/>
+						<param name="height" value="80"/>
+						<param name="list_id" value="150"/>
+						<param name="align" value="center"/>
 					</include>
 				</control>
 			</control>

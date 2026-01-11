@@ -1,4 +1,4 @@
-<?xml version="1.0"encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <window>
     <include file="Includes.xml"/>
 	<defaultcontrol always="true">201</defaultcontrol>
@@ -10,10 +10,10 @@
 			<centerleft>50%</centerleft>
 			<width>1115</width>
 			<include content="DialogBackgroundCommons">
-				<param name="width"value="1115"/>
-				<param name="height"value="380"/>
-				<param name="header_label"value="16003"/>
-				<param name="header_id"value=""/>
+				<param name="width" value="1115"/>
+				<param name="height" value="380"/>
+				<param name="header_label" value="16003"/>
+				<param name="header_id" value=""/>
 			</include>
 			<control type="group">
 				<left>20</left>
@@ -63,11 +63,11 @@
 					<shadowcolor>black</shadowcolor>
 				</control>
 				<include content="FocusableProgressBar">
-					<param name="width"value="800"/>
-					<param name="onunfocus_id"value="201"/>
+					<param name="width" value="800"/>
+					<param name="onunfocus_id" value="201"/>
 				</include>
 			</control>
-			<control type="grouplist"id="201">
+			<control type="grouplist" id="201">
 				<left>20</left>
 				<top>290</top>
 				<width>1920</width>
@@ -76,18 +76,18 @@
 				<scrolltime tween="sine">200</scrolltime>
 				<orientation>horizontal</orientation>
 				<onup>87</onup>
-				<control type="radiobutton"id="600">
+				<control type="radiobutton" id="600">
 					<include content="OSDButton">
-						<param name="texture"value="osd/fullscreen/buttons/previous.png"/>
+						<param name="texture" value="osd/fullscreen/buttons/previous.png"/>
 					</include>
 					<onclick>PlayerControl(Previous)</onclick>
 					<visible>!VideoPlayer.Content(livetv)</visible>
 				</control>
-				<control type="radiobutton"id="602">
+				<control type="radiobutton" id="602">
 					<texture></texture>
 					</control>
 				</control>
-				<control type="radiobutton"id="607">
+				<control type="radiobutton" id="607">
 					<texture></texture>
 				<bordertexture></bordertexture>
 				<bordersize>4</bordersize>

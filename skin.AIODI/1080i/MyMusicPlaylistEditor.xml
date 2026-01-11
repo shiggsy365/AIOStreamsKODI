@@ -1,4 +1,4 @@
-<?xml version="1.0"encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <window>
     <include file="Includes.xml"/>
 	<defaultcontrol always="true">6</defaultcontrol>
@@ -10,43 +10,43 @@
 			<include>OpenClose_Left</include>
 			<left>302</left>
 			<include content="FileManagerPanel">
-				<param name="list_id"value="50"/>
-				<param name="scrollbar_id"value="60"/>
-				<param name="onleft_id"value="9000"/>
-				<param name="onright_id"value="60"/>
-				<param name="right"value="848"/>
-				<param name="width"value="772"/>
+				<param name="list_id" value="50"/>
+				<param name="scrollbar_id" value="60"/>
+				<param name="onleft_id" value="9000"/>
+				<param name="onright_id" value="60"/>
+				<param name="right" value="848"/>
+				<param name="width" value="772"/>
 			</include>
 		</control>
 		<control type="group">
 			<include>OpenClose_Left</include>
 			<include content="ContentPanel">
-				<param name="width"value="360"/>
+				<param name="width" value="360"/>
 			</include>
-			<control type="grouplist"id="9000">
+			<control type="grouplist" id="9000">
 				<left>0</left>
 				<top>160</top>
 				<onright>50</onright>
 				<onleft>100</onleft>
 				<itemgap>-20</itemgap>
-				<control type="button"id="6">
+				<control type="button" id="6">
 					<description>Button Network</description>
 					<include content="DefaultSettingButton">
-						<param name="height"value="120"/>
+						<param name="height" value="120"/>
 					</include>
 					<width>300</width>
 					<label>$LOCALIZE[502]</label>
 				</control>
-				<control type="button"id="7">
+				<control type="button" id="7">
 					<include content="DefaultSettingButton">
-						<param name="height"value="120"/>
+						<param name="height" value="120"/>
 					</include>
 					<width>300</width>
 					<label>$LOCALIZE[190]</label>
 				</control>
-				<control type="button"id="8">
+				<control type="button" id="8">
 					<include content="DefaultSettingButton">
-						<param name="height"value="120"/>
+						<param name="height" value="120"/>
 					</include>
 					<width>300</width>
 					<label>$LOCALIZE[192]</label>
@@ -58,18 +58,18 @@
 			<width>845</width>
 			<right>0</right>
 			<include content="ContentPanel">
-				<param name="width"value="1100"/>
-				<param name="left"value="-21"/>
+				<param name="width" value="1100"/>
+				<param name="left" value="-21"/>
 			</include>
 			<include content="FileManagerPanel">
-				<param name="list_id"value="100"/>
-				<param name="scrollbar_id"value="61"/>
-				<param name="onleft_id"value="60"/>
-				<param name="onright_id"value="61"/>
-				<param name="right"value="-5"/>
-				<param name="width"value="840"/>
+				<param name="list_id" value="100"/>
+				<param name="scrollbar_id" value="61"/>
+				<param name="onleft_id" value="60"/>
+				<param name="onright_id" value="61"/>
+				<param name="right" value="-5"/>
+				<param name="width" value="840"/>
 			</include>
-			<control type="scrollbar"id="60">
+			<control type="scrollbar" id="60">
 				<left>0</left>
 				<top>80</top>
 				<width>12</width>
@@ -77,10 +77,10 @@
 				<onleft>50</onleft>
 				<onright>100</onright>
 				<texturesliderbackground />
-				<animation type="conditional"effect="zoom"end="50,100"time="300"tween="sine"center="0,0"easing="inout"condition="!Control.HasFocus(60)"/>
+				<animation type="conditional" effect="zoom" end="50,100" time="300" tween="sine" center="0,0" easing="inout" condition="!Control.HasFocus(60)"/>
 				<orientation>vertical</orientation>
 			</control>
-			<control type="scrollbar"id="61">
+			<control type="scrollbar" id="61">
 				<left>834</left>
 				<top>80</top>
 				<width>12</width>
@@ -88,12 +88,12 @@
 				<onleft>100</onleft>
 				<onright>9000</onright>
 				<texturesliderbackground></texturesliderbackground>
-				<animation type="conditional"effect="zoom"end="50,100"time="300"tween="sine"center="848,0"easing="inout"condition="!Control.HasFocus(61)"/>
+				<animation type="conditional" effect="zoom" end="50,100" time="300" tween="sine" center="848,0" easing="inout" condition="!Control.HasFocus(61)"/>
 				<orientation>vertical</orientation>
 			</control>
 		</control>
 		<include content="TopBar">
-			<param name="breadcrumbs_label"value="$LOCALIZE[10503][COLOR=button_focus][/COLOR]"/>
+			<param name="breadcrumbs_label" value="$LOCALIZE[10503][COLOR=button_focus][/COLOR]"/>
 		</include>
 		<include>BottomBar</include>
 		<include content="BottomBarTwoListInfo">

@@ -1,24 +1,24 @@
-<?xml version="1.0"encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <window>
     <include file="Includes.xml"/>
 	<defaultcontrol always="true">11</defaultcontrol>
 	<controls>
 		<control type="group">
-			<animation type="WindowOpen"effect="fade"start="0"end="100"time="100"/>
-			<animation type="WindowClose"effect="fade"start="100"end="0"time="100"/>
-			<animation type="Conditional"effect="fade"start="100"end="75"time="0"condition="true"/>
+			<animation type="WindowOpen" effect="fade" start="0" end="100" time="100"/>
+			<animation type="WindowClose" effect="fade" start="100" end="0" time="100"/>
+			<animation type="Conditional" effect="fade" start="100" end="75" time="0" condition="true"/>
 			<visible>!Window.IsActive(fullscreenvideo)</visible>
 			<include>ColoredBackgroundImages</include>
 		</control>
 		<control type="group">
 			<depth>DepthOSD</depth>
-			<animation type="Conditional"effect="fade"start="100"end="0"time="200"tween="sine"condition="$EXP[infodialog_active]"/>
+			<animation type="Conditional" effect="fade" start="100" end="0" time="200" tween="sine" condition="$EXP[infodialog_active]"/>
 			<control type="group">
 				<include>OpenClose_Left</include>
 				<include content="ContentPanel">
-					<param name="width"value="840"/>
+					<param name="width" value="840"/>
 				</include>
-				<control type="fixedlist"id="11">
+				<control type="fixedlist" id="11">
 					<left>0</left>
 					<top>list_top_offset</top>
 					<width>1900</width>
@@ -28,10 +28,10 @@
 					<onup>11</onup>
 					<ondown>11</ondown>
 					<pagecontrol>60</pagecontrol>
-					<scrolltime tween="cubic"easing="out">500</scrolltime>
+					<scrolltime tween="cubic" easing="out">500</scrolltime>
 					<movement>4</movement>
 					<focusposition>4</focusposition>
-					<itemlayout height="90"width="1900">
+					<itemlayout height="90" width="1900">
 						<control type="label">
 							<left>20</left>
 							<width>150</width>
@@ -49,14 +49,14 @@
 							<label>$VAR[PVRListItemSubLabel]</label>
 						</control>
 					</itemlayout>
-					<focusedlayout height="90"width="1900">
+					<focusedlayout height="90" width="1900">
 						<control type="image">
 							<left>0</left>
 							<width>780</width>
 							<bottom>0</bottom>
 							<texture></texture>
 							<visible>Control.HasFocus(11)</visible>
-							<animation type="UnFocus"effect="fade"start="100"end="0"time="0"/>
+							<animation type="UnFocus" effect="fade" start="100" end="0" time="0"/>
 						</control>
 						<control type="label">
 							<left>20</left>
@@ -76,7 +76,7 @@
 						</control>
 						<control type="group">
 							<visible>!String.IsEmpty(ListItem.Plot) + Control.HasFocus(11)</visible>
-							<animation type="Focus"effect="fade"start="0"end="100"time="200"/>
+							<animation type="Focus" effect="fade" start="0" end="100" time="200"/>
 							<control type="image">
 								<left>772</left>
 								<top>-100</top>
@@ -89,7 +89,7 @@
 								<top>-65</top>
 								<width>320</width>
 								<height>280</height>
-								<aspectratio align="center"aligny="center">keep</aspectratio>
+								<aspectratio align="center" aligny="center">keep</aspectratio>
 								<texture></texture>
 							</control>
 							<control type="textbox">
@@ -98,12 +98,12 @@
 								<width>760</width>
 								<height>290</height>
 								<label>$INFO[ListItem.Plot]</label>
-								<autoscroll time="3000"delay="4000"repeat="5000">Skin.HasSetting(AutoScroll)</autoscroll>
+								<autoscroll time="3000" delay="4000" repeat="5000">Skin.HasSetting(AutoScroll)</autoscroll>
 							</control>
 						</control>
 					</focusedlayout>
 				</control>
-				<control type="scrollbar"id="60">
+				<control type="scrollbar" id="60">
 					<left>768</left>
 					<top>list_top_offset</top>
 					<width>12</width>
@@ -120,7 +120,7 @@
 					<height>110</height>
 					<texture></texture>
 				</control>
-				<control type="label"id="2">
+				<control type="label" id="2">
 					<description>header label</description>
 					<textoffsetx>40</textoffsetx>
 					<width>1300</width>

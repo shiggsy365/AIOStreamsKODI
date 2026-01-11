@@ -1,3 +1,8 @@
+[B]3.1.15[/B]
+• FIXED: Critical XML syntax repair - restored missing spaces between attributes caused by v3.11 cleanup.
+• FIXED: Robust texture restoration - ensuring all background and UI tags point to valid common assets.
+• FIXED: Specific repair for Pointer.xml to prevent GUI failure.
+
 [B]3.1.13[/B]
 • FIXED: Emergency restoration of texture paths stripped in v3.1.11.
 • FIXED: Standardized all window backgrounds to common/white.png.

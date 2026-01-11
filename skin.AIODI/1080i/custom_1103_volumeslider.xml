@@ -1,5 +1,5 @@
-<?xml version="1.0"encoding="UTF-8"?>
-<window type="dialog"id="1103">
+<?xml version="1.0" encoding="UTF-8"?>
+<window type="dialog" id="1103">
     <include file="Includes.xml"/>
 	<defaultcontrol>11</defaultcontrol>
 	<include>Animation_DialogPopupOpenClose</include>
@@ -20,7 +20,7 @@
 				<top>20</top>
 				<width>400</width>
 				<height>112</height>
-				<texturebg border="3"colordiffuse="60FFFFFF">common/white50.png</texturebg>
+				<texturebg border="3" colordiffuse="60FFFFFF">common/white50.png</texturebg>
 				<midtexture colordiffuse="button_focus">common/white.png</midtexture>
 				<info>Player.Volume</info>
 			</control>
@@ -42,9 +42,9 @@
 				<height>28</height>
 				<texturefocus></texturefocus>
 				<texturenofocus></texturenofocus>
-				<animation type="WindowOpen"effect="zoom"start="0,100"end="100,100"delay="500"center="auto"time="200"/>
-				<animation type="WindowClose"effect="zoom"start="100,100"end="0,100"center="auto"time="200"/>
-				<hitrect x="-20"y="20"w="60"h="112"/>
+				<animation type="WindowOpen" effect="zoom" start="0,100" end="100,100" delay="500" center="auto" time="200"/>
+				<animation type="WindowClose" effect="zoom" start="100,100" end="0,100" center="auto" time="200"/>
+				<hitrect x="-20" y="20" w="60" h="112"/>
 				<onclick>Action(VolumeDown)</onclick>
 			</control>
 			<control type="button">
@@ -54,9 +54,9 @@
 				<height>28</height>
 				<texturefocus></texturefocus>
 				<texturenofocus></texturenofocus>
-				<animation type="WindowOpen"effect="zoom"start="0,100"end="100,100"delay="500"center="auto"time="200"/>
-				<animation type="WindowClose"effect="zoom"start="100,100"end="0,100"center="auto"time="200"/>
-				<hitrect x="440"y="20"w="60"h="112"/>
+				<animation type="WindowOpen" effect="zoom" start="0,100" end="100,100" delay="500" center="auto" time="200"/>
+				<animation type="WindowClose" effect="zoom" start="100,100" end="0,100" center="auto" time="200"/>
+				<hitrect x="440" y="20" w="60" h="112"/>
 				<onclick>Action(VolumeUp)</onclick>
 			</control>
 		</control>

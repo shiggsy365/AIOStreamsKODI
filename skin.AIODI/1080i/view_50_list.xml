@@ -1,4 +1,4 @@
-<?xml version="1.0"encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <includes>
 	<include name="View_50_List">
 		<control type="group">
@@ -7,9 +7,9 @@
 			<visible>Control.IsVisible(50)</visible>
 			<include>Visible_Right</include>
 			<include content="ListContainer">
-				<param name="list_id"value="50"/>
-				<param name="right"value="594"/>
-				<param name="viewtype_label"value="$LOCALIZE[535]"/>
+				<param name="list_id" value="50"/>
+				<param name="right" value="594"/>
+				<param name="viewtype_label" value="$LOCALIZE[535]"/>
 			</include>
 			<control type="group">
 				<depth>DepthContentPanel</depth>
@@ -17,15 +17,15 @@
 					<right>-20</right>
 					<width>634</width>
 					<include content="ContentPanel">
-						<param name="left"value="0"/>
-						<param name="top"value="-20"/>
-						<param name="width"value="656"/>
-						<param name="flipx"value="true"/>
+						<param name="left" value="0"/>
+						<param name="top" value="-20"/>
+						<param name="width" value="656"/>
+						<param name="flipx" value="true"/>
 					</include>
 					<include content="RightListPanel">
-						<param name="list_id"value="50"/>
+						<param name="list_id" value="50"/>
 					</include>
-					<control type="scrollbar"id="50600">
+					<control type="scrollbar" id="50600">
 						<left>20</left>
 						<top>list_top_offset</top>
 						<width>12</width>
@@ -33,7 +33,7 @@
 						<onleft>50</onleft>
 						<onright>50</onright>
 						<orientation>vertical</orientation>
-						<animation type="conditional"effect="zoom"end="50,100"time="300"tween="sine"center="20,0"easing="inout"condition="!Control.HasFocus(50600)"/>
+						<animation type="conditional" effect="zoom" end="50,100" time="300" tween="sine" center="20,0" easing="inout" condition="!Control.HasFocus(50600)"/>
 					</control>
 				</control>
 			</control>
@@ -45,10 +45,10 @@
 			<control type="group">
 				<right>-32</right>
 				<include content="ContentPanel">
-					<param name="left"value="0"/>
-					<param name="top"value="-20"/>
-					<param name="width"value="656"/>
-					<param name="flipx"value="true"/>
+					<param name="left" value="0"/>
+					<param name="top" value="-20"/>
+					<param name="width" value="656"/>
+					<param name="flipx" value="true"/>
 				</include>
 				<control type="group">
 					<visible>!Container.Content(songs)</visible>
@@ -67,7 +67,7 @@
 						<left>291</left>
 						<top>950</top>
 						<include content="RatingCircle">
-							<param name="animation"value="True"/>
+							<param name="animation" value="True"/>
 						</include>
 					</control>
 				</control>
@@ -86,31 +86,31 @@
 						<left>301</left>
 						<top>560</top>
 						<control type="group">
-							<animation type="VisibleChange"effect="fade"time="0"condition="$PARAM[animation]"/>
-							<include content="UserRatingContent"condition="Skin.HasSetting(circle_userrating)">
-								<param name="infolabel"value="MusicPlayer.UserRating"/>
+							<animation type="VisibleChange" effect="fade" time="0" condition="$PARAM[animation]"/>
+							<include content="UserRatingContent" condition="Skin.HasSetting(circle_userrating)">
+								<param name="infolabel" value="MusicPlayer.UserRating"/>
 							</include>
-							<include content="UserRatingContent"condition="Skin.HasSetting(circle_rating)">
-								<param name="infolabel"value="MusicPlayer.Rating"/>
+							<include content="UserRatingContent" condition="Skin.HasSetting(circle_rating)">
+								<param name="infolabel" value="MusicPlayer.Rating"/>
 							</include>
 						</control>
 					</control>
-					<control type="textbox"id="15599">
+					<control type="textbox" id="15599">
 						<visible>Player.HasAudio + Window.IsActive(musicplaylist)</visible>
 						<left>58</left>
 						<top>600</top>
 						<width>540</width>
 						<bottom>70</bottom>
-						<autoscroll time="3000"delay="7000"repeat="5000">!System.HasModalDialog + Skin.HasSetting(AutoScroll)</autoscroll>
+						<autoscroll time="3000" delay="7000" repeat="5000">!System.HasModalDialog + Skin.HasSetting(AutoScroll)</autoscroll>
 						<label>[COLOR button_focus][B]$LOCALIZE[31000]: [/COLOR]$INFO[musicplayer.Playlistposition,]$INFO[musicplayer.Playlistlength,/][/B][CR]$VAR[NowPlayingInfoVar]</label>
 					</control>
-					<control type="textbox"id="15599">
+					<control type="textbox" id="15599">
 						<visible>!Player.HasAudio + Window.IsActive(musicplaylist)</visible>
 						<left>58</left>
 						<top>640</top>
 						<width>540</width>
 						<bottom>70</bottom>
-						<autoscroll time="3000"delay="7000"repeat="5000">!System.HasModalDialog + Skin.HasSetting(AutoScroll)</autoscroll>
+						<autoscroll time="3000" delay="7000" repeat="5000">!System.HasModalDialog + Skin.HasSetting(AutoScroll)</autoscroll>
 						<label>[COLOR button_focus][B]$LOCALIZE[31000]: [/COLOR]$LOCALIZE[36623][/B]</label>
 					</control>
 				</control>
@@ -121,14 +121,14 @@
 		<param name="left">0</param>
 		<param name="right">0</param>
 		<definition>
-			<control type="fixedlist"id="$PARAM[list_id]">
+			<control type="fixedlist" id="$PARAM[list_id]">
 				<left>$PARAM[left]</left>
 				<right>$PARAM[right]</right>
 				<top>list_top_offset</top>
 				<bottom>list_bottom_offset</bottom>
 				<movement>6</movement>
 				<focusposition>5</focusposition>
-				<scrolltime tween="cubic"easing="out">500</scrolltime>
+				<scrolltime tween="cubic" easing="out">500</scrolltime>
 				<orientation>vertical</orientation>
 				<pagecontrol>$PARAM[list_id]600</pagecontrol>
 				<onleft>9000</onleft>
@@ -166,7 +166,7 @@
 						<aligny>center</aligny>
 						<font>font12</font>
 						<label>$VAR[ListLabel2Var]</label>
-						<animation type="Focus"effect="fade"start="70"end="100"time="300"reversible="false"/>
+						<animation type="Focus" effect="fade" start="70" end="100" time="300" reversible="false"/>
 						<shadowcolor>text_shadow</shadowcolor>
 					</control>
 					<control type="image">
@@ -175,7 +175,7 @@
 						<width>32</width>
 						<height>32</height>
 						<texture></texture>
-						<animation type="Focus"effect="fade"start="30"end="100"time="300"reversible="false"/>
+						<animation type="Focus" effect="fade" start="30" end="100" time="300" reversible="false"/>
 					</control>
 					<control type="image">
 						<left>21</left>
@@ -183,8 +183,8 @@
 						<width>32</width>
 						<height>32</height>
 						<texture></texture>
-						<animation type="Focus"effect="fade"start="0"end="100"time="300"reversible="false"/>
-						<animation type="VisibleChange"effect="fade"time="150"/>
+						<animation type="Focus" effect="fade" start="0" end="100" time="300" reversible="false"/>
+						<animation type="VisibleChange" effect="fade" time="150"/>
 						<visible>!Control.HasFocus($PARAM[list_id])</visible>
 					</control>
 				</focusedlayout>
@@ -229,8 +229,8 @@
 			<control type="group">
 				<depth>DepthContentPanel</depth>
 				<include content="ContentPanel">
-					<param name="width"value="656"/>
-					<param name="flipx"value="$PARAM[flip_bg]"/>
+					<param name="width" value="656"/>
+					<param name="flipx" value="$PARAM[flip_bg]"/>
 				</include>
 				<control type="image">
 					<left>30</left>
@@ -266,32 +266,32 @@
 					<left>273</left>
 					<top>560</top>
 					<include condition="Skin.HasSetting(circle_rating) | Skin.HasSetting(circle_userrating)">RatingCircle</include>
-					<animation type="conditional"effect="slide"end="0,-140"time="0"condition="String.IsEqual(ListItem.DbType,episode)"/>
+					<animation type="conditional" effect="slide" end="0,-140" time="0" condition="String.IsEqual(ListItem.DbType,episode)"/>
 				</control>
 				<control type="group">
 					<visible>!Container.Content() | !String.isempty(ListItem.Plot)</visible>
 					<left>30</left>
-					<control type="textbox"id="15500">
+					<control type="textbox" id="15500">
 						<top>600</top>
 						<width>540</width>
 						<bottom>70</bottom>
-						<autoscroll time="3000"delay="7000"repeat="5000">!System.HasModalDialog + Skin.HasSetting(AutoScroll)</autoscroll>
+						<autoscroll time="3000" delay="7000" repeat="5000">!System.HasModalDialog + Skin.HasSetting(AutoScroll)</autoscroll>
 						<label>$VAR[ListBoxInfoVar]</label>
 						<visible>!String.IsEqual(ListItem.DbType,episode) + !String.IsEqual(ListItem.DBType,song)</visible>
 					</control>
-					<control type="textbox"id="15501">
+					<control type="textbox" id="15501">
 						<top>465</top>
 						<width>540</width>
 						<bottom>70</bottom>
-						<autoscroll time="3000"delay="7000"repeat="5000">!System.HasModalDialog + Skin.HasSetting(AutoScroll)</autoscroll>
+						<autoscroll time="3000" delay="7000" repeat="5000">!System.HasModalDialog + Skin.HasSetting(AutoScroll)</autoscroll>
 						<label>$INFO[ListItem.Plot]</label>
 						<visible>String.IsEqual(ListItem.DbType,episode)</visible>
 					</control>
-					<control type="textbox"id="15502">
+					<control type="textbox" id="15502">
 						<top>600</top>
 						<width>540</width>
 						<bottom>70</bottom>
-						<autoscroll time="3000"delay="3000"repeat="5000">!System.HasModalDialog + Skin.HasSetting(AutoScroll)</autoscroll>
+						<autoscroll time="3000" delay="3000" repeat="5000">!System.HasModalDialog + Skin.HasSetting(AutoScroll)</autoscroll>
 						<label>$VAR[ListBoxInfoVar]</label>
 						<visible>String.IsEqual(ListItem.DBType,song)</visible>
 					</control>
@@ -301,11 +301,11 @@
 					<top>640</top>
 					<visible>ListItem.IsCollection + String.IsEmpty(ListItem.Plot)</visible>
 					<include content="InfoList">
-						<param name="bottom"value="100"/>
-						<param name="width"value="540"/>
-						<param name="sortby"value="year"/>
-						<param name="sortorder"value="ascending"/>
-						<param name="font"value="font13"/>
+						<param name="bottom" value="100"/>
+						<param name="width" value="540"/>
+						<param name="sortby" value="year"/>
+						<param name="sortorder" value="ascending"/>
+						<param name="font" value="font13"/>
 					</include>
 				</control>
 				<control type="group">
@@ -329,22 +329,22 @@
 						<top>640</top>
 						<visible>!String.IsEmpty(ListItem.DBID)</visible>
 						<include content="InfoList">
-							<param name="list_id"value="42000"/>
-							<param name="bottom"value="100"/>
-							<param name="width"value="540"/>
-							<param name="sortby"value="year"/>
-							<param name="sortorder"value="ascending"/>
-							<param name="item_label"value="$INFO[ListItem.Year,[COLOR button_focus],[/COLOR]  -  ]$INFO[ListItem.Label]"/>
-							<param name="visible"value="String.IsEqual(ListItem.DBType,artist)"/>
+							<param name="list_id" value="42000"/>
+							<param name="bottom" value="100"/>
+							<param name="width" value="540"/>
+							<param name="sortby" value="year"/>
+							<param name="sortorder" value="ascending"/>
+							<param name="item_label" value="$INFO[ListItem.Year,[COLOR button_focus],[/COLOR]  -  ]$INFO[ListItem.Label]"/>
+							<param name="visible" value="String.IsEqual(ListItem.DBType,artist)"/>
 						</include>
 						<include content="InfoList">
-							<param name="list_id"value="43000"/>
-							<param name="bottom"value="100"/>
-							<param name="width"value="540"/>
-							<param name="sortby"value="track"/>
-							<param name="sortorder"value="ascending"/>
-							<param name="item_label"value="$INFO[ListItem.Duration,[COLOR button_focus],[/COLOR]  -  ]$INFO[ListItem.Label]"/>
-							<param name="visible"value="String.IsEqual(ListItem.DBType,album)"/>
+							<param name="list_id" value="43000"/>
+							<param name="bottom" value="100"/>
+							<param name="width" value="540"/>
+							<param name="sortby" value="track"/>
+							<param name="sortorder" value="ascending"/>
+							<param name="item_label" value="$INFO[ListItem.Duration,[COLOR button_focus],[/COLOR]  -  ]$INFO[ListItem.Label]"/>
+							<param name="visible" value="String.IsEqual(ListItem.DBType,album)"/>
 						</include>
 					</control>
 				</control>

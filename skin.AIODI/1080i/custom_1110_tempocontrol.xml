@@ -1,5 +1,5 @@
-<?xml version="1.0"encoding="utf-8"?>
-<window id="1110"type="dialog">
+<?xml version="1.0" encoding="utf-8"?>
+<window id="1110" type="dialog">
     <include file="Includes.xml"/>
 	<defaultcontrol>11</defaultcontrol>
 	<include>Animation_DialogPopupOpenClose</include>
@@ -38,7 +38,7 @@
 				<font>font14</font>
 				<label>$INFO[Player.playspeed]</label>
 			</control>
-			<control type="button"id="11">
+			<control type="button" id="11">
 				<left>690</left>
 				<top>10</top>
 				<width>28</width>
@@ -49,7 +49,7 @@
 				<texturenofocus></texturenofocus>
 				<onclick>PlayerControl(TempoDown)</onclick>
 			</control>
-			<control type="button"id="12">
+			<control type="button" id="12">
 				<left>730</left>
 				<top>10</top>
 				<width>28</width>

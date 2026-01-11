@@ -1,5 +1,5 @@
-<?xml version="1.0"encoding="UTF-8"?>
-<window type="window"id="1150">
+<?xml version="1.0" encoding="UTF-8"?>
+<window type="window" id="1150">
     <include file="Includes.xml"/>
     <defaultcontrol always="true">100</defaultcontrol>
     <onload>RunScript(special://skin/scripts/widget_manager.py,action=load)</onload>
@@ -53,7 +53,7 @@
             </control>
 
             <!--Close Button -->
-            <control type="button"id="9000">
+            <control type="button" id="9000">
                 <left>1340</left>
                 <top>40</top>
                 <width>60</width>
@@ -82,7 +82,7 @@
                     <label>$LOCALIZE[30510]:</label>
                 </control>
 
-                <control type="radiobutton"id="200">
+                <control type="radiobutton" id="200">
                     <left>220</left>
                     <top>0</top>
                     <width>250</width>
@@ -95,7 +95,7 @@
                     <onright>201</onright>
                 </control>
 
-                <control type="radiobutton"id="201">
+                <control type="radiobutton" id="201">
                     <left>490</left>
                     <top>0</top>
                     <width>250</width>
@@ -108,7 +108,7 @@
                     <onright>202</onright>
                 </control>
 
-                <control type="radiobutton"id="202">
+                <control type="radiobutton" id="202">
                     <left>760</left>
                     <top>0</top>
                     <width>250</width>
@@ -144,7 +144,7 @@
             </control>
 
             <!--Available Widgets List -->
-            <control type="list"id="100">
+            <control type="list" id="100">
                 <left>60</left>
                 <top>280</top>
                 <width>600</width>
@@ -235,7 +235,7 @@
             </control>
 
             <!--Active Widgets List -->
-            <control type="list"id="300">
+            <control type="list" id="300">
                 <left>720</left>
                 <top>280</top>
                 <width>660</width>
@@ -296,7 +296,7 @@
             </control>
 
             <!--Action Buttons -->
-            <control type="button"id="400">
+            <control type="button" id="400">
                 <left>60</left>
                 <top>720</top>
                 <width>200</width>
@@ -311,7 +311,7 @@
                 <focusedcolor>FF000000</focusedcolor>
             </control>
 
-            <control type="button"id="501">
+            <control type="button" id="501">
                 <left>280</left>
                 <top>720</top>
                 <width>200</width>
@@ -326,7 +326,7 @@
                 <focusedcolor>FF000000</focusedcolor>
             </control>
 
-            <control type="button"id="500">
+            <control type="button" id="500">
                 <left>500</left>
                 <top>720</top>
                 <width>200</width>
@@ -342,7 +342,7 @@
                 <focusedcolor>FF000000</focusedcolor>
             </control>
 
-            <control type="button"id="502">
+            <control type="button" id="502">
                 <left>720</left>
                 <top>720</top>
                 <width>200</width>

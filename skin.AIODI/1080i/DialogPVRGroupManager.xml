@@ -1,4 +1,4 @@
-<?xml version="1.0"encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <window>
     <include file="Includes.xml"/>
 	<defaultcontrol always="true">29</defaultcontrol>
@@ -10,10 +10,10 @@
 			<centerleft>50%</centerleft>
 			<width>1820</width>
 			<include content="DialogBackgroundCommons">
-				<param name="width"value="1820"/>
-				<param name="height"value="995"/>
-				<param name="header_label"value="$VAR[PVRGroupMgrHeader]$INFO[Container(13).NumItems, (,)]"/>
-				<param name="header_id"value="1"/>
+				<param name="width" value="1820"/>
+				<param name="height" value="995"/>
+				<param name="header_label" value="$VAR[PVRGroupMgrHeader]$INFO[Container(13).NumItems, (,)]"/>
+				<param name="header_id" value="1"/>
 			</include>
 			<control type="group">
 				<left>0</left>
@@ -36,7 +36,7 @@
 					<height>855</height>
 					<texture></texture>
 				</control>
-				<control type="list"id="13">
+				<control type="list" id="13">
 					<left>20</left>
 					<top>75</top>
 					<width>400</width>
@@ -47,7 +47,7 @@
 					<onright>73</onright>
 					<pagecontrol>73</pagecontrol>
 					<scrolltime>200</scrolltime>
-					<itemlayout width="400"height="70">
+					<itemlayout width="400" height="70">
 						<control type="label">
 							<left>20</left>
 							<right>70</right>
@@ -68,7 +68,7 @@
 							<aspectratio>keep</aspectratio>
 						</control>
 					</itemlayout>
-					<focusedlayout width="400"height="70">
+					<focusedlayout width="400" height="70">
 						<control type="image">
 							<left>0</left>
 							<top>0</top>
@@ -109,7 +109,7 @@
 						</control>
 					</focusedlayout>
 				</control>
-				<control type="scrollbar"id="73">
+				<control type="scrollbar" id="73">
 					<left>420</left>
 					<top>75</top>
 					<width>12</width>
@@ -126,11 +126,11 @@
 				<left>440</left>
 				<top>80</top>
 				<include content="ChannelManagerList">
-					<param name="header_id"value="21"/>
-					<param name="list_id"value="11"/>
-					<param name="scrollbar_id"value="71"/>
-					<param name="onright"value="12"/>
-					<param name="onleft"value="73"/>
+					<param name="header_id" value="21"/>
+					<param name="list_id" value="11"/>
+					<param name="scrollbar_id" value="71"/>
+					<param name="onright" value="12"/>
+					<param name="onleft" value="73"/>
 				</include>
 			</control>
 			<control type="group">
@@ -138,14 +138,14 @@
 				<left>940</left>
 				<top>80</top>
 				<include content="ChannelManagerList">
-					<param name="header_id"value="22"/>
-					<param name="list_id"value="12"/>
-					<param name="scrollbar_id"value="72"/>
-					<param name="onright"value="9000"/>
-					<param name="onleft"value="71"/>
+					<param name="header_id" value="22"/>
+					<param name="list_id" value="12"/>
+					<param name="scrollbar_id" value="72"/>
+					<param name="onright" value="9000"/>
+					<param name="onleft" value="71"/>
 				</include>
 			</control>
-			<control type="grouplist"id="9000">
+			<control type="grouplist" id="9000">
 				<left>1450</left>
 				<top>70</top>
 				<width>370</width>
@@ -157,28 +157,28 @@
 				<onright>13</onright>
 				<onup>9000</onup>
 				<ondown>9000</ondown>
-				<control type="button"id="29">
+				<control type="button" id="29">
 					<description>OK</description>
 					<width>370</width>
 					<include>SettingsItemCommon</include>
 					<font>font25_title</font>
 					<label>$LOCALIZE[186]</label>
 				</control>
-				<control type="button"id="26">
+				<control type="button" id="26">
 					<description>Add Group</description>
 					<width>370</width>
 					<include>SettingsItemCommon</include>
 					<font>font25_title</font>
 					<label>$LOCALIZE[31044]</label>
 				</control>
-				<control type="button"id="27">
+				<control type="button" id="27">
 					<description>Rename Group</description>
 					<width>370</width>
 					<include>SettingsItemCommon</include>
 					<font>font25_title</font>
 					<label>$LOCALIZE[31045]</label>
 				</control>
-				<control type="radiobutton"id="25">
+				<control type="radiobutton" id="25">
 					<description>Hide Group</description>
 					<width>370</width>
 					<include>SettingsItemCommon</include>
@@ -187,21 +187,21 @@
 					<radiowidth>100</radiowidth>
 					<radioposy>13</radioposy>
 				</control>
-				<control type="button"id="28">
+				<control type="button" id="28">
 					<description>Delete Group</description>
 					<width>370</width>
 					<include>SettingsItemCommon</include>
 					<font>font25_title</font>
 					<label>$LOCALIZE[31046]</label>
 				</control>
-				<control type="button"id="35">
+				<control type="button" id="35">
 					<description>Regenerate Group Thumbnail</description>
 					<width>370</width>
 					<include>SettingsItemCommon</include>
 					<font>font25_title</font>
 					<label>$LOCALIZE[13315]</label>
 				</control>
-				<control type="togglebutton"id="34">
+				<control type="togglebutton" id="34">
 					<description>TV/Radio toggle</description>
 					<width>370</width>
 					<include>SettingsItemCommon</include>
@@ -222,7 +222,7 @@
 				<aspectratio>keep</aspectratio>
 			</control>
 		</control>
-		<control type="label"id="20">
+		<control type="label" id="20">
 			<description>Fake Label used to pass on name label</description>
 			<visible>false</visible>
 		</control>

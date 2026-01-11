@@ -1,4 +1,4 @@
-<?xml version="1.0"encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <window>
     <include file="Includes.xml"/>
 	<visible>Window.IsActive(fullscreenvideo) | Window.IsActive(visualisation)</visible>
@@ -10,7 +10,7 @@
 	<controls>
 		<include>PVRChannelNumberInput</include>
 		<control type="group">
-			<animation type="VisibleChange"effect="slide"start="0,200"end="0,0"time="300"tween="cubic"easing="out"/>
+			<animation type="VisibleChange" effect="slide" start="0,200" end="0,0" time="300" tween="cubic" easing="out"/>
 			<visible>Player.ShowInfo | Window.IsActive(fullscreeninfo) | Player.ShowTime | Window.IsActive(videoosd) | Window.IsActive(musicosd) | Window.IsActive(playerprocessinfo) | Window.IsActive(pvrosdchannels) | Window.IsActive(pvrchannelguide) | ![!String.IsEmpty(Player.SeekNumeric) | Player.Seeking | Player.HasPerformedSeek(3) | Player.Forwarding | Player.Rewinding | Player.Paused] | !String.IsEmpty(PVR.ChannelNumberInput)</visible>
 			<visible>!Player.HasGame</visible>
 			<bottom>0</bottom>
@@ -23,7 +23,7 @@
 			</control>
 			<control type="group">
 				<visible>!Window.IsVisible(videoosd) + !Window.IsVisible(musicosd)</visible>
-				<animation type="VisibleChange"effect="fade"time="200"/>
+				<animation type="VisibleChange" effect="fade" time="200"/>
 				<control type="grouplist">
 					<visible>[PVR.IsRecordingPlayingChannel + !Player.ChannelPreviewActive] | PVR.IsPlayingActiveRecording</visible>
 					<left>20</left>
@@ -60,30 +60,30 @@
 					<orientation>horizontal</orientation>
 					<itemgap>5</itemgap>
 					<visible>[Player.ShowInfo | Window.IsActive(fullscreeninfo)] + !Player.ChannelPreviewActive + Window.IsActive(fullscreenvideo)</visible>
-					<animation type="Visible"effect="fade"start="0"end="100"time="200"delay="1000"/>
+					<animation type="Visible" effect="fade" start="0" end="100" time="200" delay="1000"/>
 					<include content="MediaFlag">
-						<param name="texture"value="$INFO[VideoPlayer.VideoCodec,flags/videocodec/,.png]"/>
-						<param name="visible"value="!String.IsEmpty(VideoPlayer.VideoCodec)"/>
+						<param name="texture" value="$INFO[VideoPlayer.VideoCodec,flags/videocodec/,.png]"/>
+						<param name="visible" value="!String.IsEmpty(VideoPlayer.VideoCodec)"/>
 					</include>
 					<include content="MediaFlag">
-						<param name="texture"value="$INFO[VideoPlayer.VideoResolution,flags/videoresolution/,.png]"/>
-						<param name="visible"value="!String.IsEmpty(VideoPlayer.VideoResolution)"/>
+						<param name="texture" value="$INFO[VideoPlayer.VideoResolution,flags/videoresolution/,.png]"/>
+						<param name="visible" value="!String.IsEmpty(VideoPlayer.VideoResolution)"/>
 					</include>
 					<include content="MediaFlag">
-						<param name="texture"value="$INFO[VideoPlayer.HdrType,flags/videohdr/,.png]"/>
-						<param name="visible"value="!String.IsEmpty(VideoPlayer.HdrType)"/>
+						<param name="texture" value="$INFO[VideoPlayer.HdrType,flags/videohdr/,.png]"/>
+						<param name="visible" value="!String.IsEmpty(VideoPlayer.HdrType)"/>
 					</include>
 					<include content="MediaFlag">
-						<param name="texture"value="$INFO[VideoPlayer.VideoAspect,flags/aspectratio/,.png]"/>
-						<param name="visible"value="!String.IsEmpty(VideoPlayer.VideoAspect)"/>
+						<param name="texture" value="$INFO[VideoPlayer.VideoAspect,flags/aspectratio/,.png]"/>
+						<param name="visible" value="!String.IsEmpty(VideoPlayer.VideoAspect)"/>
 					</include>
 					<include content="MediaFlag">
-						<param name="texture"value="$INFO[VideoPlayer.AudioCodec,flags/audiocodec/,.png]"/>
-						<param name="visible"value="!String.IsEmpty(VideoPlayer.AudioCodec)"/>
+						<param name="texture" value="$INFO[VideoPlayer.AudioCodec,flags/audiocodec/,.png]"/>
+						<param name="visible" value="!String.IsEmpty(VideoPlayer.AudioCodec)"/>
 					</include>
 					<include content="MediaFlag">
-						<param name="texture"value="$INFO[VideoPlayer.AudioChannels,flags/audiochannel/,.png]"/>
-						<param name="visible"value="!String.IsEmpty(VideoPlayer.AudioChannels)"/>
+						<param name="texture" value="$INFO[VideoPlayer.AudioChannels,flags/audiochannel/,.png]"/>
+						<param name="visible" value="!String.IsEmpty(VideoPlayer.AudioChannels)"/>
 					</include>
 				</control>
 				<control type="grouplist">
@@ -96,18 +96,18 @@
 					<orientation>horizontal</orientation>
 					<itemgap>10</itemgap>
 					<visible>Player.ShowInfo + !Player.ChannelPreviewActive + Window.IsActive(visualisation)</visible>
-					<animation type="Visible"effect="fade"start="0"end="100"time="200"delay="1000"/>
+					<animation type="Visible" effect="fade" start="0" end="100" time="200" delay="1000"/>
 					<include content="MediaFlag">
-						<param name="texture"value="flags/rds/rds.png"/>
-						<param name="visible"value="RDS.HasRDS"/>
+						<param name="texture" value="flags/rds/rds.png"/>
+						<param name="visible" value="RDS.HasRDS"/>
 					</include>
 					<include content="MediaFlag">
-						<param name="texture"value="$INFO[MusicPlayer.Codec,flags/audiocodec/,.png]"/>
-						<param name="visible"value="!String.IsEmpty(MusicPlayer.Codec)"/>
+						<param name="texture" value="$INFO[MusicPlayer.Codec,flags/audiocodec/,.png]"/>
+						<param name="visible" value="!String.IsEmpty(MusicPlayer.Codec)"/>
 					</include>
 					<include content="MediaFlag">
-						<param name="texture"value="$INFO[MusicPlayer.Channels,flags/audiochannel/,.png]"/>
-						<param name="visible"value="!String.IsEmpty(MusicPlayer.Channels)"/>
+						<param name="texture" value="$INFO[MusicPlayer.Channels,flags/audiochannel/,.png]"/>
+						<param name="visible" value="!String.IsEmpty(MusicPlayer.Channels)"/>
 					</include>
 					<control type="group">
 						<visible>!String.IsEmpty(MusicPlayer.SampleRate)</visible>
@@ -121,7 +121,7 @@
 							<font>font_flag</font>
 						</control>
 						<include content="MediaFlag">
-							<param name="texture"value="flags/flag.png"/>
+							<param name="texture" value="flags/flag.png"/>
 						</include>
 					</control>
 					<control type="group">
@@ -136,7 +136,7 @@
 							<font>font_flag</font>
 						</control>
 						<include content="MediaFlag">
-							<param name="texture"value="flags/flag.png"/>
+							<param name="texture" value="flags/flag.png"/>
 						</include>
 					</control>
 					<control type="group">
@@ -151,7 +151,7 @@
 							<font>font_flag</font>
 						</control>
 						<include content="MediaFlag">
-							<param name="texture"value="flags/flag.png"/>
+							<param name="texture" value="flags/flag.png"/>
 						</include>
 					</control>
 				</control>
@@ -168,7 +168,7 @@
 				<shadowcolor>black</shadowcolor>
 				<visible>!Player.ChannelPreviewActive | VideoPlayer.HasEpg</visible>
 			</control>
-			<control type="label"id="40000">
+			<control type="label" id="40000">
 				<centerleft>50%</centerleft>
 				<centertop>175</centertop>
 				<width>50%</width>
@@ -184,31 +184,31 @@
 				<control type="group">
 					<visible>Player.SeekEnabled + VideoPlayer.HasEPG</visible>
 					<include content="PVRProgress">
-						<param name="ts_bar_top"value="70"/>
-						<param name="epg_bar_top"value="78"/>
-						<param name="ts_bar_height"value="8"/>
-						<param name="epg_bar_height"value="8"/>
+						<param name="ts_bar_top" value="70"/>
+						<param name="epg_bar_top" value="78"/>
+						<param name="ts_bar_height" value="8"/>
+						<param name="epg_bar_height" value="8"/>
 					</include>
 				</control>
 				<control type="group">
 					<visible>Player.SeekEnabled + !VideoPlayer.HasEPG</visible>
 					<include content="PVRProgress">
-						<param name="ts_bar_top"value="70"/>
-						<param name="ts_bar_height"value="16"/>
+						<param name="ts_bar_top" value="70"/>
+						<param name="ts_bar_height" value="16"/>
 					</include>
 				</control>
 				<control type="group">
 					<visible>!Player.SeekEnabled + VideoPlayer.HasEPG</visible>
 					<include content="PVRProgress">
-						<param name="epg_bar_top"value="70"/>
-						<param name="epg_bar_height"value="16"/>
+						<param name="epg_bar_top" value="70"/>
+						<param name="epg_bar_height" value="16"/>
 					</include>
 				</control>
 				<control type="group">
 					<visible>!Player.SeekEnabled + !VideoPlayer.HasEPG</visible>
 					<include content="PVRProgress"/>
 				</control>
-				<control type="slider"id="403">
+				<control type="slider" id="403">
 					<left>0</left>
 					<top>65</top>
 					<width>100%</width>
@@ -230,7 +230,7 @@
 				<height>160</height>
 				<label fallback="19055">$INFO[VideoPlayer.Plot]</label>
 				<align>justify</align>
-				<autoscroll delay="5000"repeat="7500"time="5000"></autoscroll>
+				<autoscroll delay="5000" repeat="7500" time="5000"></autoscroll>
 				<visible>String.IsEmpty(PVR.EpgEventIcon)</visible>
 			</control>
 			<control type="textbox">
@@ -240,7 +240,7 @@
 				<height>160</height>
 				<label fallback="19055">$INFO[VideoPlayer.Plot]</label>
 				<align>justify</align>
-				<autoscroll delay="5000"repeat="7500"time="5000"></autoscroll>
+				<autoscroll delay="5000" repeat="7500" time="5000"></autoscroll>
 				<visible>!String.IsEmpty(PVR.EpgEventIcon)</visible>
 			</control>
 			<control type="image">
@@ -272,8 +272,8 @@
 			<visible>!Window.IsVisible(playerprocessinfo)</visible>
 			<visible>[Player.ShowInfo | Window.IsActive(fullscreeninfo)] + !VideoPlayer.Content(LiveTV) + Window.IsActive(fullscreenvideo)</visible>
 			<visible>Player.ShowInfo | Window.IsActive(fullscreeninfo) | !Player.Seeking | !Player.HasPerformedSeek(3) | !Player.Forwarding | !Player.Rewinding | !Player.Paused</visible>
-			<animation type="Visible"effect="fade"start="0"end="100"time="300"delay="250"/>
-			<animation type="Hidden"effect="fade"start="100"end="0"time="100"/>
+			<animation type="Visible" effect="fade" start="0" end="100" time="300" delay="250"/>
+			<animation type="Hidden" effect="fade" start="100" end="0" time="100"/>
 			<bottom>0</bottom>
 			<height>470</height>
 			<control type="image">
@@ -306,14 +306,14 @@
 					<height>294</height>
 					<label fallback="10005">$INFO[VideoPlayer.Tagline,[B],[/B][CR]]$INFO[VideoPlayer.Plot]</label>
 					<align>left</align>
-					<autoscroll delay="5000"repeat="7500"time="5000"></autoscroll>
+					<autoscroll delay="5000" repeat="7500" time="5000"></autoscroll>
 					<visible>Integer.IsGreaterOrEqual(Playlist.Position(video), Playlist.Length(video))</visible>
 				</control>
 				<control type="textbox">
 					<height>250</height>
 					<label fallback="10005">$INFO[VideoPlayer.Tagline,[B],[/B][CR]]$INFO[VideoPlayer.Plot]</label>
 					<align>left</align>
-					<autoscroll delay="5000"repeat="7500"time="5000"></autoscroll>
+					<autoscroll delay="5000" repeat="7500" time="5000"></autoscroll>
 					<visible>Integer.IsLess(Playlist.Position(video), Playlist.Length(video))</visible>
 				</control>
 				<control type="label">

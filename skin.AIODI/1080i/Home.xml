@@ -1,4 +1,4 @@
-<?xml version="1.0"encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <window>
     <include file="Includes.xml"/>
     <defaultcontrol always="true">9001</defaultcontrol>
@@ -42,7 +42,7 @@
             </control>
             
             <!--Navigation Menu -->
-            <control type="grouplist"id="9000">
+            <control type="grouplist" id="9000">
                 <left>500</left>
                 <top>30</top>
                 <width>1200</width>
@@ -51,7 +51,7 @@
                 <orientation>horizontal</orientation>
                 <itemgap>20</itemgap>
                 
-                <control type="button"id="9001">
+                <control type="button" id="9001">
                     <width>150</width>
                     <height>60</height>
                     <font>font30</font>
@@ -61,7 +61,7 @@
                     <onclick>ActivateWindow(Home)</onclick>
                 </control>
                 
-                <control type="button"id="9002">
+                <control type="button" id="9002">
                     <width>150</width>
                     <height>60</height>
                     <font>font30</font>
@@ -71,7 +71,7 @@
                     <onclick>ActivateWindow(Videos,plugin://plugin.video.aiostreams/?action=movie_lists,return)</onclick>
                 </control>
                 
-                <control type="button"id="9003">
+                <control type="button" id="9003">
                     <width>150</width>
                     <height>60</height>
                     <font>font30</font>
@@ -81,7 +81,7 @@
                     <onclick>ActivateWindow(Videos,plugin://plugin.video.aiostreams/?action=series_lists,return)</onclick>
                 </control>
                 
-                <control type="button"id="9004">
+                <control type="button" id="9004">
                     <width>150</width>
                     <height>60</height>
                     <font>font30</font>
@@ -91,7 +91,7 @@
                     <onclick>ActivateWindow(Videos,plugin://plugin.video.aiostreams/?action=search_unified,return)</onclick>
                 </control>
                 
-                <control type="button"id="9005">
+                <control type="button" id="9005">
                     <width>150</width>
                     <height>60</height>
                     <font>font30</font>
@@ -104,7 +104,7 @@
         </control>
 
         <!--Home Dashboard Widgets -->
-        <control type="grouplist"id="50">
+        <control type="grouplist" id="50">
             <left>60</left>
             <top>150</top>
             <width>1800</width>
@@ -127,7 +127,7 @@
                     <label>Next Up</label>
                     <textcolor>main_fg_100</textcolor>
                 </control>
-                <control type="list"id="51">
+                <control type="list" id="51">
                     <left>0</left>
                     <top>50</top>
                     <width>1800</width>
@@ -135,7 +135,7 @@
                     <onup>9000</onup>
                     <ondown>52</ondown>
                     <orientation>horizontal</orientation>
-                    <itemlayout width="160"height="230">
+                    <itemlayout width="160" height="230">
                         <control type="image">
                             <left>5</left>
                             <top>5</top>
@@ -145,7 +145,7 @@
                             <texture></texture>
                         </control>
                     </itemlayout>
-                    <focusedlayout width="160"height="230">
+                    <focusedlayout width="160" height="230">
                         <control type="image">
                             <left>0</left>
                             <top>0</top>
@@ -164,7 +164,7 @@
                     </focusedlayout>
                     <content>plugin://plugin.video.aiostreams/?action=trakt_next_up</content>
                 </control>
-                <control type="button"id="510">
+                <control type="button" id="510">
                     <left>0</left>
                     <top>50</top>
                     <width>1800</width>
@@ -190,7 +190,7 @@
                     <label>Movie Watchlist</label>
                     <textcolor>main_fg_100</textcolor>
                 </control>
-                <control type="list"id="52">
+                <control type="list" id="52">
                     <left>0</left>
                     <top>50</top>
                     <width>1800</width>
@@ -198,7 +198,7 @@
                     <onup>51</onup>
                     <ondown>53</ondown>
                     <orientation>horizontal</orientation>
-                    <itemlayout width="160"height="230">
+                    <itemlayout width="160" height="230">
                         <control type="image">
                             <left>5</left>
                             <top>5</top>
@@ -208,7 +208,7 @@
                             <texture></texture>
                         </control>
                     </itemlayout>
-                    <focusedlayout width="160"height="230">
+                    <focusedlayout width="160" height="230">
                         <control type="image">
                             <left>0</left>
                             <top>0</top>
@@ -227,7 +227,7 @@
                     </focusedlayout>
                     <content>plugin://plugin.video.aiostreams/?action=trakt_watchlist&amp;content_type=movie</content>
                 </control>
-                <control type="button"id="520">
+                <control type="button" id="520">
                     <left>0</left>
                     <top>50</top>
                     <width>1800</width>
@@ -253,14 +253,14 @@
                     <label>TV Watchlist</label>
                     <textcolor>main_fg_100</textcolor>
                 </control>
-                <control type="list"id="53">
+                <control type="list" id="53">
                     <left>0</left>
                     <top>50</top>
                     <width>1800</width>
                     <height>230</height>
                     <onup>52</onup>
                     <orientation>horizontal</orientation>
-                    <itemlayout width="160"height="230">
+                    <itemlayout width="160" height="230">
                         <control type="image">
                             <left>5</left>
                             <top>5</top>
@@ -270,7 +270,7 @@
                             <texture></texture>
                         </control>
                     </itemlayout>
-                    <focusedlayout width="160"height="230">
+                    <focusedlayout width="160" height="230">
                         <control type="image">
                             <left>0</left>
                             <top>0</top>
@@ -289,7 +289,7 @@
                     </focusedlayout>
                     <content>plugin://plugin.video.aiostreams/?action=trakt_watchlist&amp;content_type=series</content>
                 </control>
-                <control type="button"id="530">
+                <control type="button" id="530">
                     <left>0</left>
                     <top>50</top>
                     <width>1800</width>

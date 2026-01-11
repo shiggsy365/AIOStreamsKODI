@@ -1,4 +1,4 @@
-<?xml version="1.0"encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <window>
     <include file="Includes.xml"/>
 	<defaultcontrol always="true">2</defaultcontrol>
@@ -23,7 +23,7 @@
 				<label>$LOCALIZE[31155]</label>
 				<visible>Integer.IsEqual(Container(11).NumItems,0)</visible>
 			</control>
-			<control type="grouplist"id="9001">
+			<control type="grouplist" id="9001">
 				<orientation>horizontal</orientation>
 				<left>0</left>
 				<top>-10</top>
@@ -33,23 +33,23 @@
 				<onup>11</onup>
 				<ondown>11</ondown>
 				<include content="DefaultDialogButton">
-					<param name="id"value="2"/>
-					<param name="label"value="$LOCALIZE[294]"/>
-					<param name="width"value="350"/>
+					<param name="id" value="2"/>
+					<param name="label" value="$LOCALIZE[294]"/>
+					<param name="width" value="350"/>
 				</include>
 				<include content="DefaultDialogButton">
-					<param name="id"value="3"/>
-					<param name="label"value="$LOCALIZE[296]"/>
-					<param name="width"value="350"/>
+					<param name="id" value="3"/>
+					<param name="label" value="$LOCALIZE[296]"/>
+					<param name="width" value="350"/>
 				</include>
 				<include content="DefaultDialogButton">
-					<param name="id"value="4"/>
-					<param name="label"value="$LOCALIZE[20406]"/>
-					<param name="width"value="350"/>
-					<param name="visible"value="Control.IsEnabled(4)"/>
+					<param name="id" value="4"/>
+					<param name="label" value="$LOCALIZE[20406]"/>
+					<param name="width" value="350"/>
+					<param name="visible" value="Control.IsEnabled(4)"/>
 				</include>
 			</control>
-			<control type="panel"id="11">
+			<control type="panel" id="11">
 				<left>0</left>
 				<top>81</top>
 				<width>100%</width>
@@ -59,7 +59,7 @@
 				<preloaditems>2</preloaditems>
 				<scrolltime tween="sine">200</scrolltime>
 				<orientation>horizontal</orientation>
-				<itemlayout width="360"height="340">
+				<itemlayout width="360" height="340">
 					<control type="group">
 						<left>70</left>
 						<control type="image">
@@ -84,7 +84,7 @@
 						</control>
 					</control>
 				</itemlayout>
-				<focusedlayout width="360"height="340">
+				<focusedlayout width="360" height="340">
 					<control type="group">
 						<left>70</left>
 						<control type="image">

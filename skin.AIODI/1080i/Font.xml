@@ -1,6 +1,6 @@
-<?xml version="1.0"encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <fonts>
-	<fontset id="Default"idloc="15109">
+	<fontset id="Default" idloc="15109">
 		<!--Normal Fonts -->
 		<font>
 			<name>font10</name>
@@ -169,7 +169,7 @@
 			<style>bold</style>
 		</font>
 	</fontset>
-	<fontset id="Arial"idloc="31053">
+	<fontset id="Arial" idloc="31053">
 		<!--Arial Font better for non English -->
 		<font>
 			<name>font10</name>
