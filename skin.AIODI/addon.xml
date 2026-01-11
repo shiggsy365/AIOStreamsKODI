@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<addon id="skin.aiodi" version="3.1.7" name="AIODI" provider-name="shiggsy365">
+<addon id="skin.aiodi" version="3.1.8" name="AIODI" provider-name="shiggsy365">
     <requires>
         <import addon="xbmc.gui" version="5.17.0"/>
         <import addon="plugin.video.aiostreams"/>

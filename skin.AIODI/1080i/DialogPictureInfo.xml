@@ -27,9 +27,9 @@
 					<width>1180</width>
 					<height>720</height>
 					<aspectratio aligny="center">keep</aspectratio>
-					<bordertexture colordiffuse="border_alpha">colors/black.png</bordertexture>
+					<bordertexture colordiffuse="border_alpha">common/black.png</bordertexture>
 					<bordersize>4</bordersize>
-					<texture border="4"background="true"fallback="colors/black.png">$INFO[ListItem.FolderPath]</texture>
+					<texture border="4"background="true"fallback="common/black.png">$INFO[ListItem.FolderPath]</texture>
 				</control>
 			</control>
 			<control type="group">

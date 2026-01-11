@@ -68,7 +68,7 @@
 							<width>680</width>
 							<height>390</height>
 							<aspectratio>scale</aspectratio>
-							<texture colordiffuse="AAFFFFFF">colors/black.png</texture>
+							<texture colordiffuse="AAFFFFFF">common/black.png</texture>
 						</control>
 						<control type="textbox">
 							<left>16</left>
@@ -118,7 +118,7 @@
 								<width>670</width>
 								<height>380</height>
 								<aspectratio>scale</aspectratio>
-								<texture colordiffuse="AAFFFFFF">colors/black.png</texture>
+								<texture colordiffuse="AAFFFFFF">common/black.png</texture>
 							</control>
 							<control type="textbox">
 								<left>-14</left>
@@ -151,7 +151,7 @@
 								<width>670</width>
 								<height>380</height>
 								<aspectratio>scale</aspectratio>
-								<texture colordiffuse="AAFFFFFF">colors/black.png</texture>
+								<texture colordiffuse="AAFFFFFF">common/black.png</texture>
 							</control>
 							<control type="textbox">
 								<left>-14</left>
@@ -283,7 +283,7 @@
 							<height>190</height>
 							<texture border="2"fallback="defaultaudio.png"background="true">$INFO[ListItem.Thumb]</texture>
 							<aspectratio>keep</aspectratio>
-							<bordertexture colordiffuse="border_alpha">colors/black.png</bordertexture>
+							<bordertexture colordiffuse="border_alpha">common/black.png</bordertexture>
 							<bordersize>4</bordersize>
 						</control>
 						<control type="textbox">
@@ -319,7 +319,7 @@
 								<height>190</height>
 								<texture border="2"fallback="defaultaudio.png"background="true">$INFO[ListItem.Thumb]</texture>
 								<aspectratio>keep</aspectratio>
-								<bordertexture colordiffuse="border_alpha">colors/black.png</bordertexture>
+								<bordertexture colordiffuse="border_alpha">common/black.png</bordertexture>
 								<bordersize>4</bordersize>
 							</control>
 							<control type="textbox">
@@ -438,7 +438,7 @@
 						<width>450</width>
 						<height>390</height>
 						<aspectratio>scale</aspectratio>
-						<texture colordiffuse="AAFFFFFF">colors/black.png</texture>
+						<texture colordiffuse="AAFFFFFF">common/black.png</texture>
 					</control>
 					<control type="group">
 						<left>1275</left>

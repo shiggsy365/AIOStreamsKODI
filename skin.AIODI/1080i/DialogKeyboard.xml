@@ -23,7 +23,7 @@
 				<bottom>0</bottom>
 				<width>100%</width>
 				<height>470</height>
-				<texture colordiffuse="dialog_tint">colors/white.png</texture>
+				<texture colordiffuse="dialog_tint">common/white.png</texture>
 			</control>
 			<control type="label"id="311">
 				<centerleft>50%</centerleft>
@@ -41,7 +41,7 @@
 				<top>184</top>
 				<width>1542</width>
 				<height>100</height>
-				<texture colordiffuse="dialog_tint">colors/white.png</texture>
+				<texture colordiffuse="dialog_tint">common/white.png</texture>
 			</control>
 			<control type="image">
 				<centerleft>50%</centerleft>
@@ -600,7 +600,7 @@
 						<top>0</top>
 						<width>480</width>
 						<height>50</height>
-						<texture colordiffuse="dialog_tint">colors/white.png</texture>
+						<texture colordiffuse="dialog_tint">common/white.png</texture>
 					</control>
 					<control type="label">
 						<textoffsetx>30</textoffsetx>
@@ -620,13 +620,13 @@
 							<top>0</top>
 							<width>480</width>
 							<height>50</height>
-							<texture colordiffuse="dialog_tint">colors/white.png</texture>
+							<texture colordiffuse="dialog_tint">common/white.png</texture>
 						</control>
 						<control type="image">
 							<left>10</left>
 							<width>480</width>
 							<height>50</height>
-							<texture colordiffuse="button_focus">colors/grey.png</texture>
+							<texture colordiffuse="button_focus">common/grey.png</texture>
 							<include>Animation_FocusTextureFade</include>
 						</control>
 						<control type="label">

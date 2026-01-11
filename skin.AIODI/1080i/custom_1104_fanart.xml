@@ -8,7 +8,7 @@
 		<control type="image">
 			<include>FullScreenDimensions</include>
 			<aspectratio>scale</aspectratio>
-			<texture >colors/black.png</texture>
+			<texture >common/black.png</texture>
 		</control>
 		<control type="image">
 			<include>FullScreenDimensions</include>

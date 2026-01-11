@@ -255,9 +255,9 @@
 					<left>0</left>
 					<width>100%</width>
 					<height>26</height>
-					<texturesliderbar colordiffuse="00FFFFFF">osd/progress/nub_leftright.png</texturesliderbar>
-					<textureslidernib >osd/progress/nub_leftright.png</textureslidernib>
-					<textureslidernibfocus colordiffuse="button_focus">osd/progress/nub_leftright.png</textureslidernibfocus>
+					<texturesliderbar colordiffuse="00FFFFFF">common/nub_leftright.png</texturesliderbar>
+					<textureslidernib >common/nub_leftright.png</textureslidernib>
+					<textureslidernibfocus colordiffuse="button_focus">common/nub_leftright.png</textureslidernibfocus>
 					<info>Player.Progress</info>
 					<onup>200</onup>
 					<ondown>200</ondown>
@@ -269,9 +269,9 @@
 					<left>0</left>
 					<width>100%</width>
 					<height>26</height>
-					<texturesliderbar colordiffuse="00FFFFFF">osd/progress/nub_leftright.png</texturesliderbar>
-					<textureslidernib colordiffuse="button_focus">osd/progress/nub_leftright.png</textureslidernib>
-					<textureslidernibfocus colordiffuse="button_focus">osd/progress/nub_leftright.png</textureslidernibfocus>
+					<texturesliderbar colordiffuse="00FFFFFF">common/nub_leftright.png</texturesliderbar>
+					<textureslidernib colordiffuse="button_focus">common/nub_leftright.png</textureslidernib>
+					<textureslidernibfocus colordiffuse="button_focus">common/nub_leftright.png</textureslidernibfocus>
 					<info>Player.Progress</info>
 					<onup>200</onup>
 					<ondown>200</ondown>
@@ -283,9 +283,9 @@
 					<left>0</left>
 					<width>100%</width>
 					<height>26</height>
-					<texturesliderbar colordiffuse="00FFFFFF">osd/progress/nub_leftright.png</texturesliderbar>
-					<textureslidernib >osd/progress/nub_leftright.png</textureslidernib>
-					<textureslidernibfocus colordiffuse="button_focus">osd/progress/nub_leftright.png</textureslidernibfocus>
+					<texturesliderbar colordiffuse="00FFFFFF">common/nub_leftright.png</texturesliderbar>
+					<textureslidernib >common/nub_leftright.png</textureslidernib>
+					<textureslidernibfocus colordiffuse="button_focus">common/nub_leftright.png</textureslidernibfocus>
 					<info>PVR.TimeshiftProgressPlayPos</info>
 					<onup>200</onup>
 					<ondown>200</ondown>
@@ -297,9 +297,9 @@
 					<left>0</left>
 					<width>100%</width>
 					<height>26</height>
-					<texturesliderbar colordiffuse="00FFFFFF">osd/progress/nub_leftright.png</texturesliderbar>
-					<textureslidernib colordiffuse="button_focus">osd/progress/nub_leftright.png</textureslidernib>
-					<textureslidernibfocus colordiffuse="button_focus">osd/progress/nub_leftright.png</textureslidernibfocus>
+					<texturesliderbar colordiffuse="00FFFFFF">common/nub_leftright.png</texturesliderbar>
+					<textureslidernib colordiffuse="button_focus">common/nub_leftright.png</textureslidernib>
+					<textureslidernibfocus colordiffuse="button_focus">common/nub_leftright.png</textureslidernibfocus>
 					<info>PVR.TimeshiftProgressPlayPos</info>
 					<onup>200</onup>
 					<ondown>200</ondown>

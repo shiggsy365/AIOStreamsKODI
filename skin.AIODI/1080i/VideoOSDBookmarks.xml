@@ -82,7 +82,7 @@
 							<height>250</height>
 							<aspectratio>scale</aspectratio>
 							<texture border="4"fallback="defaultvideo.png">$INFO[ListItem.Art(thumb)]</texture>
-							<bordertexture colordiffuse="border_alpha">colors/black.png</bordertexture>
+							<bordertexture colordiffuse="border_alpha">common/black.png</bordertexture>
 							<bordersize>4</bordersize>
 						</control>
 						<control type="label">
@@ -107,7 +107,7 @@
 							<height>250</height>
 							<aspectratio>scale</aspectratio>
 							<texture border="4"fallback="defaultvideo.png">$INFO[ListItem.Art(thumb)]</texture>
-							<bordertexture colordiffuse="border_alpha">colors/black.png</bordertexture>
+							<bordertexture colordiffuse="border_alpha">common/black.png</bordertexture>
 							<bordersize>4</bordersize>
 						</control>
 						<control type="label">

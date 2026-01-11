@@ -33,7 +33,7 @@
 							<height>120</height>
 							<texture fallback="defaultaddon.png">$INFO[Listitem.Icon]</texture>
 							<aspectratio>scale</aspectratio>
-							<bordertexture colordiffuse="border_alpha">colors/black.png</bordertexture>
+							<bordertexture colordiffuse="border_alpha">common/black.png</bordertexture>
 							<bordersize>4</bordersize>
 						</control>
 						<control type="label">
@@ -80,7 +80,7 @@
 							<height>120</height>
 							<texture fallback="defaultaddon.png">$INFO[Listitem.Icon]</texture>
 							<aspectratio>scale</aspectratio>
-							<bordertexture colordiffuse="border_alpha">colors/black.png</bordertexture>
+							<bordertexture colordiffuse="border_alpha">common/black.png</bordertexture>
 							<bordersize>4</bordersize>
 						</control>
 						<control type="label">

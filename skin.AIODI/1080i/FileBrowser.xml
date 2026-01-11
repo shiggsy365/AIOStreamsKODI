@@ -51,7 +51,7 @@
 				<width>260</width>
 				<height>380</height>
 				<aspectratio aligny="bottom">keep</aspectratio>
-				<bordertexture colordiffuse="border_alpha">colors/black.png</bordertexture>
+				<bordertexture colordiffuse="border_alpha">common/black.png</bordertexture>
 				<bordersize>4</bordersize>
 				<texture border="4"background="true">$INFO[ListItem.Icon]</texture>
 			</control>

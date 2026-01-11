@@ -280,7 +280,7 @@
 			<width>4000</width>
 			<height>100%</height>
 			<aspectratio>scale</aspectratio>
-			<texture colordiffuse="80FFFFFF">colors/black.png</texture>
+			<texture colordiffuse="80FFFFFF">common/black.png</texture>
 			<visible>$EXP[sidebar_visible] + !System.HasActiveModalDialog</visible>
 			<animation type="VisibleChange"effect="fade"time="200"/>
 		</control>

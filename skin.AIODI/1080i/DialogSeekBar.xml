@@ -213,9 +213,9 @@
 					<top>65</top>
 					<width>100%</width>
 					<height>26</height>
-					<texturesliderbar colordiffuse="00FFFFFF">osd/progress/nub_bar.png</texturesliderbar>
-					<textureslidernib colordiffuse="button_focus">osd/progress/nub_bar.png</textureslidernib>
-					<textureslidernibfocus colordiffuse="button_focus">colors/white.png</textureslidernibfocus>
+					<texturesliderbar colordiffuse="00FFFFFF">common/nub_bar.png</texturesliderbar>
+					<textureslidernib colordiffuse="button_focus">common/nub_bar.png</textureslidernib>
+					<textureslidernibfocus colordiffuse="button_focus">common/white.png</textureslidernibfocus>
 					<visible>Player.SeekEnabled + !Player.ChannelPreviewActive</visible>
 				</control>
 			</control>
@@ -227,8 +227,8 @@
 					<width>100%</width>
 					<height>16</height>
 					<info>Player.ProgressCache</info>
-					<texturebg border="3"colordiffuse="00FFFFFF">colors/white50.png</texturebg>
-					<midtexture >colors/white50.png</midtexture>
+					<texturebg border="3"colordiffuse="00FFFFFF">common/white50.png</texturebg>
+					<midtexture >common/white50.png</midtexture>
 				</control>
 				<control type="progress">
 					<left>0</left>
@@ -236,17 +236,17 @@
 					<width>100%</width>
 					<height>16</height>
 					<info>Player.Progress</info>
-					<texturebg border="3"colordiffuse="60FFFFFF">colors/white50.png</texturebg>
-					<midtexture colordiffuse="button_focus">colors/white.png</midtexture>
+					<texturebg border="3"colordiffuse="60FFFFFF">common/white50.png</texturebg>
+					<midtexture colordiffuse="button_focus">common/white.png</midtexture>
 				</control>
 				<control type="slider"id="401">
 					<left>0</left>
 					<top>65</top>
 					<width>100%</width>
 					<height>26</height>
-					<texturesliderbar colordiffuse="00FFFFFF">osd/progress/nub_bar.png</texturesliderbar>
-					<textureslidernib colordiffuse="button_focus">osd/progress/nub_bar.png</textureslidernib>
-					<textureslidernibfocus colordiffuse="button_focus">colors/white.png</textureslidernibfocus>
+					<texturesliderbar colordiffuse="00FFFFFF">common/nub_bar.png</texturesliderbar>
+					<textureslidernib colordiffuse="button_focus">common/nub_bar.png</textureslidernib>
+					<textureslidernibfocus colordiffuse="button_focus">common/white.png</textureslidernibfocus>
 					<visible>Player.SeekEnabled</visible>
 				</control>
 			</control>
@@ -255,10 +255,10 @@
 				<top>70</top>
 				<width>100%</width>
 				<height>8</height>
-				<texturebg border="3"colordiffuse="00FFFFFF">colors/white50.png</texturebg>
-				<lefttexture >colors/white.png</lefttexture>
-				<midtexture colordiffuse="FFFF0000">colors/white.png</midtexture>
-				<righttexture >colors/white.png</righttexture>
+				<texturebg border="3"colordiffuse="00FFFFFF">common/white50.png</texturebg>
+				<lefttexture >common/white.png</lefttexture>
+				<midtexture colordiffuse="FFFF0000">common/white.png</midtexture>
+				<righttexture >common/white.png</righttexture>
 				<info>Player.Editlist</info>
 			</control>
 			<control type="ranges">
@@ -266,8 +266,8 @@
 				<top>82</top>
 				<width>100%</width>
 				<height>8</height>
-				<texturebg border="3"colordiffuse="00FFFFFF">colors/red50.png</texturebg>
-				<righttexture >colors/red.png</righttexture>
+				<texturebg border="3"colordiffuse="00FFFFFF">common/red50.png</texturebg>
+				<righttexture >common/red.png</righttexture>
 				<info>Player.Cuts</info>
 			</control>
 			<control type="ranges">
@@ -275,8 +275,8 @@
 				<top>82</top>
 				<width>100%</width>
 				<height>4</height>
-				<texturebg border="3"colordiffuse="00FFFFFF">colors/white50.png</texturebg>
-				<righttexture >colors/white.png</righttexture>
+				<texturebg border="3"colordiffuse="00FFFFFF">common/white50.png</texturebg>
+				<righttexture >common/white.png</righttexture>
 				<info>Player.SceneMarkers</info>
 			</control>
 			<control type="ranges">
@@ -284,8 +284,8 @@
 				<top>82</top>
 				<width>100%</width>
 				<height>4</height>
-				<texturebg border="3"colordiffuse="00FFFFFF">colors/white50.png</texturebg>
-				<righttexture >colors/white.png</righttexture>
+				<texturebg border="3"colordiffuse="00FFFFFF">common/white50.png</texturebg>
+				<righttexture >common/white.png</righttexture>
 				<info>Player.Chapters</info>
 			</control>
 		</control>

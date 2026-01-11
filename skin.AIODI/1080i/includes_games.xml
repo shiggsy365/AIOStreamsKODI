@@ -363,7 +363,7 @@
 						<onclick>ActivateWindow(GamePorts)</onclick>
 					</control>
 					<control type="gamecontrollerlist"id="4">
-						<description>Active port list. Length should fit 13 listitems (12 controllers and one "controller disconnected"indicator).</description>
+						<description>Active port list.Length should fit 13 listitems (12 controllers and one "controller disconnected"indicator).</description>
 						<right>0</right>
 						<width>1248</width>
 						<orientation>horizontal</orientation>
@@ -546,7 +546,7 @@
 			<align>left</align>
 		</control>
 		<control type="gamecontrollerlist">
-			<description>Controller list which indicates the port a player's controller is connected to. Length should fit 13 listitems (12 controller items and one "input disabled"item).</description>
+			<description>Controller list which indicates the port a player's controller is connected to.Length should fit 13 listitems (12 controller items and one "input disabled"item).</description>
 			<right>0</right>
 			<width>1248</width>
 			<orientation>horizontal</orientation>

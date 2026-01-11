@@ -41,7 +41,7 @@
 							<controllerid>game.controller.snes</controllerid>
 						</control>
 						<control type="textbox">
-							<description>Additional help text. This will be removed in future versions.</description>
+							<description>Additional help text.This will be removed in future versions.</description>
 							<bottom>30</bottom>
 							<left>30</left>
 							<right>30</right>

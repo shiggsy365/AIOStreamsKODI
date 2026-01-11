@@ -63,7 +63,7 @@
 							<right>5</right>
 							<top>5</top>
 							<texture>$INFO[ListItem.Icon]</texture>
-							<bordertexture colordiffuse="border_alpha">colors/black.png</bordertexture>
+							<bordertexture colordiffuse="border_alpha">common/black.png</bordertexture>
 							<bordersize>2</bordersize>
 							<aspectratio>keep</aspectratio>
 						</control>
@@ -103,7 +103,7 @@
 							<right>5</right>
 							<top>5</top>
 							<texture>$INFO[ListItem.Icon]</texture>
-							<bordertexture colordiffuse="border_alpha">colors/black.png</bordertexture>
+							<bordertexture colordiffuse="border_alpha">common/black.png</bordertexture>
 							<bordersize>2</bordersize>
 							<aspectratio>keep</aspectratio>
 						</control>
@@ -217,7 +217,7 @@
 				<width>370</width>
 				<height>200</height>
 				<texture>$INFO[Container(13).ListItem.Icon]</texture>
-				<bordertexture colordiffuse="border_alpha">colors/black.png</bordertexture>
+				<bordertexture colordiffuse="border_alpha">common/black.png</bordertexture>
 				<bordersize>2</bordersize>
 				<aspectratio>keep</aspectratio>
 			</control>

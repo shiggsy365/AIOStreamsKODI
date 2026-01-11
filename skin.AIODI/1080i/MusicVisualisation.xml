@@ -59,7 +59,7 @@
 				<fadetime>400</fadetime>
 				<aspectratio aligny="bottom">keep</aspectratio>
 				<texture fallback="defaultalbumcover.png"border="2">$INFO[MusicPlayer.Cover]</texture>
-				<bordertexture colordiffuse="border_alpha">colors/black.png</bordertexture>
+				<bordertexture colordiffuse="border_alpha">common/black.png</bordertexture>
 				<bordersize>4</bordersize>
 			</control>
 			<control type="group">

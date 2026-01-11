@@ -20,7 +20,7 @@
 					<left>-16</left>
 					<width>566</width>
 					<height>841</height>
-					<texture >colors/black.png</texture>
+					<texture >common/black.png</texture>
 					<bordertexture border="21"infill="false">overlays/shadow.png</bordertexture>
 					<bordersize>20</bordersize>
 				</control>
@@ -42,7 +42,7 @@
 						<width>526</width>
 						<height>801</height>
 						<aspectratio>stretch</aspectratio>
-						<texture colordiffuse="AAFFFFFF"fallback="defaultvideo.png">colors/black.png</texture>
+						<texture colordiffuse="AAFFFFFF"fallback="defaultvideo.png">common/black.png</texture>
 					</control>
 					<control type="image">
 						<left>14</left>

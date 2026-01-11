@@ -34,8 +34,8 @@
 				<top>20</top>
 				<width>400</width>
 				<height>112</height>
-				<texturebg border="3"colordiffuse="60FFFFFF">colors/white50.png</texturebg>
-				<midtexture colordiffuse="button_focus">colors/white.png</midtexture>
+				<texturebg border="3"colordiffuse="60FFFFFF">common/white50.png</texturebg>
+				<midtexture colordiffuse="button_focus">common/white.png</midtexture>
 				<info>Player.Volume</info>
 			</control>
 			<control type="slider">

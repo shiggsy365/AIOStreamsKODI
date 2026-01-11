@@ -21,7 +21,7 @@
 				<top>181</top>
 				<width>457</width>
 				<height>60</height>
-				<texture colordiffuse="32FFFFFF"border="2">colors/white.png</texture>
+				<texture colordiffuse="32FFFFFF"border="2">common/white.png</texture>
 			</control>
 			<control type="label"id="4">
 				<description>Edit Text</description>

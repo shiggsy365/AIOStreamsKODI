@@ -1,3 +1,9 @@
+[B]3.1.8[/B]
+• FIXED: Critical resource path cleanup - removed accidental spaces in filename references.
+• FIXED: Redirected failing legacy texture paths (colors/*, osd/*) to consolidated common assets.
+• FIXED: Restored font loading by repairing broken NotoSans-Regular.ttf references.
+• FIXED: Provided fallback assets for missing dialog backgrounds and pointers.
+
 [B]3.1.6[/B]
 • FIXED: Massive rendering overhaul for Linux - standardizing all texture and font references to lowercase.
 • FIXED: Resolved "black on black" text and missing backgrounds by defining missing colors (grey, button_focus, etc.) in defaults.xml.

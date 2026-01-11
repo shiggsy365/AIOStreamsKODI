@@ -53,7 +53,7 @@
 								<left>0</left>
 								<right>0</right>
 								<bottom>0</bottom>
-								<texture colordiffuse="selected">colors/white.png</texture>
+								<texture colordiffuse="selected">common/white.png</texture>
 								<animation type="Conditional"effect="fade"end="20"time="0"condition="true"/>
 								<visible>ListItem.Property(Changed)</visible>
 							</control>
@@ -88,7 +88,7 @@
 							<left>0</left>
 							<right>0</right>
 							<bottom>0</bottom>
-							<texture colordiffuse="selected">colors/white.png</texture>
+							<texture colordiffuse="selected">common/white.png</texture>
 							<animation type="Conditional"effect="fade"end="20"time="0"condition="true"/>
 							<visible>ListItem.Property(Changed)</visible>
 						</control>

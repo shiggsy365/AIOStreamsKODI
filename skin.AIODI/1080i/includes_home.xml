@@ -353,7 +353,7 @@
 						<control type="image">
 							<width>316</width>
 							<height>200</height>
-							<texture colordiffuse="button_focus">colors/grey.png</texture>
+							<texture colordiffuse="button_focus">common/grey.png</texture>
 							<bordersize>20</bordersize>
 							<include>Animation_FocusTextureFade</include>
 						</control>
@@ -540,7 +540,7 @@
 						<control type="image">
 							<width>319</width>
 							<height>340</height>
-							<texture colordiffuse="button_focus">colors/grey.png</texture>
+							<texture colordiffuse="button_focus">common/grey.png</texture>
 							<bordersize>20</bordersize>
 							<include>Animation_FocusTextureFade</include>
 						</control>
@@ -710,7 +710,7 @@
 							<top>20</top>
 							<width>254</width>
 							<height>280</height>
-							<texture colordiffuse="button_focus">colors/grey.png</texture>
+							<texture colordiffuse="button_focus">common/grey.png</texture>
 							<bordersize>20</bordersize>
 							<include>Animation_FocusTextureFade</include>
 						</control>
@@ -753,7 +753,7 @@
 	<include name="HourlyItems">
 		<content>
 			<item>
-				<icon>resource://resource.images.weathericons. default/na.png</icon>
+				<icon>resource://resource.images.weathericons.default/na.png</icon>
 				<onclick>noop</onclick>
 				<visible>String.IsEmpty(Window(weather).Property(Hourly.IsFetched))</visible>
 			</item>
@@ -834,7 +834,7 @@
 	<include name="DailyItems">
 		<content>
 			<item>
-				<icon>resource://resource.images.weathericons. default/na.png</icon>
+				<icon>resource://resource.images.weathericons.default/na.png</icon>
 				<onclick>noop</onclick>
 				<visible>!Weather.IsFetched</visible>
 			</item>

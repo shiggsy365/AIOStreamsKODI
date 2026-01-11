@@ -2,7 +2,7 @@
 <window>
     <include file="Includes.xml"/>
 	<description>
-		Window for game functionality. This dialog was originally for controllers,
+		Window for game functionality.This dialog was originally for controllers,
 		but adding new XML windows breaks old skins, so it has been repurposed
 		for any game-related windows.
 	</description>

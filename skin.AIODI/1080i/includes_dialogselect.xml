@@ -426,7 +426,7 @@
 							<height>250</height>
 							<aspectratio>scale</aspectratio>
 							<texture border="4">defaultvideo.png</texture>
-							<bordertexture colordiffuse="border_alpha">colors/black.png</bordertexture>
+							<bordertexture colordiffuse="border_alpha">common/black.png</bordertexture>
 							<bordersize>4</bordersize>
 						</control>
 						<control type="gamewindow">
@@ -457,7 +457,7 @@
 							<height>250</height>
 							<aspectratio>scale</aspectratio>
 							<texture border="4">defaultvideo.png</texture>
-							<bordertexture colordiffuse="border_alpha">colors/black.png</bordertexture>
+							<bordertexture colordiffuse="border_alpha">common/black.png</bordertexture>
 							<bordersize>4</bordersize>
 						</control>
 						<control type="gamewindow">
@@ -532,7 +532,7 @@
 							<height>250</height>
 							<aspectratio>scale</aspectratio>
 							<texture border="4">defaultvideo.png</texture>
-							<bordertexture colordiffuse="border_alpha">colors/black.png</bordertexture>
+							<bordertexture colordiffuse="border_alpha">common/black.png</bordertexture>
 							<bordersize>4</bordersize>
 						</control>
 						<control type="gamewindow">
@@ -563,7 +563,7 @@
 							<height>250</height>
 							<aspectratio>scale</aspectratio>
 							<texture border="4">defaultvideo.png</texture>
-							<bordertexture colordiffuse="border_alpha">colors/black.png</bordertexture>
+							<bordertexture colordiffuse="border_alpha">common/black.png</bordertexture>
 							<bordersize>4</bordersize>
 						</control>
 						<control type="gamewindow">
@@ -627,7 +627,7 @@
 							<height>250</height>
 							<aspectratio>scale</aspectratio>
 							<texture border="4">$INFO[ListItem.Icon]</texture>
-							<bordertexture colordiffuse="border_alpha">colors/black.png</bordertexture>
+							<bordertexture colordiffuse="border_alpha">common/black.png</bordertexture>
 							<bordersize>4</bordersize>
 						</control>
 						<control type="image">
@@ -635,7 +635,7 @@
 							<height>250</height>
 							<aspectratio>scale</aspectratio>
 							<texture border="4">$INFO[ListItem.Art(screenshot)]</texture>
-							<bordertexture colordiffuse="border_alpha">colors/black.png</bordertexture>
+							<bordertexture colordiffuse="border_alpha">common/black.png</bordertexture>
 							<bordersize>4</bordersize>
 						</control>
 						<control type="gamewindow">
@@ -664,7 +664,7 @@
 							<height>250</height>
 							<aspectratio>scale</aspectratio>
 							<texture border="4">$INFO[ListItem.Icon]</texture>
-							<bordertexture colordiffuse="border_alpha">colors/black.png</bordertexture>
+							<bordertexture colordiffuse="border_alpha">common/black.png</bordertexture>
 							<bordersize>4</bordersize>
 						</control>
 						<control type="image">
@@ -672,7 +672,7 @@
 							<height>250</height>
 							<aspectratio>scale</aspectratio>
 							<texture border="4">$INFO[ListItem.Art(screenshot)]</texture>
-							<bordertexture colordiffuse="border_alpha">colors/black.png</bordertexture>
+							<bordertexture colordiffuse="border_alpha">common/black.png</bordertexture>
 							<bordersize>4</bordersize>
 						</control>
 						<control type="gamewindow">

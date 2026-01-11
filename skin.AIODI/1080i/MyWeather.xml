@@ -209,7 +209,7 @@
 			<visible>String.StartsWith(Weather.Temperature,$LOCALIZE[503])</visible>
 			<animation type="VisibleChange"effect="fade"time="400"/>
 			<control type="image">
-				<texture >colors/black.png</texture>
+				<texture >common/black.png</texture>
 				<include>FullScreenDimensions</include>
 				<animation type="Conditional"effect="fade"start="100"end="70"time="0"condition="true"/>
 			</control>
