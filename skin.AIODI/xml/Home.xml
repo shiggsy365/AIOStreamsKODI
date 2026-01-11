@@ -159,7 +159,8 @@
 		<bottom>180</bottom>
 		<align>center</align>
 		<itemgap>70</itemgap>
-		<onright>SetFocus($VAR[CurrentWidgetListID])</onright>
+		<onright>SetFocus(11999)</onright>
+
 
 		<!-- Home -->
 		<control type="group">
@@ -631,12 +632,13 @@
 		</control>
 		<control type="label">
 			<left>150</left>
-			<top>40</top>
+			<top>70</top>
 			<width>1500</width>
 			<height>30</height>
 			<font>font12</font>
-			<textcolor>FFFF0000</textcolor> <!-- Hex Red -->
-			<label>RED LABEL ALWAYS ON | HOME MATCH: [ $INFO[Skin.IsString(SideMenuFocus,home)] ]</label>
+			<textcolor>FF00FFFF</textcolor> <!-- Hex Cyan -->
+			<visible>Control.HasFocus(11999)</visible>
+			<label>WIDGET AREA (11999) HAS FOCUS</label>
 		</control>
 
 		<!-- TOP LAYER TEST WIDGET -->
@@ -645,12 +647,13 @@
 			<top>200</top>
 			<width>800</width>
 			<height>400</height>
+			<onleft>9000</onleft>
 			<orientation>horizontal</orientation>
 			<itemlayout width="200" height="200">
 				<control type="label">
 					<width>200</width>
 					<height>200</height>
-					<label>ITEM</label>
+					<label>$INFO[ListItem.Label]</label>
 					<align>center</align>
 					<textcolor>white</textcolor>
 				</control>
@@ -659,7 +662,7 @@
 				<control type="label">
 					<width>200</width>
 					<height>200</height>
-					<label>FOCUS</label>
+					<label>$INFO[ListItem.Label]</label>
 					<align>center</align>
 					<textcolor>red</textcolor>
 				</control>
@@ -676,6 +679,7 @@
 			</content>
 		</control>
 	</control>
+
 
 </controls>
 </window>
