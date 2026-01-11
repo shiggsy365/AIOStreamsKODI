@@ -39,9 +39,10 @@
         </assets>
     </extension>
 </addon>
-<addon id="skin.AIODI" version="6.0.15" name="AIODI" provider-name="Jon">
+<addon id="skin.AIODI" version="6.0.17" name="AIODI" provider-name="Jon">
 	<requires>
 		<import addon="xbmc.gui" version="5.17.0"/>
+		<import addon="pvr.iptvsimple" version="20.0.0"/>
 	</requires>
 	<extension point="xbmc.gui.skin" debugging="false">
 		<res width="1920" height="1440" aspect="4:3" default="false" folder="xml" />

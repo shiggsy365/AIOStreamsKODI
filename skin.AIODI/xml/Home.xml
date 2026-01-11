@@ -386,7 +386,7 @@
 	<right>0</right>
 	<height>550</height>
 	<visible>Skin.IsString(SideMenuFocus,home)</visible>
-	<include content="Visible_Right_Delayed"><param name="id" value="home"/></include>
+	<!-- <include content="Visible_Right_Delayed"><param name="id" value="home"/></include> -->
 
 	<control type="group">
 		<visible>Skin.IsString(Home_WidgetIndex,0)</visible>
@@ -431,7 +431,7 @@
 	<right>0</right>
 	<height>550</height>
 	<visible>Skin.IsString(SideMenuFocus,movies)</visible>
-	<include content="Visible_Right_Delayed"><param name="id" value="movies"/></include>
+	<!-- <include content="Visible_Right_Delayed"><param name="id" value="movies"/></include> -->
 
 	<control type="group">
 		<visible>Skin.IsString(Movies_WidgetIndex,0)</visible>
@@ -487,7 +487,7 @@
 	<right>0</right>
 	<height>550</height>
 	<visible>Skin.IsString(SideMenuFocus,tvshows)</visible>
-	<include content="Visible_Right_Delayed"><param name="id" value="tvshows"/></include>
+	<!-- <include content="Visible_Right_Delayed"><param name="id" value="tvshows"/></include> -->
 
 	<control type="group">
 		<visible>Skin.IsString(TV_WidgetIndex,0)</visible>
