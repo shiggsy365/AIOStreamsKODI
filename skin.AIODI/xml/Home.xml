@@ -22,13 +22,64 @@
 <visible allowhiddenfocus="true">Control.HasFocus(20001)</visible>
 </control>
 <include>DefaultBackground</include>
-<control type="multiimage">
-<depth>DepthBackground</depth>
-<include>FullScreenDimensions</include>
-<aspectratio>scale</aspectratio>
-<imagepath background="true" colordiffuse="bg_overlay">$VAR[HomeFanartVar]</imagepath>
-<visible>!Player.HasMedia</visible>
-</control>
+	<control type="group">
+		<visible>!Player.HasMedia</visible>
+		<!-- Background Fanart -->
+		<control type="image">
+			<depth>DepthBackground</depth>
+			<include>FullScreenDimensions</include>
+			<texture background="true" colordiffuse="BBFFFFFF">$VAR[CurrentWidgetFanart]</texture>
+			<fadetime>600</fadetime>
+			<aspectratio>scale</aspectratio>
+		</control>
+		
+		<!-- Info Overlay -->
+		<control type="group">
+			<left>150</left>
+			<top>120</top>
+			<width>1100</width>
+			<height>500</height>
+			<animation effect="fade" start="0" end="100" time="400">Visible</animation>
+			<animation effect="fade" start="100" end="0" time="400">Hidden</animation>
+
+			<!-- ClearLogo -->
+			<control type="image">
+				<left>0</left>
+				<top>0</top>
+				<width>600</width>
+				<height>250</height>
+				<aspectratio align="left" aligny="bottom">keep</aspectratio>
+				<texture>$VAR[CurrentWidgetClearLogo]</texture>
+			</control>
+			
+			<!-- Info String -->
+			<control type="label">
+				<left>0</left>
+				<top>260</top>
+				<width>1100</width>
+				<height>45</height>
+				<font>font13</font>
+				<textcolor>white</textcolor>
+				<shadowcolor>black</shadowcolor>
+				<label>$VAR[CurrentWidgetInfo]</label>
+			</control>
+			
+			<!-- Plot -->
+			<control type="textbox">
+				<left>0</left>
+				<top>310</top>
+				<width>1100</width>
+				<height>200</height>
+				<font>font12</font>
+				<textcolor>DDFFFFFF</textcolor>
+				<shadowcolor>black</shadowcolor>
+				<label>$VAR[CurrentWidgetPlot]</label>
+				<align>justify</align>
+				<autoscroll delay="8000" repeat="5000">true</autoscroll>
+			</control>
+		</control>
+	</control>
+
 <control type="group">
 <animation effect="fade" start="100" end="0" time="200" tween="sine" condition="$EXP[infodialog_active]">Conditional</animation>
 
@@ -75,7 +126,7 @@
 				<onup>9001</onup>
 				<ondown>9003</ondown>
 				<onright>SetFocus($VAR[CurrentWidgetListID])</onright>
-				<onclick>ActivateWindow(Videos,plugin://plugin.video.aiostreams/?action=search&amp;content_type=both,return)</onclick>
+				<onclick>ActivateWindow(Videos,plugin://plugin.video.aiostreams/?action=search&amp;content_type=both&amp;nonce=$VAR[SearchTimestamp],return)</onclick>
 			</control>
 			<control type="image">
 				<left>24</left>
