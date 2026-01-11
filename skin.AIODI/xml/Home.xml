@@ -380,7 +380,7 @@
 <include>OpenClose_Right</include>
 
 <!-- Home Widgets -->
-<control type="group" id="10000">
+<control type="group" id="11000">
 	<bottom>100</bottom>
 	<left>0</left>
 	<right>0</right>
