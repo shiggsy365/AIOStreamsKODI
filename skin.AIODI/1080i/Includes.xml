@@ -19,11 +19,13 @@
     <include name="PVRProgress"><control type="group" /></include>
     <include name="PVRChannelNumberInput"><control type="group" /></include>
     <include name="CommonScrollbars"><control type="group" /></include>
-    <include name="Animation_TopSlide"></include>
-    <include name="Animation_BottomSlide"></include>
-    <include name="OpenClose_Left"></include>
-    <include name="OpenClose_Right"></include>
-    <include name="Visible_Left"></include>
+    <include name="PicsInfoLine"><control type="group" /></include>
+    <include name="InfoWallEpisodeLayout"><control type="group" /></include>
+    <include name="Animation_TopSlide"><control type="group" /></include>
+    <include name="Animation_BottomSlide"><control type="group" /></include>
+    <include name="OpenClose_Left"><control type="group" /></include>
+    <include name="OpenClose_Right"><control type="group" /></include>
+    <include name="Visible_Left"><control type="group" /></include>
     <include name="MediaMenuMouseOverlay"><control type="group" /></include>
     <include name="ListThumbInfoPanel"><control type="group" /></include>
     <include name="MediaMenuCommon"><control type="group" /></include>

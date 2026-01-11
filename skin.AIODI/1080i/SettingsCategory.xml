@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <window>
+    <include file="Includes.xml" />
 	<defaultcontrol>3</defaultcontrol>
 	<backgroundcolor>background</backgroundcolor>
 	<controls>

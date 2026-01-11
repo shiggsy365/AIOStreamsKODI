@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <window>
-    <defaultcontrol always="true">50</defaultcontrol>
+    <include file="Includes.xml" />
+    <defaultcontrol always="true">9001</defaultcontrol>
     <views>50</views>
     <controls>
         <!-- Background -->
@@ -178,6 +179,17 @@
                     <label>$INFO[ListItem.Plot]</label>
                 </control>
             </focusedlayout>
+        </control>
+        <control type="button" id="501">
+            <left>60</left>
+            <top>180</top>
+            <width>1800</width>
+            <height>60</height>
+            <font>font25</font>
+            <label>No content found in this view</label>
+            <textcolor>main_fg_70</textcolor>
+            <onclick>SetFocus(9000)</onclick>
+            <visible>Integer.IsEqual(Container(50).NumItems,0) + !Container(50).IsUpdating</visible>
         </control>
         
     </controls>

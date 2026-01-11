@@ -1,3 +1,8 @@
+[B]3.1.4[/B]
+• FIXED: Resolve MyVideoNav focus failure (Control 50) and added fallback navigation.
+• FIXED: Targeted "Skin has invalid include" (blank name) warning by silencing PicsInfoLine and ensuring global dummy robustness.
+• FIXED: Globally injected Includes.xml into all 70+ core window files to ensure universal access to dummy components.
+
 [B]3.1.2[/B]
 • FIXED: Resolve Home screen focus failure (Control 50) by adding fallback labels and setting default focus to top menu.
 • FIXED: Eliminated "Skin has invalid include" (empty name) warnings in includes_home.xml.

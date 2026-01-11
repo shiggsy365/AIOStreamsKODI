@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <window>
+    <include file="Includes.xml" />
 	<defaultcontrol always="true">21</defaultcontrol>
 	<include>Animation_DialogPopupOpenClose</include>
 	<depth>DepthDialog+</depth>

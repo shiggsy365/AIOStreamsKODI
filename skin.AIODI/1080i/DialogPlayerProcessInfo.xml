@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <window>
+    <include file="Includes.xml" />
 	<depth>DepthOSD</depth>
 	<defaultcontrol always="true">5553</defaultcontrol>
 	<animation type="WindowOpen" effect="fade" start="0" end="100" time="300" />
