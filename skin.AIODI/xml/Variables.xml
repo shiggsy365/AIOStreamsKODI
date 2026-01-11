@@ -801,7 +801,7 @@
 	</variable>
 
 <variable name="SidebarWidthVar">
-<value condition="ControlGroup(9000).HasFocus">462</value>
-<value>100</value>
-</variable>
+		<value condition="ControlGroup(9000).HasFocus | Control.HasFocus(9000)">462</value>
+		<value>100</value>
+	</variable>
 </includes>

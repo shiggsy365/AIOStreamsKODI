@@ -1,3 +1,8 @@
+[B]4.0.3[/B]
+• FIXED: Restored menu accessibility and label visibility.
+• FIXED: Robust sidebar width transition logic.
+• FIXED: Corrected navigation from widgets to sidebar.
+
 [B]4.0.2[/B]
 • MODIFIED: Sidebar now collapses to icon-only view when not focused.
 • ADDED: Search and Settings as main menu items.
