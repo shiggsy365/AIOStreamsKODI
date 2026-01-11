@@ -37,139 +37,294 @@
 <control type="group">
 <animation effect="fade" start="100" end="0" time="200" tween="sine" condition="$EXP[infodialog_active]">Conditional</animation>
 
-<!-- Sidebar Background -->
-<control type="image">
-	<left>0</left>
-	<top>0</top>
-	<width>120</width>
-	<bottom>0</bottom>
-	<texture colordiffuse="FF000000">colors/white.png</texture>
-	<animation effect="slide" start="-120,0" end="0,0" time="300">WindowOpen</animation>
-</control>
-
-<!-- AIOStreams Logo -->
-<control type="button" id="9001">
-	<left>10</left>
-	<top>20</top>
-	<width>100</width>
-	<height>60</height>
-	<texturefocus>special://skin/media/aiostreams_logo.png</texturefocus>
-	<texturenofocus>special://skin/media/aiostreams_logo.png</texturenofocus>
-	<onup>noop</onup>
-	<ondown>9000</ondown>
-	<onclick>noop</onclick>
-</control>
-
-<control type="fixedlist" id="9000">
-<left>0</left>
-<top>120</top>
-<width>120</width>
-<bottom>60</bottom>
-<movement>7</movement>
-<focusposition>0</focusposition>
-<onup>9001</onup>
-<oncontextmenu>ActivateWindow(1115)</oncontextmenu>
-<onrightclick>ActivateWindow(1115)</onrightclick>
-<onright>SetFocus($INFO[Container(9000).ListItem.Property(menu_id)])</onright>
-<focusedlayout height="85">
+<!-- Sidebar -->
 <control type="group">
-<control type="image">
-<left>24</left>
-<top>7</top>
-<width>71</width>
-<height>71</height>
-<texture>$INFO[ListItem.Property(icon_red)]</texture>
-</control>
-</control>
-</focusedlayout>
-<itemlayout height="85">
-<control type="image">
-<left>24</left>
-<top>7</top>
-<width>71</width>
-<height>71</height>
-<texture>$INFO[ListItem.Icon]</texture>
-</control>
-</itemlayout>
-<content>
-	<item>
-		<label>Search</label>
-		<onclick>noop</onclick>
-		<property name="menu_id">noop</property>
-		<thumb>icons/sidemenu/search_white.png</thumb>
-		<property name="icon_red">icons/sidemenu/search_red.png</property>
-		<property name="id">search</property>
-	</item>
-	<item>
-		<label>Spacer</label>
-		<enable>false</enable>
-	</item>
-	<item>
-		<label>$LOCALIZE[10000]</label>
-		<onclick>noop</onclick>
-		<property name="menu_id">10000</property>
-		<thumb>icons/sidemenu/home_white.png</thumb>
-		<property name="icon_red">icons/sidemenu/home_red.png</property>
-		<property name="id">home</property>
-	</item>
-	<item>
-		<label>[20343]</label>
-		<onclick>ActivateWindow(Videos,videodb://tvshows/titles/,return)</onclick>
-		<property name="menu_id">6000</property>
-		<thumb>icons/sidemenu/tv_white.png</thumb>
-		<property name="icon_red">icons/sidemenu/tv_red.png</property>
-		<property name="id">tvshows</property>
-	</item>
-	<item>
-		<label>[342]</label>
-		<onclick>ActivateWindow(Videos,videodb://movies/titles/,return)</onclick>
-		<property name="menu_id">5000</property>
-		<thumb>icons/sidemenu/movies_white.png</thumb>
-		<property name="icon_red">icons/sidemenu/movies_red.png</property>
-		<property name="id">movies</property>
-	</item>
-	<item>
-		<label>TV</label>
-		<onclick>ActivateWindow(TVChannels)</onclick>
-		<property name="menu_id">12000</property>
-		<thumb>icons/sidemenu/livetv_white.png</thumb>
-		<property name="icon_red">icons/sidemenu/livetv_red.png</property>
-		<property name="id">livetv</property>
-	</item>
-	<item>
-		<label>[2]</label>
-		<onclick>ActivateWindow(Music,root,return)</onclick>
-		<property name="menu_id">7000</property>
-		<thumb>icons/sidemenu/music_white.png</thumb>
-		<property name="icon_red">icons/sidemenu/music_red.png</property>
-		<property name="id">music</property>
-	</item>
-	<item>
-		<label>Spacer</label>
-		<enable>false</enable>
-	</item>
-	<item>
-		<label>[5]</label>
-		<onclick>ActivateWindow(settings)</onclick>
-		<property name="menu_id">20000</property>
-		<thumb>icons/sidemenu/settings_white.png</thumb>
-		<property name="icon_red">icons/sidemenu/settings_red.png</property>
-		<property name="id">settings</property>
-	</item>
-</content>
-</control>
+	<animation effect="slide" start="-120,0" end="0,0" time="300">WindowOpen</animation>
+	<control type="image">
+		<left>0</left>
+		<top>0</top>
+		<width>120</width>
+		<bottom>0</bottom>
+		<texture colordiffuse="FF000000">colors/white.png</texture>
+	</control>
 
-<!-- Time at Bottom -->
-<control type="label">
-	<left>0</left>
-	<bottom>10</bottom>
-	<width>120</width>
-	<height>40</height>
-	<font>font12</font>
-	<textcolor>#FFFFFF</textcolor>
-	<align canvas="true">center</align>
-	<aligny>center</aligny>
-	<label>$INFO[System.Time]</label>
+	<!-- AIOStreams Logo -->
+	<control type="button" id="9001">
+		<left>10</left>
+		<top>20</top>
+		<width>100</width>
+		<height>60</height>
+		<texturefocus>special://skin/media/aiostreams_logo.png</texturefocus>
+		<texturenofocus>special://skin/media/aiostreams_logo.png</texturenofocus>
+		<onup>noop</onup>
+		<ondown>9002</ondown>
+		<onright>noop</onright>
+		<onclick>noop</onclick>
+	</control>
+
+	<!-- Sidebar Menu (Static) -->
+	<control type="grouplist" id="9000">
+		<left>0</left>
+		<top>110</top>
+		<width>120</width>
+		<bottom>100</bottom>
+		<itemgap>0</itemgap>
+		<onright>SetFocus($INFO[Skin.String(Menu_WidgetID)])</onright>
+
+		<!-- Search -->
+		<control type="group" id="9100">
+			<width>120</width>
+			<height>85</height>
+			<control type="button" id="9002">
+				<width>120</width>
+				<height>85</height>
+				<texturefocus />
+				<texturenofocus />
+				<onup>9001</onup>
+				<ondown>9003</ondown>
+				<onclick>noop</onclick>
+			</control>
+			<control type="image">
+				<left>24</left>
+				<top>7</top>
+				<width>71</width>
+				<height>71</height>
+				<texture>icons/sidemenu/search_white.png</texture>
+				<visible>!Control.HasFocus(9002)</visible>
+			</control>
+			<control type="image">
+				<left>24</left>
+				<top>7</top>
+				<width>71</width>
+				<height>71</height>
+				<texture>icons/sidemenu/search_red.png</texture>
+				<visible>Control.HasFocus(9002)</visible>
+			</control>
+		</control>
+
+		<control type="image">
+			<width>120</width>
+			<height>30</height>
+			<texture />
+		</control>
+
+		<!-- Home -->
+		<control type="group" id="9101">
+			<width>120</width>
+			<height>85</height>
+			<control type="button" id="9003">
+				<width>120</width>
+				<height>85</height>
+				<texturefocus />
+				<texturenofocus />
+				<onup>9002</onup>
+				<ondown>9004</ondown>
+				<onfocus>Skin.SetString(SideMenuFocus,home)</onfocus>
+				<onfocus>Skin.SetString(Menu_WidgetID,10000)</onfocus>
+				<onclick>noop</onclick>
+			</control>
+			<control type="image">
+				<left>24</left>
+				<top>7</top>
+				<width>71</width>
+				<height>71</height>
+				<texture>icons/sidemenu/home_white.png</texture>
+				<visible>!Control.HasFocus(9003) + !Skin.IsString(SideMenuFocus,home)</visible>
+			</control>
+			<control type="image">
+				<left>24</left>
+				<top>7</top>
+				<width>71</width>
+				<height>71</height>
+				<texture>icons/sidemenu/home_red.png</texture>
+				<visible>Control.HasFocus(9003) | [!ControlGroup(9000).HasFocus + Skin.IsString(SideMenuFocus,home)]</visible>
+			</control>
+		</control>
+
+		<!-- TV Shows -->
+		<control type="group" id="9102">
+			<width>120</width>
+			<height>85</height>
+			<control type="button" id="9004">
+				<width>120</width>
+				<height>85</height>
+				<texturefocus />
+				<texturenofocus />
+				<onup>9003</onup>
+				<ondown>9005</ondown>
+				<onfocus>Skin.SetString(SideMenuFocus,tvshows)</onfocus>
+				<onfocus>Skin.SetString(Menu_WidgetID,6000)</onfocus>
+				<onclick>ActivateWindow(Videos,videodb://tvshows/titles/,return)</onclick>
+			</control>
+			<control type="image">
+				<left>24</left>
+				<top>7</top>
+				<width>71</width>
+				<height>71</height>
+				<texture>icons/sidemenu/tv_white.png</texture>
+				<visible>!Control.HasFocus(9004) + !Skin.IsString(SideMenuFocus,tvshows)</visible>
+			</control>
+			<control type="image">
+				<left>24</left>
+				<top>7</top>
+				<width>71</width>
+				<height>71</height>
+				<texture>icons/sidemenu/tv_red.png</texture>
+				<visible>Control.HasFocus(9004) | [!ControlGroup(9000).HasFocus + Skin.IsString(SideMenuFocus,tvshows)]</visible>
+			</control>
+		</control>
+
+		<!-- Movies -->
+		<control type="group" id="9103">
+			<width>120</width>
+			<height>85</height>
+			<control type="button" id="9005">
+				<width>120</width>
+				<height>85</height>
+				<texturefocus />
+				<texturenofocus />
+				<onup>9004</onup>
+				<ondown>9006</ondown>
+				<onfocus>Skin.SetString(SideMenuFocus,movies)</onfocus>
+				<onfocus>Skin.SetString(Menu_WidgetID,5000)</onfocus>
+				<onclick>ActivateWindow(Videos,videodb://movies/titles/,return)</onclick>
+			</control>
+			<control type="image">
+				<left>24</left>
+				<top>7</top>
+				<width>71</width>
+				<height>71</height>
+				<texture>icons/sidemenu/movies_white.png</texture>
+				<visible>!Control.HasFocus(9005) + !Skin.IsString(SideMenuFocus,movies)</visible>
+			</control>
+			<control type="image">
+				<left>24</left>
+				<top>7</top>
+				<width>71</width>
+				<height>71</height>
+				<texture>icons/sidemenu/movies_red.png</texture>
+				<visible>Control.HasFocus(9005) | [!ControlGroup(9000).HasFocus + Skin.IsString(SideMenuFocus,movies)]</visible>
+			</control>
+		</control>
+
+		<!-- Live TV -->
+		<control type="group" id="9104">
+			<width>120</width>
+			<height>85</height>
+			<control type="button" id="9006">
+				<width>120</width>
+				<height>85</height>
+				<texturefocus />
+				<texturenofocus />
+				<onup>9005</onup>
+				<ondown>9007</ondown>
+				<onfocus>Skin.SetString(SideMenuFocus,livetv)</onfocus>
+				<onfocus>Skin.SetString(Menu_WidgetID,12000)</onfocus>
+				<onclick>ActivateWindow(TVChannels)</onclick>
+			</control>
+			<control type="image">
+				<left>24</left>
+				<top>7</top>
+				<width>71</width>
+				<height>71</height>
+				<texture>icons/sidemenu/livetv_white.png</texture>
+				<visible>!Control.HasFocus(9006) + !Skin.IsString(SideMenuFocus,livetv)</visible>
+			</control>
+			<control type="image">
+				<left>24</left>
+				<top>7</top>
+				<width>71</width>
+				<height>71</height>
+				<texture>icons/sidemenu/livetv_red.png</texture>
+				<visible>Control.HasFocus(9006) | [!ControlGroup(9000).HasFocus + Skin.IsString(SideMenuFocus,livetv)]</visible>
+			</control>
+		</control>
+
+		<!-- Music -->
+		<control type="group" id="9105">
+			<width>120</width>
+			<height>85</height>
+			<control type="button" id="9007">
+				<width>120</width>
+				<height>85</height>
+				<texturefocus />
+				<texturenofocus />
+				<onup>9006</onup>
+				<ondown>9008</ondown>
+				<onfocus>Skin.SetString(SideMenuFocus,music)</onfocus>
+				<onfocus>Skin.SetString(Menu_WidgetID,7000)</onfocus>
+				<onclick>ActivateWindow(Music,root,return)</onclick>
+			</control>
+			<control type="image">
+				<left>24</left>
+				<top>7</top>
+				<width>71</width>
+				<height>71</height>
+				<texture>icons/sidemenu/music_white.png</texture>
+				<visible>!Control.HasFocus(9007) + !Skin.IsString(SideMenuFocus,music)</visible>
+			</control>
+			<control type="image">
+				<left>24</left>
+				<top>7</top>
+				<width>71</width>
+				<height>71</height>
+				<texture>icons/sidemenu/music_red.png</texture>
+				<visible>Control.HasFocus(9007) | [!ControlGroup(9000).HasFocus + Skin.IsString(SideMenuFocus,music)]</visible>
+			</control>
+		</control>
+
+		<control type="image">
+			<width>120</width>
+			<height>30</height>
+			<texture />
+		</control>
+
+		<!-- Settings -->
+		<control type="group" id="9106">
+			<width>120</width>
+			<height>85</height>
+			<control type="button" id="9008">
+				<width>120</width>
+				<height>85</height>
+				<texturefocus />
+				<texturenofocus />
+				<onup>9007</onup>
+				<ondown>noop</ondown>
+				<onfocus>Skin.SetString(SideMenuFocus,settings)</onfocus>
+				<onfocus>Skin.SetString(Menu_WidgetID,20000)</onfocus>
+				<onclick>ActivateWindow(settings)</onclick>
+			</control>
+			<control type="image">
+				<left>24</left>
+				<top>7</top>
+				<width>71</width>
+				<height>71</height>
+				<texture>icons/sidemenu/settings_white.png</texture>
+				<visible>!Control.HasFocus(9008) + !Skin.IsString(SideMenuFocus,settings)</visible>
+			</control>
+			<control type="image">
+				<left>24</left>
+				<top>7</top>
+				<width>71</width>
+				<height>71</height>
+				<texture>icons/sidemenu/settings_red.png</texture>
+				<visible>Control.HasFocus(9008) | [!ControlGroup(9000).HasFocus + Skin.IsString(SideMenuFocus,settings)]</visible>
+			</control>
+		</control>
+	</control>
+
+	<!-- Time at Bottom -->
+	<control type="label">
+		<left>0</left>
+		<bottom>10</bottom>
+		<width>120</width>
+		<height>40</height>
+		<font>font12</font>
+		<textcolor>#FFFFFF</textcolor>
+		<align>center</align>
+		<aligny>center</aligny>
+		<label>$INFO[System.Time]</label>
+	</control>
 </control>
 
 <!-- Content Panels -->
@@ -180,7 +335,7 @@
 <!-- Home Widgets -->
 <control type="group" id="10000">
 					<top>450</top>
-<visible>String.IsEqual(Container(9000).ListItem.Property(id),home)</visible>
+<visible>Skin.IsString(SideMenuFocus,home)</visible>
 <include content="Visible_Right_Delayed"><param name="id" value="home"/></include>
 <control type="grouplist" id="10001">
 						
@@ -220,7 +375,7 @@
 <!-- Movie Widgets -->
 <control type="group" id="5000">
 					<top>450</top>
-<visible>String.IsEqual(Container(9000).ListItem.Property(id),movies)</visible>
+<visible>Skin.IsString(SideMenuFocus,movies)</visible>
 <include content="Visible_Right_Delayed"><param name="id" value="movies"/></include>
 <control type="grouplist" id="5001">
 						
@@ -269,7 +424,7 @@
 <!-- TV Series Widgets -->
 <control type="group" id="6000">
 					<top>450</top>
-<visible>String.IsEqual(Container(9000).ListItem.Property(id),tvshows)</visible>
+<visible>Skin.IsString(SideMenuFocus,tvshows)</visible>
 <include content="Visible_Right_Delayed"><param name="id" value="tvshows"/></include>
 <control type="grouplist" id="6001">
 						
