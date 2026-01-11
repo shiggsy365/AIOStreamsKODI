@@ -12,6 +12,28 @@
 <defaultcontrol>9000</defaultcontrol>
 <backgroundcolor>background</backgroundcolor>
 <controls>
+	<!-- DEBUG LABELS -->
+	<control type="label">
+		<left>150</left>
+		<top>20</top>
+		<width>1000</width>
+		<height>50</height>
+		<font>font14</font>
+		<textcolor>yellow</textcolor>
+		<label>SideMenuFocus: [ $INFO[Skin.String(SideMenuFocus)] ] | ActiveWidgetID: [ $VAR[CurrentWidgetListID] ]</label>
+		<zorder>100</zorder>
+	</control>
+	<control type="label">
+		<left>150</left>
+		<top>70</top>
+		<width>1000</width>
+		<height>50</height>
+		<font>font14</font>
+		<textcolor>red</textcolor>
+		<visible>Skin.IsString(SideMenuFocus,home)</visible>
+		<label>HOME WIDGET GROUP (11000) IS VISIBLE</label>
+		<zorder>100</zorder>
+	</control>
 <control type="button" id="20000">
 <include>HiddenObject</include>
 <onfocus>SetFocus(2000)</onfocus>
@@ -390,6 +412,44 @@
 
 	<control type="group">
 		<visible>Skin.IsString(Home_WidgetIndex,0)</visible>
+		
+		<!-- DUMMY TEST WIDGET -->
+		<control type="panel" id="11999">
+			<left>150</left>
+			<top>400</top>
+			<width>1000</width>
+			<height>200</height>
+			<orientation>horizontal</orientation>
+			<itemlayout width="200" height="200">
+				<control type="label">
+					<width>200</width>
+					<height>200</height>
+					<label>ITEM</label>
+					<align>center</align>
+					<textcolor>white</textcolor>
+				</control>
+			</itemlayout>
+			<focusedlayout width="200" height="200">
+				<control type="label">
+					<width>200</width>
+					<height>200</height>
+					<label>FOCUS</label>
+					<align>center</align>
+					<textcolor>red</textcolor>
+				</control>
+			</focusedlayout>
+			<content>
+				<item>
+					<label>TEST 1</label>
+					<onclick>noop</onclick>
+				</item>
+				<item>
+					<label>TEST 2</label>
+					<onclick>noop</onclick>
+				</item>
+			</content>
+		</control>
+
 		<include content="WidgetListEpisodes">
 			<param name="content_path" value="plugin://plugin.video.aiostreams/?action=trakt_next_up"/>
 			<param name="widget_header" value="Trakt Next Up"/>
