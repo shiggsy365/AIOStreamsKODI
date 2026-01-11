@@ -1,3 +1,8 @@
+[B]4.0.5[/B]
+• RESTORED: Sidebar visibility using stable width logic.
+• IMPROVED: Surgical label hiding for a cleaner icon-only collapse.
+• FIXED: Universal navigation (Left) from all widgets to sidebar.
+
 [B]4.0.3[/B]
 • FIXED: Restored menu accessibility and label visibility.
 • FIXED: Robust sidebar width transition logic.
