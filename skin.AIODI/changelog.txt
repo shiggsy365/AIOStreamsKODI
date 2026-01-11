@@ -1,3 +1,7 @@
+[B]3.0.7[/B]
+• FIXED: "Unable to load skin" error on Linux by standardizing resolution folder (1080i) and restore core CamelCase filenames.
+• UPDATED: Corrected missing inclusions of Variables.xml in Includes.xml.
+
 [B]3.0.5[/B]
 • FIXED: Missing icon.png and fanart.jpg in root (caused installation error)
 

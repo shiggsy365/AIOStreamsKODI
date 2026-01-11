@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<includes>
+    <include file="Defaults.xml" />
+    <include file="Variables.xml" />
+    
+    <!-- Sub-Includes -->
+    <include file="includes_animations.xml" />
+    <include file="includes_buttons.xml" />
+    <include file="includes_dialogselect.xml" />
+    <include file="includes_games.xml" />
+    <include file="includes_home.xml" />
+    <include file="includes_mediamenu.xml" />
+    <include file="includes_musicinfo.xml" />
+    <include file="includes_pvr.xml" />
+    
+    <!-- Views -->
+    <include file="view_50_list.xml" />
+    <include file="view_51_poster.xml" />
+    <include file="view_52_iconwall.xml" />
+    <include file="view_53_shift.xml" />
+    <include file="view_54_infowall.xml" />
+    <include file="view_55_widelist.xml" />
+    <include file="view_500_wall.xml" />
+    <include file="view_501_banner.xml" />
+    <include file="view_502_fanart.xml" />
+    <include file="view_503_nowplaying.xml" />
+
+    <!-- Common Constants -->
+    <constant name="ThemeColor">ffb3b3b3</constant>
+
+    <!-- Dummy Includes to suppress Kodi warnings -->
+    <include name="Animation_TopSlide"></include>
+    <include name="Animation_BottomSlide"></include>
+    <include name="OpenClose_Left"></include>
+    <include name="OpenClose_Right"></include>
+    <include name="Visible_Left"></include>
+    <include name="HiddenObject"></include>
+    <include name="DefaultBackground"></include>
+    <include name="TopBar"></include>
+    <include name="BottomBar"></include>
+    <include name="PVRProgress"></include>
+    <include name="PVRChannelNumberInput"></include>
+    <include name="MediaFlag"></include>
+    <include name="CommonScrollbars"></include>
+    <include name="MediaMenuMouseOverlay"></include>
+    <include name="ListThumbInfoPanel"></include>
+    <include name="MediaMenuCommon"></include>
+    <include name="MediaMenuListCommon"></include>
+    <include name="MediaMenuNowPlaying"></include>
+    <include name="MediaMenuLabelCommon"></include>
+    <include name="MediaMenuItemsCommon"></include>
+    <include name="LeftAlignedInfo"></include>
+    <include name="SettingsPanel"></include>
+</includes>
