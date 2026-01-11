@@ -1,3 +1,8 @@
+[B]3.1.12[/B]
+• FIXED: Emergency repair of Font.xml - restored filenames accidentally stripped in v3.11.
+• FIXED: Massive resource path sanitization - ensuring all texture references are clean and lowercase.
+• FIXED: Reinforced raw media structure for Linux compatibility.
+
 [B]3.1.11[/B]
 • FIXED: Extreme resource resolution pass - verified all media filenames and folders are strictly lowercase on disk.
 • FIXED: Aggressive space stripping from all texture tags to prevent path corruption.
