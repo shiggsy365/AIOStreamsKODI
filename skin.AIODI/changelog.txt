@@ -1,3 +1,9 @@
+[B]2.0.3[/B]
+• Fixed missing widgets and content on all pages
+• Removed strict visibility condition that was hiding widgets
+• Widgets now display AIOStreams content directly
+• Resolves blank home, movies, and shows pages
+
 [B]2.0.2[/B]
 • Rebuilt package to resolve installation issues
 • Verified ZIP integrity and MD5 checksums
