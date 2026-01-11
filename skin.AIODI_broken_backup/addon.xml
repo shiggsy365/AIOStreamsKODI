@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<addon id="skin.aiodi" version="3.1.20" name="AIODI" provider-name="shiggsy365">
+    <requires>
+        <import addon="xbmc.gui" version="5.17.0"/>
+        <import addon="plugin.video.aiostreams"/>
+    </requires>
+    <extension point="xbmc.gui.skin" debugging="false">
+        <res width="1920" height="1080" aspect="16:9" default="true" folder="1080i"/>
+    </extension>
+    <extension point="xbmc.addon.metadata">
+        <summary lang="en_GB">AIOStreams Integrated Dynamic Interface</summary>
+        <description lang="en_GB">AIODI is a minimal Kodi skin designed specifically for AIOStreams with direct plugin integration and Arctic Fuse 2 aesthetic.</description>
+        <news>v3.0.0: Complete rebuild - Minimal design, direct AIOStreams integration, Arctic Fuse 2 theme, simplified structure for reliability.</news>
+        <platform>all</platform>
+        <license>Creative Commons Attribution Non-Commercial Share-Alike 4.0</license>
+        <assets>
+            <icon>icon.png</icon>
+            <fanart>fanart.jpg</fanart>
+        </assets>
+    </extension>
+</addon>
