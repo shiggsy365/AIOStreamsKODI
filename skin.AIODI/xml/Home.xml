@@ -337,6 +337,7 @@
 				<onup>9007</onup>
 				<ondown>noop</ondown>
 				<onfocus>Skin.SetString(SideMenuFocus,settings)</onfocus>
+				<onleft>SetFocus(9010)</onleft>
 				<onright>SetFocus($VAR[CurrentWidgetListID])</onright>
 				<onclick>ActivateWindow(settings)</onclick>
 			</control>
@@ -551,5 +552,55 @@
 </include>
 
 </control>
+
+<!-- Settings Submenu -->
+<control type="group">
+	<left>130</left>
+	<bottom>100</bottom>
+	<width>300</width>
+	<height>120</height>
+	<visible>Control.HasFocus(9010) | Control.HasFocus(9011)</visible>
+	<animation effect="fade" start="0" end="100" time="200">Visible</animation>
+	<animation effect="slide" start="-50,0" end="0,0" time="300" tween="cubic" easing="out">Visible</animation>
+	<animation effect="fade" start="100" end="0" time="200">Hidden</animation>
+	
+	<control type="image">
+		<width>300</width>
+		<height>120</height>
+		<texture colordiffuse="E6000000">colors/white.png</texture>
+	</control>
+	
+	<control type="grouplist" id="9101">
+		<left>10</left>
+		<top>10</top>
+		<width>280</width>
+		<height>100</height>
+		<onright>9008</onright>
+		<onback>9008</onback>
+		<control type="button" id="9010">
+			<width>280</width>
+			<height>50</height>
+			<font>font13</font>
+			<label>Reload Skin</label>
+			<textcolor>white</textcolor>
+			<focusedcolor>red</focusedcolor>
+			<texturefocus />
+			<texturenofocus />
+			<onclick>ReloadSkin()</onclick>
+		</control>
+		<control type="button" id="9011">
+			<width>280</width>
+			<height>50</height>
+			<font>font13</font>
+			<label>Exit AIODI</label>
+			<textcolor>white</textcolor>
+			<focusedcolor>red</focusedcolor>
+			<texturefocus />
+			<texturenofocus />
+			<onclick>Quit()</onclick>
+		</control>
+	</control>
+</control>
+
 </controls>
 </window>
