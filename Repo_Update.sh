@@ -433,8 +433,9 @@ case "$choice" in
         new_plugin_version=$(increment_version "$plugin_version")
         echo -e "\n${YELLOW}Plugin will be updated: $plugin_version -> $new_plugin_version${NC}"
         read -p "Continue? (y/n) " confirm
-        if [[ "$confirm" == "y" ]] || [[ "$confirm" == "Y" ]]; then
-            update_plugin "$plugin_version" "$new_plugin_version"
+        if [[ \"$confirm\" == \"y\" ]] || [[ \"$confirm\" == \"Y\" ]]; then
+            update_plugin \"$plugin_version\" \"$new_plugin_version\"
+            rebuild_addons_xml
         else
             echo -e "\n${GRAY}[i] Update cancelled${NC}"
         fi
@@ -447,8 +448,9 @@ case "$choice" in
         new_skin_version=$(increment_version "$skin_version")
         echo -e "\n${YELLOW}Skin will be updated: $skin_version -> $new_skin_version${NC}"
         read -p "Continue? (y/n) " confirm
-        if [[ "$confirm" == "y" ]] || [[ "$confirm" == "Y" ]]; then
-            update_skin "$skin_version" "$new_skin_version"
+        if [[ \"$confirm\" == \"y\" ]] || [[ \"$confirm\" == \"Y\" ]]; then
+            update_skin \"$skin_version\" \"$new_skin_version\"
+            rebuild_addons_xml
         else
             echo -e "\n${GRAY}[i] Update cancelled${NC}"
         fi
@@ -478,9 +480,10 @@ case "$choice" in
         echo -e "  ${WHITE}Skin: $skin_version -> $new_skin_version${NC}"
 
         read -p $'\nContinue? (y/n) ' confirm
-        if [[ "$confirm" == "y" ]] || [[ "$confirm" == "Y" ]]; then
-            update_plugin "$plugin_version" "$new_plugin_version"
-            update_skin "$skin_version" "$new_skin_version"
+        if [[ \"$confirm\" == \"y\" ]] || [[ \"$confirm\" == \"Y\" ]]; then
+            update_plugin \"$plugin_version\" \"$new_plugin_version\"
+            update_skin \"$skin_version\" \"$new_skin_version\"
+            rebuild_addons_xml
         else
             echo -e "\n${GRAY}[i] Update cancelled${NC}"
         fi
