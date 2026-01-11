@@ -12,38 +12,8 @@
 <defaultcontrol>9000</defaultcontrol>
 <backgroundcolor>background</backgroundcolor>
 <controls>
-	<control type="label">
-		<left>150</left>
-		<top>10</top>
-		<width>1500</width>
-		<height>30</height>
-		<font>font12</font>
-		<textcolor>yellow</textcolor>
-		<label>FOCUS: [ $INFO[Skin.String(SideMenuFocus)] ] | WIDGET_IDX: [ $INFO[Skin.String(Home_WidgetIndex)] ] | ACTIVE_ID: [ $VAR[CurrentWidgetListID] ]</label>
-		<zorder>1000</zorder>
-	</control>
-	<control type="label">
-		<left>150</left>
-		<top>40</top>
-		<width>1500</width>
-		<height>30</height>
-		<font>font12</font>
-		<textcolor>red</textcolor>
-		<visible>Skin.IsString(SideMenuFocus,home)</visible>
-		<label>GROUP 11000 (HOME) IS VISIBLE</label>
-		<zorder>1000</zorder>
-	</control>
-	<control type="label">
-		<left>150</left>
-		<top>70</top>
-		<width>1500</width>
-		<height>30</height>
-		<font>font12</font>
-		<textcolor>cyan</textcolor>
-		<visible>Control.HasFocus(11999) | Control.HasFocus(10100)</visible>
-		<label>WIDGET AREA HAS FOCUS</label>
-		<zorder>1000</zorder>
-	</control>
+<!-- Top Layer Debug Labels moved to bottom -->
+
 <control type="button" id="20000">
 <include>HiddenObject</include>
 <onfocus>SetFocus(2000)</onfocus>
@@ -114,7 +84,8 @@
 	</control>
 
 <control type="group">
-<animation effect="fade" start="100" end="0" time="200" tween="sine" condition="$EXP[infodialog_active]">Conditional</animation>
+<!-- <animation effect="fade" start="100" end="0" time="200" tween="sine" condition="$EXP[infodialog_active]">Conditional</animation> -->
+
 
 <!-- Sidebar -->
 <control type="group">
@@ -417,7 +388,8 @@
 	<left>0</left>
 	<right>0</right>
 	<height>550</height>
-	<visible>Skin.IsString(SideMenuFocus,home)</visible>
+	<visible>True</visible>
+
 	<!-- <include content="Visible_Right_Delayed"><param name="id" value="home"/></include> -->
 
 	<control type="group">
