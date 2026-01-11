@@ -48,31 +48,28 @@
 		<texture colordiffuse="FF000000">colors/white.png</texture>
 	</control>
 
-	<!-- AIOStreams Logo -->
-	<control type="button" id="9001">
-		<left>10</left>
+	<!-- Top Group (Logo & Search) -->
+	<control type="group">
 		<top>20</top>
-		<width>100</width>
-		<height>60</height>
-		<texturefocus>special://skin/media/aiostreams_logo.png</texturefocus>
-		<texturenofocus>special://skin/media/aiostreams_logo.png</texturenofocus>
-		<onup>noop</onup>
-		<ondown>9002</ondown>
-		<onright>noop</onright>
-		<onclick>noop</onclick>
-	</control>
-
-	<!-- Sidebar Menu (Static) -->
-	<control type="grouplist" id="9000">
-		<left>0</left>
-		<top>110</top>
-		<width>120</width>
-		<bottom>100</bottom>
-		<itemgap>0</itemgap>
-		<onright>SetFocus($INFO[Skin.String(Menu_WidgetID)])</onright>
+		<height>160</height>
+		
+		<!-- AIOStreams Logo -->
+		<control type="button" id="9001">
+			<left>10</left>
+			<top>0</top>
+			<width>100</width>
+			<height>60</height>
+			<texturefocus>special://skin/media/aiostreams_logo.png</texturefocus>
+			<texturenofocus>special://skin/media/aiostreams_logo.png</texturenofocus>
+			<onup>noop</onup>
+			<ondown>9002</ondown>
+			<onright>noop</onright>
+			<onclick>noop</onclick>
+		</control>
 
 		<!-- Search -->
-		<control type="group" id="9100">
+		<control type="group">
+			<top>80</top>
 			<width>120</width>
 			<height>85</height>
 			<control type="button" id="9002">
@@ -82,6 +79,7 @@
 				<texturenofocus />
 				<onup>9001</onup>
 				<ondown>9003</ondown>
+				<onright>SetFocus($INFO[Skin.String(Menu_WidgetID)])</onright>
 				<onclick>noop</onclick>
 			</control>
 			<control type="image">
@@ -101,15 +99,20 @@
 				<visible>Control.HasFocus(9002)</visible>
 			</control>
 		</control>
+	</control>
 
-		<control type="image">
-			<width>120</width>
-			<height>30</height>
-			<texture />
-		</control>
+	<!-- Center Group (Main Menu) -->
+	<control type="grouplist" id="9000">
+		<left>0</left>
+		<top>180</top>
+		<width>120</width>
+		<bottom>180</bottom>
+		<align>center</align>
+		<itemgap>0</itemgap>
+		<onright>SetFocus($INFO[Skin.String(Menu_WidgetID)])</onright>
 
 		<!-- Home -->
-		<control type="group" id="9101">
+		<control type="group">
 			<width>120</width>
 			<height>85</height>
 			<control type="button" id="9003">
@@ -137,12 +140,12 @@
 				<width>71</width>
 				<height>71</height>
 				<texture>icons/sidemenu/home_red.png</texture>
-				<visible>Control.HasFocus(9003) | [!ControlGroup(9000).HasFocus + Skin.IsString(SideMenuFocus,home)]</visible>
+				<visible>Control.HasFocus(9003) | [!ControlGroup(9000).HasFocus + Skin.IsString(SideMenuFocus,home) + !ControlGroup(9100).HasFocus]</visible>
 			</control>
 		</control>
 
 		<!-- TV Shows -->
-		<control type="group" id="9102">
+		<control type="group">
 			<width>120</width>
 			<height>85</height>
 			<control type="button" id="9004">
@@ -170,12 +173,12 @@
 				<width>71</width>
 				<height>71</height>
 				<texture>icons/sidemenu/tv_red.png</texture>
-				<visible>Control.HasFocus(9004) | [!ControlGroup(9000).HasFocus + Skin.IsString(SideMenuFocus,tvshows)]</visible>
+				<visible>Control.HasFocus(9004) | [!ControlGroup(9000).HasFocus + Skin.IsString(SideMenuFocus,tvshows) + !ControlGroup(9100).HasFocus]</visible>
 			</control>
 		</control>
 
 		<!-- Movies -->
-		<control type="group" id="9103">
+		<control type="group">
 			<width>120</width>
 			<height>85</height>
 			<control type="button" id="9005">
@@ -203,12 +206,12 @@
 				<width>71</width>
 				<height>71</height>
 				<texture>icons/sidemenu/movies_red.png</texture>
-				<visible>Control.HasFocus(9005) | [!ControlGroup(9000).HasFocus + Skin.IsString(SideMenuFocus,movies)]</visible>
+				<visible>Control.HasFocus(9005) | [!ControlGroup(9000).HasFocus + Skin.IsString(SideMenuFocus,movies) + !ControlGroup(9100).HasFocus]</visible>
 			</control>
 		</control>
 
 		<!-- Live TV -->
-		<control type="group" id="9104">
+		<control type="group">
 			<width>120</width>
 			<height>85</height>
 			<control type="button" id="9006">
@@ -236,12 +239,12 @@
 				<width>71</width>
 				<height>71</height>
 				<texture>icons/sidemenu/livetv_red.png</texture>
-				<visible>Control.HasFocus(9006) | [!ControlGroup(9000).HasFocus + Skin.IsString(SideMenuFocus,livetv)]</visible>
+				<visible>Control.HasFocus(9006) | [!ControlGroup(9000).HasFocus + Skin.IsString(SideMenuFocus,livetv) + !ControlGroup(9100).HasFocus]</visible>
 			</control>
 		</control>
 
 		<!-- Music -->
-		<control type="group" id="9105">
+		<control type="group">
 			<width>120</width>
 			<height>85</height>
 			<control type="button" id="9007">
@@ -269,18 +272,19 @@
 				<width>71</width>
 				<height>71</height>
 				<texture>icons/sidemenu/music_red.png</texture>
-				<visible>Control.HasFocus(9007) | [!ControlGroup(9000).HasFocus + Skin.IsString(SideMenuFocus,music)]</visible>
+				<visible>Control.HasFocus(9007) | [!ControlGroup(9000).HasFocus + Skin.IsString(SideMenuFocus,music) + !ControlGroup(9100).HasFocus]</visible>
 			</control>
 		</control>
+	</control>
 
-		<control type="image">
-			<width>120</width>
-			<height>30</height>
-			<texture />
-		</control>
-
+	<!-- Bottom Group (Settings & Clock) -->
+	<control type="group" id="9100">
+		<bottom>10</bottom>
+		<height>125</height>
+		
 		<!-- Settings -->
-		<control type="group" id="9106">
+		<control type="group">
+			<top>0</top>
 			<width>120</width>
 			<height>85</height>
 			<control type="button" id="9008">
@@ -292,6 +296,7 @@
 				<ondown>noop</ondown>
 				<onfocus>Skin.SetString(SideMenuFocus,settings)</onfocus>
 				<onfocus>Skin.SetString(Menu_WidgetID,20000)</onfocus>
+				<onright>SetFocus($INFO[Skin.String(Menu_WidgetID)])</onright>
 				<onclick>ActivateWindow(settings)</onclick>
 			</control>
 			<control type="image">
@@ -308,22 +313,22 @@
 				<width>71</width>
 				<height>71</height>
 				<texture>icons/sidemenu/settings_red.png</texture>
-				<visible>Control.HasFocus(9008) | [!ControlGroup(9000).HasFocus + Skin.IsString(SideMenuFocus,settings)]</visible>
+				<visible>Control.HasFocus(9008) | [!ControlGroup(9000).HasFocus + Skin.IsString(SideMenuFocus,settings) + !ControlGroup(9100).HasFocus]</visible>
 			</control>
 		</control>
-	</control>
 
-	<!-- Time at Bottom -->
-	<control type="label">
-		<left>0</left>
-		<bottom>10</bottom>
-		<width>120</width>
-		<height>40</height>
-		<font>font12</font>
-		<textcolor>#FFFFFF</textcolor>
-		<align>center</align>
-		<aligny>center</aligny>
-		<label>$INFO[System.Time]</label>
+		<!-- Time -->
+		<control type="label">
+			<left>0</left>
+			<top>85</top>
+			<width>120</width>
+			<height>40</height>
+			<font>font12</font>
+			<textcolor>#FFFFFF</textcolor>
+			<align>center</align>
+			<aligny>center</aligny>
+			<label>$INFO[System.Time]</label>
+		</control>
 	</control>
 </control>
 
