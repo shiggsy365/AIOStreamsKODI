@@ -1,3 +1,7 @@
+[B]3.0.1[/B]
+• Maintenance release - No functional changes
+• Rebuilt package via Repo_Update.sh for proper deployment
+
 [B]3.0.0[/B]
 • COMPLETE REBUILD - Fresh start with minimal structure
 • Direct AIOStreams plugin integration (no widget manager)
