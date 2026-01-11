@@ -1,12 +1,12 @@
-<?xml version='1.0' encoding='UTF-8'?>
+<?xml version="1.0" encoding="UTF-8"?>
 <addons>
 <addon id="repository.aiostreams" name="AIOStreams Repository" version="1.1.27" provider-name="AIOStreams">
     <extension point="xbmc.addon.repository" name="AIOStreams Repository">
-<dir>
-        <info compressed="false">https://shiggsy365.github.io/AIOStreamsKODI/repository.aiostreams/zips/addons.xml</info>
-        <checksum>https://shiggsy365.github.io/AIOStreamsKODI/repository.aiostreams/zips/addons.xml.md5</checksum>
-        <datadir zip="true">https://shiggsy365.github.io/AIOStreamsKODI/repository.aiostreams/zips/</datadir>
-</dir>
+        <dir>
+            <info compressed="false">https://shiggsy365.github.io/AIOStreamsKODI/repository.aiostreams/zips/addons.xml</info>
+            <checksum>https://shiggsy365.github.io/AIOStreamsKODI/repository.aiostreams/zips/addons.xml.md5</checksum>
+            <datadir zip="true">https://shiggsy365.github.io/AIOStreamsKODI/repository.aiostreams/zips/</datadir>
+        </dir>
     </extension>
     <extension point="xbmc.addon.metadata">
         <summary>AIOStreams Addon Repository</summary>
@@ -17,10 +17,11 @@
         </assets>
     </extension>
 </addon>
+
 <addon id="plugin.video.aiostreams" name="AIOStreams" version="1.1.27" provider-name="Jon">
     <requires>
-        <import addon="xbmc.python" version="3.0.0" />
-        <import addon="script.module.requests" version="2.25.1" />
+        <import addon="xbmc.python" version="3.0.0"/>
+        <import addon="script.module.requests" version="2.25.1"/>
     </requires>
     <extension point="xbmc.python.pluginsource" library="addon.py">
         <provides>video</provides>
@@ -28,28 +29,28 @@
     <extension point="xbmc.service" library="service.py" start="login" />
     <extension point="xbmc.addon.metadata">
         <summary lang="en_GB">AIOStreams addon for Kodi with advanced features</summary>
-        <description lang="en_GB">Search and stream content from AIOStreams with comprehensive Trakt integration, stream quality filtering, reliability tracking, UI enhancements (color coding, progress bars), content discovery, keyboard shortcuts, and maintenance tools. Features dynamic context menus, smart stream sorting, and preference learning.</description>
+        <description lang="en_GB">Search and stream content from AIOStreams.</description>
         <platform>all</platform>
         <license>MIT</license>
-        <website>https://aiostreams.shiggsy.co.uk</website>
-        <news>v1.1.3: Standalone miracle fix.</news>
+        <news>v1.1.27: Absolute Alignment & Integrity Fix.</news>
         <assets>
             <icon>resources/icon.png</icon>
             <fanart>resources/fanart.jpg</fanart>
         </assets>
     </extension>
 </addon>
-<addon id="skin.aiodi" version="3.0.1" name="AIODI" provider-name="shiggsy365">
+<addon id="skin.aiodi" version="3.0.2" name="AIODI" provider-name="shiggsy365">
     <requires>
-        <import addon="xbmc.gui" version="5.17.0" />
+        <import addon="xbmc.gui" version="5.17.0"/>
+        <import addon="plugin.video.aiostreams"/>
     </requires>
     <extension point="xbmc.gui.skin" debugging="false">
-        <res width="1920" height="1080" aspect="16:9" default="true" folder="xml" />
+        <res width="1920" height="1080" aspect="16:9" default="true" folder="xml"/>
     </extension>
     <extension point="xbmc.addon.metadata">
         <summary lang="en_GB">AIOStreams Integrated Dynamic Interface</summary>
-        <description lang="en_GB">AIODI is a custom Kodi skin designed specifically for AIOStreams with deep integration.</description>
-        <news>v2.0.0: Arctic Fuse 2 Theme Integration - Transformed to minimal design with opacity-based colors, subtle grays, and elegant focus states.</news>
+        <description lang="en_GB">AIODI is a minimal Kodi skin designed specifically for AIOStreams with direct plugin integration and Arctic Fuse 2 aesthetic.</description>
+        <news>v3.0.0: Complete rebuild - Minimal design, direct AIOStreams integration, Arctic Fuse 2 theme, simplified structure for reliability.</news>
         <platform>all</platform>
         <license>Creative Commons Attribution Non-Commercial Share-Alike 4.0</license>
         <assets>
