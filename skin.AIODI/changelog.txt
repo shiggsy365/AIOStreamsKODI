@@ -1,3 +1,8 @@
+[B]4.0.18[/B]
+• CRITICAL: Fixed Home.xml structural error (Black Screen fix).
+• RESTORED: Sidebar menu items and layout.
+• FIXED: Icon resolution for sidebar items.
+
 [B]4.0.16[/B]
 • FIXED: Overlapping widgets on Home page.
 • FIXED: Missing icons for Home and Settings.
