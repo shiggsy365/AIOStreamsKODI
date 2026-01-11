@@ -161,7 +161,42 @@ build_repository_zip() {
     rm -rf "$temp_dir"
 
     local zip_size=$(du -k "$destination" | cut -f1)
-    echo -e "  ${GREEN}[+]${GRAY} Created: $destination (${zip_size} KB)${NC}"
+    echo -e \"  ${GREEN}[+]${GRAY} Created: $destination (${zip_size} KB)${NC}\"
+}
+
+rebuild_addons_xml() {
+    local addons_xml=\"$BASE_DIR/docs/repository.aiostreams/zips/addons.xml\"
+    local addons_md5=\"$addons_xml.md5\"
+    
+    echo -e \"\\n${CYAN}[*] Regenerating addons.xml...${NC}\"
+    
+    # Start fresh
+    echo \"<?xml version=\\\"1.0\\\" encoding=\\\"UTF-8\\\"?>\" \u003e \"$addons_xml\"
+    echo \"\u003caddons\u003e\" \u003e\u003e \"$addons_xml\"
+    
+    # Files to include
+    local source_files=(
+        \"$BASE_DIR/docs/repository.aiostreams/addon.xml\"
+        \"$BASE_DIR/plugin.video.aiostreams/addon.xml\"
+        \"$BASE_DIR/skin.AIODI/addon.xml\"
+    )
+    
+    for f in \"${source_files[@]}\"; do
+        if [[ -f \"$f\" ]]; then
+            # Extract only the \u003caddon\u003e...\u003c/addon\u003e block
+            # Extract only the <addon>...</addon> block
+            sed -n '/<addon/,/<\/addon>/p' \"$f\" \u003e\u003e \"$addons_xml\"
+            echo \"\" \u003e\u003e \"$addons_xml\"
+            echo -e \"  ${GREEN}[+]${GRAY} Added: $(grep -m 1 \"id=\" \"$f\" | sed -n 's/.*id=\"\\([^\"]*\\)\".*/\\1/p')${NC}\"
+        else
+            echo -e \"  ${YELLOW}[!] Warning: Source addon.xml not found: $f${NC}\"
+        fi
+    done
+    
+    echo \"\u003c/addons\u003e\" \u003e\u003e \"$addons_xml\"
+    
+    # Update checksum
+    write_md5 \"$addons_xml\" \"$addons_md5\"
 }
 
 update_plugin() {
@@ -174,10 +209,9 @@ update_plugin() {
 
     # File paths for plugin
     local xml_paths=(
-        "$BASE_DIR/plugin.video.aiostreams/addon.xml"
-        "$BASE_DIR/docs/plugin.video.aiostreams/addon.xml"
-        "$BASE_DIR/docs/repository.aiostreams/addon.xml"
-        "$BASE_DIR/docs/repository.aiostreams/zips/addons.xml"
+        \"$BASE_DIR/plugin.video.aiostreams/addon.xml\"
+        \"$BASE_DIR/docs/plugin.video.aiostreams/addon.xml\"
+        \"$BASE_DIR/docs/repository.aiostreams/addon.xml\"
     )
 
     local zip_dest1="$BASE_DIR/docs/repository.aiostreams/zips/plugin.video.aiostreams/plugin.video.aiostreams-$new_version.zip"
@@ -216,9 +250,11 @@ update_plugin() {
     cp "$BASE_DIR/docs/repository.aiostreams-1.0.0.zip" "$internal_repo_zip"
     
     # Update checksums
-    write_md5 "$BASE_DIR/docs/repository.aiostreams-1.0.0.zip" "$BASE_DIR/docs/repository.aiostreams-1.0.0.zip.md5"
-    write_md5 "$internal_repo_zip" "$internal_repo_zip.md5"
-    write_md5 "$BASE_DIR/docs/repository.aiostreams/zips/addons.xml" "$BASE_DIR/docs/repository.aiostreams/zips/addons.xml.md5"
+    write_md5 \"$BASE_DIR/docs/repository.aiostreams-1.0.0.zip\" \"$BASE_DIR/docs/repository.aiostreams-1.0.0.zip.md5\"
+    write_md5 \"$internal_repo_zip\" \"$internal_repo_zip.md5\"
+    
+    # Rebuild addons.xml
+    rebuild_addons_xml
 
     # Clean up old repo versions in zips folder
     for f in "$repo_zip_id_dir"/repository.aiostreams-*.zip; do
@@ -264,10 +300,9 @@ update_skin() {
 
     # File paths for skin
     local xml_paths=(
-        "$BASE_DIR/skin.AIODI/addon.xml"
-        "$BASE_DIR/docs/skin.aiodi/addon.xml"
-        "$BASE_DIR/docs/repository.aiostreams/addon.xml"
-        "$BASE_DIR/docs/repository.aiostreams/zips/addons.xml"
+        \"$BASE_DIR/skin.AIODI/addon.xml\"
+        \"$BASE_DIR/docs/skin.aiodi/addon.xml\"
+        \"$BASE_DIR/docs/repository.aiostreams/addon.xml\"
     )
 
     local zip_dest_repo="$BASE_DIR/docs/repository.aiostreams/zips/skin.aiodi/skin.aiodi-$new_version.zip"
@@ -317,9 +352,11 @@ update_skin() {
     cp "$BASE_DIR/docs/repository.aiostreams-1.0.0.zip" "$internal_repo_zip"
 
     # Update checksums
-    write_md5 "$BASE_DIR/docs/repository.aiostreams-1.0.0.zip" "$BASE_DIR/docs/repository.aiostreams-1.0.0.zip.md5"
-    write_md5 "$internal_repo_zip" "$internal_repo_zip.md5"
-    write_md5 "$BASE_DIR/docs/repository.aiostreams/zips/addons.xml" "$BASE_DIR/docs/repository.aiostreams/zips/addons.xml.md5"
+    write_md5 \"$BASE_DIR/docs/repository.aiostreams-1.0.0.zip\" \"$BASE_DIR/docs/repository.aiostreams-1.0.0.zip.md5\"
+    write_md5 \"$internal_repo_zip\" \"$internal_repo_zip.md5\"
+    
+    # Rebuild addons.xml
+    rebuild_addons_xml
 
     # Clean up old repo versions in zips folder
     for f in "$repo_zip_id_dir"/repository.aiostreams-*.zip; do
