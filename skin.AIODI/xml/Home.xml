@@ -245,10 +245,8 @@
 				<ondown>9006</ondown>
 				<onfocus>Skin.SetString(SideMenuFocus,movies)</onfocus>
 				<onright>12001</onright>
-
-				<onright>12001</onright>
-
 				<onclick>ActivateWindow(Videos,plugin://plugin.video.aiostreams/?action=movie_lists,return)</onclick>
+
 			</control>
 			<control type="image">
 				<left>24</left>
@@ -619,9 +617,10 @@
 	</control>
 </control>
 
-	<!-- TOP LAYER DIAGNOSTICS -->
+	<!-- TOP LAYER DIAGNOSTICS v6.0.35 -->
 	<control type="group">
 		<zorder>10000</zorder>
+		
 		<!-- Background for diagnostics -->
 		<control type="image">
 			<left>140</left>
@@ -631,10 +630,6 @@
 			<texture colordiffuse="88000000">colors/white.png</texture>
 		</control>
 
-	<!-- TOP LAYER DIAGNOSTICS v6.0.33 -->
-	<control type="group">
-		<zorder>10000</zorder>
-		
 		<!-- Labels -->
 		<control type="label">
 			<left>150</left>
@@ -643,7 +638,7 @@
 			<height>30</height>
 			<font>font12</font>
 			<textcolor>FFFFFF00</textcolor> <!-- Hex Yellow -->
-			<label>v6.0.33 | FOCUS: [ $INFO[Skin.String(SideMenuFocus)] ] | WIDGET_IDX: [ $INFO[Skin.String(Home_WidgetIndex)] ] | ACTIVE_ID: [ $VAR[CurrentWidgetListID] ]</label>
+			<label>v6.0.35 | FOCUS: [ $INFO[Skin.String(SideMenuFocus)] ] | WIDGET_IDX: [ $INFO[Skin.String(Home_WidgetIndex)] ] | ACTIVE_ID: [ $VAR[CurrentWidgetListID] ]</label>
 		</control>
 		<control type="label">
 			<left>150</left>
@@ -652,7 +647,7 @@
 			<height>30</height>
 			<font>font12</font>
 			<textcolor>FFFF0000</textcolor> <!-- Hex Red -->
-			<label>RED LABEL ALWAYS ON (v6.0.33)</label>
+			<label>RED LABEL ALWAYS ON (v6.0.35)</label>
 		</control>
 		<control type="label">
 			<left>150</left>
@@ -699,4 +694,6 @@
 	</control>
 </controls>
 </window>
+
+
 
