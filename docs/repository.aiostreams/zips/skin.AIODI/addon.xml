@@ -1,5 +1,5 @@
 <?xml version="4.0.3" encoding="UTF-8"?>
-<addon id="skin.AIODI" version="6.0.24" name="AIODI" provider-name="Jon">
+<addon id="skin.AIODI" version="6.0.26" name="AIODI" provider-name="Jon">
 	<requires>
 		<import addon="xbmc.gui" version="5.17.0"/>
 		<import addon="pvr.iptvsimple" version="20.0.0"/>

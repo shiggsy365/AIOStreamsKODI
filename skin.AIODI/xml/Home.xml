@@ -644,5 +644,28 @@
 	</control>
 </control>
 
+	<!-- TOP LAYER DIAGNOSTICS -->
+	<control type="group">
+		<zorder>10000</zorder>
+		<control type="label">
+			<left>150</left>
+			<top>10</top>
+			<width>1500</width>
+			<height>30</height>
+			<font>font12</font>
+			<textcolor>FFFFFF00</textcolor> <!-- Hex Yellow -->
+			<label>v6.0.25 | FOCUS: [ $INFO[Skin.String(SideMenuFocus)] ] | WIDGET_IDX: [ $INFO[Skin.String(Home_WidgetIndex)] ] | ACTIVE_ID: [ $VAR[CurrentWidgetListID] ]</label>
+		</control>
+		<control type="label">
+			<left>150</left>
+			<top>40</top>
+			<width>1500</width>
+			<height>30</height>
+			<font>font12</font>
+			<textcolor>FFFF0000</textcolor> <!-- Hex Red -->
+			<visible>Skin.IsString(SideMenuFocus,home)</visible>
+			<label>HOMEMENU MATCHES 'home' -> SHOULD BE VISIBLE</label>
+		</control>
+	</control>
 </controls>
 </window>
