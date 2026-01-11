@@ -39,7 +39,7 @@
         </assets>
     </extension>
 </addon>
-<addon id="skin.aiodi" version="2.0.3" name="AIODI" provider-name="shiggsy365">
+<addon id="skin.aiodi" version="2.0.4" name="AIODI" provider-name="shiggsy365">
     <requires>
         <import addon="xbmc.gui" version="5.17.0" />
     </requires>
