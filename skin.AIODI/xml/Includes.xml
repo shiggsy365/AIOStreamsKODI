@@ -1764,4 +1764,5 @@
 			</focusedlayout>
 		</definition>
 	</include>
+<include file="Includes_Netflix.xml" />
 </includes>

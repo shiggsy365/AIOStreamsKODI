@@ -920,3 +920,60 @@
 <value>3</value>
 </variable>
 </includes>
+
+<!-- Netflix UI Status Icons -->
+<variable name="StatusHomeIconVar">
+<value condition="!Skin.HasSetting(HideHome)">overlays/checkbox-on.png</value>
+<value>overlays/checkbox-off.png</value>
+</variable>
+
+<!-- Home Widget Status Icons -->
+<variable name="StatusHomeWidget0IconVar">
+<value condition="!Skin.HasSetting(Home.HideWidget0)">overlays/checkbox-on.png</value>
+<value>overlays/checkbox-off.png</value>
+</variable>
+<variable name="StatusHomeWidget1IconVar">
+<value condition="!Skin.HasSetting(Home.HideWidget1)">overlays/checkbox-on.png</value>
+<value>overlays/checkbox-off.png</value>
+</variable>
+<variable name="StatusHomeWidget2IconVar">
+<value condition="!Skin.HasSetting(Home.HideWidget2)">overlays/checkbox-on.png</value>
+<value>overlays/checkbox-off.png</value>
+</variable>
+
+<!-- Movies Widget Status Icons -->
+<variable name="StatusMoviesWidget0IconVar">
+<value condition="!Skin.HasSetting(Movies.HideWidget0)">overlays/checkbox-on.png</value>
+<value>overlays/checkbox-off.png</value>
+</variable>
+<variable name="StatusMoviesWidget1IconVar">
+<value condition="!Skin.HasSetting(Movies.HideWidget1)">overlays/checkbox-on.png</value>
+<value>overlays/checkbox-off.png</value>
+</variable>
+<variable name="StatusMoviesWidget2IconVar">
+<value condition="!Skin.HasSetting(Movies.HideWidget2)">overlays/checkbox-on.png</value>
+<value>overlays/checkbox-off.png</value>
+</variable>
+<variable name="StatusMoviesWidget3IconVar">
+<value condition="!Skin.HasSetting(Movies.HideWidget3)">overlays/checkbox-on.png</value>
+<value>overlays/checkbox-off.png</value>
+</variable>
+
+<!-- Series Widget Status Icons -->
+<variable name="StatusSeriesWidget0IconVar">
+<value condition="!Skin.HasSetting(Series.HideWidget0)">overlays/checkbox-on.png</value>
+<value>overlays/checkbox-off.png</value>
+</variable>
+<variable name="StatusSeriesWidget1IconVar">
+<value condition="!Skin.HasSetting(Series.HideWidget1)">overlays/checkbox-on.png</value>
+<value>overlays/checkbox-off.png</value>
+</variable>
+<variable name="StatusSeriesWidget2IconVar">
+<value condition="!Skin.HasSetting(Series.HideWidget2)">overlays/checkbox-on.png</value>
+<value>overlays/checkbox-off.png</value>
+</variable>
+<variable name="StatusSeriesWidget3IconVar">
+<value condition="!Skin.HasSetting(Series.HideWidget3)">overlays/checkbox-on.png</value>
+<value>overlays/checkbox-off.png</value>
+</variable>
+</includes>

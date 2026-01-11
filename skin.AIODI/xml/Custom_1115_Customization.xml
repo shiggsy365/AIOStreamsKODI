@@ -1,239 +1,437 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <window type="dialog" id="1115">
-<defaultcontrol>9000</defaultcontrol>
-<onload>SetProperty(ReorderTarget,MOVIES,home)</onload>
-<controls>
-<control type="group">
-<include>OpenClose_Right</include>
-<left>530</left>
-<top>80</top>
-<width>860</width>
-<height>920</height>
-<control type="image">
-<include>FullScreenDimensions</include>
-<texture colordiffuse="background">colors/black.png</texture>
-<animation effect="fade" start="0" end="80" time="300">WindowOpen</animation>
-</control>
-<control type="image">
-<left>0</left>
-<top>0</top>
-<width>860</width>
-<height>920</height>
-<texture border="20">dialogs/dialog-bg.png</texture>
-</control>
-<control type="label">
-<left>40</left>
-<top>20</top>
-<width>780</width>
-<height>40</height>
-<label>AIODI Customization</label>
-<font>font27_title</font>
-<textcolor>button_focus</textcolor>
-</control>
-
-<control type="fixedlist" id="9000">
-<left>40</left>
-<top>80</top>
-<width>780</width>
-<height>800</height>
-<onleft>9000</onleft>
-<onright>9000</onright>
-<onup>9000</onup>
-<ondown>9000</ondown>
-<scrolltime tween="cubic" easing="out">500</scrolltime>
-<itemlayout height="50" width="780">
-<control type="label">
-<left>20</left>
-<width>600</width>
-<height>50</height>
-<font>font12</font>
-<aligny>center</aligny>
-<label>$INFO[ListItem.Label]</label>
-</control>
-<control type="image">
-<right>20</right>
-<top>5</top>
-<width>40</width>
-<height>40</height>
-<texture>$INFO[ListItem.Property(status_icon)]</texture>
-</control>
-</itemlayout>
-<focusedlayout height="50" width="780">
-<control type="image">
-<width>780</width>
-<height>50</height>
-<texture colordiffuse="button_focus">lists/focus.png</texture>
-</control>
-<control type="label">
-<left>20</left>
-<width>600</width>
-<height>50</height>
-<font>font12</font>
-<aligny>center</aligny>
-<label>$INFO[ListItem.Label]</label>
-<textcolor>black</textcolor>
-</control>
-<control type="image">
-<right>20</right>
-<top>5</top>
-<width>40</width>
-<height>40</height>
-<texture>$INFO[ListItem.Property(status_icon)]</texture>
-</control>
-</focusedlayout>
-<content>
-<item>
-<label>--- Global Visibility ---</label>
-<onclick>noop</onclick>
-</item>
-<item>
-<label>Show Movies</label>
-<onclick>Skin.ToggleSetting(HideMovies)</onclick>
-<property name="status_icon">$VAR[StatusMoviesIconVar]</property>
-</item>
-<item>
-<label>Show Series</label>
-<onclick>Skin.ToggleSetting(HideSeries)</onclick>
-<property name="status_icon">$VAR[StatusSeriesIconVar]</property>
-</item>
-<item>
-<label>Show TV</label>
-<onclick>Skin.ToggleSetting(HideTV)</onclick>
-<property name="status_icon">$VAR[StatusTVIconVar]</property>
-</item>
-<item>
-<label>Show Music</label>
-<onclick>Skin.ToggleSetting(HideMusic)</onclick>
-<property name="status_icon">$VAR[StatusMusicIconVar]</property>
-</item>
-
-<item>
-<label>--- Reorder Widgets for: [ $INFO[Window(Home).Property(ReorderTarget)] ] ---</label>
-<onclick>noop</onclick>
-</item>
-<item>
-<label>Select Target: MOVIES</label>
-<onclick>SetProperty(ReorderTarget,MOVIES,home)</onclick>
-</item>
-<item>
-<label>Select Target: SERIES</label>
-<onclick>SetProperty(ReorderTarget,SERIES,home)</onclick>
-</item>
-<item>
-<label>Select Target: HOME</label>
-<onclick>SetProperty(ReorderTarget,HOME,home)</onclick>
-</item>
-
-<item>
-<label>Row 1: Move Down</label>
-<onclick condition="String.IsEqual(Window(Home).Property(ReorderTarget),MOVIES)">Skin.SetString(temp_idx,$INFO[Skin.String(MovieRow1Index)])</onclick>
-<onclick condition="String.IsEqual(Window(Home).Property(ReorderTarget),MOVIES)">Skin.SetString(MovieRow1Index,$INFO[Skin.String(MovieRow2Index)])</onclick>
-<onclick condition="String.IsEqual(Window(Home).Property(ReorderTarget),MOVIES)">Skin.SetString(MovieRow2Index,$INFO[Skin.String(temp_idx)])</onclick>
-
-<onclick condition="String.IsEqual(Window(Home).Property(ReorderTarget),SERIES)">Skin.SetString(temp_idx,$INFO[Skin.String(SeriesRow1Index)])</onclick>
-<onclick condition="String.IsEqual(Window(Home).Property(ReorderTarget),SERIES)">Skin.SetString(SeriesRow1Index,$INFO[Skin.String(SeriesRow2Index)])</onclick>
-<onclick condition="String.IsEqual(Window(Home).Property(ReorderTarget),SERIES)">Skin.SetString(SeriesRow2Index,$INFO[Skin.String(temp_idx)])</onclick>
-
-<onclick condition="String.IsEqual(Window(Home).Property(ReorderTarget),HOME)">Skin.SetString(temp_idx,$INFO[Skin.String(Row1Index)])</onclick>
-<onclick condition="String.IsEqual(Window(Home).Property(ReorderTarget),HOME)">Skin.SetString(Row1Index,$INFO[Skin.String(Row2Index)])</onclick>
-<onclick condition="String.IsEqual(Window(Home).Property(ReorderTarget),HOME)">Skin.SetString(Row2Index,$INFO[Skin.String(temp_idx)])</onclick>
-</item>
-<item>
-<label>Row 2: Move Up</label>
-<onclick condition="String.IsEqual(Window(Home).Property(ReorderTarget),MOVIES)">Skin.SetString(temp_idx,$INFO[Skin.String(MovieRow2Index)])</onclick>
-<onclick condition="String.IsEqual(Window(Home).Property(ReorderTarget),MOVIES)">Skin.SetString(MovieRow2Index,$INFO[Skin.String(MovieRow1Index)])</onclick>
-<onclick condition="String.IsEqual(Window(Home).Property(ReorderTarget),MOVIES)">Skin.SetString(MovieRow1Index,$INFO[Skin.String(temp_idx)])</onclick>
-
-<onclick condition="String.IsEqual(Window(Home).Property(ReorderTarget),SERIES)">Skin.SetString(temp_idx,$INFO[Skin.String(SeriesRow2Index)])</onclick>
-<onclick condition="String.IsEqual(Window(Home).Property(ReorderTarget),SERIES)">Skin.SetString(SeriesRow2Index,$INFO[Skin.String(SeriesRow1Index)])</onclick>
-<onclick condition="String.IsEqual(Window(Home).Property(ReorderTarget),SERIES)">Skin.SetString(SeriesRow1Index,$INFO[Skin.String(temp_idx)])</onclick>
-
-<onclick condition="String.IsEqual(Window(Home).Property(ReorderTarget),HOME)">Skin.SetString(temp_idx,$INFO[Skin.String(Row2Index)])</onclick>
-<onclick condition="String.IsEqual(Window(Home).Property(ReorderTarget),HOME)">Skin.SetString(Row2Index,$INFO[Skin.String(Row1Index)])</onclick>
-<onclick condition="String.IsEqual(Window(Home).Property(ReorderTarget),HOME)">Skin.SetString(Row1Index,$INFO[Skin.String(temp_idx)])</onclick>
-</item>
-<item>
-<label>Row 2: Move Down</label>
-<onclick condition="String.IsEqual(Window(Home).Property(ReorderTarget),MOVIES)">Skin.SetString(temp_idx,$INFO[Skin.String(MovieRow2Index)])</onclick>
-<onclick condition="String.IsEqual(Window(Home).Property(ReorderTarget),MOVIES)">Skin.SetString(MovieRow2Index,$INFO[Skin.String(MovieRow3Index)])</onclick>
-<onclick condition="String.IsEqual(Window(Home).Property(ReorderTarget),MOVIES)">Skin.SetString(MovieRow3Index,$INFO[Skin.String(temp_idx)])</onclick>
-
-<onclick condition="String.IsEqual(Window(Home).Property(ReorderTarget),SERIES)">Skin.SetString(temp_idx,$INFO[Skin.String(SeriesRow2Index)])</onclick>
-<onclick condition="String.IsEqual(Window(Home).Property(ReorderTarget),SERIES)">Skin.SetString(SeriesRow2Index,$INFO[Skin.String(SeriesRow3Index)])</onclick>
-<onclick condition="String.IsEqual(Window(Home).Property(ReorderTarget),SERIES)">Skin.SetString(SeriesRow3Index,$INFO[Skin.String(temp_idx)])</onclick>
-
-<onclick condition="String.IsEqual(Window(Home).Property(ReorderTarget),HOME)">Skin.SetString(temp_idx,$INFO[Skin.String(Row2Index)])</onclick>
-<onclick condition="String.IsEqual(Window(Home).Property(ReorderTarget),HOME)">Skin.SetString(Row2Index,$INFO[Skin.String(Row3Index)])</onclick>
-<onclick condition="String.IsEqual(Window(Home).Property(ReorderTarget),HOME)">Skin.SetString(Row3Index,$INFO[Skin.String(temp_idx)])</onclick>
-</item>
-<item>
-<label>Row 3: Move Up</label>
-<onclick condition="String.IsEqual(Window(Home).Property(ReorderTarget),MOVIES)">Skin.SetString(temp_idx,$INFO[Skin.String(MovieRow3Index)])</onclick>
-<onclick condition="String.IsEqual(Window(Home).Property(ReorderTarget),MOVIES)">Skin.SetString(MovieRow3Index,$INFO[Skin.String(MovieRow2Index)])</onclick>
-<onclick condition="String.IsEqual(Window(Home).Property(ReorderTarget),MOVIES)">Skin.SetString(MovieRow2Index,$INFO[Skin.String(temp_idx)])</onclick>
-
-<onclick condition="String.IsEqual(Window(Home).Property(ReorderTarget),SERIES)">Skin.SetString(temp_idx,$INFO[Skin.String(SeriesRow3Index)])</onclick>
-<onclick condition="String.IsEqual(Window(Home).Property(ReorderTarget),SERIES)">Skin.SetString(SeriesRow3Index,$INFO[Skin.String(SeriesRow2Index)])</onclick>
-<onclick condition="String.IsEqual(Window(Home).Property(ReorderTarget),SERIES)">Skin.SetString(SeriesRow2Index,$INFO[Skin.String(temp_idx)])</onclick>
-
-<onclick condition="String.IsEqual(Window(Home).Property(ReorderTarget),HOME)">Skin.SetString(temp_idx,$INFO[Skin.String(Row3Index)])</onclick>
-<onclick condition="String.IsEqual(Window(Home).Property(ReorderTarget),HOME)">Skin.SetString(Row3Index,$INFO[Skin.String(Row2Index)])</onclick>
-<onclick condition="String.IsEqual(Window(Home).Property(ReorderTarget),HOME)">Skin.SetString(Row2Index,$INFO[Skin.String(temp_idx)])</onclick>
-</item>
-<item>
-<label>Row 3: Move Down</label>
-<onclick condition="String.IsEqual(Window(Home).Property(ReorderTarget),MOVIES)">Skin.SetString(temp_idx,$INFO[Skin.String(MovieRow3Index)])</onclick>
-<onclick condition="String.IsEqual(Window(Home).Property(ReorderTarget),MOVIES)">Skin.SetString(MovieRow3Index,$INFO[Skin.String(MovieRow4Index)])</onclick>
-<onclick condition="String.IsEqual(Window(Home).Property(ReorderTarget),MOVIES)">Skin.SetString(MovieRow4Index,$INFO[Skin.String(temp_idx)])</onclick>
-
-<onclick condition="String.IsEqual(Window(Home).Property(ReorderTarget),SERIES)">Skin.SetString(temp_idx,$INFO[Skin.String(SeriesRow3Index)])</onclick>
-<onclick condition="String.IsEqual(Window(Home).Property(ReorderTarget),SERIES)">Skin.SetString(SeriesRow3Index,$INFO[Skin.String(SeriesRow4Index)])</onclick>
-<onclick condition="String.IsEqual(Window(Home).Property(ReorderTarget),SERIES)">Skin.SetString(SeriesRow4Index,$INFO[Skin.String(temp_idx)])</onclick>
-
-<onclick condition="String.IsEqual(Window(Home).Property(ReorderTarget),HOME)">Skin.SetString(temp_idx,$INFO[Skin.String(Row3Index)])</onclick>
-<onclick condition="String.IsEqual(Window(Home).Property(ReorderTarget),HOME)">Skin.SetString(Row3Index,$INFO[Skin.String(Row4Index)])</onclick>
-<onclick condition="String.IsEqual(Window(Home).Property(ReorderTarget),HOME)">Skin.SetString(Row4Index,$INFO[Skin.String(temp_idx)])</onclick>
-</item>
-<item>
-<label>Row 4: Move Up</label>
-<onclick condition="String.IsEqual(Window(Home).Property(ReorderTarget),MOVIES)">Skin.SetString(temp_idx,$INFO[Skin.String(MovieRow4Index)])</onclick>
-<onclick condition="String.IsEqual(Window(Home).Property(ReorderTarget),MOVIES)">Skin.SetString(MovieRow4Index,$INFO[Skin.String(MovieRow3Index)])</onclick>
-<onclick condition="String.IsEqual(Window(Home).Property(ReorderTarget),MOVIES)">Skin.SetString(MovieRow3Index,$INFO[Skin.String(temp_idx)])</onclick>
-
-<onclick condition="String.IsEqual(Window(Home).Property(ReorderTarget),SERIES)">Skin.SetString(temp_idx,$INFO[Skin.String(SeriesRow4Index)])</onclick>
-<onclick condition="String.IsEqual(Window(Home).Property(ReorderTarget),SERIES)">Skin.SetString(SeriesRow4Index,$INFO[Skin.String(SeriesRow3Index)])</onclick>
-<onclick condition="String.IsEqual(Window(Home).Property(ReorderTarget),SERIES)">Skin.SetString(SeriesRow3Index,$INFO[Skin.String(temp_idx)])</onclick>
-
-<onclick condition="String.IsEqual(Window(Home).Property(ReorderTarget),HOME)">Skin.SetString(temp_idx,$INFO[Skin.String(Row4Index)])</onclick>
-<onclick condition="String.IsEqual(Window(Home).Property(ReorderTarget),HOME)">Skin.SetString(Row4Index,$INFO[Skin.String(Row3Index)])</onclick>
-<onclick condition="String.IsEqual(Window(Home).Property(ReorderTarget),HOME)">Skin.SetString(Row3Index,$INFO[Skin.String(temp_idx)])</onclick>
-</item>
-
-<item>
-<label>--- Reset ---</label>
-<onclick>noop</onclick>
-</item>
-<item>
-<label>Reset to Defaults</label>
-<onclick>Skin.Reset(HideMovies)</onclick>
-<onclick>Skin.Reset(HideSeries)</onclick>
-<onclick>Skin.Reset(HideTV)</onclick>
-<onclick>Skin.Reset(HideMusic)</onclick>
-<onclick>Skin.SetString(MovieRow1Index,0)</onclick>
-<onclick>Skin.SetString(MovieRow2Index,1)</onclick>
-<onclick>Skin.SetString(MovieRow3Index,2)</onclick>
-<onclick>Skin.SetString(MovieRow4Index,3)</onclick>
-<onclick>Skin.SetString(SeriesRow1Index,0)</onclick>
-<onclick>Skin.SetString(SeriesRow2Index,1)</onclick>
-<onclick>Skin.SetString(SeriesRow3Index,2)</onclick>
-<onclick>Skin.SetString(SeriesRow4Index,3)</onclick>
-<onclick>Skin.SetString(Row1Index,0)</onclick>
-<onclick>Skin.SetString(Row2Index,1)</onclick>
-<onclick>Skin.SetString(Row3Index,2)</onclick>
-<onclick>Skin.SetString(Row4Index,3)</onclick>
-</item>
-</content>
-</control>
-</control>
-</controls>
+	<defaultcontrol>9100</defaultcontrol>
+	<coordinates>
+		<system>1</system>
+		<left>0</left>
+		<top>0</top>
+	</coordinates>
+	
+	<controls>
+		<!-- Background Dim -->
+		<control type="image">
+			<include>FullScreenDimensions</include>
+			<texture colordiffuse="background">colors/black.png</texture>
+			<animation effect="fade" start="0" end="85" time="300">WindowOpen</animation>
+			<animation effect="fade" start="85" end="0" time="200">WindowClose</animation>
+		</control>
+		
+		<!-- Main Dialog Container -->
+		<control type="group">
+			<left>360</left>
+			<top>120</top>
+			<width>1200</width>
+			<height>840</height>
+			<animation effect="slide" start="0,-900" end="0,0" time="400" tween="cubic" easing="out">WindowOpen</animation>
+			<animation effect="slide" start="0,0" end="0,-900" time="300" tween="cubic" easing="in">WindowClose</animation>
+			
+			<!-- Dialog Background -->
+			<control type="image">
+				<left>0</left>
+				<top>0</top>
+				<width>1200</width>
+				<height>840</height>
+				<texture colordiffuse="#1C1C1C" border="20">dialogs/dialog-bg.png</texture>
+			</control>
+			
+			<!-- Header -->
+			<control type="label">
+				<left>40</left>
+				<top>30</top>
+				<width>1120</width>
+				<height>50</height>
+				<font>font27_title</font>
+				<textcolor>#FFFFFF</textcolor>
+				<label>Customize Interface</label>
+			</control>
+			
+			<!-- Tab Bar -->
+			<control type="fixedlist" id="9100">
+				<left>40</left>
+				<top>100</top>
+				<width>1120</width>
+				<height>60</height>
+				<orientation>horizontal</orientation>
+				<focusposition>0</focusposition>
+				<movement>1</movement>
+				<ondown>SetFocus(9200)</ondown>
+				<onup>noop</onup>
+				
+				<itemlayout width="280" height="60">
+					<control type="label">
+						<left>0</left>
+						<top>0</top>
+						<width>280</width>
+						<height>60</height>
+						<font>font13</font>
+						<textcolor>#B3B3B3</textcolor>
+						<align>center</align>
+						<aligny>center</aligny>
+						<label>$INFO[ListItem.Label]</label>
+					</control>
+				</itemlayout>
+				
+				<focusedlayout width="280" height="60">
+					<control type="group">
+						<control type="label">
+							<left>0</left>
+							<top>0</top>
+							<width>280</width>
+							<height>60</height>
+							<font>font13_title</font>
+							<textcolor>#FFFFFF</textcolor>
+							<align>center</align>
+							<aligny>center</aligny>
+							<label>$INFO[ListItem.Label]</label>
+						</control>
+						<control type="image">
+							<left>90</left>
+							<top>55</top>
+							<width>100</width>
+							<height>3</height>
+							<texture colordiffuse="#E50914">colors/white.png</texture>
+						</control>
+					</control>
+				</focusedlayout>
+				
+				<content>
+					<item>
+						<label>Menu Pages</label>
+						<onclick>SetProperty(ActiveTab,pages,home)</onclick>
+						<property name="tab_id">pages</property>
+					</item>
+					<item>
+						<label>Widgets</label>
+						<onclick>SetProperty(ActiveTab,widgets,home)</onclick>
+						<property name="tab_id">widgets</property>
+					</item>
+					<item>
+						<label>Appearance</label>
+						<onclick>SetProperty(ActiveTab,appearance,home)</onclick>
+						<property name="tab_id">appearance</property>
+					</item>
+				</content>
+			</control>
+			
+			<!-- PAGES TAB -->
+			<control type="group">
+				<visible>String.IsEqual(Window(Home).Property(ActiveTab),pages) | String.IsEmpty(Window(Home).Property(ActiveTab))</visible>
+				
+				<control type="label">
+					<left>40</left>
+					<top>180</top>
+					<width>1120</width>
+					<height>40</height>
+					<font>font13</font>
+					<textcolor>#B3B3B3</textcolor>
+					<label>Show or hide menu pages</label>
+				</control>
+				
+				<control type="fixedlist" id="9200">
+					<left>40</left>
+					<top>240</top>
+					<width>1120</width>
+					<height>520</height>
+					<onup>SetFocus(9100)</onup>
+					<ondown>9200</ondown>
+					<onleft>9200</onleft>
+					<onright>9200</onright>
+					<scrolltime>300</scrolltime>
+					
+					<itemlayout height="80" width="1120">
+						<control type="label">
+							<left>20</left>
+							<top>0</top>
+							<width>900</width>
+							<height>80</height>
+							<font>font13</font>
+							<textcolor>#FFFFFF</textcolor>
+							<aligny>center</aligny>
+							<label>$INFO[ListItem.Label]</label>
+						</control>
+						<control type="image">
+							<right>20</right>
+							<top>20</top>
+							<width>40</width>
+							<height>40</height>
+							<texture>$INFO[ListItem.Property(status_icon)]</texture>
+						</control>
+					</itemlayout>
+					
+					<focusedlayout height="80" width="1120">
+						<control type="image">
+							<left>0</left>
+							<top>0</top>
+							<width>1120</width>
+							<height>80</height>
+							<texture colordiffuse="#E50914">lists/focus.png</texture>
+						</control>
+						<control type="label">
+							<left>20</left>
+							<top>0</top>
+							<width>900</width>
+							<height>80</height>
+							<font>font13_title</font>
+							<textcolor>#000000</textcolor>
+							<aligny>center</aligny>
+							<label>$INFO[ListItem.Label]</label>
+						</control>
+						<control type="image">
+							<right>20</right>
+							<top>20</top>
+							<width>40</width>
+							<height>40</height>
+							<texture>$INFO[ListItem.Property(status_icon)]</texture>
+						</control>
+					</focusedlayout>
+					
+					<content>
+						<item>
+							<label>Show Home</label>
+							<onclick>Skin.ToggleSetting(HideHome)</onclick>
+							<property name="status_icon">$VAR[StatusHomeIconVar]</property>
+						</item>
+						<item>
+							<label>Show Movies</label>
+							<onclick>Skin.ToggleSetting(HideMovies)</onclick>
+							<property name="status_icon">$VAR[StatusMoviesIconVar]</property>
+						</item>
+						<item>
+							<label>Show Series</label>
+							<onclick>Skin.ToggleSetting(HideSeries)</onclick>
+							<property name="status_icon">$VAR[StatusSeriesIconVar]</property>
+						</item>
+						<item>
+							<label>Show TV</label>
+							<onclick>Skin.ToggleSetting(HideTV)</onclick>
+							<property name="status_icon">$VAR[StatusTVIconVar]</property>
+						</item>
+						<item>
+							<label>Show Music</label>
+							<onclick>Skin.ToggleSetting(HideMusic)</onclick>
+							<property name="status_icon">$VAR[StatusMusicIconVar]</property>
+						</item>
+					</content>
+				</control>
+			</control>
+			
+			<!-- WIDGETS TAB -->
+			<control type="group">
+				<visible>String.IsEqual(Window(Home).Property(ActiveTab),widgets)</visible>
+				
+				<control type="label">
+					<left>40</left>
+					<top>180</top>
+					<width>1120</width>
+					<height>40</height>
+					<font>font13</font>
+					<textcolor>#B3B3B3</textcolor>
+					<label>Manage widgets for each page</label>
+				</control>
+				
+				<!-- Page Selector -->
+				<control type="radiobutton" id="9210">
+					<left>40</left>
+					<top>240</top>
+					<width>360</width>
+					<height>60</height>
+					<font>font13</font>
+					<textcolor>#FFFFFF</textcolor>
+					<focusedcolor>#000000</focusedcolor>
+					<label>Page: $INFO[Window(Home).Property(WidgetPage)]</label>
+					<radioposx>320</radioposx>
+					<texturefocus colordiffuse="#E50914">lists/focus.png</texturefocus>
+					<onclick>SetProperty(WidgetPage,Home,home)</onclick>
+					<onclick condition="String.IsEqual(Window(Home).Property(WidgetPage),Home)">SetProperty(WidgetPage,Movies,home)</onclick>
+					<onclick condition="String.IsEqual(Window(Home).Property(WidgetPage),Movies)">SetProperty(WidgetPage,Series,home)</onclick>
+					<onclick condition="String.IsEqual(Window(Home).Property(WidgetPage),Series)">SetProperty(WidgetPage,Home,home)</onclick>
+					<ondown>SetFocus(9200)</ondown>
+					<onup>SetFocus(9100)</onup>
+				</control>
+				
+				<!-- Widget List -->
+				<control type="fixedlist" id="9200">
+					<left>40</left>
+					<top>320</top>
+					<width>1120</width>
+					<height>440</height>
+					<onup>SetFocus(9210)</onup>
+					<ondown>9200</ondown>
+					<scrolltime>300</scrolltime>
+					
+					<itemlayout height="70" width="1120">
+						<control type="label">
+							<left>20</left>
+							<top>0</top>
+							<width>800</width>
+							<height>70</height>
+							<font>font13</font>
+							<textcolor>#FFFFFF</textcolor>
+							<aligny>center</aligny>
+							<label>$INFO[ListItem.Label]</label>
+						</control>
+						<control type="image">
+							<right>20</right>
+							<top>15</top>
+							<width>40</width>
+							<height>40</height>
+							<texture>$INFO[ListItem.Property(status_icon)]</texture>
+						</control>
+					</itemlayout>
+					
+					<focusedlayout height="70" width="1120">
+						<control type="image">
+							<left>0</left>
+							<top>0</top>
+							<width>1120</width>
+							<height>70</height>
+							<texture colordiffuse="#E50914">lists/focus.png</texture>
+						</control>
+						<control type="label">
+							<left>20</left>
+							<top>0</top>
+							<width>800</width>
+							<height>70</height>
+							<font>font13_title</font>
+							<textcolor>#000000</textcolor>
+							<aligny>center</aligny>
+							<label>$INFO[ListItem.Label]</label>
+						</control>
+						<control type="image">
+							<right>20</right>
+							<top>15</top>
+							<width>40</width>
+							<height>40</height>
+							<texture>$INFO[ListItem.Property(status_icon)]</texture>
+						</control>
+					</focusedlayout>
+					
+					<!-- HOME WIDGETS -->
+					<content>
+						<item>
+							<label>Continue Watching</label>
+							<onclick>Skin.ToggleSetting(Home.HideWidget0)</onclick>
+							<property name="status_icon">$VAR[StatusHomeWidget0IconVar]</property>
+							<visible>String.IsEqual(Window(Home).Property(WidgetPage),Home) | String.IsEmpty(Window(Home).Property(WidgetPage))</visible>
+						</item>
+						<item>
+							<label>My Movie Watchlist</label>
+							<onclick>Skin.ToggleSetting(Home.HideWidget1)</onclick>
+							<property name="status_icon">$VAR[StatusHomeWidget1IconVar]</property>
+							<visible>String.IsEqual(Window(Home).Property(WidgetPage),Home) | String.IsEmpty(Window(Home).Property(WidgetPage))</visible>
+						</item>
+						<item>
+							<label>My Series Watchlist</label>
+							<onclick>Skin.ToggleSetting(Home.HideWidget2)</onclick>
+							<property name="status_icon">$VAR[StatusHomeWidget2IconVar]</property>
+							<visible>String.IsEqual(Window(Home).Property(WidgetPage),Home) | String.IsEmpty(Window(Home).Property(WidgetPage))</visible>
+						</item>
+						
+						<!-- MOVIES WIDGETS -->
+						<item>
+							<label>Movie Catalog 1</label>
+							<onclick>Skin.ToggleSetting(Movies.HideWidget0)</onclick>
+							<property name="status_icon">$VAR[StatusMoviesWidget0IconVar]</property>
+							<visible>String.IsEqual(Window(Home).Property(WidgetPage),Movies)</visible>
+						</item>
+						<item>
+							<label>Movie Catalog 2</label>
+							<onclick>Skin.ToggleSetting(Movies.HideWidget1)</onclick>
+							<property name="status_icon">$VAR[StatusMoviesWidget1IconVar]</property>
+							<visible>String.IsEqual(Window(Home).Property(WidgetPage),Movies)</visible>
+						</item>
+						<item>
+							<label>Movie Catalog 3</label>
+							<onclick>Skin.ToggleSetting(Movies.HideWidget2)</onclick>
+							<property name="status_icon">$VAR[StatusMoviesWidget2IconVar]</property>
+							<visible>String.IsEqual(Window(Home).Property(WidgetPage),Movies)</visible>
+						</item>
+						<item>
+							<label>Movie Catalog 4</label>
+							<onclick>Skin.ToggleSetting(Movies.HideWidget3)</onclick>
+							<property name="status_icon">$VAR[StatusMoviesWidget3IconVar]</property>
+							<visible>String.IsEqual(Window(Home).Property(WidgetPage),Movies)</visible>
+						</item>
+						
+						<!-- SERIES WIDGETS -->
+						<item>
+							<label>Series Catalog 1</label>
+							<onclick>Skin.ToggleSetting(Series.HideWidget0)</onclick>
+							<property name="status_icon">$VAR[StatusSeriesWidget0IconVar]</property>
+							<visible>String.IsEqual(Window(Home).Property(WidgetPage),Series)</visible>
+						</item>
+						<item>
+							<label>Series Catalog 2</label>
+							<onclick>Skin.ToggleSetting(Series.HideWidget1)</onclick>
+							<property name="status_icon">$VAR[StatusSeriesWidget1IconVar]</property>
+							<visible>String.IsEqual(Window(Home).Property(WidgetPage),Series)</visible>
+						</item>
+						<item>
+							<label>Series Catalog 3</label>
+							<onclick>Skin.ToggleSetting(Series.HideWidget2)</onclick>
+							<property name="status_icon">$VAR[StatusSeriesWidget2IconVar]</property>
+							<visible>String.IsEqual(Window(Home).Property(WidgetPage),Series)</visible>
+						</item>
+						<item>
+							<label>Series Catalog 4</label>
+							<onclick>Skin.ToggleSetting(Series.HideWidget3)</onclick>
+							<property name="status_icon">$VAR[StatusSeriesWidget3IconVar]</property>
+							<visible>String.IsEqual(Window(Home).Property(WidgetPage),Series)</visible>
+						</item>
+					</content>
+				</control>
+			</control>
+			
+			<!-- APPEARANCE TAB -->
+			<control type="group">
+				<visible>String.IsEqual(Window(Home).Property(ActiveTab),appearance)</visible>
+				
+				<control type="label">
+					<left>40</left>
+					<top>180</top>
+					<width>1120</width>
+					<height>40</height>
+					<font>font13</font>
+					<textcolor>#B3B3B3</textcolor>
+					<label>Customize the look and feel</label>
+				</control>
+				
+				<control type="label">
+					<left>40</left>
+					<top>260</top>
+					<width>1120</width>
+					<height>60</height>
+					<font>font13_title</font>
+					<textcolor>#FFFFFF</textcolor>
+					<label>Coming Soon</label>
+				</control>
+				
+				<control type="label">
+					<left>40</left>
+					<top>320</top>
+					<width>1120</width>
+					<height>40</height>
+					<font>font13</font>
+					<textcolor>#B3B3B3</textcolor>
+					<label>Theme customization options will be available in a future update</label>
+				</control>
+			</control>
+			
+			<!-- Close Button -->
+			<control type="button" id="9300">
+				<left>920</left>
+				<top>770</top>
+				<width>240</width>
+				<height>50</height>
+				<font>font13_title</font>
+				<textcolor>#FFFFFF</textcolor>
+				<focusedcolor>#000000</focusedcolor>
+				<label>Close</label>
+				<align>center</align>
+				<texturefocus colordiffuse="#E50914">colors/white.png</texturefocus>
+				<texturenofocus colordiffuse="#333333">colors/white.png</texturenofocus>
+				<onclick>Dialog.Close(1115)</onclick>
+			</control>
+		</control>
+	</controls>
 </window>

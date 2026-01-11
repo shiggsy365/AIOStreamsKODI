@@ -1,3 +1,14 @@
+[B]5.0.0[/B]
+• MAJOR: Complete Netflix-style UI refactor
+• NEW: Horizontal top menu bar replacing sidebar
+• NEW: Full-width widget rows for maximum content visibility
+• NEW: Simplified tabbed customization dialog
+• NEW: Clean page-based navigation (Home, Movies, Series, TV, Music)
+• NEW: Smooth page transitions and focus animations
+• IMPROVED: Widget management - toggle visibility per page
+• IMPROVED: Netflix-inspired color scheme and typography
+• REMOVED: Complex widget reordering (simplified approach)
+
 [B]4.0.22[/B]
 • FIXED: Widget positioning on Movies and Series pages.
 • NEW: Integrated page-specific widget reordering in Customization dialog.
