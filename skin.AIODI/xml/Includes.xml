@@ -1107,6 +1107,7 @@
 						<width>auto</width>
 						<animation effect="fade" start="100" end="0" time="300" condition="Window.Next(screencalibration)">WindowClose</animation>
 						<label>$INFO[System.Time]</label>
+						<visible>false</visible>
 					</control>
 				</control>
 				<control type="grouplist">
@@ -1764,5 +1765,4 @@
 			</focusedlayout>
 		</definition>
 	</include>
-<include file="Includes_Netflix.xml" />
 </includes>

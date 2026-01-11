@@ -1,3 +1,10 @@
+[B]4.0.25[/B]
+• NEW: Single-widget display with up/down cycling
+• NEW: White sidebar icons for better visibility
+• IMPROVED: Widget positioning at bottom of screen (600px from top)
+• IMPROVED: Cleaner navigation - up/down cycles through widgets
+• IMPROVED: Each page (Home/Movies/Series) shows one widget at a time
+
 [B]5.0.0[/B]
 • MAJOR: Complete Netflix-style UI refactor
 • NEW: Horizontal top menu bar replacing sidebar
