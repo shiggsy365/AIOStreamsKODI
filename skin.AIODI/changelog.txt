@@ -1,3 +1,6 @@
+[B]3.0.5[/B]
+• FIXED: Missing icon.png and fanart.jpg in root (caused installation error)
+
 [B]3.0.3[/B]
 • FIXED: Black screen and missing content issues
 • FIXED: Case-sensitivity issues (full lowercase refactor)
