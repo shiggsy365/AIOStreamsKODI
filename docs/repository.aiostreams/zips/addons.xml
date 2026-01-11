@@ -39,7 +39,7 @@
         </assets>
     </extension>
 </addon>
-<addon id="skin.AIODI" version="6.0.13" name="AIODI" provider-name="Jon">
+<addon id="skin.AIODI" version="6.0.14" name="AIODI" provider-name="Jon">
 	<requires>
 		<import addon="xbmc.gui" version="5.17.0"/>
 	</requires>
