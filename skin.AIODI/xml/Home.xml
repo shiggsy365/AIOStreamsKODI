@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <window>
-<onload condition="String.IsEmpty(Skin.String(SideMenuFocus))">Skin.SetString(SideMenuFocus,home)</onload>
-<onload condition="String.IsEmpty(Skin.String(Home_WidgetIndex))">Skin.SetString(Home_WidgetIndex,0)</onload>
-<onload condition="String.IsEmpty(Skin.String(Movies_WidgetIndex))">Skin.SetString(Movies_WidgetIndex,0)</onload>
-<onload condition="String.IsEmpty(Skin.String(TV_WidgetIndex))">Skin.SetString(TV_WidgetIndex,0)</onload>
+<onload>Skin.SetString(SideMenuFocus,home)</onload>
+<onload>Skin.SetString(Home_WidgetIndex,0)</onload>
+<onload>Skin.SetString(Movies_WidgetIndex,0)</onload>
+<onload>Skin.SetString(TV_WidgetIndex,0)</onload>
 
 
 
@@ -12,27 +12,37 @@
 <defaultcontrol>9000</defaultcontrol>
 <backgroundcolor>background</backgroundcolor>
 <controls>
-	<!-- DEBUG LABELS -->
 	<control type="label">
 		<left>150</left>
-		<top>20</top>
-		<width>1000</width>
-		<height>50</height>
-		<font>font14</font>
+		<top>10</top>
+		<width>1500</width>
+		<height>30</height>
+		<font>font12</font>
 		<textcolor>yellow</textcolor>
-		<label>SideMenuFocus: [ $INFO[Skin.String(SideMenuFocus)] ] | ActiveWidgetID: [ $VAR[CurrentWidgetListID] ]</label>
-		<zorder>100</zorder>
+		<label>FOCUS: [ $INFO[Skin.String(SideMenuFocus)] ] | WIDGET_IDX: [ $INFO[Skin.String(Home_WidgetIndex)] ] | ACTIVE_ID: [ $VAR[CurrentWidgetListID] ]</label>
+		<zorder>1000</zorder>
+	</control>
+	<control type="label">
+		<left>150</left>
+		<top>40</top>
+		<width>1500</width>
+		<height>30</height>
+		<font>font12</font>
+		<textcolor>red</textcolor>
+		<visible>Skin.IsString(SideMenuFocus,home)</visible>
+		<label>GROUP 11000 (HOME) IS VISIBLE</label>
+		<zorder>1000</zorder>
 	</control>
 	<control type="label">
 		<left>150</left>
 		<top>70</top>
-		<width>1000</width>
-		<height>50</height>
-		<font>font14</font>
-		<textcolor>red</textcolor>
-		<visible>Skin.IsString(SideMenuFocus,home)</visible>
-		<label>HOME WIDGET GROUP (11000) IS VISIBLE</label>
-		<zorder>100</zorder>
+		<width>1500</width>
+		<height>30</height>
+		<font>font12</font>
+		<textcolor>cyan</textcolor>
+		<visible>Control.HasFocus(11999) | Control.HasFocus(10100)</visible>
+		<label>WIDGET AREA HAS FOCUS</label>
+		<zorder>1000</zorder>
 	</control>
 <control type="button" id="20000">
 <include>HiddenObject</include>

@@ -937,6 +937,7 @@
 		<value condition="Skin.IsString(SideMenuFocus,tvshows) + Skin.IsString(TV_WidgetIndex,1)">6200</value>
 		<value condition="Skin.IsString(SideMenuFocus,tvshows) + Skin.IsString(TV_WidgetIndex,2)">6300</value>
 		<value condition="Skin.IsString(SideMenuFocus,tvshows) + Skin.IsString(TV_WidgetIndex,3)">6400</value>
+		<value>10100</value>
 	</variable>
 
 	<!-- Cycling Variables for Navigation Updates -->
