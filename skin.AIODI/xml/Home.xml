@@ -191,6 +191,7 @@
 					<focusposition>0</focusposition>
 					<onfocus>ClearProperty(listposition,home)</onfocus>
 					<oncontextmenu>ActivateWindow(1115)</oncontextmenu>
+					<onrightclick>ActivateWindow(1115)</onrightclick>
 					<onright>SetFocus($INFO[Container(9000).ListItem.Property(menu_id)])</onright>
 					<onup>700</onup>
 					<ondown>700</ondown>
@@ -211,7 +212,7 @@
 								<top>1</top>
 								<width>95</width>
 								<height>95</height>
-								<texture colordiffuse="button_focus">$INFO[ListItem.Art(thumb)]</texture>
+								<texture colordiffuse="button_focus">$INFO[ListItem.Thumb]</texture>
 								<animation effect="fade" start="0" end="100" time="300" reversible="false">Focus</animation>
 							</control>
 							<control type="image">
@@ -228,7 +229,7 @@
 							<top>1</top>
 							<width>95</width>
 							<height>95</height>
-							<texture>$INFO[ListItem.Art(thumb)]</texture>
+							<texture>$INFO[ListItem.Thumb]</texture>
 						</control>
 						
 					</focusedlayout>
@@ -238,7 +239,7 @@
 							<top>1</top>
 							<width>95</width>
 							<height>95</height>
-							<texture colordiffuse="44FFFFFF">$INFO[ListItem.Art(thumb)]</texture>
+							<texture colordiffuse="44FFFFFF">$INFO[ListItem.Thumb]</texture>
 						</control>
 						
 					</itemlayout>
@@ -305,7 +306,15 @@
 <thumb>icons/sidemenu/settings.png</thumb>
 <property name="id">settings</property>
 </item>
-</content>
+
+<item>
+<label>Customise AIODI</label>
+<onclick>ActivateWindow(1115)</onclick>
+<property name="menu_id">20000</property>
+<thumb>icons/sidemenu/settings.png</thumb>
+<property name="id">customise</property>
+</item>
+					</content>
 				</control>
 				
 		                
