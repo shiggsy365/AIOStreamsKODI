@@ -39,7 +39,7 @@
         </assets>
     </extension>
 </addon>
-<addon id="skin.aiodi" version="3.1.15" name="AIODI" provider-name="shiggsy365">
+<addon id="skin.aiodi" version="3.1.17" name="AIODI" provider-name="shiggsy365">
     <requires>
         <import addon="xbmc.gui" version="5.17.0"/>
         <import addon="plugin.video.aiostreams"/>

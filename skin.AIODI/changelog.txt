@@ -1,3 +1,8 @@
+[B]3.1.16[/B]
+• FIXED: Foolproof texture restoration - repopulated all empty tags with valid lowercase assets.
+• FIXED: Manual repair of Pointer.xml to ensure mouse and GUI stability.
+• FIXED: Verified all XML attributes have correct spacing for standard compliance.
+
 [B]3.1.15[/B]
 • FIXED: Critical XML syntax repair - restored missing spaces between attributes caused by v3.11 cleanup.
 • FIXED: Robust texture restoration - ensuring all background and UI tags point to valid common assets.
