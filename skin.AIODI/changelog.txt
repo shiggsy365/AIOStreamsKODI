@@ -1,3 +1,9 @@
+[B]4.0.10[/B]
+• FIXED: Sidebar now correctly expands and collapses based on focus.
+• NEW: Smart Multi-Row Widgets for Movies and Series (Posters instead of Buttons).
+• REMOVED: Weather and Favourites from side menu.
+• IMPROVED: Widgets now adapt to available user catalogs dynamically.
+
 [B]4.0.8[/B]
 • NEW: Minimalist icon-only side menu with collapse animation.
 • FIXED: AIOStreams widgets now skip genre selection and default to "All".

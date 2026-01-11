@@ -1728,6 +1728,7 @@ def list_catalogs():
     is_widget = params.get('widget') == 'true'
     
     manifest = get_manifest()
+
     if not manifest or 'catalogs' not in manifest:
         xbmcgui.Dialog().notification('AIOStreams', 'No catalogs available', xbmcgui.NOTIFICATION_ERROR)
         xbmcplugin.endOfDirectory(HANDLE)
@@ -1812,6 +1813,135 @@ def list_catalog_genres():
             info_tag.setTitle(genre)
             url = get_url(action='browse_catalog', catalog_id=catalog_id, content_type=content_type, catalog_name=catalog_name, genre=genre)
             xbmcplugin.addDirectoryItem(HANDLE, url, list_item, True)
+    
+    xbmcplugin.endOfDirectory(HANDLE)
+
+
+
+
+        return
+        
+    # Filter catalogs by type
+    typed_catalogs = [c for c in manifest['catalogs'] 
+                     if c.get('type') == content_type 
+                     and 'search' not in c.get('name', '').lower()
+                     and 'search' not in c.get('id', '').lower()]
+    
+    if index < len(typed_catalogs):
+        catalog = typed_catalogs[index]
+        catalog_id = catalog['id']
+        catalog_name = catalog.get('name', 'Catalog')
+        
+        # Check for genres
+        extras = catalog.get('extra', [])
+        genre_extra = next((e for e in extras if e.get('name') == 'genre'), None)
+        
+        # Default to All if genres exist
+        genre_filter = 'All' if genre_extra and genre_extra.get('options') else None
+        
+        # Fetch the content
+        catalog_data = get_catalog(content_type, catalog_id, genre_filter)
+        
+        if catalog_data and 'metas' in catalog_data:
+            # Apply filters
+            if HAS_MODULES and filters:
+                catalog_data['metas'] = filters.filter_items(catalog_data['metas'])
+                
+            xbmcplugin.setPluginCategory(HANDLE, catalog_name)
+            xbmcgui.Window(10000).setProperty(f'{content_type}_catalog_{index}_name', catalog_name)
+            xbmcplugin.setContent(HANDLE, 'movies' if content_type == 'movie' else 'tvshows')
+            
+            for meta in catalog_data['metas']:
+                item_id = meta.get('id')
+                item_type = meta.get('type', content_type)
+                list_item = xbmcgui.ListItem(label=meta.get('name'))
+                
+                # Metadata
+                info_tag = list_item.getVideoInfoTag()
+                info_tag.setTitle(meta.get('name'))
+                if meta.get('year'): info_tag.setYear(int(meta.get('year')))
+                if meta.get('description'): info_tag.setPlot(meta.get('description'))
+                
+                # Art
+                art = {
+                    'poster': meta.get('poster'),
+                    'fanart': meta.get('background'),
+                    'thumb': meta.get('logo') or meta.get('poster'),
+                    'icon': meta.get('poster')
+                }
+                list_item.setArt(art)
+                
+                url = get_url(action='get_streams', content_type=item_type, media_id=item_id)
+                xbmcplugin.addDirectoryItem(HANDLE, url, list_item, False)
+    
+    xbmcplugin.endOfDirectory(HANDLE)
+
+
+
+def smart_widget():
+    """Fetch a specific catalog by index for widgets."""
+    params = dict(parse_qsl(sys.argv[2][1:]))
+    index = int(params.get('index', 0))
+    content_type = params.get('content_type', 'movie')
+    
+    manifest = get_manifest()
+    if not manifest or 'catalogs' not in manifest:
+        xbmcplugin.endOfDirectory(HANDLE)
+        return
+        
+    # Filter catalogs by type
+    typed_catalogs = [c for c in manifest['catalogs'] 
+                     if c.get('type') == content_type 
+                     and 'search' not in c.get('name', '').lower()
+                     and 'search' not in c.get('id', '').lower()]
+    
+    if index < len(typed_catalogs):
+        catalog = typed_catalogs[index]
+        catalog_id = catalog['id']
+        catalog_name = catalog.get('name', 'Catalog')
+        
+        # Check for genres
+        extras = catalog.get('extra', [])
+        genre_extra = next((e for e in extras if e.get('name') == 'genre'), None)
+        
+        # Default to All if genres exist
+        genre_filter = 'All' if genre_extra and genre_extra.get('options') else None
+        
+        # Fetch the content
+        catalog_data = get_catalog(content_type, catalog_id, genre_filter)
+        
+        if catalog_data and 'metas' in catalog_data:
+            # Apply filters
+            if HAS_MODULES and filters:
+                catalog_data['metas'] = filters.filter_items(catalog_data['metas'])
+                
+            xbmcplugin.setPluginCategory(HANDLE, catalog_name)
+            xbmcgui.Window(10000).setProperty(f'{content_type}_catalog_{index}_name', catalog_name)
+            xbmcplugin.setContent(HANDLE, 'movies' if content_type == 'movie' else 'tvshows')
+            
+            for meta in catalog_data['metas']:
+                item_id = meta.get('id')
+                item_type = meta.get('type', content_type)
+                list_item = xbmcgui.ListItem(label=meta.get('name'))
+                
+                # Metadata
+                info_tag = list_item.getVideoInfoTag()
+                info_tag.setTitle(meta.get('name'))
+                if meta.get('year'): info_tag.setYear(int(meta.get('year')))
+                if meta.get('description'): info_tag.setPlot(meta.get('description'))
+                if meta.get('imdb_id'): info_tag.setIMDBNumber(meta.get('imdb_id'))
+                
+                # Art
+                art = {
+                    'poster': meta.get('poster'),
+                    'fanart': meta.get('background'),
+                    'thumb': meta.get('logo') or meta.get('poster'),
+                    'icon': meta.get('poster')
+                }
+                list_item.setArt(art)
+                
+                url = get_url(action='get_streams', content_type=item_type, media_id=item_id)
+                xbmcplugin.addDirectoryItem(HANDLE, url, list_item, False)
     
     xbmcplugin.endOfDirectory(HANDLE)
 
@@ -3674,6 +3804,7 @@ ACTION_REGISTRY = {
     'movie_lists': lambda p: movie_lists(),
     'series_lists': lambda p: series_lists(),
     'catalogs': lambda p: list_catalogs(),
+    'smart_widget': lambda p: smart_widget(),
     'catalog_genres': lambda p: list_catalog_genres(),
     'browse_catalog': lambda p: browse_catalog(),
 

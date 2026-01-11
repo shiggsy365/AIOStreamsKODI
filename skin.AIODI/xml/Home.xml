@@ -63,6 +63,7 @@
 </include>
 </control>
 </control>
+
 <control type="group" id="5000">
 <visible>String.IsEqual(Container(9000).ListItem.Property(id),movies)</visible>
 <include content="Visible_Right_Delayed">
@@ -71,13 +72,33 @@
 <control type="grouplist" id="5001">
 <include>WidgetGroupListCommon</include>
 <include content="WidgetListPoster">
-<param name="content_path" value="plugin://plugin.video.aiostreams/?action=catalogs&amp;widget=true&amp;content_type=movie"/>
-<param name="widget_header" value="AIOStreams Movie Catalogs"/>
+<param name="content_path" value="plugin://plugin.video.aiostreams/?action=smart_widget&amp;index=0&amp;content_type=movie"/>
+<param name="widget_header" value="$INFO[Window(Home).Property(movie_catalog_0_name)]"/>
 <param name="widget_target" value="videos"/>
 <param name="list_id" value="5100"/>
 </include>
+<include content="WidgetListPoster">
+<param name="content_path" value="plugin://plugin.video.aiostreams/?action=smart_widget&amp;index=1&amp;content_type=movie"/>
+<param name="widget_header" value="$INFO[Window(Home).Property(movie_catalog_1_name)]"/>
+<param name="widget_target" value="videos"/>
+<param name="list_id" value="5200"/>
+</include>
+<include content="WidgetListPoster">
+<param name="content_path" value="plugin://plugin.video.aiostreams/?action=smart_widget&amp;index=2&amp;content_type=movie"/>
+<param name="widget_header" value="$INFO[Window(Home).Property(movie_catalog_2_name)]"/>
+<param name="widget_target" value="videos"/>
+<param name="list_id" value="5300"/>
+</include>
+<include content="WidgetListPoster">
+<param name="content_path" value="plugin://plugin.video.aiostreams/?action=smart_widget&amp;index=3&amp;content_type=movie"/>
+<param name="widget_header" value="$INFO[Window(Home).Property(movie_catalog_3_name)]"/>
+<param name="widget_target" value="videos"/>
+<param name="list_id" value="5400"/>
+</include>
 </control>
 </control>
+
+
 <control type="group" id="6000">
 <visible>String.IsEqual(Container(9000).ListItem.Property(id),tvshows)</visible>
 <include content="Visible_Right_Delayed">
@@ -86,18 +107,37 @@
 <control type="grouplist" id="6001">
 <include>WidgetGroupListCommon</include>
 <include content="WidgetListPoster">
-<param name="content_path" value="plugin://plugin.video.aiostreams/?action=catalogs&amp;widget=true&amp;content_type=series"/>
-<param name="widget_header" value="AIOStreams Series Catalogs"/>
+<param name="content_path" value="plugin://plugin.video.aiostreams/?action=smart_widget&amp;index=0&amp;content_type=series"/>
+<param name="widget_header" value="$INFO[Window(Home).Property(series_catalog_0_name)]"/>
 <param name="widget_target" value="videos"/>
 <param name="list_id" value="6100"/>
 </include>
+<include content="WidgetListPoster">
+<param name="content_path" value="plugin://plugin.video.aiostreams/?action=smart_widget&amp;index=1&amp;content_type=series"/>
+<param name="widget_header" value="$INFO[Window(Home).Property(series_catalog_1_name)]"/>
+<param name="widget_target" value="videos"/>
+<param name="list_id" value="6200"/>
+</include>
+<include content="WidgetListPoster">
+<param name="content_path" value="plugin://plugin.video.aiostreams/?action=smart_widget&amp;index=2&amp;content_type=series"/>
+<param name="widget_header" value="$INFO[Window(Home).Property(series_catalog_2_name)]"/>
+<param name="widget_target" value="videos"/>
+<param name="list_id" value="6300"/>
+</include>
+<include content="WidgetListPoster">
+<param name="content_path" value="plugin://plugin.video.aiostreams/?action=smart_widget&amp;index=3&amp;content_type=series"/>
+<param name="widget_header" value="$INFO[Window(Home).Property(series_catalog_3_name)]"/>
+<param name="widget_target" value="videos"/>
+<param name="list_id" value="6400"/>
+</include>
 </control>
 </control>
+
 </control>
 			<control type="group">
 				<depth>DepthContentPanel</depth>
 				<include>OpenClose_Left</include>
-				<animation effect="slide" start="0,0" end="-100,0" time="300" tween="sine" easing="inout" condition="!ControlGroup(9000).HasFocus">Conditional</animation>
+				<animation effect="slide" start="0,0" end="-100,0" time="300" tween="sine" easing="inout" condition="!Control.HasFocus(9000)">Conditional</animation>
 				<include content="ContentPanel">
 					<param name="width" value="120" />
 				</include>
@@ -122,7 +162,7 @@
 								<width>120</width>
 								<height>95</height>
 								<texture colordiffuse="button_focus">lists/focus.png</texture>
-								<animation effect="fade" start="100" end="0" time="0" condition="[!Control.HasFocus(9000) + !ControlGroup(700).HasFocus] | System.HasActiveModalDialog">Conditional</animation>
+								<animation effect="fade" start="100" end="0" time="0" condition="[!Control.HasFocus(9000)] | System.HasActiveModalDialog">Conditional</animation>
 							</control>
 							<control type="image">
 								<left>12</left>
@@ -138,7 +178,7 @@
 								<width>95</width>
 								<height>95</height>
 								<texture colordiffuse="51FFFFFF">colors/black.png</texture>
-								<animation effect="fade" start="100" end="0" time="0" condition="[!Control.HasFocus(9000) + !ControlGroup(700).HasFocus] | System.HasActiveModalDialog">Conditional</animation>
+								<animation effect="fade" start="100" end="0" time="0" condition="[!Control.HasFocus(9000)] | System.HasActiveModalDialog">Conditional</animation>
 							</control>
 						</control>
 						<control type="image">
