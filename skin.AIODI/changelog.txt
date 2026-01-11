@@ -1,3 +1,11 @@
+[B]3.0.0[/B]
+• COMPLETE REBUILD - Fresh start with minimal structure
+• Direct AIOStreams plugin integration (no widget manager)
+• Arctic Fuse 2 minimal aesthetic
+• Simplified navigation and content loading
+• Removed complex includes and property system
+• Clean, reliable, functional interface
+
 [B]2.0.4[/B]
 • TEST BUILD: Hardcoded AIOStreams path for widget testing
 • Path: plugin://plugin.video.aiostreams/?action=movie_lists
@@ -24,54 +32,7 @@
 [B]2.0.0[/B]
 • Arctic Fuse 2 Theme Integration - Major visual overhaul
 • Replaced bright blue (#1E90FF) with subtle gray (#b3b3b3) theme
-• Implemented opacity-based color system (100%, 90%, 70%, 50%, 30%, 12% variations)
-• Added main_fg/bg, dialog_fg/bg, panel, overlay, and shadow color definitions
-• Updated navigation with subtle focus states for minimal aesthetic
-• Updated all 14 color themes with Arctic Fuse 2 backgrounds
-• Updated dialog files with transparent overlays and soft text
-• Transformed from Netflix-style to minimal, content-focused design
-
-[B]0.8.5[/B]
-• Updated language files from Transifex
-
-[B]0.8.3[/B]
-• Updated language files from Transifex
-
-[B]0.8.2[/B]
-• Updated language files from Transifex
-
-[B]0.8.1[/B]
-• Updated language files from Transifex
-
-[B]0.7.13[/B]
-• Updated language files from Transifex
-
-[B]0.7.12[/B]
-• Updated language files from Transifex
-
-[B]0.7.11[/B]
-• Updated language files from Transifex
-
-[B]0.7.10[/B]
-• Updated language files from Transifex
-
-[B]0.7.8[/B]
-• Updated language files from Transifex
-
-[B]0.7.7[/B]
-• Updated language files from Transifex
-
-[B]0.7.3[/B]
-• Updated language files from Transifex
-
-[B]0.7.1[/B]
-• Updated language files from Transifex
-
-[B]0.6.2[/B]
-• Updated language files from Transifex
-
-[B]0.6.1[/B]
-• Updated language files from Transifex
-
-﻿[B]0.0.1[/B]
-• Initial commit
+• Implemented opacity-based color system for minimal aesthetic
+• Updated all dialogs, widgets, and navigation with new colors
+• Redesigned home screen with elegant focus states
+• Updated all 14 color themes to match new system
