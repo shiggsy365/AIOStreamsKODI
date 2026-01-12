@@ -29,91 +29,101 @@
 		</definition>
 	</include>
 	<include name="WidgetListPoster">
-		<control type="group">
-			<width>1600</width>
-			<height>600</height>
-			<include content="CategoryLabel">
-				<param name="label">$PARAM[widget_header]</param>
-				<param name="list_id">$PARAM[list_id]</param>
-			</include>
-			<include content="BusyListSpinner">
-				<param name="list_id">$PARAM[list_id]</param>
-				<param name="posy">250</param>
-			</include>
-			<control type="label">
-				<left>0</left>
-				<top>50</top>
-				<width>1000</width>
-				<height>50</height>
-				<font>font20_title</font>
-				<textcolor>FFFFFFFF</textcolor>
-				<label>STANDARD INCLUDE: POSTER (v6.0.125)</label>
-				<zorder>9999</zorder>
-			</control>
-			<control type="image">
-				<left>0</left>
-				<top>115</top>
+		<param name="list_id">noop</param>
+		<param name="widget_header"></param>
+		<param name="widget_target">videos</param>
+		<param name="content_path"></param>
+		<param name="onup_action">noop</param>
+		<param name="ondown_action">noop</param>
+		<param name="onclick_condition">false</param>
+		<param name="browse_mode">auto</param>
+		<definition>
+			<control type="group">
 				<width>1600</width>
-				<height>550</height>
-				<texture colordiffuse="FF00FFFF">icons/sidemenu/home_white.png</texture> <!-- SOLID CYAN BACKDROP -->
-				<zorder>1000</zorder>
-			</control>
-			<control type="panel" id="$PARAM[list_id]">
-				<left>0</left>
-				<top>115</top>
-				<width>1600</width>
-				<height>500</height>
-				<zorder>5000</zorder>
-				<visible>True</visible>
-				<orientation>horizontal</orientation>
-				<scrolltime tween="cubic" easing="out">500</scrolltime>
-				<onleft>9000</onleft>
-				<onright>noop</onright>
-				<itemlayout width="340" height="450">
-					<!-- PROOF OF LIFE: MAGENTA BACKGROUND -->
-					<control type="image">
-						<width>340</width>
-						<height>450</height>
-						<texture colordiffuse="FFFF00FF">icons/sidemenu/home_white.png</texture>
-					</control>
-					<control type="label">
-						<width>340</width>
-						<height>100</height>
-						<align>center</align>
-						<textcolor>white</textcolor>
-						<label>TEMPLATE ITEM</label>
-					</control>
-				</itemlayout>
-				<focusedlayout width="340" height="450">
-					<control type="image">
-						<width>340</width>
-						<height>450</height>
-						<texture colordiffuse="FF00FF00">icons/sidemenu/home_white.png</texture>
-					</control>
-					<control type="label">
-						<width>340</width>
-						<height>100</height>
-						<align>center</align>
-						<label>FOCUSED</label>
-					</control>
-				</focusedlayout>
-					<content target="$PARAM[widget_target]" limit="20">
-						<item>
-							<label>PROOFLABEL: HARDCODED 1 (v6.0.125)</label>
-							<onclick>Notification(AIO, Clicked 1)</onclick>
-							<thumb>icons/sidemenu/home_white.png</thumb>
-							<property name="IsPlayable">false</property>
-						</item>
-						<item>
-							<label>PROOFLABEL: HARDCODED 2 (v6.0.125)</label>
-							<onclick>Notification(AIO, Clicked 2)</onclick>
-							<thumb>icons/sidemenu/home_white.png</thumb>
-							<property name="IsPlayable">false</property>
-						</item>
-						$PARAM[content_path]
-					</content>
+				<height>600</height>
+				<include content="CategoryLabel">
+					<param name="label">$PARAM[widget_header]</param>
+					<param name="list_id">$PARAM[list_id]</param>
+				</include>
+				<include content="BusyListSpinner">
+					<param name="list_id">$PARAM[list_id]</param>
+					<param name="posy">250</param>
+				</include>
+				<control type="label">
+					<left>0</left>
+					<top>50</top>
+					<width>1000</width>
+					<height>50</height>
+					<font>font20_title</font>
+					<textcolor>FFFFFFFF</textcolor>
+					<label>DIRECT TRUTH: POSTER DEFINITION LOADED</label>
+					<zorder>9999</zorder>
 				</control>
-			</control>
+				<control type="image">
+					<left>0</left>
+					<top>115</top>
+					<width>1600</width>
+					<height>550</height>
+					<texture colordiffuse="FF00FFFF">icons/sidemenu/home_white.png</texture> <!-- SOLID CYAN BACKDROP -->
+					<zorder>1000</zorder>
+				</control>
+				<control type="panel" id="$PARAM[list_id]">
+					<left>0</left>
+					<top>115</top>
+					<width>1600</width>
+					<height>500</height>
+					<zorder>5000</zorder>
+					<visible>True</visible>
+					<orientation>horizontal</orientation>
+					<scrolltime tween="cubic" easing="out">500</scrolltime>
+					<onleft>9000</onleft>
+					<onright>noop</onright>
+					<itemlayout width="340" height="450">
+						<!-- PROOF OF LIFE: MAGENTA BACKGROUND -->
+						<control type="image">
+							<width>340</width>
+							<height>450</height>
+							<texture colordiffuse="FFFF00FF">icons/sidemenu/home_white.png</texture>
+						</control>
+						<control type="label">
+							<width>340</width>
+							<height>100</height>
+							<align>center</align>
+							<textcolor>white</textcolor>
+							<label>TEMPLATE ITEM</label>
+						</control>
+					</itemlayout>
+					<focusedlayout width="340" height="450">
+						<control type="image">
+							<width>340</width>
+							<height>450</height>
+							<texture colordiffuse="FF00FF00">icons/sidemenu/home_white.png</texture>
+						</control>
+						<control type="label">
+							<width>340</width>
+							<height>100</height>
+							<align>center</align>
+							<label>FOCUSED</label>
+						</control>
+					</focusedlayout>
+						<content target="$PARAM[widget_target]" limit="20">
+							<item>
+								<label>PROOFLABEL: HARDCODED 1 (v6.0.121)</label>
+								<onclick>Notification(AIO, Clicked 1)</onclick>
+								<thumb>icons/sidemenu/home_white.png</thumb>
+								<property name="IsPlayable">false</property>
+							</item>
+							<item>
+								<label>PROOFLABEL: HARDCODED 2 (v6.0.121)</label>
+								<onclick>Notification(AIO, Clicked 2)</onclick>
+								<thumb>icons/sidemenu/home_white.png</thumb>
+								<property name="IsPlayable">false</property>
+							</item>
+							$PARAM[content_path]
+						</content>
+					</control>
+				</control>
+			</definition>
 	</include>
 	<include name="ImageWidget">
 		<param name="visible">true</param>
@@ -189,93 +199,108 @@
 	<include name="WidgetListEpisodes">
 		<param name="list_id">noop</param>
 		<param name="widget_header"></param>
-			<width>1600</width>
-			<height>600</height>
-			<include content="CategoryLabel">
-				<param name="label">$PARAM[widget_header]</param>
-				<param name="list_id">$PARAM[list_id]</param>
-			</include>
-			<include content="BusyListSpinner">
-				<param name="list_id">$PARAM[list_id]</param>
-				<param name="posy">200</param>
-			</include>
-			<control type="label">
-				<left>0</left>
-				<top>50</top>
-				<width>1000</width>
-				<height>50</height>
-				<font>font20_title</font>
-				<textcolor>FFFFFFFF</textcolor>
-				<label>STANDARD INCLUDE: EPISODES (v6.0.125)</label>
-				<zorder>9999</zorder>
-			</control>
-			<control type="image">
-				<left>0</left>
-				<top>105</top>
+		<param name="widget_target">videos</param>
+		<param name="content_path"></param>
+		<param name="onup_action">noop</param>
+		<param name="ondown_action">noop</param>
+		<param name="main_label">$INFO[ListItem.Title]</param>
+		<param name="sub_label">$INFO[ListItem.TVShowTitle]</param>
+		<param name="thumb_label">$INFO[ListItem.Season,,x]$INFO[ListItem.Episode]</param>
+		<param name="sortby"></param>
+		<param name="visible">True</param>
+		<param name="sortorder">ascending</param>
+		<param name="widget_limit">15</param>
+		<param name="browse_mode">auto</param>
+		<definition>
+			<control type="group">
 				<width>1600</width>
-				<height>410</height>
-				<texture colordiffuse="FF00FFFF">icons/sidemenu/home_white.png</texture>
-				<zorder>1000</zorder>
+				<height>600</height>
+				<include content="CategoryLabel">
+					<param name="label">$PARAM[widget_header]</param>
+					<param name="list_id">$PARAM[list_id]</param>
+				</include>
+				<include content="BusyListSpinner">
+					<param name="list_id">$PARAM[list_id]</param>
+					<param name="posy">200</param>
+				</include>
+				<control type="label">
+					<left>0</left>
+					<top>50</top>
+					<width>1000</width>
+					<height>50</height>
+					<font>font20_title</font>
+					<textcolor>FFFFFFFF</textcolor>
+					<label>DIRECT TRUTH: EPISODE DEFINITION LOADED</label>
+					<zorder>9999</zorder>
+				</control>
+				<control type="image">
+					<left>0</left>
+					<top>105</top>
+					<width>1600</width>
+					<height>410</height>
+					<texture colordiffuse="FF00FFFF">icons/sidemenu/home_white.png</texture>
+					<zorder>1000</zorder>
+				</control>
+				<control type="panel" id="$PARAM[list_id]">
+					<left>0</left>
+					<top>120</top>
+					<width>1600</width>
+					<height>400</height>
+					<zorder>5000</zorder>
+					<visible>True</visible>
+					<orientation>horizontal</orientation>
+					<scrolltime tween="cubic" easing="out">500</scrolltime>
+					<onleft>9000</onleft>
+					<onright>noop</onright>
+					<itemlayout width="340" height="400">
+						<!-- PROOF OF LIFE: MAGENTA BACKGROUND -->
+						<control type="image">
+							<width>340</width>
+							<height>400</height>
+							<texture colordiffuse="FFFF00FF">icons/sidemenu/home_white.png</texture>
+						</control>
+						<control type="label">
+							<width>340</width>
+							<height>400</height>
+							<align>center</align>
+							<label>TEMPLATE ITEM</label>
+						</control>
+						<control type="group">
+							<left>70</left>
+							<top>5</top>
+							<include content="InfoWallEpisodeLayout">
+								<param name="main_label" value="$PARAM[main_label]" />
+								<param name="sub_label" value="$PARAM[sub_label]" />
+								<param name="thumb_label" value="$PARAM[thumb_label]" />
+								<param name="focused" value="false" />
+							</include>
+						</control>
+					</itemlayout>
+					<focusedlayout width="340" height="500">
+						<control type="group">
+							<depth>DepthContentPopout</depth>
+							<left>70</left>
+							<top>5</top>
+							<include content="InfoWallEpisodeLayout">
+								<param name="main_label" value="$PARAM[main_label]" />
+								<param name="sub_label" value="$PARAM[sub_label]" />
+								<param name="thumb_label" value="$PARAM[thumb_label]" />
+								<param name="focused" value="true" />
+							</include>
+						</control>
+					</focusedlayout>
+					<content sortby="$PARAM[sortby]" sortorder="$PARAM[sortorder]" target="$PARAM[widget_target]" limit="$PARAM[widget_limit]" browse="$PARAM[browse_mode]">
+						<item>
+							<label>Hardcoded Test (E)</label>
+							<onclick>Notification(AIO, Hardcoded Item Clicked)</onclick>
+							<thumb>icons/sidemenu/home_white.png</thumb>
+							<property name="IsPlayable">false</property>
+						</item>
+						$PARAM[content_path]
+					</content>
+				</control>
 			</control>
-			<control type="panel" id="$PARAM[list_id]">
-				<left>0</left>
-				<top>120</top>
-				<width>1600</width>
-				<height>400</height>
-				<zorder>5000</zorder>
-				<visible>True</visible>
-				<orientation>horizontal</orientation>
-				<scrolltime tween="cubic" easing="out">500</scrolltime>
-				<onleft>9000</onleft>
-				<onright>noop</onright>
-				<itemlayout width="340" height="400">
-					<!-- PROOF OF LIFE: MAGENTA BACKGROUND -->
-					<control type="image">
-						<width>340</width>
-						<height>400</height>
-						<texture colordiffuse="FFFF00FF">icons/sidemenu/home_white.png</texture>
-					</control>
-					<control type="label">
-						<width>340</width>
-						<height>400</height>
-						<align>center</align>
-						<label>TEMPLATE ITEM</label>
-					</control>
-					<control type="group">
-						<left>70</left>
-						<top>5</top>
-						<include content="InfoWallEpisodeLayout">
-							<param name="main_label" value="$PARAM[main_label]" />
-							<param name="sub_label" value="$PARAM[sub_label]" />
-							<param name="thumb_label" value="$PARAM[thumb_label]" />
-							<param name="focused" value="false" />
-						</include>
-					</control>
-				</itemlayout>
-				<focusedlayout width="340" height="500">
-					<control type="group">
-						<depth>DepthContentPopout</depth>
-						<left>70</left>
-						<top>5</top>
-						<include content="InfoWallEpisodeLayout">
-							<param name="main_label" value="$PARAM[main_label]" />
-							<param name="sub_label" value="$PARAM[sub_label]" />
-							<param name="thumb_label" value="$PARAM[thumb_label]" />
-							<param name="focused" value="true" />
-						</include>
-					</control>
-				</focusedlayout>
-				<content sortby="$PARAM[sortby]" sortorder="$PARAM[sortorder]" target="$PARAM[widget_target]" limit="$PARAM[widget_limit]" browse="$PARAM[browse_mode]">
-					<item>
-						<label>Hardcoded Test (E)</label>
-						<onclick>Notification(AIO, Hardcoded Item Clicked)</onclick>
-						<thumb>icons/sidemenu/home_white.png</thumb>
-						<property name="IsPlayable">false</property>
-					</item>
-					$PARAM[content_path]
-				</content>
-			</control>
-		</control>
+		</definition>
 	</include>
 	<include name="WidgetListSquare">
 		<param name="sub_label">$INFO[ListItem.Label]</param>
