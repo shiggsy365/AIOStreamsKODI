@@ -58,19 +58,18 @@
 					<param name="onup_action" value="$PARAM[onup_action]"/>
 					<param name="ondown_action" value="$PARAM[ondown_action]"/>
 				</include>
-				<itemlayout width="310" height="500">
-					<control type="group">
-						<control type="image">
-							<width>100</width>
-							<height>100</height>
-							<texture colordiffuse="FF00FFFF">icons/sidemenu/home_white.png</texture>
-							<zorder>300</zorder>
-						</control>
+				<itemlayout width="340" height="500">
+					<!-- PROOF OF LIFE: MAGENTA BACKGROUND -->
+					<control type="image">
+						<width>340</width>
+						<height>500</height>
+						<texture colordiffuse="FFFF00FF">icons/sidemenu/home_white.png</texture>
 					</control>
 					<control type="image">
-						<width>310</width>
-						<height>486</height>
-						<texture colordiffuse="88FFFF00">icons/sidemenu/home_white.png</texture>
+						<width>100</width>
+						<height>100</height>
+						<texture colordiffuse="FF00FFFF">icons/sidemenu/home_white.png</texture>
+						<zorder>300</zorder>
 					</control>
 					<control type="label">
 						<width>310</width>
@@ -239,19 +238,18 @@
 					<param name="ondown_action" value="$PARAM[ondown_action]"/>
 				</include>
 				<visible>True</visible>
-				<itemlayout width="310" height="500">
-					<control type="group">
-						<control type="image">
-							<width>100</width>
-							<height>100</height>
-							<texture colordiffuse="FF00FFFF">icons/sidemenu/home_white.png</texture>
-							<zorder>300</zorder>
-						</control>
+				<itemlayout width="340" height="500">
+					<!-- PROOF OF LIFE: MAGENTA BACKGROUND -->
+					<control type="image">
+						<width>340</width>
+						<height>500</height>
+						<texture colordiffuse="FFFF00FF">icons/sidemenu/home_white.png</texture>
 					</control>
 					<control type="image">
-						<width>310</width>
-						<height>500</height>
-						<texture colordiffuse="88FFFF00">icons/sidemenu/home_white.png</texture>
+						<width>100</width>
+						<height>100</height>
+						<texture colordiffuse="FF00FFFF">icons/sidemenu/home_white.png</texture>
+						<zorder>300</zorder>
 					</control>
 					<control type="label">
 						<width>310</width>
