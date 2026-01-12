@@ -398,11 +398,12 @@
 					<param name="list_id">$PARAM[list_id]</param>
 				</include>
 				<!-- CONTENT PANEL -->
-				<control type="panel" id="$PARAM[list_id]">
+				<control type="list" id="$PARAM[list_id]">
 					<left>0</left>
 					<top>65</top>
 					<width>1750</width>
 					<height>280</height>
+					<orientation>horizontal</orientation>
 					<onleft>9000</onleft>
 					<onright>noop</onright>
 					<onup>$PARAM[onup_action1]</onup>
