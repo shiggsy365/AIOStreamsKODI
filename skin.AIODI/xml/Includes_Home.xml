@@ -32,11 +32,11 @@
 		<param name="browse_mode">auto</param>
 		<definition>
 			<control type="group">
-				<include content="CategoryLabel">
+				<include name="CategoryLabel">
 					<param name="label">$PARAM[widget_header]</param>
 					<param name="list_id" value="$PARAM[list_id]"/>
 				</include>
-				<include content="BusyListSpinner">
+				<include name="BusyListSpinner">
 					<param name="list_id" value="$PARAM[list_id]"/>
 					<param name="posy" value="250"/>
 				</include>
@@ -68,9 +68,10 @@
 						</control>
 						<control type="label">
 							<width>340</width>
-							<height>450</height>
+							<height>100</height>
 							<align>center</align>
-							<label>TEMPLATE POSTER</label>
+							<textcolor>white</textcolor>
+							<label>TEMPLATE ITEM</label>
 						</control>
 					</itemlayout>
 					<focusedlayout width="340" height="450">

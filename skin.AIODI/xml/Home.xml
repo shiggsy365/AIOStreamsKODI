@@ -419,7 +419,7 @@
 	<control type="group">
 		<visible>Skin.IsString(Home_WidgetIndex,0)</visible>
 		
-		<include content="WidgetListEpisodes">
+		<include name="WidgetListEpisodes">
 
 			<param name="content_path" value="plugin://plugin.video.aiostreams/?action=trakt_next_up"/>
 			<param name="widget_header" value="Trakt Next Up"/>
@@ -442,7 +442,7 @@
 	</control>
 	<control type="group">
 		<visible>Skin.IsString(Home_WidgetIndex,2)</visible>
-		<include content="WidgetListPoster">
+		<include name="WidgetListPoster">
 			<param name="content_path" value="plugin://plugin.video.aiostreams/?action=trakt_watchlist&amp;media_type=shows"/>
 			<param name="widget_header" value="Trakt Watchlist Series"/>
 			<param name="widget_target" value="videos"/>
@@ -472,7 +472,7 @@
 
 	<control type="group">
 		<visible>Skin.IsString(Movies_WidgetIndex,0)</visible>
-		<include content="WidgetListPoster">
+		<include name="WidgetListPoster">
 			<param name="content_path" value="plugin://plugin.video.aiostreams/?action=smart_widget&amp;index=$VAR[MovieRow1IndexVar]&amp;content_type=movie"/>
 			<param name="widget_header" value="$INFO[Window(Home).Property(movie_catalog_0_name)]"/>
 			<param name="widget_target" value="videos"/>
@@ -483,7 +483,7 @@
 	</control>
 	<control type="group">
 		<visible>Skin.IsString(Movies_WidgetIndex,1)</visible>
-		<include content="WidgetListPoster">
+		<include name="WidgetListPoster">
 			<param name="content_path" value="plugin://plugin.video.aiostreams/?action=smart_widget&amp;index=$VAR[MovieRow2IndexVar]&amp;content_type=movie"/>
 			<param name="widget_header" value="$INFO[Window(Home).Property(movie_catalog_1_name)]"/>
 			<param name="widget_target" value="videos"/>
@@ -494,7 +494,7 @@
 	</control>
 	<control type="group">
 		<visible>Skin.IsString(Movies_WidgetIndex,2)</visible>
-		<include content="WidgetListPoster">
+		<include name="WidgetListPoster">
 			<param name="content_path" value="plugin://plugin.video.aiostreams/?action=smart_widget&amp;index=$VAR[MovieRow3IndexVar]&amp;content_type=movie"/>
 			<param name="widget_header" value="$INFO[Window(Home).Property(movie_catalog_2_name)]"/>
 			<param name="widget_target" value="videos"/>
@@ -505,7 +505,7 @@
 	</control>
 	<control type="group">
 		<visible>Skin.IsString(Movies_WidgetIndex,3)</visible>
-		<include content="WidgetListPoster">
+		<include name="WidgetListPoster">
 			<param name="content_path" value="plugin://plugin.video.aiostreams/?action=smart_widget&amp;index=$VAR[MovieRow4IndexVar]&amp;content_type=movie"/>
 			<param name="widget_header" value="$INFO[Window(Home).Property(movie_catalog_3_name)]"/>
 			<param name="widget_target" value="videos"/>
@@ -529,7 +529,7 @@
 <param name="resolution_var" value="$VAR[ContainerResolutionFlagVar]" />
 </include>
 </control>
-<include content="TopBar">
+<include name="TopBar">
 <param name="breadcrumbs_label" value="" />
 </include>
 
@@ -601,7 +601,7 @@
 	</control>
 	<control type="group">
 		<visible>Skin.IsString(TV_WidgetIndex,0)</visible>
-		<include content="WidgetListPoster">
+		<include name="WidgetListPoster">
 			<param name="content_path" value="plugin://plugin.video.aiostreams/?action=smart_widget&amp;index=$VAR[SeriesRow1IndexVar]&amp;content_type=series"/>
 			<param name="widget_header" value="SERIES TRACKING (6100)"/>
 			<param name="widget_target" value="videos"/>
@@ -634,7 +634,7 @@
 			<height>30</height>
 			<font>font12</font>
 			<textcolor>FFFFFF00</textcolor> <!-- Hex Yellow -->
-			<label>v6.0.111 | F: $INFO[Skin.String(SideMenuFocus)] | T:$INFO[Skin.String(TV_WidgetIndex)] | C: $INFO[Container(6100).NumItems]</label>
+			<label>v6.0.114 | F: $INFO[Skin.String(SideMenuFocus)] | T:$INFO[Skin.String(TV_WidgetIndex)] | C: $INFO[Container(6100).NumItems]</label>
 		</control>
 		<control type="label">
 			<left>150</left>
@@ -643,7 +643,7 @@
 			<height>30</height>
 			<font>font12</font>
 			<textcolor>FFFF0000</textcolor> <!-- Hex Red -->
-			<label>STATUS: $VAR[SeriesRow1IndexVar] | FOCUS: ($INFO[System.FocusedControl.ID]) $INFO[System.FocusedControl.Label] (v6.0.111)</label>
+			<label>STATUS: $VAR[SeriesRow1IndexVar] | FOCUS: ($INFO[System.FocusedControl.ID]) $INFO[System.FocusedControl.Label] (v6.0.114)</label>
 		</control>
 
 		<control type="label">
