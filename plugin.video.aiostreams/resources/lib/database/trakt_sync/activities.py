@@ -332,8 +332,8 @@ class TraktSyncDatabase(BaseTraktDB):
         Returns:
             list: List of all episodes with metadata
         """
-        # Fetch all seasons with episodes and extended info (includes air dates)
-        seasons = trakt.call_trakt(f'shows/{show_trakt_id}/seasons?extended=episodes', with_auth=False)
+        # Fetch all seasons with episodes and extended info (includes air dates, titles, overviews)
+        seasons = trakt.call_trakt(f'shows/{show_trakt_id}/seasons?extended=episodes,full', with_auth=False)
 
         if not seasons:
             return []
@@ -342,6 +342,16 @@ class TraktSyncDatabase(BaseTraktDB):
         for season in seasons:
             season_num = season.get('number', 0)
             for episode in season.get('episodes', []):
+                # Build episode metadata dict for storage
+                episode_meta = {
+                    'title': episode.get('title', ''),
+                    'overview': episode.get('overview', ''),
+                    'rating': episode.get('rating'),
+                    'votes': episode.get('votes'),
+                    'runtime': episode.get('runtime'),
+                    'ids': episode.get('ids', {}),
+                }
+
                 all_episodes.append({
                     'season': season_num,
                     'number': episode.get('number'),
@@ -350,6 +360,7 @@ class TraktSyncDatabase(BaseTraktDB):
                     'tmdb_id': episode.get('ids', {}).get('tmdb'),
                     'tvdb_id': episode.get('ids', {}).get('tvdb'),
                     'air_date': episode.get('first_aired'),
+                    'metadata': episode_meta,
                 })
 
         return all_episodes
@@ -391,11 +402,15 @@ class TraktSyncDatabase(BaseTraktDB):
 
             # Insert all episodes with watched=0 initially
             for ep in all_episodes:
+                # Pickle episode metadata for storage
+                import pickle
+                pickled_metadata = pickle.dumps(ep.get('metadata', {}))
+
                 self.execute_sql("""
                     INSERT OR IGNORE INTO episodes (
                         show_trakt_id, season, episode, trakt_id, imdb_id, tmdb_id, tvdb_id,
-                        air_date, watched, last_updated
-                    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, 0, datetime('now'))
+                        air_date, metadata, watched, last_updated
+                    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 0, datetime('now'))
                 """, (
                     show_trakt_id,
                     ep['season'],
@@ -404,7 +419,8 @@ class TraktSyncDatabase(BaseTraktDB):
                     ep['imdb_id'],
                     ep['tmdb_id'],
                     ep['tvdb_id'],
-                    ep['air_date']
+                    ep['air_date'],
+                    pickled_metadata
                 ))
 
             # Now mark watched episodes

@@ -257,6 +257,7 @@ class TraktSyncDatabase(Database):
                 e.episode,
                 e.air_date,
                 e.imdb_id as episode_imdb_id,
+                e.metadata as episode_metadata,
                 mw.last_watched_at,
                 s.metadata as show_metadata
             FROM next_episode_candidate nec
@@ -283,11 +284,18 @@ class TraktSyncDatabase(Database):
             results = []
             for row in cursor.fetchall():
                 row_dict = dict(row)
+                # Unpickle show metadata
                 if row_dict.get('show_metadata'):
                     try:
                         row_dict['show_metadata'] = pickle.loads(row_dict['show_metadata'])
                     except:
                         row_dict['show_metadata'] = None
+                # Unpickle episode metadata
+                if row_dict.get('episode_metadata'):
+                    try:
+                        row_dict['episode_metadata'] = pickle.loads(row_dict['episode_metadata'])
+                    except:
+                        row_dict['episode_metadata'] = None
                 results.append(row_dict)
 
             self.disconnect()
