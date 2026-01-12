@@ -286,6 +286,7 @@
 					<onright>noop</onright>
 					<onup>$PARAM[onup_action]</onup>
 					<ondown>$PARAM[ondown_action]</ondown>
+					<onfocus>Skin.SetString(CurrentWidgetListID,$PARAM[list_id])</onfocus>
 					<itemlayout width="340" height="450">
 						<!-- PROOF OF LIFE: MAGENTA BACKGROUND -->
 						<control type="image">
@@ -460,6 +461,7 @@
 					<scrolltime tween="cubic" easing="out">500</scrolltime>
 					<onup>$PARAM[onup_action]</onup>
 					<ondown>$PARAM[ondown_action]</ondown>
+					<onfocus>Skin.SetString(CurrentWidgetListID,$PARAM[list_id])</onfocus>
 					<onleft>9000</onleft>
 					<onright>noop</onright>
 					<itemlayout width="340" height="400">
