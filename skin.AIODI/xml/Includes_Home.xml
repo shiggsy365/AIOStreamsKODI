@@ -29,63 +29,65 @@
 		<param name="onclick_condition">false</param>
 		<param name="browse_mode">auto</param>
 		<definition>
-			<include content="CategoryLabel">
-				<param name="label">$PARAM[widget_header]</param>
-				<param name="list_id" value="$PARAM[list_id]"/>
-			</include>
-			<include content="BusyListSpinner">
-				<param name="list_id" value="$PARAM[list_id]"/>
-				<param name="posy" value="250"/>
-			</include>
-			<control type="image">
-				<left>0</left>
-				<top>115</top>
-				<width>1600</width>
-				<height>550</height>
-				<texture colordiffuse="44FFFFFF">icons/sidemenu/home_white.png</texture>
-				<zorder>100</zorder>
-			</control>
-			<control type="panel" id="$PARAM[list_id]">
-				<left>0</left>
-				<top>120</top>
-				<width>1600</width>
-				<height>450</height>
-				<zorder>500</zorder>
-				<visible>True</visible>
-				<orientation>horizontal</orientation>
-				<scrolltime tween="cubic" easing="out">500</scrolltime>
-				<onleft>9000</onleft>
-				<onright>noop</onright>
-				<itemlayout width="340" height="450">
-					<!-- PROOF OF LIFE: MAGENTA BACKGROUND -->
-					<control type="image">
-						<width>340</width>
-						<height>450</height>
-						<texture colordiffuse="FFFF00FF">icons/sidemenu/home_white.png</texture>
-					</control>
-					<control type="label">
-						<width>340</width>
-						<height>450</height>
-						<align>center</align>
-						<label>TEMPLATE POSTER</label>
-					</control>
-				</itemlayout>
-				<focusedlayout width="340" height="450">
-					<control type="image">
-						<width>340</width>
-						<height>450</height>
-						<texture colordiffuse="FF00FF00">icons/sidemenu/home_white.png</texture>
-					</control>
-					<control type="label">
-						<width>340</width>
-						<height>100</height>
-						<align>center</align>
-						<label>FOCUSED</label>
-					</control>
-				</focusedlayout>
-				<content target="$PARAM[widget_target]" limit="15">
-					$PARAM[content_path]
-				</content>
+			<control type="group">
+				<include content="CategoryLabel">
+					<param name="label">$PARAM[widget_header]</param>
+					<param name="list_id" value="$PARAM[list_id]"/>
+				</include>
+				<include content="BusyListSpinner">
+					<param name="list_id" value="$PARAM[list_id]"/>
+					<param name="posy" value="250"/>
+				</include>
+				<control type="image">
+					<left>0</left>
+					<top>115</top>
+					<width>1600</width>
+					<height>550</height>
+					<texture colordiffuse="44FFFFFF">icons/sidemenu/home_white.png</texture>
+					<zorder>100</zorder>
+				</control>
+				<control type="panel" id="$PARAM[list_id]">
+					<left>0</left>
+					<top>120</top>
+					<width>1600</width>
+					<height>450</height>
+					<zorder>500</zorder>
+					<visible>True</visible>
+					<orientation>horizontal</orientation>
+					<scrolltime tween="cubic" easing="out">500</scrolltime>
+					<onleft>9000</onleft>
+					<onright>noop</onright>
+					<itemlayout width="340" height="450">
+						<!-- PROOF OF LIFE: MAGENTA BACKGROUND -->
+						<control type="image">
+							<width>340</width>
+							<height>450</height>
+							<texture colordiffuse="FFFF00FF">icons/sidemenu/home_white.png</texture>
+						</control>
+						<control type="label">
+							<width>340</width>
+							<height>450</height>
+							<align>center</align>
+							<label>TEMPLATE POSTER</label>
+						</control>
+					</itemlayout>
+					<focusedlayout width="340" height="450">
+						<control type="image">
+							<width>340</width>
+							<height>450</height>
+							<texture colordiffuse="FF00FF00">icons/sidemenu/home_white.png</texture>
+						</control>
+						<control type="label">
+							<width>340</width>
+							<height>100</height>
+							<align>center</align>
+							<label>FOCUSED</label>
+						</control>
+					</focusedlayout>
+					<content target="$PARAM[widget_target]" limit="15">
+						$PARAM[content_path]
+					</content>
+				</control>
 			</control>
 		</definition>
 	</include>
