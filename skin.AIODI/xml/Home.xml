@@ -597,7 +597,74 @@
 			<height>50</height>
 			<font>font30_title</font>
 			<textcolor>FFFF00FF</textcolor>
-			<label>IF YOU CAN SEE THIS, GROUP 6000 IS ALIVE (v6.0.131)</label>
+			<label>IF YOU CAN SEE THIS, GROUP 6000 IS ALIVE (v6.0.133)</label>
+		</control>
+
+		<!-- DIRECT INJECTION TEST (v6.0.133) -->
+		<control type="group">
+			<left>0</left>
+			<top>150</top>
+			<width>1600</width>
+			<height>600</height>
+			<control type="label">
+				<width>1000</width>
+				<height>50</height>
+				<font>font20_title</font>
+				<textcolor>FFFFFFFF</textcolor>
+				<label>DIRECT INJECTION TEST: ROW 2 (v6.0.133)</label>
+			</control>
+			<control type="image">
+				<left>0</left>
+				<top>115</top>
+				<width>1600</width>
+				<height>550</height>
+				<texture colordiffuse="FF00FF00">icons/sidemenu/home_white.png</texture> <!-- SOLID GREEN BACKDROP -->
+				<zorder>1000</zorder>
+			</control>
+			<control type="panel" id="6200">
+				<left>0</left>
+				<top>115</top>
+				<width>1600</width>
+				<height>500</height>
+				<zorder>5000</zorder>
+				<orientation>horizontal</orientation>
+				<itemlayout width="340" height="450">
+					<control type="image">
+						<width>340</width>
+						<height>450</height>
+						<texture colordiffuse="FFFF00FF">icons/sidemenu/home_white.png</texture>
+					</control>
+					<control type="label">
+						<width>340</width>
+						<height>100</height>
+						<align>center</align>
+						<label>INJECTED ITEM</label>
+					</control>
+				</itemlayout>
+				<focusedlayout width="340" height="450">
+					<control type="image">
+						<width>340</width>
+						<height>450</height>
+						<texture colordiffuse="FF00FF00">icons/sidemenu/home_white.png</texture>
+					</control>
+					<control type="label">
+						<width>340</width>
+						<height>100</height>
+						<align>center</align>
+						<label>FOCUSED</label>
+					</control>
+				</focusedlayout>
+				<content limit="20">
+					<item>
+						<label>INJECTED PROOF 1</label>
+						<thumb>icons/sidemenu/home_white.png</thumb>
+					</item>
+					<item>
+						<label>INJECTED PROOF 2</label>
+						<thumb>icons/sidemenu/home_white.png</thumb>
+					</item>
+				</content>
+			</control>
 		</control>
 		<control type="label">
 			<left>0</left>
@@ -609,31 +676,12 @@
 			<label>WIDGET AREA START</label>
 		</control>
 
-		<!-- DIRECT TEST: Bypass Include System (v6.0.131) -->
-		<control type="image">
-			<left>0</left>
-			<top>200</top>
-			<width>800</width>
-			<height>400</height>
-			<texture colordiffuse="FF00FFFF">icons/sidemenu/home_white.png</texture>
-			<zorder>9000</zorder>
-		</control>
-		<control type="label">
-			<left>0</left>
-			<top>250</top>
-			<width>800</width>
-			<height>100</height>
-			<font>font30_title</font>
-			<textcolor>FFFFFFFF</textcolor>
-			<label>DIRECT TEST: NO INCLUDE (v6.0.131)</label>
-			<zorder>9500</zorder>
-		</control>
 
 	<control type="group">
 		<visible>Skin.IsString(TV_WidgetIndex,0)</visible>
 		<include content="WidgetListPoster">
 			<param name="content_path">plugin://plugin.video.aiostreams/?action=smart_widget&amp;index=$VAR[SeriesRow1IndexVar]&amp;content_type=series</param>
-			<param name="widget_header">SERIES TRACKING (6100) (v6.0.131)</param>
+			<param name="widget_header">SERIES TRACKING (6100) (v6.0.133)</param>
 			<param name="widget_target">videos</param>
 			<param name="list_id">6100</param>
 			<param name="onup_action">Skin.SetString(TV_WidgetIndex,$VAR[TV_Prev_Index])</param>
@@ -664,7 +712,7 @@
 			<height>30</height>
 			<font>font12</font>
 			<textcolor>FFFFFF00</textcolor> <!-- Hex Yellow -->
-			<label>v6.0.131 | F: $INFO[Skin.String(SideMenuFocus)] | T:$INFO[Skin.String(TV_WidgetIndex)] | C: $INFO[Container(6100).NumItems]</label>
+			<label>v6.0.133 | F: $INFO[Skin.String(SideMenuFocus)] | T:$INFO[Skin.String(TV_WidgetIndex)] | C: $INFO[Container(6100).NumItems]</label>
 		</control>
 		<control type="label">
 			<left>150</left>
@@ -673,7 +721,7 @@
 			<height>30</height>
 			<font>font12</font>
 			<textcolor>FFFF0000</textcolor> <!-- Hex Red -->
-			<label>STATUS: $VAR[SeriesRow1IndexVar] | FOCUS: ($INFO[System.FocusedControl.ID]) $INFO[System.FocusedControl.Label] (v6.0.131)</label>
+			<label>STATUS: $VAR[SeriesRow1IndexVar] | FOCUS: ($INFO[System.FocusedControl.ID]) $INFO[System.FocusedControl.Label] (v6.0.133)</label>
 		</control>
 
 		<control type="label">
