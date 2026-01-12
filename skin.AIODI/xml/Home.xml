@@ -599,8 +599,8 @@
 		<height>1200</height>
 		<visible>String.IsEqual(Skin.String(TV_WidgetIndex),0)</visible>
 		<include content="WidgetListPoster_Stable">
-			<param name="content_path">plugin://plugin.video.aiostreams/?action=smart_widget&amp;index=0&amp;content_type=series</param>
-			<param name="widget_header">HARDCODED PATH TEST (v6.0.150)</param>
+			<param name="content_path">plugin://plugin.video.aiostreams/?action=smart_widget&amp;index=$VAR[SeriesRow1IndexVar]&amp;content_type=series</param>
+			<param name="widget_header">Series Tracking</param>
 			<param name="widget_target">videos</param>
 			<param name="list_id">6100</param>
 			<param name="onup_action">Skin.SetString(TV_WidgetIndex,$VAR[TV_Prev_Index])</param>
