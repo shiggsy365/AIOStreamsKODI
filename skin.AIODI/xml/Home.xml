@@ -658,7 +658,7 @@
 			<height>30</height>
 			<font>font12</font>
 			<textcolor>FFFFFF00</textcolor> <!-- Hex Yellow -->
-			<label>v6.0.58 | F: $INFO[Skin.String(SideMenuFocus)] | H:$INFO[Skin.String(Home_WidgetIndex)] M:$INFO[Skin.String(Movies_WidgetIndex)] T:$INFO[Skin.String(TV_WidgetIndex)]</label>
+			<label>v6.0.88 | F: $INFO[Skin.String(SideMenuFocus)] | H:$INFO[Skin.String(Home_WidgetIndex)] M:$INFO[Skin.String(Movies_WidgetIndex)] T:$INFO[Skin.String(TV_WidgetIndex)]</label>
 		</control>
 		<control type="label">
 			<left>150</left>
@@ -667,7 +667,7 @@
 			<height>30</height>
 			<font>font12</font>
 			<textcolor>FFFF0000</textcolor> <!-- Hex Red -->
-			<label>TV_6100: $INFO[Container(6100).NumItems] | FOCUS: ($INFO[System.FocusedControl.ID]) $INFO[System.FocusedControl.Label] (v6.0.86)</label>
+			<label>TV_6100: $INFO[Container(6100).NumItems] | FOCUS: ($INFO[System.FocusedControl.ID]) $INFO[System.FocusedControl.Label] (v6.0.88)</label>
 		</control>
 
 		<control type="label">
