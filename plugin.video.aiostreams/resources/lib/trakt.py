@@ -2368,15 +2368,15 @@ def prime_database_cache(media_type):
             _watched_id_db_cache['movie'] = {row['imdb_id']: True for row in rows if row['imdb_id']}
         else:
             # For shows, we cache both the basic 'is any episode watched' and the full progress
-            rows = db.fetch_all("SELECT imdb_id, trakt_id FROM shows")
-            watched_shows = {}
-            for row in rows:
-                if not row['imdb_id']: continue
-                
-                # Check for any watched episodes
-                ep_row = db.fetchone("SELECT 1 FROM episodes WHERE show_trakt_id=? AND watched=1 LIMIT 1", (row['trakt_id'],))
-                if ep_row:
-                    watched_shows[row['imdb_id']] = True
+            # Optimization: Use a single JOIN query instead of iterating all shows
+            rows = db.fetch_all("""
+                SELECT DISTINCT s.imdb_id 
+                FROM shows s 
+                JOIN episodes e ON s.trakt_id = e.show_trakt_id 
+                WHERE e.watched = 1 AND s.imdb_id IS NOT NULL AND s.imdb_id != ''
+            """)
+            
+            watched_shows = {row['imdb_id']: True for row in rows}
             
             _watched_id_db_cache['series'] = watched_shows
             _watched_id_db_cache['show'] = watched_shows

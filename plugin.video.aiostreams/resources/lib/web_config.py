@@ -233,15 +233,34 @@ def configure_aiostreams(host_url=None):
     if host_url.endswith('/configure'):
         host_url = host_url[:-10]
 
-    # Check if we already have a manifest URL configured - use that for reconfiguration
+    # Check if we already have a manifest URL configured
     current_manifest = addon.getSetting('base_url')
+    use_manifest_config = False
+    
     if current_manifest and current_manifest.strip():
+        # Check if the host matches our current setting
+        try:
+            from urllib.parse import urlparse
+            manifest_parsed = urlparse(current_manifest)
+            manifest_host = f'{manifest_parsed.scheme}://{manifest_parsed.netloc}'
+            
+            # If hosts match (or close enough), use the manifest's configure URL (preserves state)
+            # If they differ, the user likely changed the setting to switch hosts, so use the new host
+            if host_url and manifest_host in host_url:
+                use_manifest_config = True
+            elif not host_url:
+                use_manifest_config = True
+        except:
+            pass
+
+    if use_manifest_config:
         # Extract configure URL from manifest
         if '/manifest.json' in current_manifest:
             configure_url = current_manifest.replace('/manifest.json', '/configure')
         else:
             configure_url = current_manifest.rstrip('/') + '/configure'
     else:
+        # Use simple configure URL from the host setting
         configure_url = host_url + '/stremio/configure'
 
     # Check if on Android - use different flow (manual paste)
