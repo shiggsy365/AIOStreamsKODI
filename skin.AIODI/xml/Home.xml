@@ -516,6 +516,59 @@
 	</control>
 </control>
 
+<!-- TV Show Widgets -->
+<control type="group" id="6000">
+	<bottom>100</bottom>
+	<left>0</left>
+	<right>0</right>
+	<height>550</height>
+	<visible>String.IsEqual(HomeCategory,tvshows)</visible>
+
+	<control type="group">
+		<visible>Skin.IsString(TV_WidgetIndex,0)</visible>
+		<include content="WidgetListPoster">
+			<param name="content_path" value="plugin://plugin.video.aiostreams/?action=smart_widget&amp;index=$VAR[SeriesRow1IndexVar]&amp;content_type=series"/>
+			<param name="widget_header" value="$INFO[Window(Home).Property(series_catalog_0_name)]"/>
+			<param name="widget_target" value="videos"/>
+			<param name="list_id" value="6100"/>
+			<param name="onup_action" value="Skin.SetString(TV_WidgetIndex,$VAR[TV_Prev_Index])"/>
+			<param name="ondown_action" value="Skin.SetString(TV_WidgetIndex,$VAR[TV_Next_Index])"/>
+		</include>
+	</control>
+	<control type="group">
+		<visible>Skin.IsString(TV_WidgetIndex,1)</visible>
+		<include content="WidgetListPoster">
+			<param name="content_path" value="plugin://plugin.video.aiostreams/?action=smart_widget&amp;index=$VAR[SeriesRow2IndexVar]&amp;content_type=series"/>
+			<param name="widget_header" value="$INFO[Window(Home).Property(series_catalog_1_name)]"/>
+			<param name="widget_target" value="videos"/>
+			<param name="list_id" value="6200"/>
+			<param name="onup_action" value="Skin.SetString(TV_WidgetIndex,$VAR[TV_Prev_Index])"/>
+			<param name="ondown_action" value="Skin.SetString(TV_WidgetIndex,$VAR[TV_Next_Index])"/>
+		</include>
+	</control>
+	<control type="group">
+		<visible>Skin.IsString(TV_WidgetIndex,2)</visible>
+		<include content="WidgetListPoster">
+			<param name="content_path" value="plugin://plugin.video.aiostreams/?action=smart_widget&amp;index=$VAR[SeriesRow3IndexVar]&amp;content_type=series"/>
+			<param name="widget_header" value="$INFO[Window(Home).Property(series_catalog_2_name)]"/>
+			<param name="widget_target" value="videos"/>
+			<param name="list_id" value="6300"/>
+			<param name="onup_action" value="Skin.SetString(TV_WidgetIndex,$VAR[TV_Prev_Index])"/>
+			<param name="ondown_action" value="Skin.SetString(TV_WidgetIndex,$VAR[TV_Next_Index])"/>
+		</include>
+	</control>
+	<control type="group">
+		<visible>Skin.IsString(TV_WidgetIndex,3)</visible>
+		<include content="WidgetListPoster">
+			<param name="content_path" value="plugin://plugin.video.aiostreams/?action=smart_widget&amp;index=$VAR[SeriesRow4IndexVar]&amp;content_type=series"/>
+			<param name="widget_header" value="$INFO[Window(Home).Property(series_catalog_3_name)]"/>
+			<param name="widget_target" value="videos"/>
+			<param name="list_id" value="6400"/>
+			<param name="onup_action" value="Skin.SetString(TV_WidgetIndex,$VAR[TV_Prev_Index])"/>
+			<param name="ondown_action" value="Skin.SetString(TV_WidgetIndex,$VAR[TV_Next_Index])"/>
+		</include>
+	</control>
+</control>
 
 	</control>
 </control>
@@ -586,66 +639,6 @@
 	<!-- TOP LAYER DIAGNOSTICS v6.0.35 -->
 	<control type="group">
 		<zorder>10000</zorder>
-		
-		<!-- Background for diagnostics -->
-		<control type="image">
-			<left>140</left>
-			<top>0</top>
-			<width>1200</width>
-			<height>800</height>
-			<texture colordiffuse="88000000">colors/white.png</texture>
-		</control>
-
-		<!-- TV Show Widgets (INSIDE DIAGNOSTICS FOR PROOF) -->
-		<control type="group" id="6000">
-			<left>150</left>
-			<top>100</top>
-			<width>1700</width>
-			<height>600</height>
-			<visible>True</visible>
-			<control type="group">
-				<visible>True</visible>
-				<include content="WidgetListPoster">
-					<param name="list_id" value="6100"/>
-				</include>
-			</control>
-		</control>
-
-		<!-- ROOT PROOF PANEL: NO GROUPS, NO PARAMETERS -->
-		<control type="panel" id="3000">
-			<left>150</left>
-			<top>500</top>
-			<width>1600</width>
-			<height>300</height>
-			<zorder>5000</zorder>
-			<visible>True</visible>
-			<orientation>horizontal</orientation>
-			<itemlayout width="300" height="200">
-				<control type="image">
-					<width>300</width>
-					<height>200</height>
-					<texture colordiffuse="FF00FFFF">icons/sidemenu/home_white.png</texture>
-				</control>
-				<control type="label">
-					<width>300</width>
-					<height>200</height>
-					<align>center</align>
-					<label>ROOT ITEM</label>
-				</control>
-			</itemlayout>
-			<focusedlayout width="300" height="200">
-				<control type="image">
-					<width>300</width>
-					<height>200</height>
-					<texture colordiffuse="FF00FF00">icons/sidemenu/home_white.png</texture>
-				</control>
-			</focusedlayout>
-			<content>
-				<item><label>TEST 1</label><onclick>noop</onclick></item>
-				<item><label>TEST 2</label><onclick>noop</onclick></item>
-				<item><label>TEST 3</label><onclick>noop</onclick></item>
-			</content>
-		</control>
 
 		<!-- Labels -->
 		<!-- GLOBAL TRUTH BOX: PROVES RENDERING & TEXTURE -->

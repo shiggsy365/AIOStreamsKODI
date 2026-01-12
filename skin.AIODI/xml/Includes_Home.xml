@@ -83,10 +83,8 @@
 						<label>FOCUSED</label>
 					</control>
 				</focusedlayout>
-				<content>
-					<item><label>TEMPLATE ITEM 1</label><onclick>noop</onclick></item>
-					<item><label>TEMPLATE ITEM 2</label><onclick>noop</onclick></item>
-					<item><label>TEMPLATE ITEM 3</label><onclick>noop</onclick></item>
+				<content target="$PARAM[widget_target]" limit="15">
+					$PARAM[content_path]
 				</content>
 			</control>
 		</definition>
