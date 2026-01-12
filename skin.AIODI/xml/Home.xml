@@ -589,16 +589,7 @@
 	<top>100</top>
 	<width>1600</width>
 	<height>900</height>
-	<zorder>50000</zorder>
-		<control type="label">
-			<left>0</left>
-			<top>-50</top>
-			<width>1000</width>
-			<height>50</height>
-			<font>font30_title</font>
-			<textcolor>FFFF00FF</textcolor>
-			<label>IF YOU CAN SEE THIS, GROUP 6000 IS ALIVE (v6.0.146)</label>
-		</control>
+	<zorder>20</zorder>
 
 
 	<control type="group">
@@ -609,7 +600,7 @@
 		<visible>String.IsEqual(Skin.String(TV_WidgetIndex),0)</visible>
 		<include content="WidgetListPoster_Stable">
 			<param name="content_path">plugin://plugin.video.aiostreams/?action=smart_widget&amp;index=$VAR[SeriesRow1IndexVar]&amp;content_type=series</param>
-			<param name="widget_header">PRODUCTION: SERIES TRACKING (6100) (v6.0.146)</param>
+			<param name="widget_header">Series Tracking</param>
 			<param name="widget_target">videos</param>
 			<param name="list_id">6100</param>
 			<param name="onup_action">Skin.SetString(TV_WidgetIndex,$VAR[TV_Prev_Index])</param>
@@ -619,56 +610,6 @@
 </control>
 
 	<!-- TOP LAYER DIAGNOSTICS v6.0.144 -->
-	<control type="group">
-		<zorder>30000</zorder>
-		<!-- Labels -->
-		<control type="image">
-			<left>0</left>
-			<top>0</top>
-			<width>100</width>
-			<height>100</height>
-			<texture colordiffuse="FFFF0000">icons/sidemenu/home_white.png</texture>
-			<zorder>1000</zorder>
-		</control>
-
-		<control type="label">
-			<left>150</left>
-			<top>10</top>
-			<width>1500</width>
-			<height>30</height>
-			<font>font12</font>
-			<textcolor>FFFFFF00</textcolor> <!-- Hex Yellow -->
-			<label>v6.0.146 | F: $INFO[Skin.String(SideMenuFocus)] | T:$INFO[Skin.String(TV_WidgetIndex)] | C: $INFO[Container(6100).NumItems]</label>
-		</control>
-		<control type="label">
-			<left>150</left>
-			<top>40</top>
-			<width>1500</width>
-			<height>30</height>
-			<font>font12</font>
-			<textcolor>FFFF0000</textcolor> <!-- Hex Red -->
-			<label>STATUS: $VAR[SeriesRow1IndexVar] | FOCUS: ($INFO[System.FocusedControl.ID]) $INFO[System.FocusedControl.Label] (v6.0.146)</label>
-		</control>
-		<control type="label">
-			<left>150</left>
-			<top>70</top>
-			<width>1500</width>
-			<height>30</height>
-			<font>font12</font>
-			<textcolor>FF00FF00</textcolor> <!-- Hex Green -->
-			<label>TV_INDEX: $INFO[Skin.String(TV_WidgetIndex)] | ROW1_VAR: $VAR[SeriesRow1IndexVar] | C2: $INFO[Container(6101).NumItems]</label>
-		</control>
-		<control type="label">
-			<left>150</left>
-			<top>70</top>
-			<width>1500</width>
-			<height>30</height>
-			<font>font12</font>
-			<textcolor>FF00FFFF</textcolor> <!-- Hex Cyan -->
-			<visible>Control.HasFocus(6100)</visible>
-			<label>FOCUS DETECTED ON ROW 1 (6100)</label>
-		</control>
-	</control>
 </controls>
 </window>
 

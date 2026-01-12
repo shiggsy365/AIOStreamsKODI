@@ -76,75 +76,69 @@
 				<top>0</top>
 				<width>1600</width>
 				<height>1200</height>
-				<zorder>30000</zorder>
 				<!-- HEADER -->
 				<control type="label">
 					<left>0</left>
 					<top>0</top>
 					<width>1000</width>
 					<height>50</height>
-					<font>font12</font>
+					<font>font20_title</font>
 					<textcolor>FFFFFFFF</textcolor>
-					<label>$PARAM[widget_header] (STABLE v6.0.146 @ 0,0 RELATIVE)</label>
-				</control>
-				<!-- BACKDROP -->
-				<control type="image">
-					<left>0</left>
-					<top>115</top>
-					<width>1600</width>
-					<height>550</height>
-					<texture colordiffuse="FF0000FF">icons/sidemenu/home_white.png</texture> <!-- SOLID BLUE BACKDROP -->
-					<zorder>31000</zorder>
+					<label>$PARAM[widget_header]</label>
 				</control>
 				<!-- CONTENT PANEL -->
 				<control type="panel" id="$PARAM[list_id]">
 					<left>0</left>
-					<top>115</top>
+					<top>60</top>
 					<width>1600</width>
 					<height>500</height>
-					<zorder>35000</zorder>
 					<orientation>horizontal</orientation>
 					<onleft>9000</onleft>
 					<onright>noop</onright>
 					<onup>$PARAM[onup_action]</onup>
 					<ondown>$PARAM[ondown_action]</ondown>
-					<itemlayout width="340" height="450">
+					<itemlayout width="240" height="360">
 						<control type="image">
-							<width>340</width>
-							<height>450</height>
-							<texture colordiffuse="FFFFFF00">icons/sidemenu/home_white.png</texture> <!-- YELLOW ITEMS -->
+							<width>230</width>
+							<height>345</height>
+							<aspectratio align="center" aligny="center">scale</aspectratio>
+							<texture background="true">$INFO[ListItem.Icon]</texture>
 						</control>
 						<control type="label">
-							<width>340</width>
-							<height>100</height>
+							<top>310</top>
+							<width>230</width>
+							<height>40</height>
 							<align>center</align>
 							<font>font12</font>
-							<label>STABLE ITEM</label>
+							<textcolor>white</textcolor>
+							<shadowcolor>black</shadowcolor>
+							<label>$INFO[ListItem.Label]</label>
 						</control>
 					</itemlayout>
-					<focusedlayout width="340" height="450">
-						<control type="image">
-							<width>340</width>
-							<height>450</height>
-							<texture colordiffuse="FF00FF00">icons/sidemenu/home_white.png</texture> <!-- GREEN FOCUS -->
-						</control>
-						<control type="label">
-							<width>340</width>
-							<height>100</height>
-							<align>center</align>
-							<font>font12</font>
-							<label>FOCUSED</label>
+					<focusedlayout width="240" height="360">
+						<control type="group">
+							<animation effect="zoom" center="auto" start="100" end="110" time="200" tween="sine" easing="out">Focus</animation>
+							<control type="image">
+								<width>230</width>
+								<height>345</height>
+								<aspectratio align="center" aligny="center">scale</aspectratio>
+								<texture background="true">$INFO[ListItem.Icon]</texture>
+								<bordertexture border="8">thumbs/border/border_focus.png</bordertexture>
+								<bordersize>8</bordersize>
+							</control>
+							<control type="label">
+								<top>310</top>
+								<width>230</width>
+								<height>40</height>
+								<align>center</align>
+								<font>font12</font>
+								<textcolor>FFFFFFFF</textcolor>
+								<shadowcolor>black</shadowcolor>
+								<label>$INFO[ListItem.Label]</label>
+							</control>
 						</control>
 					</focusedlayout>
 					<content limit="20" target="$PARAM[widget_target]">
-						<item>
-							<label>STABLE PROOF 1</label>
-							<thumb>icons/sidemenu/home_white.png</thumb>
-						</item>
-						<item>
-							<label>STABLE PROOF 2</label>
-							<thumb>icons/sidemenu/home_white.png</thumb>
-						</item>
 						$PARAM[content_path]
 					</content>
 				</control>
