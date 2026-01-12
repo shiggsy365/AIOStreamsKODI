@@ -3794,6 +3794,13 @@ def smart_widget():
     catalog_name = catalog.get('name', 'Unknown')
     
     xbmc.log(f'[AIOStreams] smart_widget: Using catalog "{catalog_name}" (id: {catalog_id})', xbmc.LOGINFO)
+
+    # Update the window property to ensure it uses the clean name
+    # This overwrites any previous long path headers
+    try:
+        xbmcgui.Window(10000).setProperty(f'{content_type}_catalog_{index}_name', catalog_name)
+    except:
+        pass
     
     # Prime database cache for performance
     if HAS_MODULES:

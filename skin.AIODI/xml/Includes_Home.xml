@@ -266,6 +266,7 @@
 					<onup>$PARAM[onup_action]</onup>
 					<ondown>$PARAM[ondown_action]</ondown>
 					<onfocus>Skin.SetString(CurrentWidgetListID,$PARAM[list_id])</onfocus>
+					<onfocus>Control.Move($PARAM[list_id],-1000)</onfocus>
 					<itemlayout width="240" height="360">
 						<control type="image">
 							<width>230</width>
