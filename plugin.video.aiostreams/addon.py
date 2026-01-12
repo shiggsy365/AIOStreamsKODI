@@ -250,7 +250,19 @@ def get_catalog(content_type, catalog_id, genre=None, skip=0):
     # Build cache identifier from all parameters
     cache_id = f"{content_type}:{catalog_id}:{genre or 'none'}:{skip}"
 
-    # Check cache first (6 hours = 21600 seconds)
+    # Check SQL cache first (fastest)
+    if HAS_MODULES:
+        try:
+            db = trakt.get_trakt_db()
+            if db:
+                cached_sql = db.get_catalog(content_type, catalog_id, genre, skip)
+                if cached_sql:
+                    xbmc.log(f'[AIOStreams] SQL Cache hit for catalog: {catalog_id}', xbmc.LOGDEBUG)
+                    return cached_sql
+        except Exception as e:
+             xbmc.log(f'[AIOStreams] SQL Cache error for catalog: {e}', xbmc.LOGDEBUG)
+
+    # Check file cache second (legacy)
     if HAS_MODULES:
         cached = cache.get_cached_data('catalog', cache_id, 21600)
         if cached:
@@ -276,9 +288,17 @@ def get_catalog(content_type, catalog_id, genre=None, skip=0):
     xbmc.log(f'[AIOStreams] Requesting catalog from: {url}', xbmc.LOGINFO)
     catalog = make_request(url, 'Catalog error')
 
-    # Cache the result
+    # Cache the result in both tiers
     if catalog and HAS_MODULES:
+        # 1. File cache
         cache.cache_data('catalog', cache_id, catalog)
+        # 2. SQL cache
+        try:
+            db = trakt.get_trakt_db()
+            if db:
+                db.set_catalog(content_type, catalog_id, genre, skip, catalog, 21600)
+        except:
+            pass
 
     return catalog
 
@@ -472,7 +492,20 @@ def get_meta(content_type, meta_id):
     - Last year: 30 days
     - Older: 90 days (metadata is stable)
     """
-    # Initial check with long TTL to see if we have any cache
+    # 1. Check SQL cache first (fastest)
+    if HAS_MODULES:
+        try:
+            db = trakt.get_trakt_db()
+            if db:
+                # Initial check with long TTL (handled by DB expires column)
+                cached_sql = db.get_meta(content_type, meta_id)
+                if cached_sql:
+                    xbmc.log(f'[AIOStreams] SQL Metadata cache hit for {meta_id}', xbmc.LOGDEBUG)
+                    return cached_sql
+        except:
+            pass
+
+    # 2. Check file-based cache (middle tier)
     if HAS_MODULES:
         cached = cache.get_cached_meta(content_type, meta_id, ttl_seconds=86400*365)
         if cached:
@@ -482,7 +515,7 @@ def get_meta(content_type, meta_id):
             # Re-check cache with calculated TTL
             cached = cache.get_cached_meta(content_type, meta_id, ttl_seconds=ttl)
             if cached:
-                xbmc.log(f'[AIOStreams] Metadata cache hit for {meta_id} (TTL: {ttl//86400} days)', xbmc.LOGDEBUG)
+                xbmc.log(f'[AIOStreams] File Metadata cache hit for {meta_id} (TTL: {ttl//86400} days)', xbmc.LOGDEBUG)
                 return cached
 
     # Cache miss, fetch from API
@@ -494,7 +527,15 @@ def get_meta(content_type, meta_id):
     # Store in cache
     if HAS_MODULES and result:
         ttl = get_metadata_ttl(result)
+        # 1. File cache
         cache.cache_meta(content_type, meta_id, result)
+        # 2. SQL cache
+        try:
+            db = trakt.get_trakt_db()
+            if db:
+                db.set_meta(content_type, meta_id, result, ttl)
+        except:
+            pass
         xbmc.log(f'[AIOStreams] Cached metadata for {meta_id} (TTL: {ttl//86400} days)', xbmc.LOGDEBUG)
 
     return result
@@ -673,12 +714,18 @@ def create_listitem_with_context(meta, content_type, action_url):
                         list_item.setProperty('WatchedOverlay', 'OverlayWatched.png')
     
     # Set artwork
+    art = {}
     if meta.get('poster'):
-        list_item.setArt({'poster': meta['poster'], 'thumb': meta['poster']})
+        art['poster'] = meta['poster']
+        art['thumb'] = meta['poster']
     if meta.get('background'):
-        list_item.setArt({'fanart': meta['background']})
+        art['fanart'] = meta['background']
     if meta.get('logo'):
-        list_item.setArt({'clearlogo': meta['logo']})
+        art['clearlogo'] = meta['logo']
+        art['logo'] = meta['logo']
+    
+    if art:
+        list_item.setArt(art)
     
     # Build context menu based on content type
     context_menu = []
@@ -1725,8 +1772,10 @@ def list_catalogs():
     """List all available catalogs from manifest."""
     params = dict(parse_qsl(sys.argv[2][1:]))
     filter_type = params.get('content_type')  # 'movie' or 'series'
+    is_widget = params.get('widget') == 'true'
     
     manifest = get_manifest()
+
     if not manifest or 'catalogs' not in manifest:
         xbmcgui.Dialog().notification('AIOStreams', 'No catalogs available', xbmcgui.NOTIFICATION_ERROR)
         xbmcplugin.endOfDirectory(HANDLE)
@@ -1752,8 +1801,12 @@ def list_catalogs():
         extras = catalog.get('extra', [])
         genre_extra = next((e for e in extras if e.get('name') == 'genre'), None)
         
-        if genre_extra and genre_extra.get('options'):
+        if not is_widget and genre_extra and genre_extra.get('options'):
             url = get_url(action='catalog_genres', catalog_id=catalog_id, content_type=content_type, catalog_name=catalog_name)
+            is_folder = True
+        elif is_widget and genre_extra and genre_extra.get('options'):
+            # widget=true skips genre selection and goes to "All"
+            url = get_url(action='browse_catalog', catalog_id=catalog_id, content_type=content_type, catalog_name=catalog_name, genre='All')
             is_folder = True
         else:
             url = get_url(action='browse_catalog', catalog_id=catalog_id, content_type=content_type, catalog_name=catalog_name)
@@ -1810,7 +1863,6 @@ def list_catalog_genres():
     
     xbmcplugin.endOfDirectory(HANDLE)
 
-
 def browse_catalog():
     """Browse a specific catalog with optional genre filter."""
     params = dict(parse_qsl(sys.argv[2][1:]))
@@ -1820,6 +1872,10 @@ def browse_catalog():
     genre = params.get('genre')
     skip = int(params.get('skip', 0))
 
+    # Prime watchlist and watched caches for performance (batch fetch)
+    if HAS_MODULES:
+        trakt.prime_database_cache(content_type)
+        
     # Fetch catalog data (treat 'All' as no genre filter)
     genre_filter = None if genre == 'All' else genre
     catalog_data = get_catalog(content_type, catalog_id, genre_filter, skip)
@@ -2426,7 +2482,7 @@ def force_trakt_sync():
         xbmc.log('[AIOStreams] Force sync completed with errors', xbmc.LOGWARNING)
 
 
-def trakt_watchlist():
+def trakt_watchlist(params=None):
     """Display Trakt watchlist with auto-sync."""
     if not HAS_MODULES:
         xbmcgui.Dialog().ok('AIOStreams', 'Trakt module not available')
@@ -2700,6 +2756,13 @@ def trakt_next_up():
 
     xbmcplugin.setPluginCategory(HANDLE, 'Next Up')
     xbmcplugin.setContent(HANDLE, 'episodes')
+    
+    # Prime database cache (batch fetch watched status)
+    try:
+        from resources.lib import trakt
+        trakt.prime_database_cache()
+    except:
+        pass
 
     # Get next episodes from database - ONE SQL query, ZERO API calls!
     try:
@@ -2713,7 +2776,15 @@ def trakt_next_up():
         return
 
     if not next_episodes:
+        xbmc.log('[AIOStreams] DEBUG: trakt_next_up - No shows in progress (next_episodes list is empty)', xbmc.LOGWARNING)
         xbmcgui.Dialog().notification('AIOStreams', 'No shows in progress', xbmcgui.NOTIFICATION_INFO)
+        
+        # Fallback item for visual confirmation
+        li = xbmcgui.ListItem(label='[No Next Up Episodes Found]')
+        li.setInfo('video', {'plot': 'Trakt returned no next up episodes.\nCheck your Trakt history or scrobbling status.'})
+        url = get_url(action='noop')
+        xbmcplugin.addDirectoryItem(HANDLE, url, li, False)
+        
         xbmcplugin.endOfDirectory(HANDLE)
         return
 
@@ -2735,37 +2806,65 @@ def trakt_next_up():
         episode_title = f'Episode {episode}'
         episode_overview = ''
 
+        # 1. First, try to get episode-specific metadata from database (instant!)
+        episode_meta = ep_data.get('episode_metadata')
+        if episode_meta:
+            episode_title = episode_meta.get('title', episode_title)
+            episode_overview = episode_meta.get('overview', '')
+            xbmc.log(f'[AIOStreams] Next Up: Using DATABASE episode metadata: {episode_title}', xbmc.LOGDEBUG)
+
         if show_imdb:
-            # First try cache, then fetch from API if needed
-            meta_result = None
-            if HAS_MODULES:
-                cached_meta = cache.get_cached_meta('series', show_imdb)
-                if cached_meta and 'meta' in cached_meta:
-                    meta_result = cached_meta
-                    xbmc.log(f'[AIOStreams] Next Up: Using cached metadata for {show_title}', xbmc.LOGDEBUG)
+            # 2. Try show metadata from the SQL query results (instant)
+            meta_data = ep_data.get('show_metadata')
+            if meta_data:
+                # meta_data is already a dict from pickle.loads in the DB
+                xbmc.log(f'[AIOStreams] Next Up: Using DATABASE show metadata for {show_title}', xbmc.LOGDEBUG)
+            else:
+                # 3. Try file-based meta cache (slower than DB, faster than API)
+                cached_ref = None
+                if HAS_MODULES:
+                    cached_ref = cache.get_cached_meta('series', show_imdb)
+                    if cached_ref and 'meta' in cached_ref:
+                        meta_data = cached_ref['meta']
+                        xbmc.log(f'[AIOStreams] Next Up: Using FILE CACHED metadata for {show_title}', xbmc.LOGDEBUG)
 
-            # If not cached, fetch from API
-            if not meta_result:
-                meta_result = get_meta('series', show_imdb)
-                xbmc.log(f'[AIOStreams] Next Up: Fetched metadata from API for {show_title}', xbmc.LOGDEBUG)
+                # 4. If still nothing, fetch from API (slowest)
+                if not meta_data:
+                    meta_result = get_meta('series', show_imdb)
+                    if meta_result and 'meta' in meta_result:
+                        meta_data = meta_result['meta']
+                        xbmc.log(f'[AIOStreams] Next Up: Fetched FRESH metadata from API for {show_title}', xbmc.LOGDEBUG)
 
-            # Extract metadata
-            if meta_result and 'meta' in meta_result:
-                meta_data = meta_result['meta']
+                        # Save to database for next time (make it instant)
+                        try:
+                            # We already have db object from line 2770
+                            slug = meta_data.get('ids', {}).get('slug', '')
+                            trakt_id = ep_data.get('show_trakt_id')
+                            if trakt_id:
+                                db.insert_show(trakt_id, show_imdb, None, None, slug, show_title, meta_data, int(time.time()))
+                                xbmc.log(f'[AIOStreams] Next Up: Cached metadata to database for {show_title}', xbmc.LOGDEBUG)
+                        except Exception as e:
+                            xbmc.log(f'[AIOStreams] Next Up: Failed to cache to DB: {e}', xbmc.LOGWARNING)
+
+            # Extract artwork from show metadata
+            if meta_data:
                 # Get show title from metadata if available
                 show_title = meta_data.get('name', show_title)
                 poster = meta_data.get('poster', '')
                 fanart = meta_data.get('background', '')
                 logo = meta_data.get('logo', '')
 
-                # Get episode-specific data
-                videos = meta_data.get('videos', [])
-                for video in videos:
-                    if video.get('season') == season and video.get('episode') == episode:
-                        episode_thumb = video.get('thumbnail', '')
-                        episode_title = video.get('title', episode_title)
-                        episode_overview = video.get('description', '')
-                        break
+                # Try to get episode thumbnail from show metadata videos (fallback if not in DB)
+                if not episode_thumb:
+                    videos = meta_data.get('videos', [])
+                    for video in videos:
+                        if video.get('season') == season and video.get('episode') == episode:
+                            episode_thumb = video.get('thumbnail', '')
+                            # Only override episode title/overview if not already from DB
+                            if not episode_meta:
+                                episode_title = video.get('title', episode_title)
+                                episode_overview = video.get('description', '')
+                            break
 
         label = f'{show_title} S{season:02d}E{episode:02d}'
 
@@ -2779,18 +2878,24 @@ def trakt_next_up():
         info_tag.setPlot(episode_overview)
 
         # Set artwork
+        art = {}
         if episode_thumb:
-            list_item.setArt({'thumb': episode_thumb})
+            art['thumb'] = episode_thumb
             if poster:
-                list_item.setArt({'poster': poster})
+                art['poster'] = poster
         elif poster:
-            list_item.setArt({'thumb': poster, 'poster': poster})
-
+            art['thumb'] = poster
+            art['poster'] = poster
+        
         if fanart:
-            list_item.setArt({'fanart': fanart})
-
+            art['fanart'] = fanart
+        
         if logo:
-            list_item.setArt({'clearlogo': logo})
+            art['clearlogo'] = logo
+            art['logo'] = logo
+            
+        if art:
+            list_item.setArt(art)
 
         # Build context menu
         episode_media_id = f"{show_imdb}:{season}:{episode}"
@@ -3648,6 +3753,137 @@ def configure_aiostreams_action():
         xbmcgui.Dialog().ok('AIOStreams', f'Configuration failed:\n\n{str(e)}')
 
 
+def retrieve_manifest_action():
+    """Retrieve manifest URL using UUID and password authentication."""
+    try:
+        from resources.lib.web_config import retrieve_manifest
+        result = retrieve_manifest()
+        if result:
+            xbmc.log(f'[AIOStreams] Manifest retrieved: {result}', xbmc.LOGINFO)
+    except ImportError as e:
+        xbmc.log(f'[AIOStreams] Failed to import web_config: {e}', xbmc.LOGERROR)
+        xbmcgui.Dialog().ok('AIOStreams', 'Web configuration module not available.\n\nPlease update the addon.')
+    except Exception as e:
+        xbmc.log(f'[AIOStreams] Retrieve manifest action failed: {e}', xbmc.LOGERROR)
+        xbmcgui.Dialog().ok('AIOStreams', f'Retrieve manifest failed:\n\n{str(e)}')
+
+def smart_widget():
+    """
+    Dynamic widget content generator.
+    
+    URL Parameters:
+        index: Widget index (0, 1, 2, ...)
+        content_type: 'series', 'movie', or 'home'
+    
+    Returns:
+        - For series: Navigatable show list from catalog[index]/All
+        - For movies: Playable movie list from catalog[index]/All
+        - For home: Trakt lists (Next Up, Watchlist)
+    """
+    params = dict(parse_qsl(sys.argv[2][1:]))
+    index = int(params.get('index', 0))
+    content_type = params.get('content_type', 'movie')
+    
+    xbmc.log(f'[AIOStreams] smart_widget: index={index}, content_type={content_type}', xbmc.LOGINFO)
+    
+    # Handle home widgets (Trakt lists)
+    if content_type == 'home':
+        if index == 0:
+            # Next Up - Trakt
+            return trakt_next_up()
+        elif index == 1:
+            # Series Watchlist - Trakt
+            params_watchlist = {'media_type': 'shows'}
+            return trakt_watchlist(params_watchlist)
+        elif index == 2:
+            # Movie Watchlist - Trakt
+            params_watchlist = {'media_type': 'movies'}
+            return trakt_watchlist(params_watchlist)
+        else:
+            xbmcplugin.endOfDirectory(HANDLE)
+            return
+    
+    # Get manifest catalogs
+    manifest = get_manifest()
+    if not manifest or 'catalogs' not in manifest:
+        xbmc.log('[AIOStreams] smart_widget: No manifest/catalogs', xbmc.LOGWARNING)
+        xbmcplugin.endOfDirectory(HANDLE)
+        return
+    
+    # Filter catalogs by content_type
+    catalogs = [c for c in manifest['catalogs'] 
+                if c.get('type') == content_type 
+                and not c.get('id', '').endswith('.search')]
+    
+    xbmc.log(f'[AIOStreams] DEBUG: smart_widget filtered catalogs for {content_type}: {len(catalogs)} found. Accessing index {index}', xbmc.LOGINFO)
+    
+    # Check if index is valid
+    if index >= len(catalogs):
+        xbmc.log(f'[AIOStreams] smart_widget: Index {index} out of range (max: {len(catalogs)-1})', xbmc.LOGWARNING)
+        xbmcplugin.endOfDirectory(HANDLE)
+        return
+    
+    # Get the catalog at this index
+    catalog = catalogs[index]
+    catalog_id = catalog.get('id')
+    catalog_name = catalog.get('name', 'Unknown')
+    
+    xbmc.log(f'[AIOStreams] smart_widget: Using catalog "{catalog_name}" (id: {catalog_id})', xbmc.LOGINFO)
+
+    # Update the window property to ensure it uses the clean name
+    # This overwrites any previous long path headers
+    try:
+        xbmcgui.Window(10000).setProperty(f'{content_type}_catalog_{index}_name', catalog_name)
+    except:
+        pass
+    
+    # Prime database cache for performance
+    if HAS_MODULES:
+        trakt.prime_database_cache(content_type)
+        
+    # Fetch catalog content with "All" genre filter (genre=None means "All")
+    catalog_data = get_catalog(content_type, catalog_id, genre=None, skip=0)
+    
+    if not catalog_data or 'metas' not in catalog_data:
+        xbmc.log(f'[AIOStreams] smart_widget: No content in catalog {catalog_id}', xbmc.LOGWARNING)
+        
+        # Fallback item for visual confirmation
+        li = xbmcgui.ListItem(label=f'[No Content in Catalog: {catalog_name}]')
+        li.setInfo('video', {'plot': f'Catalog ID: {catalog_id}\nContent Type: {content_type}\nCheck manifest configuration.'})
+        url = get_url(action='noop')
+        xbmcplugin.addDirectoryItem(HANDLE, url, li, False)
+        
+        xbmcplugin.endOfDirectory(HANDLE)
+        return
+    
+    # Set plugin metadata
+    xbmcplugin.setPluginCategory(HANDLE, catalog_name)
+    xbmcplugin.setContent(HANDLE, 'tvshows' if content_type == 'series' else 'movies')
+    
+    # Add items
+    for meta in catalog_data['metas']:
+        item_id = meta.get('id')
+        if not item_id:
+            continue
+        
+        # For series: navigate to show (will then go to seasons/episodes)
+        # For movies: direct play
+        if content_type == 'series':
+            url = get_url(action='show_seasons', series_id=item_id)
+            is_folder = True
+        else:
+            url = get_url(action='show_streams', content_type='movie', media_id=item_id,
+                         title=meta.get('name', ''), poster=meta.get('poster', ''),
+                         fanart=meta.get('background', ''), clearlogo=meta.get('logo', ''))
+            is_folder = False
+        
+        list_item = create_listitem_with_context(meta, content_type, url)
+        xbmcplugin.addDirectoryItem(HANDLE, url, list_item, is_folder)
+    
+    xbmcplugin.endOfDirectory(HANDLE)
+
+
+
 # ============================================================================
 # Action Registry - Cleaner routing using dictionary pattern
 # ============================================================================
@@ -3669,6 +3905,7 @@ ACTION_REGISTRY = {
     'movie_lists': lambda p: movie_lists(),
     'series_lists': lambda p: series_lists(),
     'catalogs': lambda p: list_catalogs(),
+    'smart_widget': lambda p: smart_widget(),
     'catalog_genres': lambda p: list_catalog_genres(),
     'browse_catalog': lambda p: browse_catalog(),
 
@@ -3705,6 +3942,7 @@ ACTION_REGISTRY = {
     'test_connection': lambda p: test_connection(),
     'quick_actions': lambda p: quick_actions(),
     'configure_aiostreams': lambda p: configure_aiostreams_action(),
+    'retrieve_manifest': lambda p: retrieve_manifest_action(),
     'refresh_manifest_cache': lambda p: refresh_manifest_cache(),
 }
 

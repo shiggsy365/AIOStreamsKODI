@@ -11,7 +11,7 @@ GRAY='\033[0;90m'
 WHITE='\033[1;37m'
 NC='\033[0m' # No Color
 
-# Base Path - Update this to your actual path
+# Base Path
 BASE_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 # Helper Functions
@@ -84,18 +84,13 @@ build_plugin_zip() {
         rm -f "$destination"
     fi
 
-    # Create temporary directory for ZIP structure
     local temp_dir=$(mktemp -d)
     local plugin_dir="$temp_dir/plugin.video.aiostreams"
     mkdir -p "$plugin_dir"
 
-    # Copy all files to temp directory
     cp -r "$source_dir"/* "$plugin_dir/"
-
-    # Create ZIP from temp directory
     (cd "$temp_dir" && zip -r -q "$destination" plugin.video.aiostreams/)
 
-    # Cleanup
     rm -rf "$temp_dir"
 
     local zip_size=$(du -k "$destination" | cut -f1)
@@ -113,21 +108,16 @@ build_skin_zip() {
         rm -f "$destination"
     fi
 
-    # Create temporary directory for ZIP structure
     local temp_dir=$(mktemp -d)
-    local skin_dir="$temp_dir/skin.aiodi"
+    local skin_dir="$temp_dir/skin.AIODI"
     mkdir -p "$skin_dir"
 
-    # Copy all files except excluded ones
     rsync -a --exclude='CUSTOM_SKIN_PLAN.md' \
              --exclude='IMPLEMENTATION_SUMMARY.md' \
              --exclude='TESTING_INSTRUCTIONS.md' \
              "$source_dir/" "$skin_dir/"
 
-    # Create ZIP from temp directory
-    (cd "$temp_dir" && zip -r -q "$destination" skin.aiodi/)
-
-    # Cleanup
+    (cd "$temp_dir" && zip -r -q "$destination" skin.AIODI/)
     rm -rf "$temp_dir"
 
     local zip_size=$(du -k "$destination" | cut -f1)
@@ -145,23 +135,52 @@ build_repository_zip() {
         rm -f "$destination"
     fi
 
-    # Create temporary directory for ZIP structure
     local temp_dir=$(mktemp -d)
     local repo_dir="$temp_dir/repository.aiostreams"
     mkdir -p "$repo_dir"
 
-    # Copy necessary files
     cp "$source_dir/addon.xml" "$repo_dir/"
     cp "$source_dir/icon.png" "$repo_dir/"
 
-    # Create ZIP from temp directory
     (cd "$temp_dir" && zip -r -q "$destination" repository.aiostreams/)
-
-    # Cleanup
     rm -rf "$temp_dir"
 
     local zip_size=$(du -k "$destination" | cut -f1)
     echo -e "  ${GREEN}[+]${GRAY} Created: $destination (${zip_size} KB)${NC}"
+}
+
+rebuild_addons_xml() {
+    local addons_xml="$BASE_DIR/docs/repository.aiostreams/zips/addons.xml"
+    local addons_md5="$addons_xml.md5"
+    
+    echo -e "\n${CYAN}[*] Regenerating addons.xml...${NC}"
+    
+    # Start fresh
+    echo '<?xml version="1.0" encoding="UTF-8"?>' > "$addons_xml"
+    echo '<addons>' >> "$addons_xml"
+    
+    # Files to include
+    local source_files=(
+        "$BASE_DIR/docs/repository.aiostreams/addon.xml"
+        "$BASE_DIR/plugin.video.aiostreams/addon.xml"
+        "$BASE_DIR/skin.AIODI/addon.xml"
+    )
+    
+    for f in "${source_files[@]}"; do
+        if [[ -f "$f" ]]; then
+            # Extract only the <addon>...</addon> block
+            sed -n '/<addon/,/<\/addon>/p' "$f" >> "$addons_xml"
+            echo "" >> "$addons_xml"
+            echo -e "  ${GREEN}[+]${GRAY} Added: $(grep -m 1 "id=" "$f" | sed -n 's/.*id="\([^"]*\)".*/\1/p')${NC}"
+        else
+            echo -e "  ${YELLOW}[!] Warning: Source addon.xml not found: $f${NC}"
+        fi
+    done
+    
+    echo '</addons>' >> "$addons_xml"
+    
+    # Update checksum
+    write_md5 "$addons_xml" "$addons_md5"
 }
 
 update_plugin() {
@@ -172,55 +191,48 @@ update_plugin() {
     echo -e "${CYAN}Updating Plugin: $old_version -> $new_version${NC}"
     echo -e "${CYAN}========================================${NC}"
 
-    # File paths for plugin
     local xml_paths=(
         "$BASE_DIR/plugin.video.aiostreams/addon.xml"
         "$BASE_DIR/docs/plugin.video.aiostreams/addon.xml"
         "$BASE_DIR/docs/repository.aiostreams/addon.xml"
-        "$BASE_DIR/docs/repository.aiostreams/zips/addons.xml"
     )
 
     local zip_dest1="$BASE_DIR/docs/repository.aiostreams/zips/plugin.video.aiostreams/plugin.video.aiostreams-$new_version.zip"
     local zip_dest2="$BASE_DIR/docs/plugin.video.aiostreams/plugin.video.aiostreams-$new_version.zip"
 
-    # Update version numbers
     echo -e "\n${CYAN}[1/4] Updating version numbers...${NC}"
     for xml_path in "${xml_paths[@]}"; do
         update_kodi_file "$xml_path" "$old_version" "$new_version"
     done
 
-    # Create ZIP files
     echo -e "\n${CYAN}[2/4] Building plugin ZIP files...${NC}"
     build_plugin_zip "$zip_dest1" "$BASE_DIR/plugin.video.aiostreams"
     build_plugin_zip "$zip_dest2" "$BASE_DIR/plugin.video.aiostreams"
     
-    # Generate MD5 checksums
     write_md5 "$zip_dest1" "$zip_dest1.md5"
     write_md5 "$zip_dest2" "$zip_dest2.md5"
 
-    # Get Repo Version
     local repo_xml="$BASE_DIR/docs/repository.aiostreams/addon.xml"
     local repo_version=$(grep -m 1 "id=\"repository.aiostreams\"" "$repo_xml" | sed -n 's/.*version="\([^"]*\)".*/\1/p')
     if [[ -z "$repo_version" ]]; then repo_version="1.0.0"; fi
 
-    # Rebuild Repository ZIP
-    echo -e "\n${CYAN}[5/4] Rebuilding repository ZIPs...${NC}"
+    echo -e "\n${CYAN}[3/4] Rebuilding repository ZIPs...${NC}"
     local repo_zip_id_dir="$BASE_DIR/docs/repository.aiostreams/zips/repository.aiostreams"
     mkdir -p "$repo_zip_id_dir"
     
-    # Root installer (keep as 1.0.0 for fixed links if needed, or versioned)
     build_repository_zip "$BASE_DIR/docs/repository.aiostreams-1.0.0.zip" "$BASE_DIR/docs/repository.aiostreams"
-    
-    # Internal repo-structured zip (CRITICAL for Kodi updates)
     local internal_repo_zip="$repo_zip_id_dir/repository.aiostreams-$repo_version.zip"
     cp "$BASE_DIR/docs/repository.aiostreams-1.0.0.zip" "$internal_repo_zip"
     
-    # Update checksums
     write_md5 "$BASE_DIR/docs/repository.aiostreams-1.0.0.zip" "$BASE_DIR/docs/repository.aiostreams-1.0.0.zip.md5"
     write_md5 "$internal_repo_zip" "$internal_repo_zip.md5"
-    write_md5 "$BASE_DIR/docs/repository.aiostreams/zips/addons.xml" "$BASE_DIR/docs/repository.aiostreams/zips/addons.xml.md5"
+    
+    echo -e "  ${GREEN}[+]${GRAY} Copying assets to repository directory${NC}"
+    mkdir -p "$BASE_DIR/docs/repository.aiostreams/zips/plugin.video.aiostreams/"
+    cp "$BASE_DIR/plugin.video.aiostreams/resources/icon.png" "$BASE_DIR/docs/repository.aiostreams/zips/plugin.video.aiostreams/" 2>/dev/null || true
+    cp "$BASE_DIR/plugin.video.aiostreams/resources/fanart.jpg" "$BASE_DIR/docs/repository.aiostreams/zips/plugin.video.aiostreams/" 2>/dev/null || true
+    cp "$BASE_DIR/plugin.video.aiostreams/addon.xml" "$BASE_DIR/docs/repository.aiostreams/zips/plugin.video.aiostreams/addon.xml"
 
-    # Clean up old repo versions in zips folder
     for f in "$repo_zip_id_dir"/repository.aiostreams-*.zip; do
         if [[ -f "$f" && "$f" != "$internal_repo_zip" ]]; then
             rm -f "$f" "$f.md5"
@@ -228,7 +240,6 @@ update_plugin() {
         fi
     done
 
-    # Cleanup old version
     echo -e "\n${CYAN}[4/4] Checking for old version files...${NC}"
     local old_zip_path1="$BASE_DIR/docs/repository.aiostreams/zips/plugin.video.aiostreams/plugin.video.aiostreams-$old_version.zip"
     local old_zip_path2="$BASE_DIR/docs/plugin.video.aiostreams/plugin.video.aiostreams-$old_version.zip"
@@ -244,11 +255,7 @@ update_plugin() {
                 rm -f "$old_zip_path2" "$old_zip_path2.md5"
                 echo -e "  ${GREEN}[+]${GRAY} Deleted: $old_zip_path2${NC}"
             fi
-        else
-            echo -e "  ${GRAY}[i] Keeping old version files${NC}"
         fi
-    else
-        echo -e "  ${GRAY}[i] No old version files found${NC}"
     fi
 
     echo -e "\n${GREEN}[+] Plugin update complete: $new_version${NC}"
@@ -262,66 +269,47 @@ update_skin() {
     echo -e "${CYAN}Updating Skin: $old_version -> $new_version${NC}"
     echo -e "${CYAN}========================================${NC}"
 
-    # File paths for skin
     local xml_paths=(
         "$BASE_DIR/skin.AIODI/addon.xml"
-        "$BASE_DIR/docs/skin.aiodi/addon.xml"
+        "$BASE_DIR/docs/skin.AIODI/addon.xml"
         "$BASE_DIR/docs/repository.aiostreams/addon.xml"
-        "$BASE_DIR/docs/repository.aiostreams/zips/addons.xml"
     )
 
-    local zip_dest_repo="$BASE_DIR/docs/repository.aiostreams/zips/skin.aiodi/skin.aiodi-$new_version.zip"
-    local zip_dest_docs="$BASE_DIR/docs/skin.aiodi/skin.aiodi-$new_version.zip"
+    local zip_dest_repo="$BASE_DIR/docs/repository.aiostreams/zips/skin.AIODI/skin.AIODI-$new_version.zip"
+    local zip_dest_docs="$BASE_DIR/docs/skin.AIODI/skin.AIODI-$new_version.zip"
 
-    # Update version numbers
     echo -e "\n${CYAN}[1/4] Updating version numbers...${NC}"
     for xml_path in "${xml_paths[@]}"; do
         update_kodi_file "$xml_path" "$old_version" "$new_version"
     done
 
-    # Create ZIP files
     echo -e "\n${CYAN}[2/4] Building skin ZIP file...${NC}"
     build_skin_zip "$zip_dest_repo" "$BASE_DIR/skin.AIODI"
-    echo -e "  ${GREEN}[+]${GRAY} Copying ZIP to docs/skin.aiodi/${NC}"
     cp "$zip_dest_repo" "$zip_dest_docs"
 
-    # Generate MD5 checksums
     write_md5 "$zip_dest_repo" "$zip_dest_repo.md5"
     write_md5 "$zip_dest_docs" "$zip_dest_docs.md5"
 
-    # Copy assets to repository directory (Root level for better visibility)
     echo -e "  ${GREEN}[+]${GRAY} Copying assets to repository directory${NC}"
-    mkdir -p "$BASE_DIR/docs/repository.aiostreams/zips/skin.aiodi/"
-    cp "$BASE_DIR/skin.AIODI/resources/icon.png" "$BASE_DIR/docs/repository.aiostreams/zips/skin.aiodi/"
-    cp "$BASE_DIR/skin.AIODI/resources/fanart.jpg" "$BASE_DIR/docs/repository.aiostreams/zips/skin.aiodi/"
+    mkdir -p "$BASE_DIR/docs/repository.aiostreams/zips/skin.AIODI/"
+    cp "$BASE_DIR/skin.AIODI/resources/icon.png" "$BASE_DIR/docs/repository.aiostreams/zips/skin.AIODI/" 2>/dev/null || true
+    cp "$BASE_DIR/skin.AIODI/resources/fanart.jpg" "$BASE_DIR/docs/repository.aiostreams/zips/skin.AIODI/" 2>/dev/null || true
+    cp "$BASE_DIR/skin.AIODI/addon.xml" "$BASE_DIR/docs/repository.aiostreams/zips/skin.AIODI/addon.xml"
 
-    # Copy addon.xml to zips directory (Kodi scans this for quick addon info)
-    echo -e "  ${GREEN}[+]${GRAY} Copying addon.xml to repository zips directory${NC}"
-    cp "$BASE_DIR/docs/skin.aiodi/addon.xml" "$BASE_DIR/docs/repository.aiostreams/zips/skin.aiodi/addon.xml"
-
-    # Get Repo Version
     local repo_xml="$BASE_DIR/docs/repository.aiostreams/addon.xml"
     local repo_version=$(grep -m 1 "id=\"repository.aiostreams\"" "$repo_xml" | sed -n 's/.*version="\([^"]*\)".*/\1/p')
     if [[ -z "$repo_version" ]]; then repo_version="1.0.0"; fi
 
-    # Rebuild Repository ZIPs
-    echo -e "\n${CYAN}[5/4] Rebuilding repository ZIPs...${NC}"
+    echo -e "\n${CYAN}[3/4] Rebuilding repository ZIPs...${NC}"
     local repo_zip_id_dir="$BASE_DIR/docs/repository.aiostreams/zips/repository.aiostreams"
     mkdir -p "$repo_zip_id_dir"
-
-    # Root installer
     build_repository_zip "$BASE_DIR/docs/repository.aiostreams-1.0.0.zip" "$BASE_DIR/docs/repository.aiostreams"
-
-    # Internal repo-structured zip
     local internal_repo_zip="$repo_zip_id_dir/repository.aiostreams-$repo_version.zip"
     cp "$BASE_DIR/docs/repository.aiostreams-1.0.0.zip" "$internal_repo_zip"
 
-    # Update checksums
     write_md5 "$BASE_DIR/docs/repository.aiostreams-1.0.0.zip" "$BASE_DIR/docs/repository.aiostreams-1.0.0.zip.md5"
     write_md5 "$internal_repo_zip" "$internal_repo_zip.md5"
-    write_md5 "$BASE_DIR/docs/repository.aiostreams/zips/addons.xml" "$BASE_DIR/docs/repository.aiostreams/zips/addons.xml.md5"
-
-    # Clean up old repo versions in zips folder
+    
     for f in "$repo_zip_id_dir"/repository.aiostreams-*.zip; do
         if [[ -f "$f" && "$f" != "$internal_repo_zip" ]]; then
             rm -f "$f" "$f.md5"
@@ -329,10 +317,9 @@ update_skin() {
         fi
     done
 
-    # Cleanup old version
     echo -e "\n${CYAN}[4/4] Checking for old version files...${NC}"
-    local old_zip_path_repo="$BASE_DIR/docs/repository.aiostreams/zips/skin.aiodi/skin.aiodi-$old_version.zip"
-    local old_zip_path_docs="$BASE_DIR/docs/skin.aiodi/skin.aiodi-$old_version.zip"
+    local old_zip_path_repo="$BASE_DIR/docs/repository.aiostreams/zips/skin.AIODI/skin.AIODI-$old_version.zip"
+    local old_zip_path_docs="$BASE_DIR/docs/skin.AIODI/skin.AIODI-$old_version.zip"
 
     if [[ -f "$old_zip_path_repo" ]] || [[ -f "$old_zip_path_docs" ]]; then
         read -p "Found old skin version $old_version. Delete old ZIP files? (y/n) " cleanup
@@ -345,14 +332,25 @@ update_skin() {
                 rm -f "$old_zip_path_docs" "$old_zip_path_docs.md5"
                 echo -e "  ${GREEN}[+]${GRAY} Deleted: $old_zip_path_docs${NC}"
             fi
-        else
-            echo -e "  ${GRAY}[i] Keeping old version files${NC}"
         fi
-    else
-        echo -e "  ${GRAY}[i] No old version files found${NC}"
     fi
 
     echo -e "\n${GREEN}[+] Skin update complete: $new_version${NC}"
+}
+
+
+push_to_git() {
+    echo -e "\n${CYAN}[*] Pushing changes to main branch...${NC}"
+    git add .
+    local plugin_v=$(get_source_version "$BASE_DIR/plugin.video.aiostreams/addon.xml")
+    local skin_v=$(get_source_version "$BASE_DIR/skin.AIODI/addon.xml")
+    git commit -m "Repository Update: Plugin $plugin_v, Skin $skin_v"
+    git push origin main
+    if [ $? -eq 0 ]; then
+        echo -e "  ${GREEN}[+]${GRAY} Successfully pushed to main branch${NC}"
+    else
+        echo -e "  ${RED}[!] Error: Failed to push to main branch${NC}"
+    fi
 }
 
 # Main Script
@@ -391,7 +389,7 @@ read -p $'\nEnter your choice (1, 2, or 3): ' choice
 case "$choice" in
     1)
         if [[ -z "$plugin_version" ]]; then
-            echo -e "\n${RED}[!] Error: Could not detect plugin version. Please check docs/plugin.video.aiostreams/${NC}"
+            echo -e "\n${RED}[!] Error: Could not detect plugin version${NC}"
             exit 1
         fi
         new_plugin_version=$(increment_version "$plugin_version")
@@ -399,13 +397,12 @@ case "$choice" in
         read -p "Continue? (y/n) " confirm
         if [[ "$confirm" == "y" ]] || [[ "$confirm" == "Y" ]]; then
             update_plugin "$plugin_version" "$new_plugin_version"
-        else
-            echo -e "\n${GRAY}[i] Update cancelled${NC}"
+            rebuild_addons_xml
         fi
         ;;
     2)
         if [[ -z "$skin_version" ]]; then
-            echo -e "\n${RED}[!] Error: Could not detect skin version. Please check docs/skin.aiodi/${NC}"
+            echo -e "\n${RED}[!] Error: Could not detect skin version${NC}"
             exit 1
         fi
         new_skin_version=$(increment_version "$skin_version")
@@ -413,27 +410,14 @@ case "$choice" in
         read -p "Continue? (y/n) " confirm
         if [[ "$confirm" == "y" ]] || [[ "$confirm" == "Y" ]]; then
             update_skin "$skin_version" "$new_skin_version"
-        else
-            echo -e "\n${GRAY}[i] Update cancelled${NC}"
+            rebuild_addons_xml
         fi
         ;;
     3)
-        can_proceed=true
-
-        if [[ -z "$plugin_version" ]]; then
-            echo -e "\n${RED}[!] Error: Could not detect plugin version${NC}"
-            can_proceed=false
-        fi
-        if [[ -z "$skin_version" ]]; then
-            echo -e "${RED}[!] Error: Could not detect skin version${NC}"
-            can_proceed=false
-        fi
-
-        if [[ "$can_proceed" == false ]]; then
-            echo -e "\n${YELLOW}Please check docs folder for version detection issues${NC}"
+        if [[ -z "$plugin_version" ]] || [[ -z "$skin_version" ]]; then
+            echo -e "\n${RED}[!] Error: Could not detect both versions${NC}"
             exit 1
         fi
-
         new_plugin_version=$(increment_version "$plugin_version")
         new_skin_version=$(increment_version "$skin_version")
 
@@ -445,12 +429,11 @@ case "$choice" in
         if [[ "$confirm" == "y" ]] || [[ "$confirm" == "Y" ]]; then
             update_plugin "$plugin_version" "$new_plugin_version"
             update_skin "$skin_version" "$new_skin_version"
-        else
-            echo -e "\n${GRAY}[i] Update cancelled${NC}"
+            rebuild_addons_xml
         fi
         ;;
     *)
-        echo -e "\n${RED}[!] Invalid choice. Exiting.${NC}"
+        echo -e "\n${RED}[!] Invalid choice${NC}"
         exit 1
         ;;
 esac
@@ -458,8 +441,11 @@ esac
 echo -e "\n${CYAN}========================================${NC}"
 echo -e "${GREEN}[+] Update process complete!${NC}"
 echo -e "${CYAN}========================================${NC}"
-echo -e "\n${YELLOW}Next Steps:${NC}"
-echo -e "  ${WHITE}1. Review changes in Git${NC}"
-echo -e "  ${WHITE}2. Test the new ZIP files in Kodi${NC}"
-echo -e "  ${WHITE}3. Commit and push changes${NC}"
+
+echo -e "\n${YELLOW}Would you like to push these changes to GitHub main branch? (y/n)${NC}"
+read -p "Choice: " push_confirm
+if [[ "$push_confirm" == "y" ]] || [[ "$push_confirm" == "Y" ]]; then
+    push_to_git
+fi
+
 echo ""

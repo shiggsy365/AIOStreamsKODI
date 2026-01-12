@@ -323,11 +323,18 @@ class AIOStreamsService:
             xbmc.log(f'[AIOStreams Service] Migration check failed: {e}', xbmc.LOGERROR)
 
     def run_cache_cleanup(self):
-        """Run cache cleanup on startup."""
+        """Run cache cleanup on startup and periodically."""
         try:
+            # 1. Cleanup file-based cache
             from resources.lib.cache import cleanup_expired_cache
             cleanup_expired_cache()
-            xbmc.log('[AIOStreams Service] Cache cleanup completed', xbmc.LOGDEBUG)
+            
+            # 2. Cleanup SQL-based cache
+            from resources.lib.database.trakt_sync.activities import TraktSyncDatabase
+            db = TraktSyncDatabase()
+            db.cleanup_cached_data()
+            
+            xbmc.log('[AIOStreams Service] Cache cleanup (File & SQL) completed', xbmc.LOGDEBUG)
         except Exception as e:
             xbmc.log(f'[AIOStreams Service] Cache cleanup failed: {e}', xbmc.LOGERROR)
 

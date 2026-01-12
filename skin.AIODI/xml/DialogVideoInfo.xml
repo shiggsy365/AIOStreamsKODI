@@ -4,6 +4,16 @@
 	<onload>SetProperty(infobackground,$ESCINFO[ListItem.Art(fanart)],home)</onload>
 	<onunload>ClearProperty(infobackground,home)</onunload>
 	<controls>
+		<control type="image">
+			<include>FullScreenDimensions</include>
+			<texture background="true">$INFO[ListItem.Art(fanart)]</texture>
+			<fadetime>600</fadetime>
+			<aspectratio>scale</aspectratio>
+		</control>
+		<control type="image">
+			<include>FullScreenDimensions</include>
+			<texture>colors/black_50.png</texture>
+		</control>
 		<control type="group">
 			<centertop>50%</centertop>
 			<height>1080</height>
@@ -163,10 +173,7 @@
 						<param name="control_id" value="147" />
 						<param name="label" value="$INFO[ListItem.Director,[COLOR button_focus]$LOCALIZE[20339]: [/COLOR]]" />
 						<param name="altlabel" value="$INFO[ListItem.Director,$LOCALIZE[20339]: ]" />
-						<param name="onclick_condition" value="System.AddonIsEnabled(script.embuary.info)" />
-						<param name="onclick" value="RunScript(script.embuary.info,call=person,query='$ESCINFO[ListItem.Director]')" />
-						<param name="altclick_condition" value="System.AddonIsEnabled(script.embuary.info)" />
-						<param name="altclick" value="RunScript(script.embuary.info,call=person,query='$ESCINFO[ListItem.Director]')" />
+						<param name="onclick" value="ActivateWindow(Videos,plugin://plugin.video.aiostreams/?action=search_all&amp;query=$ESCINFO[ListItem.Director],return)" />
 						<param name="visible" value="!String.IsEmpty(ListItem.Director)" />
 					</include>
 					<include content="InfoDialogMetadata">
@@ -301,6 +308,7 @@
 					<visible>Integer.IsEqual(Container(50).NumItems,0)</visible>
 				</control>
 				<control type="panel" id="50">
+					<onclick>ActivateWindow(Videos,plugin://plugin.video.aiostreams/?action=search_all&amp;query=$ESCINFO[ListItem.Label],return)</onclick>
 					<top>158</top>
 					<width>1235</width>
 					<height>370</height>
@@ -554,40 +562,9 @@
 						<param name="visible" value="System.AddonIsEnabled(script.cinemavision) + [String.IsEqual(ListItem.DBType,movie) | String.IsEqual(ListItem.DBType,tvshow) | String.IsEqual(ListItem.DBType,season) | String.IsEqual(ListItem.DBType,episode)]" />
 					</include>
 					<control type="group" id="400">
-						<width>264</width>
-						<visible>Control.IsEnabled(7) | !String.IsEmpty(ListItem.UserRating)</visible>
-						<control type="button" id="7">
-							<include content="VideoInfoButtonsCommon">
-								<param name="icon" value="" />
-							</include>
-							<label>$LOCALIZE[31033]</label>
-							<onleft>441</onleft>
-							<onright>101</onright>
-							<onup>140</onup>
-							<enable>String.IsEmpty(Container.PluginName) + !Container.Content(Sets)</enable>
-							<ondown condition="Integer.IsEqual(Container(5000).CurrentItem,1)">SetFocus(50,0)</ondown>
-							<ondown condition="Integer.IsEqual(Container(5000).CurrentItem,2)">SetFocus(50,1)</ondown>
-							<ondown condition="Integer.IsEqual(Container(5000).CurrentItem,3)">SetFocus(50,2)</ondown>
-							<ondown condition="Integer.IsEqual(Container(5000).CurrentItem,4)">SetFocus(50,3)</ondown>
-							<ondown condition="Integer.IsEqual(Container(5000).CurrentItem,5)">SetFocus(50,4)</ondown>
-						</control>
-						<control type="label">
-							<label>$INFO[ListItem.UserRating]</label>
-							<font>font45_title</font>
-							<left>0</left>
-							<top>24</top>
-							<width>264</width>
-							<align>center</align>
-						</control>
-						<control type="image">
-							<texture>icons/infodialogs/rating.png</texture>
-							<left>108</left>
-							<top>30</top>
-							<width>48</width>
-							<height>48</height>
-							<align>center</align>
-							<visible>String.IsEmpty(ListItem.UserRating)</visible>
-						</control>
+						<width>1</width>
+						<height>1</height>
+						<visible>false</visible>
 					</control>
 					<include content="InfoDialogButton">
 						<param name="id" value="101" />
@@ -601,14 +578,7 @@
 						<param name="onclick_3" value="RunScript(script.embuary.info,call=tv,query='$ESCINFO[ListItem.TVShowTitle]',year=$INFO[ListItem.Year])" />
 						<param name="visible" value="System.AddonIsEnabled(script.embuary.info) + !String.IsEmpty(ListItem.DBID) + [String.IsEqual(ListItem.DbType,movie) | String.IsEqual(ListItem.DbType,tvshow) | String.IsEqual(ListItem.DbType,episode)]" />
 					</include>
-					<include content="InfoDialogButton">
-						<param name="id" value="102" />
-						<param name="icon" value="icons/infodialogs/image.png" />
-						<param name="label" value="$LOCALIZE[31028]" />
-						<param name="onclick_1" value="SetProperty(fanart,$ESCINFO[ListItem.Art(fanart)],home)" />
-						<param name="onclick_2" value="ActivateWindow(1104)" />
-						<param name="visible" value="!String.IsEmpty(ListItem.Art(fanart))" />
-					</include>
+
 					<include content="InfoDialogButton">
 						<param name="id" value="13" />
 						<param name="icon" value="icons/infodialogs/director.png" />
@@ -643,12 +613,7 @@
 						<param name="onclick_2" value="ActivateWindow(Videos,videodb://movies/sets/$INFO[ListItem.SetId]/?setid=$INFO[ListItem.SetId])" />
 						<param name="visible" value="!String.IsEmpty(ListItem.SetID)" />
 					</include>
-					<include content="InfoDialogButton">
-						<param name="id" value="10" />
-						<param name="icon" value="icons/infodialogs/choose_image.png" />
-						<param name="label" value="$LOCALIZE[13511]" />
-						<param name="visible" value="Control.IsEnabled(10)" />
-					</include>
+
 					<include content="InfoDialogButton">
 						<param name="id" value="6" />
 						<param name="icon" value="icons/infodialogs/update.png" />

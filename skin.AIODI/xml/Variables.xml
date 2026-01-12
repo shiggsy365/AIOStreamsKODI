@@ -10,6 +10,9 @@
 		<value condition="!String.IsEmpty(ListItem.ChannelName)">$INFO[ListItem.ChannelName]</value>
 		<value>$INFO[ListItem.Label]</value>
 	</variable>
+	<variable name="SearchTimestamp">
+		<value>$INFO[System.Time(hhmmss)]</value>
+	</variable>
 	<variable name="AutoCompletionContentVar">
 		<value condition="System.AddonIsEnabled(plugin.program.autocompletion) + !System.HasHiddenInput">plugin://plugin.program.autocompletion?info=autocomplete&amp;&amp;id=$INFO[Control.GetLabel(312).index(1)]&amp;&amp;limit=9</value>
 	</variable>
@@ -798,5 +801,352 @@
 	<variable name="MediaInfoListLabel2Var">
 		<value condition="ListItem.IsStereoscopic">$INFO[ListItem.Duration,$LOCALIZE[180]: ][CR]$VAR[VideoCodecVar,, ]$INFO[ListItem.VideoResolution,| , ]$VAR[VideoResolutionTypeVar,, ]$VAR[VideoHDRVar,| , ]| 3D $INFO[ListItem.VideoAspect,| ,:1 ]$VAR[AudioCodecVar,| , ]$VAR[AudioChannelsVar]</value>
 		<value>$INFO[ListItem.Duration,$LOCALIZE[180]: ][CR]$VAR[VideoCodecVar,, ]$INFO[ListItem.VideoResolution,| , ]$VAR[VideoResolutionTypeVar,, ]$VAR[VideoHDRVar,| , ]$INFO[ListItem.VideoAspect,| ,:1 ]$VAR[AudioCodecVar,| , ]$VAR[AudioChannelsVar]</value>
+	</variable>
+
+
+
+<variable name="StatusMoviesIconVar">
+<value condition="!Skin.HasSetting(HideMovies)">overlays/checkbox-on.png</value>
+<value>overlays/checkbox-off.png</value>
+</variable>
+<variable name="StatusSeriesIconVar">
+<value condition="!Skin.HasSetting(HideSeries)">overlays/checkbox-on.png</value>
+<value>overlays/checkbox-off.png</value>
+</variable>
+<variable name="StatusTVIconVar">
+<value condition="!Skin.HasSetting(HideTV)">overlays/checkbox-on.png</value>
+<value>overlays/checkbox-off.png</value>
+</variable>
+<variable name="StatusMusicIconVar">
+<value condition="!Skin.HasSetting(HideMusic)">overlays/checkbox-on.png</value>
+<value>overlays/checkbox-off.png</value>
+</variable>
+<variable name="StatusAddonsIconVar">
+<value condition="!Skin.HasSetting(HideAddons)">overlays/checkbox-on.png</value>
+<value>overlays/checkbox-off.png</value>
+</variable>
+<variable name="StatusRow1IconVar">
+<value condition="!Skin.HasSetting(HideRow1)">overlays/checkbox-on.png</value>
+<value>overlays/checkbox-off.png</value>
+</variable>
+<variable name="StatusRow2IconVar">
+<value condition="!Skin.HasSetting(HideRow2)">overlays/checkbox-on.png</value>
+<value>overlays/checkbox-off.png</value>
+</variable>
+<variable name="StatusRow3IconVar">
+<value condition="!Skin.HasSetting(HideRow3)">overlays/checkbox-on.png</value>
+<value>overlays/checkbox-off.png</value>
+</variable>
+<variable name="StatusRow4IconVar">
+<value condition="!Skin.HasSetting(HideRow4)">overlays/checkbox-on.png</value>
+<value>overlays/checkbox-off.png</value>
+</variable>
+
+<variable name="Row1IndexVar">
+<value condition="!String.IsEmpty(Skin.String(Row1Index))">$INFO[Skin.String(Row1Index)]</value>
+<value>0</value>
+</variable>
+<variable name="Row2IndexVar">
+<value condition="!String.IsEmpty(Skin.String(Row2Index))">$INFO[Skin.String(Row2Index)]</value>
+<value>1</value>
+</variable>
+<variable name="Row3IndexVar">
+<value condition="!String.IsEmpty(Skin.String(Row3Index))">$INFO[Skin.String(Row3Index)]</value>
+<value>2</value>
+</variable>
+<variable name="Row4IndexVar">
+<value condition="!String.IsEmpty(Skin.String(Row4Index))">$INFO[Skin.String(Row4Index)]</value>
+<value>3</value>
+</variable>
+<variable name="MovieRow1IndexVar">
+<value condition="!String.IsEmpty(Skin.String(MovieRow1Index))">$INFO[Skin.String(MovieRow1Index)]</value>
+<value>0</value>
+</variable>
+<variable name="MovieRow2IndexVar">
+<value condition="!String.IsEmpty(Skin.String(MovieRow2Index))">$INFO[Skin.String(MovieRow2Index)]</value>
+<value>1</value>
+</variable>
+<variable name="MovieRow3IndexVar">
+<value condition="!String.IsEmpty(Skin.String(MovieRow3Index))">$INFO[Skin.String(MovieRow3Index)]</value>
+<value>2</value>
+</variable>
+<variable name="MovieRow4IndexVar">
+<value condition="!String.IsEmpty(Skin.String(MovieRow4Index))">$INFO[Skin.String(MovieRow4Index)]</value>
+<value>3</value>
+</variable>
+<variable name="SeriesRow1IndexVar">
+<value condition="!String.IsEmpty(Skin.String(SeriesRow1Index))">$INFO[Skin.String(SeriesRow1Index)]</value>
+<value>0</value>
+</variable>
+<variable name="SeriesRow2IndexVar">
+<value condition="!String.IsEmpty(Skin.String(SeriesRow2Index))">$INFO[Skin.String(SeriesRow2Index)]</value>
+<value>1</value>
+</variable>
+<variable name="SeriesRow3IndexVar">
+<value condition="!String.IsEmpty(Skin.String(SeriesRow3Index))">$INFO[Skin.String(SeriesRow3Index)]</value>
+<value>2</value>
+</variable>
+<variable name="SeriesRow4IndexVar">
+<value condition="!String.IsEmpty(Skin.String(SeriesRow4Index))">$INFO[Skin.String(SeriesRow4Index)]</value>
+<value>3</value>
+</variable>
+
+	<variable name="ActiveWidgetID">
+		<!-- Home Page (3 widgets: 0-2) -->
+		<value condition="String.IsEqual(Skin.String(SideMenuFocus),home) + String.IsEqual(Skin.String(Home_WidgetIndex),0)">10100</value>
+		<value condition="String.IsEqual(Skin.String(SideMenuFocus),home) + String.IsEqual(Skin.String(Home_WidgetIndex),1)">10200</value>
+		<value condition="String.IsEqual(Skin.String(SideMenuFocus),home) + String.IsEqual(Skin.String(Home_WidgetIndex),2)">10300</value>
+		<value condition="String.IsEqual(Skin.String(SideMenuFocus),home) + String.IsEmpty(Skin.String(Home_WidgetIndex))">10100</value>
+		<!-- Movies Page (20 widgets: 0-19) -->
+		<value condition="String.IsEqual(Skin.String(SideMenuFocus),movies) + String.IsEqual(Skin.String(Movies_WidgetIndex),0)">5100</value>
+		<value condition="String.IsEqual(Skin.String(SideMenuFocus),movies) + String.IsEqual(Skin.String(Movies_WidgetIndex),1)">5110</value>
+		<value condition="String.IsEqual(Skin.String(SideMenuFocus),movies) + String.IsEqual(Skin.String(Movies_WidgetIndex),2)">5120</value>
+		<value condition="String.IsEqual(Skin.String(SideMenuFocus),movies) + String.IsEqual(Skin.String(Movies_WidgetIndex),3)">5130</value>
+		<value condition="String.IsEqual(Skin.String(SideMenuFocus),movies) + String.IsEqual(Skin.String(Movies_WidgetIndex),4)">5140</value>
+		<value condition="String.IsEqual(Skin.String(SideMenuFocus),movies) + String.IsEqual(Skin.String(Movies_WidgetIndex),5)">5150</value>
+		<value condition="String.IsEqual(Skin.String(SideMenuFocus),movies) + String.IsEqual(Skin.String(Movies_WidgetIndex),6)">5160</value>
+		<value condition="String.IsEqual(Skin.String(SideMenuFocus),movies) + String.IsEqual(Skin.String(Movies_WidgetIndex),7)">5170</value>
+		<value condition="String.IsEqual(Skin.String(SideMenuFocus),movies) + String.IsEqual(Skin.String(Movies_WidgetIndex),8)">5180</value>
+		<value condition="String.IsEqual(Skin.String(SideMenuFocus),movies) + String.IsEqual(Skin.String(Movies_WidgetIndex),9)">5190</value>
+		<value condition="String.IsEqual(Skin.String(SideMenuFocus),movies) + String.IsEqual(Skin.String(Movies_WidgetIndex),10)">5200</value>
+		<value condition="String.IsEqual(Skin.String(SideMenuFocus),movies) + String.IsEqual(Skin.String(Movies_WidgetIndex),11)">5210</value>
+		<value condition="String.IsEqual(Skin.String(SideMenuFocus),movies) + String.IsEqual(Skin.String(Movies_WidgetIndex),12)">5220</value>
+		<value condition="String.IsEqual(Skin.String(SideMenuFocus),movies) + String.IsEqual(Skin.String(Movies_WidgetIndex),13)">5230</value>
+		<value condition="String.IsEqual(Skin.String(SideMenuFocus),movies) + String.IsEqual(Skin.String(Movies_WidgetIndex),14)">5240</value>
+		<value condition="String.IsEqual(Skin.String(SideMenuFocus),movies) + String.IsEqual(Skin.String(Movies_WidgetIndex),15)">5250</value>
+		<value condition="String.IsEqual(Skin.String(SideMenuFocus),movies) + String.IsEqual(Skin.String(Movies_WidgetIndex),16)">5260</value>
+		<value condition="String.IsEqual(Skin.String(SideMenuFocus),movies) + String.IsEqual(Skin.String(Movies_WidgetIndex),17)">5270</value>
+		<value condition="String.IsEqual(Skin.String(SideMenuFocus),movies) + String.IsEqual(Skin.String(Movies_WidgetIndex),18)">5280</value>
+		<value condition="String.IsEqual(Skin.String(SideMenuFocus),movies) + String.IsEqual(Skin.String(Movies_WidgetIndex),19)">5290</value>
+		<value condition="String.IsEqual(Skin.String(SideMenuFocus),movies) + String.IsEmpty(Skin.String(Movies_WidgetIndex))">5100</value>
+		<!-- TV Shows Page (20 widgets: 0-19) -->
+		<value condition="String.IsEqual(Skin.String(SideMenuFocus),tvshows) + String.IsEqual(Skin.String(TV_WidgetIndex),0)">6100</value>
+		<value condition="String.IsEqual(Skin.String(SideMenuFocus),tvshows) + String.IsEqual(Skin.String(TV_WidgetIndex),1)">6110</value>
+		<value condition="String.IsEqual(Skin.String(SideMenuFocus),tvshows) + String.IsEqual(Skin.String(TV_WidgetIndex),2)">6120</value>
+		<value condition="String.IsEqual(Skin.String(SideMenuFocus),tvshows) + String.IsEqual(Skin.String(TV_WidgetIndex),3)">6130</value>
+		<value condition="String.IsEqual(Skin.String(SideMenuFocus),tvshows) + String.IsEqual(Skin.String(TV_WidgetIndex),4)">6140</value>
+		<value condition="String.IsEqual(Skin.String(SideMenuFocus),tvshows) + String.IsEqual(Skin.String(TV_WidgetIndex),5)">6150</value>
+		<value condition="String.IsEqual(Skin.String(SideMenuFocus),tvshows) + String.IsEqual(Skin.String(TV_WidgetIndex),6)">6160</value>
+		<value condition="String.IsEqual(Skin.String(SideMenuFocus),tvshows) + String.IsEqual(Skin.String(TV_WidgetIndex),7)">6170</value>
+		<value condition="String.IsEqual(Skin.String(SideMenuFocus),tvshows) + String.IsEqual(Skin.String(TV_WidgetIndex),8)">6180</value>
+		<value condition="String.IsEqual(Skin.String(SideMenuFocus),tvshows) + String.IsEqual(Skin.String(TV_WidgetIndex),9)">6190</value>
+		<value condition="String.IsEqual(Skin.String(SideMenuFocus),tvshows) + String.IsEqual(Skin.String(TV_WidgetIndex),10)">6200</value>
+		<value condition="String.IsEqual(Skin.String(SideMenuFocus),tvshows) + String.IsEqual(Skin.String(TV_WidgetIndex),11)">6210</value>
+		<value condition="String.IsEqual(Skin.String(SideMenuFocus),tvshows) + String.IsEqual(Skin.String(TV_WidgetIndex),12)">6220</value>
+		<value condition="String.IsEqual(Skin.String(SideMenuFocus),tvshows) + String.IsEqual(Skin.String(TV_WidgetIndex),13)">6230</value>
+		<value condition="String.IsEqual(Skin.String(SideMenuFocus),tvshows) + String.IsEqual(Skin.String(TV_WidgetIndex),14)">6240</value>
+		<value condition="String.IsEqual(Skin.String(SideMenuFocus),tvshows) + String.IsEqual(Skin.String(TV_WidgetIndex),15)">6250</value>
+		<value condition="String.IsEqual(Skin.String(SideMenuFocus),tvshows) + String.IsEqual(Skin.String(TV_WidgetIndex),16)">6260</value>
+		<value condition="String.IsEqual(Skin.String(SideMenuFocus),tvshows) + String.IsEqual(Skin.String(TV_WidgetIndex),17)">6270</value>
+		<value condition="String.IsEqual(Skin.String(SideMenuFocus),tvshows) + String.IsEqual(Skin.String(TV_WidgetIndex),18)">6280</value>
+		<value condition="String.IsEqual(Skin.String(SideMenuFocus),tvshows) + String.IsEqual(Skin.String(TV_WidgetIndex),19)">6290</value>
+		<value condition="String.IsEqual(Skin.String(SideMenuFocus),tvshows) + String.IsEmpty(Skin.String(TV_WidgetIndex))">6100</value>
+		<value>10100</value>
+	</variable>
+
+	<!-- Cycling Variables for Navigation Updates -->
+	<variable name="Home_Next_Index">
+		<value condition="String.IsEqual(Skin.String(Home_WidgetIndex),0)">1</value>
+		<value condition="String.IsEqual(Skin.String(Home_WidgetIndex),1)">2</value>
+		<value condition="String.IsEqual(Skin.String(Home_WidgetIndex),2)">0</value>
+		<value>0</value>
+	</variable>
+	<variable name="Home_Prev_Index">
+		<value condition="String.IsEqual(Skin.String(Home_WidgetIndex),0)">2</value>
+		<value condition="String.IsEqual(Skin.String(Home_WidgetIndex),1)">0</value>
+		<value condition="String.IsEqual(Skin.String(Home_WidgetIndex),2)">1</value>
+		<value>0</value>
+	</variable>
+
+	<variable name="Movies_Next_Index">
+		<value condition="String.IsEqual(Skin.String(Movies_WidgetIndex),0)">1</value>
+		<value condition="String.IsEqual(Skin.String(Movies_WidgetIndex),1)">2</value>
+		<value condition="String.IsEqual(Skin.String(Movies_WidgetIndex),2)">3</value>
+		<value condition="String.IsEqual(Skin.String(Movies_WidgetIndex),3)">4</value>
+		<value condition="String.IsEqual(Skin.String(Movies_WidgetIndex),4)">5</value>
+		<value condition="String.IsEqual(Skin.String(Movies_WidgetIndex),5)">6</value>
+		<value condition="String.IsEqual(Skin.String(Movies_WidgetIndex),6)">7</value>
+		<value condition="String.IsEqual(Skin.String(Movies_WidgetIndex),7)">8</value>
+		<value condition="String.IsEqual(Skin.String(Movies_WidgetIndex),8)">9</value>
+		<value condition="String.IsEqual(Skin.String(Movies_WidgetIndex),9)">10</value>
+		<value condition="String.IsEqual(Skin.String(Movies_WidgetIndex),10)">11</value>
+		<value condition="String.IsEqual(Skin.String(Movies_WidgetIndex),11)">12</value>
+		<value condition="String.IsEqual(Skin.String(Movies_WidgetIndex),12)">13</value>
+		<value condition="String.IsEqual(Skin.String(Movies_WidgetIndex),13)">14</value>
+		<value condition="String.IsEqual(Skin.String(Movies_WidgetIndex),14)">15</value>
+		<value condition="String.IsEqual(Skin.String(Movies_WidgetIndex),15)">16</value>
+		<value condition="String.IsEqual(Skin.String(Movies_WidgetIndex),16)">17</value>
+		<value condition="String.IsEqual(Skin.String(Movies_WidgetIndex),17)">18</value>
+		<value condition="String.IsEqual(Skin.String(Movies_WidgetIndex),18)">19</value>
+		<value condition="String.IsEqual(Skin.String(Movies_WidgetIndex),19)">0</value>
+		<value>0</value>
+	</variable>
+	<variable name="Movies_Prev_Index">
+		<value condition="String.IsEqual(Skin.String(Movies_WidgetIndex),0)">19</value>
+		<value condition="String.IsEqual(Skin.String(Movies_WidgetIndex),1)">0</value>
+		<value condition="String.IsEqual(Skin.String(Movies_WidgetIndex),2)">1</value>
+		<value condition="String.IsEqual(Skin.String(Movies_WidgetIndex),3)">2</value>
+		<value condition="String.IsEqual(Skin.String(Movies_WidgetIndex),4)">3</value>
+		<value condition="String.IsEqual(Skin.String(Movies_WidgetIndex),5)">4</value>
+		<value condition="String.IsEqual(Skin.String(Movies_WidgetIndex),6)">5</value>
+		<value condition="String.IsEqual(Skin.String(Movies_WidgetIndex),7)">6</value>
+		<value condition="String.IsEqual(Skin.String(Movies_WidgetIndex),8)">7</value>
+		<value condition="String.IsEqual(Skin.String(Movies_WidgetIndex),9)">8</value>
+		<value condition="String.IsEqual(Skin.String(Movies_WidgetIndex),10)">9</value>
+		<value condition="String.IsEqual(Skin.String(Movies_WidgetIndex),11)">10</value>
+		<value condition="String.IsEqual(Skin.String(Movies_WidgetIndex),12)">11</value>
+		<value condition="String.IsEqual(Skin.String(Movies_WidgetIndex),13)">12</value>
+		<value condition="String.IsEqual(Skin.String(Movies_WidgetIndex),14)">13</value>
+		<value condition="String.IsEqual(Skin.String(Movies_WidgetIndex),15)">14</value>
+		<value condition="String.IsEqual(Skin.String(Movies_WidgetIndex),16)">15</value>
+		<value condition="String.IsEqual(Skin.String(Movies_WidgetIndex),17)">16</value>
+		<value condition="String.IsEqual(Skin.String(Movies_WidgetIndex),18)">17</value>
+		<value condition="String.IsEqual(Skin.String(Movies_WidgetIndex),19)">18</value>
+		<value>0</value>
+	</variable>
+	<variable name="TV_Next_Index">
+		<value condition="String.IsEqual(Skin.String(TV_WidgetIndex),0)">1</value>
+		<value condition="String.IsEqual(Skin.String(TV_WidgetIndex),1)">2</value>
+		<value condition="String.IsEqual(Skin.String(TV_WidgetIndex),2)">3</value>
+		<value condition="String.IsEqual(Skin.String(TV_WidgetIndex),3)">4</value>
+		<value condition="String.IsEqual(Skin.String(TV_WidgetIndex),4)">5</value>
+		<value condition="String.IsEqual(Skin.String(TV_WidgetIndex),5)">6</value>
+		<value condition="String.IsEqual(Skin.String(TV_WidgetIndex),6)">7</value>
+		<value condition="String.IsEqual(Skin.String(TV_WidgetIndex),7)">8</value>
+		<value condition="String.IsEqual(Skin.String(TV_WidgetIndex),8)">9</value>
+		<value condition="String.IsEqual(Skin.String(TV_WidgetIndex),9)">10</value>
+		<value condition="String.IsEqual(Skin.String(TV_WidgetIndex),10)">11</value>
+		<value condition="String.IsEqual(Skin.String(TV_WidgetIndex),11)">12</value>
+		<value condition="String.IsEqual(Skin.String(TV_WidgetIndex),12)">13</value>
+		<value condition="String.IsEqual(Skin.String(TV_WidgetIndex),13)">14</value>
+		<value condition="String.IsEqual(Skin.String(TV_WidgetIndex),14)">15</value>
+		<value condition="String.IsEqual(Skin.String(TV_WidgetIndex),15)">16</value>
+		<value condition="String.IsEqual(Skin.String(TV_WidgetIndex),16)">17</value>
+		<value condition="String.IsEqual(Skin.String(TV_WidgetIndex),17)">18</value>
+		<value condition="String.IsEqual(Skin.String(TV_WidgetIndex),18)">19</value>
+		<value condition="String.IsEqual(Skin.String(TV_WidgetIndex),19)">0</value>
+		<value>0</value>
+	</variable>
+	<variable name="TV_Prev_Index">
+		<value condition="String.IsEqual(Skin.String(TV_WidgetIndex),0)">19</value>
+		<value condition="String.IsEqual(Skin.String(TV_WidgetIndex),1)">0</value>
+		<value condition="String.IsEqual(Skin.String(TV_WidgetIndex),2)">1</value>
+		<value condition="String.IsEqual(Skin.String(TV_WidgetIndex),3)">2</value>
+		<value condition="String.IsEqual(Skin.String(TV_WidgetIndex),4)">3</value>
+		<value condition="String.IsEqual(Skin.String(TV_WidgetIndex),5)">4</value>
+		<value condition="String.IsEqual(Skin.String(TV_WidgetIndex),6)">5</value>
+		<value condition="String.IsEqual(Skin.String(TV_WidgetIndex),7)">6</value>
+		<value condition="String.IsEqual(Skin.String(TV_WidgetIndex),8)">7</value>
+		<value condition="String.IsEqual(Skin.String(TV_WidgetIndex),9)">8</value>
+		<value condition="String.IsEqual(Skin.String(TV_WidgetIndex),10)">9</value>
+		<value condition="String.IsEqual(Skin.String(TV_WidgetIndex),11)">10</value>
+		<value condition="String.IsEqual(Skin.String(TV_WidgetIndex),12)">11</value>
+		<value condition="String.IsEqual(Skin.String(TV_WidgetIndex),13)">12</value>
+		<value condition="String.IsEqual(Skin.String(TV_WidgetIndex),14)">13</value>
+		<value condition="String.IsEqual(Skin.String(TV_WidgetIndex),15)">14</value>
+		<value condition="String.IsEqual(Skin.String(TV_WidgetIndex),16)">15</value>
+		<value condition="String.IsEqual(Skin.String(TV_WidgetIndex),17)">16</value>
+		<value condition="String.IsEqual(Skin.String(TV_WidgetIndex),18)">17</value>
+		<value condition="String.IsEqual(Skin.String(TV_WidgetIndex),19)">18</value>
+		<value>0</value>
+	</variable>
+
+
+<!-- Netflix UI Status Icons -->
+<variable name="StatusHomeIconVar">
+<value condition="!Skin.HasSetting(HideHome)">overlays/checkbox-on.png</value>
+<value>overlays/checkbox-off.png</value>
+</variable>
+
+<!-- Home Widget Status Icons -->
+<variable name="StatusHomeWidget0IconVar">
+<value condition="!Skin.HasSetting(Home.HideWidget0)">overlays/checkbox-on.png</value>
+<value>overlays/checkbox-off.png</value>
+</variable>
+<variable name="StatusHomeWidget1IconVar">
+<value condition="!Skin.HasSetting(Home.HideWidget1)">overlays/checkbox-on.png</value>
+<value>overlays/checkbox-off.png</value>
+</variable>
+<variable name="StatusHomeWidget2IconVar">
+<value condition="!Skin.HasSetting(Home.HideWidget2)">overlays/checkbox-on.png</value>
+<value>overlays/checkbox-off.png</value>
+</variable>
+
+<!-- Movies Widget Status Icons -->
+<variable name="StatusMoviesWidget0IconVar">
+<value condition="!Skin.HasSetting(Movies.HideWidget0)">overlays/checkbox-on.png</value>
+<value>overlays/checkbox-off.png</value>
+</variable>
+<variable name="StatusMoviesWidget1IconVar">
+<value condition="!Skin.HasSetting(Movies.HideWidget1)">overlays/checkbox-on.png</value>
+<value>overlays/checkbox-off.png</value>
+</variable>
+<variable name="StatusMoviesWidget2IconVar">
+<value condition="!Skin.HasSetting(Movies.HideWidget2)">overlays/checkbox-on.png</value>
+<value>overlays/checkbox-off.png</value>
+</variable>
+<variable name="StatusMoviesWidget3IconVar">
+<value condition="!Skin.HasSetting(Movies.HideWidget3)">overlays/checkbox-on.png</value>
+<value>overlays/checkbox-off.png</value>
+</variable>
+
+<!-- Series Widget Status Icons -->
+<variable name="StatusSeriesWidget0IconVar">
+<value condition="!Skin.HasSetting(Series.HideWidget0)">overlays/checkbox-on.png</value>
+<value>overlays/checkbox-off.png</value>
+</variable>
+<variable name="StatusSeriesWidget1IconVar">
+<value condition="!Skin.HasSetting(Series.HideWidget1)">overlays/checkbox-on.png</value>
+<value>overlays/checkbox-off.png</value>
+</variable>
+<variable name="StatusSeriesWidget2IconVar">
+<value condition="!Skin.HasSetting(Series.HideWidget2)">overlays/checkbox-on.png</value>
+<value>overlays/checkbox-off.png</value>
+</variable>
+<variable name="StatusSeriesWidget3IconVar">
+<value condition="!Skin.HasSetting(Series.HideWidget3)">overlays/checkbox-on.png</value>
+<value>overlays/checkbox-off.png</value>
+</variable>
+	<variable name="CurrentWidgetTitle">
+		<!-- Dynamic Lookup -->
+		<value condition="!String.IsEmpty(Container($VAR[ActiveWidgetID]).ListItem.Title)">$INFO[Container($VAR[ActiveWidgetID]).ListItem.Title]</value>
+		<!-- Manual Fallbacks -->
+		<value condition="String.IsEqual($VAR[ActiveWidgetID],10100)">$INFO[Container(10100).ListItem.Title]</value>
+		<value condition="String.IsEqual($VAR[ActiveWidgetID],10200)">$INFO[Container(10200).ListItem.Title]</value>
+		<value condition="String.IsEqual($VAR[ActiveWidgetID],10300)">$INFO[Container(10300).ListItem.Title]</value>
+		<!-- Generic Fallback -->
+		<value>$INFO[ListItem.Title]</value>
+	</variable>
+	<variable name="CurrentWidgetFanart">
+		<value condition="!String.IsEmpty(Container($VAR[ActiveWidgetID]).ListItem.Art(fanart))">$INFO[Container($VAR[ActiveWidgetID]).ListItem.Art(fanart)]</value>
+		<value condition="String.IsEqual($VAR[ActiveWidgetID],10100)">$INFO[Container(10100).ListItem.Art(fanart)]</value>
+		<value condition="String.IsEqual($VAR[ActiveWidgetID],10200)">$INFO[Container(10200).ListItem.Art(fanart)]</value>
+		<value condition="String.IsEqual($VAR[ActiveWidgetID],10300)">$INFO[Container(10300).ListItem.Art(fanart)]</value>
+		<value>$INFO[ListItem.Art(fanart)]</value>
+	</variable>
+	<variable name="CurrentWidgetClearLogo">
+		<value condition="!String.IsEmpty(Container($VAR[ActiveWidgetID]).ListItem.Art(clearlogo))">$INFO[Container($VAR[ActiveWidgetID]).ListItem.Art(clearlogo)]</value>
+		<value condition="!String.IsEmpty(Container($VAR[ActiveWidgetID]).ListItem.Art(logo))">$INFO[Container($VAR[ActiveWidgetID]).ListItem.Art(logo)]</value>
+		<value condition="String.IsEqual($VAR[ActiveWidgetID],10100) + !String.IsEmpty(Container(10100).ListItem.Art(clearlogo))">$INFO[Container(10100).ListItem.Art(clearlogo)]</value>
+		<value condition="String.IsEqual($VAR[ActiveWidgetID],10100) + !String.IsEmpty(Container(10100).ListItem.Art(logo))">$INFO[Container(10100).ListItem.Art(logo)]</value>
+		<value condition="String.IsEqual($VAR[ActiveWidgetID],10200) + !String.IsEmpty(Container(10200).ListItem.Art(clearlogo))">$INFO[Container(10200).ListItem.Art(clearlogo)]</value>
+		<value condition="String.IsEqual($VAR[ActiveWidgetID],10200) + !String.IsEmpty(Container(10200).ListItem.Art(logo))">$INFO[Container(10200).ListItem.Art(logo)]</value>
+		<value condition="String.IsEqual($VAR[ActiveWidgetID],10300) + !String.IsEmpty(Container(10300).ListItem.Art(clearlogo))">$INFO[Container(10300).ListItem.Art(clearlogo)]</value>
+		<value condition="String.IsEqual($VAR[ActiveWidgetID],10300) + !String.IsEmpty(Container(10300).ListItem.Art(logo))">$INFO[Container(10300).ListItem.Art(logo)]</value>
+		<value condition="!String.IsEmpty(ListItem.Art(clearlogo))">$INFO[ListItem.Art(clearlogo)]</value>
+		<value>$INFO[ListItem.Art(logo)]</value>
+	</variable>
+
+	<variable name="CurrentWidgetPlot">
+		<value condition="!String.IsEmpty(Container($VAR[ActiveWidgetID]).ListItem.Plot)">$INFO[Container($VAR[ActiveWidgetID]).ListItem.Plot]</value>
+		<value condition="String.IsEqual($VAR[ActiveWidgetID],10100)">$INFO[Container(10100).ListItem.Plot]</value>
+		<value condition="String.IsEqual($VAR[ActiveWidgetID],10200)">$INFO[Container(10200).ListItem.Plot]</value>
+		<value condition="String.IsEqual($VAR[ActiveWidgetID],10300)">$INFO[Container(10300).ListItem.Plot]</value>
+		<value>$INFO[ListItem.Plot]</value>
+	</variable>
+
+	<variable name="CurrentWidgetInfo">
+		<value condition="!String.IsEmpty(ListItem.Season)">$INFO[ListItem.Season,S,]$INFO[ListItem.Episode,E,  |  ]$INFO[ListItem.Title]</value>
+		<value>$INFO[ListItem.Year]$INFO[ListItem.Genre,  |  ]</value>
 	</variable>
 </includes>

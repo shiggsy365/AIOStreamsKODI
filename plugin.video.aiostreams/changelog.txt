@@ -1,5 +1,15 @@
 # Changelog
 
+## [1.1.46] - 2026-01-12
+
+### Added
+- **SQL-Backed Caching**: Moved general catalog and metadata storage to SQLite for faster retrieval and parsing.
+- **Automated Cache Cleanup**: Integrated periodic purging of expired SQL cache entries into the background service.
+
+### Performance
+- **Session Batch Caching**: Drastically reduced database overhead by batch-fetching watched status for entire widget rows.
+- **Three-Tier Architecture**: Optimized metadata lookup flow (SQL -> Disk -> API) for maximum responsiveness.
+
 ## [3.4.5] - 2026-01-07
 
 ### Bug Fixes

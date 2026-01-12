@@ -253,6 +253,12 @@ class AIOStreamsPlayer(xbmc.Player):
         # Check if we should auto-mark as watched before cleanup
         try:
             if self.is_aiostreams and self.total_time > 0:
+                # Update current time before checking progress
+                try:
+                    self.current_time = self.getTime()
+                except:
+                    pass  # Use last known time if getTime() fails
+
                 progress = int((self.current_time / self.total_time) * 100)
                 if progress >= 90 and self.should_auto_mark_watched():
                     xbmc.log(f'[AIOStreams] Stopped at {progress}% - Auto-marking as watched', xbmc.LOGINFO)
@@ -262,6 +268,9 @@ class AIOStreamsPlayer(xbmc.Player):
 
         if not self.should_scrobble() or not self.started:
             self.clear_media_info()
+            # Refresh widget after playback ends
+            if self.marked_watched:
+                self._refresh_widget()
             return
 
         try:
@@ -275,6 +284,9 @@ class AIOStreamsPlayer(xbmc.Player):
         except Exception as e:
             xbmc.log(f'[AIOStreams] Scrobble stop error: {e}', xbmc.LOGERROR)
         finally:
+            # Refresh widget after playback ends if marked watched
+            if self.marked_watched:
+                self._refresh_widget()
             self.clear_media_info()
     
     def onPlayBackEnded(self):
@@ -295,6 +307,9 @@ class AIOStreamsPlayer(xbmc.Player):
 
         if not self.should_scrobble() or not self.started:
             self.clear_media_info()
+            # Refresh widget after playback ends
+            if self.marked_watched:
+                self._refresh_widget()
             return
 
         try:
@@ -306,6 +321,9 @@ class AIOStreamsPlayer(xbmc.Player):
         except Exception as e:
             xbmc.log(f'[AIOStreams] Scrobble end error: {e}', xbmc.LOGERROR)
         finally:
+            # Refresh widget after playback ends if marked watched
+            if self.marked_watched:
+                self._refresh_widget()
             self.clear_media_info()
     
     def onPlayBackSeek(self, seekTime, seekOffset):

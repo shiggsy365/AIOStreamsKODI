@@ -26,19 +26,20 @@
 			<onclick>Action(close)</onclick>
 		</control>
 		<control type="group">
-			<animation effect="slide" end="0,175" time="0" condition="Window.IsActive(home)">conditional</animation>
+			<centerleft>50%</centerleft>
+			<centertop>50%</centertop>
 			<control type="image" id="999">
 				<description>background image</description>
-				<left>0</left>
-				<top>0</top>
+				<left>-225</left>
+				<top>-390</top>
 				<width>450</width>
 				<height>780</height>
 				<texture colordiffuse="dialog_tint">colors/white.png</texture>
 			</control>
 			<control type="grouplist" id="996">
 				<description>grouplist for context buttons</description>
-				<left>0</left>
-				<top>0</top>
+				<left>-225</left>
+				<top>-390</top>
 				<width>450</width>
 				<height max="780">auto</height>
 				<usecontrolcoords>true</usecontrolcoords>

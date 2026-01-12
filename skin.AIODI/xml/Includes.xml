@@ -1,8 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <includes>
 	<include file="Defaults.xml" />
-	<include file="includes/Widgets.xml" />
-	<include file="includes/AIOStreamsMenus.xml" />
 	<include file="Includes_Home.xml" />
 	<include file="Includes_Animations.xml" />
 	<include file="Includes_Games.xml" />
@@ -22,7 +20,6 @@
 	<include file="View_501_Banner.xml" />
 	<include file="View_502_FanArt.xml" />
 	<include file="Variables.xml" />
-	<constant name="ThemeColor">FF1E90FF</constant>
 	<constant name="DepthDialog">0.50</constant>
 	<constant name="DepthDialog+">0.52</constant>
 	<constant name="DepthDialog-">0.48</constant>
@@ -356,6 +353,7 @@
 	<include name="MediaFlags">
 		<param name="infolabel_prefix"></param>
 		<param name="resolution_var">$VAR[ResolutionFlagVar]</param>
+		<param name="infolabel_prefix">Container.</param>
 		<definition>
 			<control type="grouplist">
 				<visible>Window.IsActive(Home) | Window.IsActive(10025)</visible>
@@ -978,6 +976,7 @@
 		</control>
 	</include>
 	<include name="TopBar">
+		<param name="breadcrumbs_label"></param>
 		<param name="sublabel">$INFO[Container.SortMethod,$LOCALIZE[31022]: ,  ∙  ]$INFO[Container.CurrentItem,, / ]$INFO[Container.NumItems]</param>
 		<definition>
 			<control type="group">
@@ -1110,6 +1109,7 @@
 						<width>auto</width>
 						<animation effect="fade" start="100" end="0" time="300" condition="Window.Next(screencalibration)">WindowClose</animation>
 						<label>$INFO[System.Time]</label>
+						<visible>false</visible>
 					</control>
 				</control>
 				<control type="grouplist">
@@ -1766,67 +1766,5 @@
 				</control>
 			</focusedlayout>
 		</definition>
-	</include>
-	<include name="CommonBackground">
-		<control type="image">
-			<left>0</left>
-			<top>0</top>
-			<width>100%</width>
-			<height>100%</height>
-			<texture background="true">$INFO[Window(Home).Property(Fanart_Image)]</texture>
-			<aspectratio>scale</aspectratio>
-		</control>
-	</include>
-	<include name="NavigationBar">
-		<control type="group">
-			<left>0</left>
-			<top>0</top>
-			<width>100%</width>
-			<height>120</height>
-			<control type="image">
-				<left>0</left>
-				<top>0</top>
-				<width>100%</width>
-				<height>120</height>
-				<texture colordiffuse="DD000000">common/white.png</texture>
-				<aspectratio>stretch</aspectratio>
-			</control>
-			<control type="label">
-				<left>60</left>
-				<top>30</top>
-				<width>400</width>
-				<height>60</height>
-				<font>font37_title</font>
-				<textcolor>ThemeColor</textcolor>
-				<label>AIODI</label>
-			</control>
-		</control>
-	</include>
-	<include name="Loading">
-		<control type="group">
-			<visible>Window.IsActive(busydialog)</visible>
-			<left>860</left>
-			<top>490</top>
-			<width>200</width>
-			<height>100</height>
-			<control type="image">
-				<left>0</left>
-				<top>0</top>
-				<width>200</width>
-				<height>100</height>
-				<texture colordiffuse="AA000000">common/white.png</texture>
-				<aspectratio>stretch</aspectratio>
-			</control>
-			<control type="label">
-				<left>0</left>
-				<top>30</top>
-				<width>200</width>
-				<height>40</height>
-				<font>font27</font>
-				<textcolor>FFFFFFFF</textcolor>
-				<align>center</align>
-				<label>Loading...</label>
-			</control>
-		</control>
 	</include>
 </includes>
