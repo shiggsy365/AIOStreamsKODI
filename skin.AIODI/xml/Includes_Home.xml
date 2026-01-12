@@ -82,18 +82,6 @@
 						<align>center</align>
 						<label>FOCUSED</label>
 					</control>
-				<focusedlayout width="340" height="450">
-					<control type="image">
-						<width>340</width>
-						<height>450</height>
-						<texture colordiffuse="FF00FF00">icons/sidemenu/home_white.png</texture>
-					</control>
-					<control type="label">
-						<width>340</width>
-						<height>100</height>
-						<align>center</align>
-						<label>FOCUSED</label>
-					</control>
 				</focusedlayout>
 				<content>
 					<item><label>TEMPLATE ITEM 1</label><onclick>noop</onclick></item>
