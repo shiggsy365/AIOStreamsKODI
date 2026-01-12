@@ -890,38 +890,7 @@
 <value condition="!String.IsEmpty(Skin.String(SeriesRow4Index))">$INFO[Skin.String(SeriesRow4Index)]</value>
 <value>3</value>
 </variable>
-<variable name="MovieRow1IndexVar">
-<value condition="!String.IsEmpty(Skin.String(MovieRow1Index))">$INFO[Skin.String(MovieRow1Index)]</value>
-<value>0</value>
-</variable>
-<variable name="MovieRow2IndexVar">
-<value condition="!String.IsEmpty(Skin.String(MovieRow2Index))">$INFO[Skin.String(MovieRow2Index)]</value>
-<value>1</value>
-</variable>
-<variable name="MovieRow3IndexVar">
-<value condition="!String.IsEmpty(Skin.String(MovieRow3Index))">$INFO[Skin.String(MovieRow3Index)]</value>
-<value>2</value>
-</variable>
-<variable name="MovieRow4IndexVar">
-<value condition="!String.IsEmpty(Skin.String(MovieRow4Index))">$INFO[Skin.String(MovieRow4Index)]</value>
-<value>3</value>
-</variable>
-<variable name="SeriesRow1IndexVar">
-<value condition="!String.IsEmpty(Skin.String(SeriesRow1Index))">$INFO[Skin.String(SeriesRow1Index)]</value>
-<value>0</value>
-</variable>
-<variable name="SeriesRow2IndexVar">
-<value condition="!String.IsEmpty(Skin.String(SeriesRow2Index))">$INFO[Skin.String(SeriesRow2Index)]</value>
-<value>1</value>
-</variable>
-<variable name="SeriesRow3IndexVar">
-<value condition="!String.IsEmpty(Skin.String(SeriesRow3Index))">$INFO[Skin.String(SeriesRow3Index)]</value>
-<value>2</value>
-</variable>
-<variable name="SeriesRow4IndexVar">
-<value condition="!String.IsEmpty(Skin.String(SeriesRow4Index))">$INFO[Skin.String(SeriesRow4Index)]</value>
-<value>3</value>
-</variable>
+
 	<variable name="CurrentWidgetListID">
 		<!-- Home Page (3 widgets: 0-2) -->
 		<value condition="String.IsEqual(Skin.String(SideMenuFocus),home) + String.IsEqual(Skin.String(Home_WidgetIndex),0)">10100</value>
