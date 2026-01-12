@@ -13,17 +13,16 @@
 		<param name="visible">true</param>
 		<param name="item_treshold">0</param>
 		<definition>
-			<control type="label" id="$PARAM[list_id]666">
+			<control type="label">
 				<left>0</left>
 				<top>0</top>
 				<width>900</width>
 				<height>60</height>
 				<font>font30_title</font>
-				<textcolor>blue</textcolor>
+				<textcolor>FF7ACAFE</textcolor> <!-- Blue -->
 				<label>$PARAM[label] (HEADER)</label>
 				<shadowcolor>text_shadow</shadowcolor>
-				<visible>$PARAM[visible]</visible>
-				<visible>Integer.IsGreater(Container($PARAM[list_id]).NumItems,$PARAM[item_treshold]) | [Container($PARAM[list_id]).IsUpdating + Integer.IsEqual(Container($PARAM[list_id]).NumItems,0)]</visible>
+				<visible>true</visible>
 			</control>
 		</definition>
 	</include>
@@ -87,15 +86,7 @@
 							<label>FOCUSED</label>
 						</control>
 					</focusedlayout>
-						<content target="$PARAM[widget_target]" limit="15">
-							<item>
-								<label>Hardcoded Test</label>
-								<onclick>Notification(AIO, Hardcoded Item Clicked)</onclick>
-								<thumb>icons/sidemenu/home_white.png</thumb>
-								<property name="IsPlayable">false</property>
-							</item>
-							$PARAM[content_path]
-						</content>
+						<content target="$PARAM[widget_target]" limit="15">$PARAM[content_path]</content>
 					</control>
 				</control>
 			</definition>
