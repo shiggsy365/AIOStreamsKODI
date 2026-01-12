@@ -265,12 +265,9 @@
 					<orientation>horizontal</orientation>
 					<onleft>9000</onleft>
 					<onright>noop</onright>
-					<onup>$PARAM[onup_action1]</onup>
-					<onup>$PARAM[onup_action2]</onup>
-					<ondown>$PARAM[ondown_action1]</ondown>
-					<ondown>$PARAM[ondown_action2]</ondown>
-					<onfocus>Skin.SetString(CurrentWidgetListID,$PARAM[list_id])</onfocus>
-					<onfocus>Control.Move($PARAM[list_id],-1000)</onfocus>
+					<onup>$PARAM[onup_action1],$PARAM[onup_action2]</onup>
+					<ondown>$PARAM[ondown_action1],$PARAM[ondown_action2]</ondown>
+					<onfocus>Skin.SetString(CurrentWidgetListID,$PARAM[list_id]),Control.Move($PARAM[list_id],-1000)</onfocus>
 					<itemlayout width="240" height="360">
 						<control type="image">
 							<width>230</width>
@@ -402,15 +399,11 @@
 					<left>0</left>
 					<top>65</top>
 					<width>1750</width>
-					<height>385</height>
-					<orientation>horizontal</orientation>
 					<onleft>9000</onleft>
 					<onright>noop</onright>
-					<onup>$PARAM[onup_action1]</onup>
-					<onup>$PARAM[onup_action2]</onup>
-					<ondown>$PARAM[ondown_action1]</ondown>
-					<ondown>$PARAM[ondown_action2]</ondown>
-					<onfocus>Skin.SetString(CurrentWidgetListID,$PARAM[list_id])</onfocus>
+					<onup>$PARAM[onup_action1],$PARAM[onup_action2]</onup>
+					<ondown>$PARAM[ondown_action1],$PARAM[ondown_action2]</ondown>
+					<onfocus>Skin.SetString(CurrentWidgetListID,$PARAM[list_id]),Control.Move($PARAM[list_id],-1000)</onfocus>
 					<itemlayout width="410" height="235">
 						<control type="image">
 							<width>390</width>
@@ -1275,10 +1268,8 @@
 		<orientation>horizontal</orientation>
 		<onleft>9000</onleft>
 		<onright>noop</onright>
-		<onup>$PARAM[onup_action]</onup>
-		<onup>SetFocus($VAR[CurrentWidgetListID])</onup>
-		<ondown>$PARAM[ondown_action]</ondown>
-		<ondown>SetFocus($VAR[CurrentWidgetListID])</ondown>
+		<onup>$PARAM[onup_action],SetFocus($VAR[CurrentWidgetListID])</onup>
+		<ondown>$PARAM[ondown_action],SetFocus($VAR[CurrentWidgetListID])</ondown>
 		<onunfocus>SetProperty(listposition,$INFO[Container($PARAM[list_id]).Position],home)</onunfocus>
 		<onfocus>Control.Move($PARAM[list_id],-$INFO[Container($PARAM[list_id]).Position])</onfocus>
 		<onfocus>Control.Move($PARAM[list_id],$INFO[Window(home).Property(listposition)])</onfocus>
