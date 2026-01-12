@@ -1283,9 +1283,9 @@
 		<onleft>9000</onleft>
 		<onright>noop</onright>
 		<onup>$PARAM[onup_action]</onup>
-		<onup>SetFocus($VAR[CurrentWidgetListID])</onup>
+		<onup>SetFocus($VAR[ActiveWidgetID])</onup>
 		<ondown>$PARAM[ondown_action]</ondown>
-		<ondown>SetFocus($VAR[CurrentWidgetListID])</ondown>
+		<ondown>SetFocus($VAR[ActiveWidgetID])</ondown>
 		<onunfocus>SetProperty(listposition,$INFO[Container($PARAM[list_id]).Position],home)</onunfocus>
 		<onfocus>Control.Move($PARAM[list_id],-$INFO[Container($PARAM[list_id]).Position])</onfocus>
 		<onfocus>Control.Move($PARAM[list_id],$INFO[Window(home).Property(listposition)])</onfocus>
