@@ -10,6 +10,8 @@
 		<usecontrolcoords>true</usecontrolcoords>
 	</include>
 	<include name="CategoryLabel">
+		<param name="label">Default Header</param>
+		<param name="list_id">noop</param>
 		<param name="visible">true</param>
 		<param name="item_treshold">0</param>
 		<definition>
@@ -27,6 +29,12 @@
 		</definition>
 	</include>
 	<include name="WidgetListPoster">
+		<param name="list_id">noop</param>
+		<param name="widget_header"></param>
+		<param name="widget_target">videos</param>
+		<param name="content_path"></param>
+		<param name="onup_action">noop</param>
+		<param name="ondown_action">noop</param>
 		<param name="onclick_condition">false</param>
 		<param name="browse_mode">auto</param>
 		<definition>
@@ -44,20 +52,15 @@
 					<top>115</top>
 					<width>1600</width>
 					<height>550</height>
-					<texture colordiffuse="44FFFFFF">icons/sidemenu/home_white.png</texture>
+					<texture colordiffuse="4400FFFF">icons/sidemenu/home_white.png</texture> <!-- Cyan Backdrop Outside Panel -->
 					<zorder>100</zorder>
 				</control>
 				<control type="panel" id="$PARAM[list_id]">
 					<left>0</left>
-					<top>0</top>
+					<top>115</top>
 					<width>1600</width>
 					<height>500</height>
 					<zorder>5000</zorder>
-					<control type="image">
-						<width>1600</width>
-						<height>500</height>
-						<texture colordiffuse="4400FFFF">icons/sidemenu/home_white.png</texture> <!-- Cyan Backdrop -->
-					</control>
 					<visible>True</visible>
 					<orientation>horizontal</orientation>
 					<scrolltime tween="cubic" easing="out">500</scrolltime>
@@ -176,6 +179,12 @@
 		</definition>
 	</include>
 	<include name="WidgetListEpisodes">
+		<param name="list_id">noop</param>
+		<param name="widget_header"></param>
+		<param name="widget_target">videos</param>
+		<param name="content_path"></param>
+		<param name="onup_action">noop</param>
+		<param name="ondown_action">noop</param>
 		<param name="main_label">$INFO[ListItem.Title]</param>
 		<param name="sub_label">$INFO[ListItem.TVShowTitle]</param>
 		<param name="thumb_label">$INFO[ListItem.Season,,x]$INFO[ListItem.Episode]</param>
@@ -242,7 +251,7 @@
 							<depth>DepthContentPopout</depth>
 							<left>70</left>
 							<top>5</top>
-							<include name="InfoWallEpisodeLayout">
+							<include content="InfoWallEpisodeLayout">
 								<param name="main_label" value="$PARAM[main_label]" />
 								<param name="sub_label" value="$PARAM[sub_label]" />
 								<param name="thumb_label" value="$PARAM[thumb_label]" />
@@ -1104,6 +1113,7 @@
 		<preloaditems>2</preloaditems>
 	</include>
 	<include name="BusyListSpinner">
+		<param name="list_id">noop</param>
 		<param name="posy">160</param>
 		<param name="visible">true</param>
 		<definition>

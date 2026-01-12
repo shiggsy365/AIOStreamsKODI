@@ -353,6 +353,7 @@
 	<include name="MediaFlags">
 		<param name="infolabel_prefix"></param>
 		<param name="resolution_var">$VAR[ResolutionFlagVar]</param>
+		<param name="infolabel_prefix">Container.</param>
 		<definition>
 			<control type="grouplist">
 				<visible>Window.IsActive(Home) | Window.IsActive(10025)</visible>
@@ -975,6 +976,7 @@
 		</control>
 	</include>
 	<include name="TopBar">
+		<param name="breadcrumbs_label"></param>
 		<param name="sublabel">$INFO[Container.SortMethod,$LOCALIZE[31022]: ,  ∙  ]$INFO[Container.CurrentItem,, / ]$INFO[Container.NumItems]</param>
 		<definition>
 			<control type="group">

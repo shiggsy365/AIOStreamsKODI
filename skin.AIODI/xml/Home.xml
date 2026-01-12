@@ -597,7 +597,7 @@
 			<height>50</height>
 			<font>font30_title</font>
 			<textcolor>FFFF00FF</textcolor>
-			<label>IF YOU CAN SEE THIS, GROUP 6000 IS ALIVE (v6.0.118)</label>
+			<label>IF YOU CAN SEE THIS, GROUP 6000 IS ALIVE (v6.0.119)</label>
 		</control>
 		<control type="label">
 			<left>0</left>
@@ -643,7 +643,7 @@
 			<height>30</height>
 			<font>font12</font>
 			<textcolor>FFFFFF00</textcolor> <!-- Hex Yellow -->
-			<label>v6.0.118 | F: $INFO[Skin.String(SideMenuFocus)] | T:$INFO[Skin.String(TV_WidgetIndex)] | C: $INFO[Container(6100).NumItems]</label>
+			<label>v6.0.119 | F: $INFO[Skin.String(SideMenuFocus)] | T:$INFO[Skin.String(TV_WidgetIndex)] | C: $INFO[Container(6100).NumItems]</label>
 		</control>
 		<control type="label">
 			<left>150</left>
@@ -652,7 +652,7 @@
 			<height>30</height>
 			<font>font12</font>
 			<textcolor>FFFF0000</textcolor> <!-- Hex Red -->
-			<label>STATUS: $VAR[SeriesRow1IndexVar] | FOCUS: ($INFO[System.FocusedControl.ID]) $INFO[System.FocusedControl.Label] (v6.0.118)</label>
+			<label>STATUS: $VAR[SeriesRow1IndexVar] | FOCUS: ($INFO[System.FocusedControl.ID]) $INFO[System.FocusedControl.Label] (v6.0.119)</label>
 		</control>
 
 		<control type="label">
