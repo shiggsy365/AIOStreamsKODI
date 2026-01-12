@@ -33,8 +33,8 @@
 			<height>300</height>
 			<align>right</align>
 			<label>Home:$INFO[Skin.String(Home_WidgetIndex)] | Movies:$INFO[Skin.String(Movies_WidgetIndex)] | TV:$INFO[Skin.String(TV_WidgetIndex)]
-Focus:$INFO[System.GetBool(Control.HasFocus(6110))] | 6100vis:$INFO[Control.IsVisible(6100)] | 6110vis:$INFO[Control.IsVisible(6110)]
-SideFocus:$INFO[Skin.String(SideMenuFocus)] | VER: 6.0.241</label>
+ActiveID:$VAR[ActiveWidgetID] | Title:$VAR[CurrentWidgetTitle]
+SideFocus:$INFO[Skin.String(SideMenuFocus)] | VER: 6.0.243</label>
 			<textcolor>red</textcolor>
 			<font>font13</font>
 			<visible>true</visible>
@@ -215,7 +215,7 @@ SideFocus:$INFO[Skin.String(SideMenuFocus)] | VER: 6.0.241</label>
 				<onup>9002</onup>
 				<ondown>9004</ondown>
 				<onfocus>Skin.SetString(SideMenuFocus,home)</onfocus>
-				<onright>SetFocus($VAR[ActiveWidgetID])</onright>
+				<onright>SetFocus(10100)</onright>
 				<onclick>ActivateWindow(Videos,plugin://plugin.video.aiostreams/,return)</onclick>
 
 			</control>
@@ -249,7 +249,7 @@ SideFocus:$INFO[Skin.String(SideMenuFocus)] | VER: 6.0.241</label>
 				<onup>9003</onup>
 				<ondown>9005</ondown>
 				<onfocus>Skin.SetString(SideMenuFocus,tvshows)</onfocus>
-				<onright>SetFocus($VAR[ActiveWidgetID])</onright>
+				<onright>SetFocus(6100)</onright>
 
 				<onclick>ActivateWindow(Videos,plugin://plugin.video.aiostreams/?action=series_lists,return)</onclick>
 			</control>
@@ -283,7 +283,7 @@ SideFocus:$INFO[Skin.String(SideMenuFocus)] | VER: 6.0.241</label>
 				<onup>9004</onup>
 				<ondown>9006</ondown>
 				<onfocus>Skin.SetString(SideMenuFocus,movies)</onfocus>
-				<onright>SetFocus($VAR[ActiveWidgetID])</onright>
+				<onright>SetFocus(5100)</onright>
 				<onclick>ActivateWindow(Videos,plugin://plugin.video.aiostreams/?action=movie_lists,return)</onclick>
 
 			</control>
