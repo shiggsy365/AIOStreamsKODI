@@ -49,14 +49,31 @@
 					<param name="list_id">$PARAM[list_id]</param>
 					<param name="posy">250</param>
 				</include>
+				<control type="label">
+					<left>0</left>
+					<top>50</top>
+					<width>1000</width>
+					<height>50</height>
+					<font>font20_title</font>
+					<textcolor>FFFFFFFF</textcolor>
+					<label>DIRECT TRUTH: POSTER DEFINITION LOADED</label>
+					<zorder>9999</zorder>
+				</control>
 				<control type="image">
 					<left>0</left>
 					<top>115</top>
 					<width>1600</width>
 					<height>550</height>
 					<texture colordiffuse="FF00FFFF">icons/sidemenu/home_white.png</texture> <!-- SOLID CYAN BACKDROP -->
+					<zorder>1000</zorder>
 				</control>
 				<control type="panel" id="$PARAM[list_id]">
+					<left>0</left>
+					<top>115</top>
+					<width>1600</width>
+					<height>500</height>
+					<zorder>5000</zorder>
+					<visible>True</visible>
 					<orientation>horizontal</orientation>
 					<scrolltime tween="cubic" easing="out">500</scrolltime>
 					<onleft>9000</onleft>
@@ -206,20 +223,30 @@
 					<param name="list_id">$PARAM[list_id]</param>
 					<param name="posy">200</param>
 				</include>
+				<control type="label">
+					<left>0</left>
+					<top>50</top>
+					<width>1000</width>
+					<height>50</height>
+					<font>font20_title</font>
+					<textcolor>FFFFFFFF</textcolor>
+					<label>DIRECT TRUTH: EPISODE DEFINITION LOADED</label>
+					<zorder>9999</zorder>
+				</control>
 				<control type="image">
 					<left>0</left>
 					<top>105</top>
 					<width>1600</width>
 					<height>410</height>
-					<texture colordiffuse="44FFFFFF">icons/sidemenu/home_white.png</texture>
-					<zorder>100</zorder>
+					<texture colordiffuse="FF00FFFF">icons/sidemenu/home_white.png</texture>
+					<zorder>1000</zorder>
 				</control>
 				<control type="panel" id="$PARAM[list_id]">
 					<left>0</left>
 					<top>120</top>
 					<width>1600</width>
 					<height>400</height>
-					<zorder>500</zorder>
+					<zorder>5000</zorder>
 					<visible>True</visible>
 					<orientation>horizontal</orientation>
 					<scrolltime tween="cubic" easing="out">500</scrolltime>
