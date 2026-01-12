@@ -591,7 +591,7 @@
 	<visible>String.IsEqual(Skin.String(SideMenuFocus),tvshows)</visible>
 	<left>300</left>
 	<top>550</top>
-	<width>1600</width>
+	<width>1750</width>
 	<height>900</height>
 	<zorder>20</zorder>
 
@@ -942,7 +942,7 @@
 	<visible>String.IsEqual(Skin.String(SideMenuFocus),movies)</visible>
 	<left>300</left>
 	<top>550</top>
-	<width>1600</width>
+	<width>1750</width>
 	<height>900</height>
 	<zorder>20</zorder>
 
