@@ -53,11 +53,12 @@
 					<control type="image">
 						<width>310</width>
 						<height>486</height>
-						<texture colordiffuse="88FFFF00">colors/white.png</texture>
+						<texture colordiffuse="88FFFF00">icons/sidemenu/home_white.png</texture>
 					</control>
 					<control type="group">
 						<left>68</left>
 						<top>10</top>
+
 						<include content="InfoWallMovieLayout">
 							<param name="focused" value="false" />
 						</include>
@@ -67,12 +68,21 @@
 					<control type="image">
 						<width>310</width>
 						<height>486</height>
-						<texture colordiffuse="FFFFFF00">colors/white.png</texture>
+						<texture colordiffuse="FFFFFF00">icons/sidemenu/home_white.png</texture>
+					</control>
+					<control type="label">
+						<width>310</width>
+						<height>100</height>
+						<align>center</align>
+						<font>font13</font>
+						<textcolor>black</textcolor>
+						<label>WIDGET FOUND HERE</label>
 					</control>
 					<control type="group">
 						<depth>DepthContentPopout</depth>
 						<left>68</left>
 						<top>10</top>
+
 						<animation type="Focus">
 							<effect type="zoom" start="100" end="110" time="200" tween="sine" easing="inout" center="230,130" />
 						</animation>
@@ -200,11 +210,12 @@
 					<control type="image">
 						<width>310</width>
 						<height>500</height>
-						<texture colordiffuse="88FFFF00">colors/white.png</texture>
+						<texture colordiffuse="88FFFF00">icons/sidemenu/home_white.png</texture>
 					</control>
 					<control type="group">
 						<left>70</left>
 						<top>5</top>
+
 						<include content="InfoWallEpisodeLayout">
 							<param name="main_label" value="$PARAM[main_label]" />
 							<param name="sub_label" value="$PARAM[sub_label]" />
@@ -217,12 +228,21 @@
 					<control type="image">
 						<width>310</width>
 						<height>500</height>
-						<texture colordiffuse="FFFFFF00">colors/white.png</texture>
+						<texture colordiffuse="FFFFFF00">icons/sidemenu/home_white.png</texture>
+					</control>
+					<control type="label">
+						<width>310</width>
+						<height>100</height>
+						<align>center</align>
+						<font>font13</font>
+						<textcolor>black</textcolor>
+						<label>WIDGET FOUND HERE</label>
 					</control>
 					<control type="group">
 						<depth>DepthContentPopout</depth>
 						<left>70</left>
 						<top>5</top>
+
 						<animation type="Focus">
 							<effect type="zoom" start="100" end="112" time="200" tween="sine" easing="inout" center="230,120" />
 						</animation>
