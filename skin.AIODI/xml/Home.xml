@@ -177,7 +177,8 @@
 				<texturenofocus />
 				<onup>9002</onup>
 				<ondown>9004</ondown>
-				<onfocus>Skin.SetString(SideMenuFocus,home)|Skin.SetString(Home_WidgetIndex,0)</onfocus>
+				<onfocus>Skin.SetString(SideMenuFocus,home)</onfocus>
+				<onfocus>Skin.SetString(Home_WidgetIndex,0)</onfocus>
 				<onright>SetFocus($VAR[CurrentWidgetListID])</onright>
 				<onclick>ActivateWindow(Videos,plugin://plugin.video.aiostreams/,return)</onclick>
 
@@ -211,7 +212,8 @@
 				<texturenofocus />
 				<onup>9003</onup>
 				<ondown>9005</ondown>
-				<onfocus>Skin.SetString(SideMenuFocus,tvshows)|Skin.SetString(TV_WidgetIndex,0)</onfocus>
+				<onfocus>Skin.SetString(SideMenuFocus,tvshows)</onfocus>
+				<onfocus>Skin.SetString(TV_WidgetIndex,0)</onfocus>
 				<onright>SetFocus($VAR[CurrentWidgetListID])</onright>
 
 				<onclick>ActivateWindow(Videos,plugin://plugin.video.aiostreams/?action=series_lists,return)</onclick>
@@ -245,7 +247,8 @@
 				<texturenofocus />
 				<onup>9004</onup>
 				<ondown>9006</ondown>
-				<onfocus>Skin.SetString(SideMenuFocus,movies)|Skin.SetString(Movies_WidgetIndex,0)</onfocus>
+				<onfocus>Skin.SetString(SideMenuFocus,movies)</onfocus>
+				<onfocus>Skin.SetString(Movies_WidgetIndex,0)</onfocus>
 				<onright>SetFocus($VAR[CurrentWidgetListID])</onright>
 				<onclick>ActivateWindow(Videos,plugin://plugin.video.aiostreams/?action=movie_lists,return)</onclick>
 

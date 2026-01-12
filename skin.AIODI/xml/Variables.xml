@@ -959,29 +959,92 @@
 		<value condition="Skin.IsString(Movies_WidgetIndex,0)">1</value>
 		<value condition="Skin.IsString(Movies_WidgetIndex,1)">2</value>
 		<value condition="Skin.IsString(Movies_WidgetIndex,2)">3</value>
-		<value condition="Skin.IsString(Movies_WidgetIndex,3)">0</value>
+		<value condition="Skin.IsString(Movies_WidgetIndex,3)">4</value>
+		<value condition="Skin.IsString(Movies_WidgetIndex,4)">5</value>
+		<value condition="Skin.IsString(Movies_WidgetIndex,5)">6</value>
+		<value condition="Skin.IsString(Movies_WidgetIndex,6)">7</value>
+		<value condition="Skin.IsString(Movies_WidgetIndex,7)">8</value>
+		<value condition="Skin.IsString(Movies_WidgetIndex,8)">9</value>
+		<value condition="Skin.IsString(Movies_WidgetIndex,9)">10</value>
+		<value condition="Skin.IsString(Movies_WidgetIndex,10)">11</value>
+		<value condition="Skin.IsString(Movies_WidgetIndex,11)">12</value>
+		<value condition="Skin.IsString(Movies_WidgetIndex,12)">13</value>
+		<value condition="Skin.IsString(Movies_WidgetIndex,13)">14</value>
+		<value condition="Skin.IsString(Movies_WidgetIndex,14)">15</value>
+		<value condition="Skin.IsString(Movies_WidgetIndex,15)">16</value>
+		<value condition="Skin.IsString(Movies_WidgetIndex,16)">17</value>
+		<value condition="Skin.IsString(Movies_WidgetIndex,17)">18</value>
+		<value condition="Skin.IsString(Movies_WidgetIndex,18)">19</value>
+		<value condition="Skin.IsString(Movies_WidgetIndex,19)">0</value>
 		<value>0</value>
 	</variable>
 	<variable name="Movies_Prev_Index">
-		<value condition="Skin.IsString(Movies_WidgetIndex,0)">3</value>
+		<value condition="Skin.IsString(Movies_WidgetIndex,0)">19</value>
 		<value condition="Skin.IsString(Movies_WidgetIndex,1)">0</value>
 		<value condition="Skin.IsString(Movies_WidgetIndex,2)">1</value>
 		<value condition="Skin.IsString(Movies_WidgetIndex,3)">2</value>
+		<value condition="Skin.IsString(Movies_WidgetIndex,4)">3</value>
+		<value condition="Skin.IsString(Movies_WidgetIndex,5)">4</value>
+		<value condition="Skin.IsString(Movies_WidgetIndex,6)">5</value>
+		<value condition="Skin.IsString(Movies_WidgetIndex,7)">6</value>
+		<value condition="Skin.IsString(Movies_WidgetIndex,8)">7</value>
+		<value condition="Skin.IsString(Movies_WidgetIndex,9)">8</value>
+		<value condition="Skin.IsString(Movies_WidgetIndex,10)">9</value>
+		<value condition="Skin.IsString(Movies_WidgetIndex,11)">10</value>
+		<value condition="Skin.IsString(Movies_WidgetIndex,12)">11</value>
+		<value condition="Skin.IsString(Movies_WidgetIndex,13)">12</value>
+		<value condition="Skin.IsString(Movies_WidgetIndex,14)">13</value>
+		<value condition="Skin.IsString(Movies_WidgetIndex,15)">14</value>
+		<value condition="Skin.IsString(Movies_WidgetIndex,16)">15</value>
+		<value condition="Skin.IsString(Movies_WidgetIndex,17)">16</value>
+		<value condition="Skin.IsString(Movies_WidgetIndex,18)">17</value>
+		<value condition="Skin.IsString(Movies_WidgetIndex,19)">18</value>
 		<value>0</value>
 	</variable>
-
 	<variable name="TV_Next_Index">
 		<value condition="Skin.IsString(TV_WidgetIndex,0)">1</value>
 		<value condition="Skin.IsString(TV_WidgetIndex,1)">2</value>
 		<value condition="Skin.IsString(TV_WidgetIndex,2)">3</value>
-		<value condition="Skin.IsString(TV_WidgetIndex,3)">0</value>
+		<value condition="Skin.IsString(TV_WidgetIndex,3)">4</value>
+		<value condition="Skin.IsString(TV_WidgetIndex,4)">5</value>
+		<value condition="Skin.IsString(TV_WidgetIndex,5)">6</value>
+		<value condition="Skin.IsString(TV_WidgetIndex,6)">7</value>
+		<value condition="Skin.IsString(TV_WidgetIndex,7)">8</value>
+		<value condition="Skin.IsString(TV_WidgetIndex,8)">9</value>
+		<value condition="Skin.IsString(TV_WidgetIndex,9)">10</value>
+		<value condition="Skin.IsString(TV_WidgetIndex,10)">11</value>
+		<value condition="Skin.IsString(TV_WidgetIndex,11)">12</value>
+		<value condition="Skin.IsString(TV_WidgetIndex,12)">13</value>
+		<value condition="Skin.IsString(TV_WidgetIndex,13)">14</value>
+		<value condition="Skin.IsString(TV_WidgetIndex,14)">15</value>
+		<value condition="Skin.IsString(TV_WidgetIndex,15)">16</value>
+		<value condition="Skin.IsString(TV_WidgetIndex,16)">17</value>
+		<value condition="Skin.IsString(TV_WidgetIndex,17)">18</value>
+		<value condition="Skin.IsString(TV_WidgetIndex,18)">19</value>
+		<value condition="Skin.IsString(TV_WidgetIndex,19)">0</value>
 		<value>0</value>
 	</variable>
 	<variable name="TV_Prev_Index">
-		<value condition="Skin.IsString(TV_WidgetIndex,0)">3</value>
+		<value condition="Skin.IsString(TV_WidgetIndex,0)">19</value>
 		<value condition="Skin.IsString(TV_WidgetIndex,1)">0</value>
 		<value condition="Skin.IsString(TV_WidgetIndex,2)">1</value>
 		<value condition="Skin.IsString(TV_WidgetIndex,3)">2</value>
+		<value condition="Skin.IsString(TV_WidgetIndex,4)">3</value>
+		<value condition="Skin.IsString(TV_WidgetIndex,5)">4</value>
+		<value condition="Skin.IsString(TV_WidgetIndex,6)">5</value>
+		<value condition="Skin.IsString(TV_WidgetIndex,7)">6</value>
+		<value condition="Skin.IsString(TV_WidgetIndex,8)">7</value>
+		<value condition="Skin.IsString(TV_WidgetIndex,9)">8</value>
+		<value condition="Skin.IsString(TV_WidgetIndex,10)">9</value>
+		<value condition="Skin.IsString(TV_WidgetIndex,11)">10</value>
+		<value condition="Skin.IsString(TV_WidgetIndex,12)">11</value>
+		<value condition="Skin.IsString(TV_WidgetIndex,13)">12</value>
+		<value condition="Skin.IsString(TV_WidgetIndex,14)">13</value>
+		<value condition="Skin.IsString(TV_WidgetIndex,15)">14</value>
+		<value condition="Skin.IsString(TV_WidgetIndex,16)">15</value>
+		<value condition="Skin.IsString(TV_WidgetIndex,17)">16</value>
+		<value condition="Skin.IsString(TV_WidgetIndex,18)">17</value>
+		<value condition="Skin.IsString(TV_WidgetIndex,19)">18</value>
 		<value>0</value>
 	</variable>
 

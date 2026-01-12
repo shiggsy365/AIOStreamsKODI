@@ -120,6 +120,18 @@
 					</focusedlayout>
 					<content limit="20" target="$PARAM[widget_target]" browse="$PARAM[browse_mode]">$PARAM[content_path]</content>
 				</control>
+				<!-- LOADING INDICATOR -->
+				<control type="label">
+					<left>0</left>
+					<top>200</top>
+					<width>1300</width>
+					<height>100</height>
+					<align>center</align>
+					<font>font30_title</font>
+					<textcolor>FFFFFFFF</textcolor>
+					<label>Loading content...</label>
+					<visible>Container($PARAM[list_id]).IsUpdating</visible>
+				</control>
 			</control>
 		</definition>
 	</include>
