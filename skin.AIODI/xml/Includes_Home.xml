@@ -29,7 +29,7 @@
 				<height>50</height>
 				<font>font20_title</font>
 				<textcolor>FFFFFFFF</textcolor>
-				<label>STATIC INCLUDE TEST: SUCCESS (v6.0.135)</label>
+				<label>STATIC INCLUDE TEST: SUCCESS (v6.0.136)</label>
 			</control>
 		</control>
 	</include>
@@ -55,12 +55,99 @@
 					<height>50</height>
 					<font>font20_title</font>
 					<textcolor>FFFFFFFF</textcolor>
-					<label>DEFINITION TEST: $PARAM[test_label] (v6.0.135)</label>
+					<label>DEFINITION TEST: $PARAM[test_label] (v6.0.136)</label>
 				</control>
 			</control>
 		</definition>
 	</include>
-	<include name="CategoryLabel">
+	<!-- PRODUCTION: STABLE CLONE (BASED ON SUCCESSFUL PURPLE TEST) -->
+	<include name="WidgetListPoster_Stable">
+		<param name="list_id">noop</param>
+		<param name="widget_header"></param>
+		<param name="widget_target">videos</param>
+		<param name="content_path"></param>
+		<param name="onup_action">noop</param>
+		<param name="ondown_action">noop</param>
+		<param name="onclick_condition">false</param>
+		<param name="browse_mode">auto</param>
+		<definition>
+			<control type="group">
+				<left>0</left>
+				<top>0</top>
+				<width>1600</width>
+				<height>600</height>
+				<!-- HEADER -->
+				<control type="label">
+					<left>0</left>
+					<top>0</top>
+					<width>1000</width>
+					<height>50</height>
+					<font>font20_title</font>
+					<textcolor>FFFFFFFF</textcolor>
+					<label>$PARAM[widget_header] (STABLE v6.0.136)</label>
+				</control>
+				<!-- BACKDROP -->
+				<control type="image">
+					<left>0</left>
+					<top>115</top>
+					<width>1600</width>
+					<height>550</height>
+					<texture colordiffuse="FF00FFFF">icons/sidemenu/home_white.png</texture> <!-- SOLID CYAN BACKDROP -->
+					<zorder>1000</zorder>
+				</control>
+				<!-- CONTENT PANEL -->
+				<control type="panel" id="$PARAM[list_id]">
+					<left>0</left>
+					<top>115</top>
+					<width>1600</width>
+					<height>500</height>
+					<zorder>5000</zorder>
+					<orientation>horizontal</orientation>
+					<onleft>9000</onleft>
+					<onright>noop</onright>
+					<onup>$PARAM[onup_action]</onup>
+					<ondown>$PARAM[ondown_action]</ondown>
+					<itemlayout width="340" height="450">
+						<control type="image">
+							<width>340</width>
+							<height>450</height>
+							<texture colordiffuse="FFFF00FF">icons/sidemenu/home_white.png</texture> <!-- MAGENTA -->
+						</control>
+						<control type="label">
+							<width>340</width>
+							<height>100</height>
+							<align>center</align>
+							<label>STABLE ITEM</label>
+						</control>
+					</itemlayout>
+					<focusedlayout width="340" height="450">
+						<control type="image">
+							<width>340</width>
+							<height>450</height>
+							<texture colordiffuse="FF00FF00">icons/sidemenu/home_white.png</texture> <!-- GREEN FOCUS -->
+						</control>
+						<control type="label">
+							<width>340</width>
+							<height>100</height>
+							<align>center</align>
+							<label>FOCUSED</label>
+						</control>
+					</focusedlayout>
+					<content limit="20" target="$PARAM[widget_target]">
+						<item>
+							<label>STABLE PROOF 1</label>
+							<thumb>icons/sidemenu/home_white.png</thumb>
+						</item>
+						<item>
+							<label>STABLE PROOF 2</label>
+							<thumb>icons/sidemenu/home_white.png</thumb>
+						</item>
+						$PARAM[content_path]
+					</content>
+				</control>
+			</control>
+		</definition>
+	</include>
 		<param name="label">Default Header</param>
 		<param name="list_id">noop</param>
 		<param name="visible">true</param>

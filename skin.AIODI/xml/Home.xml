@@ -597,10 +597,10 @@
 			<height>50</height>
 			<font>font30_title</font>
 			<textcolor>FFFF00FF</textcolor>
-			<label>IF YOU CAN SEE THIS, GROUP 6000 IS ALIVE (v6.0.133)</label>
+			<label>IF YOU CAN SEE THIS, GROUP 6000 IS ALIVE (v6.0.136)</label>
 		</control>
 
-		<!-- DIRECT INJECTION TEST (v6.0.133) -->
+		<!-- DIRECT INJECTION TEST (v6.0.136) -->
 		<control type="group">
 			<left>0</left>
 			<top>150</top>
@@ -611,7 +611,7 @@
 				<height>50</height>
 				<font>font20_title</font>
 				<textcolor>FFFFFFFF</textcolor>
-				<label>DIRECT INJECTION TEST: ROW 2 (v6.0.133)</label>
+				<label>DIRECT INJECTION TEST: ROW 2 (v6.0.136)</label>
 			</control>
 			<control type="image">
 				<left>0</left>
@@ -678,7 +678,7 @@
 
 
 
-		<!-- TEST STACK: PROVING THE POINT (v6.0.135) -->
+		<!-- TEST STACK: PROVING THE POINT (v6.0.136) -->
 		<include>StaticWidgetTest</include>
 		<include content="DefinitionWidgetTest">
 			<param name="test_label">PASSED PARAM</param>
@@ -686,9 +686,9 @@
 
 	<control type="group">
 		<visible>Skin.IsString(TV_WidgetIndex,0)</visible>
-		<include content="WidgetListPoster">
+		<include content="WidgetListPoster_Stable">
 			<param name="content_path">plugin://plugin.video.aiostreams/?action=smart_widget&amp;index=$VAR[SeriesRow1IndexVar]&amp;content_type=series</param>
-			<param name="widget_header">SERIES TRACKING (6100) (v6.0.135)</param>
+			<param name="widget_header">PRODUCTION: SERIES TRACKING (6100) (v6.0.136)</param>
 			<param name="widget_target">videos</param>
 			<param name="list_id">6100</param>
 			<param name="onup_action">Skin.SetString(TV_WidgetIndex,$VAR[TV_Prev_Index])</param>
@@ -719,7 +719,7 @@
 			<height>30</height>
 			<font>font12</font>
 			<textcolor>FFFFFF00</textcolor> <!-- Hex Yellow -->
-			<label>v6.0.133 | F: $INFO[Skin.String(SideMenuFocus)] | T:$INFO[Skin.String(TV_WidgetIndex)] | C: $INFO[Container(6100).NumItems]</label>
+			<label>v6.0.136 | F: $INFO[Skin.String(SideMenuFocus)] | T:$INFO[Skin.String(TV_WidgetIndex)] | C: $INFO[Container(6100).NumItems]</label>
 		</control>
 		<control type="label">
 			<left>150</left>
@@ -728,7 +728,7 @@
 			<height>30</height>
 			<font>font12</font>
 			<textcolor>FFFF0000</textcolor> <!-- Hex Red -->
-			<label>STATUS: $VAR[SeriesRow1IndexVar] | FOCUS: ($INFO[System.FocusedControl.ID]) $INFO[System.FocusedControl.Label] (v6.0.133)</label>
+			<label>STATUS: $VAR[SeriesRow1IndexVar] | FOCUS: ($INFO[System.FocusedControl.ID]) $INFO[System.FocusedControl.Label] (v6.0.136)</label>
 		</control>
 
 		<control type="label">
