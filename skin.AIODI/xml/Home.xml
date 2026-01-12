@@ -397,130 +397,111 @@
 
 <!-- Home Widgets -->
 <control type="group" id="11000">
-	<top>250</top>
+	<bottom>100</bottom>
 	<left>150</left>
 	<right>0</right>
-	<height>800</height>
+	<height>550</height>
 	<visible>Skin.IsString(SideMenuFocus,home)</visible>
 
-	<control type="grouplist" id="11000_list">
-		<left>0</left>
-		<top>0</top>
-		<width>1750</width>
-		<height>3000</height>
-		<orientation>vertical</orientation>
-		<itemgap>20</itemgap>
-		<onright>noop</onright>
-		<onleft>9000</onleft>
-		<scrolltime tween="cubic" easing="out">500</scrolltime>
+	<!-- Widget 0: Trakt Next Up -->
+	<control type="group">
+		<visible>String.IsEqual(Skin.String(Home_WidgetIndex),0)</visible>
+		<include content="WidgetListEpisodes">
+			<param name="content_path">plugin://plugin.video.aiostreams/?action=trakt_next_up</param>
+			<param name="widget_header">Trakt Next Up</param>
+			<param name="widget_target">videos</param>
+			<param name="list_id">10100</param>
+			<param name="onup_action">noop</param>
+			<param name="ondown_action">Skin.SetString(Home_WidgetIndex,1)</param>
+		</include>
+	</control>
 
-		<control type="group">
-			<width>1750</width>
-			<height>600</height>
-			<include content="WidgetListEpisodes">
-				<param name="content_path">plugin://plugin.video.aiostreams/?action=trakt_next_up</param>
-				<param name="widget_header">Trakt Next Up</param>
-				<param name="widget_target">videos</param>
-				<param name="list_id">10100</param>
-				<param name="onup_action">noop</param>
-				<param name="ondown_action">SetFocus(10200)</param>
-			</include>
-		</control>
-		<control type="group">
-			<width>1750</width>
-			<height>600</height>
-			<include content="WidgetListPoster">
-				<param name="content_path">plugin://plugin.video.aiostreams/?action=trakt_watchlist&amp;media_type=movies</param>
-				<param name="widget_header">Trakt Watchlist Movies</param>
-				<param name="widget_target">videos</param>
-				<param name="list_id">10200</param>
-				<param name="onup_action">SetFocus(10100)</param>
-				<param name="ondown_action">SetFocus(10300)</param>
-			</include>
-		</control>
-		<control type="group">
-			<width>1750</width>
-			<height>600</height>
-			<include content="WidgetListPoster">
-				<param name="content_path">plugin://plugin.video.aiostreams/?action=trakt_watchlist&amp;media_type=shows</param>
-				<param name="widget_header">Trakt Watchlist Series</param>
-				<param name="widget_target">videos</param>
-				<param name="list_id">10300</param>
-				<param name="onup_action">SetFocus(10200)</param>
-				<param name="ondown_action">noop</param>
-			</include>
-		</control>
+	<!-- Widget 1: Trakt Watchlist Movies -->
+	<control type="group">
+		<visible>String.IsEqual(Skin.String(Home_WidgetIndex),1)</visible>
+		<include content="WidgetListPoster">
+			<param name="content_path">plugin://plugin.video.aiostreams/?action=trakt_watchlist&amp;media_type=movies</param>
+			<param name="widget_header">Trakt Watchlist Movies</param>
+			<param name="widget_target">videos</param>
+			<param name="list_id">10200</param>
+			<param name="onup_action">Skin.SetString(Home_WidgetIndex,0)</param>
+			<param name="ondown_action">Skin.SetString(Home_WidgetIndex,2)</param>
+		</include>
+	</control>
+
+	<!-- Widget 2: Trakt Watchlist Series -->
+	<control type="group">
+		<visible>String.IsEqual(Skin.String(Home_WidgetIndex),2)</visible>
+		<include content="WidgetListPoster">
+			<param name="content_path">plugin://plugin.video.aiostreams/?action=trakt_watchlist&amp;media_type=shows</param>
+			<param name="widget_header">Trakt Watchlist Series</param>
+			<param name="widget_target">videos</param>
+			<param name="list_id">10300</param>
+			<param name="onup_action">Skin.SetString(Home_WidgetIndex,1)</param>
+			<param name="ondown_action">noop</param>
+		</include>
 	</control>
 </control>
 
 
 <!-- Movie Widgets -->
 <control type="group" id="5000">
-	<top>250</top>
+	<bottom>100</bottom>
 	<left>150</left>
 	<right>0</right>
-	<height>800</height>
+	<height>550</height>
 	<visible>Skin.IsString(SideMenuFocus,movies)</visible>
-	
-	<control type="grouplist" id="5000_list">
-		<left>0</left>
-		<top>0</top>
-		<width>1750</width>
-		<height>3000</height>
-		<orientation>vertical</orientation>
-		<itemgap>20</itemgap>
-		<onright>noop</onright>
-		<onleft>9000</onleft>
-		<scrolltime tween="cubic" easing="out">500</scrolltime>
-		
-		<control type="group">
-			<width>1750</width>
-			<height>600</height>
-			<include content="WidgetListPoster">
-				<param name="content_path">plugin://plugin.video.aiostreams/?action=smart_widget&amp;index=$VAR[MovieRow1IndexVar]&amp;content_type=movie</param>
-				<param name="widget_header">$INFO[Window(Home).Property(movie_catalog_0_name)]</param>
-				<param name="widget_target">videos</param>
-				<param name="list_id">5100</param>
-				<param name="onup_action">noop</param>
-				<param name="ondown_action">SetFocus(5200)</param>
-			</include>
-		</control>
-		<control type="group">
-			<width>1750</width>
-			<height>600</height>
-			<include content="WidgetListPoster">
-				<param name="content_path">plugin://plugin.video.aiostreams/?action=smart_widget&amp;index=$VAR[MovieRow2IndexVar]&amp;content_type=movie</param>
-				<param name="widget_header">$INFO[Window(Home).Property(movie_catalog_1_name)]</param>
-				<param name="widget_target">videos</param>
-				<param name="list_id">5200</param>
-				<param name="onup_action">SetFocus(5100)</param>
-				<param name="ondown_action">SetFocus(5300)</param>
-			</include>
-		</control>
-		<control type="group">
-			<width>1750</width>
-			<height>600</height>
-			<include content="WidgetListPoster">
-				<param name="content_path">plugin://plugin.video.aiostreams/?action=smart_widget&amp;index=$VAR[MovieRow3IndexVar]&amp;content_type=movie</param>
-				<param name="widget_header">$INFO[Window(Home).Property(movie_catalog_2_name)]</param>
-				<param name="widget_target">videos</param>
-				<param name="list_id">5300</param>
-				<param name="onup_action">SetFocus(5200)</param>
-				<param name="ondown_action">SetFocus(5400)</param>
-			</include>
-		</control>
-		<control type="group">
-			<width>1750</width>
-			<height>600</height>
-			<include content="WidgetListPoster">
-				<param name="content_path">plugin://plugin.video.aiostreams/?action=smart_widget&amp;index=$VAR[MovieRow4IndexVar]&amp;content_type=movie</param>
-				<param name="widget_header">$INFO[Window(Home).Property(movie_catalog_3_name)]</param>
-				<param name="widget_target">videos</param>
-				<param name="list_id">5400</param>
-				<param name="onup_action">SetFocus(5300)</param>
-				<param name="ondown_action">noop</param>
-			</include>
-		</control>
+
+	<!-- Widget 0 -->
+	<control type="group">
+		<visible>String.IsEqual(Skin.String(Movies_WidgetIndex),0)</visible>
+		<include content="WidgetListPoster">
+			<param name="content_path">plugin://plugin.video.aiostreams/?action=smart_widget&amp;index=0&amp;content_type=movie</param>
+			<param name="widget_header">$INFO[Window(Home).Property(movie_catalog_0_name)]</param>
+			<param name="widget_target">videos</param>
+			<param name="list_id">5100</param>
+			<param name="onup_action">noop</param>
+			<param name="ondown_action">Skin.SetString(Movies_WidgetIndex,1)</param>
+		</include>
+	</control>
+
+	<!-- Widget 1 -->
+	<control type="group">
+		<visible>String.IsEqual(Skin.String(Movies_WidgetIndex),1)</visible>
+		<include content="WidgetListPoster">
+			<param name="content_path">plugin://plugin.video.aiostreams/?action=smart_widget&amp;index=1&amp;content_type=movie</param>
+			<param name="widget_header">$INFO[Window(Home).Property(movie_catalog_1_name)]</param>
+			<param name="widget_target">videos</param>
+			<param name="list_id">5200</param>
+			<param name="onup_action">Skin.SetString(Movies_WidgetIndex,0)</param>
+			<param name="ondown_action">Skin.SetString(Movies_WidgetIndex,2)</param>
+		</include>
+	</control>
+
+	<!-- Widget 2 -->
+	<control type="group">
+		<visible>String.IsEqual(Skin.String(Movies_WidgetIndex),2)</visible>
+		<include content="WidgetListPoster">
+			<param name="content_path">plugin://plugin.video.aiostreams/?action=smart_widget&amp;index=2&amp;content_type=movie</param>
+			<param name="widget_header">$INFO[Window(Home).Property(movie_catalog_2_name)]</param>
+			<param name="widget_target">videos</param>
+			<param name="list_id">5300</param>
+			<param name="onup_action">Skin.SetString(Movies_WidgetIndex,1)</param>
+			<param name="ondown_action">Skin.SetString(Movies_WidgetIndex,3)</param>
+		</include>
+	</control>
+
+	<!-- Widget 3 -->
+	<control type="group">
+		<visible>String.IsEqual(Skin.String(Movies_WidgetIndex),3)</visible>
+		<include content="WidgetListPoster">
+			<param name="content_path">plugin://plugin.video.aiostreams/?action=smart_widget&amp;index=3&amp;content_type=movie</param>
+			<param name="widget_header">$INFO[Window(Home).Property(movie_catalog_3_name)]</param>
+			<param name="widget_target">videos</param>
+			<param name="list_id">5400</param>
+			<param name="onup_action">Skin.SetString(Movies_WidgetIndex,2)</param>
+			<param name="ondown_action">noop</param>
+		</include>
 	</control>
 </control>
 
@@ -593,72 +574,62 @@
 
 <!-- ========== TV SHOWS WIDGETS (20 ROWS) ========== -->
 <control type="group" id="6000">
-	<visible>String.IsEqual(Skin.String(SideMenuFocus),tvshows)</visible>
+	<bottom>100</bottom>
 	<left>150</left>
-	<top>250</top>
 	<width>1750</width>
-	<height>800</height>
-	<zorder>20</zorder>
+	<height>550</height>
+	<visible>String.IsEqual(Skin.String(SideMenuFocus),tvshows)</visible>
 
-	<control type="grouplist" id="6000_list">
-		<left>0</left>
-		<top>0</top>
-		<width>1750</width>
-		<height>3000</height>
-		<orientation>vertical</orientation>
-		<itemgap>20</itemgap>
-		<onright>noop</onright>
-		<onleft>9000</onleft>
-		<scrolltime tween="cubic" easing="out">500</scrolltime>
+	<!-- Widget 0 -->
+	<control type="group">
+		<visible>String.IsEqual(Skin.String(TV_WidgetIndex),0)</visible>
+		<include content="WidgetListPoster">
+			<param name="content_path">plugin://plugin.video.aiostreams/?action=smart_widget&amp;index=0&amp;content_type=series</param>
+			<param name="widget_header">$INFO[Window(Home).Property(series_catalog_0_name)]</param>
+			<param name="widget_target">videos</param>
+			<param name="list_id">6100</param>
+			<param name="onup_action">noop</param>
+			<param name="ondown_action">Skin.SetString(TV_WidgetIndex,1)</param>
+		</include>
+	</control>
 
-		<control type="group">
-			<width>1750</width>
-			<height>600</height>
-			<include content="WidgetListPoster">
-				<param name="content_path">plugin://plugin.video.aiostreams/?action=smart_widget&amp;index=0&amp;content_type=series</param>
-				<param name="widget_header">Series Row 1</param>
-				<param name="widget_target">videos</param>
-				<param name="list_id">6100</param>
-				<param name="onup_action">noop</param>
-				<param name="ondown_action">SetFocus(6110)</param>
-			</include>
-		</control>
-		<control type="group">
-			<width>1750</width>
-			<height>600</height>
-			<include content="WidgetListPoster">
-				<param name="content_path">plugin://plugin.video.aiostreams/?action=smart_widget&amp;index=1&amp;content_type=series</param>
-				<param name="widget_header">Series Row 2</param>
-				<param name="widget_target">videos</param>
-				<param name="list_id">6110</param>
-				<param name="onup_action">SetFocus(6100)</param>
-				<param name="ondown_action">SetFocus(6120)</param>
-			</include>
-		</control>
-		<control type="group">
-			<width>1750</width>
-			<height>600</height>
-			<include content="WidgetListPoster">
-				<param name="content_path">plugin://plugin.video.aiostreams/?action=smart_widget&amp;index=2&amp;content_type=series</param>
-				<param name="widget_header">Series Row 3</param>
-				<param name="widget_target">videos</param>
-				<param name="list_id">6120</param>
-				<param name="onup_action">SetFocus(6110)</param>
-				<param name="ondown_action">SetFocus(6130)</param>
-			</include>
-		</control>
-		<control type="group">
-			<width>1750</width>
-			<height>600</height>
-			<include content="WidgetListPoster">
-				<param name="content_path">plugin://plugin.video.aiostreams/?action=smart_widget&amp;index=3&amp;content_type=series</param>
-				<param name="widget_header">Series Row 4</param>
-				<param name="widget_target">videos</param>
-				<param name="list_id">6130</param>
-				<param name="onup_action">SetFocus(6120)</param>
-				<param name="ondown_action">noop</param>
-			</include>
-		</control>
+	<!-- Widget 1 -->
+	<control type="group">
+		<visible>String.IsEqual(Skin.String(TV_WidgetIndex),1)</visible>
+		<include content="WidgetListPoster">
+			<param name="content_path">plugin://plugin.video.aiostreams/?action=smart_widget&amp;index=1&amp;content_type=series</param>
+			<param name="widget_header">$INFO[Window(Home).Property(series_catalog_1_name)]</param>
+			<param name="widget_target">videos</param>
+			<param name="list_id">6110</param>
+			<param name="onup_action">Skin.SetString(TV_WidgetIndex,0)</param>
+			<param name="ondown_action">Skin.SetString(TV_WidgetIndex,2)</param>
+		</include>
+	</control>
+
+	<!-- Widget 2 -->
+	<control type="group">
+		<visible>String.IsEqual(Skin.String(TV_WidgetIndex),2)</visible>
+		<include content="WidgetListPoster">
+			<param name="content_path">plugin://plugin.video.aiostreams/?action=smart_widget&amp;index=2&amp;content_type=series</param>
+			<param name="widget_header">$INFO[Window(Home).Property(series_catalog_2_name)]</param>
+			<param name="widget_target">videos</param>
+			<param name="list_id">6120</param>
+			<param name="onup_action">Skin.SetString(TV_WidgetIndex,1)</param>
+			<param name="ondown_action">Skin.SetString(TV_WidgetIndex,3)</param>
+		</include>
+	</control>
+
+	<!-- Widget 3 -->
+	<control type="group">
+		<visible>String.IsEqual(Skin.String(TV_WidgetIndex),3)</visible>
+		<include content="WidgetListPoster">
+			<param name="content_path">plugin://plugin.video.aiostreams/?action=smart_widget&amp;index=3&amp;content_type=series</param>
+			<param name="widget_header">$INFO[Window(Home).Property(series_catalog_3_name)]</param>
+			<param name="widget_target">videos</param>
+			<param name="list_id">6130</param>
+			<param name="onup_action">Skin.SetString(TV_WidgetIndex,2)</param>
+			<param name="ondown_action">noop</param>
+		</include>
 	</control>
 </control>
 
