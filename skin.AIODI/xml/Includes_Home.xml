@@ -272,7 +272,7 @@
 					<ondown>$PARAM[ondown_action1]</ondown>
 					<ondown>$PARAM[ondown_action2]</ondown>
 					<onfocus>Skin.SetString(CurrentWidgetListID,$PARAM[list_id])</onfocus>
-					<onfocus>Control.Move($PARAM[list_id],-1000)</onfocus>
+					<onfocus>Control.SetItem($PARAM[list_id],1)</onfocus>
 					<itemlayout width="240" height="360">
 						<control type="image">
 							<width>230</width>
@@ -297,7 +297,7 @@
 							</control>
 						</control>
 					</focusedlayout>
-					<content limit="20" target="$PARAM[widget_target]" browse="$PARAM[browse_mode]">$PARAM[content_path]</content>
+					<content limit="20" target="$PARAM[widget_target]" browse="never">$PARAM[content_path]</content>
 				</control>
 				<!-- LOADING INDICATOR -->
 				<include content="BusyListSpinner">
@@ -414,7 +414,7 @@
 					<ondown>$PARAM[ondown_action1]</ondown>
 					<ondown>$PARAM[ondown_action2]</ondown>
 					<onfocus>Skin.SetString(CurrentWidgetListID,$PARAM[list_id])</onfocus>
-					<onfocus>Control.Move($PARAM[list_id],-1000)</onfocus>
+					<onfocus>Control.SetItem($PARAM[list_id],1)</onfocus>
 					<itemlayout width="410" height="235">
 						<control type="image">
 							<width>390</width>
