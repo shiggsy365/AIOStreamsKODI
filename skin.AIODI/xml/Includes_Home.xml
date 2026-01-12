@@ -48,7 +48,7 @@
 			<control type="panel" id="$PARAM[list_id]">
 				<left>0</left>
 				<top>115</top>
-				<right>0</right>
+				<width>1700</width>
 				<height>518</height>
 				<zorder>200</zorder>
 				<onclick condition="$PARAM[onclick_condition]">$PARAM[onclick_action]</onclick>
@@ -220,7 +220,7 @@
 			<control type="panel" id="$PARAM[list_id]">
 				<left>0</left>
 				<top>105</top>
-				<right>0</right>
+				<width>1700</width>
 				<height>410</height>
 				<zorder>200</zorder>
 				<include content="WidgetListCommon">
