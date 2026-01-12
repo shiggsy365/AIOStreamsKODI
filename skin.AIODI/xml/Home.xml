@@ -686,7 +686,7 @@
 			<height>30</height>
 			<font>font12</font>
 			<textcolor>FFFF0000</textcolor> <!-- Hex Red -->
-			<label>ACT_ID: $VAR[CurrentWidgetListID] ($INFO[Container($VAR[CurrentWidgetListID]).NumItems] items) | TV_COUNT: $INFO[Container(6100).NumItems] | FOCUS: ($INFO[System.FocusedControl.ID]) $INFO[System.FocusedControl.Label] (v6.0.58)</label>
+			<label>ACT_ID: $VAR[CurrentWidgetListID] ($INFO[Container($VAR[CurrentWidgetListID]).NumItems] items) | TV_COUNT: $INFO[Container(6100).NumItems] | FOCUS: ($INFO[System.FocusedControl.ID]) $INFO[System.FocusedControl.Label] (v6.0.60)</label>
 		</control>
 
 		<control type="label">

@@ -51,13 +51,22 @@
 				<width>1700</width>
 				<height>518</height>
 				<zorder>200</zorder>
+				<visible>True</visible>
 				<onclick condition="$PARAM[onclick_condition]">$PARAM[onclick_action]</onclick>
 				<include content="WidgetListCommon">
 					<param name="list_id" value="$PARAM[list_id]"/>
 					<param name="onup_action" value="$PARAM[onup_action]"/>
 					<param name="ondown_action" value="$PARAM[ondown_action]"/>
 				</include>
-				<itemlayout width="310" height="486">
+				<itemlayout width="310" height="500">
+					<control type="group">
+						<control type="image">
+							<width>100</width>
+							<height>100</height>
+							<texture colordiffuse="FF00FFFF">icons/sidemenu/home_white.png</texture>
+							<zorder>300</zorder>
+						</control>
+					</control>
 					<control type="image">
 						<width>310</width>
 						<height>486</height>
@@ -223,6 +232,7 @@
 				<width>1700</width>
 				<height>410</height>
 				<zorder>200</zorder>
+				<visible>True</visible>
 				<include content="WidgetListCommon">
 					<param name="list_id" value="$PARAM[list_id]"/>
 					<param name="onup_action" value="$PARAM[onup_action]"/>
@@ -230,6 +240,14 @@
 				</include>
 				<visible>True</visible>
 				<itemlayout width="310" height="500">
+					<control type="group">
+						<control type="image">
+							<width>100</width>
+							<height>100</height>
+							<texture colordiffuse="FF00FFFF">icons/sidemenu/home_white.png</texture>
+							<zorder>300</zorder>
+						</control>
+					</control>
 					<control type="image">
 						<width>310</width>
 						<height>500</height>
