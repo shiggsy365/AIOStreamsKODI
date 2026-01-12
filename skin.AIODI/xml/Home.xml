@@ -659,6 +659,42 @@
 			<texture colordiffuse="88000000">colors/white.png</texture>
 		</control>
 
+		<!-- ROOT PROOF PANEL: NO GROUPS, NO PARAMETERS -->
+		<control type="panel" id="3000">
+			<left>150</left>
+			<top>500</top>
+			<width>1600</width>
+			<height>300</height>
+			<zorder>5000</zorder>
+			<visible>True</visible>
+			<orientation>horizontal</orientation>
+			<itemlayout width="300" height="200">
+				<control type="image">
+					<width>300</width>
+					<height>200</height>
+					<texture colordiffuse="FF00FFFF">icons/sidemenu/home_white.png</texture>
+				</control>
+				<control type="label">
+					<width>300</width>
+					<height>200</height>
+					<align>center</align>
+					<label>ROOT ITEM</label>
+				</control>
+			</itemlayout>
+			<focusedlayout width="300" height="200">
+				<control type="image">
+					<width>300</width>
+					<height>200</height>
+					<texture colordiffuse="FF00FF00">icons/sidemenu/home_white.png</texture>
+				</control>
+			</focusedlayout>
+			<content>
+				<item><label>TEST 1</label><onclick>noop</onclick></item>
+				<item><label>TEST 2</label><onclick>noop</onclick></item>
+				<item><label>TEST 3</label><onclick>noop</onclick></item>
+			</content>
+		</control>
+
 		<!-- Labels -->
 		<!-- GLOBAL TRUTH BOX: PROVES RENDERING & TEXTURE -->
 		<control type="image">
@@ -686,7 +722,7 @@
 			<height>30</height>
 			<font>font12</font>
 			<textcolor>FFFF0000</textcolor> <!-- Hex Red -->
-			<label>ACT_ID: $VAR[CurrentWidgetListID] ($INFO[Container($VAR[CurrentWidgetListID]).NumItems] items) | TV_COUNT: $INFO[Container(6100).NumItems] | FOCUS: ($INFO[System.FocusedControl.ID]) $INFO[System.FocusedControl.Label] (v6.0.62)</label>
+			<label>ACT_ID: $VAR[CurrentWidgetListID] ($INFO[Container($VAR[CurrentWidgetListID]).NumItems] items) | TV_COUNT: $INFO[Container(6100).NumItems] | FOCUS: ($INFO[System.FocusedControl.ID]) $INFO[System.FocusedControl.Label] (v6.0.64)</label>
 		</control>
 
 		<control type="label">
