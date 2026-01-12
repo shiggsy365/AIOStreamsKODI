@@ -1108,13 +1108,41 @@
 		<value condition="!String.IsEmpty(Container($VAR[CurrentWidgetListID]).ListItem.Art(fanart))">$INFO[Container($VAR[CurrentWidgetListID]).ListItem.Art(fanart)]</value>
 	</variable>
 	<variable name="CurrentWidgetClearLogo">
-		<value condition="!String.IsEmpty(Container($VAR[CurrentWidgetListID]).ListItem.Art(clearlogo))">$INFO[Container($VAR[CurrentWidgetListID]).ListItem.Art(clearlogo)]</value>
+		<!-- Home Widgets -->
+		<value condition="String.IsEqual(Skin.String(CurrentWidgetListID),10100)">$INFO[Container(10100).ListItem.Art(clearlogo)]</value>
+		<value condition="String.IsEqual(Skin.String(CurrentWidgetListID),10200)">$INFO[Container(10200).ListItem.Art(clearlogo)]</value>
+		<value condition="String.IsEqual(Skin.String(CurrentWidgetListID),10300)">$INFO[Container(10300).ListItem.Art(clearlogo)]</value>
+		<!-- Movie Widgets -->
+		<value condition="String.IsEqual(Skin.String(CurrentWidgetListID),5100)">$INFO[Container(5100).ListItem.Art(clearlogo)]</value>
+		<value condition="String.IsEqual(Skin.String(CurrentWidgetListID),5200)">$INFO[Container(5200).ListItem.Art(clearlogo)]</value>
+		<value condition="String.IsEqual(Skin.String(CurrentWidgetListID),5300)">$INFO[Container(5300).ListItem.Art(clearlogo)]</value>
+		<value condition="String.IsEqual(Skin.String(CurrentWidgetListID),5400)">$INFO[Container(5400).ListItem.Art(clearlogo)]</value>
+		<!-- TV Widgets -->
+		<value condition="String.IsEqual(Skin.String(CurrentWidgetListID),6100)">$INFO[Container(6100).ListItem.Art(clearlogo)]</value>
+		<value condition="String.IsEqual(Skin.String(CurrentWidgetListID),6110)">$INFO[Container(6110).ListItem.Art(clearlogo)]</value>
+		<value condition="String.IsEqual(Skin.String(CurrentWidgetListID),6120)">$INFO[Container(6120).ListItem.Art(clearlogo)]</value>
+		<value condition="String.IsEqual(Skin.String(CurrentWidgetListID),6130)">$INFO[Container(6130).ListItem.Art(clearlogo)]</value>
 	</variable>
+
 	<variable name="CurrentWidgetPlot">
-		<value>$INFO[Container($VAR[CurrentWidgetListID]).ListItem.Plot]</value>
+		<!-- Home Widgets -->
+		<value condition="String.IsEqual(Skin.String(CurrentWidgetListID),10100)">$INFO[Container(10100).ListItem.Plot]</value>
+		<value condition="String.IsEqual(Skin.String(CurrentWidgetListID),10200)">$INFO[Container(10200).ListItem.Plot]</value>
+		<value condition="String.IsEqual(Skin.String(CurrentWidgetListID),10300)">$INFO[Container(10300).ListItem.Plot]</value>
+		<!-- Movie Widgets -->
+		<value condition="String.IsEqual(Skin.String(CurrentWidgetListID),5100)">$INFO[Container(5100).ListItem.Plot]</value>
+		<value condition="String.IsEqual(Skin.String(CurrentWidgetListID),5200)">$INFO[Container(5200).ListItem.Plot]</value>
+		<value condition="String.IsEqual(Skin.String(CurrentWidgetListID),5300)">$INFO[Container(5300).ListItem.Plot]</value>
+		<value condition="String.IsEqual(Skin.String(CurrentWidgetListID),5400)">$INFO[Container(5400).ListItem.Plot]</value>
+		<!-- TV Widgets -->
+		<value condition="String.IsEqual(Skin.String(CurrentWidgetListID),6100)">$INFO[Container(6100).ListItem.Plot]</value>
+		<value condition="String.IsEqual(Skin.String(CurrentWidgetListID),6110)">$INFO[Container(6110).ListItem.Plot]</value>
+		<value condition="String.IsEqual(Skin.String(CurrentWidgetListID),6120)">$INFO[Container(6120).ListItem.Plot]</value>
+		<value condition="String.IsEqual(Skin.String(CurrentWidgetListID),6130)">$INFO[Container(6130).ListItem.Plot]</value>
 	</variable>
+
 	<variable name="CurrentWidgetInfo">
-		<value condition="!String.IsEmpty(Container($VAR[CurrentWidgetListID]).ListItem.Season)">$INFO[Container($VAR[CurrentWidgetListID]).ListItem.Season,S,]$INFO[Container($VAR[CurrentWidgetListID]).ListItem.Episode,E,  |  ]$INFO[Container($VAR[CurrentWidgetListID]).ListItem.Title]</value>
-		<value>$INFO[Container($VAR[CurrentWidgetListID]).ListItem.Year]$INFO[Container($VAR[CurrentWidgetListID]).ListItem.Genre,  |  ]</value>
+		<value condition="!String.IsEmpty(ListItem.Season)">$INFO[ListItem.Season,S,]$INFO[ListItem.Episode,E,  |  ]$INFO[ListItem.Title]</value>
+		<value>$INFO[ListItem.Year]$INFO[ListItem.Genre,  |  ]</value>
 	</variable>
 </includes>
