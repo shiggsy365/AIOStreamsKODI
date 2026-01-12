@@ -25,6 +25,20 @@
 <onfocus>SetFocus(2000)</onfocus>
 <visible allowhiddenfocus="true">Control.HasFocus(20001)</visible>
 </control>
+		<!-- DEBUG LABEL -->
+		<control type="label">
+			<right>10</right>
+			<top>10</top>
+			<width>1000</width>
+			<height>300</height>
+			<align>right</align>
+			<label>Home:$INFO[Skin.String(Home_WidgetIndex)] | Movies:$INFO[Skin.String(Movies_WidgetIndex)] | TV:$INFO[Skin.String(TV_WidgetIndex)]
+Focus:$INFO[System.GetBool(Control.HasFocus(6110))] | 6100vis:$INFO[Control.IsVisible(6100)] | 6110vis:$INFO[Control.IsVisible(6110)]
+SideFocus:$INFO[Skin.String(SideMenuFocus)]</label>
+			<textcolor>red</textcolor>
+			<font>font13</font>
+			<visible>true</visible>
+		</control>
 <include content="DefaultBackground" />
 	<control type="group">
 		<visible>!Player.HasMedia</visible>

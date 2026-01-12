@@ -2776,6 +2776,7 @@ def trakt_next_up():
         return
 
     if not next_episodes:
+        xbmc.log('[AIOStreams] DEBUG: trakt_next_up - No shows in progress (next_episodes list is empty)', xbmc.LOGWARNING)
         xbmcgui.Dialog().notification('AIOStreams', 'No shows in progress', xbmcgui.NOTIFICATION_INFO)
         xbmcplugin.endOfDirectory(HANDLE)
         return
@@ -3781,6 +3782,8 @@ def smart_widget():
     catalogs = [c for c in manifest['catalogs'] 
                 if c.get('type') == content_type 
                 and not c.get('id', '').endswith('.search')]
+    
+    xbmc.log(f'[AIOStreams] DEBUG: smart_widget filtered catalogs for {content_type}: {len(catalogs)} found. Accessing index {index}', xbmc.LOGINFO)
     
     # Check if index is valid
     if index >= len(catalogs):
