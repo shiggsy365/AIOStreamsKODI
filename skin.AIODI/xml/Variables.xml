@@ -1010,30 +1010,23 @@
 <value>overlays/checkbox-off.png</value>
 </variable>
 	<variable name="CurrentWidgetFanart">
-		<value condition="!String.IsEmpty(Container($VAR[CurrentWidgetListID]).ListItem.Art(fanart))">$INFO[Container($VAR[CurrentWidgetListID]).ListItem.Art(fanart)]</value>
-		<!-- Fallback to first row first item if list is empty or something -->
-		<value condition="Skin.IsString(SideMenuFocus,home)">$INFO[Container(10100).ListItem(0).Art(fanart)]</value>
-		<value condition="Skin.IsString(SideMenuFocus,movies)">$INFO[Container(5100).ListItem(0).Art(fanart)]</value>
-		<value condition="Skin.IsString(SideMenuFocus,tvshows)">$INFO[Container(6100).ListItem(0).Art(fanart)]</value>
+		<value condition="Skin.IsString(SideMenuFocus,home)">$INFO[Container(10100).ListItem.Art(fanart)]</value>
+		<value condition="Skin.IsString(SideMenuFocus,movies)">$INFO[Container(5100).ListItem.Art(fanart)]</value>
+		<value condition="Skin.IsString(SideMenuFocus,tvshows)">$INFO[Container(6100).ListItem.Art(fanart)]</value>
 	</variable>
 	<variable name="CurrentWidgetClearLogo">
-		<value condition="!String.IsEmpty(Container($VAR[CurrentWidgetListID]).ListItem.Art(clearlogo))">$INFO[Container($VAR[CurrentWidgetListID]).ListItem.Art(clearlogo)]</value>
-		<value condition="!String.IsEmpty(Container($VAR[CurrentWidgetListID]).ListItem.Art(tvshow.clearlogo))">$INFO[Container($VAR[CurrentWidgetListID]).ListItem.Art(tvshow.clearlogo)]</value>
-		<value condition="Skin.IsString(SideMenuFocus,home)">$INFO[Container(10100).ListItem(0).Art(clearlogo)]</value>
-		<value condition="Skin.IsString(SideMenuFocus,movies)">$INFO[Container(5100).ListItem(0).Art(clearlogo)]</value>
-		<value condition="Skin.IsString(SideMenuFocus,tvshows)">$INFO[Container(6100).ListItem(0).Art(clearlogo)]</value>
+		<value condition="Skin.IsString(SideMenuFocus,home)">$INFO[Container(10100).ListItem.Art(clearlogo)]</value>
+		<value condition="Skin.IsString(SideMenuFocus,movies)">$INFO[Container(5100).ListItem.Art(clearlogo)]</value>
+		<value condition="Skin.IsString(SideMenuFocus,tvshows)">$INFO[Container(6100).ListItem.Art(clearlogo)]</value>
 	</variable>
 	<variable name="CurrentWidgetPlot">
-		<value condition="!String.IsEmpty(Container($VAR[CurrentWidgetListID]).ListItem.Plot)">$INFO[Container($VAR[CurrentWidgetListID]).ListItem.Plot]</value>
-		<value condition="Skin.IsString(SideMenuFocus,home)">$INFO[Container(10100).ListItem(0).Plot]</value>
-		<value condition="Skin.IsString(SideMenuFocus,movies)">$INFO[Container(5100).ListItem(0).Plot]</value>
-		<value condition="Skin.IsString(SideMenuFocus,tvshows)">$INFO[Container(6100).ListItem(0).Plot]</value>
+		<value condition="Skin.IsString(SideMenuFocus,home)">$INFO[Container(10100).ListItem.Plot]</value>
+		<value condition="Skin.IsString(SideMenuFocus,movies)">$INFO[Container(5100).ListItem.Plot]</value>
+		<value condition="Skin.IsString(SideMenuFocus,tvshows)">$INFO[Container(6100).ListItem.Plot]</value>
 	</variable>
 	<variable name="CurrentWidgetInfo">
-		<value condition="!String.IsEmpty(Container($VAR[CurrentWidgetListID]).ListItem.Season)">$INFO[Container($VAR[CurrentWidgetListID]).ListItem.Season,S]$INFO[Container($VAR[CurrentWidgetListID]).ListItem.Episode,E,: ]$INFO[Container($VAR[CurrentWidgetListID]).ListItem.Title]</value>
-		<value condition="!String.IsEmpty(Container($VAR[CurrentWidgetListID]).ListItem.Year)">$INFO[Container($VAR[CurrentWidgetListID]).ListItem.Year]$INFO[Container($VAR[CurrentWidgetListID]).ListItem.Genre,  |  ]</value>
-		<value condition="Skin.IsString(SideMenuFocus,home)">$INFO[Container(10100).ListItem(0).Year]$INFO[Container(10100).ListItem(0).Genre,  |  ]</value>
-		<value condition="Skin.IsString(SideMenuFocus,movies)">$INFO[Container(5100).ListItem(0).Year]$INFO[Container(5100).ListItem(0).Genre,  |  ]</value>
-		<value condition="Skin.IsString(SideMenuFocus,tvshows)">$INFO[Container(6100).ListItem(0).Year]$INFO[Container(6100).ListItem(0).Genre,  |  ]</value>
+		<value condition="Skin.IsString(SideMenuFocus,home)">$INFO[Container(10100).ListItem.Year]$INFO[Container(10100).ListItem.Genre,  |  ]</value>
+		<value condition="Skin.IsString(SideMenuFocus,movies)">$INFO[Container(5100).ListItem.Year]$INFO[Container(5100).ListItem.Genre,  |  ]</value>
+		<value condition="Skin.IsString(SideMenuFocus,tvshows)">$INFO[Container(6100).ListItem.Year]$INFO[Container(6100).ListItem.Genre,  |  ]</value>
 	</variable>
 </includes>
