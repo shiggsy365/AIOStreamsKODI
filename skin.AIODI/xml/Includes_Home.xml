@@ -18,7 +18,7 @@
 				<top>0</top>
 				<width>900</width>
 				<height>60</height>
-				<font>font15</font>
+				<font>font30_title</font>
 				<textcolor>blue</textcolor>
 				<label>$PARAM[label] (HEADER)</label>
 				<shadowcolor>text_shadow</shadowcolor>
