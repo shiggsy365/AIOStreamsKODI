@@ -517,3 +517,148 @@ def reconfigure_aiostreams():
     else:
         # No existing config, do fresh setup
         return configure_aiostreams()
+
+
+def retrieve_manifest():
+    """
+    Retrieve manifest URL using UUID and password authentication.
+
+    Workflow:
+    1. Get host URL, UUID, and password from settings
+    2. Call [host url]/api/v1/user?uuid=[uuid]&password=[password]
+    3. Get 'encryptedPassword' from json response
+    4. Construct manifest URL as [host url]/stremio/[uuid]/[encryptedPassword]/manifest.json
+    5. Save to base_url setting
+    """
+    import requests
+
+    addon = xbmcaddon.Addon()
+
+    # Get settings
+    host_url = addon.getSetting('aiostreams_host')
+    uuid = addon.getSetting('aiostreams_uuid')
+    password = addon.getSetting('aiostreams_password')
+
+    # Validate inputs
+    if not host_url:
+        xbmcgui.Dialog().ok(
+            'AIOStreams',
+            'Please enter the Host Base URL first.'
+        )
+        return None
+
+    if not uuid:
+        xbmcgui.Dialog().ok(
+            'AIOStreams',
+            'Please enter your UUID first.'
+        )
+        return None
+
+    if not password:
+        xbmcgui.Dialog().ok(
+            'AIOStreams',
+            'Please enter your Password first.'
+        )
+        return None
+
+    # Clean up host URL
+    host_url = host_url.rstrip('/')
+
+    # Show progress dialog
+    progress = xbmcgui.DialogProgress()
+    progress.create('AIOStreams', 'Retrieving manifest...')
+
+    try:
+        # Build API URL
+        api_url = f'{host_url}/api/v1/user?uuid={uuid}&password={password}'
+        xbmc.log(f'[AIOStreams WebConfig] Calling API: {host_url}/api/v1/user?uuid={uuid}&password=***', xbmc.LOGINFO)
+
+        progress.update(25, 'Contacting AIOStreams server...')
+
+        # Make API request
+        response = requests.get(api_url, timeout=15)
+
+        progress.update(50, 'Processing response...')
+
+        if response.status_code != 200:
+            progress.close()
+            error_msg = f'Server returned error: {response.status_code}'
+            try:
+                error_data = response.json()
+                if 'error' in error_data:
+                    error_msg = error_data['error']
+                elif 'message' in error_data:
+                    error_msg = error_data['message']
+            except:
+                pass
+            xbmcgui.Dialog().ok('AIOStreams Error', error_msg)
+            xbmc.log(f'[AIOStreams WebConfig] API error: {error_msg}', xbmc.LOGERROR)
+            return None
+
+        # Parse response
+        data = response.json()
+        xbmc.log(f'[AIOStreams WebConfig] API response keys: {list(data.keys())}', xbmc.LOGDEBUG)
+
+        # Get encrypted password
+        encrypted_password = data.get('encryptedPassword')
+        if not encrypted_password:
+            progress.close()
+            xbmcgui.Dialog().ok(
+                'AIOStreams Error',
+                'Could not retrieve encrypted password from server.\n'
+                'Please check your UUID and password.'
+            )
+            xbmc.log('[AIOStreams WebConfig] No encryptedPassword in response', xbmc.LOGERROR)
+            return None
+
+        progress.update(75, 'Building manifest URL...')
+
+        # Construct manifest URL
+        manifest_url = f'{host_url}/stremio/{uuid}/{encrypted_password}/manifest.json'
+        xbmc.log(f'[AIOStreams WebConfig] Constructed manifest URL: {manifest_url[:50]}...', xbmc.LOGINFO)
+
+        # Save to settings
+        addon.setSetting('base_url', manifest_url)
+
+        progress.update(100, 'Configuration saved!')
+        xbmc.sleep(500)
+        progress.close()
+
+        xbmcgui.Dialog().notification(
+            'AIOStreams',
+            'Manifest URL retrieved successfully!',
+            xbmcgui.NOTIFICATION_INFO,
+            3000
+        )
+
+        xbmc.log(f'[AIOStreams WebConfig] Manifest URL saved successfully', xbmc.LOGINFO)
+        return manifest_url
+
+    except requests.exceptions.Timeout:
+        progress.close()
+        xbmcgui.Dialog().ok(
+            'AIOStreams Error',
+            'Request timed out.\n'
+            'Please check your internet connection and host URL.'
+        )
+        xbmc.log('[AIOStreams WebConfig] API request timed out', xbmc.LOGERROR)
+        return None
+
+    except requests.exceptions.ConnectionError as e:
+        progress.close()
+        xbmcgui.Dialog().ok(
+            'AIOStreams Error',
+            'Could not connect to server.\n'
+            'Please check the host URL is correct.'
+        )
+        xbmc.log(f'[AIOStreams WebConfig] Connection error: {e}', xbmc.LOGERROR)
+        return None
+
+    except Exception as e:
+        progress.close()
+        xbmcgui.Dialog().ok(
+            'AIOStreams Error',
+            f'An error occurred:\n{str(e)}'
+        )
+        xbmc.log(f'[AIOStreams WebConfig] Unexpected error: {e}', xbmc.LOGERROR)
+        return None

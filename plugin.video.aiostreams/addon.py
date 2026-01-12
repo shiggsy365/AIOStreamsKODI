@@ -3742,6 +3742,21 @@ def configure_aiostreams_action():
         xbmc.log(f'[AIOStreams] Configure action failed: {e}', xbmc.LOGERROR)
         xbmcgui.Dialog().ok('AIOStreams', f'Configuration failed:\n\n{str(e)}')
 
+
+def retrieve_manifest_action():
+    """Retrieve manifest URL using UUID and password authentication."""
+    try:
+        from resources.lib.web_config import retrieve_manifest
+        result = retrieve_manifest()
+        if result:
+            xbmc.log(f'[AIOStreams] Manifest retrieved: {result}', xbmc.LOGINFO)
+    except ImportError as e:
+        xbmc.log(f'[AIOStreams] Failed to import web_config: {e}', xbmc.LOGERROR)
+        xbmcgui.Dialog().ok('AIOStreams', 'Web configuration module not available.\n\nPlease update the addon.')
+    except Exception as e:
+        xbmc.log(f'[AIOStreams] Retrieve manifest action failed: {e}', xbmc.LOGERROR)
+        xbmcgui.Dialog().ok('AIOStreams', f'Retrieve manifest failed:\n\n{str(e)}')
+
 def smart_widget():
     """
     Dynamic widget content generator.
@@ -3917,6 +3932,7 @@ ACTION_REGISTRY = {
     'test_connection': lambda p: test_connection(),
     'quick_actions': lambda p: quick_actions(),
     'configure_aiostreams': lambda p: configure_aiostreams_action(),
+    'retrieve_manifest': lambda p: retrieve_manifest_action(),
     'refresh_manifest_cache': lambda p: refresh_manifest_cache(),
 }
 
