@@ -2806,14 +2806,21 @@ def trakt_next_up():
         episode_title = f'Episode {episode}'
         episode_overview = ''
 
+        # 1. First, try to get episode-specific metadata from database (instant!)
+        episode_meta = ep_data.get('episode_metadata')
+        if episode_meta:
+            episode_title = episode_meta.get('title', episode_title)
+            episode_overview = episode_meta.get('overview', '')
+            xbmc.log(f'[AIOStreams] Next Up: Using DATABASE episode metadata: {episode_title}', xbmc.LOGDEBUG)
+
         if show_imdb:
-            # 1. Try metadata from the SQL query results first (instant)
+            # 2. Try show metadata from the SQL query results (instant)
             meta_data = ep_data.get('show_metadata')
             if meta_data:
                 # meta_data is already a dict from pickle.loads in the DB
-                xbmc.log(f'[AIOStreams] Next Up: Using DATABASE metadata for {show_title}', xbmc.LOGDEBUG)
+                xbmc.log(f'[AIOStreams] Next Up: Using DATABASE show metadata for {show_title}', xbmc.LOGDEBUG)
             else:
-                # 2. Try file-based meta cache (slower than DB, faster than API)
+                # 3. Try file-based meta cache (slower than DB, faster than API)
                 cached_ref = None
                 if HAS_MODULES:
                     cached_ref = cache.get_cached_meta('series', show_imdb)
@@ -2821,16 +2828,16 @@ def trakt_next_up():
                         meta_data = cached_ref['meta']
                         xbmc.log(f'[AIOStreams] Next Up: Using FILE CACHED metadata for {show_title}', xbmc.LOGDEBUG)
 
-                # 3. If still nothing, fetch from API (slowest)
+                # 4. If still nothing, fetch from API (slowest)
                 if not meta_data:
                     meta_result = get_meta('series', show_imdb)
                     if meta_result and 'meta' in meta_result:
                         meta_data = meta_result['meta']
                         xbmc.log(f'[AIOStreams] Next Up: Fetched FRESH metadata from API for {show_title}', xbmc.LOGDEBUG)
-                        
+
                         # Save to database for next time (make it instant)
                         try:
-                            # We already have db object from line 2712
+                            # We already have db object from line 2770
                             slug = meta_data.get('ids', {}).get('slug', '')
                             trakt_id = ep_data.get('show_trakt_id')
                             if trakt_id:
@@ -2839,7 +2846,7 @@ def trakt_next_up():
                         except Exception as e:
                             xbmc.log(f'[AIOStreams] Next Up: Failed to cache to DB: {e}', xbmc.LOGWARNING)
 
-            # Extract artwork and episode details from metadata
+            # Extract artwork from show metadata
             if meta_data:
                 # Get show title from metadata if available
                 show_title = meta_data.get('name', show_title)
@@ -2847,14 +2854,17 @@ def trakt_next_up():
                 fanart = meta_data.get('background', '')
                 logo = meta_data.get('logo', '')
 
-                # Get episode-specific data
-                videos = meta_data.get('videos', [])
-                for video in videos:
-                    if video.get('season') == season and video.get('episode') == episode:
-                        episode_thumb = video.get('thumbnail', '')
-                        episode_title = video.get('title', episode_title)
-                        episode_overview = video.get('description', '')
-                        break
+                # Try to get episode thumbnail from show metadata videos (fallback if not in DB)
+                if not episode_thumb:
+                    videos = meta_data.get('videos', [])
+                    for video in videos:
+                        if video.get('season') == season and video.get('episode') == episode:
+                            episode_thumb = video.get('thumbnail', '')
+                            # Only override episode title/overview if not already from DB
+                            if not episode_meta:
+                                episode_title = video.get('title', episode_title)
+                                episode_overview = video.get('description', '')
+                            break
 
         label = f'{show_title} S{season:02d}E{episode:02d}'
 
