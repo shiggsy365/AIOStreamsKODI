@@ -138,7 +138,7 @@
 							</control>
 						</control>
 					</focusedlayout>
-					<content limit="20" target="$PARAM[widget_target]">$PARAM[content_path]</content>
+					<content limit="20" target="$PARAM[widget_target]" browse="$PARAM[browse_mode]">$PARAM[content_path]</content>
 				</control>
 			</control>
 		</definition>
