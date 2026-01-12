@@ -55,6 +55,13 @@
 						<height>486</height>
 						<texture colordiffuse="88FFFF00">icons/sidemenu/home_white.png</texture>
 					</control>
+					<control type="label">
+						<width>310</width>
+						<top>-50</top>
+						<label>RENDER TEST (P)</label>
+						<textcolor>FFFF0000</textcolor>
+						<font>font15</font>
+					</control>
 					<control type="group">
 						<left>68</left>
 						<top>10</top>
@@ -212,6 +219,13 @@
 						<height>500</height>
 						<texture colordiffuse="88FFFF00">icons/sidemenu/home_white.png</texture>
 					</control>
+					<control type="label">
+						<width>310</width>
+						<top>-50</top>
+						<label>RENDER TEST (E)</label>
+						<textcolor>FFFF0000</textcolor>
+						<font>font15</font>
+					</control>
 					<control type="group">
 						<left>70</left>
 						<top>5</top>
@@ -330,7 +344,14 @@
 						</include>
 					</control>
 				</focusedlayout>
-				<content sortby="$PARAM[sortby]" sortorder="$PARAM[sortorder]" target="$PARAM[widget_target]" limit="$PARAM[widget_limit]" browse="$PARAM[browse_mode]">$PARAM[content_path]</content>
+				<content sortby="$PARAM[sortby]" sortorder="$PARAM[sortorder]" target="$PARAM[widget_target]" limit="$PARAM[widget_limit]" browse="$PARAM[browse_mode]">
+					<item>
+						<label>WIDGET DUMMY (EPISODE)</label>
+						<thumb>icons/sidemenu/home_white.png</thumb>
+						<onclick>noop</onclick>
+					</item>
+					$PARAM[content_path]
+				</content>
 			</control>
 		</definition>
 	</include>
@@ -685,7 +706,14 @@
 						</control>
 					</control>
 				</focusedlayout>
-				<content sortby="$PARAM[sortby]" sortorder="$PARAM[sortorder]" target="$PARAM[widget_target]" limit="$PARAM[item_limit]" browse="$PARAM[browse_mode]">$PARAM[content_path]</content>
+				<content sortby="$PARAM[sortby]" sortorder="$PARAM[sortorder]" target="$PARAM[widget_target]" limit="15" browse="$PARAM[browse_mode]">
+					<item>
+						<label>WIDGET DUMMY (POSTER)</label>
+						<thumb>icons/sidemenu/home_white.png</thumb>
+						<onclick>noop</onclick>
+					</item>
+					$PARAM[content_path]
+				</content>
 			</control>
 		</definition>
 	</include>
@@ -1085,7 +1113,9 @@
 		<onleft>9000</onleft>
 		<onright>noop</onright>
 		<onup>$PARAM[onup_action]</onup>
+		<onup>SetFocus($VAR[CurrentWidgetListID])</onup>
 		<ondown>$PARAM[ondown_action]</ondown>
+		<ondown>SetFocus($VAR[CurrentWidgetListID])</ondown>
 		<onunfocus>SetProperty(listposition,$INFO[Container($PARAM[list_id]).Position],home)</onunfocus>
 		<onfocus>Control.Move($PARAM[list_id],-$INFO[Container($PARAM[list_id]).Position])</onfocus>
 		<onfocus>Control.Move($PARAM[list_id],$INFO[Window(home).Property(listposition)])</onfocus>

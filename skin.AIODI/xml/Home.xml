@@ -4,6 +4,8 @@
 <onload>Skin.SetString(Home_WidgetIndex,0)</onload>
 <onload>Skin.SetString(Movies_WidgetIndex,0)</onload>
 <onload>Skin.SetString(TV_WidgetIndex,0)</onload>
+<onload>Skin.Reset(SideMenuFocus)</onload>
+<onload>Skin.SetString(SideMenuFocus,home)</onload>
 
 
 
@@ -411,8 +413,8 @@
 			<param name="widget_header" value="Trakt Next Up"/>
 			<param name="widget_target" value="videos"/>
 			<param name="list_id" value="10100"/>
-			<param name="onup_action" value="Skin.SetString(Home_WidgetIndex,$VAR[Home_Prev_Index]) + SetFocus($VAR[CurrentWidgetListID])"/>
-			<param name="ondown_action" value="Skin.SetString(Home_WidgetIndex,$VAR[Home_Next_Index]) + SetFocus($VAR[CurrentWidgetListID])"/>
+			<param name="onup_action" value="Skin.SetString(Home_WidgetIndex,$VAR[Home_Prev_Index])"/>
+			<param name="ondown_action" value="Skin.SetString(Home_WidgetIndex,$VAR[Home_Next_Index])"/>
 		</include>
 	</control>
 	<control type="group">
@@ -422,8 +424,8 @@
 			<param name="widget_header" value="Trakt Watchlist Movies"/>
 			<param name="widget_target" value="videos"/>
 			<param name="list_id" value="10200"/>
-			<param name="onup_action" value="Skin.SetString(Home_WidgetIndex,$VAR[Home_Prev_Index]) + SetFocus($VAR[CurrentWidgetListID])"/>
-			<param name="ondown_action" value="Skin.SetString(Home_WidgetIndex,$VAR[Home_Next_Index]) + SetFocus($VAR[CurrentWidgetListID])"/>
+			<param name="onup_action" value="Skin.SetString(Home_WidgetIndex,$VAR[Home_Prev_Index])"/>
+			<param name="ondown_action" value="Skin.SetString(Home_WidgetIndex,$VAR[Home_Next_Index])"/>
 		</include>
 	</control>
 	<control type="group">
@@ -433,7 +435,7 @@
 			<param name="widget_header" value="Trakt Watchlist Series"/>
 			<param name="widget_target" value="videos"/>
 			<param name="list_id" value="10300"/>
-			<param name="onup_action" value="Skin.SetString(Home_WidgetIndex,$VAR[Home_Prev_Index]) + SetFocus($VAR[CurrentWidgetListID])"/>
+			<param name="onup_action" value="Skin.SetString(Home_WidgetIndex,$VAR[Home_Prev_Index])"/>
 			<param name="ondown_action" value="Skin.SetString(Home_WidgetIndex,$VAR[Home_Next_Index]) + SetFocus($VAR[CurrentWidgetListID])"/>
 		</include>
 	</control>
@@ -457,8 +459,8 @@
 			<param name="widget_header" value="$INFO[Window(Home).Property(movie_catalog_0_name)]"/>
 			<param name="widget_target" value="videos"/>
 			<param name="list_id" value="5100"/>
-			<param name="onup_action" value="Skin.SetString(Movies_WidgetIndex,$VAR[Movies_Prev_Index]) + SetFocus($VAR[CurrentWidgetListID])"/>
-			<param name="ondown_action" value="Skin.SetString(Movies_WidgetIndex,$VAR[Movies_Next_Index]) + SetFocus($VAR[CurrentWidgetListID])"/>
+			<param name="onup_action" value="Skin.SetString(Movies_WidgetIndex,$VAR[Movies_Prev_Index])"/>
+			<param name="ondown_action" value="Skin.SetString(Movies_WidgetIndex,$VAR[Movies_Next_Index])"/>
 		</include>
 	</control>
 	<control type="group">
@@ -468,8 +470,8 @@
 			<param name="widget_header" value="$INFO[Window(Home).Property(movie_catalog_1_name)]"/>
 			<param name="widget_target" value="videos"/>
 			<param name="list_id" value="5200"/>
-			<param name="onup_action" value="Skin.SetString(Movies_WidgetIndex,$VAR[Movies_Prev_Index]) + SetFocus($VAR[CurrentWidgetListID])"/>
-			<param name="ondown_action" value="Skin.SetString(Movies_WidgetIndex,$VAR[Movies_Next_Index]) + SetFocus($VAR[CurrentWidgetListID])"/>
+			<param name="onup_action" value="Skin.SetString(Movies_WidgetIndex,$VAR[Movies_Prev_Index])"/>
+			<param name="ondown_action" value="Skin.SetString(Movies_WidgetIndex,$VAR[Movies_Next_Index])"/>
 		</include>
 	</control>
 	<control type="group">
@@ -479,8 +481,8 @@
 			<param name="widget_header" value="$INFO[Window(Home).Property(movie_catalog_2_name)]"/>
 			<param name="widget_target" value="videos"/>
 			<param name="list_id" value="5300"/>
-			<param name="onup_action" value="Skin.SetString(Movies_WidgetIndex,$VAR[Movies_Prev_Index]) + SetFocus($VAR[CurrentWidgetListID])"/>
-			<param name="ondown_action" value="Skin.SetString(Movies_WidgetIndex,$VAR[Movies_Next_Index]) + SetFocus($VAR[CurrentWidgetListID])"/>
+			<param name="onup_action" value="Skin.SetString(Movies_WidgetIndex,$VAR[Movies_Prev_Index])"/>
+			<param name="ondown_action" value="Skin.SetString(Movies_WidgetIndex,$VAR[Movies_Next_Index])"/>
 		</include>
 	</control>
 	<control type="group">
@@ -490,8 +492,8 @@
 			<param name="widget_header" value="$INFO[Window(Home).Property(movie_catalog_3_name)]"/>
 			<param name="widget_target" value="videos"/>
 			<param name="list_id" value="5400"/>
-			<param name="onup_action" value="Skin.SetString(Movies_WidgetIndex,$VAR[Movies_Prev_Index]) + SetFocus($VAR[CurrentWidgetListID])"/>
-			<param name="ondown_action" value="Skin.SetString(Movies_WidgetIndex,$VAR[Movies_Next_Index]) + SetFocus($VAR[CurrentWidgetListID])"/>
+			<param name="onup_action" value="Skin.SetString(Movies_WidgetIndex,$VAR[Movies_Prev_Index])"/>
+			<param name="ondown_action" value="Skin.SetString(Movies_WidgetIndex,$VAR[Movies_Next_Index])"/>
 		</include>
 	</control>
 </control>
@@ -514,8 +516,8 @@
 			<param name="widget_header" value="$INFO[Window(Home).Property(series_catalog_0_name)]"/>
 			<param name="widget_target" value="videos"/>
 			<param name="list_id" value="6100"/>
-			<param name="onup_action" value="Skin.SetString(TV_WidgetIndex,$VAR[TV_Prev_Index]) + SetFocus($VAR[CurrentWidgetListID])"/>
-			<param name="ondown_action" value="Skin.SetString(TV_WidgetIndex,$VAR[TV_Next_Index]) + SetFocus($VAR[CurrentWidgetListID])"/>
+			<param name="onup_action" value="Skin.SetString(TV_WidgetIndex,$VAR[TV_Prev_Index])"/>
+			<param name="ondown_action" value="Skin.SetString(TV_WidgetIndex,$VAR[TV_Next_Index])"/>
 		</include>
 	</control>
 	<control type="group">
@@ -525,8 +527,8 @@
 			<param name="widget_header" value="$INFO[Window(Home).Property(series_catalog_1_name)]"/>
 			<param name="widget_target" value="videos"/>
 			<param name="list_id" value="6200"/>
-			<param name="onup_action" value="Skin.SetString(TV_WidgetIndex,$VAR[TV_Prev_Index]) + SetFocus($VAR[CurrentWidgetListID])"/>
-			<param name="ondown_action" value="Skin.SetString(TV_WidgetIndex,$VAR[TV_Next_Index]) + SetFocus($VAR[CurrentWidgetListID])"/>
+			<param name="onup_action" value="Skin.SetString(TV_WidgetIndex,$VAR[TV_Prev_Index])"/>
+			<param name="ondown_action" value="Skin.SetString(TV_WidgetIndex,$VAR[TV_Next_Index])"/>
 		</include>
 	</control>
 	<control type="group">
@@ -536,8 +538,8 @@
 			<param name="widget_header" value="$INFO[Window(Home).Property(series_catalog_2_name)]"/>
 			<param name="widget_target" value="videos"/>
 			<param name="list_id" value="6300"/>
-			<param name="onup_action" value="Skin.SetString(TV_WidgetIndex,$VAR[TV_Prev_Index]) + SetFocus($VAR[CurrentWidgetListID])"/>
-			<param name="ondown_action" value="Skin.SetString(TV_WidgetIndex,$VAR[TV_Next_Index]) + SetFocus($VAR[CurrentWidgetListID])"/>
+			<param name="onup_action" value="Skin.SetString(TV_WidgetIndex,$VAR[TV_Prev_Index])"/>
+			<param name="ondown_action" value="Skin.SetString(TV_WidgetIndex,$VAR[TV_Next_Index])"/>
 		</include>
 	</control>
 	<control type="group">
@@ -547,8 +549,8 @@
 			<param name="widget_header" value="$INFO[Window(Home).Property(series_catalog_3_name)]"/>
 			<param name="widget_target" value="videos"/>
 			<param name="list_id" value="6400"/>
-			<param name="onup_action" value="Skin.SetString(TV_WidgetIndex,$VAR[TV_Prev_Index]) + SetFocus($VAR[CurrentWidgetListID])"/>
-			<param name="ondown_action" value="Skin.SetString(TV_WidgetIndex,$VAR[TV_Next_Index]) + SetFocus($VAR[CurrentWidgetListID])"/>
+			<param name="onup_action" value="Skin.SetString(TV_WidgetIndex,$VAR[TV_Prev_Index])"/>
+			<param name="ondown_action" value="Skin.SetString(TV_WidgetIndex,$VAR[TV_Next_Index])"/>
 		</include>
 	</control>
 </control>
@@ -641,7 +643,7 @@
 			<height>30</height>
 			<font>font12</font>
 			<textcolor>FFFFFF00</textcolor> <!-- Hex Yellow -->
-			<label>v6.0.46 | F: $INFO[Skin.String(SideMenuFocus)] | H:$INFO[Skin.String(Home_WidgetIndex)] M:$INFO[Skin.String(Movies_WidgetIndex)] T:$INFO[Skin.String(TV_WidgetIndex)] | ACT_ID: $VAR[CurrentWidgetListID]</label>
+			<label>v6.0.48 | F: $INFO[Skin.String(SideMenuFocus)] | H:$INFO[Skin.String(Home_WidgetIndex)] M:$INFO[Skin.String(Movies_WidgetIndex)] T:$INFO[Skin.String(TV_WidgetIndex)]</label>
 		</control>
 		<control type="label">
 			<left>150</left>
@@ -650,7 +652,7 @@
 			<height>30</height>
 			<font>font12</font>
 			<textcolor>FFFF0000</textcolor> <!-- Hex Red -->
-			<label>RED LABEL ALWAYS ON (v6.0.46)</label>
+			<label>ACT_ID: $VAR[CurrentWidgetListID] | FOCUS: $INFO[System.ControlID] ($INFO[System.FocusedControl.ID]) (v6.0.48)</label>
 		</control>
 
 		<control type="label">
