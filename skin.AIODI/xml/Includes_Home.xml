@@ -400,8 +400,8 @@
 					<orientation>horizontal</orientation>
 					<onleft>9000</onleft>
 					<onright>noop</onright>
-					<onup>$PARAM[onup_action]</onup>
-					<ondown>$PARAM[ondown_action]</ondown>
+					<onup>noop</onup>
+					<ondown>noop</ondown>
 					<onfocus>Skin.SetString(CurrentWidgetListID,$PARAM[list_id])</onfocus>
 					<itemlayout width="410" height="235">
 						<control type="image">
