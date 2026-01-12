@@ -37,19 +37,20 @@
 				<param name="list_id" value="$PARAM[list_id]"/>
 				<param name="posy" value="250"/>
 			</include>
+			<control type="image">
+				<left>0</left>
+				<top>115</top>
+				<width>1600</width>
+				<height>550</height>
+				<texture colordiffuse="44FFFFFF">colors/white.png</texture>
+				<zorder>1</zorder>
+			</control>
 			<control type="panel" id="$PARAM[list_id]">
 				<left>0</left>
 				<top>115</top>
-				<white_debug_box>
-					<control type="image">
-						<width>1900</width>
-						<height>550</height>
-						<texture colordiffuse="88FFFFFF">colors/white.png</texture>
-					</control>
-				</white_debug_box>
-				<visible>True</visible>
 				<right>0</right>
 				<height>518</height>
+				<zorder>50</zorder>
 				<onclick condition="$PARAM[onclick_condition]">$PARAM[onclick_action]</onclick>
 				<include content="WidgetListCommon">
 					<param name="list_id" value="$PARAM[list_id]"/>
@@ -208,18 +209,20 @@
 				<param name="list_id" value="$PARAM[list_id]"/>
 				<param name="posy" value="200"/>
 			</include>
+			<control type="image">
+				<left>0</left>
+				<top>105</top>
+				<width>1600</width>
+				<height>410</height>
+				<texture colordiffuse="44FFFFFF">colors/white.png</texture>
+				<zorder>1</zorder>
+			</control>
 			<control type="panel" id="$PARAM[list_id]">
 				<left>0</left>
 				<top>105</top>
-				<white_debug_box>
-					<control type="image">
-						<width>1900</width>
-						<height>550</height>
-						<texture colordiffuse="88FFFFFF">colors/white.png</texture>
-					</control>
-				</white_debug_box>
 				<right>0</right>
 				<height>410</height>
+				<zorder>50</zorder>
 				<include content="WidgetListCommon">
 					<param name="list_id" value="$PARAM[list_id]"/>
 					<param name="onup_action" value="$PARAM[onup_action]"/>

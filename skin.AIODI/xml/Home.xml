@@ -652,7 +652,7 @@
 			<height>30</height>
 			<font>font12</font>
 			<textcolor>FFFF0000</textcolor> <!-- Hex Red -->
-			<label>ACT_ID: $VAR[CurrentWidgetListID] | FOCUS: $INFO[System.FocusedControl.ID] | WIN: $INFO[Window.Property(SideMenuFocus)] (v6.0.50)</label>
+			<label>ACT_ID: $VAR[CurrentWidgetListID] ($INFO[Container($VAR[CurrentWidgetListID]).NumItems] items) | FOCUS: $INFO[System.FocusedControl.ID] | WIN: $INFO[Skin.String(SideMenuFocus)] (v6.0.52)</label>
 		</control>
 
 		<control type="label">
