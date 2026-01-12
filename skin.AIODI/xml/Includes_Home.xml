@@ -32,11 +32,11 @@
 		<param name="browse_mode">auto</param>
 		<definition>
 			<control type="group">
-				<include content="CategoryLabel">
+				<include name="CategoryLabel">
 					<param name="label">$PARAM[widget_header]</param>
 					<param name="list_id" value="$PARAM[list_id]"/>
 				</include>
-				<include content="BusyListSpinner">
+				<include name="BusyListSpinner">
 					<param name="list_id" value="$PARAM[list_id]"/>
 					<param name="posy" value="250"/>
 				</include>
@@ -181,11 +181,11 @@
 		<param name="browse_mode">auto</param>
 		<definition>
 			<control type="group">
-				<include content="CategoryLabel">
+				<include name="CategoryLabel">
 					<param name="label">$PARAM[widget_header]</param>
 					<param name="list_id" value="$PARAM[list_id]"/>
 				</include>
-				<include content="BusyListSpinner">
+				<include name="BusyListSpinner">
 					<param name="list_id" value="$PARAM[list_id]"/>
 					<param name="posy" value="200"/>
 				</include>
@@ -237,7 +237,7 @@
 							<depth>DepthContentPopout</depth>
 							<left>70</left>
 							<top>5</top>
-							<include content="InfoWallEpisodeLayout">
+							<include name="InfoWallEpisodeLayout">
 								<param name="main_label" value="$PARAM[main_label]" />
 								<param name="sub_label" value="$PARAM[sub_label]" />
 								<param name="thumb_label" value="$PARAM[thumb_label]" />

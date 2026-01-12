@@ -952,7 +952,7 @@
 		<value condition="Skin.IsString(TV_WidgetIndex,3)">2</value>
 		<value>0</value>
 	</variable>
-</includes>
+
 
 <!-- Netflix UI Status Icons -->
 <variable name="StatusHomeIconVar">
