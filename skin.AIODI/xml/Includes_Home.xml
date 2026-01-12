@@ -271,6 +271,7 @@
 					<onup>$PARAM[onup_action2]</onup>
 					<ondown>$PARAM[ondown_action1]</ondown>
 					<ondown>$PARAM[ondown_action2]</ondown>
+					<onclick condition="String.IsEqual(ListItem.DBType,tvshow) | String.IsEqual(ListItem.DBType,season)">ActivateWindow(Videos,$INFO[ListItem.FolderPath],return)</onclick>
 					<onfocus>Skin.SetString(CurrentWidgetListID,$PARAM[list_id])</onfocus>
 					<onfocus>Control.SetItem($PARAM[list_id],1)</onfocus>
 					<itemlayout width="240" height="360">
@@ -297,7 +298,7 @@
 							</control>
 						</control>
 					</focusedlayout>
-					<content limit="20" target="$PARAM[widget_target]" browse="never">$PARAM[content_path]</content>
+					<content limit="20" target="$PARAM[widget_target]"> $PARAM[content_path]</content>
 				</control>
 				<!-- LOADING INDICATOR -->
 				<include content="BusyListSpinner">
