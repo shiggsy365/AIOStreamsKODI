@@ -1126,10 +1126,15 @@
 	</variable>
 	<variable name="CurrentWidgetClearLogo">
 		<value condition="!String.IsEmpty(Container($VAR[ActiveWidgetID]).ListItem.Art(clearlogo))">$INFO[Container($VAR[ActiveWidgetID]).ListItem.Art(clearlogo)]</value>
-		<value condition="String.IsEqual($VAR[ActiveWidgetID],10100)">$INFO[Container(10100).ListItem.Art(clearlogo)]</value>
-		<value condition="String.IsEqual($VAR[ActiveWidgetID],10200)">$INFO[Container(10200).ListItem.Art(clearlogo)]</value>
-		<value condition="String.IsEqual($VAR[ActiveWidgetID],10300)">$INFO[Container(10300).ListItem.Art(clearlogo)]</value>
-		<value>$INFO[ListItem.Art(clearlogo)]</value>
+		<value condition="!String.IsEmpty(Container($VAR[ActiveWidgetID]).ListItem.Art(logo))">$INFO[Container($VAR[ActiveWidgetID]).ListItem.Art(logo)]</value>
+		<value condition="String.IsEqual($VAR[ActiveWidgetID],10100) + !String.IsEmpty(Container(10100).ListItem.Art(clearlogo))">$INFO[Container(10100).ListItem.Art(clearlogo)]</value>
+		<value condition="String.IsEqual($VAR[ActiveWidgetID],10100) + !String.IsEmpty(Container(10100).ListItem.Art(logo))">$INFO[Container(10100).ListItem.Art(logo)]</value>
+		<value condition="String.IsEqual($VAR[ActiveWidgetID],10200) + !String.IsEmpty(Container(10200).ListItem.Art(clearlogo))">$INFO[Container(10200).ListItem.Art(clearlogo)]</value>
+		<value condition="String.IsEqual($VAR[ActiveWidgetID],10200) + !String.IsEmpty(Container(10200).ListItem.Art(logo))">$INFO[Container(10200).ListItem.Art(logo)]</value>
+		<value condition="String.IsEqual($VAR[ActiveWidgetID],10300) + !String.IsEmpty(Container(10300).ListItem.Art(clearlogo))">$INFO[Container(10300).ListItem.Art(clearlogo)]</value>
+		<value condition="String.IsEqual($VAR[ActiveWidgetID],10300) + !String.IsEmpty(Container(10300).ListItem.Art(logo))">$INFO[Container(10300).ListItem.Art(logo)]</value>
+		<value condition="!String.IsEmpty(ListItem.Art(clearlogo))">$INFO[ListItem.Art(clearlogo)]</value>
+		<value>$INFO[ListItem.Art(logo)]</value>
 	</variable>
 
 	<variable name="CurrentWidgetPlot">

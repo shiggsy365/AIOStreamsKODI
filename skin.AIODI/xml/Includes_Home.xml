@@ -247,6 +247,7 @@
 		<param name="ondown_action2">noop</param>
 		<param name="onclick_condition">false</param>
 		<param name="browse_mode">auto</param>
+		<param name="widget_type">videos</param>
 		<definition>
 			<control type="group">
 				<left>0</left>
@@ -271,7 +272,7 @@
 					<onup>$PARAM[onup_action2]</onup>
 					<ondown>$PARAM[ondown_action1]</ondown>
 					<ondown>$PARAM[ondown_action2]</ondown>
-					<onclick condition="String.IsEqual(ListItem.DBType,tvshow) | String.IsEqual(ListItem.DBType,season)">ActivateWindow(Videos,$INFO[ListItem.FolderPath],return)</onclick>
+					<onclick>Action(Select)</onclick>
 					<onfocus>Skin.SetString(ActiveWidgetID,$PARAM[list_id])</onfocus>
 					<onfocus>Control.SetItem($PARAM[list_id],1)</onfocus>
 					<itemlayout width="240" height="360">
@@ -298,7 +299,7 @@
 							</control>
 						</control>
 					</focusedlayout>
-					<content limit="20" target="$PARAM[widget_target]">$PARAM[content_path]</content>
+					<content limit="20" target="$PARAM[widget_target]" type="$PARAM[widget_type]">$PARAM[content_path]</content>
 				</control>
 				<!-- LOADING INDICATOR -->
 				<include content="BusyListSpinner">
@@ -390,6 +391,7 @@
 		<param name="ondown_action2">noop</param>
 		<param name="onclick_condition">false</param>
 		<param name="browse_mode">auto</param>
+		<param name="widget_type">videos</param>
 		<definition>
 			<control type="group">
 				<left>0</left>
@@ -414,8 +416,8 @@
 					<onup>$PARAM[onup_action2]</onup>
 					<ondown>$PARAM[ondown_action1]</ondown>
 					<ondown>$PARAM[ondown_action2]</ondown>
-					<onclick condition="String.IsEqual(ListItem.DBType,tvshow) | String.IsEqual(ListItem.DBType,season)">ActivateWindow(Videos,$INFO[ListItem.FolderPath],return)</onclick>
-					<onfocus>Skin.SetString(CurrentWidgetListID,$PARAM[list_id])</onfocus>
+					<onclick>Action(Select)</onclick>
+					<onfocus>Skin.SetString(ActiveWidgetID,$PARAM[list_id])</onfocus>
 					<onfocus>Control.SetItem($PARAM[list_id],1)</onfocus>
 					<itemlayout width="410" height="235">
 						<control type="image">
@@ -441,7 +443,7 @@
 							</control>
 						</control>
 					</focusedlayout>
-					<content limit="20" target="$PARAM[widget_target]" browse="$PARAM[browse_mode]">$PARAM[content_path]</content>
+					<content limit="20" target="$PARAM[widget_target]" browse="$PARAM[browse_mode]" type="$PARAM[widget_type]">$PARAM[content_path]</content>
 				</control>
 				<!-- LOADING INDICATOR -->
 				<include content="BusyListSpinner">
