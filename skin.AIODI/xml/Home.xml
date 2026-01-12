@@ -34,7 +34,7 @@
 			<align>right</align>
 			<label>Home:$INFO[Skin.String(Home_WidgetIndex)] | Movies:$INFO[Skin.String(Movies_WidgetIndex)] | TV:$INFO[Skin.String(TV_WidgetIndex)]
 Focus:$INFO[System.GetBool(Control.HasFocus(6110))] | 6100vis:$INFO[Control.IsVisible(6100)] | 6110vis:$INFO[Control.IsVisible(6110)]
-SideFocus:$INFO[Skin.String(SideMenuFocus)] | VER: 6.0.225</label>
+SideFocus:$INFO[Skin.String(SideMenuFocus)] | VER: 6.0.230</label>
 			<textcolor>red</textcolor>
 			<font>font13</font>
 			<visible>true</visible>
@@ -124,7 +124,6 @@ SideFocus:$INFO[Skin.String(SideMenuFocus)] | VER: 6.0.225</label>
 		</control>
 	</control>
 
-<control type="group">
 <!-- <animation effect="fade" start="100" end="0" time="200" tween="sine" condition="$EXP[infodialog_active]">Conditional</animation> -->
 
 
@@ -554,12 +553,22 @@ SideFocus:$INFO[Skin.String(SideMenuFocus)] | VER: 6.0.225</label>
 		</include>
 	</control>
 
-	i30</param>
+	<!-- Widget 3 -->
+	<control type="group">
+		<visible>String.IsEqual(Skin.String(Movies_WidgetIndex),3)</visible>
+		<onfocus>Skin.SetString(Movies_WidgetIndex,3)</onfocus>
+		<onfocus>SetFocus(5130)</onfocus>
+		<include content="WidgetListPoster">
+			<param name="content_path">plugin://plugin.video.aiostreams/?action=smart_widget&amp;index=3&amp;content_type=movie</param>
+			<param name="widget_header">$INFO[Window(Home).Property(movie_catalog_3_name)]</param>
+			<param name="widget_target">videos</param>
+			<param name="list_id">5130</param>
 			<param name="onup_action1">Skin.SetString(Movies_WidgetIndex,2)</param>
-			<param name="onup_action2">SetFocus(5300)</param>
+			<param name="onup_action2">SetFocus(5120)</param>
 			<param name="ondown_action1">Skin.SetString(Movies_WidgetIndex,4)</param>
 			<param name="ondown_action2">SetFocus(5140)</param>
 		</include>
+	</control>
 	
 	<!-- Widget 4 -->
 	<control type="group">
@@ -831,8 +840,7 @@ SideFocus:$INFO[Skin.String(SideMenuFocus)] | VER: 6.0.225</label>
 			<param name="ondown_action1">noop</param>
 		</include>
 	</control>
-	</control>
-</control> <!-- Close Group 5000 -->
+	</control> <!-- Close Group 5000 -->
 
 <include content="BottomBar" />
 <control type="group">
@@ -1245,7 +1253,6 @@ SideFocus:$INFO[Skin.String(SideMenuFocus)] | VER: 6.0.225</label>
 		</include>
 	</control>
 	</control>
-</control>
 </controls>
 </window>
 
