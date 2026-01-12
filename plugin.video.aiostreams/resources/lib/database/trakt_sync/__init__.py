@@ -791,9 +791,11 @@ class TraktSyncDatabase(Database):
 
     def get_meta(self, content_type, meta_id):
         """Get metadata from the SQL cache."""
+        if not self.connection and not self.connect():
+            return None
         try:
             sql = "SELECT metadata FROM metas WHERE id=? AND content_type=? AND expires > ?"
-            row = self.fetchone(sql, (meta_id, content_type, int(time.time())))
+            row = self.fetch_one(sql, (meta_id, content_type, int(time.time())))
             if row and row['metadata']:
                 return pickle.loads(row['metadata'])
             return None
@@ -803,6 +805,8 @@ class TraktSyncDatabase(Database):
 
     def set_meta(self, content_type, meta_id, metadata, ttl_seconds):
         """Store metadata in the SQL cache."""
+        if not self.connection and not self.connect():
+            return False
         try:
             expires = int(time.time()) + ttl_seconds
             pickled_metadata = pickle.dumps(metadata)
@@ -816,9 +820,11 @@ class TraktSyncDatabase(Database):
 
     def get_catalog(self, content_type, catalog_id, genre=None, skip=0):
         """Get catalog data from the SQL cache."""
+        if not self.connection and not self.connect():
+            return None
         try:
             sql = "SELECT data FROM catalogs WHERE catalog_id=? AND content_type=? AND (genre=? OR (genre IS NULL AND ? IS NULL)) AND skip=? AND expires > ?"
-            row = self.fetchone(sql, (catalog_id, content_type, genre, genre, skip, int(time.time())))
+            row = self.fetch_one(sql, (catalog_id, content_type, genre, genre, skip, int(time.time())))
             if row and row['data']:
                 return pickle.loads(row['data'])
             return None
@@ -828,6 +834,8 @@ class TraktSyncDatabase(Database):
 
     def set_catalog(self, content_type, catalog_id, genre, skip, data, ttl_seconds):
         """Store catalog data in the SQL cache."""
+        if not self.connection and not self.connect():
+            return False
         try:
             expires = int(time.time()) + ttl_seconds
             pickled_data = pickle.dumps(data)
@@ -843,14 +851,18 @@ class TraktSyncDatabase(Database):
 
     def cleanup_cached_data(self):
         """Remove expired metadata and catalog entries from the database."""
+        if not self.connection and not self.connect():
+            return False
         try:
             now = int(time.time())
             
             # Delete expired metas
-            meta_count = self.execute("DELETE FROM metas WHERE expires < ?", (now,)).rowcount
+            cursor_meta = self.execute("DELETE FROM metas WHERE expires < ?", (now,))
+            meta_count = cursor_meta.rowcount if cursor_meta else 0
             
             # Delete expired catalogs
-            catalog_count = self.execute("DELETE FROM catalogs WHERE expires < ?", (now,)).rowcount
+            cursor_catalog = self.execute("DELETE FROM catalogs WHERE expires < ?", (now,))
+            catalog_count = cursor_catalog.rowcount if cursor_catalog else 0
             
             self.commit()
             

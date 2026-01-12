@@ -161,7 +161,7 @@
 		<width>120</width>
 		<bottom>180</bottom>
 		<align>center</align>
-		<itemgap>70</itemgap>
+		<itemgap>35</itemgap>
 		<onright>12000</onright>
 
 
@@ -405,7 +405,7 @@
 <!-- Home Widgets -->
 <control type="group" id="11000">
 	<bottom>100</bottom>
-	<left>0</left>
+	<left>150</left>
 	<right>0</right>
 	<height>550</height>
 	<visible>Skin.IsString(SideMenuFocus,home)</visible>

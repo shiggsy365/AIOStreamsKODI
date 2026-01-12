@@ -245,7 +245,7 @@
 		<param name="browse_mode">auto</param>
 		<definition>
 			<control type="group">
-				<width>1600</width>
+				<width>1750</width>
 				<height>600</height>
 				<include content="CategoryLabel">
 					<param name="label">$PARAM[widget_header]</param>
@@ -268,7 +268,7 @@
 				<control type="image">
 					<left>0</left>
 					<top>115</top>
-					<width>1600</width>
+					<width>1750</width>
 					<height>550</height>
 					<texture colordiffuse="FF00FFFF">icons/sidemenu/home_white.png</texture> <!-- SOLID CYAN BACKDROP -->
 					<zorder>1000</zorder>
@@ -276,7 +276,7 @@
 				<control type="panel" id="$PARAM[list_id]">
 					<left>0</left>
 					<top>115</top>
-					<width>1600</width>
+					<width>1750</width>
 					<height>500</height>
 					<zorder>5000</zorder>
 					<visible>True</visible>
@@ -284,6 +284,8 @@
 					<scrolltime tween="cubic" easing="out">500</scrolltime>
 					<onleft>9000</onleft>
 					<onright>noop</onright>
+					<onup>$PARAM[onup_action]</onup>
+					<ondown>$PARAM[ondown_action]</ondown>
 					<itemlayout width="340" height="450">
 						<!-- PROOF OF LIFE: MAGENTA BACKGROUND -->
 						<control type="image">
@@ -442,7 +444,7 @@
 				<control type="image">
 					<left>0</left>
 					<top>105</top>
-					<width>1600</width>
+					<width>1750</width>
 					<height>410</height>
 					<texture colordiffuse="FF00FFFF">icons/sidemenu/home_white.png</texture>
 					<zorder>1000</zorder>
@@ -450,12 +452,14 @@
 				<control type="panel" id="$PARAM[list_id]">
 					<left>0</left>
 					<top>120</top>
-					<width>1600</width>
+					<width>1750</width>
 					<height>400</height>
 					<zorder>5000</zorder>
 					<visible>True</visible>
 					<orientation>horizontal</orientation>
 					<scrolltime tween="cubic" easing="out">500</scrolltime>
+					<onup>$PARAM[onup_action]</onup>
+					<ondown>$PARAM[ondown_action]</ondown>
 					<onleft>9000</onleft>
 					<onright>noop</onright>
 					<itemlayout width="340" height="400">

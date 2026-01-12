@@ -2482,7 +2482,7 @@ def force_trakt_sync():
         xbmc.log('[AIOStreams] Force sync completed with errors', xbmc.LOGWARNING)
 
 
-def trakt_watchlist():
+def trakt_watchlist(params=None):
     """Display Trakt watchlist with auto-sync."""
     if not HAS_MODULES:
         xbmcgui.Dialog().ok('AIOStreams', 'Trakt module not available')
@@ -2756,6 +2756,13 @@ def trakt_next_up():
 
     xbmcplugin.setPluginCategory(HANDLE, 'Next Up')
     xbmcplugin.setContent(HANDLE, 'episodes')
+    
+    # Prime database cache (batch fetch watched status)
+    try:
+        from resources.lib import trakt
+        trakt.prime_database_cache()
+    except:
+        pass
 
     # Get next episodes from database - ONE SQL query, ZERO API calls!
     try:

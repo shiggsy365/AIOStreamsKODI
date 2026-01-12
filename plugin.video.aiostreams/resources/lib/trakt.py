@@ -39,7 +39,8 @@ def get_trakt_db():
         try:
             from resources.lib.database.trakt_sync.activities import TraktSyncDatabase
             _trakt_db = TraktSyncDatabase()
-            xbmc.log('[AIOStreams] Trakt database initialized', xbmc.LOGDEBUG)
+            _trakt_db.connect()
+            xbmc.log('[AIOStreams] Trakt database initialized and connected', xbmc.LOGDEBUG)
         except Exception as e:
             xbmc.log(f'[AIOStreams] Failed to initialize Trakt database: {e}', xbmc.LOGERROR)
             return None
