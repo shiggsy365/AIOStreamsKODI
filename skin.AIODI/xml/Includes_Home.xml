@@ -21,7 +21,7 @@
 				<width>900</width>
 				<height>60</height>
 				<font>font30_title</font>
-				<textcolor>FF7ACAFE</textcolor> <!-- Blue -->
+				<textcolor>FFFFFFFF</textcolor> <!-- White -->
 				<label>$PARAM[label] (HEADER) [ID: $PARAM[list_id]]</label>
 				<shadowcolor>text_shadow</shadowcolor>
 				<visible>true</visible>
@@ -39,6 +39,8 @@
 		<param name="browse_mode">auto</param>
 		<definition>
 			<control type="group">
+				<width>1600</width>
+				<height>600</height>
 				<include content="CategoryLabel">
 					<param name="label">$PARAM[widget_header]</param>
 					<param name="list_id">$PARAM[list_id]</param>
@@ -52,16 +54,9 @@
 					<top>115</top>
 					<width>1600</width>
 					<height>550</height>
-					<texture colordiffuse="4400FFFF">icons/sidemenu/home_white.png</texture> <!-- Cyan Backdrop Outside Panel -->
-					<zorder>100</zorder>
+					<texture colordiffuse="FF00FFFF">icons/sidemenu/home_white.png</texture> <!-- SOLID CYAN BACKDROP -->
 				</control>
 				<control type="panel" id="$PARAM[list_id]">
-					<left>0</left>
-					<top>115</top>
-					<width>1600</width>
-					<height>500</height>
-					<zorder>5000</zorder>
-					<visible>True</visible>
 					<orientation>horizontal</orientation>
 					<scrolltime tween="cubic" easing="out">500</scrolltime>
 					<onleft>9000</onleft>
@@ -96,8 +91,14 @@
 					</focusedlayout>
 						<content target="$PARAM[widget_target]" limit="20">
 							<item>
-								<label>PROOFLABEL: HARDCODED TEST</label>
-								<onclick>Notification(AIO, Clicked)</onclick>
+								<label>PROOFLABEL: HARDCODED 1 (v6.0.121)</label>
+								<onclick>Notification(AIO, Clicked 1)</onclick>
+								<thumb>icons/sidemenu/home_white.png</thumb>
+								<property name="IsPlayable">false</property>
+							</item>
+							<item>
+								<label>PROOFLABEL: HARDCODED 2 (v6.0.121)</label>
+								<onclick>Notification(AIO, Clicked 2)</onclick>
 								<thumb>icons/sidemenu/home_white.png</thumb>
 								<property name="IsPlayable">false</property>
 							</item>
@@ -195,6 +196,8 @@
 		<param name="browse_mode">auto</param>
 		<definition>
 			<control type="group">
+				<width>1600</width>
+				<height>600</height>
 				<include content="CategoryLabel">
 					<param name="label">$PARAM[widget_header]</param>
 					<param name="list_id">$PARAM[list_id]</param>
