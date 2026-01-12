@@ -34,7 +34,7 @@
 			<align>right</align>
 			<label>Home:$INFO[Skin.String(Home_WidgetIndex)] | Movies:$INFO[Skin.String(Movies_WidgetIndex)] | TV:$INFO[Skin.String(TV_WidgetIndex)]
 Focus:$INFO[System.GetBool(Control.HasFocus(6110))] | 6100vis:$INFO[Control.IsVisible(6100)] | 6110vis:$INFO[Control.IsVisible(6110)]
-SideFocus:$INFO[Skin.String(SideMenuFocus)] | VER: 6.0.230</label>
+SideFocus:$INFO[Skin.String(SideMenuFocus)] | VER: 6.0.232</label>
 			<textcolor>red</textcolor>
 			<font>font13</font>
 			<visible>true</visible>
@@ -56,8 +56,8 @@ SideFocus:$INFO[Skin.String(SideMenuFocus)] | VER: 6.0.230</label>
 			<depth>DepthBackground</depth>
 			<left>0</left>
 			<top>0</top>
+			<bottom>0</bottom>
 			<width>800</width>
-			<height>1080</height>
 			<texture>colors/gradient_left_to_right.png</texture>
 			<aspectratio>stretch</aspectratio>
 		</control>
@@ -91,7 +91,7 @@ SideFocus:$INFO[Skin.String(SideMenuFocus)] | VER: 6.0.230</label>
 				<height>180</height>
 				<font>font45_title</font>
 				<textcolor>FFFFFFFF</textcolor>
-				<label>$INFO[Container($VAR[CurrentWidgetListID]).ListItem.Title]</label>
+				<label>$VAR[CurrentWidgetTitle]</label>
 				<shadowcolor>text_shadow</shadowcolor>
 				<aligny>bottom</aligny>
 				<visible>String.IsEmpty($VAR[CurrentWidgetClearLogo])</visible>
@@ -450,7 +450,6 @@ SideFocus:$INFO[Skin.String(SideMenuFocus)] | VER: 6.0.230</label>
 			<param name="content_path">plugin://plugin.video.aiostreams/?action=trakt_next_up</param>
 			<param name="widget_header">Trakt Next Up</param>
 			<param name="widget_target">videos</param>
-			<param name="list_id">10100</param>
 			<param name="list_id">10100</param>
 			<param name="onup_action1">noop</param>
 			<param name="onup_action2">noop</param>
