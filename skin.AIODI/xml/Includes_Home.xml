@@ -377,21 +377,6 @@
 		<param name="content_path"></param>
 		<param name="onup_action">noop</param>
 		<param name="ondown_action">noop</param>
-		<param name="main_label">$INFO[ListItem.Title]</param>
-		<param name="sub_label">$INFO[ListItem.TVShowTitle]</param>
-		<param name="thumb_label">$INFO[ListItem.Season,,x]$INFO[ListItem.Episode]</param>
-		<param name="sortby"></param>
-		<param name="visible">True</param>
-		<param name="sortorder">ascending</param>
-		<param name="widget_limit">15</param>
-		<param name="browse_mode">auto</param>
-	<include name="WidgetListEpisodes">
-		<param name="list_id">noop</param>
-		<param name="widget_header"></param>
-		<param name="widget_target">videos</param>
-		<param name="content_path"></param>
-		<param name="onup_action">noop</param>
-		<param name="ondown_action">noop</param>
 		<param name="onclick_condition">false</param>
 		<param name="browse_mode">auto</param>
 		<definition>
@@ -450,6 +435,7 @@
 			</control>
 		</definition>
 	</include>
+
 	<include name="WidgetListSquare">
 		<param name="sub_label">$INFO[ListItem.Label]</param>
 		<param name="sortby"></param>
