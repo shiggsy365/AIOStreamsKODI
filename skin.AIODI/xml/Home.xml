@@ -41,46 +41,46 @@
 		<!-- Info Overlay -->
 		<control type="group">
 			<left>150</left>
-			<top>120</top>
+			<top>50</top>
 			<width>1100</width>
 			<height>500</height>
 			<animation effect="fade" start="0" end="100" time="400">Visible</animation>
 			<animation effect="fade" start="100" end="0" time="400">Hidden</animation>
+			<visible>!String.IsEmpty(Container($VAR[CurrentWidgetListID]).ListItem.Label)</visible>
 
 			<!-- ClearLogo -->
 			<control type="image">
 				<left>0</left>
 				<top>0</top>
-				<width>600</width>
-				<height>250</height>
+				<width>500</width>
+				<height>180</height>
 				<aspectratio align="left" aligny="bottom">keep</aspectratio>
-				<texture>$VAR[CurrentWidgetClearLogo]</texture>
+				<texture background="true">$VAR[CurrentWidgetClearLogo]</texture>
 			</control>
-			
-			<!-- Info String -->
+
+			<!-- Info Title -->
 			<control type="label">
 				<left>0</left>
-				<top>260</top>
-				<width>1100</width>
-				<height>45</height>
-				<font>font13</font>
-				<textcolor>white</textcolor>
-				<shadowcolor>black</shadowcolor>
+				<top>200</top>
+				<width>1000</width>
+				<height>40</height>
+				<font>font30_title</font>
+				<textcolor>FFFFFFFF</textcolor>
 				<label>$VAR[CurrentWidgetInfo]</label>
+				<shadowcolor>text_shadow</shadowcolor>
 			</control>
-			
+
 			<!-- Plot -->
 			<control type="textbox">
 				<left>0</left>
-				<top>310</top>
-				<width>1100</width>
+				<top>250</top>
+				<width>1200</width>
 				<height>200</height>
-				<font>font12</font>
-				<textcolor>DDFFFFFF</textcolor>
-				<shadowcolor>black</shadowcolor>
+				<font>font15</font>
+				<textcolor>BBBBBBBB</textcolor>
 				<label>$VAR[CurrentWidgetPlot]</label>
-				<align>justify</align>
-				<autoscroll delay="8000" repeat="5000">true</autoscroll>
+				<shadowcolor>text_shadow</shadowcolor>
+				<autoscroll time="3000" delay="4000" repeat="5000">true</autoscroll>
 			</control>
 		</control>
 	</control>
@@ -589,8 +589,8 @@
 <!-- ========== TV SHOWS WIDGETS (20 ROWS) ========== -->
 <control type="group" id="6000">
 	<visible>String.IsEqual(Skin.String(SideMenuFocus),tvshows)</visible>
-	<left>300</left>
-	<top>100</top>
+	<left>0</left>
+	<top>550</top>
 	<width>1600</width>
 	<height>900</height>
 	<zorder>20</zorder>
@@ -940,8 +940,8 @@
 <!-- ========== MOVIES WIDGETS (20 ROWS) ========== -->
 <control type="group" id="5000">
 	<visible>String.IsEqual(Skin.String(SideMenuFocus),movies)</visible>
-	<left>300</left>
-	<top>100</top>
+	<left>0</left>
+	<top>550</top>
 	<width>1600</width>
 	<height>900</height>
 	<zorder>20</zorder>
@@ -1290,27 +1290,21 @@
 
 <!-- ========== HOME WIDGETS (3 ROWS) ========== -->
 <control type="group" id="10000">
+	<left>0</left>
+	<top>550</top>
 	<visible>String.IsEqual(Skin.String(SideMenuFocus),home)</visible>
-	<left>300</left>
-	<top>100</top>
-	<width>1600</width>
-	<height>900</height>
-	<zorder>20</zorder>
 
-	<!-- Row 1: Next Up - Trakt -->
+	<!-- Row 0: Next Up - Trakt -->
 	<control type="group">
 		<left>0</left>
 		<top>0</top>
-		<width>1300</width>
-		<height>1200</height>
 		<visible>String.IsEqual(Skin.String(Home_WidgetIndex),0)</visible>
-		<include content="WidgetListPoster_Stable">
-			<param name="content_path">plugin://plugin.video.aiostreams/?action=smart_widget&amp;index=0&amp;content_type=home</param>
-			<param name="widget_header">Next Up - Trakt</param>
-			<param name="widget_target">videos</param>
+		<include content="WidgetListLandscape_Stable">
 			<param name="list_id">10100</param>
-			<param name="onup_action">Skin.SetString(Home_WidgetIndex,$VAR[Home_Prev_Index])</param>
-			<param name="ondown_action">Skin.SetString(Home_WidgetIndex,$VAR[Home_Next_Index])</param>
+			<param name="widget_header">Next Up - Trakt</param>
+			<param name="content_path">plugin://plugin.video.aiostreams/?action=smart_widget&amp;index=0&amp;content_type=home</param>
+			<param name="ondown_action">Skin.SetString(Home_WidgetIndex,1)</param>
+			<param name="onup_action">noop</param>
 		</include>
 	</control>
 

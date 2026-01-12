@@ -72,6 +72,8 @@
 		<param name="browse_mode">auto</param>
 		<definition>
 			<control type="group">
+				<animation effect="slide" start="0,200" end="0,0" time="300" tween="sine" easing="out">Visible</animation>
+				<animation effect="slide" start="0,0" end="0,-200" time="300" tween="sine" easing="out">Hidden</animation>
 				<left>0</left>
 				<top>0</top>
 				<width>1600</width>
@@ -124,6 +126,82 @@
 				<control type="label">
 					<left>0</left>
 					<top>200</top>
+					<width>1300</width>
+					<height>100</height>
+					<align>center</align>
+					<font>font30_title</font>
+					<textcolor>FFFFFFFF</textcolor>
+					<label>Loading content...</label>
+					<visible>Container($PARAM[list_id]).IsUpdating</visible>
+				</control>
+			</control>
+		</definition>
+	</include>
+	<include name="WidgetListLandscape_Stable">
+		<param name="list_id">noop</param>
+		<param name="widget_header"></param>
+		<param name="widget_target">videos</param>
+		<param name="content_path"></param>
+		<param name="onup_action">noop</param>
+		<param name="ondown_action">noop</param>
+		<param name="onclick_condition">false</param>
+		<param name="browse_mode">auto</param>
+		<definition>
+			<control type="group">
+				<animation effect="slide" start="0,200" end="0,0" time="300" tween="sine" easing="out">Visible</animation>
+				<animation effect="slide" start="0,0" end="0,-200" time="300" tween="sine" easing="out">Hidden</animation>
+				<left>0</left>
+				<top>0</top>
+				<width>1600</width>
+				<height>1200</height>
+				<!-- HEADER -->
+				<control type="label">
+					<left>0</left>
+					<top>0</top>
+					<width>1000</width>
+					<height>50</height>
+					<font>font20_title</font>
+					<textcolor>FFFFFFFF</textcolor>
+					<label>$PARAM[widget_header]</label>
+				</control>
+				<!-- CONTENT PANEL -->
+				<control type="panel" id="$PARAM[list_id]">
+					<left>0</left>
+					<top>60</top>
+					<width>1600</width>
+					<height>400</height>
+					<orientation>horizontal</orientation>
+					<onleft>9000</onleft>
+					<onright>noop</onright>
+					<onup>$PARAM[onup_action]</onup>
+					<ondown>$PARAM[ondown_action]</ondown>
+					<itemlayout width="410" height="235">
+						<control type="image">
+							<width>390</width>
+							<height>220</height>
+							<aspectratio align="center" aligny="center">scale</aspectratio>
+							<texture background="true">$INFO[ListItem.Icon]</texture>
+						</control>
+					</itemlayout>
+					<focusedlayout width="410" height="235">
+						<control type="group">
+							<animation effect="zoom" center="auto" start="100" end="110" time="200" tween="sine" easing="out">Focus</animation>
+							<control type="image">
+								<width>390</width>
+								<height>220</height>
+								<aspectratio align="center" aligny="center">scale</aspectratio>
+								<texture background="true">$INFO[ListItem.Icon]</texture>
+								<bordertexture border="8">thumbs/border/border_focus.png</bordertexture>
+								<bordersize>8</bordersize>
+							</control>
+						</control>
+					</focusedlayout>
+					<content limit="20" target="$PARAM[widget_target]" browse="$PARAM[browse_mode]">$PARAM[content_path]</content>
+				</control>
+				<!-- LOADING INDICATOR -->
+				<control type="label">
+					<left>0</left>
+					<top>150</top>
 					<width>1300</width>
 					<height>100</height>
 					<align>center</align>
