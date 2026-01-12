@@ -34,7 +34,7 @@
 			<align>right</align>
 			<label>Home:$INFO[Skin.String(Home_WidgetIndex)] | Movies:$INFO[Skin.String(Movies_WidgetIndex)] | TV:$INFO[Skin.String(TV_WidgetIndex)]
 Focus:$INFO[System.GetBool(Control.HasFocus(6110))] | 6100vis:$INFO[Control.IsVisible(6100)] | 6110vis:$INFO[Control.IsVisible(6110)]
-SideFocus:$INFO[Skin.String(SideMenuFocus)] | VER: 6.0.187</label>
+SideFocus:$INFO[Skin.String(SideMenuFocus)] | VER: 6.0.188</label>
 			<textcolor>red</textcolor>
 			<font>font13</font>
 			<visible>true</visible>
@@ -425,7 +425,6 @@ SideFocus:$INFO[Skin.String(SideMenuFocus)] | VER: 6.0.187</label>
 		<visible>String.IsEqual(Skin.String(Home_WidgetIndex),0)</visible>
 		<onfocus>Skin.SetString(Home_WidgetIndex,0)</onfocus>
 		<onfocus>SetFocus(10100)</onfocus>
-		<ondown>SetFocus(10200)</ondown>
 		<include content="WidgetListEpisodes">
 			<param name="content_path">plugin://plugin.video.aiostreams/?action=trakt_next_up</param>
 			<param name="widget_header">Trakt Next Up</param>
@@ -441,8 +440,6 @@ SideFocus:$INFO[Skin.String(SideMenuFocus)] | VER: 6.0.187</label>
 		<visible>String.IsEqual(Skin.String(Home_WidgetIndex),1)</visible>
 		<onfocus>Skin.SetString(Home_WidgetIndex,1)</onfocus>
 		<onfocus>SetFocus(10200)</onfocus>
-		<onup>SetFocus(10100)</onup>
-		<ondown>SetFocus(10300)</ondown>
 		<include content="WidgetListPoster">
 			<param name="content_path">plugin://plugin.video.aiostreams/?action=trakt_watchlist&amp;media_type=movies</param>
 			<param name="widget_header">Trakt Watchlist Movies</param>
@@ -458,7 +455,6 @@ SideFocus:$INFO[Skin.String(SideMenuFocus)] | VER: 6.0.187</label>
 		<visible>String.IsEqual(Skin.String(Home_WidgetIndex),2)</visible>
 		<onfocus>Skin.SetString(Home_WidgetIndex,2)</onfocus>
 		<onfocus>SetFocus(10300)</onfocus>
-		<onup>SetFocus(10200)</onup>
 		<include content="WidgetListPoster">
 			<param name="content_path">plugin://plugin.video.aiostreams/?action=trakt_watchlist&amp;media_type=shows</param>
 			<param name="widget_header">Trakt Watchlist Series</param>
