@@ -22,7 +22,7 @@
 				<height>60</height>
 				<font>font30_title</font>
 				<textcolor>FF7ACAFE</textcolor> <!-- Blue -->
-				<label>$PARAM[label] (HEADER)</label>
+				<label>$PARAM[label] (HEADER) [ID: $PARAM[list_id]]</label>
 				<shadowcolor>text_shadow</shadowcolor>
 				<visible>true</visible>
 			</control>
@@ -41,11 +41,11 @@
 			<control type="group">
 				<include content="CategoryLabel">
 					<param name="label">$PARAM[widget_header]</param>
-					<param name="list_id" value="$PARAM[list_id]"/>
+					<param name="list_id">$PARAM[list_id]</param>
 				</include>
 				<include content="BusyListSpinner">
-					<param name="list_id" value="$PARAM[list_id]"/>
-					<param name="posy" value="250"/>
+					<param name="list_id">$PARAM[list_id]</param>
+					<param name="posy">250</param>
 				</include>
 				<control type="image">
 					<left>0</left>
@@ -197,11 +197,11 @@
 			<control type="group">
 				<include content="CategoryLabel">
 					<param name="label">$PARAM[widget_header]</param>
-					<param name="list_id" value="$PARAM[list_id]"/>
+					<param name="list_id">$PARAM[list_id]</param>
 				</include>
 				<include content="BusyListSpinner">
-					<param name="list_id" value="$PARAM[list_id]"/>
-					<param name="posy" value="200"/>
+					<param name="list_id">$PARAM[list_id]</param>
+					<param name="posy">200</param>
 				</include>
 				<control type="image">
 					<left>0</left>
