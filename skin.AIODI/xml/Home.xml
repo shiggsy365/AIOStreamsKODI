@@ -589,7 +589,7 @@
 <!-- ========== TV SHOWS WIDGETS (20 ROWS) ========== -->
 <control type="group" id="6000">
 	<visible>String.IsEqual(Skin.String(SideMenuFocus),tvshows)</visible>
-	<left>0</left>
+	<left>300</left>
 	<top>550</top>
 	<width>1600</width>
 	<height>900</height>
@@ -940,7 +940,7 @@
 <!-- ========== MOVIES WIDGETS (20 ROWS) ========== -->
 <control type="group" id="5000">
 	<visible>String.IsEqual(Skin.String(SideMenuFocus),movies)</visible>
-	<left>0</left>
+	<left>300</left>
 	<top>550</top>
 	<width>1600</width>
 	<height>900</height>
@@ -1290,7 +1290,7 @@
 
 <!-- ========== HOME WIDGETS (3 ROWS) ========== -->
 <control type="group" id="10000">
-	<left>0</left>
+	<left>300</left>
 	<top>550</top>
 	<visible>String.IsEqual(Skin.String(SideMenuFocus),home)</visible>
 

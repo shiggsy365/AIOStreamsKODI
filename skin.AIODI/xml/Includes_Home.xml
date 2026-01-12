@@ -99,6 +99,7 @@
 					<onright>noop</onright>
 					<onup>$PARAM[onup_action]</onup>
 					<ondown>$PARAM[ondown_action]</ondown>
+					<onfocus>Skin.SetString(CurrentWidgetListID,$PARAM[list_id])</onfocus>
 					<itemlayout width="240" height="360">
 						<control type="image">
 							<width>230</width>
@@ -175,6 +176,7 @@
 					<onright>noop</onright>
 					<onup>$PARAM[onup_action]</onup>
 					<ondown>$PARAM[ondown_action]</ondown>
+					<onfocus>Skin.SetString(CurrentWidgetListID,$PARAM[list_id])</onfocus>
 					<itemlayout width="410" height="235">
 						<control type="image">
 							<width>390</width>

@@ -250,7 +250,19 @@ def get_catalog(content_type, catalog_id, genre=None, skip=0):
     # Build cache identifier from all parameters
     cache_id = f"{content_type}:{catalog_id}:{genre or 'none'}:{skip}"
 
-    # Check cache first (6 hours = 21600 seconds)
+    # Check SQL cache first (fastest)
+    if HAS_MODULES:
+        try:
+            db = trakt.get_trakt_db()
+            if db:
+                cached_sql = db.get_catalog(content_type, catalog_id, genre, skip)
+                if cached_sql:
+                    xbmc.log(f'[AIOStreams] SQL Cache hit for catalog: {catalog_id}', xbmc.LOGDEBUG)
+                    return cached_sql
+        except Exception as e:
+             xbmc.log(f'[AIOStreams] SQL Cache error for catalog: {e}', xbmc.LOGDEBUG)
+
+    # Check file cache second (legacy)
     if HAS_MODULES:
         cached = cache.get_cached_data('catalog', cache_id, 21600)
         if cached:
@@ -276,9 +288,17 @@ def get_catalog(content_type, catalog_id, genre=None, skip=0):
     xbmc.log(f'[AIOStreams] Requesting catalog from: {url}', xbmc.LOGINFO)
     catalog = make_request(url, 'Catalog error')
 
-    # Cache the result
+    # Cache the result in both tiers
     if catalog and HAS_MODULES:
+        # 1. File cache
         cache.cache_data('catalog', cache_id, catalog)
+        # 2. SQL cache
+        try:
+            db = trakt.get_trakt_db()
+            if db:
+                db.set_catalog(content_type, catalog_id, genre, skip, catalog, 21600)
+        except:
+            pass
 
     return catalog
 
@@ -472,7 +492,20 @@ def get_meta(content_type, meta_id):
     - Last year: 30 days
     - Older: 90 days (metadata is stable)
     """
-    # Initial check with long TTL to see if we have any cache
+    # 1. Check SQL cache first (fastest)
+    if HAS_MODULES:
+        try:
+            db = trakt.get_trakt_db()
+            if db:
+                # Initial check with long TTL (handled by DB expires column)
+                cached_sql = db.get_meta(content_type, meta_id)
+                if cached_sql:
+                    xbmc.log(f'[AIOStreams] SQL Metadata cache hit for {meta_id}', xbmc.LOGDEBUG)
+                    return cached_sql
+        except:
+            pass
+
+    # 2. Check file-based cache (middle tier)
     if HAS_MODULES:
         cached = cache.get_cached_meta(content_type, meta_id, ttl_seconds=86400*365)
         if cached:
@@ -482,7 +515,7 @@ def get_meta(content_type, meta_id):
             # Re-check cache with calculated TTL
             cached = cache.get_cached_meta(content_type, meta_id, ttl_seconds=ttl)
             if cached:
-                xbmc.log(f'[AIOStreams] Metadata cache hit for {meta_id} (TTL: {ttl//86400} days)', xbmc.LOGDEBUG)
+                xbmc.log(f'[AIOStreams] File Metadata cache hit for {meta_id} (TTL: {ttl//86400} days)', xbmc.LOGDEBUG)
                 return cached
 
     # Cache miss, fetch from API
@@ -494,7 +527,15 @@ def get_meta(content_type, meta_id):
     # Store in cache
     if HAS_MODULES and result:
         ttl = get_metadata_ttl(result)
+        # 1. File cache
         cache.cache_meta(content_type, meta_id, result)
+        # 2. SQL cache
+        try:
+            db = trakt.get_trakt_db()
+            if db:
+                db.set_meta(content_type, meta_id, result, ttl)
+        except:
+            pass
         xbmc.log(f'[AIOStreams] Cached metadata for {meta_id} (TTL: {ttl//86400} days)', xbmc.LOGDEBUG)
 
     return result
@@ -673,12 +714,18 @@ def create_listitem_with_context(meta, content_type, action_url):
                         list_item.setProperty('WatchedOverlay', 'OverlayWatched.png')
     
     # Set artwork
+    art = {}
     if meta.get('poster'):
-        list_item.setArt({'poster': meta['poster'], 'thumb': meta['poster']})
+        art['poster'] = meta['poster']
+        art['thumb'] = meta['poster']
     if meta.get('background'):
-        list_item.setArt({'fanart': meta['background']})
+        art['fanart'] = meta['background']
     if meta.get('logo'):
-        list_item.setArt({'clearlogo': meta['logo']})
+        art['clearlogo'] = meta['logo']
+        art['logo'] = meta['logo']
+    
+    if art:
+        list_item.setArt(art)
     
     # Build context menu based on content type
     context_menu = []
@@ -1825,6 +1872,10 @@ def browse_catalog():
     genre = params.get('genre')
     skip = int(params.get('skip', 0))
 
+    # Prime watchlist and watched caches for performance (batch fetch)
+    if HAS_MODULES:
+        trakt.prime_database_cache(content_type)
+        
     # Fetch catalog data (treat 'All' as no genre filter)
     genre_filter = None if genre == 'All' else genre
     catalog_data = get_catalog(content_type, catalog_id, genre_filter, skip)
@@ -2741,22 +2792,40 @@ def trakt_next_up():
         episode_overview = ''
 
         if show_imdb:
-            # First try cache, then fetch from API if needed
-            meta_result = None
-            if HAS_MODULES:
-                cached_meta = cache.get_cached_meta('series', show_imdb)
-                if cached_meta and 'meta' in cached_meta:
-                    meta_result = cached_meta
-                    xbmc.log(f'[AIOStreams] Next Up: Using cached metadata for {show_title}', xbmc.LOGDEBUG)
+            # 1. Try metadata from the SQL query results first (instant)
+            meta_data = ep_data.get('show_metadata')
+            if meta_data:
+                # meta_data is already a dict from pickle.loads in the DB
+                xbmc.log(f'[AIOStreams] Next Up: Using DATABASE metadata for {show_title}', xbmc.LOGDEBUG)
+            else:
+                # 2. Try file-based meta cache (slower than DB, faster than API)
+                cached_ref = None
+                if HAS_MODULES:
+                    cached_ref = cache.get_cached_meta('series', show_imdb)
+                    if cached_ref and 'meta' in cached_ref:
+                        meta_data = cached_ref['meta']
+                        xbmc.log(f'[AIOStreams] Next Up: Using FILE CACHED metadata for {show_title}', xbmc.LOGDEBUG)
 
-            # If not cached, fetch from API
-            if not meta_result:
-                meta_result = get_meta('series', show_imdb)
-                xbmc.log(f'[AIOStreams] Next Up: Fetched metadata from API for {show_title}', xbmc.LOGDEBUG)
+                # 3. If still nothing, fetch from API (slowest)
+                if not meta_data:
+                    meta_result = get_meta('series', show_imdb)
+                    if meta_result and 'meta' in meta_result:
+                        meta_data = meta_result['meta']
+                        xbmc.log(f'[AIOStreams] Next Up: Fetched FRESH metadata from API for {show_title}', xbmc.LOGDEBUG)
+                        
+                        # Save to database for next time (make it instant)
+                        try:
+                            # We already have db object from line 2712
+                            slug = meta_data.get('ids', {}).get('slug', '')
+                            trakt_id = ep_data.get('show_trakt_id')
+                            if trakt_id:
+                                db.insert_show(trakt_id, show_imdb, None, None, slug, show_title, meta_data, int(time.time()))
+                                xbmc.log(f'[AIOStreams] Next Up: Cached metadata to database for {show_title}', xbmc.LOGDEBUG)
+                        except Exception as e:
+                            xbmc.log(f'[AIOStreams] Next Up: Failed to cache to DB: {e}', xbmc.LOGWARNING)
 
-            # Extract metadata
-            if meta_result and 'meta' in meta_result:
-                meta_data = meta_result['meta']
+            # Extract artwork and episode details from metadata
+            if meta_data:
                 # Get show title from metadata if available
                 show_title = meta_data.get('name', show_title)
                 poster = meta_data.get('poster', '')
@@ -2784,18 +2853,24 @@ def trakt_next_up():
         info_tag.setPlot(episode_overview)
 
         # Set artwork
+        art = {}
         if episode_thumb:
-            list_item.setArt({'thumb': episode_thumb})
+            art['thumb'] = episode_thumb
             if poster:
-                list_item.setArt({'poster': poster})
+                art['poster'] = poster
         elif poster:
-            list_item.setArt({'thumb': poster, 'poster': poster})
-
+            art['thumb'] = poster
+            art['poster'] = poster
+        
         if fanart:
-            list_item.setArt({'fanart': fanart})
-
+            art['fanart'] = fanart
+        
         if logo:
-            list_item.setArt({'clearlogo': logo})
+            art['clearlogo'] = logo
+            art['logo'] = logo
+            
+        if art:
+            list_item.setArt(art)
 
         # Build context menu
         episode_media_id = f"{show_imdb}:{season}:{episode}"
@@ -3713,6 +3788,10 @@ def smart_widget():
     
     xbmc.log(f'[AIOStreams] smart_widget: Using catalog "{catalog_name}" (id: {catalog_id})', xbmc.LOGINFO)
     
+    # Prime database cache for performance
+    if HAS_MODULES:
+        trakt.prime_database_cache(content_type)
+        
     # Fetch catalog content with "All" genre filter (genre=None means "All")
     catalog_data = get_catalog(content_type, catalog_id, genre=None, skip=0)
     

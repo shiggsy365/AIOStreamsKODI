@@ -50,6 +50,11 @@ def get_trakt_db():
 _show_progress_batch_cache = {}
 _show_progress_cache_valid = False
 
+# Session caches for database results to avoid multiple connections per row
+_watched_id_db_cache = {}      # {media_type: {imdb_id: True}}
+_show_progress_db_cache = {}   # {imdb_id: progress_dict}
+_db_cache_primed = {}          # {media_type: bool}
+
 
 def invalidate_progress_cache():
     """Invalidate in-memory show progress cache.
@@ -2342,6 +2347,47 @@ def fetch_all_watched_history(media_type):
         return {}
 
 
+def prime_database_cache(media_type):
+    """Prime the in-memory cache from database for the current process.
+    
+    Fetches all watched items from DB at once to avoid item-by-item queries.
+    """
+    global _watched_id_db_cache, _db_cache_primed, _show_progress_db_cache
+    
+    if _db_cache_primed.get(media_type):
+        return
+        
+    db = get_trakt_db()
+    if not db or not db.connect():
+        return
+        
+    try:
+        if media_type == 'movie':
+            rows = db.fetch_all("SELECT imdb_id FROM movies WHERE watched=1")
+            _watched_id_db_cache['movie'] = {row['imdb_id']: True for row in rows if row['imdb_id']}
+        else:
+            # For shows, we cache both the basic 'is any episode watched' and the full progress
+            rows = db.fetch_all("SELECT imdb_id, trakt_id FROM shows")
+            watched_shows = {}
+            for row in rows:
+                if not row['imdb_id']: continue
+                
+                # Check for any watched episodes
+                ep_row = db.fetchone("SELECT 1 FROM episodes WHERE show_trakt_id=? AND watched=1 LIMIT 1", (row['trakt_id'],))
+                if ep_row:
+                    watched_shows[row['imdb_id']] = True
+            
+            _watched_id_db_cache['series'] = watched_shows
+            _watched_id_db_cache['show'] = watched_shows
+            
+        _db_cache_primed[media_type] = True
+        xbmc.log(f'[AIOStreams] Primed {media_type} database cache ({len(_watched_id_db_cache.get(media_type, {}))} items)', xbmc.LOGDEBUG)
+    except Exception as e:
+        xbmc.log(f'[AIOStreams] Failed to prime database cache: {e}', xbmc.LOGWARNING)
+    finally:
+        db.disconnect()
+
+
 def is_watched(media_type, imdb_id):
     """Check if item is watched using SQLite database.
     Falls back to API if database is unavailable.
@@ -2349,7 +2395,19 @@ def is_watched(media_type, imdb_id):
     if not imdb_id:
         return False
     
-    # Try database first
+    # Ensure cache is primed for this media type
+    prime_database_cache('movie' if media_type == 'movie' else 'series')
+    
+    # Check session cache first
+    type_key = 'movie' if media_type == 'movie' else 'series'
+    if imdb_id in _watched_id_db_cache.get(type_key, {}):
+        return True
+        
+    # If not in cache but cache was primed, it's definitely not watched in DB
+    if _db_cache_primed.get(type_key):
+        return False
+
+    # Fallback to single query if priming failed (legacy behavior)
     db = get_trakt_db()
     if db and db.connect():
         try:
@@ -2370,11 +2428,10 @@ def is_watched(media_type, imdb_id):
                     show_trakt_id = result.get('trakt_id')
                     # Check if there are any watched episodes
                     episode_result = db.fetchone(
-                        "SELECT COUNT(*) as count FROM episodes WHERE show_trakt_id=? AND watched=1",
+                        "SELECT 1 FROM episodes WHERE show_trakt_id=? AND watched=1 LIMIT 1",
                         (show_trakt_id,)
                     )
-                    if episode_result:
-                        return episode_result.get('count', 0) > 0
+                    return episode_result is not None
             return False
         except Exception as e:
             xbmc.log(f'[AIOStreams] Database error checking watched status: {e}', xbmc.LOGWARNING)

@@ -1,3 +1,7 @@
+[B]6.0.163[/B]
+• FIXED: Widget alignment (left shifted to 300) to prevent overlap with the sidebar menu.
+• IMPROVED: Dynamic metadata (Plot, Fanart, Logo) now updates instantly when focusing different widget rows.
+
 [B]4.0.25[/B]
 • NEW: Single-widget display with up/down cycling
 • NEW: White sidebar icons for better visibility

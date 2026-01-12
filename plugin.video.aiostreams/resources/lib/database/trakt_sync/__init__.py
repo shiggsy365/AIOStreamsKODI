@@ -8,6 +8,7 @@ The metadata comes from Trakt API responses processed by this addon,
 not from external untrusted sources. All data is self-generated.
 """
 import pickle
+import time
 import xbmc
 from .. import Database
 
@@ -70,6 +71,7 @@ class TraktSyncDatabase(Database):
         imdb_id TEXT,
         listed_at TEXT,
         last_updated TEXT DEFAULT (datetime('now')),
+        metadata BLOB,
         UNIQUE(trakt_id, mediatype)
     """
 
@@ -107,6 +109,23 @@ class TraktSyncDatabase(Database):
         UNIQUE(trakt_id, mediatype, section)
     """
 
+    METAS_SCHEMA = """
+        id TEXT PRIMARY KEY,
+        content_type TEXT,
+        metadata BLOB,
+        expires INTEGER
+    """
+
+    CATALOGS_SCHEMA = """
+        id TEXT PRIMARY KEY,
+        content_type TEXT,
+        catalog_id TEXT,
+        genre TEXT,
+        skip INTEGER,
+        data BLOB,
+        expires INTEGER
+    """
+
     def __init__(self):
         """Initialize Trakt sync database."""
         super().__init__('trakt_sync.db')
@@ -127,6 +146,8 @@ class TraktSyncDatabase(Database):
             self.create_table('activities', self.ACTIVITIES_SCHEMA)
             self.create_table('bookmarks', self.BOOKMARKS_SCHEMA)
             self.create_table('hidden', self.HIDDEN_SCHEMA)
+            self.create_table('metas', self.METAS_SCHEMA)
+            self.create_table('catalogs', self.CATALOGS_SCHEMA)
             self.commit()
             xbmc.log('[AIOStreams] Trakt sync database tables initialized', xbmc.LOGDEBUG)
         except Exception as e:
@@ -153,6 +174,20 @@ class TraktSyncDatabase(Database):
                     xbmc.log('[AIOStreams] Added air_date column to episodes table', xbmc.LOGINFO)
                 else:
                     xbmc.log('[AIOStreams] air_date column already exists, skipping migration', xbmc.LOGDEBUG)
+
+                # Migration: Add metadata column to watchlist table
+                cursor = self.execute("PRAGMA table_info(watchlist)")
+                if cursor:
+                    columns = [row[1] for row in cursor.fetchall()]
+                    if 'metadata' not in columns:
+                        self.execute("ALTER TABLE watchlist ADD COLUMN metadata BLOB")
+                        self.commit()
+                        xbmc.log('[AIOStreams] Added metadata column to watchlist table', xbmc.LOGINFO)
+
+                # Migration: Add metas and catalogs tables if they don't exist (v3.2.0)
+                self.create_table('metas', self.METAS_SCHEMA)
+                self.create_table('catalogs', self.CATALOGS_SCHEMA)
+                self.commit()
 
         except Exception as e:
             xbmc.log(f'[AIOStreams] Error running migrations: {e}', xbmc.LOGERROR)
@@ -222,7 +257,8 @@ class TraktSyncDatabase(Database):
                 e.episode,
                 e.air_date,
                 e.imdb_id as episode_imdb_id,
-                mw.last_watched_at
+                mw.last_watched_at,
+                s.metadata as show_metadata
             FROM next_episode_candidate nec
             INNER JOIN episodes e
                 ON e.show_trakt_id = nec.show_trakt_id
@@ -246,7 +282,13 @@ class TraktSyncDatabase(Database):
 
             results = []
             for row in cursor.fetchall():
-                results.append(dict(row))
+                row_dict = dict(row)
+                if row_dict.get('show_metadata'):
+                    try:
+                        row_dict['show_metadata'] = pickle.loads(row_dict['show_metadata'])
+                    except:
+                        row_dict['show_metadata'] = None
+                results.append(row_dict)
 
             self.disconnect()
             return results
@@ -746,3 +788,75 @@ class TraktSyncDatabase(Database):
         finally:
             if connected:
                 self.disconnect()
+
+    def get_meta(self, content_type, meta_id):
+        """Get metadata from the SQL cache."""
+        try:
+            sql = "SELECT metadata FROM metas WHERE id=? AND content_type=? AND expires > ?"
+            row = self.fetchone(sql, (meta_id, content_type, int(time.time())))
+            if row and row['metadata']:
+                return pickle.loads(row['metadata'])
+            return None
+        except Exception as e:
+            xbmc.log(f'[AIOStreams] DB error getting meta: {e}', xbmc.LOGWARNING)
+            return None
+
+    def set_meta(self, content_type, meta_id, metadata, ttl_seconds):
+        """Store metadata in the SQL cache."""
+        try:
+            expires = int(time.time()) + ttl_seconds
+            pickled_metadata = pickle.dumps(metadata)
+            sql = "INSERT OR REPLACE INTO metas (id, content_type, metadata, expires) VALUES (?, ?, ?, ?)"
+            self.execute(sql, (meta_id, content_type, pickled_metadata, expires))
+            self.commit()
+            return True
+        except Exception as e:
+            xbmc.log(f'[AIOStreams] DB error setting meta: {e}', xbmc.LOGWARNING)
+            return False
+
+    def get_catalog(self, content_type, catalog_id, genre=None, skip=0):
+        """Get catalog data from the SQL cache."""
+        try:
+            sql = "SELECT data FROM catalogs WHERE catalog_id=? AND content_type=? AND (genre=? OR (genre IS NULL AND ? IS NULL)) AND skip=? AND expires > ?"
+            row = self.fetchone(sql, (catalog_id, content_type, genre, genre, skip, int(time.time())))
+            if row and row['data']:
+                return pickle.loads(row['data'])
+            return None
+        except Exception as e:
+            xbmc.log(f'[AIOStreams] DB error getting catalog: {e}', xbmc.LOGWARNING)
+            return None
+
+    def set_catalog(self, content_type, catalog_id, genre, skip, data, ttl_seconds):
+        """Store catalog data in the SQL cache."""
+        try:
+            expires = int(time.time()) + ttl_seconds
+            pickled_data = pickle.dumps(data)
+            # Use unique key for catalogs: content_type:catalog_id:genre:skip
+            cache_id = f"{content_type}:{catalog_id}:{genre or 'none'}:{skip}"
+            sql = "INSERT OR REPLACE INTO catalogs (id, content_type, catalog_id, genre, skip, data, expires) VALUES (?, ?, ?, ?, ?, ?, ?)"
+            self.execute(sql, (cache_id, content_type, catalog_id, genre, skip, pickled_data, expires))
+            self.commit()
+            return True
+        except Exception as e:
+            xbmc.log(f'[AIOStreams] DB error setting catalog: {e}', xbmc.LOGWARNING)
+            return False
+
+    def cleanup_cached_data(self):
+        """Remove expired metadata and catalog entries from the database."""
+        try:
+            now = int(time.time())
+            
+            # Delete expired metas
+            meta_count = self.execute("DELETE FROM metas WHERE expires < ?", (now,)).rowcount
+            
+            # Delete expired catalogs
+            catalog_count = self.execute("DELETE FROM catalogs WHERE expires < ?", (now,)).rowcount
+            
+            self.commit()
+            
+            if meta_count > 0 or catalog_count > 0:
+                xbmc.log(f'[AIOStreams] SQL Cache cleanup: removed {meta_count} metas and {catalog_count} catalogs', xbmc.LOGINFO)
+            return True
+        except Exception as e:
+            xbmc.log(f'[AIOStreams] DB error during cache cleanup: {e}', xbmc.LOGWARNING)
+            return False
