@@ -425,13 +425,14 @@ SideFocus:$INFO[Skin.String(SideMenuFocus)]</label>
 		<visible>String.IsEqual(Skin.String(Home_WidgetIndex),0)</visible>
 		<onfocus>Skin.SetString(Home_WidgetIndex,0)</onfocus>
 		<onfocus>SetFocus(10100)</onfocus>
+		<ondown>SetFocus(10200)</ondown>
 		<include content="WidgetListEpisodes">
 			<param name="content_path">plugin://plugin.video.aiostreams/?action=trakt_next_up</param>
 			<param name="widget_header">Trakt Next Up</param>
 			<param name="widget_target">videos</param>
 			<param name="list_id">10100</param>
 			<param name="onup_action">noop</param>
-			<param name="ondown_action">10200</param>
+			<param name="ondown_action">noop</param>
 		</include>
 	</control>
 
@@ -440,13 +441,15 @@ SideFocus:$INFO[Skin.String(SideMenuFocus)]</label>
 		<visible>String.IsEqual(Skin.String(Home_WidgetIndex),1)</visible>
 		<onfocus>Skin.SetString(Home_WidgetIndex,1)</onfocus>
 		<onfocus>SetFocus(10200)</onfocus>
+		<onup>SetFocus(10100)</onup>
+		<ondown>SetFocus(10300)</ondown>
 		<include content="WidgetListPoster">
 			<param name="content_path">plugin://plugin.video.aiostreams/?action=trakt_watchlist&amp;media_type=movies</param>
 			<param name="widget_header">Trakt Watchlist Movies</param>
 			<param name="widget_target">videos</param>
 			<param name="list_id">10200</param>
-			<param name="onup_action">10100</param>
-			<param name="ondown_action">10300</param>
+			<param name="onup_action">noop</param>
+			<param name="ondown_action">noop</param>
 		</include>
 	</control>
 
@@ -455,12 +458,13 @@ SideFocus:$INFO[Skin.String(SideMenuFocus)]</label>
 		<visible>String.IsEqual(Skin.String(Home_WidgetIndex),2)</visible>
 		<onfocus>Skin.SetString(Home_WidgetIndex,2)</onfocus>
 		<onfocus>SetFocus(10300)</onfocus>
+		<onup>SetFocus(10200)</onup>
 		<include content="WidgetListPoster">
 			<param name="content_path">plugin://plugin.video.aiostreams/?action=trakt_watchlist&amp;media_type=shows</param>
 			<param name="widget_header">Trakt Watchlist Series</param>
 			<param name="widget_target">videos</param>
 			<param name="list_id">10300</param>
-			<param name="onup_action">10200</param>
+			<param name="onup_action">noop</param>
 			<param name="ondown_action">noop</param>
 		</include>
 	</control>
@@ -480,6 +484,7 @@ SideFocus:$INFO[Skin.String(SideMenuFocus)]</label>
 		<visible>String.IsEqual(Skin.String(Movies_WidgetIndex),0)</visible>
 		<onfocus>Skin.SetString(Movies_WidgetIndex,0)</onfocus>
 		<onfocus>SetFocus(5100)</onfocus>
+		<ondown>SetFocus(5200)</ondown>
 		<include content="WidgetListPoster">
 			<param name="content_path">plugin://plugin.video.aiostreams/?action=smart_widget&amp;index=0&amp;content_type=movie</param>
 			<param name="widget_header">$INFO[Window(Home).Property(movie_catalog_0_name)]</param>
@@ -495,6 +500,8 @@ SideFocus:$INFO[Skin.String(SideMenuFocus)]</label>
 		<visible>String.IsEqual(Skin.String(Movies_WidgetIndex),1)</visible>
 		<onfocus>Skin.SetString(Movies_WidgetIndex,1)</onfocus>
 		<onfocus>SetFocus(5200)</onfocus>
+		<onup>SetFocus(5100)</onup>
+		<ondown>SetFocus(5300)</ondown>
 		<include content="WidgetListPoster">
 			<param name="content_path">plugin://plugin.video.aiostreams/?action=smart_widget&amp;index=1&amp;content_type=movie</param>
 			<param name="widget_header">$INFO[Window(Home).Property(movie_catalog_1_name)]</param>
@@ -510,6 +517,8 @@ SideFocus:$INFO[Skin.String(SideMenuFocus)]</label>
 		<visible>String.IsEqual(Skin.String(Movies_WidgetIndex),2)</visible>
 		<onfocus>Skin.SetString(Movies_WidgetIndex,2)</onfocus>
 		<onfocus>SetFocus(5300)</onfocus>
+		<onup>SetFocus(5200)</onup>
+		<ondown>SetFocus(5400)</ondown>
 		<include content="WidgetListPoster">
 			<param name="content_path">plugin://plugin.video.aiostreams/?action=smart_widget&amp;index=2&amp;content_type=movie</param>
 			<param name="widget_header">$INFO[Window(Home).Property(movie_catalog_2_name)]</param>
@@ -525,6 +534,7 @@ SideFocus:$INFO[Skin.String(SideMenuFocus)]</label>
 		<visible>String.IsEqual(Skin.String(Movies_WidgetIndex),3)</visible>
 		<onfocus>Skin.SetString(Movies_WidgetIndex,3)</onfocus>
 		<onfocus>SetFocus(5400)</onfocus>
+		<onup>SetFocus(5300)</onup>
 		<include content="WidgetListPoster">
 			<param name="content_path">plugin://plugin.video.aiostreams/?action=smart_widget&amp;index=3&amp;content_type=movie</param>
 			<param name="widget_header">$INFO[Window(Home).Property(movie_catalog_3_name)]</param>
@@ -616,6 +626,7 @@ SideFocus:$INFO[Skin.String(SideMenuFocus)]</label>
 		<visible>String.IsEqual(Skin.String(TV_WidgetIndex),0)</visible>
 		<onfocus>Skin.SetString(TV_WidgetIndex,0)</onfocus>
 		<onfocus>SetFocus(6100)</onfocus>
+		<ondown>SetFocus(6110)</ondown>
 		<include content="WidgetListPoster">
 			<param name="content_path">plugin://plugin.video.aiostreams/?action=smart_widget&amp;index=0&amp;content_type=series</param>
 			<param name="widget_header">$INFO[Window(Home).Property(series_catalog_0_name)]</param>
@@ -631,6 +642,8 @@ SideFocus:$INFO[Skin.String(SideMenuFocus)]</label>
 		<visible>String.IsEqual(Skin.String(TV_WidgetIndex),1)</visible>
 		<onfocus>Skin.SetString(TV_WidgetIndex,1)</onfocus>
 		<onfocus>SetFocus(6110)</onfocus>
+		<onup>SetFocus(6100)</onup>
+		<ondown>SetFocus(6120)</ondown>
 		<include content="WidgetListPoster">
 			<param name="content_path">plugin://plugin.video.aiostreams/?action=smart_widget&amp;index=1&amp;content_type=series</param>
 			<param name="widget_header">$INFO[Window(Home).Property(series_catalog_1_name)]</param>
@@ -646,6 +659,8 @@ SideFocus:$INFO[Skin.String(SideMenuFocus)]</label>
 		<visible>String.IsEqual(Skin.String(TV_WidgetIndex),2)</visible>
 		<onfocus>Skin.SetString(TV_WidgetIndex,2)</onfocus>
 		<onfocus>SetFocus(6120)</onfocus>
+		<onup>SetFocus(6110)</onup>
+		<ondown>SetFocus(6130)</ondown>
 		<include content="WidgetListPoster">
 			<param name="content_path">plugin://plugin.video.aiostreams/?action=smart_widget&amp;index=2&amp;content_type=series</param>
 			<param name="widget_header">$INFO[Window(Home).Property(series_catalog_2_name)]</param>
@@ -661,6 +676,7 @@ SideFocus:$INFO[Skin.String(SideMenuFocus)]</label>
 		<visible>String.IsEqual(Skin.String(TV_WidgetIndex),3)</visible>
 		<onfocus>Skin.SetString(TV_WidgetIndex,3)</onfocus>
 		<onfocus>SetFocus(6130)</onfocus>
+		<onup>SetFocus(6120)</onup>
 		<include content="WidgetListPoster">
 			<param name="content_path">plugin://plugin.video.aiostreams/?action=smart_widget&amp;index=3&amp;content_type=series</param>
 			<param name="widget_header">$INFO[Window(Home).Property(series_catalog_3_name)]</param>
