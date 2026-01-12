@@ -52,7 +52,12 @@
 					<top>0</top>
 					<width>1600</width>
 					<height>500</height>
-					<zorder>1000</zorder>
+					<zorder>5000</zorder>
+					<control type="image">
+						<width>1600</width>
+						<height>500</height>
+						<texture colordiffuse="4400FFFF">icons/sidemenu/home_white.png</texture> <!-- Cyan Backdrop -->
+					</control>
 					<visible>True</visible>
 					<orientation>horizontal</orientation>
 					<scrolltime tween="cubic" easing="out">500</scrolltime>
@@ -86,7 +91,15 @@
 							<label>FOCUSED</label>
 						</control>
 					</focusedlayout>
-						<content target="$PARAM[widget_target]" limit="15">$PARAM[content_path]</content>
+						<content target="$PARAM[widget_target]" limit="20">
+							<item>
+								<label>PROOFLABEL: HARDCODED TEST</label>
+								<onclick>Notification(AIO, Clicked)</onclick>
+								<thumb>icons/sidemenu/home_white.png</thumb>
+								<property name="IsPlayable">false</property>
+							</item>
+							$PARAM[content_path]
+						</content>
 					</control>
 				</control>
 			</definition>
