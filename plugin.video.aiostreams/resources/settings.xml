@@ -2,12 +2,6 @@
 <settings>
     <!-- General Settings -->
     <category label="General">
-        <setting id="aiostreams_config" type="lsep" label="AIOStreams Configuration"/>
-        <setting id="aiostreams_host" type="text" label="AIOStreams Host URL" default="https://aiostreams.elfhosted.com"/>
-        <setting id="configure_aiostreams" type="action" label="Configure AIOStreams (Open Browser)" action="RunPlugin(plugin://plugin.video.aiostreams/?action=configure_aiostreams)"/>
-        <setting id="base_url" type="text" label="Manifest URL (auto-filled)" default=""/>
-        <setting id="timeout" type="number" label="Request Timeout (seconds)" default="10"/>
-
         <setting id="playback_settings" type="lsep" label="Playback Settings"/>
         <setting id="default_behavior" type="select" label="Default Behavior" values="play_first|show_streams" default="show_streams"/>
         <setting id="fallback_behavior" type="select" label="Fallback on Stream Failure" values="play_next|show_streams" default="show_streams" enable="eq(-1,play_first)"/>
@@ -31,15 +25,23 @@
         <setting id="autoplay_under_45" type="number" label="Shows under 45 min (seconds before end)" default="45" enable="eq(-3,true)"/>
         <setting id="autoplay_over_45" type="number" label="Shows over 45 min (seconds before end)" default="60" enable="eq(-4,true)"/>
     </category>
-    
-    <!-- Trakt Settings -->
-    <category label="Trakt">
-        <setting id="trakt_info" type="lsep" label="Trakt Configuration"/>
+
+    <!-- Integrations Settings -->
+    <category label="Integrations">
+        <setting id="aiostreams_config" type="lsep" label="AIOStreams Integration"/>
+        <setting id="aiostreams_host" type="text" label="Host Base URL" default="https://aiostreams.elfhosted.com"/>
+        <setting id="aiostreams_uuid" type="text" label="UUID" default=""/>
+        <setting id="aiostreams_password" type="text" label="Password" default="" option="hidden"/>
+        <setting id="retrieve_manifest" type="action" label="Retrieve Manifest" action="RunPlugin(plugin://plugin.video.aiostreams/?action=retrieve_manifest)"/>
+        <setting id="base_url" type="text" label="Manifest URL" default=""/>
+        <setting id="timeout" type="number" label="Request Timeout (seconds)" default="10"/>
+
+        <setting id="trakt_config" type="lsep" label="Trakt Integration"/>
         <setting id="trakt_client_id" type="text" label="Client ID" default=""/>
         <setting id="trakt_client_secret" type="text" label="Client Secret" default="" option="hidden"/>
         <setting id="trakt_authorize" type="action" label="Authorize Trakt" action="RunPlugin(plugin://plugin.video.aiostreams/?action=trakt_auth)"/>
         <setting id="trakt_revoke" type="action" label="Revoke Authorization" action="RunPlugin(plugin://plugin.video.aiostreams/?action=trakt_revoke)"/>
-        
+
         <setting id="trakt_sync" type="lsep" label="Sync Settings"/>
         <setting id="trakt_sync_auto" type="bool" label="Enable Auto-Sync (Background Service)" default="true"/>
 
@@ -53,7 +55,7 @@
         <setting id="trakt_expires" type="text" label="Token Expires" default="0" visible="false"/>
         <setting id="trakt.username" type="text" label="Username" default="" visible="false"/>
     </category>
-    
+
     <!-- UI Settings -->
     <category label="User Interface">
         <setting id="ui_enhancements" type="lsep" label="Display Options"/>
