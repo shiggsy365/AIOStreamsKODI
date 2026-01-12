@@ -1143,4 +1143,5 @@
 	<variable name="CurrentWidgetInfo">
 		<value condition="!String.IsEmpty(ListItem.Season)">$INFO[ListItem.Season,S,]$INFO[ListItem.Episode,E,  |  ]$INFO[ListItem.Title]</value>
 		<value>$INFO[ListItem.Year]$INFO[ListItem.Genre,  |  ]</value>
+	</variable>
 </includes>
