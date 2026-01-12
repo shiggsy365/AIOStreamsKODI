@@ -14,11 +14,13 @@
 		<param name="item_treshold">0</param>
 		<definition>
 			<control type="label" id="$PARAM[list_id]666">
-				<left>55</left>
-				<top>80</top>
+				<left>0</left>
+				<top>0</top>
 				<width>900</width>
-				<height>90</height>
-				<label>$PARAM[label]</label>
+				<height>60</height>
+				<font>font15</font>
+				<textcolor>blue</textcolor>
+				<label>$PARAM[label] (HEADER)</label>
 				<shadowcolor>text_shadow</shadowcolor>
 				<visible>$PARAM[visible]</visible>
 				<visible>Integer.IsGreater(Container($PARAM[list_id]).NumItems,$PARAM[item_treshold]) | [Container($PARAM[list_id]).IsUpdating + Integer.IsEqual(Container($PARAM[list_id]).NumItems,0)]</visible>
@@ -48,10 +50,10 @@
 				</control>
 				<control type="panel" id="$PARAM[list_id]">
 					<left>0</left>
-					<top>120</top>
+					<top>0</top>
 					<width>1600</width>
-					<height>450</height>
-					<zorder>500</zorder>
+					<height>500</height>
+					<zorder>1000</zorder>
 					<visible>True</visible>
 					<orientation>horizontal</orientation>
 					<scrolltime tween="cubic" easing="out">500</scrolltime>
