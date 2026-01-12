@@ -589,7 +589,7 @@
 	<top>100</top>
 	<width>1600</width>
 	<height>900</height>
-	<zorder>1000</zorder>
+	<zorder>50000</zorder>
 		<control type="label">
 			<left>0</left>
 			<top>-50</top>
@@ -597,7 +597,7 @@
 			<height>50</height>
 			<font>font30_title</font>
 			<textcolor>FFFF00FF</textcolor>
-			<label>IF YOU CAN SEE THIS, GROUP 6000 IS ALIVE (v6.0.144)</label>
+			<label>IF YOU CAN SEE THIS, GROUP 6000 IS ALIVE (v6.0.146)</label>
 		</control>
 
 
@@ -606,10 +606,10 @@
 		<top>0</top>
 		<width>1300</width>
 		<height>1200</height>
-		<visible>Skin.IsString(TV_WidgetIndex,0)</visible>
+		<visible>String.IsEqual(Skin.String(TV_WidgetIndex),0)</visible>
 		<include content="WidgetListPoster_Stable">
 			<param name="content_path">plugin://plugin.video.aiostreams/?action=smart_widget&amp;index=$VAR[SeriesRow1IndexVar]&amp;content_type=series</param>
-			<param name="widget_header">PRODUCTION: SERIES TRACKING (6100) (v6.0.144)</param>
+			<param name="widget_header">PRODUCTION: SERIES TRACKING (6100) (v6.0.146)</param>
 			<param name="widget_target">videos</param>
 			<param name="list_id">6100</param>
 			<param name="onup_action">Skin.SetString(TV_WidgetIndex,$VAR[TV_Prev_Index])</param>
@@ -638,7 +638,7 @@
 			<height>30</height>
 			<font>font12</font>
 			<textcolor>FFFFFF00</textcolor> <!-- Hex Yellow -->
-			<label>v6.0.144 | F: $INFO[Skin.String(SideMenuFocus)] | T:$INFO[Skin.String(TV_WidgetIndex)] | C: $INFO[Container(6100).NumItems]</label>
+			<label>v6.0.146 | F: $INFO[Skin.String(SideMenuFocus)] | T:$INFO[Skin.String(TV_WidgetIndex)] | C: $INFO[Container(6100).NumItems]</label>
 		</control>
 		<control type="label">
 			<left>150</left>
@@ -647,7 +647,7 @@
 			<height>30</height>
 			<font>font12</font>
 			<textcolor>FFFF0000</textcolor> <!-- Hex Red -->
-			<label>STATUS: $VAR[SeriesRow1IndexVar] | FOCUS: ($INFO[System.FocusedControl.ID]) $INFO[System.FocusedControl.Label] (v6.0.144)</label>
+			<label>STATUS: $VAR[SeriesRow1IndexVar] | FOCUS: ($INFO[System.FocusedControl.ID]) $INFO[System.FocusedControl.Label] (v6.0.146)</label>
 		</control>
 		<control type="label">
 			<left>150</left>

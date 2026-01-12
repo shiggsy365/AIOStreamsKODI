@@ -29,7 +29,7 @@
 				<height>50</height>
 				<font>font20_title</font>
 				<textcolor>FFFFFFFF</textcolor>
-				<label>STATIC INCLUDE TEST: SUCCESS (v6.0.144)</label>
+				<label>STATIC INCLUDE TEST: SUCCESS (v6.0.146)</label>
 			</control>
 		</control>
 	</include>
@@ -55,7 +55,7 @@
 					<height>50</height>
 					<font>font20_title</font>
 					<textcolor>FFFFFFFF</textcolor>
-					<label>DEFINITION TEST: $PARAM[test_label] (v6.0.144)</label>
+					<label>DEFINITION TEST: $PARAM[test_label] (v6.0.146)</label>
 				</control>
 			</control>
 		</definition>
@@ -85,7 +85,7 @@
 					<height>50</height>
 					<font>font12</font>
 					<textcolor>FFFFFFFF</textcolor>
-					<label>$PARAM[widget_header] (STABLE v6.0.144 @ 0,0 RELATIVE)</label>
+					<label>$PARAM[widget_header] (STABLE v6.0.146 @ 0,0 RELATIVE)</label>
 				</control>
 				<!-- BACKDROP -->
 				<control type="image">
