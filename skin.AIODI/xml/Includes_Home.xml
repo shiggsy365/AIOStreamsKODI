@@ -42,15 +42,15 @@
 				<top>115</top>
 				<width>1600</width>
 				<height>550</height>
-				<texture colordiffuse="44FFFFFF">colors/white.png</texture>
-				<zorder>1</zorder>
+				<texture colordiffuse="44FFFFFF">icons/sidemenu/home_white.png</texture>
+				<zorder>100</zorder>
 			</control>
 			<control type="panel" id="$PARAM[list_id]">
 				<left>0</left>
 				<top>115</top>
 				<right>0</right>
 				<height>518</height>
-				<zorder>50</zorder>
+				<zorder>200</zorder>
 				<onclick condition="$PARAM[onclick_condition]">$PARAM[onclick_action]</onclick>
 				<include content="WidgetListCommon">
 					<param name="list_id" value="$PARAM[list_id]"/>
@@ -214,15 +214,15 @@
 				<top>105</top>
 				<width>1600</width>
 				<height>410</height>
-				<texture colordiffuse="44FFFFFF">colors/white.png</texture>
-				<zorder>1</zorder>
+				<texture colordiffuse="44FFFFFF">icons/sidemenu/home_white.png</texture>
+				<zorder>100</zorder>
 			</control>
 			<control type="panel" id="$PARAM[list_id]">
 				<left>0</left>
 				<top>105</top>
 				<right>0</right>
 				<height>410</height>
-				<zorder>50</zorder>
+				<zorder>200</zorder>
 				<include content="WidgetListCommon">
 					<param name="list_id" value="$PARAM[list_id]"/>
 					<param name="onup_action" value="$PARAM[onup_action]"/>

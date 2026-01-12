@@ -636,6 +636,16 @@
 		</control>
 
 		<!-- Labels -->
+		<!-- GLOBAL TRUTH BOX: PROVES RENDERING & TEXTURE -->
+		<control type="image">
+			<left>0</left>
+			<top>0</top>
+			<width>100</width>
+			<height>100</height>
+			<texture colordiffuse="FFFF0000">icons/sidemenu/home_white.png</texture>
+			<zorder>1000</zorder>
+		</control>
+
 		<control type="label">
 			<left>150</left>
 			<top>10</top>
@@ -643,7 +653,7 @@
 			<height>30</height>
 			<font>font12</font>
 			<textcolor>FFFFFF00</textcolor> <!-- Hex Yellow -->
-			<label>v6.0.48 | F: $INFO[Skin.String(SideMenuFocus)] | H:$INFO[Skin.String(Home_WidgetIndex)] M:$INFO[Skin.String(Movies_WidgetIndex)] T:$INFO[Skin.String(TV_WidgetIndex)]</label>
+			<label>v6.0.54 | F: $INFO[Skin.String(SideMenuFocus)] | H:$INFO[Skin.String(Home_WidgetIndex)] M:$INFO[Skin.String(Movies_WidgetIndex)] T:$INFO[Skin.String(TV_WidgetIndex)]</label>
 		</control>
 		<control type="label">
 			<left>150</left>
@@ -652,7 +662,7 @@
 			<height>30</height>
 			<font>font12</font>
 			<textcolor>FFFF0000</textcolor> <!-- Hex Red -->
-			<label>ACT_ID: $VAR[CurrentWidgetListID] ($INFO[Container($VAR[CurrentWidgetListID]).NumItems] items) | FOCUS: $INFO[System.FocusedControl.ID] | WIN: $INFO[Skin.String(SideMenuFocus)] (v6.0.52)</label>
+			<label>ACT_ID: $VAR[CurrentWidgetListID] | TV_COUNT: $INFO[Container(6100).NumItems] | FOCUS: ($INFO[System.FocusedControl.ID]) $INFO[System.FocusedControl.Label] (v6.0.54)</label>
 		</control>
 
 		<control type="label">
