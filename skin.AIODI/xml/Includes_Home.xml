@@ -9,6 +9,57 @@
 		<ondown>20001</ondown>
 		<usecontrolcoords>true</usecontrolcoords>
 	</include>
+
+	<!-- TEST: STATIC INCLUDE (NO PARAMS, NO DEFINITION) -->
+	<include name="StaticWidgetTest">
+		<control type="group">
+			<left>0</left>
+			<top>300</top>
+			<width>1600</width>
+			<height>100</height>
+			<control type="image">
+				<width>1600</width>
+				<height>100</height>
+				<texture colordiffuse="FFFF6600">icons/sidemenu/home_white.png</texture> <!-- Orange -->
+			</control>
+			<control type="label">
+				<left>20</left>
+				<top>25</top>
+				<width>1000</width>
+				<height>50</height>
+				<font>font20_title</font>
+				<textcolor>FFFFFFFF</textcolor>
+				<label>STATIC INCLUDE TEST: SUCCESS (v6.0.135)</label>
+			</control>
+		</control>
+	</include>
+
+	<!-- TEST: DEFINITION INCLUDE (WITH PARAMS) -->
+	<include name="DefinitionWidgetTest">
+		<param name="test_label">Definition Default</param>
+		<definition>
+			<control type="group">
+				<left>0</left>
+				<top>450</top>
+				<width>1600</width>
+				<height>100</height>
+				<control type="image">
+					<width>1600</width>
+					<height>100</height>
+					<texture colordiffuse="FF6600FF">icons/sidemenu/home_white.png</texture> <!-- Purple -->
+				</control>
+				<control type="label">
+					<left>20</left>
+					<top>25</top>
+					<width>1000</width>
+					<height>50</height>
+					<font>font20_title</font>
+					<textcolor>FFFFFFFF</textcolor>
+					<label>DEFINITION TEST: $PARAM[test_label] (v6.0.135)</label>
+				</control>
+			</control>
+		</definition>
+	</include>
 	<include name="CategoryLabel">
 		<param name="label">Default Header</param>
 		<param name="list_id">noop</param>

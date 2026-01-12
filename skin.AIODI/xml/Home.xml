@@ -677,11 +677,18 @@
 		</control>
 
 
+
+		<!-- TEST STACK: PROVING THE POINT (v6.0.135) -->
+		<include>StaticWidgetTest</include>
+		<include content="DefinitionWidgetTest">
+			<param name="test_label">PASSED PARAM</param>
+		</include>
+
 	<control type="group">
 		<visible>Skin.IsString(TV_WidgetIndex,0)</visible>
 		<include content="WidgetListPoster">
 			<param name="content_path">plugin://plugin.video.aiostreams/?action=smart_widget&amp;index=$VAR[SeriesRow1IndexVar]&amp;content_type=series</param>
-			<param name="widget_header">SERIES TRACKING (6100) (v6.0.133)</param>
+			<param name="widget_header">SERIES TRACKING (6100) (v6.0.135)</param>
 			<param name="widget_target">videos</param>
 			<param name="list_id">6100</param>
 			<param name="onup_action">Skin.SetString(TV_WidgetIndex,$VAR[TV_Prev_Index])</param>
