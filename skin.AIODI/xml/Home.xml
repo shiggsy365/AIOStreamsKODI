@@ -429,7 +429,7 @@ SideFocus:$INFO[Skin.String(SideMenuFocus)]</label>
 			<param name="widget_target">videos</param>
 			<param name="list_id">10100</param>
 			<param name="onup_action">noop</param>
-			<param name="ondown_action">Skin.SetString(Home_WidgetIndex,1),SetFocus(10200)</param>
+			<param name="ondown_action">Skin.SetString(Home_WidgetIndex,1),AlarmClock(FocusHome1,Control.SetFocus(10200),00:01,silent)</param>
 		</include>
 	</control>
 
@@ -441,8 +441,8 @@ SideFocus:$INFO[Skin.String(SideMenuFocus)]</label>
 			<param name="widget_header">Trakt Watchlist Movies</param>
 			<param name="widget_target">videos</param>
 			<param name="list_id">10200</param>
-			<param name="onup_action">Skin.SetString(Home_WidgetIndex,0),SetFocus(10100)</param>
-			<param name="ondown_action">Skin.SetString(Home_WidgetIndex,2),SetFocus(10300)</param>
+			<param name="onup_action">Skin.SetString(Home_WidgetIndex,0),AlarmClock(FocusHome0,Control.SetFocus(10100),00:01,silent)</param>
+			<param name="ondown_action">Skin.SetString(Home_WidgetIndex,2),AlarmClock(FocusHome2,Control.SetFocus(10300),00:01,silent)</param>
 		</include>
 	</control>
 
@@ -478,7 +478,7 @@ SideFocus:$INFO[Skin.String(SideMenuFocus)]</label>
 			<param name="widget_target">videos</param>
 			<param name="list_id">5100</param>
 			<param name="onup_action">noop</param>
-			<param name="ondown_action">Skin.SetString(Movies_WidgetIndex,1),SetFocus(5200)</param>
+			<param name="ondown_action">Skin.SetString(Movies_WidgetIndex,1),AlarmClock(FocusMov1,Control.SetFocus(5200),00:01,silent)</param>
 		</include>
 	</control>
 
@@ -606,7 +606,7 @@ SideFocus:$INFO[Skin.String(SideMenuFocus)]</label>
 			<param name="widget_target">videos</param>
 			<param name="list_id">6100</param>
 			<param name="onup_action">noop</param>
-			<param name="ondown_action">Skin.SetString(TV_WidgetIndex,1),SetFocus(6110)</param>
+			<param name="ondown_action">Skin.SetString(TV_WidgetIndex,1),AlarmClock(FocusTV1,Control.SetFocus(6110),00:01,silent)</param>
 		</include>
 	</control>
 
@@ -618,8 +618,8 @@ SideFocus:$INFO[Skin.String(SideMenuFocus)]</label>
 			<param name="widget_header">$INFO[Window(Home).Property(series_catalog_1_name)]</param>
 			<param name="widget_target">videos</param>
 			<param name="list_id">6110</param>
-			<param name="onup_action">Skin.SetString(TV_WidgetIndex,0),SetFocus(6100)</param>
-			<param name="ondown_action">Skin.SetString(TV_WidgetIndex,2),SetFocus(6120)</param>
+			<param name="onup_action">Skin.SetString(TV_WidgetIndex,0),AlarmClock(FocusTV0,Control.SetFocus(6100),00:01,silent)</param>
+			<param name="ondown_action">Skin.SetString(TV_WidgetIndex,2),AlarmClock(FocusTV2,Control.SetFocus(6120),00:01,silent)</param>
 		</include>
 	</control>
 

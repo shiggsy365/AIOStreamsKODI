@@ -2778,6 +2778,13 @@ def trakt_next_up():
     if not next_episodes:
         xbmc.log('[AIOStreams] DEBUG: trakt_next_up - No shows in progress (next_episodes list is empty)', xbmc.LOGWARNING)
         xbmcgui.Dialog().notification('AIOStreams', 'No shows in progress', xbmcgui.NOTIFICATION_INFO)
+        
+        # Fallback item for visual confirmation
+        li = xbmcgui.ListItem(label='[No Next Up Episodes Found]')
+        li.setInfo('video', {'plot': 'Trakt returned no next up episodes.\nCheck your Trakt history or scrobbling status.'})
+        url = get_url(action='noop')
+        xbmcplugin.addDirectoryItem(HANDLE, url, li, False)
+        
         xbmcplugin.endOfDirectory(HANDLE)
         return
 
@@ -3814,6 +3821,13 @@ def smart_widget():
     
     if not catalog_data or 'metas' not in catalog_data:
         xbmc.log(f'[AIOStreams] smart_widget: No content in catalog {catalog_id}', xbmc.LOGWARNING)
+        
+        # Fallback item for visual confirmation
+        li = xbmcgui.ListItem(label=f'[No Content in Catalog: {catalog_name}]')
+        li.setInfo('video', {'plot': f'Catalog ID: {catalog_id}\nContent Type: {content_type}\nCheck manifest configuration.'})
+        url = get_url(action='noop')
+        xbmcplugin.addDirectoryItem(HANDLE, url, li, False)
+        
         xbmcplugin.endOfDirectory(HANDLE)
         return
     
