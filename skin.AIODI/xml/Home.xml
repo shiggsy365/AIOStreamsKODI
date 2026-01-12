@@ -535,30 +535,6 @@
 </include>
 
 <!-- Settings Submenu -->
-<!-- TV Show Widgets (BROKEN OUT TO ROOT) -->
-<control type="group" id="6000">
-	<left>0</left>
-	<top>100</top>
-	<width>1700</width>
-	<height>600</height>
-	<visible>String.IsEqual(HomeCategory,tvshows)</visible>
-	<control type="image">
-		<width>300</width>
-		<height>100</height>
-		<texture colordiffuse="FFFFFF00">icons/sidemenu/home_white.png</texture>
-		<zorder>1000</zorder>
-	</control>
-
-	<control type="group">
-		<visible>Skin.IsString(TV_WidgetIndex,0)</visible>
-		<include content="WidgetListPoster">
-			<param name="content_path" value="plugin://plugin.video.aiostreams/?action=smart_widget&amp;index=$VAR[SeriesRow1IndexVar]&amp;content_type=series"/>
-			<param name="widget_header" value="TV ROW 1"/>
-			<param name="widget_target" value="videos"/>
-			<param name="list_id" value="6100"/>
-		</include>
-	</control>
-</control>
 <control type="group">
 	<left>130</left>
 	<bottom>100</bottom>
@@ -618,6 +594,24 @@
 			<width>1200</width>
 			<height>800</height>
 			<texture colordiffuse="88000000">colors/white.png</texture>
+		</control>
+
+		<!-- TV Show Widgets (INSIDE DIAGNOSTICS FOR PROOF) -->
+		<control type="group" id="6000">
+			<left>150</left>
+			<top>100</top>
+			<width>1700</width>
+			<height>600</height>
+			<visible>String.IsEqual(HomeCategory,tvshows)</visible>
+			<control type="group">
+				<visible>True</visible>
+				<include content="WidgetListPoster">
+					<param name="content_path" value="plugin://plugin.video.aiostreams/?action=series_lists"/>
+					<param name="widget_header" value="TV ROW 1"/>
+					<param name="widget_target" value="videos"/>
+					<param name="list_id" value="6100"/>
+				</include>
+			</control>
 		</control>
 
 		<!-- ROOT PROOF PANEL: NO GROUPS, NO PARAMETERS -->
@@ -683,7 +677,7 @@
 			<height>30</height>
 			<font>font12</font>
 			<textcolor>FFFF0000</textcolor> <!-- Hex Red -->
-			<label>TV_6100: $INFO[Container(6100).NumItems] | ROOT_3000: $INFO[Container(3000).NumItems] | FOCUS: ($INFO[System.FocusedControl.ID]) $INFO[System.FocusedControl.Label] (v6.0.70)</label>
+			<label>TV_6100: $INFO[Container(6100).NumItems] | ROOT_3000: $INFO[Container(3000).NumItems] | FOCUS: ($INFO[System.FocusedControl.ID]) $INFO[System.FocusedControl.Label] (v6.0.72)</label>
 		</control>
 
 		<control type="label">

@@ -56,11 +56,6 @@
 				<scrolltime tween="cubic" easing="out">500</scrolltime>
 				<onleft>9000</onleft>
 				<onright>noop</onright>
-				<include content="WidgetListCommon">
-					<param name="list_id" value="$PARAM[list_id]"/>
-					<param name="onup_action" value="$PARAM[onup_action]"/>
-					<param name="ondown_action" value="$PARAM[ondown_action]"/>
-				</include>
 				<itemlayout width="340" height="450">
 					<!-- PROOF OF LIFE: MAGENTA BACKGROUND -->
 					<control type="image">
@@ -72,15 +67,7 @@
 						<width>340</width>
 						<height>450</height>
 						<align>center</align>
-						<label>POSTER ITEM</label>
-					</control>
-					<control type="group">
-						<left>68</left>
-						<top>10</top>
-
-						<include content="InfoWallMovieLayout">
-							<param name="focused" value="false" />
-						</include>
+						<label>TEMPLATE POSTER</label>
 					</control>
 				</itemlayout>
 				<focusedlayout width="340" height="450">
@@ -90,14 +77,12 @@
 						<texture colordiffuse="FF00FF00">icons/sidemenu/home_white.png</texture>
 					</control>
 					<control type="label">
-						<width>310</width>
+						<width>340</width>
 						<height>100</height>
 						<align>center</align>
-						<font>font13</font>
-						<textcolor>black</textcolor>
-						<label>WIDGET FOUND HERE</label>
+						<label>FOCUSED</label>
 					</control>
-					<control type="group">
+				</focusedlayout>
 						<depth>DepthContentPopout</depth>
 						<left>68</left>
 						<top>10</top>
