@@ -227,30 +227,36 @@
 			</control>
 			<control type="panel" id="$PARAM[list_id]">
 				<left>0</left>
-				<top>105</top>
-				<width>1700</width>
-				<height>410</height>
-				<zorder>200</zorder>
+				<top>120</top>
+				<width>1600</width>
+				<height>400</height>
+				<zorder>500</zorder>
 				<visible>True</visible>
-				<include content="WidgetListCommon">
-					<param name="list_id" value="$PARAM[list_id]"/>
-					<param name="onup_action" value="$PARAM[onup_action]"/>
-					<param name="ondown_action" value="$PARAM[ondown_action]"/>
-				</include>
-				<visible>True</visible>
-				<itemlayout width="340" height="500">
+				<orientation>horizontal</orientation>
+				<scrolltime tween="cubic" easing="out">500</scrolltime>
+				<onleft>9000</onleft>
+				<onright>noop</onright>
+				<itemlayout width="340" height="400">
 					<!-- PROOF OF LIFE: MAGENTA BACKGROUND -->
 					<control type="image">
 						<width>340</width>
-						<height>500</height>
+						<height>400</height>
 						<texture colordiffuse="FFFF00FF">icons/sidemenu/home_white.png</texture>
 					</control>
-					<control type="image">
-						<width>100</width>
-						<height>100</height>
-						<texture colordiffuse="FF00FFFF">icons/sidemenu/home_white.png</texture>
-						<zorder>300</zorder>
+					<control type="label">
+						<width>340</width>
+						<height>400</height>
+						<align>center</align>
+						<label>TEMPLATE ITEM</label>
 					</control>
+				</itemlayout>
+				<focusedlayout width="340" height="400">
+					<control type="image">
+						<width>340</width>
+						<height>400</height>
+						<texture colordiffuse="FF00FF00">icons/sidemenu/home_white.png</texture>
+					</control>
+				</focusedlayout>
 					<control type="label">
 						<width>310</width>
 						<top>-50</top>
