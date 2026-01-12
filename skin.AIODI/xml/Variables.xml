@@ -924,19 +924,19 @@
 </variable>
 	<variable name="CurrentWidgetListID">
 		<!-- Home Page (3 widgets: 0-2) -->
-		<value condition="Skin.IsString(SideMenuFocus,home) + Skin.IsString(Home_WidgetIndex,0)">10100</value>
-		<value condition="Skin.IsString(SideMenuFocus,home) + Skin.IsString(Home_WidgetIndex,1)">10200</value>
-		<value condition="Skin.IsString(SideMenuFocus,home) + Skin.IsString(Home_WidgetIndex,2)">10300</value>
+		<value condition="String.IsEqual(Skin.String(SideMenuFocus),home) + String.IsEqual(Skin.String(Home_WidgetIndex),0)">10100</value>
+		<value condition="String.IsEqual(Skin.String(SideMenuFocus),home) + String.IsEqual(Skin.String(Home_WidgetIndex),1)">10200</value>
+		<value condition="String.IsEqual(Skin.String(SideMenuFocus),home) + String.IsEqual(Skin.String(Home_WidgetIndex),2)">10300</value>
 		<!-- Movies Page (4 widgets: 0-3) -->
-		<value condition="Skin.IsString(SideMenuFocus,movies) + Skin.IsString(Movies_WidgetIndex,0)">5100</value>
-		<value condition="Skin.IsString(SideMenuFocus,movies) + Skin.IsString(Movies_WidgetIndex,1)">5200</value>
-		<value condition="Skin.IsString(SideMenuFocus,movies) + Skin.IsString(Movies_WidgetIndex,2)">5300</value>
-		<value condition="Skin.IsString(SideMenuFocus,movies) + Skin.IsString(Movies_WidgetIndex,3)">5400</value>
+		<value condition="String.IsEqual(Skin.String(SideMenuFocus),movies) + String.IsEqual(Skin.String(Movies_WidgetIndex),0)">5100</value>
+		<value condition="String.IsEqual(Skin.String(SideMenuFocus),movies) + String.IsEqual(Skin.String(Movies_WidgetIndex),1)">5200</value>
+		<value condition="String.IsEqual(Skin.String(SideMenuFocus),movies) + String.IsEqual(Skin.String(Movies_WidgetIndex),2)">5300</value>
+		<value condition="String.IsEqual(Skin.String(SideMenuFocus),movies) + String.IsEqual(Skin.String(Movies_WidgetIndex),3)">5400</value>
 		<!-- TV Shows Page (4 widgets: 0-3) -->
-		<value condition="Skin.IsString(SideMenuFocus,tvshows) + Skin.IsString(TV_WidgetIndex,0)">6100</value>
-		<value condition="Skin.IsString(SideMenuFocus,tvshows) + Skin.IsString(TV_WidgetIndex,1)">6200</value>
-		<value condition="Skin.IsString(SideMenuFocus,tvshows) + Skin.IsString(TV_WidgetIndex,2)">6300</value>
-		<value condition="Skin.IsString(SideMenuFocus,tvshows) + Skin.IsString(TV_WidgetIndex,3)">6400</value>
+		<value condition="String.IsEqual(Skin.String(SideMenuFocus),tvshows) + String.IsEqual(Skin.String(TV_WidgetIndex),0)">6100</value>
+		<value condition="String.IsEqual(Skin.String(SideMenuFocus),tvshows) + String.IsEqual(Skin.String(TV_WidgetIndex),1)">6200</value>
+		<value condition="String.IsEqual(Skin.String(SideMenuFocus),tvshows) + String.IsEqual(Skin.String(TV_WidgetIndex),2)">6300</value>
+		<value condition="String.IsEqual(Skin.String(SideMenuFocus),tvshows) + String.IsEqual(Skin.String(TV_WidgetIndex),3)">6400</value>
 		<value>10100</value>
 	</variable>
 

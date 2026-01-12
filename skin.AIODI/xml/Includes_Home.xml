@@ -197,6 +197,11 @@
 				<visible>$PARAM[visible]</visible>
 				<visible>True</visible>
 				<itemlayout width="310" height="500">
+					<control type="image">
+						<width>310</width>
+						<height>500</height>
+						<texture colordiffuse="88FFFF00">colors/white.png</texture>
+					</control>
 					<control type="group">
 						<left>70</left>
 						<top>5</top>
@@ -209,6 +214,11 @@
 					</control>
 				</itemlayout>
 				<focusedlayout width="310" height="500">
+					<control type="image">
+						<width>310</width>
+						<height>500</height>
+						<texture colordiffuse="FFFFFF00">colors/white.png</texture>
+					</control>
 					<control type="group">
 						<depth>DepthContentPopout</depth>
 						<left>70</left>
