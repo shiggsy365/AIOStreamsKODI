@@ -29,7 +29,7 @@
 				<height>50</height>
 				<font>font20_title</font>
 				<textcolor>FFFFFFFF</textcolor>
-				<label>STATIC INCLUDE TEST: SUCCESS (v6.0.141)</label>
+				<label>STATIC INCLUDE TEST: SUCCESS (v6.0.142)</label>
 			</control>
 		</control>
 	</include>
@@ -55,7 +55,7 @@
 					<height>50</height>
 					<font>font20_title</font>
 					<textcolor>FFFFFFFF</textcolor>
-					<label>DEFINITION TEST: $PARAM[test_label] (v6.0.141)</label>
+					<label>DEFINITION TEST: $PARAM[test_label] (v6.0.142)</label>
 				</control>
 			</control>
 		</definition>
@@ -72,19 +72,20 @@
 		<param name="browse_mode">auto</param>
 		<definition>
 			<control type="group">
-				<left>0</left>
-				<top>0</top>
+				<left>300</left>
+				<top>100</top>
 				<width>1600</width>
-				<height>600</height>
+				<height>1200</height>
+				<zorder>30000</zorder>
 				<!-- HEADER -->
 				<control type="label">
 					<left>0</left>
 					<top>0</top>
 					<width>1000</width>
 					<height>50</height>
-					<font>font20_title</font>
+					<font>font12</font>
 					<textcolor>FFFFFFFF</textcolor>
-					<label>$PARAM[widget_header] (STABLE v6.0.141)</label>
+					<label>$PARAM[widget_header] (STABLE v6.0.142)</label>
 				</control>
 				<!-- BACKDROP -->
 				<control type="image">
@@ -92,8 +93,8 @@
 					<top>115</top>
 					<width>1600</width>
 					<height>550</height>
-					<texture colordiffuse="FF00FFFF">icons/sidemenu/home_white.png</texture> <!-- SOLID CYAN BACKDROP -->
-					<zorder>1000</zorder>
+					<texture colordiffuse="FF0000FF">icons/sidemenu/home_white.png</texture> <!-- SOLID BLUE BACKDROP -->
+					<zorder>31000</zorder>
 				</control>
 				<!-- CONTENT PANEL -->
 				<control type="panel" id="$PARAM[list_id]">
@@ -101,7 +102,7 @@
 					<top>115</top>
 					<width>1600</width>
 					<height>500</height>
-					<zorder>5000</zorder>
+					<zorder>35000</zorder>
 					<orientation>horizontal</orientation>
 					<onleft>9000</onleft>
 					<onright>noop</onright>
@@ -111,12 +112,13 @@
 						<control type="image">
 							<width>340</width>
 							<height>450</height>
-							<texture colordiffuse="FFFF00FF">icons/sidemenu/home_white.png</texture> <!-- MAGENTA -->
+							<texture colordiffuse="FFFFFF00">icons/sidemenu/home_white.png</texture> <!-- YELLOW ITEMS -->
 						</control>
 						<control type="label">
 							<width>340</width>
 							<height>100</height>
 							<align>center</align>
+							<font>font12</font>
 							<label>STABLE ITEM</label>
 						</control>
 					</itemlayout>
@@ -130,6 +132,7 @@
 							<width>340</width>
 							<height>100</height>
 							<align>center</align>
+							<font>font12</font>
 							<label>FOCUSED</label>
 						</control>
 					</focusedlayout>
