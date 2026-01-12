@@ -405,7 +405,7 @@
 	<left>0</left>
 	<right>0</right>
 	<height>550</height>
-	<visible>True</visible>
+	<visible>Skin.IsString(SideMenuFocus,home)</visible>
 	<control type="image">
 		<width>300</width>
 		<height>100</height>
@@ -460,7 +460,7 @@
 	<left>0</left>
 	<right>0</right>
 	<height>550</height>
-	<visible>True</visible>
+	<visible>Skin.IsString(SideMenuFocus,movies)</visible>
 	<control type="image">
 		<width>300</width>
 		<height>100</height>
@@ -522,7 +522,7 @@
 	<left>0</left>
 	<right>0</right>
 	<height>550</height>
-	<visible>String.IsEqual(HomeCategory,tvshows)</visible>
+	<visible>Skin.IsString(SideMenuFocus,tvshows)</visible>
 
 	<control type="group">
 		<visible>Skin.IsString(TV_WidgetIndex,0)</visible>
@@ -667,7 +667,7 @@
 			<height>30</height>
 			<font>font12</font>
 			<textcolor>FFFF0000</textcolor> <!-- Hex Red -->
-			<label>TV_6100: $INFO[Container(6100).NumItems] | FOCUS: ($INFO[System.FocusedControl.ID]) $INFO[System.FocusedControl.Label] (v6.0.84)</label>
+			<label>TV_6100: $INFO[Container(6100).NumItems] | FOCUS: ($INFO[System.FocusedControl.ID]) $INFO[System.FocusedControl.Label] (v6.0.86)</label>
 		</control>
 
 		<control type="label">
@@ -679,7 +679,7 @@
 			<textcolor>FF00FF00</textcolor> <!-- Hex Green -->
 			<label>TV_INDEX: $INFO[Skin.String(TV_WidgetIndex)] | ROW1_VAR: $VAR[SeriesRow1IndexVar]</label>
 		</control>
-		</control>
+
 
 		<control type="label">
 			<left>150</left>
