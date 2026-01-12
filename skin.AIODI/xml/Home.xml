@@ -517,65 +517,6 @@
 </control>
 
 
-<!-- TV Show Widgets -->
-<control type="group" id="6000">
-	<bottom>100</bottom>
-	<left>0</left>
-	<right>0</right>
-	<height>550</height>
-	<visible>True</visible>
-	<control type="image">
-		<width>300</width>
-		<height>100</height>
-		<texture colordiffuse="FFFFFF00">icons/sidemenu/home_white.png</texture>
-		<zorder>1000</zorder>
-	</control>
-
-	<!-- <include content="Visible_Right_Delayed"><param name="id" value="tvshows"/></include> -->
-
-	<control type="group">
-		<visible>Skin.IsString(TV_WidgetIndex,0)</visible>
-		<include content="WidgetListPoster">
-			<param name="content_path" value="plugin://plugin.video.aiostreams/?action=smart_widget&amp;index=$VAR[SeriesRow1IndexVar]&amp;content_type=series"/>
-			<param name="widget_header" value="$INFO[Window(Home).Property(series_catalog_0_name)]"/>
-			<param name="widget_target" value="videos"/>
-			<param name="list_id" value="6100"/>
-			<param name="onup_action" value="Skin.SetString(TV_WidgetIndex,$VAR[TV_Prev_Index])"/>
-			<param name="ondown_action" value="Skin.SetString(TV_WidgetIndex,$VAR[TV_Next_Index])"/>
-		</include>
-	</control>
-	<control type="group">
-		<visible>Skin.IsString(TV_WidgetIndex,1)</visible>
-		<include content="WidgetListPoster">
-			<param name="content_path" value="plugin://plugin.video.aiostreams/?action=smart_widget&amp;index=$VAR[SeriesRow2IndexVar]&amp;content_type=series"/>
-			<param name="widget_header" value="$INFO[Window(Home).Property(series_catalog_1_name)]"/>
-			<param name="widget_target" value="videos"/>
-			<param name="list_id" value="6200"/>
-			<param name="onup_action" value="Skin.SetString(TV_WidgetIndex,$VAR[TV_Prev_Index])"/>
-			<param name="ondown_action" value="Skin.SetString(TV_WidgetIndex,$VAR[TV_Next_Index])"/>
-		</include>
-	</control>
-	<control type="group">
-		<visible>Skin.IsString(TV_WidgetIndex,2)</visible>
-		<include content="WidgetListPoster">
-			<param name="content_path" value="plugin://plugin.video.aiostreams/?action=smart_widget&amp;index=$VAR[SeriesRow3IndexVar]&amp;content_type=series"/>
-			<param name="widget_header" value="$INFO[Window(Home).Property(series_catalog_2_name)]"/>
-			<param name="widget_target" value="videos"/>
-			<param name="list_id" value="6300"/>
-			<param name="onup_action" value="Skin.SetString(TV_WidgetIndex,$VAR[TV_Prev_Index])"/>
-			<param name="ondown_action" value="Skin.SetString(TV_WidgetIndex,$VAR[TV_Next_Index])"/>
-		</include>
-	</control>
-	<control type="group">
-		<visible>Skin.IsString(TV_WidgetIndex,3)</visible>
-		<include content="WidgetListPoster">
-			<param name="content_path" value="plugin://plugin.video.aiostreams/?action=smart_widget&amp;index=$VAR[SeriesRow4IndexVar]&amp;content_type=series"/>
-			<param name="widget_header" value="$INFO[Window(Home).Property(series_catalog_3_name)]"/>
-			<param name="widget_target" value="videos"/>
-			<param name="list_id" value="6400"/>
-			<param name="onup_action" value="Skin.SetString(TV_WidgetIndex,$VAR[TV_Prev_Index])"/>
-			<param name="ondown_action" value="Skin.SetString(TV_WidgetIndex,$VAR[TV_Next_Index])"/>
-		</include>
 	</control>
 </control>
 
@@ -598,6 +539,30 @@
 </control>
 
 <!-- Settings Submenu -->
+<!-- TV Show Widgets (BROKEN OUT TO ROOT) -->
+<control type="group" id="6000">
+	<left>0</left>
+	<top>100</top>
+	<width>1700</width>
+	<height>600</height>
+	<visible>String.IsEqual(HomeCategory,tvshows)</visible>
+	<control type="image">
+		<width>300</width>
+		<height>100</height>
+		<texture colordiffuse="FFFFFF00">icons/sidemenu/home_white.png</texture>
+		<zorder>1000</zorder>
+	</control>
+
+	<control type="group">
+		<visible>Skin.IsString(TV_WidgetIndex,0)</visible>
+		<include content="WidgetListPoster">
+			<param name="content_path" value="plugin://plugin.video.aiostreams/?action=smart_widget&amp;index=$VAR[SeriesRow1IndexVar]&amp;content_type=series"/>
+			<param name="widget_header" value="TV ROW 1"/>
+			<param name="widget_target" value="videos"/>
+			<param name="list_id" value="6100"/>
+		</include>
+	</control>
+</control>
 <control type="group">
 	<left>130</left>
 	<bottom>100</bottom>
@@ -722,7 +687,7 @@
 			<height>30</height>
 			<font>font12</font>
 			<textcolor>FFFF0000</textcolor> <!-- Hex Red -->
-			<label>TV_6100: $INFO[Container(6100).NumItems] | ROOT_3000: $INFO[Container(3000).NumItems] | FOCUS: ($INFO[System.FocusedControl.ID]) $INFO[System.FocusedControl.Label] (v6.0.66)</label>
+			<label>TV_6100: $INFO[Container(6100).NumItems] | ROOT_3000: $INFO[Container(3000).NumItems] | FOCUS: ($INFO[System.FocusedControl.ID]) $INFO[System.FocusedControl.Label] (v6.0.68)</label>
 		</control>
 
 		<control type="label">

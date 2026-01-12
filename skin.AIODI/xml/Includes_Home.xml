@@ -47,36 +47,32 @@
 			</control>
 			<control type="panel" id="$PARAM[list_id]">
 				<left>0</left>
-				<top>115</top>
-				<width>1700</width>
-				<height>518</height>
-				<zorder>200</zorder>
+				<top>120</top>
+				<width>1600</width>
+				<height>450</height>
+				<zorder>500</zorder>
 				<visible>True</visible>
-				<onclick condition="$PARAM[onclick_condition]">$PARAM[onclick_action]</onclick>
+				<orientation>horizontal</orientation>
+				<scrolltime tween="cubic" easing="out">500</scrolltime>
+				<onleft>9000</onleft>
+				<onright>noop</onright>
 				<include content="WidgetListCommon">
 					<param name="list_id" value="$PARAM[list_id]"/>
 					<param name="onup_action" value="$PARAM[onup_action]"/>
 					<param name="ondown_action" value="$PARAM[ondown_action]"/>
 				</include>
-				<itemlayout width="340" height="500">
+				<itemlayout width="340" height="450">
 					<!-- PROOF OF LIFE: MAGENTA BACKGROUND -->
 					<control type="image">
 						<width>340</width>
-						<height>500</height>
+						<height>450</height>
 						<texture colordiffuse="FFFF00FF">icons/sidemenu/home_white.png</texture>
 					</control>
-					<control type="image">
-						<width>100</width>
-						<height>100</height>
-						<texture colordiffuse="FF00FFFF">icons/sidemenu/home_white.png</texture>
-						<zorder>300</zorder>
-					</control>
 					<control type="label">
-						<width>310</width>
-						<top>-50</top>
-						<label>RENDER TEST (P)</label>
-						<textcolor>FFFF0000</textcolor>
-						<font>font15</font>
+						<width>340</width>
+						<height>450</height>
+						<align>center</align>
+						<label>POSTER ITEM</label>
 					</control>
 					<control type="group">
 						<left>68</left>
@@ -87,11 +83,11 @@
 						</include>
 					</control>
 				</itemlayout>
-				<focusedlayout width="310" height="486">
+				<focusedlayout width="340" height="450">
 					<control type="image">
-						<width>310</width>
-						<height>486</height>
-						<texture colordiffuse="FFFFFF00">icons/sidemenu/home_white.png</texture>
+						<width>340</width>
+						<height>450</height>
+						<texture colordiffuse="FF00FF00">icons/sidemenu/home_white.png</texture>
 					</control>
 					<control type="label">
 						<width>310</width>
@@ -249,14 +245,6 @@
 						<align>center</align>
 						<label>TEMPLATE ITEM</label>
 					</control>
-				</itemlayout>
-				<focusedlayout width="340" height="400">
-					<control type="image">
-						<width>340</width>
-						<height>400</height>
-						<texture colordiffuse="FF00FF00">icons/sidemenu/home_white.png</texture>
-					</control>
-				</focusedlayout>
 					<control type="label">
 						<width>310</width>
 						<top>-50</top>
