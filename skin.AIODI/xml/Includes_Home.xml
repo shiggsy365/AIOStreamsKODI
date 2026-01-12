@@ -104,16 +104,6 @@
 							<aspectratio align="center" aligny="center">scale</aspectratio>
 							<texture background="true">$INFO[ListItem.Icon]</texture>
 						</control>
-						<control type="label">
-							<top>310</top>
-							<width>230</width>
-							<height>40</height>
-							<align>center</align>
-							<font>font12</font>
-							<textcolor>white</textcolor>
-							<shadowcolor>black</shadowcolor>
-							<label>$INFO[ListItem.Label]</label>
-						</control>
 					</itemlayout>
 					<focusedlayout width="240" height="360">
 						<control type="group">
@@ -125,16 +115,6 @@
 								<texture background="true">$INFO[ListItem.Icon]</texture>
 								<bordertexture border="8">thumbs/border/border_focus.png</bordertexture>
 								<bordersize>8</bordersize>
-							</control>
-							<control type="label">
-								<top>310</top>
-								<width>230</width>
-								<height>40</height>
-								<align>center</align>
-								<font>font12</font>
-								<textcolor>FFFFFFFF</textcolor>
-								<shadowcolor>black</shadowcolor>
-								<label>$INFO[ListItem.Label]</label>
 							</control>
 						</control>
 					</focusedlayout>
