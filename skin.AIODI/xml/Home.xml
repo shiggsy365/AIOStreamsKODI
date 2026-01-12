@@ -597,7 +597,7 @@
 			<height>50</height>
 			<font>font30_title</font>
 			<textcolor>FFFF00FF</textcolor>
-			<label>IF YOU CAN SEE THIS, GROUP 6000 IS ALIVE (v6.0.122)</label>
+			<label>IF YOU CAN SEE THIS, GROUP 6000 IS ALIVE (v6.0.123)</label>
 		</control>
 		<control type="label">
 			<left>0</left>
@@ -608,11 +608,32 @@
 			<textcolor>FF00FFFF</textcolor> <!-- Cyan -->
 			<label>WIDGET AREA START</label>
 		</control>
+
+		<!-- DIRECT TEST: Bypass Include System (v6.0.123) -->
+		<control type="image">
+			<left>0</left>
+			<top>200</top>
+			<width>800</width>
+			<height>400</height>
+			<texture colordiffuse="FF00FFFF">icons/sidemenu/home_white.png</texture>
+			<zorder>9000</zorder>
+		</control>
+		<control type="label">
+			<left>0</left>
+			<top>250</top>
+			<width>800</width>
+			<height>100</height>
+			<font>font30_title</font>
+			<textcolor>FFFFFFFF</textcolor>
+			<label>DIRECT TEST: NO INCLUDE (v6.0.123)</label>
+			<zorder>9500</zorder>
+		</control>
+
 	<control type="group">
 		<visible>Skin.IsString(TV_WidgetIndex,0)</visible>
 		<include content="WidgetListPoster">
 			<param name="content_path">plugin://plugin.video.aiostreams/?action=smart_widget&amp;index=$VAR[SeriesRow1IndexVar]&amp;content_type=series</param>
-			<param name="widget_header">SERIES TRACKING (6100) (v6.0.122)</param>
+			<param name="widget_header">SERIES TRACKING (6100) (v6.0.123)</param>
 			<param name="widget_target">videos</param>
 			<param name="list_id">6100</param>
 			<param name="onup_action">Skin.SetString(TV_WidgetIndex,$VAR[TV_Prev_Index])</param>
@@ -643,7 +664,7 @@
 			<height>30</height>
 			<font>font12</font>
 			<textcolor>FFFFFF00</textcolor> <!-- Hex Yellow -->
-			<label>v6.0.122 | F: $INFO[Skin.String(SideMenuFocus)] | T:$INFO[Skin.String(TV_WidgetIndex)] | C: $INFO[Container(6100).NumItems]</label>
+			<label>v6.0.123 | F: $INFO[Skin.String(SideMenuFocus)] | T:$INFO[Skin.String(TV_WidgetIndex)] | C: $INFO[Container(6100).NumItems]</label>
 		</control>
 		<control type="label">
 			<left>150</left>
@@ -652,7 +673,7 @@
 			<height>30</height>
 			<font>font12</font>
 			<textcolor>FFFF0000</textcolor> <!-- Hex Red -->
-			<label>STATUS: $VAR[SeriesRow1IndexVar] | FOCUS: ($INFO[System.FocusedControl.ID]) $INFO[System.FocusedControl.Label] (v6.0.122)</label>
+			<label>STATUS: $VAR[SeriesRow1IndexVar] | FOCUS: ($INFO[System.FocusedControl.ID]) $INFO[System.FocusedControl.Label] (v6.0.123)</label>
 		</control>
 
 		<control type="label">
