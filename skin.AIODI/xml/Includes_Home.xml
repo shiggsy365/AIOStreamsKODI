@@ -32,11 +32,11 @@
 		<param name="browse_mode">auto</param>
 		<definition>
 			<control type="group">
-				<include name="CategoryLabel">
+				<include content="CategoryLabel">
 					<param name="label">$PARAM[widget_header]</param>
 					<param name="list_id" value="$PARAM[list_id]"/>
 				</include>
-				<include name="BusyListSpinner">
+				<include content="BusyListSpinner">
 					<param name="list_id" value="$PARAM[list_id]"/>
 					<param name="posy" value="250"/>
 				</include>
