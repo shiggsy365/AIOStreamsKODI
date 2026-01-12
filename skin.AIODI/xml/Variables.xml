@@ -896,16 +896,48 @@
 		<value condition="String.IsEqual(Skin.String(SideMenuFocus),home) + String.IsEqual(Skin.String(Home_WidgetIndex),0)">10100</value>
 		<value condition="String.IsEqual(Skin.String(SideMenuFocus),home) + String.IsEqual(Skin.String(Home_WidgetIndex),1)">10200</value>
 		<value condition="String.IsEqual(Skin.String(SideMenuFocus),home) + String.IsEqual(Skin.String(Home_WidgetIndex),2)">10300</value>
-		<!-- Movies Page (4 widgets: 0-3) -->
+		<!-- Movies Page (20 widgets: 0-19) -->
 		<value condition="String.IsEqual(Skin.String(SideMenuFocus),movies) + String.IsEqual(Skin.String(Movies_WidgetIndex),0)">5100</value>
-		<value condition="String.IsEqual(Skin.String(SideMenuFocus),movies) + String.IsEqual(Skin.String(Movies_WidgetIndex),1)">5200</value>
-		<value condition="String.IsEqual(Skin.String(SideMenuFocus),movies) + String.IsEqual(Skin.String(Movies_WidgetIndex),2)">5300</value>
-		<value condition="String.IsEqual(Skin.String(SideMenuFocus),movies) + String.IsEqual(Skin.String(Movies_WidgetIndex),3)">5400</value>
-		<!-- TV Shows Page (4 widgets: 0-3) -->
+		<value condition="String.IsEqual(Skin.String(SideMenuFocus),movies) + String.IsEqual(Skin.String(Movies_WidgetIndex),1)">5110</value>
+		<value condition="String.IsEqual(Skin.String(SideMenuFocus),movies) + String.IsEqual(Skin.String(Movies_WidgetIndex),2)">5120</value>
+		<value condition="String.IsEqual(Skin.String(SideMenuFocus),movies) + String.IsEqual(Skin.String(Movies_WidgetIndex),3)">5130</value>
+		<value condition="String.IsEqual(Skin.String(SideMenuFocus),movies) + String.IsEqual(Skin.String(Movies_WidgetIndex),4)">5140</value>
+		<value condition="String.IsEqual(Skin.String(SideMenuFocus),movies) + String.IsEqual(Skin.String(Movies_WidgetIndex),5)">5150</value>
+		<value condition="String.IsEqual(Skin.String(SideMenuFocus),movies) + String.IsEqual(Skin.String(Movies_WidgetIndex),6)">5160</value>
+		<value condition="String.IsEqual(Skin.String(SideMenuFocus),movies) + String.IsEqual(Skin.String(Movies_WidgetIndex),7)">5170</value>
+		<value condition="String.IsEqual(Skin.String(SideMenuFocus),movies) + String.IsEqual(Skin.String(Movies_WidgetIndex),8)">5180</value>
+		<value condition="String.IsEqual(Skin.String(SideMenuFocus),movies) + String.IsEqual(Skin.String(Movies_WidgetIndex),9)">5190</value>
+		<value condition="String.IsEqual(Skin.String(SideMenuFocus),movies) + String.IsEqual(Skin.String(Movies_WidgetIndex),10)">5200</value>
+		<value condition="String.IsEqual(Skin.String(SideMenuFocus),movies) + String.IsEqual(Skin.String(Movies_WidgetIndex),11)">5210</value>
+		<value condition="String.IsEqual(Skin.String(SideMenuFocus),movies) + String.IsEqual(Skin.String(Movies_WidgetIndex),12)">5220</value>
+		<value condition="String.IsEqual(Skin.String(SideMenuFocus),movies) + String.IsEqual(Skin.String(Movies_WidgetIndex),13)">5230</value>
+		<value condition="String.IsEqual(Skin.String(SideMenuFocus),movies) + String.IsEqual(Skin.String(Movies_WidgetIndex),14)">5240</value>
+		<value condition="String.IsEqual(Skin.String(SideMenuFocus),movies) + String.IsEqual(Skin.String(Movies_WidgetIndex),15)">5250</value>
+		<value condition="String.IsEqual(Skin.String(SideMenuFocus),movies) + String.IsEqual(Skin.String(Movies_WidgetIndex),16)">5260</value>
+		<value condition="String.IsEqual(Skin.String(SideMenuFocus),movies) + String.IsEqual(Skin.String(Movies_WidgetIndex),17)">5270</value>
+		<value condition="String.IsEqual(Skin.String(SideMenuFocus),movies) + String.IsEqual(Skin.String(Movies_WidgetIndex),18)">5280</value>
+		<value condition="String.IsEqual(Skin.String(SideMenuFocus),movies) + String.IsEqual(Skin.String(Movies_WidgetIndex),19)">5290</value>
+		<!-- TV Shows Page (20 widgets: 0-19) -->
 		<value condition="String.IsEqual(Skin.String(SideMenuFocus),tvshows) + String.IsEqual(Skin.String(TV_WidgetIndex),0)">6100</value>
-		<value condition="String.IsEqual(Skin.String(SideMenuFocus),tvshows) + String.IsEqual(Skin.String(TV_WidgetIndex),1)">6200</value>
-		<value condition="String.IsEqual(Skin.String(SideMenuFocus),tvshows) + String.IsEqual(Skin.String(TV_WidgetIndex),2)">6300</value>
-		<value condition="String.IsEqual(Skin.String(SideMenuFocus),tvshows) + String.IsEqual(Skin.String(TV_WidgetIndex),3)">6400</value>
+		<value condition="String.IsEqual(Skin.String(SideMenuFocus),tvshows) + String.IsEqual(Skin.String(TV_WidgetIndex),1)">6110</value>
+		<value condition="String.IsEqual(Skin.String(SideMenuFocus),tvshows) + String.IsEqual(Skin.String(TV_WidgetIndex),2)">6120</value>
+		<value condition="String.IsEqual(Skin.String(SideMenuFocus),tvshows) + String.IsEqual(Skin.String(TV_WidgetIndex),3)">6130</value>
+		<value condition="String.IsEqual(Skin.String(SideMenuFocus),tvshows) + String.IsEqual(Skin.String(TV_WidgetIndex),4)">6140</value>
+		<value condition="String.IsEqual(Skin.String(SideMenuFocus),tvshows) + String.IsEqual(Skin.String(TV_WidgetIndex),5)">6150</value>
+		<value condition="String.IsEqual(Skin.String(SideMenuFocus),tvshows) + String.IsEqual(Skin.String(TV_WidgetIndex),6)">6160</value>
+		<value condition="String.IsEqual(Skin.String(SideMenuFocus),tvshows) + String.IsEqual(Skin.String(TV_WidgetIndex),7)">6170</value>
+		<value condition="String.IsEqual(Skin.String(SideMenuFocus),tvshows) + String.IsEqual(Skin.String(TV_WidgetIndex),8)">6180</value>
+		<value condition="String.IsEqual(Skin.String(SideMenuFocus),tvshows) + String.IsEqual(Skin.String(TV_WidgetIndex),9)">6190</value>
+		<value condition="String.IsEqual(Skin.String(SideMenuFocus),tvshows) + String.IsEqual(Skin.String(TV_WidgetIndex),10)">6200</value>
+		<value condition="String.IsEqual(Skin.String(SideMenuFocus),tvshows) + String.IsEqual(Skin.String(TV_WidgetIndex),11)">6210</value>
+		<value condition="String.IsEqual(Skin.String(SideMenuFocus),tvshows) + String.IsEqual(Skin.String(TV_WidgetIndex),12)">6220</value>
+		<value condition="String.IsEqual(Skin.String(SideMenuFocus),tvshows) + String.IsEqual(Skin.String(TV_WidgetIndex),13)">6230</value>
+		<value condition="String.IsEqual(Skin.String(SideMenuFocus),tvshows) + String.IsEqual(Skin.String(TV_WidgetIndex),14)">6240</value>
+		<value condition="String.IsEqual(Skin.String(SideMenuFocus),tvshows) + String.IsEqual(Skin.String(TV_WidgetIndex),15)">6250</value>
+		<value condition="String.IsEqual(Skin.String(SideMenuFocus),tvshows) + String.IsEqual(Skin.String(TV_WidgetIndex),16)">6260</value>
+		<value condition="String.IsEqual(Skin.String(SideMenuFocus),tvshows) + String.IsEqual(Skin.String(TV_WidgetIndex),17)">6270</value>
+		<value condition="String.IsEqual(Skin.String(SideMenuFocus),tvshows) + String.IsEqual(Skin.String(TV_WidgetIndex),18)">6280</value>
+		<value condition="String.IsEqual(Skin.String(SideMenuFocus),tvshows) + String.IsEqual(Skin.String(TV_WidgetIndex),19)">6290</value>
 		<value>10100</value>
 	</variable>
 
