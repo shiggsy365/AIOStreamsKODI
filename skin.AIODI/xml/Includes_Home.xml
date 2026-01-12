@@ -228,7 +228,7 @@
 				<height>60</height>
 				<font>font30_title</font>
 				<textcolor>FFFFFFFF</textcolor> <!-- White -->
-				<label>$PARAM[label] (HEADER) [ID: $PARAM[list_id]]</label>
+				<label>$PARAM[label]</label>
 				<shadowcolor>text_shadow</shadowcolor>
 				<visible>true</visible>
 			</control>
