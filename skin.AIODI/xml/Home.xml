@@ -34,7 +34,7 @@
 			<align>right</align>
 			<label>Home:$INFO[Skin.String(Home_WidgetIndex)] | Movies:$INFO[Skin.String(Movies_WidgetIndex)] | TV:$INFO[Skin.String(TV_WidgetIndex)]
 Focus:$INFO[System.GetBool(Control.HasFocus(6110))] | 6100vis:$INFO[Control.IsVisible(6100)] | 6110vis:$INFO[Control.IsVisible(6110)]
-SideFocus:$INFO[Skin.String(SideMenuFocus)] | VER: 6.0.203</label>
+SideFocus:$INFO[Skin.String(SideMenuFocus)] | VER: 6.0.205</label>
 			<textcolor>red</textcolor>
 			<font>font13</font>
 			<visible>true</visible>
