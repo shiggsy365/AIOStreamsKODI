@@ -652,7 +652,7 @@
 			<height>30</height>
 			<font>font12</font>
 			<textcolor>FFFF0000</textcolor> <!-- Hex Red -->
-			<label>ACT_ID: $VAR[CurrentWidgetListID] | FOCUS: $INFO[System.ControlID] ($INFO[System.FocusedControl.ID]) (v6.0.48)</label>
+			<label>ACT_ID: $VAR[CurrentWidgetListID] | FOCUS: $INFO[System.FocusedControl.ID] | WIN: $INFO[Window.Property(SideMenuFocus)] (v6.0.50)</label>
 		</control>
 
 		<control type="label">
@@ -680,6 +680,7 @@
 			<texturenofocus colordiffuse="8800FF00">colors/white.png</texturenofocus>
 			<onleft>9000</onleft>
 			<onright>SetFocus($VAR[CurrentWidgetListID])</onright>
+			<onclick>SetFocus($VAR[CurrentWidgetListID])</onclick>
 		</control>
 
 

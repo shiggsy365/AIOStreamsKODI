@@ -40,6 +40,13 @@
 			<control type="panel" id="$PARAM[list_id]">
 				<left>0</left>
 				<top>115</top>
+				<white_debug_box>
+					<control type="image">
+						<width>1900</width>
+						<height>550</height>
+						<texture colordiffuse="88FFFFFF">colors/white.png</texture>
+					</control>
+				</white_debug_box>
 				<visible>True</visible>
 				<right>0</right>
 				<height>518</height>
@@ -204,6 +211,13 @@
 			<control type="panel" id="$PARAM[list_id]">
 				<left>0</left>
 				<top>105</top>
+				<white_debug_box>
+					<control type="image">
+						<width>1900</width>
+						<height>550</height>
+						<texture colordiffuse="88FFFFFF">colors/white.png</texture>
+					</control>
+				</white_debug_box>
 				<right>0</right>
 				<height>410</height>
 				<include content="WidgetListCommon">
@@ -211,7 +225,6 @@
 					<param name="onup_action" value="$PARAM[onup_action]"/>
 					<param name="ondown_action" value="$PARAM[ondown_action]"/>
 				</include>
-				<visible>$PARAM[visible]</visible>
 				<visible>True</visible>
 				<itemlayout width="310" height="500">
 					<control type="image">
