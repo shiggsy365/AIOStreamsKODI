@@ -34,7 +34,7 @@
 			<align>right</align>
 			<label>Home:$INFO[Skin.String(Home_WidgetIndex)] | Movies:$INFO[Skin.String(Movies_WidgetIndex)] | TV:$INFO[Skin.String(TV_WidgetIndex)]
 Focus:$INFO[System.GetBool(Control.HasFocus(6110))] | 6100vis:$INFO[Control.IsVisible(6100)] | 6110vis:$INFO[Control.IsVisible(6110)]
-SideFocus:$INFO[Skin.String(SideMenuFocus)] | VER: 6.0.192</label>
+SideFocus:$INFO[Skin.String(SideMenuFocus)] | VER: 6.0.193</label>
 			<textcolor>red</textcolor>
 			<font>font13</font>
 			<visible>true</visible>
@@ -429,9 +429,9 @@ SideFocus:$INFO[Skin.String(SideMenuFocus)] | VER: 6.0.192</label>
 			<param name="content_path">plugin://plugin.video.aiostreams/?action=trakt_next_up</param>
 			<param name="widget_header">Trakt Next Up</param>
 			<param name="widget_target">videos</param>
-			<param name="list_id">10100</param>
-			<param name="onup_action">noop</param>
-			<param name="ondown_action">Skin.SetString(Home_WidgetIndex,1);SetFocus(10200)</param>
+			<param name="onup_action1">noop</param>
+			<param name="ondown_action1">Skin.SetString(Home_WidgetIndex,1)</param>
+			<param name="ondown_action2">SetFocus(10200)</param>
 		</include>
 	</control>
 
@@ -445,8 +445,10 @@ SideFocus:$INFO[Skin.String(SideMenuFocus)] | VER: 6.0.192</label>
 			<param name="widget_header">Trakt Watchlist Movies</param>
 			<param name="widget_target">videos</param>
 			<param name="list_id">10200</param>
-			<param name="onup_action">Skin.SetString(Home_WidgetIndex,0);SetFocus(10100)</param>
-			<param name="ondown_action">Skin.SetString(Home_WidgetIndex,2);SetFocus(10300)</param>
+			<param name="onup_action1">Skin.SetString(Home_WidgetIndex,0)</param>
+			<param name="onup_action2">SetFocus(10100)</param>
+			<param name="ondown_action1">Skin.SetString(Home_WidgetIndex,2)</param>
+			<param name="ondown_action2">SetFocus(10300)</param>
 		</include>
 	</control>
 
@@ -460,8 +462,9 @@ SideFocus:$INFO[Skin.String(SideMenuFocus)] | VER: 6.0.192</label>
 			<param name="widget_header">Trakt Watchlist Series</param>
 			<param name="widget_target">videos</param>
 			<param name="list_id">10300</param>
-			<param name="onup_action">Skin.SetString(Home_WidgetIndex,1);SetFocus(10200)</param>
-			<param name="ondown_action">noop</param>
+			<param name="onup_action1">Skin.SetString(Home_WidgetIndex,1)</param>
+			<param name="onup_action2">SetFocus(10200)</param>
+			<param name="ondown_action1">noop</param>
 		</include>
 	</control>
 </control>
@@ -485,9 +488,9 @@ SideFocus:$INFO[Skin.String(SideMenuFocus)] | VER: 6.0.192</label>
 			<param name="content_path">plugin://plugin.video.aiostreams/?action=smart_widget&amp;index=0&amp;content_type=movie</param>
 			<param name="widget_header">$INFO[Window(Home).Property(movie_catalog_0_name)]</param>
 			<param name="widget_target">videos</param>
-			<param name="list_id">5100</param>
-			<param name="onup_action">noop</param>
-			<param name="ondown_action">Skin.SetString(Movies_WidgetIndex,1);SetFocus(5200)</param>
+			<param name="onup_action1">noop</param>
+			<param name="ondown_action1">Skin.SetString(Movies_WidgetIndex,1)</param>
+			<param name="ondown_action2">SetFocus(5200)</param>
 		</include>
 	</control>
 
@@ -503,8 +506,10 @@ SideFocus:$INFO[Skin.String(SideMenuFocus)] | VER: 6.0.192</label>
 			<param name="widget_header">$INFO[Window(Home).Property(movie_catalog_1_name)]</param>
 			<param name="widget_target">videos</param>
 			<param name="list_id">5200</param>
-			<param name="onup_action">Skin.SetString(Movies_WidgetIndex,0);SetFocus(5100)</param>
-			<param name="ondown_action">Skin.SetString(Movies_WidgetIndex,2);SetFocus(5300)</param>
+			<param name="onup_action1">Skin.SetString(Movies_WidgetIndex,0)</param>
+			<param name="onup_action2">SetFocus(5100)</param>
+			<param name="ondown_action1">Skin.SetString(Movies_WidgetIndex,2)</param>
+			<param name="ondown_action2">SetFocus(5300)</param>
 		</include>
 	</control>
 
@@ -520,8 +525,10 @@ SideFocus:$INFO[Skin.String(SideMenuFocus)] | VER: 6.0.192</label>
 			<param name="widget_header">$INFO[Window(Home).Property(movie_catalog_2_name)]</param>
 			<param name="widget_target">videos</param>
 			<param name="list_id">5300</param>
-			<param name="onup_action">Skin.SetString(Movies_WidgetIndex,1);SetFocus(5200)</param>
-			<param name="ondown_action">Skin.SetString(Movies_WidgetIndex,3);SetFocus(5400)</param>
+			<param name="onup_action1">Skin.SetString(Movies_WidgetIndex,1)</param>
+			<param name="onup_action2">SetFocus(5200)</param>
+			<param name="ondown_action1">Skin.SetString(Movies_WidgetIndex,3)</param>
+			<param name="ondown_action2">SetFocus(5400)</param>
 		</include>
 	</control>
 
@@ -536,8 +543,9 @@ SideFocus:$INFO[Skin.String(SideMenuFocus)] | VER: 6.0.192</label>
 			<param name="widget_header">$INFO[Window(Home).Property(movie_catalog_3_name)]</param>
 			<param name="widget_target">videos</param>
 			<param name="list_id">5400</param>
-			<param name="onup_action">Skin.SetString(Movies_WidgetIndex,2);SetFocus(5300)</param>
-			<param name="ondown_action">noop</param>
+			<param name="onup_action1">Skin.SetString(Movies_WidgetIndex,2)</param>
+			<param name="onup_action2">SetFocus(5300)</param>
+			<param name="ondown_action1">noop</param>
 		</include>
 	</control>
 </control>
@@ -627,9 +635,9 @@ SideFocus:$INFO[Skin.String(SideMenuFocus)] | VER: 6.0.192</label>
 			<param name="content_path">plugin://plugin.video.aiostreams/?action=smart_widget&amp;index=0&amp;content_type=series</param>
 			<param name="widget_header">$INFO[Window(Home).Property(series_catalog_0_name)]</param>
 			<param name="widget_target">videos</param>
-			<param name="list_id">6100</param>
-			<param name="onup_action">noop</param>
-			<param name="ondown_action">Skin.SetString(TV_WidgetIndex,1);SetFocus(6110)</param>
+			<param name="onup_action1">noop</param>
+			<param name="ondown_action1">Skin.SetString(TV_WidgetIndex,1)</param>
+			<param name="ondown_action2">SetFocus(6110)</param>
 		</include>
 	</control>
 
@@ -645,8 +653,10 @@ SideFocus:$INFO[Skin.String(SideMenuFocus)] | VER: 6.0.192</label>
 			<param name="widget_header">$INFO[Window(Home).Property(series_catalog_1_name)]</param>
 			<param name="widget_target">videos</param>
 			<param name="list_id">6110</param>
-			<param name="onup_action">Skin.SetString(TV_WidgetIndex,0);SetFocus(6100)</param>
-			<param name="ondown_action">Skin.SetString(TV_WidgetIndex,2);SetFocus(6120)</param>
+			<param name="onup_action1">Skin.SetString(TV_WidgetIndex,0)</param>
+			<param name="onup_action2">SetFocus(6100)</param>
+			<param name="ondown_action1">Skin.SetString(TV_WidgetIndex,2)</param>
+			<param name="ondown_action2">SetFocus(6120)</param>
 		</include>
 	</control>
 
@@ -662,8 +672,10 @@ SideFocus:$INFO[Skin.String(SideMenuFocus)] | VER: 6.0.192</label>
 			<param name="widget_header">$INFO[Window(Home).Property(series_catalog_2_name)]</param>
 			<param name="widget_target">videos</param>
 			<param name="list_id">6120</param>
-			<param name="onup_action">Skin.SetString(TV_WidgetIndex,1);SetFocus(6110)</param>
-			<param name="ondown_action">Skin.SetString(TV_WidgetIndex,3);SetFocus(6130)</param>
+			<param name="onup_action1">Skin.SetString(TV_WidgetIndex,1)</param>
+			<param name="onup_action2">SetFocus(6110)</param>
+			<param name="ondown_action1">Skin.SetString(TV_WidgetIndex,3)</param>
+			<param name="ondown_action2">SetFocus(6130)</param>
 		</include>
 	</control>
 
@@ -678,8 +690,9 @@ SideFocus:$INFO[Skin.String(SideMenuFocus)] | VER: 6.0.192</label>
 			<param name="widget_header">$INFO[Window(Home).Property(series_catalog_3_name)]</param>
 			<param name="widget_target">videos</param>
 			<param name="list_id">6130</param>
-			<param name="onup_action">Skin.SetString(TV_WidgetIndex,2);SetFocus(6120)</param>
-			<param name="ondown_action">noop</param>
+			<param name="onup_action1">Skin.SetString(TV_WidgetIndex,2)</param>
+			<param name="onup_action2">SetFocus(6120)</param>
+			<param name="ondown_action1">noop</param>
 		</include>
 	</control>
 </control>

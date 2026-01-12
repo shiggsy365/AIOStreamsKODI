@@ -239,8 +239,10 @@
 		<param name="widget_header"></param>
 		<param name="widget_target">videos</param>
 		<param name="content_path"></param>
-		<param name="onup_action">noop</param>
-		<param name="ondown_action">noop</param>
+		<param name="onup_action1">noop</param>
+		<param name="onup_action2">noop</param>
+		<param name="ondown_action1">noop</param>
+		<param name="ondown_action2">noop</param>
 		<param name="onclick_condition">false</param>
 		<param name="browse_mode">auto</param>
 		<definition>
@@ -263,8 +265,10 @@
 					<orientation>horizontal</orientation>
 					<onleft>9000</onleft>
 					<onright>noop</onright>
-					<onup>$PARAM[onup_action]</onup>
-					<ondown>$PARAM[ondown_action]</ondown>
+					<onup>$PARAM[onup_action1]</onup>
+					<onup>$PARAM[onup_action2]</onup>
+					<ondown>$PARAM[ondown_action1]</ondown>
+					<ondown>$PARAM[ondown_action2]</ondown>
 					<onfocus>Skin.SetString(CurrentWidgetListID,$PARAM[list_id])</onfocus>
 					<onfocus>Control.Move($PARAM[list_id],-1000)</onfocus>
 					<itemlayout width="240" height="360">
@@ -376,8 +380,10 @@
 		<param name="widget_header"></param>
 		<param name="widget_target">videos</param>
 		<param name="content_path"></param>
-		<param name="onup_action">noop</param>
-		<param name="ondown_action">noop</param>
+		<param name="onup_action1">noop</param>
+		<param name="onup_action2">noop</param>
+		<param name="ondown_action1">noop</param>
+		<param name="ondown_action2">noop</param>
 		<param name="onclick_condition">false</param>
 		<param name="browse_mode">auto</param>
 		<definition>
@@ -400,8 +406,10 @@
 					<orientation>horizontal</orientation>
 					<onleft>9000</onleft>
 					<onright>noop</onright>
-					<onup>$PARAM[onup_action]</onup>
-					<ondown>$PARAM[ondown_action]</ondown>
+					<onup>$PARAM[onup_action1]</onup>
+					<onup>$PARAM[onup_action2]</onup>
+					<ondown>$PARAM[ondown_action1]</ondown>
+					<ondown>$PARAM[ondown_action2]</ondown>
 					<onfocus>Skin.SetString(CurrentWidgetListID,$PARAM[list_id])</onfocus>
 					<itemlayout width="410" height="235">
 						<control type="image">
