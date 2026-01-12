@@ -896,6 +896,7 @@
 		<value condition="String.IsEqual(Skin.String(SideMenuFocus),home) + String.IsEqual(Skin.String(Home_WidgetIndex),0)">10100</value>
 		<value condition="String.IsEqual(Skin.String(SideMenuFocus),home) + String.IsEqual(Skin.String(Home_WidgetIndex),1)">10200</value>
 		<value condition="String.IsEqual(Skin.String(SideMenuFocus),home) + String.IsEqual(Skin.String(Home_WidgetIndex),2)">10300</value>
+		<value condition="String.IsEqual(Skin.String(SideMenuFocus),home) + String.IsEmpty(Skin.String(Home_WidgetIndex))">10100</value>
 		<!-- Movies Page (20 widgets: 0-19) -->
 		<value condition="String.IsEqual(Skin.String(SideMenuFocus),movies) + String.IsEqual(Skin.String(Movies_WidgetIndex),0)">5100</value>
 		<value condition="String.IsEqual(Skin.String(SideMenuFocus),movies) + String.IsEqual(Skin.String(Movies_WidgetIndex),1)">5110</value>
@@ -917,6 +918,7 @@
 		<value condition="String.IsEqual(Skin.String(SideMenuFocus),movies) + String.IsEqual(Skin.String(Movies_WidgetIndex),17)">5270</value>
 		<value condition="String.IsEqual(Skin.String(SideMenuFocus),movies) + String.IsEqual(Skin.String(Movies_WidgetIndex),18)">5280</value>
 		<value condition="String.IsEqual(Skin.String(SideMenuFocus),movies) + String.IsEqual(Skin.String(Movies_WidgetIndex),19)">5290</value>
+		<value condition="String.IsEqual(Skin.String(SideMenuFocus),movies) + String.IsEmpty(Skin.String(Movies_WidgetIndex))">5100</value>
 		<!-- TV Shows Page (20 widgets: 0-19) -->
 		<value condition="String.IsEqual(Skin.String(SideMenuFocus),tvshows) + String.IsEqual(Skin.String(TV_WidgetIndex),0)">6100</value>
 		<value condition="String.IsEqual(Skin.String(SideMenuFocus),tvshows) + String.IsEqual(Skin.String(TV_WidgetIndex),1)">6110</value>
@@ -938,6 +940,7 @@
 		<value condition="String.IsEqual(Skin.String(SideMenuFocus),tvshows) + String.IsEqual(Skin.String(TV_WidgetIndex),17)">6270</value>
 		<value condition="String.IsEqual(Skin.String(SideMenuFocus),tvshows) + String.IsEqual(Skin.String(TV_WidgetIndex),18)">6280</value>
 		<value condition="String.IsEqual(Skin.String(SideMenuFocus),tvshows) + String.IsEqual(Skin.String(TV_WidgetIndex),19)">6290</value>
+		<value condition="String.IsEqual(Skin.String(SideMenuFocus),tvshows) + String.IsEmpty(Skin.String(TV_WidgetIndex))">6100</value>
 		<value>10100</value>
 	</variable>
 

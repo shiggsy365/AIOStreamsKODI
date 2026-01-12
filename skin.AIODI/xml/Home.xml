@@ -34,7 +34,7 @@
 			<align>right</align>
 			<label>Home:$INFO[Skin.String(Home_WidgetIndex)] | Movies:$INFO[Skin.String(Movies_WidgetIndex)] | TV:$INFO[Skin.String(TV_WidgetIndex)]
 Focus:$INFO[System.GetBool(Control.HasFocus(6110))] | 6100vis:$INFO[Control.IsVisible(6100)] | 6110vis:$INFO[Control.IsVisible(6110)]
-SideFocus:$INFO[Skin.String(SideMenuFocus)] | VER: 6.0.239</label>
+SideFocus:$INFO[Skin.String(SideMenuFocus)] | VER: 6.0.241</label>
 			<textcolor>red</textcolor>
 			<font>font13</font>
 			<visible>true</visible>
@@ -436,7 +436,7 @@ SideFocus:$INFO[Skin.String(SideMenuFocus)] | VER: 6.0.239</label>
 
 	<!-- Widget 0: Trakt Next Up -->
 	<control type="group">
-		<visible>String.IsEqual(Skin.String(Home_WidgetIndex),0)</visible>
+		<visible>String.IsEqual(Skin.String(Home_WidgetIndex),0) | String.IsEmpty(Skin.String(Home_WidgetIndex))</visible>
 		<include content="WidgetListEpisodes">
 			<param name="content_path">plugin://plugin.video.aiostreams/?action=trakt_next_up</param>
 			<param name="widget_header">Trakt Next Up</param>
@@ -491,7 +491,7 @@ SideFocus:$INFO[Skin.String(SideMenuFocus)] | VER: 6.0.239</label>
 
 	<!-- Widget 0 -->
 	<control type="group">
-		<visible>String.IsEqual(Skin.String(Movies_WidgetIndex),0)</visible>
+		<visible>String.IsEqual(Skin.String(Movies_WidgetIndex),0) | String.IsEmpty(Skin.String(Movies_WidgetIndex))</visible>
 		<include content="WidgetListPoster">
 			<param name="content_path">plugin://plugin.video.aiostreams/?action=smart_widget&amp;index=0&amp;content_type=movie</param>
 			<param name="widget_header">$INFO[Window(Home).Property(movie_catalog_0_name)]</param>
@@ -891,9 +891,7 @@ SideFocus:$INFO[Skin.String(SideMenuFocus)] | VER: 6.0.239</label>
 
 	<!-- Widget 0 -->
 	<control type="group">
-		<visible>String.IsEqual(Skin.String(TV_WidgetIndex),0)</visible>
-		<onfocus>Skin.SetString(TV_WidgetIndex,0)</onfocus>
-		<onfocus>SetFocus(6100)</onfocus>
+		<visible>String.IsEqual(Skin.String(TV_WidgetIndex),0) | String.IsEmpty(Skin.String(TV_WidgetIndex))</visible>
 		<include content="WidgetListPoster">
 			<param name="content_path">plugin://plugin.video.aiostreams/?action=smart_widget&amp;index=0&amp;content_type=series</param>
 			<param name="widget_header">$INFO[Window(Home).Property(series_catalog_0_name)]</param>
