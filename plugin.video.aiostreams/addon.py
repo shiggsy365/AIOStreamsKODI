@@ -1815,75 +1815,6 @@ def list_catalog_genres():
             xbmcplugin.addDirectoryItem(HANDLE, url, list_item, True)
     
     xbmcplugin.endOfDirectory(HANDLE)
-def smart_widget():
-    """Fetch a specific catalog by index for widgets."""
-    try:
-        params = dict(parse_qsl(sys.argv[2][1:]))
-        index = int(params.get('index', 0))
-        content_type = params.get('content_type', 'movie')
-        
-        manifest = get_manifest()
-        if not manifest or 'catalogs' not in manifest:
-            xbmcplugin.endOfDirectory(HANDLE)
-            return
-            
-        # Filter catalogs by type
-        typed_catalogs = [c for c in manifest['catalogs'] 
-                         if c.get('type') == content_type 
-                         and 'search' not in c.get('name', '').lower()
-                         and 'search' not in c.get('id', '').lower()]
-        
-        if index < len(typed_catalogs):
-            catalog = typed_catalogs[index]
-            catalog_id = catalog['id']
-            catalog_name = catalog.get('name', 'Catalog')
-            
-            # Check for genres
-            extras = catalog.get('extra', [])
-            genre_extra = next((e for e in extras if e.get('name') == 'genre'), None)
-            
-            # Default to All if genres exist
-            genre_filter = 'All' if genre_extra and genre_extra.get('options') else None
-            
-            # Fetch the content
-            catalog_data = get_catalog(content_type, catalog_id, genre_filter)
-            
-            if catalog_data and 'metas' in catalog_data:
-                # Apply filters
-                if HAS_MODULES and filters:
-                    catalog_data['metas'] = filters.filter_items(catalog_data['metas'])
-                    
-                xbmcplugin.setPluginCategory(HANDLE, catalog_name)
-                xbmcgui.Window(10000).setProperty(f'{content_type}_catalog_{index}_name', catalog_name)
-                xbmcplugin.setContent(HANDLE, 'movies' if content_type == 'movie' else 'tvshows')
-                
-                for meta in catalog_data['metas']:
-                    item_id = meta.get('id')
-                    item_type = meta.get('type', content_type)
-                    list_item = xbmcgui.ListItem(label=meta.get('name'))
-                    
-                    # Metadata
-                    info_tag = list_item.getVideoInfoTag()
-                    info_tag.setTitle(meta.get('name'))
-                    if meta.get('year'): info_tag.setYear(int(meta.get('year')))
-                    if meta.get('description'): info_tag.setPlot(meta.get('description'))
-                    
-                    # Art
-                    art = {
-                        'poster': meta.get('poster'),
-                        'fanart': meta.get('background'),
-                        'thumb': meta.get('logo') or meta.get('poster'),
-                        'icon': meta.get('poster')
-                    }
-                    list_item.setArt(art)
-                    
-                    url = get_url(action='get_streams', content_type=item_type, media_id=item_id)
-                    xbmcplugin.addDirectoryItem(HANDLE, url, list_item, False)
-        
-        xbmcplugin.endOfDirectory(HANDLE)
-    except Exception as e:
-        xbmc.log(f'[AIOStreams] Error in smart_widget: {str(e)}', xbmc.LOGERROR)
-        xbmcplugin.endOfDirectory(HANDLE)
 
 def browse_catalog():
     """Browse a specific catalog with optional genre filter."""
@@ -3720,6 +3651,102 @@ def configure_aiostreams_action():
     except Exception as e:
         xbmc.log(f'[AIOStreams] Configure action failed: {e}', xbmc.LOGERROR)
         xbmcgui.Dialog().ok('AIOStreams', f'Configuration failed:\n\n{str(e)}')
+
+def smart_widget():
+    """
+    Dynamic widget content generator.
+    
+    URL Parameters:
+        index: Widget index (0, 1, 2, ...)
+        content_type: 'series', 'movie', or 'home'
+    
+    Returns:
+        - For series: Navigatable show list from catalog[index]/All
+        - For movies: Playable movie list from catalog[index]/All
+        - For home: Trakt lists (Next Up, Watchlist)
+    """
+    params = dict(parse_qsl(sys.argv[2][1:]))
+    index = int(params.get('index', 0))
+    content_type = params.get('content_type', 'movie')
+    
+    xbmc.log(f'[AIOStreams] smart_widget: index={index}, content_type={content_type}', xbmc.LOGINFO)
+    
+    # Handle home widgets (Trakt lists)
+    if content_type == 'home':
+        if index == 0:
+            # Next Up - Trakt
+            return trakt_next_up()
+        elif index == 1:
+            # Series Watchlist - Trakt
+            params_watchlist = {'media_type': 'shows'}
+            return trakt_watchlist(params_watchlist)
+        elif index == 2:
+            # Movie Watchlist - Trakt
+            params_watchlist = {'media_type': 'movies'}
+            return trakt_watchlist(params_watchlist)
+        else:
+            xbmcplugin.endOfDirectory(HANDLE)
+            return
+    
+    # Get manifest catalogs
+    manifest = get_manifest()
+    if not manifest or 'catalogs' not in manifest:
+        xbmc.log('[AIOStreams] smart_widget: No manifest/catalogs', xbmc.LOGWARNING)
+        xbmcplugin.endOfDirectory(HANDLE)
+        return
+    
+    # Filter catalogs by content_type
+    catalogs = [c for c in manifest['catalogs'] 
+                if c.get('type') == content_type 
+                and not c.get('id', '').endswith('.search')]
+    
+    # Check if index is valid
+    if index >= len(catalogs):
+        xbmc.log(f'[AIOStreams] smart_widget: Index {index} out of range (max: {len(catalogs)-1})', xbmc.LOGWARNING)
+        xbmcplugin.endOfDirectory(HANDLE)
+        return
+    
+    # Get the catalog at this index
+    catalog = catalogs[index]
+    catalog_id = catalog.get('id')
+    catalog_name = catalog.get('name', 'Unknown')
+    
+    xbmc.log(f'[AIOStreams] smart_widget: Using catalog "{catalog_name}" (id: {catalog_id})', xbmc.LOGINFO)
+    
+    # Fetch catalog content with "All" genre filter (genre=None means "All")
+    catalog_data = get_catalog(content_type, catalog_id, genre=None, skip=0)
+    
+    if not catalog_data or 'metas' not in catalog_data:
+        xbmc.log(f'[AIOStreams] smart_widget: No content in catalog {catalog_id}', xbmc.LOGWARNING)
+        xbmcplugin.endOfDirectory(HANDLE)
+        return
+    
+    # Set plugin metadata
+    xbmcplugin.setPluginCategory(HANDLE, catalog_name)
+    xbmcplugin.setContent(HANDLE, 'tvshows' if content_type == 'series' else 'movies')
+    
+    # Add items
+    for meta in catalog_data['metas']:
+        item_id = meta.get('id')
+        if not item_id:
+            continue
+        
+        # For series: navigate to show (will then go to seasons/episodes)
+        # For movies: direct play
+        if content_type == 'series':
+            url = get_url(action='show_seasons', series_id=item_id)
+            is_folder = True
+        else:
+            url = get_url(action='show_streams', content_type='movie', media_id=item_id,
+                         title=meta.get('name', ''), poster=meta.get('poster', ''),
+                         fanart=meta.get('background', ''), clearlogo=meta.get('logo', ''))
+            is_folder = False
+        
+        list_item = create_listitem_with_context(meta, content_type, url)
+        xbmcplugin.addDirectoryItem(HANDLE, url, list_item, is_folder)
+    
+    xbmcplugin.endOfDirectory(HANDLE)
+
 
 
 # ============================================================================
