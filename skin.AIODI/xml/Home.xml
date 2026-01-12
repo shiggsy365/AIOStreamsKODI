@@ -630,8 +630,16 @@
 			<texture colordiffuse="88000000">colors/white.png</texture>
 		</control>
 
-			<label>v6.0.37 | F: $INFO[Skin.String(SideMenuFocus)] | H:$INFO[Skin.String(Home_WidgetIndex)] M:$INFO[Skin.String(Movies_WidgetIndex)] T:$INFO[Skin.String(TV_WidgetIndex)] | ACT_ID: $VAR[CurrentWidgetListID]</label>
-
+		<!-- Labels -->
+		<control type="label">
+			<left>150</left>
+			<top>10</top>
+			<width>1500</width>
+			<height>30</height>
+			<font>font12</font>
+			<textcolor>FFFFFF00</textcolor> <!-- Hex Yellow -->
+			<label>v6.0.40 | F: $INFO[Skin.String(SideMenuFocus)] | H:$INFO[Skin.String(Home_WidgetIndex)] M:$INFO[Skin.String(Movies_WidgetIndex)] T:$INFO[Skin.String(TV_WidgetIndex)] | ACT_ID: $VAR[CurrentWidgetListID]</label>
+		</control>
 		<control type="label">
 			<left>150</left>
 			<top>40</top>
@@ -639,8 +647,9 @@
 			<height>30</height>
 			<font>font12</font>
 			<textcolor>FFFF0000</textcolor> <!-- Hex Red -->
-			<label>RED LABEL ALWAYS ON (v6.0.35)</label>
+			<label>RED LABEL ALWAYS ON (v6.0.40)</label>
 		</control>
+
 		<control type="label">
 			<left>150</left>
 			<top>70</top>

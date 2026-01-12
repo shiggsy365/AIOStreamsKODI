@@ -50,6 +50,11 @@
 					<param name="ondown_action" value="$PARAM[ondown_action]"/>
 				</include>
 				<itemlayout width="310" height="486">
+					<control type="image">
+						<width>310</width>
+						<height>486</height>
+						<texture colordiffuse="88FFFF00">colors/white.png</texture>
+					</control>
 					<control type="group">
 						<left>68</left>
 						<top>10</top>
@@ -59,6 +64,11 @@
 					</control>
 				</itemlayout>
 				<focusedlayout width="310" height="486">
+					<control type="image">
+						<width>310</width>
+						<height>486</height>
+						<texture colordiffuse="FFFFFF00">colors/white.png</texture>
+					</control>
 					<control type="group">
 						<depth>DepthContentPopout</depth>
 						<left>68</left>
