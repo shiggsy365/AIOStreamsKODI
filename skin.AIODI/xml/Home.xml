@@ -584,7 +584,7 @@
 
 <!-- TV Show Widgets (ROOT BREAKOUT) -->
 <control type="group" id="6000">
-	<visible>Skin.IsString(SideMenuFocus,tvshows)</visible>
+	<visible>true</visible>
 	<left>300</left>
 	<top>100</top>
 	<width>1600</width>
@@ -596,7 +596,7 @@
 		<width>1000</width>
 		<height>50</height>
 		<font>font30_title</font>
-		<textcolor>magenta</textcolor>
+		<textcolor>FFFF00FF</textcolor>
 		<label>IF YOU CAN SEE THIS, GROUP 6000 IS ALIVE</label>
 	</control>
 	<control type="group">
@@ -634,7 +634,7 @@
 			<height>30</height>
 			<font>font12</font>
 			<textcolor>FFFFFF00</textcolor> <!-- Hex Yellow -->
-			<label>v6.0.110 | F: $INFO[Skin.String(SideMenuFocus)] | T:$INFO[Skin.String(TV_WidgetIndex)] | C: $INFO[Container(6100).NumItems]</label>
+			<label>v6.0.111 | F: $INFO[Skin.String(SideMenuFocus)] | T:$INFO[Skin.String(TV_WidgetIndex)] | C: $INFO[Container(6100).NumItems]</label>
 		</control>
 		<control type="label">
 			<left>150</left>
@@ -643,7 +643,7 @@
 			<height>30</height>
 			<font>font12</font>
 			<textcolor>FFFF0000</textcolor> <!-- Hex Red -->
-			<label>STATUS: $VAR[SeriesRow1IndexVar] | FOCUS: ($INFO[System.FocusedControl.ID]) $INFO[System.FocusedControl.Label] (v6.0.110)</label>
+			<label>STATUS: $VAR[SeriesRow1IndexVar] | FOCUS: ($INFO[System.FocusedControl.ID]) $INFO[System.FocusedControl.Label] (v6.0.111)</label>
 		</control>
 
 		<control type="label">
