@@ -391,7 +391,13 @@
 <!-- Content Panels -->
 <control type="group" id="2000">
 <left>120</left>
-<include>OpenClose_Right</include>
+<zorder>100</zorder>
+<control type="image">
+	<width>1800</width>
+	<height>1000</height>
+	<texture colordiffuse="22FFFFFF">icons/sidemenu/home_white.png</texture>
+	<zorder>-1</zorder>
+</control>
 
 <!-- Home Widgets -->
 <control type="group" id="11000">
@@ -400,6 +406,12 @@
 	<right>0</right>
 	<height>550</height>
 	<visible>True</visible>
+	<control type="image">
+		<width>300</width>
+		<height>100</height>
+		<texture colordiffuse="FF0000FF">icons/sidemenu/home_white.png</texture>
+		<zorder>1000</zorder>
+	</control>
 
 
 	<!-- <include content="Visible_Right_Delayed"><param name="id" value="home"/></include> -->
@@ -448,7 +460,13 @@
 	<left>0</left>
 	<right>0</right>
 	<height>550</height>
-	<visible>String.IsEqual(Skin.String(SideMenuFocus),movies)</visible>
+	<visible>True</visible>
+	<control type="image">
+		<width>300</width>
+		<height>100</height>
+		<texture colordiffuse="FF00FF00">icons/sidemenu/home_white.png</texture>
+		<zorder>1000</zorder>
+	</control>
 
 	<!-- <include content="Visible_Right_Delayed"><param name="id" value="movies"/></include> -->
 
@@ -499,13 +517,19 @@
 </control>
 
 
-<!-- TV Series Widgets -->
+<!-- TV Show Widgets -->
 <control type="group" id="6000">
 	<bottom>100</bottom>
 	<left>0</left>
 	<right>0</right>
 	<height>550</height>
-	<visible>String.IsEqual(Skin.String(SideMenuFocus),tvshows)</visible>
+	<visible>True</visible>
+	<control type="image">
+		<width>300</width>
+		<height>100</height>
+		<texture colordiffuse="FFFFFF00">icons/sidemenu/home_white.png</texture>
+		<zorder>1000</zorder>
+	</control>
 
 	<!-- <include content="Visible_Right_Delayed"><param name="id" value="tvshows"/></include> -->
 
@@ -662,7 +686,7 @@
 			<height>30</height>
 			<font>font12</font>
 			<textcolor>FFFF0000</textcolor> <!-- Hex Red -->
-			<label>ACT_ID: $VAR[CurrentWidgetListID] | TV_COUNT: $INFO[Container(6100).NumItems] | FOCUS: ($INFO[System.FocusedControl.ID]) $INFO[System.FocusedControl.Label] (v6.0.54)</label>
+			<label>ACT_ID: $VAR[CurrentWidgetListID] ($INFO[Container($VAR[CurrentWidgetListID]).NumItems] items) | TV_COUNT: $INFO[Container(6100).NumItems] | FOCUS: ($INFO[System.FocusedControl.ID]) $INFO[System.FocusedControl.Label] (v6.0.56)</label>
 		</control>
 
 		<control type="label">
