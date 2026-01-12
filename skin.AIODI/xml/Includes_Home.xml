@@ -116,8 +116,8 @@
 								<height>345</height>
 								<aspectratio align="center" aligny="center">scale</aspectratio>
 								<texture background="true">$INFO[ListItem.Icon]</texture>
-								<bordertexture border="8">thumbs/border/border_focus.png</bordertexture>
-								<bordersize>8</bordersize>
+								<bordertexture border="12" colordiffuse="FFFF0000">colors/white.png</bordertexture>
+								<bordersize>12</bordersize>
 							</control>
 						</control>
 					</focusedlayout>
@@ -193,8 +193,8 @@
 								<height>220</height>
 								<aspectratio align="center" aligny="center">scale</aspectratio>
 								<texture background="true">$INFO[ListItem.Icon]</texture>
-								<bordertexture border="8">thumbs/border/border_focus.png</bordertexture>
-								<bordersize>8</bordersize>
+								<bordertexture border="12" colordiffuse="FFFF0000">colors/white.png</bordertexture>
+								<bordersize>12</bordersize>
 							</control>
 						</control>
 					</focusedlayout>
@@ -288,8 +288,8 @@
 								<height>345</height>
 								<aspectratio align="center" aligny="center">scale</aspectratio>
 								<texture background="true">$INFO[ListItem.Art(poster)]</texture>
-								<bordertexture border="8">thumbs/border/border_focus.png</bordertexture>
-								<bordersize>8</bordersize>
+								<bordertexture border="12" colordiffuse="FFFF0000">colors/white.png</bordertexture>
+								<bordersize>12</bordersize>
 								<fallback>DefaultVideo.png</fallback>
 							</control>
 						</control>
@@ -429,8 +429,8 @@
 								<height>220</height>
 								<aspectratio align="center" aligny="center">scale</aspectratio>
 								<texture background="true">$INFO[ListItem.Art(thumb)]</texture>
-								<bordertexture border="8">thumbs/border/border_focus.png</bordertexture>
-								<bordersize>8</bordersize>
+								<bordertexture border="12" colordiffuse="FFFF0000">colors/white.png</bordertexture>
+								<bordersize>12</bordersize>
 								<fallback>DefaultVideo.png</fallback>
 							</control>
 						</control>

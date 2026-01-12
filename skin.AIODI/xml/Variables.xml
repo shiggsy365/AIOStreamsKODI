@@ -1114,11 +1114,43 @@
 		<value condition="String.IsEqual(Skin.String(CurrentWidgetListID),5110)">$INFO[Container(5110).ListItem.Art(fanart)]</value>
 		<value condition="String.IsEqual(Skin.String(CurrentWidgetListID),5120)">$INFO[Container(5120).ListItem.Art(fanart)]</value>
 		<value condition="String.IsEqual(Skin.String(CurrentWidgetListID),5130)">$INFO[Container(5130).ListItem.Art(fanart)]</value>
+		<value condition="String.IsEqual(Skin.String(CurrentWidgetListID),5140)">$INFO[Container(5140).ListItem.Art(fanart)]</value>
+		<value condition="String.IsEqual(Skin.String(CurrentWidgetListID),5150)">$INFO[Container(5150).ListItem.Art(fanart)]</value>
+		<value condition="String.IsEqual(Skin.String(CurrentWidgetListID),5160)">$INFO[Container(5160).ListItem.Art(fanart)]</value>
+		<value condition="String.IsEqual(Skin.String(CurrentWidgetListID),5170)">$INFO[Container(5170).ListItem.Art(fanart)]</value>
+		<value condition="String.IsEqual(Skin.String(CurrentWidgetListID),5180)">$INFO[Container(5180).ListItem.Art(fanart)]</value>
+		<value condition="String.IsEqual(Skin.String(CurrentWidgetListID),5190)">$INFO[Container(5190).ListItem.Art(fanart)]</value>
+		<value condition="String.IsEqual(Skin.String(CurrentWidgetListID),5200)">$INFO[Container(5200).ListItem.Art(fanart)]</value>
+		<value condition="String.IsEqual(Skin.String(CurrentWidgetListID),5210)">$INFO[Container(5210).ListItem.Art(fanart)]</value>
+		<value condition="String.IsEqual(Skin.String(CurrentWidgetListID),5220)">$INFO[Container(5220).ListItem.Art(fanart)]</value>
+		<value condition="String.IsEqual(Skin.String(CurrentWidgetListID),5230)">$INFO[Container(5230).ListItem.Art(fanart)]</value>
+		<value condition="String.IsEqual(Skin.String(CurrentWidgetListID),5240)">$INFO[Container(5240).ListItem.Art(fanart)]</value>
+		<value condition="String.IsEqual(Skin.String(CurrentWidgetListID),5250)">$INFO[Container(5250).ListItem.Art(fanart)]</value>
+		<value condition="String.IsEqual(Skin.String(CurrentWidgetListID),5260)">$INFO[Container(5260).ListItem.Art(fanart)]</value>
+		<value condition="String.IsEqual(Skin.String(CurrentWidgetListID),5270)">$INFO[Container(5270).ListItem.Art(fanart)]</value>
+		<value condition="String.IsEqual(Skin.String(CurrentWidgetListID),5280)">$INFO[Container(5280).ListItem.Art(fanart)]</value>
+		<value condition="String.IsEqual(Skin.String(CurrentWidgetListID),5290)">$INFO[Container(5290).ListItem.Art(fanart)]</value>
 		<!-- TV Widgets -->
 		<value condition="String.IsEqual(Skin.String(CurrentWidgetListID),6100)">$INFO[Container(6100).ListItem.Art(fanart)]</value>
 		<value condition="String.IsEqual(Skin.String(CurrentWidgetListID),6110)">$INFO[Container(6110).ListItem.Art(fanart)]</value>
 		<value condition="String.IsEqual(Skin.String(CurrentWidgetListID),6120)">$INFO[Container(6120).ListItem.Art(fanart)]</value>
 		<value condition="String.IsEqual(Skin.String(CurrentWidgetListID),6130)">$INFO[Container(6130).ListItem.Art(fanart)]</value>
+		<value condition="String.IsEqual(Skin.String(CurrentWidgetListID),6140)">$INFO[Container(6140).ListItem.Art(fanart)]</value>
+		<value condition="String.IsEqual(Skin.String(CurrentWidgetListID),6150)">$INFO[Container(6150).ListItem.Art(fanart)]</value>
+		<value condition="String.IsEqual(Skin.String(CurrentWidgetListID),6160)">$INFO[Container(6160).ListItem.Art(fanart)]</value>
+		<value condition="String.IsEqual(Skin.String(CurrentWidgetListID),6170)">$INFO[Container(6170).ListItem.Art(fanart)]</value>
+		<value condition="String.IsEqual(Skin.String(CurrentWidgetListID),6180)">$INFO[Container(6180).ListItem.Art(fanart)]</value>
+		<value condition="String.IsEqual(Skin.String(CurrentWidgetListID),6190)">$INFO[Container(6190).ListItem.Art(fanart)]</value>
+		<value condition="String.IsEqual(Skin.String(CurrentWidgetListID),6200)">$INFO[Container(6200).ListItem.Art(fanart)]</value>
+		<value condition="String.IsEqual(Skin.String(CurrentWidgetListID),6210)">$INFO[Container(6210).ListItem.Art(fanart)]</value>
+		<value condition="String.IsEqual(Skin.String(CurrentWidgetListID),6220)">$INFO[Container(6220).ListItem.Art(fanart)]</value>
+		<value condition="String.IsEqual(Skin.String(CurrentWidgetListID),6230)">$INFO[Container(6230).ListItem.Art(fanart)]</value>
+		<value condition="String.IsEqual(Skin.String(CurrentWidgetListID),6240)">$INFO[Container(6240).ListItem.Art(fanart)]</value>
+		<value condition="String.IsEqual(Skin.String(CurrentWidgetListID),6250)">$INFO[Container(6250).ListItem.Art(fanart)]</value>
+		<value condition="String.IsEqual(Skin.String(CurrentWidgetListID),6260)">$INFO[Container(6260).ListItem.Art(fanart)]</value>
+		<value condition="String.IsEqual(Skin.String(CurrentWidgetListID),6270)">$INFO[Container(6270).ListItem.Art(fanart)]</value>
+		<value condition="String.IsEqual(Skin.String(CurrentWidgetListID),6280)">$INFO[Container(6280).ListItem.Art(fanart)]</value>
+		<value condition="String.IsEqual(Skin.String(CurrentWidgetListID),6290)">$INFO[Container(6290).ListItem.Art(fanart)]</value>
 	</variable>
 	<variable name="CurrentWidgetClearLogo">
 		<!-- Home Widgets -->
@@ -1127,14 +1159,46 @@
 		<value condition="String.IsEqual(Skin.String(CurrentWidgetListID),10300)">$INFO[Container(10300).ListItem.Art(clearlogo)]</value>
 		<!-- Movie Widgets -->
 		<value condition="String.IsEqual(Skin.String(CurrentWidgetListID),5100)">$INFO[Container(5100).ListItem.Art(clearlogo)]</value>
+		<value condition="String.IsEqual(Skin.String(CurrentWidgetListID),5110)">$INFO[Container(5110).ListItem.Art(clearlogo)]</value>
+		<value condition="String.IsEqual(Skin.String(CurrentWidgetListID),5120)">$INFO[Container(5120).ListItem.Art(clearlogo)]</value>
+		<value condition="String.IsEqual(Skin.String(CurrentWidgetListID),5130)">$INFO[Container(5130).ListItem.Art(clearlogo)]</value>
+		<value condition="String.IsEqual(Skin.String(CurrentWidgetListID),5140)">$INFO[Container(5140).ListItem.Art(clearlogo)]</value>
+		<value condition="String.IsEqual(Skin.String(CurrentWidgetListID),5150)">$INFO[Container(5150).ListItem.Art(clearlogo)]</value>
+		<value condition="String.IsEqual(Skin.String(CurrentWidgetListID),5160)">$INFO[Container(5160).ListItem.Art(clearlogo)]</value>
+		<value condition="String.IsEqual(Skin.String(CurrentWidgetListID),5170)">$INFO[Container(5170).ListItem.Art(clearlogo)]</value>
+		<value condition="String.IsEqual(Skin.String(CurrentWidgetListID),5180)">$INFO[Container(5180).ListItem.Art(clearlogo)]</value>
+		<value condition="String.IsEqual(Skin.String(CurrentWidgetListID),5190)">$INFO[Container(5190).ListItem.Art(clearlogo)]</value>
 		<value condition="String.IsEqual(Skin.String(CurrentWidgetListID),5200)">$INFO[Container(5200).ListItem.Art(clearlogo)]</value>
-		<value condition="String.IsEqual(Skin.String(CurrentWidgetListID),5300)">$INFO[Container(5300).ListItem.Art(clearlogo)]</value>
-		<value condition="String.IsEqual(Skin.String(CurrentWidgetListID),5400)">$INFO[Container(5400).ListItem.Art(clearlogo)]</value>
+		<value condition="String.IsEqual(Skin.String(CurrentWidgetListID),5210)">$INFO[Container(5210).ListItem.Art(clearlogo)]</value>
+		<value condition="String.IsEqual(Skin.String(CurrentWidgetListID),5220)">$INFO[Container(5220).ListItem.Art(clearlogo)]</value>
+		<value condition="String.IsEqual(Skin.String(CurrentWidgetListID),5230)">$INFO[Container(5230).ListItem.Art(clearlogo)]</value>
+		<value condition="String.IsEqual(Skin.String(CurrentWidgetListID),5240)">$INFO[Container(5240).ListItem.Art(clearlogo)]</value>
+		<value condition="String.IsEqual(Skin.String(CurrentWidgetListID),5250)">$INFO[Container(5250).ListItem.Art(clearlogo)]</value>
+		<value condition="String.IsEqual(Skin.String(CurrentWidgetListID),5260)">$INFO[Container(5260).ListItem.Art(clearlogo)]</value>
+		<value condition="String.IsEqual(Skin.String(CurrentWidgetListID),5270)">$INFO[Container(5270).ListItem.Art(clearlogo)]</value>
+		<value condition="String.IsEqual(Skin.String(CurrentWidgetListID),5280)">$INFO[Container(5280).ListItem.Art(clearlogo)]</value>
+		<value condition="String.IsEqual(Skin.String(CurrentWidgetListID),5290)">$INFO[Container(5290).ListItem.Art(clearlogo)]</value>
 		<!-- TV Widgets -->
 		<value condition="String.IsEqual(Skin.String(CurrentWidgetListID),6100)">$INFO[Container(6100).ListItem.Art(clearlogo)]</value>
 		<value condition="String.IsEqual(Skin.String(CurrentWidgetListID),6110)">$INFO[Container(6110).ListItem.Art(clearlogo)]</value>
 		<value condition="String.IsEqual(Skin.String(CurrentWidgetListID),6120)">$INFO[Container(6120).ListItem.Art(clearlogo)]</value>
 		<value condition="String.IsEqual(Skin.String(CurrentWidgetListID),6130)">$INFO[Container(6130).ListItem.Art(clearlogo)]</value>
+		<value condition="String.IsEqual(Skin.String(CurrentWidgetListID),6140)">$INFO[Container(6140).ListItem.Art(clearlogo)]</value>
+		<value condition="String.IsEqual(Skin.String(CurrentWidgetListID),6150)">$INFO[Container(6150).ListItem.Art(clearlogo)]</value>
+		<value condition="String.IsEqual(Skin.String(CurrentWidgetListID),6160)">$INFO[Container(6160).ListItem.Art(clearlogo)]</value>
+		<value condition="String.IsEqual(Skin.String(CurrentWidgetListID),6170)">$INFO[Container(6170).ListItem.Art(clearlogo)]</value>
+		<value condition="String.IsEqual(Skin.String(CurrentWidgetListID),6180)">$INFO[Container(6180).ListItem.Art(clearlogo)]</value>
+		<value condition="String.IsEqual(Skin.String(CurrentWidgetListID),6190)">$INFO[Container(6190).ListItem.Art(clearlogo)]</value>
+		<value condition="String.IsEqual(Skin.String(CurrentWidgetListID),6200)">$INFO[Container(6200).ListItem.Art(clearlogo)]</value>
+		<value condition="String.IsEqual(Skin.String(CurrentWidgetListID),6210)">$INFO[Container(6210).ListItem.Art(clearlogo)]</value>
+		<value condition="String.IsEqual(Skin.String(CurrentWidgetListID),6220)">$INFO[Container(6220).ListItem.Art(clearlogo)]</value>
+		<value condition="String.IsEqual(Skin.String(CurrentWidgetListID),6230)">$INFO[Container(6230).ListItem.Art(clearlogo)]</value>
+		<value condition="String.IsEqual(Skin.String(CurrentWidgetListID),6240)">$INFO[Container(6240).ListItem.Art(clearlogo)]</value>
+		<value condition="String.IsEqual(Skin.String(CurrentWidgetListID),6250)">$INFO[Container(6250).ListItem.Art(clearlogo)]</value>
+		<value condition="String.IsEqual(Skin.String(CurrentWidgetListID),6260)">$INFO[Container(6260).ListItem.Art(clearlogo)]</value>
+		<value condition="String.IsEqual(Skin.String(CurrentWidgetListID),6270)">$INFO[Container(6270).ListItem.Art(clearlogo)]</value>
+		<value condition="String.IsEqual(Skin.String(CurrentWidgetListID),6280)">$INFO[Container(6280).ListItem.Art(clearlogo)]</value>
+		<value condition="String.IsEqual(Skin.String(CurrentWidgetListID),6290)">$INFO[Container(6290).ListItem.Art(clearlogo)]</value>
 	</variable>
 
 	<variable name="CurrentWidgetPlot">
@@ -1144,14 +1208,46 @@
 		<value condition="String.IsEqual(Skin.String(CurrentWidgetListID),10300)">$INFO[Container(10300).ListItem.Plot]</value>
 		<!-- Movie Widgets -->
 		<value condition="String.IsEqual(Skin.String(CurrentWidgetListID),5100)">$INFO[Container(5100).ListItem.Plot]</value>
+		<value condition="String.IsEqual(Skin.String(CurrentWidgetListID),5110)">$INFO[Container(5110).ListItem.Plot]</value>
+		<value condition="String.IsEqual(Skin.String(CurrentWidgetListID),5120)">$INFO[Container(5120).ListItem.Plot]</value>
+		<value condition="String.IsEqual(Skin.String(CurrentWidgetListID),5130)">$INFO[Container(5130).ListItem.Plot]</value>
+		<value condition="String.IsEqual(Skin.String(CurrentWidgetListID),5140)">$INFO[Container(5140).ListItem.Plot]</value>
+		<value condition="String.IsEqual(Skin.String(CurrentWidgetListID),5150)">$INFO[Container(5150).ListItem.Plot]</value>
+		<value condition="String.IsEqual(Skin.String(CurrentWidgetListID),5160)">$INFO[Container(5160).ListItem.Plot]</value>
+		<value condition="String.IsEqual(Skin.String(CurrentWidgetListID),5170)">$INFO[Container(5170).ListItem.Plot]</value>
+		<value condition="String.IsEqual(Skin.String(CurrentWidgetListID),5180)">$INFO[Container(5180).ListItem.Plot]</value>
+		<value condition="String.IsEqual(Skin.String(CurrentWidgetListID),5190)">$INFO[Container(5190).ListItem.Plot]</value>
 		<value condition="String.IsEqual(Skin.String(CurrentWidgetListID),5200)">$INFO[Container(5200).ListItem.Plot]</value>
-		<value condition="String.IsEqual(Skin.String(CurrentWidgetListID),5300)">$INFO[Container(5300).ListItem.Plot]</value>
-		<value condition="String.IsEqual(Skin.String(CurrentWidgetListID),5400)">$INFO[Container(5400).ListItem.Plot]</value>
+		<value condition="String.IsEqual(Skin.String(CurrentWidgetListID),5210)">$INFO[Container(5210).ListItem.Plot]</value>
+		<value condition="String.IsEqual(Skin.String(CurrentWidgetListID),5220)">$INFO[Container(5220).ListItem.Plot]</value>
+		<value condition="String.IsEqual(Skin.String(CurrentWidgetListID),5230)">$INFO[Container(5230).ListItem.Plot]</value>
+		<value condition="String.IsEqual(Skin.String(CurrentWidgetListID),5240)">$INFO[Container(5240).ListItem.Plot]</value>
+		<value condition="String.IsEqual(Skin.String(CurrentWidgetListID),5250)">$INFO[Container(5250).ListItem.Plot]</value>
+		<value condition="String.IsEqual(Skin.String(CurrentWidgetListID),5260)">$INFO[Container(5260).ListItem.Plot]</value>
+		<value condition="String.IsEqual(Skin.String(CurrentWidgetListID),5270)">$INFO[Container(5270).ListItem.Plot]</value>
+		<value condition="String.IsEqual(Skin.String(CurrentWidgetListID),5280)">$INFO[Container(5280).ListItem.Plot]</value>
+		<value condition="String.IsEqual(Skin.String(CurrentWidgetListID),5290)">$INFO[Container(5290).ListItem.Plot]</value>
 		<!-- TV Widgets -->
 		<value condition="String.IsEqual(Skin.String(CurrentWidgetListID),6100)">$INFO[Container(6100).ListItem.Plot]</value>
 		<value condition="String.IsEqual(Skin.String(CurrentWidgetListID),6110)">$INFO[Container(6110).ListItem.Plot]</value>
 		<value condition="String.IsEqual(Skin.String(CurrentWidgetListID),6120)">$INFO[Container(6120).ListItem.Plot]</value>
 		<value condition="String.IsEqual(Skin.String(CurrentWidgetListID),6130)">$INFO[Container(6130).ListItem.Plot]</value>
+		<value condition="String.IsEqual(Skin.String(CurrentWidgetListID),6140)">$INFO[Container(6140).ListItem.Plot]</value>
+		<value condition="String.IsEqual(Skin.String(CurrentWidgetListID),6150)">$INFO[Container(6150).ListItem.Plot]</value>
+		<value condition="String.IsEqual(Skin.String(CurrentWidgetListID),6160)">$INFO[Container(6160).ListItem.Plot]</value>
+		<value condition="String.IsEqual(Skin.String(CurrentWidgetListID),6170)">$INFO[Container(6170).ListItem.Plot]</value>
+		<value condition="String.IsEqual(Skin.String(CurrentWidgetListID),6180)">$INFO[Container(6180).ListItem.Plot]</value>
+		<value condition="String.IsEqual(Skin.String(CurrentWidgetListID),6190)">$INFO[Container(6190).ListItem.Plot]</value>
+		<value condition="String.IsEqual(Skin.String(CurrentWidgetListID),6200)">$INFO[Container(6200).ListItem.Plot]</value>
+		<value condition="String.IsEqual(Skin.String(CurrentWidgetListID),6210)">$INFO[Container(6210).ListItem.Plot]</value>
+		<value condition="String.IsEqual(Skin.String(CurrentWidgetListID),6220)">$INFO[Container(6220).ListItem.Plot]</value>
+		<value condition="String.IsEqual(Skin.String(CurrentWidgetListID),6230)">$INFO[Container(6230).ListItem.Plot]</value>
+		<value condition="String.IsEqual(Skin.String(CurrentWidgetListID),6240)">$INFO[Container(6240).ListItem.Plot]</value>
+		<value condition="String.IsEqual(Skin.String(CurrentWidgetListID),6250)">$INFO[Container(6250).ListItem.Plot]</value>
+		<value condition="String.IsEqual(Skin.String(CurrentWidgetListID),6260)">$INFO[Container(6260).ListItem.Plot]</value>
+		<value condition="String.IsEqual(Skin.String(CurrentWidgetListID),6270)">$INFO[Container(6270).ListItem.Plot]</value>
+		<value condition="String.IsEqual(Skin.String(CurrentWidgetListID),6280)">$INFO[Container(6280).ListItem.Plot]</value>
+		<value condition="String.IsEqual(Skin.String(CurrentWidgetListID),6290)">$INFO[Container(6290).ListItem.Plot]</value>
 	</variable>
 
 	<variable name="CurrentWidgetInfo">
