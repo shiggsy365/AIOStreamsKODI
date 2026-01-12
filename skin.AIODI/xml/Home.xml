@@ -46,7 +46,7 @@
 			<height>500</height>
 			<animation effect="fade" start="0" end="100" time="400">Visible</animation>
 			<animation effect="fade" start="100" end="0" time="400">Hidden</animation>
-			<visible>!String.IsEmpty(Container($VAR[CurrentWidgetListID]).ListItem.Label)</visible>
+			<visible>Container($VAR[CurrentWidgetListID]).HasFocus | !String.IsEmpty(Container($VAR[CurrentWidgetListID]).ListItem.Label)</visible>
 
 			<!-- ClearLogo -->
 			<control type="image">
@@ -178,6 +178,7 @@
 				<onup>9002</onup>
 				<ondown>9004</ondown>
 				<onfocus>Skin.SetString(SideMenuFocus,home)</onfocus>
+				<onfocus>Skin.SetString(CurrentWidgetListID,10100)</onfocus>
 				<onfocus>Skin.SetString(Home_WidgetIndex,0)</onfocus>
 				<onright>SetFocus($VAR[CurrentWidgetListID])</onright>
 				<onclick>ActivateWindow(Videos,plugin://plugin.video.aiostreams/,return)</onclick>
@@ -213,6 +214,7 @@
 				<onup>9003</onup>
 				<ondown>9005</ondown>
 				<onfocus>Skin.SetString(SideMenuFocus,tvshows)</onfocus>
+				<onfocus>Skin.SetString(CurrentWidgetListID,6100)</onfocus>
 				<onfocus>Skin.SetString(TV_WidgetIndex,0)</onfocus>
 				<onright>SetFocus($VAR[CurrentWidgetListID])</onright>
 
@@ -248,6 +250,7 @@
 				<onup>9004</onup>
 				<ondown>9006</ondown>
 				<onfocus>Skin.SetString(SideMenuFocus,movies)</onfocus>
+				<onfocus>Skin.SetString(CurrentWidgetListID,5100)</onfocus>
 				<onfocus>Skin.SetString(Movies_WidgetIndex,0)</onfocus>
 				<onright>SetFocus($VAR[CurrentWidgetListID])</onright>
 				<onclick>ActivateWindow(Videos,plugin://plugin.video.aiostreams/?action=movie_lists,return)</onclick>
@@ -395,35 +398,20 @@
 <control type="group" id="2000">
 <left>0</left>
 <zorder>100</zorder>
-<control type="image">
-	<width>1800</width>
-	<height>1000</height>
-	<texture colordiffuse="22FFFFFF">icons/sidemenu/home_white.png</texture>
-	<zorder>-1</zorder>
-</control>
 
 <!-- Home Widgets -->
 <control type="group" id="11000">
-	<bottom>100</bottom>
+	<top>250</top>
 	<left>150</left>
 	<right>0</right>
-	<height>550</height>
+	<height>800</height>
 	<visible>Skin.IsString(SideMenuFocus,home)</visible>
-	<control type="image">
-		<width>300</width>
-		<height>100</height>
-		<texture colordiffuse="FF0000FF">icons/sidemenu/home_white.png</texture>
-		<zorder>1000</zorder>
-	</control>
-
-
-	<!-- <include content="Visible_Right_Delayed"><param name="id">home</param></include> -->
 
 	<control type="grouplist" id="11000_list">
 		<left>0</left>
 		<top>0</top>
 		<width>1750</width>
-		<height>1200</height>
+		<height>3000</height>
 		<orientation>vertical</orientation>
 		<itemgap>20</itemgap>
 		<onright>noop</onright>
@@ -472,25 +460,17 @@
 
 <!-- Movie Widgets -->
 <control type="group" id="5000">
-	<bottom>100</bottom>
+	<top>250</top>
 	<left>150</left>
 	<right>0</right>
-	<height>550</height>
+	<height>800</height>
 	<visible>Skin.IsString(SideMenuFocus,movies)</visible>
-	<control type="image">
-		<width>300</width>
-		<height>100</height>
-		<texture colordiffuse="FF00FF00">icons/sidemenu/home_white.png</texture>
-		<zorder>1000</zorder>
-	</control>
-
-	<!-- <include content="Visible_Right_Delayed"><param name="id">movies</param></include> -->
-
+	
 	<control type="grouplist" id="5000_list">
 		<left>0</left>
 		<top>0</top>
 		<width>1750</width>
-		<height>1200</height>
+		<height>3000</height>
 		<orientation>vertical</orientation>
 		<itemgap>20</itemgap>
 		<onright>noop</onright>
@@ -619,16 +599,16 @@
 <control type="group" id="6000">
 	<visible>String.IsEqual(Skin.String(SideMenuFocus),tvshows)</visible>
 	<left>150</left>
-	<top>550</top>
+	<top>250</top>
 	<width>1750</width>
-	<height>900</height>
+	<height>800</height>
 	<zorder>20</zorder>
 
 	<control type="grouplist" id="6000_list">
 		<left>0</left>
 		<top>0</top>
 		<width>1750</width>
-		<height>1200</height>
+		<height>3000</height>
 		<orientation>vertical</orientation>
 		<itemgap>20</itemgap>
 		<onright>noop</onright>
