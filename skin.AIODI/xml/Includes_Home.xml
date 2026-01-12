@@ -82,30 +82,24 @@
 						<align>center</align>
 						<label>FOCUSED</label>
 					</control>
-				</focusedlayout>
-						<depth>DepthContentPopout</depth>
-						<left>68</left>
-						<top>10</top>
-
-						<animation type="Focus">
-							<effect type="zoom" start="100" end="110" time="200" tween="sine" easing="inout" center="230,130" />
-						</animation>
-						<animation type="Unfocus">
-							<effect type="zoom" start="110" end="100" time="200" tween="sine" easing="inout" center="230,130" />
-						</animation>
-						<include content="InfoWallMovieLayout">
-							<param name="focused" value="true" />
-						</include>
+				<focusedlayout width="340" height="450">
+					<control type="image">
+						<width>340</width>
+						<height>450</height>
+						<texture colordiffuse="FF00FF00">icons/sidemenu/home_white.png</texture>
+					</control>
+					<control type="label">
+						<width>340</width>
+						<height>100</height>
+						<align>center</align>
+						<label>FOCUSED</label>
 					</control>
 				</focusedlayout>
-				<content sortby="$PARAM[sortby]" sortorder="$PARAM[sortorder]" target="$PARAM[widget_target]" limit="15" browse="$PARAM[browse_mode]">
-					<item>
-						<label>WIDGET DUMMY (POSTER)</label>
-						<onclick>noop</onclick>
-					</item>
-					$PARAM[content_path]
+				<content>
+					<item><label>TEMPLATE ITEM 1</label><onclick>noop</onclick></item>
+					<item><label>TEMPLATE ITEM 2</label><onclick>noop</onclick></item>
+					<item><label>TEMPLATE ITEM 3</label><onclick>noop</onclick></item>
 				</content>
-
 			</control>
 		</definition>
 	</include>

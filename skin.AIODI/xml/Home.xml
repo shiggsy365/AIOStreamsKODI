@@ -602,13 +602,10 @@
 			<top>100</top>
 			<width>1700</width>
 			<height>600</height>
-			<visible>String.IsEqual(HomeCategory,tvshows)</visible>
+			<visible>True</visible>
 			<control type="group">
 				<visible>True</visible>
 				<include content="WidgetListPoster">
-					<param name="content_path" value="plugin://plugin.video.aiostreams/?action=series_lists"/>
-					<param name="widget_header" value="TV ROW 1"/>
-					<param name="widget_target" value="videos"/>
 					<param name="list_id" value="6100"/>
 				</include>
 			</control>
@@ -677,7 +674,7 @@
 			<height>30</height>
 			<font>font12</font>
 			<textcolor>FFFF0000</textcolor> <!-- Hex Red -->
-			<label>TV_6100: $INFO[Container(6100).NumItems] | ROOT_3000: $INFO[Container(3000).NumItems] | FOCUS: ($INFO[System.FocusedControl.ID]) $INFO[System.FocusedControl.Label] (v6.0.72)</label>
+			<label>TV_6100: $INFO[Container(6100).NumItems] | ROOT_3000: $INFO[Container(3000).NumItems] | FOCUS: ($INFO[System.FocusedControl.ID]) $INFO[System.FocusedControl.Label] (v6.0.74)</label>
 		</control>
 
 		<control type="label">
