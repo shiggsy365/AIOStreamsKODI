@@ -34,7 +34,7 @@
 			<align>right</align>
 			<label>Home:$INFO[Skin.String(Home_WidgetIndex)] | Movies:$INFO[Skin.String(Movies_WidgetIndex)] | TV:$INFO[Skin.String(TV_WidgetIndex)]
 Focus:$INFO[System.GetBool(Control.HasFocus(6110))] | 6100vis:$INFO[Control.IsVisible(6100)] | 6110vis:$INFO[Control.IsVisible(6110)]
-SideFocus:$INFO[Skin.String(SideMenuFocus)] | VER: 6.0.215</label>
+SideFocus:$INFO[Skin.String(SideMenuFocus)] | VER: 6.0.220</label>
 			<textcolor>red</textcolor>
 			<font>font13</font>
 			<visible>true</visible>
@@ -54,9 +54,12 @@ SideFocus:$INFO[Skin.String(SideMenuFocus)] | VER: 6.0.215</label>
 		<!-- Gradient Overlay (Left to Right Black) -->
 		<control type="image">
 			<depth>DepthBackground</depth>
-			<include>FullScreenDimensions</include>
-			<texture>colors/black.png</texture>
-			<colordiffuse>gradient_left_to_right</colordiffuse>
+			<left>0</left>
+			<top>0</top>
+			<width>800</width>
+			<height>1080</height>
+			<texture>colors/gradient_left_to_right.png</texture>
+			<aspectratio>stretch</aspectratio>
 		</control>
 		
 		<!-- Info Overlay -->
@@ -67,7 +70,7 @@ SideFocus:$INFO[Skin.String(SideMenuFocus)] | VER: 6.0.215</label>
 			<height>500</height>
 			<animation effect="fade" start="0" end="100" time="400">Visible</animation>
 			<animation effect="fade" start="100" end="0" time="400">Hidden</animation>
-			<visible>!String.IsEmpty(Container(10100).ListItem.Label) | !String.IsEmpty(Container(10200).ListItem.Label) | !String.IsEmpty(Container(10300).ListItem.Label) | !String.IsEmpty(Container(5100).ListItem.Label) | !String.IsEmpty(Container(5200).ListItem.Label) | !String.IsEmpty(Container(6100).ListItem.Label) | !String.IsEmpty(Container(6110).ListItem.Label)</visible>
+			<visible>String.IsEqual(Skin.String(SideMenuFocus),home) | String.IsEqual(Skin.String(SideMenuFocus),movies) | String.IsEqual(Skin.String(SideMenuFocus),tvshows)</visible>
 
 			<!-- ClearLogo -->
 			<control type="image">
@@ -77,6 +80,21 @@ SideFocus:$INFO[Skin.String(SideMenuFocus)] | VER: 6.0.215</label>
 				<height>180</height>
 				<aspectratio align="left" aligny="bottom">keep</aspectratio>
 				<texture background="true">$VAR[CurrentWidgetClearLogo]</texture>
+				<visible>!String.IsEmpty($VAR[CurrentWidgetClearLogo])</visible>
+			</control>
+			
+			<!-- Fallback Title (when no clearlogo) -->
+			<control type="label">
+				<left>0</left>
+				<top>0</top>
+				<width>800</width>
+				<height>180</height>
+				<font>font45_title</font>
+				<textcolor>FFFFFFFF</textcolor>
+				<label>$INFO[Container($VAR[CurrentWidgetListID]).ListItem.Title]</label>
+				<shadowcolor>text_shadow</shadowcolor>
+				<aligny>bottom</aligny>
+				<visible>String.IsEmpty($VAR[CurrentWidgetClearLogo])</visible>
 			</control>
 
 			<!-- Info Title -->

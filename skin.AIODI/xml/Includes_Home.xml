@@ -116,8 +116,9 @@
 								<height>345</height>
 								<aspectratio align="center" aligny="center">scale</aspectratio>
 								<texture background="true">$INFO[ListItem.Icon]</texture>
-								<bordertexture border="12" colordiffuse="FFFF0000">colors/white.png</bordertexture>
-								<bordersize>12</bordersize>
+								<bordertexture border="3" colordiffuse="FFFF0000">colors/white.png</bordertexture>
+								<bordersize>3</bordersize>
+								<borderradius>8</borderradius>
 							</control>
 						</control>
 					</focusedlayout>
@@ -193,8 +194,9 @@
 								<height>220</height>
 								<aspectratio align="center" aligny="center">scale</aspectratio>
 								<texture background="true">$INFO[ListItem.Icon]</texture>
-								<bordertexture border="12" colordiffuse="FFFF0000">colors/white.png</bordertexture>
-								<bordersize>12</bordersize>
+								<bordertexture border="3" colordiffuse="FFFF0000">colors/white.png</bordertexture>
+								<bordersize>3</bordersize>
+								<borderradius>8</borderradius>
 							</control>
 						</control>
 					</focusedlayout>
@@ -288,8 +290,9 @@
 								<height>345</height>
 								<aspectratio align="center" aligny="center">scale</aspectratio>
 								<texture background="true">$INFO[ListItem.Art(poster)]</texture>
-								<bordertexture border="12" colordiffuse="FFFF0000">colors/white.png</bordertexture>
-								<bordersize>12</bordersize>
+								<bordertexture border="3" colordiffuse="FFFF0000">colors/white.png</bordertexture>
+								<bordersize>3</bordersize>
+								<borderradius>8</borderradius>
 								<fallback>DefaultVideo.png</fallback>
 							</control>
 						</control>
@@ -429,8 +432,9 @@
 								<height>220</height>
 								<aspectratio align="center" aligny="center">scale</aspectratio>
 								<texture background="true">$INFO[ListItem.Art(thumb)]</texture>
-								<bordertexture border="12" colordiffuse="FFFF0000">colors/white.png</bordertexture>
-								<bordersize>12</bordersize>
+								<bordertexture border="3" colordiffuse="FFFF0000">colors/white.png</bordertexture>
+								<bordersize>3</bordersize>
+								<borderradius>8</borderradius>
 								<fallback>DefaultVideo.png</fallback>
 							</control>
 						</control>
