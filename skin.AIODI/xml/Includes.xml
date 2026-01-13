@@ -774,9 +774,18 @@
 				<top>$PARAM[posy]</top>
 				<animation effect="fade" start="0" end="100" time="300" delay="300">WindowOpen</animation>
 				<animation effect="fade" start="100" end="0" time="200">WindowClose</animation>
-				<height>150</height>
+				<height>180</height>
 				<itemgap>0</itemgap>
 				<orientation>vertical</orientation>
+				<!-- ClearLogo -->
+				<control type="image">
+					<width>100%</width>
+					<height>110</height>
+					<aspectratio align="center" aligny="bottom">keep</aspectratio>
+					<texture background="true">$INFO[ListItem.Art(clearlogo),,$INFO[ListItem.Art(logo)]]</texture>
+					<visible>!String.IsEmpty(ListItem.Art(clearlogo)) | !String.IsEmpty(ListItem.Art(logo))</visible>
+				</control>
+				<!-- Fallback Label -->
 				<control type="label">
 					<width>100%</width>
 					<label>$PARAM[main_label]</label>
@@ -785,11 +794,12 @@
 					<height>65</height>
 					<align>center</align>
 					<scroll>true</scroll>
+					<visible>String.IsEmpty(ListItem.Art(clearlogo)) + String.IsEmpty(ListItem.Art(logo))</visible>
 					<animation effect="slide" start="0,0" end="0,25" time="0" condition="String.IsEmpty(Control.GetLabel($PARAM[id]))">Conditional</animation>
 				</control>
 				<control type="label" id="$PARAM[id]">
 					<label>$PARAM[sub_label]</label>
-					<left>85</left>
+					<left>0</left>
 					<shadowcolor>text_shadow</shadowcolor>
 					<align>center</align>
 					<height>100</height>

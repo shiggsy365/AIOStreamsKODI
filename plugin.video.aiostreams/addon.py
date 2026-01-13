@@ -967,7 +967,8 @@ def create_listitem_with_context(meta, content_type, action_url):
         art['thumb'] = meta['poster']
     if meta.get('background'):
         art['fanart'] = meta['background']
-    if meta.get('logo'):
+    logo_url = meta.get('logo')
+    if logo_url and isinstance(logo_url, str) and logo_url.lower() != 'none' and logo_url.lower().startswith('http'):
         # Try to use cached clearlogo first
         item_id = meta.get('id', '')
         cached_clearlogo = get_cached_clearlogo_path(content_type, item_id) if item_id else None
@@ -978,8 +979,8 @@ def create_listitem_with_context(meta, content_type, action_url):
             xbmc.log(f'[AIOStreams] Using cached clearlogo for {item_id}', xbmc.LOGDEBUG)
         else:
             # Fallback to URL and trigger background download
-            art['clearlogo'] = meta['logo']
-            art['logo'] = meta['logo']
+            art['clearlogo'] = logo_url
+            art['logo'] = logo_url
             _ensure_clearlogo_cached(meta, content_type, item_id)
     
     if art:
