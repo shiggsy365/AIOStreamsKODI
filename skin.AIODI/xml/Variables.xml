@@ -1182,11 +1182,6 @@
 		<value></value>
 	</variable>
 
-	<variable name="HasCurrentWidgetClearLogo">
-		<value condition="!String.IsEqual($VAR[CurrentWidgetClearLogo],)">true</value>
-		<value>false</value>
-	</variable>
-
 	<variable name="CurrentWidgetPlot">
 		<value condition="Control.HasFocus(10100)">$INFO[Container(10100).ListItem.Plot]</value>
 		<value condition="Control.HasFocus(10200)">$INFO[Container(10200).ListItem.Plot]</value>

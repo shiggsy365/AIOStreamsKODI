@@ -34,7 +34,7 @@
 			<align>right</align>
 			<label>Home:$INFO[Skin.String(Home_WidgetIndex)] | Movies:$INFO[Skin.String(Movies_WidgetIndex)] | TV:$INFO[Skin.String(TV_WidgetIndex)]
 ActiveID:$VAR[ActiveWidgetID] | Title:$VAR[CurrentWidgetTitle]
-SideFocus:$INFO[Skin.String(SideMenuFocus)] | VER: 6.0.306</label>
+SideFocus:$INFO[Skin.String(SideMenuFocus)] | VER: 6.0.307</label>
 			<textcolor>red</textcolor>
 			<font>font13</font>
 			<visible>true</visible>
@@ -73,7 +73,12 @@ SideFocus:$INFO[Skin.String(SideMenuFocus)] | VER: 6.0.306</label>
 			<animation effect="fade" start="100" end="0" time="400">Hidden</animation>
 			<visible>String.IsEqual(Skin.String(SideMenuFocus),home) | String.IsEqual(Skin.String(SideMenuFocus),movies) | String.IsEqual(Skin.String(SideMenuFocus),tvshows)</visible>
 
-			<!-- TEST RED BOX -->
+			<!-- HIDDEN VALUE HOLDER -->
+			<control type="label" id="8888">
+				<include>HiddenObject</include>
+				<label>$VAR[CurrentWidgetClearLogo]</label>
+			</control>
+
 			<!-- TEST RED BOX (BOTTOM LAYER) -->
 			<control type="image">
 				<left>0</left>
@@ -87,8 +92,8 @@ SideFocus:$INFO[Skin.String(SideMenuFocus)] | VER: 6.0.306</label>
 			
 			<!-- STATIC SKIN LOGO TEST (TOP LEFT) -->
 			<control type="image">
-				<left>10</left>
-				<top>10</top>
+				<left>0</left>
+				<top>0</top>
 				<width>100</width>
 				<height>50</height>
 				<texture>aiostreams_logo.png</texture>
@@ -100,10 +105,10 @@ SideFocus:$INFO[Skin.String(SideMenuFocus)] | VER: 6.0.306</label>
 				<left>0</left>
 				<top>0</top>
 				<width>500</width>
-				<height>25</height>
-				<font>font12</font>
+				<height>30</height>
+				<font>font13</font>
 				<textcolor>blue</textcolor>
-				<label>DEBUG_AREA_TOP</label>
+				<label>DEBUG_TOP: HAS_LABEL_8888: [!String.IsEmpty(Control.GetLabel(8888))]</label>
 				<visible>true</visible>
 			</control>
 
@@ -114,19 +119,19 @@ SideFocus:$INFO[Skin.String(SideMenuFocus)] | VER: 6.0.306</label>
 				<width>500</width>
 				<height>180</height>
 				<aspectratio align="left" aligny="center">keep</aspectratio>
-				<texture background="false">$VAR[CurrentWidgetClearLogo]</texture>
-				<visible>String.IsEqual($VAR[HasCurrentWidgetClearLogo],true)</visible>
+				<texture background="false">$INFO[Control.GetLabel(8888)]</texture>
+				<visible>!String.IsEmpty(Control.GetLabel(8888))</visible>
 			</control>
 
-			<!-- LOGO DEBUG LABEL 2 (BOOLEAN TEST) -->
+			<!-- LOGO DEBUG LABEL 2 (VALUE TEST) -->
 			<control type="label">
 				<left>0</left>
-				<top>25</top>
-				<width>500</width>
-				<height>25</height>
+				<top>35</top>
+				<width>1000</width>
+				<height>30</height>
 				<font>font12</font>
 				<textcolor>green</textcolor>
-				<label>HAS_CLEAR_LOGO: $VAR[HasCurrentWidgetClearLogo]</label>
+				<label>PATH_8888: $INFO[Control.GetLabel(8888)]</label>
 				<visible>true</visible>
 			</control>
 
@@ -137,13 +142,13 @@ SideFocus:$INFO[Skin.String(SideMenuFocus)] | VER: 6.0.306</label>
 			<!-- TEST FALLBACK -->
 			<control type="label">
 				<left>0</left>
-				<top>50</top>
+				<top>70</top>
 				<width>800</width>
-				<height>100</height>
-				<font>font45_title</font>
+				<height>80</height>
+				<font>font25</font>
 				<textcolor>white</textcolor>
 				<label>FB: $VAR[CurrentWidgetTitle]</label>
-				<visible>String.IsEqual($VAR[HasCurrentWidgetClearLogo],false)</visible>
+				<visible>String.IsEmpty(Control.GetLabel(8888))</visible>
 				<aligny>center</aligny>
 			</control>
 
