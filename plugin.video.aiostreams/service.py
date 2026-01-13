@@ -8,7 +8,7 @@ import xbmcaddon
 import time
 import threading
 import platform
-from collections import deque
+from resources.lib.monitor import AIOStreamsPlayer, AIOStreamsMonitor
 
 
 class BackgroundTaskQueue:
@@ -196,6 +196,7 @@ class AIOStreamsService:
         """Initialize service."""
         self.addon = xbmcaddon.Addon()
         self.monitor = AIOStreamsMonitor(self)
+        self.player = AIOStreamsPlayer()
         self.task_queue = get_task_queue()
         self.sync_interval = 5 * 60  # 5 minutes in seconds
         self.last_sync = 0

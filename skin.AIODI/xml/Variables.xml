@@ -1187,7 +1187,8 @@
 	</variable>
 
 	<variable name="CurrentWidgetInfo">
-		<value condition="Control.HasFocus(10100)">$INFO[Container(10100).ListItem.Season,S,]$INFO[Container(10100).ListItem.Episode,E,  |  ]$INFO[Container(10100).ListItem.Year]$INFO[Container(10100).ListItem.Genre,  |  ]</value>
+		<value condition="Control.HasFocus(10100) + !String.IsEmpty(Container(10100).ListItem.Season)">$VAR[EpisodeInfoPadded]</value>
+		<value condition="Control.HasFocus(10100)">$INFO[Container(10100).ListItem.Year]$INFO[Container(10100).ListItem.Genre,  |  ]</value>
 		<value condition="Control.HasFocus(10200)">$INFO[Container(10200).ListItem.Year]$INFO[Container(10200).ListItem.Genre,  |  ]</value>
 		<value condition="Control.HasFocus(10300)">$INFO[Container(10300).ListItem.Year]$INFO[Container(10300).ListItem.Genre,  |  ]</value>
 		<value condition="Control.HasFocus(5100)">$INFO[Container(5100).ListItem.Year]$INFO[Container(5100).ListItem.Genre,  |  ]</value>
