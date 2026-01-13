@@ -2563,7 +2563,7 @@ def trakt_watchlist(params=None):
             'imdbRating': str(item_data.get('rating', '')) if item_data.get('rating') else ''
         }
 
-        # Try to get artwork from cached AIOStreams metadata (fast cache lookup)
+        # Try to get artwork and title from cached AIOStreams metadata (fast cache lookup)
         if HAS_MODULES:
             cached_meta = cache.get_cached_meta(content_type, item_id)
             if cached_meta and 'meta' in cached_meta:
@@ -2572,6 +2572,12 @@ def trakt_watchlist(params=None):
                 meta['poster'] = cached_data.get('poster', '')
                 meta['background'] = cached_data.get('background', '')
                 meta['logo'] = cached_data.get('logo', '')
+                
+                # CRITICAL FIX: If Trakt title is missing or "Unknown", use AIOStreams Title
+                cached_title = cached_data.get('title') or cached_data.get('name', '')
+                if (not meta.get('name') or meta['name'] == 'Unknown') and cached_title:
+                    meta['name'] = cached_title
+                    
                 # Get cast from cached AIOStreams data (includes photos)
                 meta['app_extras'] = cached_data.get('app_extras', {})
                 # Keep Trakt data for text fields, only use AIOStreams for what's better
@@ -2585,6 +2591,12 @@ def trakt_watchlist(params=None):
                     meta['poster'] = cached_data.get('poster', '')
                     meta['background'] = cached_data.get('background', '')
                     meta['logo'] = cached_data.get('logo', '')
+                    
+                    # CRITICAL FIX: Use fetched metadata title as fallback
+                    cached_title = cached_data.get('title') or cached_data.get('name', '')
+                    if (not meta.get('name') or meta['name'] == 'Unknown') and cached_title:
+                        meta['name'] = cached_title
+                        
                     meta['app_extras'] = cached_data.get('app_extras', {})
                     if not meta['description']:
                         meta['description'] = cached_data.get('description', '')

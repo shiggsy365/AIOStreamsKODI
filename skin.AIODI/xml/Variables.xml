@@ -1108,15 +1108,15 @@
 <value>overlays/checkbox-off.png</value>
 </variable>
 	<variable name="CurrentWidgetTitle">
-		<value condition="Control.HasFocus(10100) + !String.IsEmpty(Container(10100).ListItem.Title) + !String.IsEqual(Container(10100).ListItem.Title,unknown)">$INFO[Container(10100).ListItem.Title]</value>
+		<value condition="Control.HasFocus(10100) + !String.IsEmpty(Container(10100).ListItem.Title) + !String.Contains(Container(10100).ListItem.Title,unknown)">$INFO[Container(10100).ListItem.Title]</value>
 		<value condition="Control.HasFocus(10100)">$INFO[Container(10100).ListItem.Label]</value>
-		<value condition="Control.HasFocus(10200) + !String.IsEmpty(Container(10200).ListItem.Title) + !String.IsEqual(Container(10200).ListItem.Title,unknown)">$INFO[Container(10200).ListItem.Title]</value>
+		<value condition="Control.HasFocus(10200) + !String.IsEmpty(Container(10200).ListItem.Title) + !String.Contains(Container(10200).ListItem.Title,unknown)">$INFO[Container(10200).ListItem.Title]</value>
 		<value condition="Control.HasFocus(10200)">$INFO[Container(10200).ListItem.Label]</value>
-		<value condition="Control.HasFocus(10300) + !String.IsEmpty(Container(10300).ListItem.Title) + !String.IsEqual(Container(10300).ListItem.Title,unknown)">$INFO[Container(10300).ListItem.Title]</value>
+		<value condition="Control.HasFocus(10300) + !String.IsEmpty(Container(10300).ListItem.Title) + !String.Contains(Container(10300).ListItem.Title,unknown)">$INFO[Container(10300).ListItem.Title]</value>
 		<value condition="Control.HasFocus(10300)">$INFO[Container(10300).ListItem.Label]</value>
-		<value condition="Control.HasFocus(5100) + !String.IsEmpty(Container(5100).ListItem.Title) + !String.IsEqual(Container(5100).ListItem.Title,unknown)">$INFO[Container(5100).ListItem.Title]</value>
+		<value condition="Control.HasFocus(5100) + !String.IsEmpty(Container(5100).ListItem.Title) + !String.Contains(Container(5100).ListItem.Title,unknown)">$INFO[Container(5100).ListItem.Title]</value>
 		<value condition="Control.HasFocus(5100)">$INFO[Container(5100).ListItem.Label]</value>
-		<value condition="Control.HasFocus(6100) + !String.IsEmpty(Container(6100).ListItem.Title) + !String.IsEqual(Container(6100).ListItem.Title,unknown)">$INFO[Container(6100).ListItem.Title]</value>
+		<value condition="Control.HasFocus(6100) + !String.IsEmpty(Container(6100).ListItem.Title) + !String.Contains(Container(6100).ListItem.Title,unknown)">$INFO[Container(6100).ListItem.Title]</value>
 		<value condition="Control.HasFocus(6100)">$INFO[Container(6100).ListItem.Label]</value>
 		<value>$INFO[ListItem.Title,,$INFO[ListItem.Label]]</value>
 	</variable>
