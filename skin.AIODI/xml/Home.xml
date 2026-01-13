@@ -247,6 +247,7 @@ SideFocus:$INFO[Skin.String(SideMenuFocus)] | VER: 6.0.311</label>
 				<onfocus>Skin.SetString(SideMenuFocus,home)</onfocus>
 				<onright>SetFocus($VAR[ActiveWidgetID])</onright>
 				<onclick>ActivateWindow(Videos,plugin://plugin.video.aiostreams/,return)</onclick>
+				<onclick>SetFocus($VAR[ActiveWidgetID])</onclick>
 
 			</control>
 			<control type="image">
@@ -282,6 +283,7 @@ SideFocus:$INFO[Skin.String(SideMenuFocus)] | VER: 6.0.311</label>
 				<onright>SetFocus($VAR[ActiveWidgetID])</onright>
 
 				<onclick>ActivateWindow(Videos,plugin://plugin.video.aiostreams/?action=series_lists,return)</onclick>
+				<onclick>SetFocus($VAR[ActiveWidgetID])</onclick>
 			</control>
 			<control type="image">
 				<left>24</left>
@@ -315,6 +317,7 @@ SideFocus:$INFO[Skin.String(SideMenuFocus)] | VER: 6.0.311</label>
 				<onfocus>Skin.SetString(SideMenuFocus,movies)</onfocus>
 				<onright>SetFocus($VAR[ActiveWidgetID])</onright>
 				<onclick>ActivateWindow(Videos,plugin://plugin.video.aiostreams/?action=movie_lists,return)</onclick>
+				<onclick>SetFocus($VAR[ActiveWidgetID])</onclick>
 
 			</control>
 			<control type="image">
@@ -348,6 +351,7 @@ SideFocus:$INFO[Skin.String(SideMenuFocus)] | VER: 6.0.311</label>
 				<ondown>9007</ondown>
 				<onfocus>Skin.SetString(SideMenuFocus,livetv)</onfocus>
 				<onclick>ActivateWindow(TVChannels)</onclick>
+				<onclick>SetFocus($VAR[ActiveWidgetID])</onclick>
 			</control>
 			<control type="image">
 				<left>24</left>

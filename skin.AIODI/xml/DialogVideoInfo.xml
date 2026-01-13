@@ -583,8 +583,9 @@
 						<param name="id" value="13" />
 						<param name="icon" value="icons/infodialogs/director.png" />
 						<param name="label" value="$LOCALIZE[31123]" />
-						<param name="onclick_1" value="Skin.SetString(AIOStreams_SearchQuery,$ESCINFO[ListItem.Director])" />
-						<param name="onclick_2" value="ActivateWindow(1108)" />
+						<param name="onclick_1" value="Dialog.Close(MovieInformation)" />
+						<param name="onclick_2" value="Skin.SetString(AIOStreams_SearchQuery,$ESCINFO[ListItem.Director])" />
+						<param name="onclick_3" value="ActivateWindow(1108)" />
 						<param name="visible" value="!String.IsEmpty(ListItem.Director)" />
 					</include>
 					<include content="InfoDialogButton">

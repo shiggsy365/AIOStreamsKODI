@@ -105,17 +105,22 @@ def load_page(page_name):
     
     config = load_config()
     current_catalogs = config.get(page_name, [])
-    log(f'Current catalogs in config: {len(current_catalogs)}')
+    log(f'Current catalogs for page "{page_name}": {len(current_catalogs)} items')
+    log(f'Config content: {config}')
     
     # Populate current catalogs list
     try:
         current_list = window.getControl(3000)
         current_list.reset()
-        for catalog in current_catalogs:
-            item = xbmcgui.ListItem(catalog.get('label', 'Unknown'))
+        log(f'Populating current list with {len(current_catalogs)} catalogs')
+        for i, catalog in enumerate(current_catalogs):
+            label = catalog.get('label', 'Unknown')
+            log(f'  [{i}] Adding catalog: {label}')
+            item = xbmcgui.ListItem(label)
             item.setProperty('path', catalog.get('path', ''))
             item.setProperty('type', catalog.get('type', 'unknown'))
             current_list.addItem(item)
+        log(f'Current list populated successfully with {current_list.size()} items')
     except Exception as e:
         log(f'Error populating current_list (3000): {e}', xbmc.LOGERROR)
     
