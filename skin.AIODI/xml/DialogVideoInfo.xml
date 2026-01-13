@@ -546,6 +546,10 @@
 						<param name="icon_off" value="icons/infodialogs/play.png" />
 						<param name="selected" value="String.IsEqual(ListItem.DBType,tvshow) | String.IsEqual(ListItem.DBType,season) | String.IsEqual(ListItem.DBType,set)" />
 						<param name="label" value="$VAR[VideoInfoPlayButtonLabelVar]" />
+						<!-- Default action for TV shows/seasons: Browse episodes -->
+						<param name="onclick_1" value="ActivateWindow(Videos,$INFO[ListItem.FolderPath],return)" />
+						<!-- Default action for movies: Play -->
+						<param name="onclick_2" value="PlayMedia($INFO[ListItem.FileNameAndPath])" />
 					</include>
 					<include content="InfoDialogButton">
 						<param name="id" value="11" />
