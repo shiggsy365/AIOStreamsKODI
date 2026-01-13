@@ -1479,7 +1479,6 @@ def play():
     fanart = params.get('fanart', '')
     clearlogo = params.get('clearlogo', '')
 
-    xbmc.log(f'[AIOStreams] play() params: poster={poster[:50] if poster else "empty"}, fanart={fanart[:50] if fanart else "empty"}, clearlogo={clearlogo[:50] if clearlogo else "empty"}', xbmc.LOGINFO)
 
     # Format media ID for AIOStreams API
     if content_type == 'movie':
@@ -1505,7 +1504,6 @@ def play():
                 fanart = meta.get('background', '')
             if not clearlogo:
                 clearlogo = meta.get('logo', '')
-            xbmc.log(f'[AIOStreams] play() fetched metadata: poster={bool(poster)}, fanart={bool(fanart)}, clearlogo={bool(clearlogo)}', xbmc.LOGINFO)
 
     # Show progress dialog while scraping streams
     # Calling setResolvedUrl(False) would cause a "Playback Failed" notification
@@ -1805,7 +1803,6 @@ def select_stream():
                     clearlogo = meta.get('logo', '')
                 if not title:
                     title = meta.get('name', '')
-                xbmc.log(f'[AIOStreams] select_stream() fetched metadata: poster={bool(poster)}, fanart={bool(fanart)}, clearlogo={bool(clearlogo)})', xbmc.LOGINFO)
 
         # Update progress for stream fetching
         progress.update(50, 'Scraping streams...')
@@ -2155,7 +2152,6 @@ def show_streams():
     fanart = params.get('fanart', '')
     clearlogo = params.get('clearlogo', '')
 
-    xbmc.log(f'[AIOStreams] show_streams params: poster={poster}, fanart={fanart}, clearlogo={clearlogo}', xbmc.LOGINFO)
 
     # Show loading dialog while fetching streams
     progress = xbmcgui.DialogProgress()
@@ -2182,7 +2178,6 @@ def show_streams_dialog(content_type, media_id, stream_data, title, poster='', f
     Args:
         from_playable: If True, called from playable listitem context (don't use endOfDirectory)
     """
-    xbmc.log(f'[AIOStreams] show_streams_dialog received: poster={poster}, fanart={fanart}, clearlogo={clearlogo}', xbmc.LOGINFO)
 
     if not HAS_MODULES:
         # Fallback to simple dialog - use custom formatting
