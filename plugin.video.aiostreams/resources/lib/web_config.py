@@ -11,7 +11,7 @@ import platform
 import webbrowser
 import subprocess
 import time
-import json
+
 import xbmc
 import xbmcgui
 import xbmcaddon
@@ -286,6 +286,7 @@ def configure_aiostreams(host_url=None):
     timeout = 300  # 5 minutes
     start_time = time.time()
     poll_interval = 1  # Check every second
+    manifest_url = None
 
     try:
         while not monitor.abortRequested():
@@ -473,7 +474,7 @@ def retrieve_manifest():
     Workflow:
     1. Get host URL, UUID, and password from settings
     2. Call [host url]/api/v1/user?uuid=[uuid]&password=[password]
-    3. Get 'encryptedPassword' from json response (in data.encryptedPassword)
+    3. Get 'encryptedPassword' from json response (at data.encryptedPassword)
     4. Construct manifest URL as [host url]/stremio/[uuid]/[encryptedPassword]/manifest.json
     5. Save to base_url setting
     """
@@ -585,4 +586,44 @@ def retrieve_manifest():
         addon.setSetting('base_url', manifest_url)
 
         progress.update(100, 'Configuration saved!')
-        xbmc.sleep(500
+        xbmc.sleep(500)
+        progress.close()
+
+        xbmcgui.Dialog().notification(
+            'AIOStreams',
+            'Manifest URL retrieved successfully!',
+            xbmcgui.NOTIFICATION_INFO,
+            3000
+        )
+
+        xbmc.log(f'[AIOStreams WebConfig] Manifest URL saved successfully', xbmc.LOGINFO)
+        return manifest_url
+
+    except requests.exceptions.Timeout:
+        progress.close()
+        xbmcgui.Dialog().ok(
+            'AIOStreams Error',
+            'Request timed out.\n'
+            'Please check your internet connection and host URL.'
+        )
+        xbmc.log('[AIOStreams WebConfig] API request timed out', xbmc.LOGERROR)
+        return None
+
+    except requests.exceptions.ConnectionError as e:
+        progress.close()
+        xbmcgui.Dialog().ok(
+            'AIOStreams Error',
+            'Could not connect to server.\n'
+            'Please check the host URL is correct.'
+        )
+        xbmc.log(f'[AIOStreams WebConfig] Connection error: {e}', xbmc.LOGERROR)
+        return None
+
+    except Exception as e:
+        progress.close()
+        xbmcgui.Dialog().ok(
+            'AIOStreams Error',
+            f'An error occurred:\n{str(e)}'
+        )
+        xbmc.log(f'[AIOStreams WebConfig] Unexpected error: {e}', xbmc.LOGERROR)
+        return None
