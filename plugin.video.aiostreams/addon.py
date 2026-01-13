@@ -162,7 +162,8 @@ def get_cached_clearlogo_path(content_type, meta_id):
     
     if xbmcvfs.exists(clearlogo_path):
         xbmc.log(f'[AIOStreams] Cached clearlogo found for {content_type}/{meta_id}', xbmc.LOGDEBUG)
-        return clearlogo_path
+        # Return special:// path for better skin compatibility
+        return f"special://profile/addon_data/plugin.video.aiostreams/clearlogos/{safe_id}.png"
     
     return None
 
