@@ -1179,8 +1179,12 @@
 		<value condition="Control.HasFocus(6200) + !String.IsEmpty(Container(6200).ListItem.Art(clearlogo))">$INFO[Container(6200).ListItem.Art(clearlogo)]</value>
 		<value condition="Control.HasFocus(6200) + !String.IsEmpty(Container(6200).ListItem.Art(tvshow.clearlogo))">$INFO[Container(6200).ListItem.Art(tvshow.clearlogo)]</value>
 		<value condition="Control.HasFocus(6200) + !String.IsEmpty(Container(6200).ListItem.Art(logo))">$INFO[Container(6200).ListItem.Art(logo)]</value>
-		<value condition="Control.HasFocus(6200) + !String.IsEmpty(Container(6200).ListItem.Art(logo))">$INFO[Container(6200).ListItem.Art(logo)]</value>
 		<value></value>
+	</variable>
+
+	<variable name="HasCurrentWidgetClearLogo">
+		<value condition="!String.IsEqual($VAR[CurrentWidgetClearLogo],)">true</value>
+		<value>false</value>
 	</variable>
 
 	<variable name="CurrentWidgetPlot">
