@@ -34,7 +34,7 @@
 			<align>right</align>
 			<label>Home:$INFO[Skin.String(Home_WidgetIndex)] | Movies:$INFO[Skin.String(Movies_WidgetIndex)] | TV:$INFO[Skin.String(TV_WidgetIndex)]
 ActiveID:$VAR[ActiveWidgetID] | Title:$VAR[CurrentWidgetTitle]
-SideFocus:$INFO[Skin.String(SideMenuFocus)] | VER: 6.0.304</label>
+SideFocus:$INFO[Skin.String(SideMenuFocus)] | VER: 6.0.305</label>
 			<textcolor>red</textcolor>
 			<font>font13</font>
 			<visible>true</visible>
@@ -73,24 +73,45 @@ SideFocus:$INFO[Skin.String(SideMenuFocus)] | VER: 6.0.304</label>
 			<animation effect="fade" start="100" end="0" time="400">Hidden</animation>
 			<visible>String.IsEqual(Skin.String(SideMenuFocus),home) | String.IsEqual(Skin.String(SideMenuFocus),movies) | String.IsEqual(Skin.String(SideMenuFocus),tvshows)</visible>
 
-			<!-- ClearLogo -->
+			<!-- TEST RED BOX -->
 			<control type="image">
 				<left>0</left>
 				<top>0</top>
 				<width>500</width>
 				<height>180</height>
-				<aspectratio align="left" aligny="bottom">keep</aspectratio>
-				<texture background="true">$VAR[CurrentWidgetClearLogo]</texture>
+				<texture>colors/white.png</texture>
+				<colordiffuse>40FF0000</colordiffuse>
+				<visible>true</visible>
+			</control>
+			
+			<!-- TEST LOGO -->
+			<control type="image">
+				<left>0</left>
+				<top>0</top>
+				<width>500</width>
+				<height>180</height>
+				<aspectratio align="left" aligny="center">keep</aspectratio>
+				<texture background="false">$VAR[CurrentWidgetClearLogo]</texture>
 				<visible>!String.IsEmpty($VAR[CurrentWidgetClearLogo])</visible>
-				<bordertexture colordiffuse="40FFFFFF">colors/white.png</bordertexture>
-				<bordersize>1</bordersize>
+			</control>
+
+			<!-- LOGO DEBUG LABEL -->
+			<control type="label">
+				<left>0</left>
+				<top>0</top>
+				<width>500</width>
+				<height>30</height>
+				<font>font12</font>
+				<textcolor>green</textcolor>
+				<label>LOGO_IS_NOT_EMPTY</label>
+				<visible>!String.IsEmpty($VAR[CurrentWidgetClearLogo])</visible>
 			</control>
 
 
 
 
 			
-			<!-- Fallback Title (when no clearlogo) -->
+			<!-- TEST FALLBACK -->
 			<control type="label">
 				<left>0</left>
 				<top>0</top>
@@ -98,10 +119,9 @@ SideFocus:$INFO[Skin.String(SideMenuFocus)] | VER: 6.0.304</label>
 				<height>180</height>
 				<font>font45_title</font>
 				<textcolor>white</textcolor>
-				<label>$VAR[CurrentWidgetTitle]</label>
-				<shadowcolor>text_shadow</shadowcolor>
-				<aligny>bottom</aligny>
+				<label>FALLBACK: $VAR[CurrentWidgetTitle]</label>
 				<visible>String.IsEmpty($VAR[CurrentWidgetClearLogo])</visible>
+				<aligny>center</aligny>
 			</control>
 
 			<!-- DEBUG LOGO DATA -->
