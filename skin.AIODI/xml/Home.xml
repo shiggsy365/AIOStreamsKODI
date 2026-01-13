@@ -81,7 +81,7 @@ SideFocus:$INFO[Skin.String(SideMenuFocus)] | VER: 6.0.263</label>
 				<height>180</height>
 				<aspectratio align="left" aligny="bottom">keep</aspectratio>
 				<texture background="true">$VAR[CurrentWidgetClearLogo]</texture>
-				<visible>!String.IsEqual($VAR[CurrentWidgetClearLogo],None) + !String.IsEmpty($VAR[CurrentWidgetClearLogo])</visible>
+				<visible>!String.IsEmpty($VAR[CurrentWidgetClearLogo])</visible>
 			</control>
 			
 			<!-- Fallback Title (when no clearlogo) -->
@@ -95,7 +95,7 @@ SideFocus:$INFO[Skin.String(SideMenuFocus)] | VER: 6.0.263</label>
 				<label>$VAR[CurrentWidgetTitle]</label>
 				<shadowcolor>text_shadow</shadowcolor>
 				<aligny>bottom</aligny>
-				<visible>String.IsEqual($VAR[CurrentWidgetClearLogo],None) | String.IsEmpty($VAR[CurrentWidgetClearLogo])</visible>
+				<visible>String.IsEmpty($VAR[CurrentWidgetClearLogo])</visible>
 			</control>
 
 			<!-- Info Title -->
@@ -910,6 +910,7 @@ SideFocus:$INFO[Skin.String(SideMenuFocus)] | VER: 6.0.263</label>
 			<texturefocus />
 			<texturenofocus />
 			<onclick>RunScript(special://skin/resources/lib/widget_manager.py,load_page,home)</onclick>
+			<onclick>ActivateWindow(1111)</onclick>
 		</control>
 	</control>
 </control>

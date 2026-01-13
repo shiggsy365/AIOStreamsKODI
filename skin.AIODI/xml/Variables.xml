@@ -1195,15 +1195,15 @@
 		<value condition="!String.IsEmpty(ListItem.Season)">$VAR[EpisodeInfoPadded]</value>
 		<value>$INFO[ListItem.Year]$INFO[ListItem.Genre,  |  ]</value>
 	</variable>
-	<variable name="SeasonPadding">
-		<value condition="Integer.IsLess(ListItem.Season,10)">0</value>
-		<value></value>
+	<variable name="SeasonNumberPadded">
+		<value condition="Integer.IsLess(ListItem.Season,10)">S0$INFO[ListItem.Season]</value>
+		<value>S$INFO[ListItem.Season]</value>
 	</variable>
-	<variable name="EpisodePadding">
-		<value condition="Integer.IsLess(ListItem.Episode,10)">0</value>
-		<value></value>
+	<variable name="EpisodeNumberPadded">
+		<value condition="Integer.IsLess(ListItem.Episode,10)">E0$INFO[ListItem.Episode]</value>
+		<value>E$INFO[ListItem.Episode]</value>
 	</variable>
 	<variable name="EpisodeInfoPadded">
-		<value>$INFO[ListItem.Season,S,$VAR[SeasonPadding]]$INFO[ListItem.Episode,:E,$VAR[EpisodePadding]] - $INFO[ListItem.Title]</value>
+		<value>$VAR[SeasonNumberPadded]:$VAR[EpisodeNumberPadded] - $INFO[ListItem.Title]</value>
 	</variable>
 </includes>
