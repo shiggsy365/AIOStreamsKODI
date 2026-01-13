@@ -246,6 +246,7 @@
 		<param name="ondown_action1">noop</param>
 		<param name="ondown_action2">noop</param>
 		<param name="onclick_condition">false</param>
+		<param name="onclick_action">noop</param>
 		<param name="browse_mode">auto</param>
 		<param name="widget_type">videos</param>
 		<definition>
@@ -273,7 +274,7 @@
 					<ondown>$PARAM[ondown_action1]</ondown>
 					<ondown>$PARAM[ondown_action2]</ondown>
 					<onclick condition="!String.IsEqual($PARAM[onclick_action],noop)">$PARAM[onclick_action]</onclick>
-					<onclick condition="String.IsEqual($PARAM[onclick_action],noop)">ActivateWindow(Videos,$INFO[ListItem.FolderPath],return)</onclick>
+					<onclick condition="String.IsEqual($PARAM[onclick_action],noop)">Action(Select)</onclick>
 					<onfocus>Skin.SetString(ActiveWidgetID,$PARAM[list_id])</onfocus>
 					<itemlayout width="240" height="360">
 						<control type="image">

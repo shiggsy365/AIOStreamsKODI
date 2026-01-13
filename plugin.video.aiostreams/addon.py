@@ -141,8 +141,7 @@ def get_cached_clearlogo_path(content_type, meta_id):
     
     if xbmcvfs.exists(clearlogo_path):
         xbmc.log(f'[AIOStreams] Cached clearlogo found for {content_type}/{meta_id}', xbmc.LOGDEBUG)
-        # Add file:// prefix for Kodi to handle local paths correctly in skin variables
-        return f"file://{clearlogo_path}"
+        return clearlogo_path
     
     return None
 
@@ -1002,8 +1001,6 @@ def create_listitem_with_context(meta, content_type, action_url):
     fanart = meta.get('background', '')
     # Use the actual clearlogo being used (cached path or URL)
     clearlogo = art.get('clearlogo', meta.get('logo', ''))
-
-    xbmc.log(f'[AIOStreams] Metadata for {title}: poster={poster}, fanart={fanart}, clearlogo={clearlogo}', xbmc.LOGINFO)
 
     if content_type == 'movie':
         # Movie context menu: Scrape Streams, View Trailer, Mark as Watched, Watchlist
