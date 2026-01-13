@@ -1108,66 +1108,45 @@
 <value>overlays/checkbox-off.png</value>
 </variable>
 	<variable name="CurrentWidgetTitle">
-		<value condition="String.IsEqual(Skin.String(ActiveWidgetID),10100)">$INFO[Container(10100).ListItem.Title]</value>
-		<value condition="String.IsEqual(Skin.String(ActiveWidgetID),10200)">$INFO[Container(10200).ListItem.Title]</value>
-		<value condition="String.IsEqual(Skin.String(ActiveWidgetID),10300)">$INFO[Container(10300).ListItem.Title]</value>
-		<value condition="String.IsEqual(Skin.String(ActiveWidgetID),5100)">$INFO[Container(5100).ListItem.Title]</value>
-		<value condition="String.IsEqual(Skin.String(ActiveWidgetID),5110)">$INFO[Container(5110).ListItem.Title]</value>
-		<value condition="String.IsEqual(Skin.String(ActiveWidgetID),5120)">$INFO[Container(5120).ListItem.Title]</value>
-		<value condition="String.IsEqual(Skin.String(ActiveWidgetID),5130)">$INFO[Container(5130).ListItem.Title]</value>
-		<value condition="String.IsEqual(Skin.String(ActiveWidgetID),5140)">$INFO[Container(5140).ListItem.Title]</value>
-		<value condition="String.IsEqual(Skin.String(ActiveWidgetID),5150)">$INFO[Container(5150).ListItem.Title]</value>
-		<value condition="String.IsEqual(Skin.String(ActiveWidgetID),5160)">$INFO[Container(5160).ListItem.Title]</value>
-		<value condition="String.IsEqual(Skin.String(ActiveWidgetID),5170)">$INFO[Container(5170).ListItem.Title]</value>
-		<value condition="String.IsEqual(Skin.String(ActiveWidgetID),5180)">$INFO[Container(5180).ListItem.Title]</value>
-		<value condition="String.IsEqual(Skin.String(ActiveWidgetID),5190)">$INFO[Container(5190).ListItem.Title]</value>
-		<value condition="String.IsEqual(Skin.String(ActiveWidgetID),5200)">$INFO[Container(5200).ListItem.Title]</value>
-		<value condition="String.IsEqual(Skin.String(ActiveWidgetID),6100)">$INFO[Container(6100).ListItem.Title]</value>
-		<value condition="String.IsEqual(Skin.String(ActiveWidgetID),6110)">$INFO[Container(6110).ListItem.Title]</value>
-		<value condition="String.IsEqual(Skin.String(ActiveWidgetID),6120)">$INFO[Container(6120).ListItem.Title]</value>
-		<value condition="String.IsEqual(Skin.String(ActiveWidgetID),6130)">$INFO[Container(6130).ListItem.Title]</value>
-		<value condition="String.IsEqual(Skin.String(ActiveWidgetID),6140)">$INFO[Container(6140).ListItem.Title]</value>
-		<value condition="String.IsEqual(Skin.String(ActiveWidgetID),6150)">$INFO[Container(6150).ListItem.Title]</value>
-		<value condition="String.IsEqual(Skin.String(ActiveWidgetID),6160)">$INFO[Container(6160).ListItem.Title]</value>
-		<value condition="String.IsEqual(Skin.String(ActiveWidgetID),6170)">$INFO[Container(6170).ListItem.Title]</value>
-		<value condition="String.IsEqual(Skin.String(ActiveWidgetID),6180)">$INFO[Container(6180).ListItem.Title]</value>
-		<value condition="String.IsEqual(Skin.String(ActiveWidgetID),6190)">$INFO[Container(6190).ListItem.Title]</value>
+		<value condition="Control.HasFocus(10100)">$INFO[Container(10100).ListItem.Title]</value>
+		<value condition="Control.HasFocus(10200)">$INFO[Container(10200).ListItem.Title]</value>
+		<value condition="Control.HasFocus(10300)">$INFO[Container(10300).ListItem.Title]</value>
+		<value condition="Control.HasFocus(5100)">$INFO[Container(5100).ListItem.Title]</value>
+		<value condition="Control.HasFocus(6100)">$INFO[Container(6100).ListItem.Title]</value>
 		<value>$INFO[ListItem.Title]</value>
 	</variable>
 	<variable name="CurrentWidgetFanart">
-		<value condition="String.IsEqual(Skin.String(ActiveWidgetID),10100)">$INFO[Container(10100).ListItem.Art(fanart)]</value>
-		<value condition="String.IsEqual(Skin.String(ActiveWidgetID),10200)">$INFO[Container(10200).ListItem.Art(fanart)]</value>
-		<value condition="String.IsEqual(Skin.String(ActiveWidgetID),10300)">$INFO[Container(10300).ListItem.Art(fanart)]</value>
-		<value condition="String.IsEqual(Skin.String(ActiveWidgetID),5100)">$INFO[Container(5100).ListItem.Art(fanart)]</value>
-		<value condition="String.IsEqual(Skin.String(ActiveWidgetID),5110)">$INFO[Container(5110).ListItem.Art(fanart)]</value>
-		<value condition="String.IsEqual(Skin.String(ActiveWidgetID),5120)">$INFO[Container(5120).ListItem.Art(fanart)]</value>
-		<value condition="String.IsEqual(Skin.String(ActiveWidgetID),5130)">$INFO[Container(5130).ListItem.Art(fanart)]</value>
-		<value condition="String.IsEqual(Skin.String(ActiveWidgetID),5140)">$INFO[Container(5140).ListItem.Art(fanart)]</value>
-		<value condition="String.IsEqual(Skin.String(ActiveWidgetID),5150)">$INFO[Container(5150).ListItem.Art(fanart)]</value>
-		<value condition="String.IsEqual(Skin.String(ActiveWidgetID),6100)">$INFO[Container(6100).ListItem.Art(fanart)]</value>
+		<value condition="Control.HasFocus(10100)">$INFO[Container(10100).ListItem.Art(fanart)]</value>
+		<value condition="Control.HasFocus(10200)">$INFO[Container(10200).ListItem.Art(fanart)]</value>
+		<value condition="Control.HasFocus(10300)">$INFO[Container(10300).ListItem.Art(fanart)]</value>
+		<value condition="Control.HasFocus(5100)">$INFO[Container(5100).ListItem.Art(fanart)]</value>
+		<value condition="Control.HasFocus(6100)">$INFO[Container(6100).ListItem.Art(fanart)]</value>
 		<value>$INFO[ListItem.Art(fanart)]</value>
 	</variable>
 	<variable name="CurrentWidgetClearLogo">
-		<value condition="String.IsEqual(Skin.String(ActiveWidgetID),10100)">$INFO[Container(10100).ListItem.Art(clearlogo),,$INFO[Container(10100).ListItem.Art(logo)]]</value>
-		<value condition="String.IsEqual(Skin.String(ActiveWidgetID),10200)">$INFO[Container(10200).ListItem.Art(clearlogo),,$INFO[Container(10200).ListItem.Art(logo)]]</value>
-		<value condition="String.IsEqual(Skin.String(ActiveWidgetID),10300)">$INFO[Container(10300).ListItem.Art(clearlogo),,$INFO[Container(10300).ListItem.Art(logo)]]</value>
-		<value condition="String.IsEqual(Skin.String(ActiveWidgetID),5100)">$INFO[Container(5100).ListItem.Art(clearlogo),,$INFO[Container(5100).ListItem.Art(logo)]]</value>
-		<value condition="String.IsEqual(Skin.String(ActiveWidgetID),5110)">$INFO[Container(5110).ListItem.Art(clearlogo),,$INFO[Container(5110).ListItem.Art(logo)]]</value>
-		<value condition="String.IsEqual(Skin.String(ActiveWidgetID),6100)">$INFO[Container(6100).ListItem.Art(clearlogo),,$INFO[Container(6100).ListItem.Art(logo)]]</value>
+		<value condition="Control.HasFocus(10100)">$INFO[Container(10100).ListItem.Art(clearlogo),,$INFO[Container(10100).ListItem.Art(logo)]]</value>
+		<value condition="Control.HasFocus(10200)">$INFO[Container(10200).ListItem.Art(clearlogo),,$INFO[Container(10200).ListItem.Art(logo)]]</value>
+		<value condition="Control.HasFocus(10300)">$INFO[Container(10300).ListItem.Art(clearlogo),,$INFO[Container(10300).ListItem.Art(logo)]]</value>
+		<value condition="Control.HasFocus(5100)">$INFO[Container(5100).ListItem.Art(clearlogo),,$INFO[Container(5100).ListItem.Art(logo)]]</value>
+		<value condition="Control.HasFocus(6100)">$INFO[Container(6100).ListItem.Art(clearlogo),,$INFO[Container(6100).ListItem.Art(logo)]]</value>
 		<value>$INFO[ListItem.Art(clearlogo),,$INFO[ListItem.Art(logo)]]</value>
 	</variable>
 
 	<variable name="CurrentWidgetPlot">
-		<value condition="String.IsEqual(Skin.String(ActiveWidgetID),10100)">$INFO[Container(10100).ListItem.Plot]</value>
-		<value condition="String.IsEqual(Skin.String(ActiveWidgetID),10200)">$INFO[Container(10200).ListItem.Plot]</value>
-		<value condition="String.IsEqual(Skin.String(ActiveWidgetID),10300)">$INFO[Container(10300).ListItem.Plot]</value>
-		<value condition="String.IsEqual(Skin.String(ActiveWidgetID),5100)">$INFO[Container(5100).ListItem.Plot]</value>
-		<value condition="String.IsEqual(Skin.String(ActiveWidgetID),5110)">$INFO[Container(5110).ListItem.Plot]</value>
-		<value condition="String.IsEqual(Skin.String(ActiveWidgetID),6100)">$INFO[Container(6100).ListItem.Plot]</value>
+		<value condition="Control.HasFocus(10100)">$INFO[Container(10100).ListItem.Plot]</value>
+		<value condition="Control.HasFocus(10200)">$INFO[Container(10200).ListItem.Plot]</value>
+		<value condition="Control.HasFocus(10300)">$INFO[Container(10300).ListItem.Plot]</value>
+		<value condition="Control.HasFocus(5100)">$INFO[Container(5100).ListItem.Plot]</value>
+		<value condition="Control.HasFocus(6100)">$INFO[Container(6100).ListItem.Plot]</value>
 		<value>$INFO[ListItem.Plot]</value>
 	</variable>
 
 	<variable name="CurrentWidgetInfo">
+		<value condition="Control.HasFocus(10100)">$INFO[Container(10100).ListItem.Year]$INFO[Container(10100).ListItem.Genre,  |  ]</value>
+		<value condition="Control.HasFocus(10200)">$INFO[Container(10200).ListItem.Year]$INFO[Container(10200).ListItem.Genre,  |  ]</value>
+		<value condition="Control.HasFocus(10300)">$INFO[Container(10300).ListItem.Year]$INFO[Container(10300).ListItem.Genre,  |  ]</value>
+		<value condition="Control.HasFocus(5100)">$INFO[Container(5100).ListItem.Year]$INFO[Container(5100).ListItem.Genre,  |  ]</value>
+		<value condition="Control.HasFocus(6100)">$INFO[Container(6100).ListItem.Year]$INFO[Container(6100).ListItem.Genre,  |  ]</value>
 		<value condition="!String.IsEmpty(ListItem.Season)">$INFO[ListItem.Season,S,]$INFO[ListItem.Episode,E,  |  ]$INFO[ListItem.Title]</value>
 		<value>$INFO[ListItem.Year]$INFO[ListItem.Genre,  |  ]</value>
 	</variable>
