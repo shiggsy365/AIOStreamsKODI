@@ -76,13 +76,31 @@ def get_available_catalogs():
 def load_page(page_name):
     """Load catalogs for a specific page"""
     log(f'Loading page: {page_name}')
+    
+    # Give the window a moment to fully initialize
+    xbmc.sleep(200)
+    
+    window = None
     try:
+        # Try finding the window by ID first
         window = xbmcgui.Window(1111)
-        # Wait a brief moment for the window to settle if called on load
-        # xbmc.sleep(100) 
+        # Verify it's actually our window (this will fail if not active)
+        window.getControl(3000)
+        log('Found window 1111')
+    except:
+        try:
+            # Fallback to current window
+            window = xbmcgui.getCurrentWindowDialogId()
+            log(f'Fallback: Using current window dialog ID {window}')
+            window = xbmcgui.Window(window)
+        except Exception as e:
+            log(f'Critical: Could not access window: {e}', xbmc.LOGERROR)
+            return
+
+    try:
         window.setProperty('CurrentPage', page_name)
     except Exception as e:
-        log(f'Error accessing window 1111: {e}', xbmc.LOGERROR)
+        log(f'Error setting property on window: {e}', xbmc.LOGERROR)
         return
     
     config = load_config()

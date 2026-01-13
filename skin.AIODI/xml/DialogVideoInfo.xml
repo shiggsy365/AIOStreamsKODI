@@ -308,7 +308,7 @@
 					<top>158</top>
 					<width>1235</width>
 					<height>370</height>
-					<onclick>Skin.SetString(AIOStreams_SearchQuery,$INFO[ListItem.Label])</onclick>
+					<onclick>Skin.SetString(AIOStreams_SearchQuery,$ESCINFO[ListItem.Label])</onclick>
 					<onclick>ActivateWindow(1108)</onclick>
 					<onup>SetFocus(9000)</onup>
 					<onleft>50</onleft>
@@ -583,6 +583,8 @@
 						<param name="id" value="13" />
 						<param name="icon" value="icons/infodialogs/director.png" />
 						<param name="label" value="$LOCALIZE[31123]" />
+						<param name="onclick_1" value="Skin.SetString(AIOStreams_SearchQuery,$ESCINFO[ListItem.Director])" />
+						<param name="onclick_2" value="ActivateWindow(1108)" />
 						<param name="visible" value="!String.IsEmpty(ListItem.Director)" />
 					</include>
 					<include content="InfoDialogButton">
