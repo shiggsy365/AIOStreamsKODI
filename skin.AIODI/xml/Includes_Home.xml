@@ -254,7 +254,7 @@
 				<left>0</left>
 				<top>0</top>
 				<width>1750</width>
-				<height>550</height>
+				<height>470</height>
 				<!-- HEADER -->
 				<include content="CategoryLabel">
 					<param name="label">$PARAM[widget_header]</param>
@@ -265,7 +265,7 @@
 					<left>0</left>
 					<top>65</top>
 					<width>1750</width>
-					<height>485</height>
+					<height>405</height>
 					<orientation>horizontal</orientation>
 					<onleft>9000</onleft>
 					<onright>noop</onright>
@@ -273,8 +273,7 @@
 					<onup>$PARAM[onup_action2]</onup>
 					<ondown>$PARAM[ondown_action1]</ondown>
 					<ondown>$PARAM[ondown_action2]</ondown>
-					<onclick condition="!String.IsEmpty($PARAM[onclick_action]) + !String.IsEqual($PARAM[onclick_action],noop)">$PARAM[onclick_action]</onclick>
-					<onclick condition="String.IsEmpty($PARAM[onclick_action]) | String.IsEqual($PARAM[onclick_action],noop)">Select</onclick>
+					<onclick condition="!String.IsEqual($PARAM[onclick_action],noop) + !String.IsEmpty($PARAM[onclick_action])">$PARAM[onclick_action]</onclick>
 					<onfocus>Skin.SetString(ActiveWidgetID,$PARAM[list_id])</onfocus>
 					<itemlayout width="240" height="360">
 						<control type="image">

@@ -173,18 +173,14 @@
 						<param name="control_id" value="147" />
 						<param name="label" value="$INFO[ListItem.Director,[COLOR button_focus]$LOCALIZE[20339]: [/COLOR]]" />
 						<param name="altlabel" value="$INFO[ListItem.Director,$LOCALIZE[20339]: ]" />
-						<param name="onclick" value="Skin.SetString(AIOStreams_SearchQuery, $ESCINFO[ListItem.Director])" />
-						<param name="onclick_condition_2" value="!String.IsEmpty(Skin.String(AIOStreams_SearchQuery))" />
-						<param name="onclick_2" value="ActivateWindow(1108)" />
+						<param name="onclick" value="Skin.SetString(AIOStreams_SearchQuery, $ESCINFO[ListItem.Director]);ActivateWindow(1108)" />
 						<param name="visible" value="!String.IsEmpty(ListItem.Director)" />
 					</include>
 					<include content="InfoDialogMetadata">
 						<param name="control_id" value="148" />
 						<param name="label" value="$INFO[ListItem.Writer,[COLOR button_focus]$LOCALIZE[20417]: [/COLOR]]" />
 						<param name="altlabel" value="$INFO[ListItem.Writer,$LOCALIZE[20417]: ]" />
-						<param name="onclick" value="Skin.SetString(AIOStreams_SearchQuery, $ESCINFO[ListItem.Writer])" />
-						<param name="onclick_condition_2" value="!String.IsEmpty(Skin.String(AIOStreams_SearchQuery))" />
-						<param name="onclick_2" value="ActivateWindow(1108)" />
+						<param name="onclick" value="Skin.SetString(AIOStreams_SearchQuery, $ESCINFO[ListItem.Writer]);ActivateWindow(1108)" />
 						<param name="visible" value="!String.IsEmpty(ListItem.Writer)" />
 					</include>
 					<include content="InfoDialogMetadata">
@@ -309,8 +305,7 @@
 					<visible>Integer.IsEqual(Container(50).NumItems,0)</visible>
 				</control>
 				<control type="panel" id="50">
-					<onclick>Skin.SetString(AIOStreams_SearchQuery, $ESCINFO[ListItem.Label])</onclick>
-					<onclick condition="!String.IsEmpty(Skin.String(AIOStreams_SearchQuery))">ActivateWindow(1108)</onclick>
+					<onclick>Skin.SetString(AIOStreams_SearchQuery, $ESCINFO[ListItem.Label]);ActivateWindow(1108)</onclick>
 					<top>158</top>
 					<width>1235</width>
 					<height>370</height>

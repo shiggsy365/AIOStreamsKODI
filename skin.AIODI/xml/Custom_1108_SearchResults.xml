@@ -11,45 +11,45 @@
             <texture>colors/black_70.png</texture>
         </control>
 
-        <!-- TOP: FOCUSED ITEM INFO -->
+        <!-- TOP 20%: FOCUSED ITEM INFO -->
         <control type="group">
             <left>150</left>
-            <top>50</top>
+            <top>30</top>
             <width>1100</width>
-            <height>400</height>
+            <height>180</height>
             <animation effect="fade" start="0" end="100" time="400">Visible</animation>
             
             <!-- ClearLogo or Title -->
             <control type="image">
                 <left>0</left>
                 <top>0</top>
-                <width>400</width>
-                <height>120</height>
+                <width>300</width>
+                <height>100</height>
                 <aspectratio align="left" aligny="bottom">keep</aspectratio>
                 <texture background="true">$VAR[SearchResultsClearLogo]</texture>
-                <visible>!String.IsEqual($VAR[SearchResultsClearLogo],)</visible>
+                <visible>!String.IsEmpty($VAR[SearchResultsClearLogo])</visible>
             </control>
             
             <control type="label">
                 <left>0</left>
                 <top>0</top>
                 <width>800</width>
-                <height>120</height>
+                <height>100</height>
                 <font>font45_title</font>
                 <textcolor>FFFFFFFF</textcolor>
                 <label>$VAR[SearchResultsTitle]</label>
                 <shadowcolor>text_shadow</shadowcolor>
                 <aligny>bottom</aligny>
-                <visible>String.IsEqual($VAR[SearchResultsClearLogo],)</visible>
+                <visible>String.IsEmpty($VAR[SearchResultsClearLogo])</visible>
             </control>
             
             <!-- Metadata Line -->
             <control type="label">
                 <left>0</left>
-                <top>125</top>
+                <top>105</top>
                 <width>800</width>
-                <height>40</height>
-                <font>font13</font>
+                <height>30</height>
+                <font>font12</font>
                 <textcolor>grey</textcolor>
                 <label>$INFO[Skin.String(AIOStreams_SearchQuery),Search: ,  •  ]$VAR[SearchResultsYear]$VAR[SearchResultsRating,  •  ]$VAR[SearchResultsGenre,  •  ]</label>
             </control>
@@ -57,22 +57,22 @@
             <!-- Plot/Description -->
             <control type="textbox">
                 <left>0</left>
-                <top>170</top>
-                <width>1000</width>
-                <height>160</height>
-                <font>font13</font>
+                <top>140</top>
+                <width>1500</width>
+                <height>70</height>
+                <font>font12</font>
                 <textcolor>FFFFFFFF</textcolor>
                 <label>$VAR[SearchResultsPlot]</label>
                 <autoscroll delay="8000" time="3000" repeat="8000">true</autoscroll>
             </control>
         </control>
 
-        <!-- MIDDLE THIRD: MOVIES -->
+        <!-- NEXT 40%: MOVIES -->
         <control type="group">
             <left>150</left>
-            <top>380</top>
+            <top>220</top>
             <width>1750</width>
-            <height>350</height>
+            <height>410</height>
             <include content="WidgetListPoster">
                 <param name="list_id" value="5100" />
                 <param name="widget_header" value="MOVIES" />
@@ -81,12 +81,12 @@
             </include>
         </control>
         
-        <!-- BOTTOM: TV SHOWS -->
+        <!-- NEXT 40%: TV SHOWS -->
         <control type="group">
             <left>150</left>
-            <top>750</top>
+            <top>650</top>
             <width>1750</width>
-            <height>350</height>
+            <height>410</height>
             <include content="WidgetListPoster">
                 <param name="list_id" value="5200" />
                 <param name="widget_header" value="TV SHOWS" />
