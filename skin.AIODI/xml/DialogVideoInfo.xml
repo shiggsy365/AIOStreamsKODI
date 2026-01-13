@@ -302,133 +302,273 @@
 					<fadetime>150</fadetime>
 					<aspectratio>keep</aspectratio>
 					<texture>$VAR[BannerVar]</texture>
-					<visible>Integer.IsEqual(Container(50).NumItems,0)</visible>
+					<visible>String.IsEmpty(ListItem.Cast.1.Name)</visible>
 				</control>
-				<control type="panel" id="50">
+				<!-- Custom Cast Panel - 5 Tiles -->
+				<control type="group">
+					<left>77</left>
 					<top>158</top>
-					<width>1235</width>
+					<width>1090</width>
 					<height>370</height>
-					<onclick>Dialog.Close(MovieInformation)</onclick>
-					<onclick>Skin.SetString(AIOStreams_SearchQuery,$ESCINFO[ListItem.Label])</onclick>
-					<onclick>ActivateWindow(1108)</onclick>
-					<onup>SetFocus(9000)</onup>
-					<onleft>50</onleft>
-					<onright>50</onright>
-					<ondown>140</ondown>
-					<scrolltime>200</scrolltime>
-					<orientation>horizontal</orientation>
-					<itemlayout height="317" width="245" condition="!Container.Content(Sets)">
-						<control type="group">
+					
+					<!-- Cast Tile 1 -->
+					<control type="button" id="50">
+						<left>0</left>
+						<top>0</top>
+						<width>200</width>
+						<height>350</height>
+						<texturefocus />
+						<texturenofocus />
+						<onclick>Dialog.Close(MovieInformation)</onclick>
+						<onclick>Skin.SetString(AIOStreams_SearchQuery,$INFO[ListItem.Cast.1.Name])</onclick>
+						<onclick>ActivateWindow(1108)</onclick>
+						<onup>SetFocus(9000)</onup>
+						<onleft>54</onleft>
+						<onright>51</onright>
+						<ondown>140</ondown>
+						<visible>!String.IsEmpty(ListItem.Cast.1.Name)</visible>
+						
+						<!-- Actor Photo -->
+						<control type="image">
+							<left>10</left>
 							<top>10</top>
-							<control type="image">
-								<top>0</top>
-								<width>264</width>
-								<height>317</height>
-								<texture>DefaultActorSolid.png</texture>
-								<aspectratio aligny="center">scale</aspectratio>
-								<bordertexture border="21" infill="false">overlays/shadow.png</bordertexture>
-								<bordersize>20</bordersize>
-							</control>
-							<control type="image">
-								<top>20</top>
-								<left>20</left>
-								<width>224</width>
-								<height>277</height>
-								<texture background="true">$INFO[ListItem.Thumb]</texture>
-								<aspectratio aligny="center">scale</aspectratio>
-							</control>
-							<control type="image">
-								<left>20</left>
-								<width>224</width>
-								<height>80</height>
-								<bottom>10</bottom>
-								<texture>overlays/overlayfade.png</texture>
-								<animation effect="fade" start="100" end="80" time="0" condition="true">Conditional</animation>
-							</control>
-							<control type="label">
-								<left>25</left>
-								<width>214</width>
-								<height>67</height>
-								<top>218</top>
-								<align>center</align>
-								<aligny>center</aligny>
-								<font>font12</font>
-								<label>$INFO[ListItem.Label]</label>
-							</control>
-							<control type="label">
-								<left>25</left>
-								<width>214</width>
-								<height>67</height>
-								<top>245</top>
-								<align>center</align>
-								<aligny>center</aligny>
-								<font>font12</font>
-								<textcolor>grey</textcolor>
-								<label>$INFO[ListItem.Label2]</label>
-							</control>
+							<width>180</width>
+							<height>270</height>
+							<texture background="true">$INFO[ListItem.Cast.1.Thumb]</texture>
+							<aspectratio aligny="center">scale</aspectratio>
+							<bordertexture border="8">overlays/shadow.png</bordertexture>
+							<bordersize>8</bordersize>
 						</control>
-					</itemlayout>
-					<focusedlayout height="317" width="245" condition="!Container.Content(Sets)">
-						<control type="group">
-							<left>0</left>
+						
+						<!-- Actor Name -->
+						<control type="label">
+							<left>10</left>
+							<top>290</top>
+							<width>180</width>
+							<height>50</height>
+							<align>center</align>
+							<aligny>center</aligny>
+							<font>font12</font>
+							<textcolor>white</textcolor>
+							<selectedcolor>button_focus</selectedcolor>
+							<label>$INFO[ListItem.Cast.1.Name]</label>
+						</control>
+						
+						<!-- Focus Border -->
+						<control type="image">
+							<left>8</left>
+							<top>8</top>
+							<width>184</width>
+							<height>274</height>
+							<texture border="8" colordiffuse="button_focus">buttons/thumbnail_focused.png</texture>
+							<visible>Control.HasFocus(50)</visible>
+						</control>
+					</control>
+					
+					<!-- Cast Tile 2 -->
+					<control type="button" id="51">
+						<left>218</left>
+						<top>0</top>
+						<width>200</width>
+						<height>350</height>
+						<texturefocus />
+						<texturenofocus />
+						<onclick>Dialog.Close(MovieInformation)</onclick>
+						<onclick>Skin.SetString(AIOStreams_SearchQuery,$INFO[ListItem.Cast.2.Name])</onclick>
+						<onclick>ActivateWindow(1108)</onclick>
+						<onup>SetFocus(9000)</onup>
+						<onleft>50</onleft>
+						<onright>52</onright>
+						<ondown>140</ondown>
+						<visible>!String.IsEmpty(ListItem.Cast.2.Name)</visible>
+						
+						<control type="image">
+							<left>10</left>
 							<top>10</top>
-							<control type="image">
-								<top>0</top>
-								<width>264</width>
-								<height>317</height>
-								<texture>DefaultActorSolid.png</texture>
-								<aspectratio aligny="center">scale</aspectratio>
-								<bordertexture border="21" infill="false">overlays/shadow.png</bordertexture>
-								<bordersize>20</bordersize>
-							</control>
-							<control type="image">
-								<top>20</top>
-								<left>20</left>
-								<width>224</width>
-								<height>277</height>
-								<texture background="true">$INFO[ListItem.Thumb]</texture>
-								<aspectratio aligny="center">scale</aspectratio>
-							</control>
-							<control type="image">
-								<left>20</left>
-								<width>224</width>
-								<height>80</height>
-								<bottom>10</bottom>
-								<texture>overlays/overlayfade.png</texture>
-								<animation effect="fade" start="100" end="80" time="0" condition="true">Conditional</animation>
-							</control>
-							<control type="label">
-								<left>25</left>
-								<width>214</width>
-								<height>67</height>
-								<top>218</top>
-								<align>center</align>
-								<aligny>center</aligny>
-								<font>font12</font>
-								<scroll>true</scroll>
-								<label>$INFO[ListItem.Label]</label>
-							</control>
-							<control type="label">
-								<left>25</left>
-								<width>214</width>
-								<height>67</height>
-								<top>245</top>
-								<align>center</align>
-								<aligny>center</aligny>
-								<font>font12</font>
-								<textcolor>grey</textcolor>
-								<scroll>true</scroll>
-								<label>$INFO[ListItem.Label2]</label>
-							</control>
-							<control type="image">
-								<left>16</left>
-								<top>16</top>
-								<width>232</width>
-								<height>285</height>
-								<texture border="8" colordiffuse="button_focus">buttons/thumbnail_focused.png</texture>
-							</control>
+							<width>180</width>
+							<height>270</height>
+							<texture background="true">$INFO[ListItem.Cast.2.Thumb]</texture>
+							<aspectratio aligny="center">scale</aspectratio>
+							<bordertexture border="8">overlays/shadow.png</bordertexture>
+							<bordersize>8</bordersize>
 						</control>
-					</focusedlayout>
+						
+						<control type="label">
+							<left>10</left>
+							<top>290</top>
+							<width>180</width>
+							<height>50</height>
+							<align>center</align>
+							<aligny>center</aligny>
+							<font>font12</font>
+							<textcolor>white</textcolor>
+							<selectedcolor>button_focus</selectedcolor>
+							<label>$INFO[ListItem.Cast.2.Name]</label>
+						</control>
+						
+						<control type="image">
+							<left>8</left>
+							<top>8</top>
+							<width>184</width>
+							<height>274</height>
+							<texture border="8" colordiffuse="button_focus">buttons/thumbnail_focused.png</texture>
+							<visible>Control.HasFocus(51)</visible>
+						</control>
+					</control>
+					
+					<!-- Cast Tile 3 -->
+					<control type="button" id="52">
+						<left>436</left>
+						<top>0</top>
+						<width>200</width>
+						<height>350</height>
+						<texturefocus />
+						<texturenofocus />
+						<onclick>Dialog.Close(MovieInformation)</onclick>
+						<onclick>Skin.SetString(AIOStreams_SearchQuery,$INFO[ListItem.Cast.3.Name])</onclick>
+						<onclick>ActivateWindow(1108)</onclick>
+						<onup>SetFocus(9000)</onup>
+						<onleft>51</onleft>
+						<onright>53</onright>
+						<ondown>140</ondown>
+						<visible>!String.IsEmpty(ListItem.Cast.3.Name)</visible>
+						
+						<control type="image">
+							<left>10</left>
+							<top>10</top>
+							<width>180</width>
+							<height>270</height>
+							<texture background="true">$INFO[ListItem.Cast.3.Thumb]</texture>
+							<aspectratio aligny="center">scale</aspectratio>
+							<bordertexture border="8">overlays/shadow.png</bordertexture>
+							<bordersize>8</bordersize>
+						</control>
+						
+						<control type="label">
+							<left>10</left>
+							<top>290</top>
+							<width>180</width>
+							<height>50</height>
+							<align>center</align>
+							<aligny>center</aligny>
+							<font>font12</font>
+							<textcolor>white</textcolor>
+							<selectedcolor>button_focus</selectedcolor>
+							<label>$INFO[ListItem.Cast.3.Name]</label>
+						</control>
+						
+						<control type="image">
+							<left>8</left>
+							<top>8</top>
+							<width>184</width>
+							<height>274</height>
+							<texture border="8" colordiffuse="button_focus">buttons/thumbnail_focused.png</texture>
+							<visible>Control.HasFocus(52)</visible>
+						</control>
+					</control>
+					
+					<!-- Cast Tile 4 -->
+					<control type="button" id="53">
+						<left>654</left>
+						<top>0</top>
+						<width>200</width>
+						<height>350</height>
+						<texturefocus />
+						<texturenofocus />
+						<onclick>Dialog.Close(MovieInformation)</onclick>
+						<onclick>Skin.SetString(AIOStreams_SearchQuery,$INFO[ListItem.Cast.4.Name])</onclick>
+						<onclick>ActivateWindow(1108)</onclick>
+						<onup>SetFocus(9000)</onup>
+						<onleft>52</onleft>
+						<onright>54</onright>
+						<ondown>140</ondown>
+						<visible>!String.IsEmpty(ListItem.Cast.4.Name)</visible>
+						
+						<control type="image">
+							<left>10</left>
+							<top>10</top>
+							<width>180</width>
+							<height>270</height>
+							<texture background="true">$INFO[ListItem.Cast.4.Thumb]</texture>
+							<aspectratio aligny="center">scale</aspectratio>
+							<bordertexture border="8">overlays/shadow.png</bordertexture>
+							<bordersize>8</bordersize>
+						</control>
+						
+						<control type="label">
+							<left>10</left>
+							<top>290</top>
+							<width>180</width>
+							<height>50</height>
+							<align>center</align>
+							<aligny>center</aligny>
+							<font>font12</font>
+							<textcolor>white</textcolor>
+							<selectedcolor>button_focus</selectedcolor>
+							<label>$INFO[ListItem.Cast.4.Name]</label>
+						</control>
+						
+						<control type="image">
+							<left>8</left>
+							<top>8</top>
+							<width>184</width>
+							<height>274</height>
+							<texture border="8" colordiffuse="button_focus">buttons/thumbnail_focused.png</texture>
+							<visible>Control.HasFocus(53)</visible>
+						</control>
+					</control>
+					
+					<!-- Cast Tile 5 -->
+					<control type="button" id="54">
+						<left>872</left>
+						<top>0</top>
+						<width>200</width>
+						<height>350</height>
+						<texturefocus />
+						<texturenofocus />
+						<onclick>Dialog.Close(MovieInformation)</onclick>
+						<onclick>Skin.SetString(AIOStreams_SearchQuery,$INFO[ListItem.Cast.5.Name])</onclick>
+						<onclick>ActivateWindow(1108)</onclick>
+						<onup>SetFocus(9000)</onup>
+						<onleft>53</onleft>
+						<onright>50</onright>
+						<ondown>140</ondown>
+						<visible>!String.IsEmpty(ListItem.Cast.5.Name)</visible>
+						
+						<control type="image">
+							<left>10</left>
+							<top>10</top>
+							<width>180</width>
+							<height>270</height>
+							<texture background="true">$INFO[ListItem.Cast.5.Thumb]</texture>
+							<aspectratio aligny="center">scale</aspectratio>
+							<bordertexture border="8">overlays/shadow.png</bordertexture>
+							<bordersize>8</bordersize>
+						</control>
+						
+						<control type="label">
+							<left>10</left>
+							<top>290</top>
+							<width>180</width>
+							<height>50</height>
+							<align>center</align>
+							<aligny>center</aligny>
+							<font>font12</font>
+							<textcolor>white</textcolor>
+							<selectedcolor>button_focus</selectedcolor>
+							<label>$INFO[ListItem.Cast.5.Name]</label>
+						</control>
+						
+						<control type="image">
+							<left>8</left>
+							<top>8</top>
+							<width>184</width>
+							<height>274</height>
+							<texture border="8" colordiffuse="button_focus">buttons/thumbnail_focused.png</texture>
+							<visible>Control.HasFocus(54)</visible>
+						</control>
+					</control>
+				</control>
 					<itemlayout height="319" width="205" condition="Container.Content(Sets)">
 						<control type="group">
 							<left>0</left>
