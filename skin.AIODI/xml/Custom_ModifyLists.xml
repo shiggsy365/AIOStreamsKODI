@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<window id="1109">
+<window id="1111">
     <defaultcontrol always="true">2000</defaultcontrol>
     <coordinates>
         <left>0</left>
@@ -36,7 +36,7 @@
                 <align>center</align>
             </control>
             
-            <!-- Page Selection Buttons -->
+            <!-- Page Selection Tabs -->
             <control type="grouplist" id="2000">
                 <left>0</left>
                 <top>80</top>
@@ -47,37 +47,43 @@
                 <align>center</align>
                 <ondown>3000</ondown>
                 
-                <control type="radiobutton" id="2001">
+                <control type="button" id="2001">
                     <width>400</width>
                     <height>60</height>
                     <font>font13</font>
                     <label>Home</label>
-                    <radioposx>350</radioposx>
+                    <align>center</align>
                     <onclick>SetProperty(CurrentPage,home)</onclick>
                     <onclick>RunScript(special://skin/resources/lib/widget_manager.py,load_page,home)</onclick>
-                    <selected>String.IsEqual(Window.Property(CurrentPage),home)</selected>
+                    <texturefocus colordiffuse="button_focus">colors/white.png</texturefocus>
+                    <textcolor>FFFFFFFF</textcolor>
+                    <focusedcolor>FF000000</focusedcolor>
                 </control>
                 
-                <control type="radiobutton" id="2002">
+                <control type="button" id="2002">
                     <width>400</width>
                     <height>60</height>
                     <font>font13</font>
                     <label>TV Shows</label>
-                    <radioposx>350</radioposx>
+                    <align>center</align>
                     <onclick>SetProperty(CurrentPage,tvshows)</onclick>
                     <onclick>RunScript(special://skin/resources/lib/widget_manager.py,load_page,tvshows)</onclick>
-                    <selected>String.IsEqual(Window.Property(CurrentPage),tvshows)</selected>
+                    <texturefocus colordiffuse="button_focus">colors/white.png</texturefocus>
+                    <textcolor>FFFFFFFF</textcolor>
+                    <focusedcolor>FF000000</focusedcolor>
                 </control>
                 
-                <control type="radiobutton" id="2003">
+                <control type="button" id="2003">
                     <width>400</width>
                     <height>60</height>
                     <font>font13</font>
                     <label>Movies</label>
-                    <radioposx>20</radioposx>
+                    <align>center</align>
                     <onclick>SetProperty(CurrentPage,movies)</onclick>
                     <onclick>RunScript(special://skin/resources/lib/widget_manager.py,load_page,movies)</onclick>
-                    <selected>String.IsEqual(Window.Property(CurrentPage),movies)</selected>
+                    <texturefocus colordiffuse="button_focus">colors/white.png</texturefocus>
+                    <textcolor>FFFFFFFF</textcolor>
+                    <focusedcolor>FF000000</focusedcolor>
                 </control>
             </control>
             

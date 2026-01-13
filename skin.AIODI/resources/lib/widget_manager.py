@@ -63,7 +63,7 @@ def get_available_catalogs():
 
 def load_page(page_name):
     """Load catalogs for a specific page"""
-    window = xbmcgui.Window(11109)
+    window = xbmcgui.Window(1111)
     window.setProperty('CurrentPage', page_name)
     
     config = load_config()
@@ -91,7 +91,7 @@ def load_page(page_name):
 
 def move_up():
     """Move selected catalog up in the list"""
-    window = xbmcgui.Window(11109)
+    window = xbmcgui.Window(1111)
     current_list = window.getControl(3000)
     pos = current_list.getSelectedPosition()
     
@@ -111,7 +111,7 @@ def move_up():
 
 def move_down():
     """Move selected catalog down in the list"""
-    window = xbmcgui.Window(11109)
+    window = xbmcgui.Window(1111)
     current_list = window.getControl(3000)
     pos = current_list.getSelectedPosition()
     
@@ -131,7 +131,7 @@ def move_down():
 
 def remove_catalog():
     """Remove selected catalog from current page"""
-    window = xbmcgui.Window(11109)
+    window = xbmcgui.Window(1111)
     current_list = window.getControl(3000)
     pos = current_list.getSelectedPosition()
     
@@ -151,7 +151,7 @@ def remove_catalog():
 
 def add_catalog():
     """Add selected catalog from available list to current page"""
-    window = xbmcgui.Window(11109)
+    window = xbmcgui.Window(1111)
     available_list = window.getControl(5000)
     pos = available_list.getSelectedPosition()
     

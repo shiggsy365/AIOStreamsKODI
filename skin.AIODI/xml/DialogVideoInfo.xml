@@ -305,13 +305,12 @@
 					<visible>Integer.IsEqual(Container(50).NumItems,0)</visible>
 				</control>
 				<control type="panel" id="50">
-					<onclick>Skin.SetString(AIOStreams_SearchQuery, $ESCINFO[ListItem.Label]);ActivateWindow(1108)</onclick>
+					<onclick>Skin.SetString(AIOStreams_SearchQuery, $ESCINFO[ListItem.Label])</onclick>
+					<onclick>ActivateWindow(1108)</onclick>
 					<top>158</top>
 					<width>1235</width>
 					<height>370</height>
-					<onup condition="System.AddonIsEnabled(script.embuary.info) + Control.HasFocus(50) + !String.IsEqual(ListItem.DBType,set)">RunScript(script.embuary.info,call=person,query='$ESCINFO[Container(50).ListItem.Label]')</onup>
-					<onup condition="System.HasAddon(script.embuary.info) + !System.AddonIsEnabled(script.embuary.info) + !String.IsEqual(ListItem.DBType,set)">EnableAddon(script.embuary.info)</onup>
-					<onup condition="!System.HasAddon(script.embuary.info) + !String.IsEqual(ListItem.DBType,set)">InstallAddon(script.embuary.info)</onup>
+					<onup>SetFocus(9000)</onup>
 					<onleft>50</onleft>
 					<onright>50</onright>
 					<ondown>140</ondown>
