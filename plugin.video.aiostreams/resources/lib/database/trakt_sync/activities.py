@@ -189,7 +189,7 @@ class TraktSyncDatabase(BaseTraktDB):
         if not activities:
             # Initialize activities table if empty
             self.execute_sql(
-                "INSERT INTO activities (sync_id, trakt_username) VALUES (1, ?)",
+                "INSERT OR IGNORE INTO activities (sync_id, trakt_username) VALUES (1, ?)",
                 (trakt.get_trakt_username(),)
             )
             return {}

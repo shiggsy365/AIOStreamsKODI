@@ -8,7 +8,7 @@ import xbmcaddon
 import time
 import threading
 import platform
-from resources.lib.monitor import AIOStreamsPlayer, AIOStreamsMonitor
+from resources.lib.monitor import AIOStreamsPlayer
 
 
 class BackgroundTaskQueue:
