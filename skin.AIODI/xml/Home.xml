@@ -81,8 +81,18 @@ SideFocus:$INFO[Skin.String(SideMenuFocus)] | VER: 6.0.263</label>
 				<height>180</height>
 				<aspectratio align="left" aligny="bottom">keep</aspectratio>
 				<texture background="true">$VAR[CurrentWidgetClearLogo]</texture>
-				<visible>!String.IsEmpty('$VAR[CurrentWidgetClearLogo]')</visible>
+				<visible>!String.IsEmpty($VAR[CurrentWidgetClearLogo])</visible>
 			</control>
+			<!-- DEBUG LOGO TEST IMAGE -->
+			<control type="image">
+				<left>0</left>
+				<top>0</top>
+				<width>200</width>
+				<height>100</height>
+				<texture>resources/icon.png</texture>
+				<visible>true</visible>
+			</control>
+
 			
 			<!-- Fallback Title (when no clearlogo) -->
 			<control type="label">
@@ -95,7 +105,7 @@ SideFocus:$INFO[Skin.String(SideMenuFocus)] | VER: 6.0.263</label>
 				<label>$VAR[CurrentWidgetTitle]</label>
 				<shadowcolor>text_shadow</shadowcolor>
 				<aligny>bottom</aligny>
-				<visible>String.IsEmpty('$VAR[CurrentWidgetClearLogo]')</visible>
+				<visible>String.IsEmpty($VAR[CurrentWidgetClearLogo])</visible>
 			</control>
 
 			<!-- Info Title -->
@@ -856,20 +866,23 @@ SideFocus:$INFO[Skin.String(SideMenuFocus)] | VER: 6.0.263</label>
 
 <!-- Settings Submenu -->
 <control type="group">
-	<left>130</left>
-	<bottom>50</bottom>
-	<width>300</width>
-	<height>120</height>
-	<visible>Control.HasFocus(9010) | Control.HasFocus(9011)</visible>
+	<include>FullScreenDimensions</include>
+	<visible>Control.HasFocus(9010) | Control.HasFocus(9011) | Control.HasFocus(9012)</visible>
 	<animation effect="fade" start="0" end="100" time="200">Visible</animation>
-	<animation effect="slide" start="-50,0" end="0,0" time="300" tween="cubic" easing="out">Visible</animation>
 	<animation effect="fade" start="100" end="0" time="200">Hidden</animation>
 	
-	<control type="image">
+	<control type="group">
+		<centertop>50%</centertop>
+		<centerleft>50%</centerleft>
 		<width>300</width>
-		<height>120</height>
-		<texture colordiffuse="E6000000">colors/white.png</texture>
-	</control>
+		<height>180</height>
+		
+		<control type="image">
+			<width>300</width>
+			<height>180</height>
+			<texture colordiffuse="E6000000">colors/white.png</texture>
+		</control>
+
 	
 	<control type="grouplist" id="9101">
 		<centertop>50%</centertop>
@@ -913,6 +926,7 @@ SideFocus:$INFO[Skin.String(SideMenuFocus)] | VER: 6.0.263</label>
 			<onclick>ActivateWindow(1111)</onclick>
 		</control>
 	</control>
+</control>
 </control>
 
 
