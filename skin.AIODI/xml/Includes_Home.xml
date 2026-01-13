@@ -272,7 +272,8 @@
 					<onup>$PARAM[onup_action2]</onup>
 					<ondown>$PARAM[ondown_action1]</ondown>
 					<ondown>$PARAM[ondown_action2]</ondown>
-					<onclick>ActivateWindow(Videos,$INFO[ListItem.FolderPath],return)</onclick>
+					<onclick condition="!String.IsEqual($PARAM[onclick_action],noop)">$PARAM[onclick_action]</onclick>
+					<onclick condition="String.IsEqual($PARAM[onclick_action],noop)">ActivateWindow(Videos,$INFO[ListItem.FolderPath],return)</onclick>
 					<onfocus>Skin.SetString(ActiveWidgetID,$PARAM[list_id])</onfocus>
 					<itemlayout width="240" height="360">
 						<control type="image">
@@ -415,7 +416,8 @@
 					<onup>$PARAM[onup_action2]</onup>
 					<ondown>$PARAM[ondown_action1]</ondown>
 					<ondown>$PARAM[ondown_action2]</ondown>
-					<onclick>Action(Select)</onclick>
+					<onclick condition="!String.IsEqual($PARAM[onclick_action],noop)">$PARAM[onclick_action]</onclick>
+					<onclick condition="String.IsEqual($PARAM[onclick_action],noop)">Action(Select)</onclick>
 					<onfocus>Skin.SetString(ActiveWidgetID,$PARAM[list_id])</onfocus>
 					<itemlayout width="410" height="235">
 						<control type="group">

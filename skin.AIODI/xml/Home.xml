@@ -34,7 +34,7 @@
 			<align>right</align>
 			<label>Home:$INFO[Skin.String(Home_WidgetIndex)] | Movies:$INFO[Skin.String(Movies_WidgetIndex)] | TV:$INFO[Skin.String(TV_WidgetIndex)]
 ActiveID:$VAR[ActiveWidgetID] | Title:$VAR[CurrentWidgetTitle]
-SideFocus:$INFO[Skin.String(SideMenuFocus)] | VER: 6.0.260</label>
+SideFocus:$INFO[Skin.String(SideMenuFocus)] | VER: 6.0.261</label>
 			<textcolor>red</textcolor>
 			<font>font13</font>
 			<visible>true</visible>
@@ -442,6 +442,7 @@ SideFocus:$INFO[Skin.String(SideMenuFocus)] | VER: 6.0.260</label>
 			<param name="widget_header">Trakt Next Up</param>
 			<param name="widget_target">videos</param>
 			<param name="list_id">10100</param>
+			<param name="onclick_action">ActivateWindow(Videos,$INFO[ListItem.FolderPath],return)</param>
 			<param name="onup_action1">noop</param>
 			<param name="onup_action2">noop</param>
 			<param name="ondown_action1">Skin.SetString(Home_WidgetIndex,1)</param>
@@ -457,6 +458,7 @@ SideFocus:$INFO[Skin.String(SideMenuFocus)] | VER: 6.0.260</label>
 			<param name="widget_header">Trakt Watchlist Movies</param>
 			<param name="widget_target">videos</param>
 			<param name="list_id">10200</param>
+			<param name="onclick_action">ActivateWindow(Videos,$INFO[ListItem.FolderPath],return)</param>
 			<param name="onup_action1">Skin.SetString(Home_WidgetIndex,0)</param>
 			<param name="onup_action2">SetFocus(10100)</param>
 			<param name="ondown_action1">Skin.SetString(Home_WidgetIndex,2)</param>
@@ -472,6 +474,7 @@ SideFocus:$INFO[Skin.String(SideMenuFocus)] | VER: 6.0.260</label>
 			<param name="widget_header">Trakt Watchlist Series</param>
 			<param name="widget_target">videos</param>
 			<param name="list_id">10300</param>
+			<param name="onclick_action">ActivateWindow(Videos,$INFO[ListItem.FolderPath],return)</param>
 			<param name="onup_action1">Skin.SetString(Home_WidgetIndex,1)</param>
 			<param name="onup_action2">SetFocus(10200)</param>
 			<param name="ondown_action1">noop</param>
