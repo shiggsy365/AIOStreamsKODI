@@ -1,46 +1,48 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<window>
-    <defaultcontrol always="true">3001</defaultcontrol>
+<window type="dialog">
+    <defaultcontrol always="true">3002</defaultcontrol>
+    <zorder>1</zorder>
 
     <controls>
-        <!-- Background overlay (semi-transparent) -->
+        <!-- Background overlay (semi-transparent, compact corner popup) -->
         <control type="image">
-            <left>0</left>
-            <top>750</top>
-            <width>1920</width>
-            <height>330</height>
+            <left>1400</left>
+            <top>60</top>
+            <width>460</width>
+            <height>280</height>
             <texture>white.png</texture>
             <colordiffuse>DD000000</colordiffuse>
+            <bordertexture border="5">Thumbnail_Shadow.png</bordertexture>
         </control>
 
         <!-- Container group for all elements -->
         <control type="group">
-            <left>60</left>
-            <top>780</top>
+            <left>1420</left>
+            <top>80</top>
 
-            <!-- Episode thumbnail -->
+            <!-- Episode thumbnail (smaller for corner popup) -->
             <control type="image" id="1001">
                 <left>0</left>
                 <top>0</top>
-                <width>400</width>
-                <height>225</height>
+                <width>200</width>
+                <height>113</height>
                 <aspectratio>scale</aspectratio>
                 <texture>$INFO[Window.Property(episode_thumb)]</texture>
-                <bordertexture border="10">Thumbnail_Shadow.png</bordertexture>
+                <bordertexture border="5">Thumbnail_Shadow.png</bordertexture>
             </control>
 
             <!-- Content group (text and buttons) -->
             <control type="group">
-                <left>430</left>
-                <top>0</top>
+                <left>0</left>
+                <top>120</top>
 
                 <!-- "Up Next" label -->
                 <control type="label">
                     <left>0</left>
-                    <top>10</top>
-                    <width>700</width>
-                    <height>30</height>
-                    <font>font13</font>
+                    <top>0</top>
+                    <width>420</width>
+                    <height>25</height>
+                    <font>font12</font>
                     <textcolor>FFAAAAAA</textcolor>
                     <label>UP NEXT</label>
                 </control>
@@ -48,10 +50,10 @@
                 <!-- Episode title -->
                 <control type="label">
                     <left>0</left>
-                    <top>40</top>
-                    <width>700</width>
-                    <height>40</height>
-                    <font>font30</font>
+                    <top>22</top>
+                    <width>420</width>
+                    <height>30</height>
+                    <font>font13_title</font>
                     <textcolor>FFFFFFFF</textcolor>
                     <label>$INFO[Window.Property(episode_title)]</label>
                 </control>
@@ -59,32 +61,32 @@
                 <!-- Countdown label -->
                 <control type="label" id="2001">
                     <left>0</left>
-                    <top>85</top>
-                    <width>700</width>
-                    <height>30</height>
-                    <font>font13</font>
+                    <top>52</top>
+                    <width>420</width>
+                    <height>25</height>
+                    <font>font12</font>
                     <textcolor>FFCCCCCC</textcolor>
                     <label>$INFO[Window.Property(countdown_text)]</label>
                 </control>
 
-                <!-- Buttons group -->
+                <!-- Buttons group (horizontal, compact) -->
                 <control type="grouplist" id="9000">
                     <left>0</left>
-                    <top>130</top>
-                    <width>800</width>
-                    <height>80</height>
+                    <top>85</top>
+                    <width>420</width>
+                    <height>50</height>
                     <orientation>horizontal</orientation>
-                    <itemgap>20</itemgap>
+                    <itemgap>10</itemgap>
                     <onleft>9000</onleft>
                     <onright>9000</onright>
                     <onup>9000</onup>
                     <ondown>9000</ondown>
 
-                    <!-- Play Now button -->
+                    <!-- Play Now button (compact) -->
                     <control type="button" id="3001">
-                        <width>300</width>
-                        <height>60</height>
-                        <font>font13</font>
+                        <width>200</width>
+                        <height>45</height>
+                        <font>font12</font>
                         <textcolor>FFFFFFFF</textcolor>
                         <focusedcolor>FFFFFFFF</focusedcolor>
                         <label>Play Now</label>
@@ -94,14 +96,14 @@
                         <focusedcolordiffuse>FF00DD00</focusedcolordiffuse>
                     </control>
 
-                    <!-- Cancel button -->
+                    <!-- Cancel button (compact) -->
                     <control type="button" id="3002">
-                        <width>300</width>
-                        <height>60</height>
-                        <font>font13</font>
+                        <width>200</width>
+                        <height>45</height>
+                        <font>font12</font>
                         <textcolor>FFFFFFFF</textcolor>
                         <focusedcolor>FFFFFFFF</focusedcolor>
-                        <label>Stop Watching</label>
+                        <label>Cancel</label>
                         <texturefocus>white.png</texturefocus>
                         <texturenofocus>white.png</texturenofocus>
                         <colordiffuse>FFAA0000</colordiffuse>
