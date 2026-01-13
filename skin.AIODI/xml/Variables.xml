@@ -89,6 +89,31 @@
 		<value condition="[!String.IsEmpty(ListItem.Season) | !String.IsEmpty(ListItem.Episode) | !String.IsEmpty(ListItem.EpisodeName)] + Window.IsActive(videoplaylist)">$INFO[ListItem.Title,,: ]$VAR[SeasonEpisodeLabel]$INFO[ListItem.EpisodeName]</value>
 		<value>$INFO[ListItem.Label]</value>
 	</variable>
+	<variable name="SearchResultsTitle">
+		<value condition="Control.HasFocus(5100)">$INFO[Container(5100).ListItem.Title]</value>
+		<value condition="Control.HasFocus(5200)">$INFO[Container(5200).ListItem.Title]</value>
+	</variable>
+	<variable name="SearchResultsPlot">
+		<value condition="Control.HasFocus(5100)">$INFO[Container(5100).ListItem.Plot]</value>
+		<value condition="Control.HasFocus(5200)">$INFO[Container(5200).ListItem.Plot]</value>
+	</variable>
+	<variable name="SearchResultsYear">
+		<value condition="Control.HasFocus(5100)">$INFO[Container(5100).ListItem.Year]</value>
+		<value condition="Control.HasFocus(5200)">$INFO[Container(5200).ListItem.Year]</value>
+	</variable>
+	<variable name="SearchResultsRating">
+		<value condition="Control.HasFocus(5100)">$INFO[Container(5100).ListItem.Rating]</value>
+		<value condition="Control.HasFocus(5200)">$INFO[Container(5200).ListItem.Rating]</value>
+	</variable>
+	<variable name="SearchResultsGenre">
+		<value condition="Control.HasFocus(5100)">$INFO[Container(5100).ListItem.Genre]</value>
+		<value condition="Control.HasFocus(5200)">$INFO[Container(5200).ListItem.Genre]</value>
+	</variable>
+	<variable name="SearchResultsClearLogo">
+		<value condition="Control.HasFocus(5100)">$INFO[Container(5100).ListItem.Art(clearlogo)]</value>
+		<value condition="Control.HasFocus(5200)">$INFO[Container(5200).ListItem.Art(clearlogo)]</value>
+	</variable>
+
 	<variable name="ListLabel2Var">
 		<value condition="String.IsEmpty(Container.PluginName) + Container.Content(tvshows) + Container.SortMethod(29)">$VAR[WatchedStatusVar]</value>
 		<value condition="String.IsEmpty(Container.PluginName) + String.IsEqual(ListItem.DBType,season) + Container.SortMethod(29)">$VAR[WatchedStatusVar]</value>

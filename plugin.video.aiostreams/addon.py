@@ -52,8 +52,13 @@ if HAS_NEW_MODULES:
     except Exception as e:
         xbmc.log(f'[AIOStreams] Failed to initialize providers: {e}', xbmc.LOGERROR)
 
-# Run cache cleanup on startup (async, won't block)
-if HAS_MODULES:
+# Run initialize logic once per addon execution
+def initialize():
+    """Perform startup checks and tasks (async when possible)."""
+    if not HAS_MODULES:
+        return
+
+    # Run cache cleanup on startup (async, won't block)
     try:
         cache.cleanup_expired_cache()
     except:
@@ -74,6 +79,7 @@ if HAS_MODULES:
         check_missing_clearlogos_on_startup()
     except Exception as e:
         xbmc.log(f'[AIOStreams] Clearlogo startup check failed: {e}', xbmc.LOGERROR)
+
 
 
 def get_setting(setting_id, default=None):
@@ -4047,7 +4053,7 @@ def smart_widget():
     
     # Check if index is valid
     if index >= len(catalogs):
-        xbmc.log(f'[AIOStreams] smart_widget: Index {index} out of range (max: {len(catalogs)-1})', xbmc.LOGWARNING)
+        xbmc.log(f'[AIOStreams] smart_widget: Index {index} out of range (max: {len(catalogs)-1})', xbmc.LOGDEBUG)
         xbmcplugin.endOfDirectory(HANDLE)
         return
     
@@ -4278,6 +4284,7 @@ def router(params):
 # ============================================================================
 
 if __name__ == '__main__':
+    initialize()
     params = dict(parse_qsl(sys.argv[2][1:]))
     router(params)
 

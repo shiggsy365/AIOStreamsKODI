@@ -1,56 +1,99 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <window type="dialog" id="1108">
-	<defaultcontrol always="true">5100</defaultcontrol>
-	<onload condition="String.IsEmpty(Skin.String(AIOStreams_SearchQuery))">Skin.SetString(AIOStreams_SearchQuery)</onload>
-	<controls>
-		<include>DefaultBackground</include>
-		
-		<!-- Background Dim -->
-		<control type="image">
-			<include>FullScreenDimensions</include>
-			<texture>colors/black_70.png</texture>
-		</control>
+    <defaultcontrol always="true">5100</defaultcontrol>
+    <onload condition="String.IsEmpty(Skin.String(AIOStreams_SearchQuery))">Skin.SetString(AIOStreams_SearchQuery)</onload>
+    <controls>
+        <include>DefaultBackground</include>
+        
+        <!-- Background Dim -->
+        <control type="image">
+            <include>FullScreenDimensions</include>
+            <texture>colors/black_70.png</texture>
+        </control>
 
-		<control type="group">
-			<left>150</left>
-			<top>80</top>
-			<width>1750</width>
-			<height>1000</height>
-			
-			<control type="label">
-				<left>0</left>
-				<top>0</top>
-				<width>1750</width>
-				<height>60</height>
-				<font>font36_title</font>
-				<textcolor>FFFFFFFF</textcolor>
-				<label>Search: $INFO[Skin.String(AIOStreams_SearchQuery)]</label>
-			</control>
-			
-			<control type="grouplist" id="9100">
-				<left>0</left>
-				<top>100</top>
-				<width>1750</width>
-				<height>900</height>
-				<itemgap>20</itemgap>
-				<orientation>vertical</orientation>
-				
-				<!-- Movies Row -->
-				<include content="WidgetListPoster">
-					<param name="list_id" value="5100" />
-					<param name="widget_header" value="MOVIES" />
-					<param name="content_path" value="plugin://plugin.video.aiostreams/?action=search_tab&amp;content_type=movie&amp;query=$INFO[Skin.String(AIOStreams_SearchQuery)]&amp;widget=true" />
-					<param name="ondown_action1" value="SetFocus(5200)" />
-				</include>
-				
-				<!-- TV Shows Row -->
-				<include content="WidgetListPoster">
-					<param name="list_id" value="5200" />
-					<param name="widget_header" value="TV SHOWS" />
-					<param name="content_path" value="plugin://plugin.video.aiostreams/?action=search_tab&amp;content_type=series&amp;query=$INFO[Skin.String(AIOStreams_SearchQuery)]&amp;widget=true" />
-					<param name="onup_action1" value="SetFocus(5100)" />
-				</include>
-			</control>
-		</control>
-	</controls>
+        <!-- TOP: FOCUSED ITEM INFO -->
+        <control type="group">
+            <left>150</left>
+            <top>50</top>
+            <width>1100</width>
+            <height>400</height>
+            <animation effect="fade" start="0" end="100" time="400">Visible</animation>
+            
+            <!-- ClearLogo or Title -->
+            <control type="image">
+                <left>0</left>
+                <top>0</top>
+                <width>400</width>
+                <height>120</height>
+                <aspectratio align="left" aligny="bottom">keep</aspectratio>
+                <texture background="true">$VAR[SearchResultsClearLogo]</texture>
+                <visible>!String.IsEmpty($VAR[SearchResultsClearLogo])</visible>
+            </control>
+            
+            <control type="label">
+                <left>0</left>
+                <top>0</top>
+                <width>800</width>
+                <height>120</height>
+                <font>font45_title</font>
+                <textcolor>FFFFFFFF</textcolor>
+                <label>$VAR[SearchResultsTitle]</label>
+                <shadowcolor>text_shadow</shadowcolor>
+                <aligny>bottom</aligny>
+                <visible>String.IsEmpty($VAR[SearchResultsClearLogo])</visible>
+            </control>
+            
+            <!-- Metadata Line -->
+            <control type="label">
+                <left>0</left>
+                <top>125</top>
+                <width>800</width>
+                <height>40</height>
+                <font>font13</font>
+                <textcolor>grey</textcolor>
+                <label>$INFO[Skin.String(AIOStreams_SearchQuery),Search: ,  •  ]$VAR[SearchResultsYear]$VAR[SearchResultsRating,  •  ]$VAR[SearchResultsGenre,  •  ]</label>
+            </control>
+            
+            <!-- Plot/Description -->
+            <control type="textbox">
+                <left>0</left>
+                <top>170</top>
+                <width>1000</width>
+                <height>160</height>
+                <font>font13</font>
+                <textcolor>FFFFFFFF</textcolor>
+                <label>$VAR[SearchResultsPlot]</label>
+                <autoscroll delay="8000" time="3000" repeat="8000">true</autoscroll>
+            </control>
+        </control>
+
+        <!-- MIDDLE THIRD: MOVIES -->
+        <control type="group">
+            <left>150</left>
+            <top>380</top>
+            <width>1750</width>
+            <height>350</height>
+            <include content="WidgetListPoster">
+                <param name="list_id" value="5100" />
+                <param name="widget_header" value="MOVIES" />
+                <param name="content_path" value="plugin://plugin.video.aiostreams/?action=search_tab&amp;content_type=movie&amp;query=$INFO[Skin.String(AIOStreams_SearchQuery)]&amp;widget=true" />
+                <param name="ondown_action1" value="SetFocus(5200)" />
+            </include>
+        </control>
+        
+        <!-- BOTTOM: TV SHOWS -->
+        <control type="group">
+            <left>150</left>
+            <top>750</top>
+            <width>1750</width>
+            <height>350</height>
+            <include content="WidgetListPoster">
+                <param name="list_id" value="5200" />
+                <param name="widget_header" value="TV SHOWS" />
+                <param name="content_path" value="plugin://plugin.video.aiostreams/?action=search_tab&amp;content_type=series&amp;query=$INFO[Skin.String(AIOStreams_SearchQuery)]&amp;widget=true" />
+                <param name="onup_action1" value="SetFocus(5100)" />
+            </include>
+        </control>
+
+    </controls>
 </window>
