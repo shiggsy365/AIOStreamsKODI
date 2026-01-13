@@ -534,12 +534,12 @@ def retrieve_manifest():
             try:
                 error_data = response.json()
                 if 'error' in error_data:
-                    error_msg = error_data['error']
+                    error_msg = str(error_data['error'])
                 elif 'message' in error_data:
-                    error_msg = error_data['message']
+                    error_msg = str(error_data['message'])
             except:
                 pass
-            xbmcgui.Dialog().ok('AIOStreams Error', error_msg)
+            xbmcgui.Dialog().ok('AIOStreams Error', str(error_msg))
             xbmc.log(f'[AIOStreams WebConfig] API error: {error_msg}', xbmc.LOGERROR)
             return None
 
