@@ -1250,12 +1250,14 @@
 			<include>FullScreenDimensions</include>
 			<aspectratio>scale</aspectratio>
 			<texture colordiffuse="primary_background">special://skin/extras/backgrounds/primary.jpg</texture>
+			<visible>!Window.IsActive(settings) + !Window.IsActive(settingscategory) + !Window.IsActive(skinsettings) + !Window.IsActive(systeminfo) + !Window.IsActive(filemanager) + !Window.IsActive(addonbrowser)</visible>
 		</control>
 		<control type="image">
 			<depth>DepthBackground</depth>
 			<include>FullScreenDimensions</include>
 			<aspectratio>scale</aspectratio>
 			<texture colordiffuse="secondary_background" fallback="special://skin/extras/backgrounds/pattern1.jpg">$INFO[Skin.String(background_overlay),special://skin/extras/backgrounds/pattern,.jpg]</texture>
+			<visible>!Window.IsActive(settings) + !Window.IsActive(settingscategory) + !Window.IsActive(skinsettings) + !Window.IsActive(systeminfo) + !Window.IsActive(filemanager) + !Window.IsActive(addonbrowser)</visible>
 		</control>
 	</include>
 	<include name="DefaultBackground">
