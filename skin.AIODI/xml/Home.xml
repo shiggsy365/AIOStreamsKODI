@@ -34,7 +34,7 @@
 			<align>right</align>
 			<label>Home:$INFO[Skin.String(Home_WidgetIndex)] | Movies:$INFO[Skin.String(Movies_WidgetIndex)] | TV:$INFO[Skin.String(TV_WidgetIndex)]
 ActiveID:$VAR[ActiveWidgetID] | Title:$VAR[CurrentWidgetTitle]
-SideFocus:$INFO[Skin.String(SideMenuFocus)] | VER: 6.0.309</label>
+SideFocus:$INFO[Skin.String(SideMenuFocus)] | VER: 6.0.310</label>
 			<textcolor>red</textcolor>
 			<font>font13</font>
 			<visible>true</visible>
@@ -944,6 +944,7 @@ SideFocus:$INFO[Skin.String(SideMenuFocus)] | VER: 6.0.309</label>
 			<param name="widget_header">$INFO[Window(Home).Property(series_catalog_0_name)]</param>
 			<param name="widget_target">videos</param>
 			<param name="list_id">6100</param>
+			<param name="onclick_action">ActivateWindow(Videos,$INFO[ListItem.FolderPath])</param>
 			<param name="onup_action1">noop</param>
 			<param name="ondown_action1">Skin.SetString(TV_WidgetIndex,1)</param>
 			<param name="ondown_action2">SetFocus(6110)</param>
@@ -961,6 +962,7 @@ SideFocus:$INFO[Skin.String(SideMenuFocus)] | VER: 6.0.309</label>
 			<param name="widget_header">$INFO[Window(Home).Property(series_catalog_1_name)]</param>
 			<param name="widget_target">videos</param>
 			<param name="list_id">6110</param>
+			<param name="onclick_action">ActivateWindow(Videos,$INFO[ListItem.FolderPath])</param>
 			<param name="onup_action1">Skin.SetString(TV_WidgetIndex,0)</param>
 			<param name="onup_action2">SetFocus(6100)</param>
 			<param name="ondown_action1">Skin.SetString(TV_WidgetIndex,2)</param>
@@ -979,6 +981,7 @@ SideFocus:$INFO[Skin.String(SideMenuFocus)] | VER: 6.0.309</label>
 			<param name="widget_header">$INFO[Window(Home).Property(series_catalog_2_name)]</param>
 			<param name="widget_target">videos</param>
 			<param name="list_id">6120</param>
+			<param name="onclick_action">ActivateWindow(Videos,$INFO[ListItem.FolderPath])</param>
 			<param name="onup_action1">Skin.SetString(TV_WidgetIndex,1)</param>
 			<param name="onup_action2">SetFocus(6110)</param>
 			<param name="ondown_action1">Skin.SetString(TV_WidgetIndex,3)</param>
@@ -997,6 +1000,7 @@ SideFocus:$INFO[Skin.String(SideMenuFocus)] | VER: 6.0.309</label>
 			<param name="widget_header">$INFO[Window(Home).Property(series_catalog_3_name)]</param>
 			<param name="widget_target">videos</param>
 			<param name="list_id">6130</param>
+			<param name="onclick_action">ActivateWindow(Videos,$INFO[ListItem.FolderPath])</param>
 			<param name="onup_action1">Skin.SetString(TV_WidgetIndex,2)</param>
 			<param name="onup_action2">SetFocus(6120)</param>
 			<param name="ondown_action1">Skin.SetString(TV_WidgetIndex,4)</param>
@@ -1015,6 +1019,7 @@ SideFocus:$INFO[Skin.String(SideMenuFocus)] | VER: 6.0.309</label>
 			<param name="widget_header">$INFO[Window(Home).Property(series_catalog_4_name)]</param>
 			<param name="widget_target">videos</param>
 			<param name="list_id">6140</param>
+			<param name="onclick_action">ActivateWindow(Videos,$INFO[ListItem.FolderPath])</param>
 			<param name="onup_action1">Skin.SetString(TV_WidgetIndex,3)</param>
 			<param name="onup_action2">SetFocus(6130)</param>
 			<param name="ondown_action1">Skin.SetString(TV_WidgetIndex,5)</param>
@@ -1033,6 +1038,7 @@ SideFocus:$INFO[Skin.String(SideMenuFocus)] | VER: 6.0.309</label>
 			<param name="widget_header">$INFO[Window(Home).Property(series_catalog_5_name)]</param>
 			<param name="widget_target">videos</param>
 			<param name="list_id">6150</param>
+			<param name="onclick_action">ActivateWindow(Videos,$INFO[ListItem.FolderPath])</param>
 			<param name="onup_action1">Skin.SetString(TV_WidgetIndex,4)</param>
 			<param name="onup_action2">SetFocus(6140)</param>
 			<param name="ondown_action1">Skin.SetString(TV_WidgetIndex,6)</param>
@@ -1051,6 +1057,7 @@ SideFocus:$INFO[Skin.String(SideMenuFocus)] | VER: 6.0.309</label>
 			<param name="widget_header">$INFO[Window(Home).Property(series_catalog_6_name)]</param>
 			<param name="widget_target">videos</param>
 			<param name="list_id">6160</param>
+			<param name="onclick_action">ActivateWindow(Videos,$INFO[ListItem.FolderPath])</param>
 			<param name="onup_action1">Skin.SetString(TV_WidgetIndex,5)</param>
 			<param name="onup_action2">SetFocus(6150)</param>
 			<param name="ondown_action1">Skin.SetString(TV_WidgetIndex,7)</param>
@@ -1069,6 +1076,7 @@ SideFocus:$INFO[Skin.String(SideMenuFocus)] | VER: 6.0.309</label>
 			<param name="widget_header">$INFO[Window(Home).Property(series_catalog_7_name)]</param>
 			<param name="widget_target">videos</param>
 			<param name="list_id">6170</param>
+			<param name="onclick_action">ActivateWindow(Videos,$INFO[ListItem.FolderPath])</param>
 			<param name="onup_action1">Skin.SetString(TV_WidgetIndex,6)</param>
 			<param name="onup_action2">SetFocus(6160)</param>
 			<param name="ondown_action1">Skin.SetString(TV_WidgetIndex,8)</param>
@@ -1087,6 +1095,7 @@ SideFocus:$INFO[Skin.String(SideMenuFocus)] | VER: 6.0.309</label>
 			<param name="widget_header">$INFO[Window(Home).Property(series_catalog_8_name)]</param>
 			<param name="widget_target">videos</param>
 			<param name="list_id">6180</param>
+			<param name="onclick_action">ActivateWindow(Videos,$INFO[ListItem.FolderPath])</param>
 			<param name="onup_action1">Skin.SetString(TV_WidgetIndex,7)</param>
 			<param name="onup_action2">SetFocus(6170)</param>
 			<param name="ondown_action1">Skin.SetString(TV_WidgetIndex,9)</param>
@@ -1105,6 +1114,7 @@ SideFocus:$INFO[Skin.String(SideMenuFocus)] | VER: 6.0.309</label>
 			<param name="widget_header">$INFO[Window(Home).Property(series_catalog_9_name)]</param>
 			<param name="widget_target">videos</param>
 			<param name="list_id">6190</param>
+			<param name="onclick_action">ActivateWindow(Videos,$INFO[ListItem.FolderPath])</param>
 			<param name="onup_action1">Skin.SetString(TV_WidgetIndex,8)</param>
 			<param name="onup_action2">SetFocus(6180)</param>
 			<param name="ondown_action1">Skin.SetString(TV_WidgetIndex,10)</param>
@@ -1123,6 +1133,7 @@ SideFocus:$INFO[Skin.String(SideMenuFocus)] | VER: 6.0.309</label>
 			<param name="widget_header">$INFO[Window(Home).Property(series_catalog_10_name)]</param>
 			<param name="widget_target">videos</param>
 			<param name="list_id">6200</param>
+			<param name="onclick_action">ActivateWindow(Videos,$INFO[ListItem.FolderPath])</param>
 			<param name="onup_action1">Skin.SetString(TV_WidgetIndex,9)</param>
 			<param name="onup_action2">SetFocus(6190)</param>
 			<param name="ondown_action1">Skin.SetString(TV_WidgetIndex,11)</param>
@@ -1141,6 +1152,7 @@ SideFocus:$INFO[Skin.String(SideMenuFocus)] | VER: 6.0.309</label>
 			<param name="widget_header">$INFO[Window(Home).Property(series_catalog_11_name)]</param>
 			<param name="widget_target">videos</param>
 			<param name="list_id">6210</param>
+			<param name="onclick_action">ActivateWindow(Videos,$INFO[ListItem.FolderPath])</param>
 			<param name="onup_action1">Skin.SetString(TV_WidgetIndex,10)</param>
 			<param name="onup_action2">SetFocus(6200)</param>
 			<param name="ondown_action1">Skin.SetString(TV_WidgetIndex,12)</param>
@@ -1159,6 +1171,7 @@ SideFocus:$INFO[Skin.String(SideMenuFocus)] | VER: 6.0.309</label>
 			<param name="widget_header">$INFO[Window(Home).Property(series_catalog_12_name)]</param>
 			<param name="widget_target">videos</param>
 			<param name="list_id">6220</param>
+			<param name="onclick_action">ActivateWindow(Videos,$INFO[ListItem.FolderPath])</param>
 			<param name="onup_action1">Skin.SetString(TV_WidgetIndex,11)</param>
 			<param name="onup_action2">SetFocus(6210)</param>
 			<param name="ondown_action1">Skin.SetString(TV_WidgetIndex,13)</param>
@@ -1177,6 +1190,7 @@ SideFocus:$INFO[Skin.String(SideMenuFocus)] | VER: 6.0.309</label>
 			<param name="widget_header">$INFO[Window(Home).Property(series_catalog_13_name)]</param>
 			<param name="widget_target">videos</param>
 			<param name="list_id">6230</param>
+			<param name="onclick_action">ActivateWindow(Videos,$INFO[ListItem.FolderPath])</param>
 			<param name="onup_action1">Skin.SetString(TV_WidgetIndex,12)</param>
 			<param name="onup_action2">SetFocus(6220)</param>
 			<param name="ondown_action1">Skin.SetString(TV_WidgetIndex,14)</param>
@@ -1195,6 +1209,7 @@ SideFocus:$INFO[Skin.String(SideMenuFocus)] | VER: 6.0.309</label>
 			<param name="widget_header">$INFO[Window(Home).Property(series_catalog_14_name)]</param>
 			<param name="widget_target">videos</param>
 			<param name="list_id">6240</param>
+			<param name="onclick_action">ActivateWindow(Videos,$INFO[ListItem.FolderPath])</param>
 			<param name="onup_action1">Skin.SetString(TV_WidgetIndex,13)</param>
 			<param name="onup_action2">SetFocus(6230)</param>
 			<param name="ondown_action1">Skin.SetString(TV_WidgetIndex,15)</param>
@@ -1213,6 +1228,7 @@ SideFocus:$INFO[Skin.String(SideMenuFocus)] | VER: 6.0.309</label>
 			<param name="widget_header">$INFO[Window(Home).Property(series_catalog_15_name)]</param>
 			<param name="widget_target">videos</param>
 			<param name="list_id">6250</param>
+			<param name="onclick_action">ActivateWindow(Videos,$INFO[ListItem.FolderPath])</param>
 			<param name="onup_action1">Skin.SetString(TV_WidgetIndex,14)</param>
 			<param name="onup_action2">SetFocus(6240)</param>
 			<param name="ondown_action1">Skin.SetString(TV_WidgetIndex,16)</param>
@@ -1231,6 +1247,7 @@ SideFocus:$INFO[Skin.String(SideMenuFocus)] | VER: 6.0.309</label>
 			<param name="widget_header">$INFO[Window(Home).Property(series_catalog_16_name)]</param>
 			<param name="widget_target">videos</param>
 			<param name="list_id">6260</param>
+			<param name="onclick_action">ActivateWindow(Videos,$INFO[ListItem.FolderPath])</param>
 			<param name="onup_action1">Skin.SetString(TV_WidgetIndex,15)</param>
 			<param name="onup_action2">SetFocus(6250)</param>
 			<param name="ondown_action1">Skin.SetString(TV_WidgetIndex,17)</param>
@@ -1249,6 +1266,7 @@ SideFocus:$INFO[Skin.String(SideMenuFocus)] | VER: 6.0.309</label>
 			<param name="widget_header">$INFO[Window(Home).Property(series_catalog_17_name)]</param>
 			<param name="widget_target">videos</param>
 			<param name="list_id">6270</param>
+			<param name="onclick_action">ActivateWindow(Videos,$INFO[ListItem.FolderPath])</param>
 			<param name="onup_action1">Skin.SetString(TV_WidgetIndex,16)</param>
 			<param name="onup_action2">SetFocus(6260)</param>
 			<param name="ondown_action1">Skin.SetString(TV_WidgetIndex,18)</param>
@@ -1267,6 +1285,7 @@ SideFocus:$INFO[Skin.String(SideMenuFocus)] | VER: 6.0.309</label>
 			<param name="widget_header">$INFO[Window(Home).Property(series_catalog_18_name)]</param>
 			<param name="widget_target">videos</param>
 			<param name="list_id">6280</param>
+			<param name="onclick_action">ActivateWindow(Videos,$INFO[ListItem.FolderPath])</param>
 			<param name="onup_action1">Skin.SetString(TV_WidgetIndex,17)</param>
 			<param name="onup_action2">SetFocus(6270)</param>
 			<param name="ondown_action1">Skin.SetString(TV_WidgetIndex,19)</param>
@@ -1285,6 +1304,7 @@ SideFocus:$INFO[Skin.String(SideMenuFocus)] | VER: 6.0.309</label>
 			<param name="widget_header">$INFO[Window(Home).Property(series_catalog_19_name)]</param>
 			<param name="widget_target">videos</param>
 			<param name="list_id">6290</param>
+			<param name="onclick_action">ActivateWindow(Videos,$INFO[ListItem.FolderPath])</param>
 			<param name="onup_action1">Skin.SetString(TV_WidgetIndex,18)</param>
 			<param name="onup_action2">SetFocus(6280)</param>
 			<param name="ondown_action1">noop</param>
