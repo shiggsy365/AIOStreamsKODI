@@ -544,10 +544,13 @@ def retrieve_manifest():
 
         # Parse response
         data = response.json()
-        xbmc.log(f'[AIOStreams WebConfig] API response keys: {list(data.keys())}', xbmc.LOGDEBUG)
+        xbmc.log(f'[AIOStreams WebConfig] Full response: {json.dumps(data, indent=2)}', xbmc.LOGINFO)  # ADD THIS
 
+
+        
         # FIXED: Navigate to nested userData - encryptedPassword is in data.userData.encryptedPassword
         user_data = data.get('data', {}).get('userData', {})
+        xbmc.log(f'[AIOStreams WebConfig] userData keys: {list(user_data.keys()) if user_data else "userData is empty or None"}', xbmc.LOGINFO)  # ADD THIS
         
         if not user_data:
             progress.close()
