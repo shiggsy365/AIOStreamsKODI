@@ -901,6 +901,7 @@ SideFocus:$INFO[Skin.String(SideMenuFocus)] | VER: 6.0.311</label>
 			<texturefocus />
 			<texturenofocus />
 			<onclick>ReloadSkin()</onclick>
+			<onclick>SetFocus(9008)</onclick>
 		</control>
 		<control type="button" id="9011">
 			<width>280</width>
@@ -912,6 +913,7 @@ SideFocus:$INFO[Skin.String(SideMenuFocus)] | VER: 6.0.311</label>
 			<texturefocus />
 			<texturenofocus />
 			<onclick>Quit()</onclick>
+			<onclick>SetFocus(9008)</onclick>
 		</control>
 		<control type="button" id="9012">
 			<width>280</width>
@@ -924,6 +926,7 @@ SideFocus:$INFO[Skin.String(SideMenuFocus)] | VER: 6.0.311</label>
 			<texturenofocus />
 			<texturenofocus />
 			<onclick>ActivateWindow(1111)</onclick>
+			<onclick>SetFocus(9008)</onclick>
 		</control>
 	</control>
 </control>

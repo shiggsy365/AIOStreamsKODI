@@ -308,6 +308,7 @@
 					<top>158</top>
 					<width>1235</width>
 					<height>370</height>
+					<onclick>Dialog.Close(MovieInformation)</onclick>
 					<onclick>Skin.SetString(AIOStreams_SearchQuery,$ESCINFO[ListItem.Label])</onclick>
 					<onclick>ActivateWindow(1108)</onclick>
 					<onup>SetFocus(9000)</onup>

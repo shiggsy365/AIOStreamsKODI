@@ -44,7 +44,7 @@ def save_config(config):
 def get_available_catalogs():
     """Get all available catalogs from the plugin via JSON-RPC"""
     catalogs = []
-    plugin_url = 'plugin://plugin.video.aiostreams/?action=get_all_catalogs'
+    plugin_url = 'plugin://plugin.video.aiostreams/?action=get_folder_browser_catalogs'
     
     log(f'Fetching available catalogs from {plugin_url}...')
     try:
