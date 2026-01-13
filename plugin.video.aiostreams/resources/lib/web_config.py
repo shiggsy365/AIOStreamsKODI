@@ -543,41 +543,41 @@ def retrieve_manifest():
             return None
 
         # Parse response
-        data = response.json()
-        xbmc.log(f'[AIOStreams WebConfig] Full response: {json.dumps(data, indent=2)}', xbmc.LOGINFO)  # ADD THIS
+data = response.json()
 
-        
-        # Navigate to nested userData
-        user_data = data.get('data', {}).get('userData', {})
-        xbmc.log(f'[AIOStreams WebConfig] userData keys: {list(user_data.keys()) if user_data else "userData is empty or None"}', xbmc.LOGINFO)  # ADD THIS
+# Navigate to data object (not userData)
+response_data = data.get('data', {})
 
-        if not user_data:
-            progress.close()
-            xbmcgui.Dialog().ok(
-                'AIOStreams Error',
-                'Could not retrieve user data from server.\n'
-                'Please check your UUID and password.'
-            )
-            xbmc.log('[AIOStreams WebConfig] No userData in response', xbmc.LOGERROR)
-            return None
-        
-        # Get encrypted password from nested location
-        encrypted_password = user_data.get('encryptedPassword')
-        if not encrypted_password:
-            progress.close()
-            xbmcgui.Dialog().ok(
-                'AIOStreams Error',
-                'Could not retrieve encrypted password from server.\n'
-                'Please check your UUID and password.'
-            )
-            xbmc.log('[AIOStreams WebConfig] No encryptedPassword in userData', xbmc.LOGERROR)
-            return None
+if not response_data:
+    progress.close()
+    xbmcgui.Dialog().ok(
+        'AIOStreams Error',
+        'Could not retrieve data from server.\n'
+        'Please check your UUID and password.'
+    )
+    xbmc.log('[AIOStreams WebConfig] No data in response', xbmc.LOGERROR)
+    return None
 
-        progress.update(75, 'Building manifest URL...')
+# Get encrypted password from data (NOT userData)
+encrypted_password = response_data.get('encryptedPassword')
+if not encrypted_password:
+    progress.close()
+    xbmcgui.Dialog().ok(
+        'AIOStreams Error',
+        'Could not retrieve encrypted password from server.\n'
+        'Please check your UUID and password.'
+    )
+    xbmc.log('[AIOStreams WebConfig] No encryptedPassword in data', xbmc.LOGERROR)
+    return None
 
-        # Construct manifest URL with encrypted password
-        manifest_url = f'{host_url}/stremio/{uuid}/{encrypted_password}/manifest.json'
-        xbmc.log(f'[AIOStreams WebConfig] Constructed manifest URL: {manifest_url[:50]}...', xbmc.LOGINFO)
+# Get UUID from userData
+user_data = response_data.get('userData', {})
+uuid_from_response = user_data.get('uuid', uuid)  # Use response UUID or fallback to input
+
+progress.update(75, 'Building manifest URL...')
+
+# Construct manifest URL
+manifest_url = f'{host_url}/stremio/{uuid_from_response}/{encrypted_password}/manifest.json'
 
         # Save to settings
         addon.setSetting('base_url', manifest_url)
