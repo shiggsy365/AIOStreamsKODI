@@ -35,32 +35,52 @@ def search(query):
         # Import search functions from main addon
         import addon
         
-        # Add a folder for Movies
-        list_item_movies = xbmcgui.ListItem(label=f'[Movies] {query}')
-        list_item_movies.setInfo('video', {'title': f'Movies: {query}', 'plot': 'Search results for movies'})
-        url_movies = addon.get_url(action='search_by_tab', query=query, content_type='movie')
-        xbmcplugin.addDirectoryItem(HANDLE, url_movies, list_item_movies, isFolder=True)
+        # Set mixed content type for global search
+        xbmcplugin.setContent(HANDLE, 'videos')
+        xbmcplugin.setPluginCategory(HANDLE, f'AIOStreams: {query}')
         
-        # Add a folder for TV Shows
-        list_item_shows = xbmcgui.ListItem(label=f'[TV Shows] {query}')
-        list_item_shows.setInfo('video', {'title': f'TV Shows: {query}', 'plot': 'Search results for TV shows'})
-        url_shows = addon.get_url(action='search_by_tab', query=query, content_type='series')
-        xbmcplugin.addDirectoryItem(HANDLE, url_shows, list_item_shows, isFolder=True)
+        # Search movies
+        xbmc.log(f'[AIOStreams GlobalSearch] Searching movies for: {query}', xbmc.LOGDEBUG)
+        movie_results = addon.search_catalog(query, 'movie', skip=0)
+        
+        # Search TV shows
+        xbmc.log(f'[AIOStreams GlobalSearch] Searching TV shows for: {query}', xbmc.LOGDEBUG)
+        series_results = addon.search_catalog(query, 'series', skip=0)
+        
+        # Add movie results
+        if movie_results and 'metas' in movie_results:
+            for meta in movie_results['metas'][:10]:  # Limit to 10 results
+                item_id = meta.get('id')
+                title = meta.get('name', 'Unknown')
+                poster = meta.get('poster', '')
+                fanart = meta.get('background', '')
+                clearlogo = meta.get('logo', '')
+                
+                url = addon.get_url(action='play', content_type='movie', imdb_id=item_id, 
+                                   title=title, poster=poster, fanart=fanart, clearlogo=clearlogo)
+                list_item = addon.create_listitem_with_context(meta, 'movie', url)
+                list_item.setProperty('IsPlayable', 'true')
+                xbmcplugin.addDirectoryItem(HANDLE, url, list_item, False)
+        
+        # Add TV show results
+        if series_results and 'metas' in series_results:
+            for meta in series_results['metas'][:10]:  # Limit to 10 results
+                item_id = meta.get('id')
+                url = addon.get_url(action='show_seasons', meta_id=item_id)
+                list_item = addon.create_listitem_with_context(meta, 'series', url)
+                xbmcplugin.addDirectoryItem(HANDLE, url, list_item, True)
         
         # End the directory listing
         xbmcplugin.endOfDirectory(HANDLE, succeeded=True)
         
-        xbmc.log(f'[AIOStreams GlobalSearch] Added movie and TV show search folders for: {query}', xbmc.LOGINFO)
+        movie_count = len(movie_results.get('metas', [])) if movie_results else 0
+        series_count = len(series_results.get('metas', [])) if series_results else 0
+        xbmc.log(f'[AIOStreams GlobalSearch] Found {movie_count} movies, {series_count} TV shows for: {query}', xbmc.LOGINFO)
         
     except Exception as e:
         xbmc.log(f'[AIOStreams GlobalSearch] Error: {e}', xbmc.LOGERROR)
-        # Show error to user
-        xbmcgui.Dialog().notification(
-            'AIOStreams Search Error',
-            str(e),
-            xbmcgui.NOTIFICATION_ERROR,
-            3000
-        )
+        import traceback
+        xbmc.log(f'[AIOStreams GlobalSearch] Traceback: {traceback.format_exc()}', xbmc.LOGERROR)
         # End directory even on error
         xbmcplugin.endOfDirectory(HANDLE, succeeded=False)
 
