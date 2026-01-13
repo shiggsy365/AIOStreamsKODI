@@ -1108,40 +1108,28 @@
 <value>overlays/checkbox-off.png</value>
 </variable>
 	<variable name="CurrentWidgetTitle">
-		<!-- Dynamic Lookup -->
-		<value condition="!String.IsEmpty(Container($VAR[ActiveWidgetID]).ListItem.Title)">$INFO[Container($VAR[ActiveWidgetID]).ListItem.Title]</value>
-		<!-- Manual Fallbacks -->
 		<value condition="String.IsEqual($VAR[ActiveWidgetID],10100)">$INFO[Container(10100).ListItem.Title]</value>
-		<value condition="String.IsEqual($VAR[ActiveWidgetID],10200)">$INFO[Container(10200).ListItem.Title]</value>
-		<value condition="String.IsEqual($VAR[ActiveWidgetID],10300)">$INFO[Container(10300).ListItem.Title]</value>
-		<!-- Generic Fallback -->
+		<value condition="String.IsEqual($VAR[ActiveWidgetID],5100)">$INFO[Container(5100).ListItem.Title]</value>
+		<value condition="String.IsEqual($VAR[ActiveWidgetID],6100)">$INFO[Container(6100).ListItem.Title]</value>
 		<value>$INFO[ListItem.Title]</value>
 	</variable>
 	<variable name="CurrentWidgetFanart">
-		<value condition="!String.IsEmpty(Container($VAR[ActiveWidgetID]).ListItem.Art(fanart))">$INFO[Container($VAR[ActiveWidgetID]).ListItem.Art(fanart)]</value>
 		<value condition="String.IsEqual($VAR[ActiveWidgetID],10100)">$INFO[Container(10100).ListItem.Art(fanart)]</value>
-		<value condition="String.IsEqual($VAR[ActiveWidgetID],10200)">$INFO[Container(10200).ListItem.Art(fanart)]</value>
-		<value condition="String.IsEqual($VAR[ActiveWidgetID],10300)">$INFO[Container(10300).ListItem.Art(fanart)]</value>
+		<value condition="String.IsEqual($VAR[ActiveWidgetID],5100)">$INFO[Container(5100).ListItem.Art(fanart)]</value>
+		<value condition="String.IsEqual($VAR[ActiveWidgetID],6100)">$INFO[Container(6100).ListItem.Art(fanart)]</value>
 		<value>$INFO[ListItem.Art(fanart)]</value>
 	</variable>
 	<variable name="CurrentWidgetClearLogo">
-		<value condition="!String.IsEmpty(Container($VAR[ActiveWidgetID]).ListItem.Art(clearlogo))">$INFO[Container($VAR[ActiveWidgetID]).ListItem.Art(clearlogo)]</value>
-		<value condition="!String.IsEmpty(Container($VAR[ActiveWidgetID]).ListItem.Art(logo))">$INFO[Container($VAR[ActiveWidgetID]).ListItem.Art(logo)]</value>
-		<value condition="String.IsEqual($VAR[ActiveWidgetID],10100) + !String.IsEmpty(Container(10100).ListItem.Art(clearlogo))">$INFO[Container(10100).ListItem.Art(clearlogo)]</value>
-		<value condition="String.IsEqual($VAR[ActiveWidgetID],10100) + !String.IsEmpty(Container(10100).ListItem.Art(logo))">$INFO[Container(10100).ListItem.Art(logo)]</value>
-		<value condition="String.IsEqual($VAR[ActiveWidgetID],10200) + !String.IsEmpty(Container(10200).ListItem.Art(clearlogo))">$INFO[Container(10200).ListItem.Art(clearlogo)]</value>
-		<value condition="String.IsEqual($VAR[ActiveWidgetID],10200) + !String.IsEmpty(Container(10200).ListItem.Art(logo))">$INFO[Container(10200).ListItem.Art(logo)]</value>
-		<value condition="String.IsEqual($VAR[ActiveWidgetID],10300) + !String.IsEmpty(Container(10300).ListItem.Art(clearlogo))">$INFO[Container(10300).ListItem.Art(clearlogo)]</value>
-		<value condition="String.IsEqual($VAR[ActiveWidgetID],10300) + !String.IsEmpty(Container(10300).ListItem.Art(logo))">$INFO[Container(10300).ListItem.Art(logo)]</value>
-		<value condition="!String.IsEmpty(ListItem.Art(clearlogo))">$INFO[ListItem.Art(clearlogo)]</value>
-		<value>$INFO[ListItem.Art(logo)]</value>
+		<value condition="String.IsEqual($VAR[ActiveWidgetID],10100)">$INFO[Container(10100).ListItem.Art(clearlogo),,$INFO[Container(10100).ListItem.Art(logo)]]</value>
+		<value condition="String.IsEqual($VAR[ActiveWidgetID],5100)">$INFO[Container(5100).ListItem.Art(clearlogo),,$INFO[Container(5100).ListItem.Art(logo)]]</value>
+		<value condition="String.IsEqual($VAR[ActiveWidgetID],6100)">$INFO[Container(6100).ListItem.Art(clearlogo),,$INFO[Container(6100).ListItem.Art(logo)]]</value>
+		<value>$INFO[ListItem.Art(clearlogo),,$INFO[ListItem.Art(logo)]]</value>
 	</variable>
 
 	<variable name="CurrentWidgetPlot">
-		<value condition="!String.IsEmpty(Container($VAR[ActiveWidgetID]).ListItem.Plot)">$INFO[Container($VAR[ActiveWidgetID]).ListItem.Plot]</value>
 		<value condition="String.IsEqual($VAR[ActiveWidgetID],10100)">$INFO[Container(10100).ListItem.Plot]</value>
-		<value condition="String.IsEqual($VAR[ActiveWidgetID],10200)">$INFO[Container(10200).ListItem.Plot]</value>
-		<value condition="String.IsEqual($VAR[ActiveWidgetID],10300)">$INFO[Container(10300).ListItem.Plot]</value>
+		<value condition="String.IsEqual($VAR[ActiveWidgetID],5100)">$INFO[Container(5100).ListItem.Plot]</value>
+		<value condition="String.IsEqual($VAR[ActiveWidgetID],6100)">$INFO[Container(6100).ListItem.Plot]</value>
 		<value>$INFO[ListItem.Plot]</value>
 	</variable>
 
