@@ -1159,20 +1159,28 @@
 	</variable>
 	<variable name="CurrentWidgetClearLogo">
 		<value condition="Control.HasFocus(10100) + !String.IsEmpty(Container(10100).ListItem.Art(clearlogo))">$INFO[Container(10100).ListItem.Art(clearlogo)]</value>
+		<value condition="Control.HasFocus(10100) + !String.IsEmpty(Container(10100).ListItem.Art(tvshow.clearlogo))">$INFO[Container(10100).ListItem.Art(tvshow.clearlogo)]</value>
 		<value condition="Control.HasFocus(10100) + !String.IsEmpty(Container(10100).ListItem.Art(logo))">$INFO[Container(10100).ListItem.Art(logo)]</value>
 		<value condition="Control.HasFocus(10200) + !String.IsEmpty(Container(10200).ListItem.Art(clearlogo))">$INFO[Container(10200).ListItem.Art(clearlogo)]</value>
+		<value condition="Control.HasFocus(10200) + !String.IsEmpty(Container(10200).ListItem.Art(tvshow.clearlogo))">$INFO[Container(10200).ListItem.Art(tvshow.clearlogo)]</value>
 		<value condition="Control.HasFocus(10200) + !String.IsEmpty(Container(10200).ListItem.Art(logo))">$INFO[Container(10200).ListItem.Art(logo)]</value>
 		<value condition="Control.HasFocus(10300) + !String.IsEmpty(Container(10300).ListItem.Art(clearlogo))">$INFO[Container(10300).ListItem.Art(clearlogo)]</value>
+		<value condition="Control.HasFocus(10300) + !String.IsEmpty(Container(10300).ListItem.Art(tvshow.clearlogo))">$INFO[Container(10300).ListItem.Art(tvshow.clearlogo)]</value>
 		<value condition="Control.HasFocus(10300) + !String.IsEmpty(Container(10300).ListItem.Art(logo))">$INFO[Container(10300).ListItem.Art(logo)]</value>
 		<value condition="Control.HasFocus(5100) + !String.IsEmpty(Container(5100).ListItem.Art(clearlogo))">$INFO[Container(5100).ListItem.Art(clearlogo)]</value>
+		<value condition="Control.HasFocus(5100) + !String.IsEmpty(Container(5100).ListItem.Art(tvshow.clearlogo))">$INFO[Container(5100).ListItem.Art(tvshow.clearlogo)]</value>
 		<value condition="Control.HasFocus(5100) + !String.IsEmpty(Container(5100).ListItem.Art(logo))">$INFO[Container(5100).ListItem.Art(logo)]</value>
 		<value condition="Control.HasFocus(5200) + !String.IsEmpty(Container(5200).ListItem.Art(clearlogo))">$INFO[Container(5200).ListItem.Art(clearlogo)]</value>
+		<value condition="Control.HasFocus(5200) + !String.IsEmpty(Container(5200).ListItem.Art(tvshow.clearlogo))">$INFO[Container(5200).ListItem.Art(tvshow.clearlogo)]</value>
 		<value condition="Control.HasFocus(5200) + !String.IsEmpty(Container(5200).ListItem.Art(logo))">$INFO[Container(5200).ListItem.Art(logo)]</value>
 		<value condition="Control.HasFocus(6100) + !String.IsEmpty(Container(6100).ListItem.Art(clearlogo))">$INFO[Container(6100).ListItem.Art(clearlogo)]</value>
+		<value condition="Control.HasFocus(6100) + !String.IsEmpty(Container(6100).ListItem.Art(tvshow.clearlogo))">$INFO[Container(6100).ListItem.Art(tvshow.clearlogo)]</value>
 		<value condition="Control.HasFocus(6100) + !String.IsEmpty(Container(6100).ListItem.Art(logo))">$INFO[Container(6100).ListItem.Art(logo)]</value>
 		<value condition="Control.HasFocus(6200) + !String.IsEmpty(Container(6200).ListItem.Art(clearlogo))">$INFO[Container(6200).ListItem.Art(clearlogo)]</value>
+		<value condition="Control.HasFocus(6200) + !String.IsEmpty(Container(6200).ListItem.Art(tvshow.clearlogo))">$INFO[Container(6200).ListItem.Art(tvshow.clearlogo)]</value>
 		<value condition="Control.HasFocus(6200) + !String.IsEmpty(Container(6200).ListItem.Art(logo))">$INFO[Container(6200).ListItem.Art(logo)]</value>
 		<value condition="!String.IsEmpty(ListItem.Art(clearlogo))">$INFO[ListItem.Art(clearlogo)]</value>
+		<value condition="!String.IsEmpty(ListItem.Art(tvshow.clearlogo))">$INFO[ListItem.Art(tvshow.clearlogo)]</value>
 		<value condition="!String.IsEmpty(ListItem.Art(logo))">$INFO[ListItem.Art(logo)]</value>
 		<value>None</value>
 	</variable>

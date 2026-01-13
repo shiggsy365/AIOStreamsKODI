@@ -34,7 +34,7 @@
 			<align>right</align>
 			<label>Home:$INFO[Skin.String(Home_WidgetIndex)] | Movies:$INFO[Skin.String(Movies_WidgetIndex)] | TV:$INFO[Skin.String(TV_WidgetIndex)]
 ActiveID:$VAR[ActiveWidgetID] | Title:$VAR[CurrentWidgetTitle]
-SideFocus:$INFO[Skin.String(SideMenuFocus)] | VER: 6.0.297</label>
+SideFocus:$INFO[Skin.String(SideMenuFocus)] | VER: 6.0.298</label>
 			<textcolor>red</textcolor>
 			<font>font13</font>
 			<visible>true</visible>
@@ -80,17 +80,10 @@ SideFocus:$INFO[Skin.String(SideMenuFocus)] | VER: 6.0.297</label>
 				<width>500</width>
 				<height>180</height>
 				<aspectratio align="left" aligny="bottom">keep</aspectratio>
-				<texture background="true">special://skin/resources/icon.png</texture>
-				<visible>true</visible>
+				<texture background="true">$VAR[CurrentWidgetClearLogo]</texture>
+				<visible>!String.IsEmpty($VAR[CurrentWidgetClearLogo])</visible>
 			</control>
-			<control type="image">
-				<left>-130</left>
-				<top>-40</top>
-				<width>100</width>
-				<height>100</height>
-				<texture>special://skin/resources/icon.png</texture>
-				<visible>true</visible>
-			</control>
+
 
 
 			
