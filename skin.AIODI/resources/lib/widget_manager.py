@@ -1,11 +1,12 @@
 import xbmc
 import xbmcgui
+import xbmcvfs
 import json
 import os
 import sys
 
 # Get the skin directory
-SKIN_DIR = xbmc.translatePath('special://skin/')
+SKIN_DIR = xbmcvfs.translatePath('special://skin/')
 CONFIG_FILE = os.path.join(SKIN_DIR, 'resources', 'widget_config.json')
 
 # Default configuration

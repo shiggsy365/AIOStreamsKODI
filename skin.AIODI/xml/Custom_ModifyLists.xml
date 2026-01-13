@@ -52,7 +52,7 @@
                     <height>60</height>
                     <font>font13</font>
                     <label>Home</label>
-                    <radioposx>20</radioposx>
+                    <radioposx>350</radioposx>
                     <onclick>SetProperty(CurrentPage,home)</onclick>
                     <onclick>RunScript(special://skin/resources/lib/widget_manager.py,load_page,home)</onclick>
                     <selected>String.IsEqual(Window.Property(CurrentPage),home)</selected>
@@ -63,7 +63,7 @@
                     <height>60</height>
                     <font>font13</font>
                     <label>TV Shows</label>
-                    <radioposx>20</radioposx>
+                    <radioposx>350</radioposx>
                     <onclick>SetProperty(CurrentPage,tvshows)</onclick>
                     <onclick>RunScript(special://skin/resources/lib/widget_manager.py,load_page,tvshows)</onclick>
                     <selected>String.IsEqual(Window.Property(CurrentPage),tvshows)</selected>

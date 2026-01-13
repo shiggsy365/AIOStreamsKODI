@@ -95,7 +95,7 @@ SideFocus:$INFO[Skin.String(SideMenuFocus)] | VER: 6.0.263</label>
 				<label>$VAR[CurrentWidgetTitle]</label>
 				<shadowcolor>text_shadow</shadowcolor>
 				<aligny>bottom</aligny>
-				<visible>String.IsEqual($VAR[CurrentWidgetClearLogo],None) | String.IsEmpty($VAR[CurrentWidgetClearLogo]) | true</visible> <!-- TEMPORARILY ENABLED TO TEST TEXT -->
+				<visible>String.IsEqual($VAR[CurrentWidgetClearLogo],None) | String.IsEmpty($VAR[CurrentWidgetClearLogo])</visible>
 			</control>
 
 			<!-- Info Title -->
