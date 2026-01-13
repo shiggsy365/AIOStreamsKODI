@@ -1179,17 +1179,7 @@
 		<value condition="Control.HasFocus(6200) + !String.IsEmpty(Container(6200).ListItem.Art(clearlogo))">$INFO[Container(6200).ListItem.Art(clearlogo)]</value>
 		<value condition="Control.HasFocus(6200) + !String.IsEmpty(Container(6200).ListItem.Art(tvshow.clearlogo))">$INFO[Container(6200).ListItem.Art(tvshow.clearlogo)]</value>
 		<value condition="Control.HasFocus(6200) + !String.IsEmpty(Container(6200).ListItem.Art(logo))">$INFO[Container(6200).ListItem.Art(logo)]</value>
-		<value condition="Control.HasFocus(10100) + !String.IsEmpty(Container(10100).ListItem.Art(landscape))">$INFO[Container(10100).ListItem.Art(landscape)]</value>
-		<value condition="Control.HasFocus(10100) + !String.IsEmpty(Container(10100).ListItem.Art(thumb))">$INFO[Container(10100).ListItem.Art(thumb)]</value>
-		<value condition="Control.HasFocus(10200) + !String.IsEmpty(Container(10200).ListItem.Art(landscape))">$INFO[Container(10200).ListItem.Art(landscape)]</value>
-		<value condition="Control.HasFocus(10200) + !String.IsEmpty(Container(10200).ListItem.Art(thumb))">$INFO[Container(10200).ListItem.Art(thumb)]</value>
-		<value condition="Control.HasFocus(10300) + !String.IsEmpty(Container(10300).ListItem.Art(landscape))">$INFO[Container(10300).ListItem.Art(landscape)]</value>
-		<value condition="Control.HasFocus(10300) + !String.IsEmpty(Container(10300).ListItem.Art(thumb))">$INFO[Container(10300).ListItem.Art(thumb)]</value>
-		<value condition="!String.IsEmpty(ListItem.Art(clearlogo))">$INFO[ListItem.Art(clearlogo)]</value>
-		<value condition="!String.IsEmpty(ListItem.Art(tvshow.clearlogo))">$INFO[ListItem.Art(tvshow.clearlogo)]</value>
-		<value condition="!String.IsEmpty(ListItem.Art(logo))">$INFO[ListItem.Art(logo)]</value>
-		<value condition="!String.IsEmpty(ListItem.Art(landscape))">$INFO[ListItem.Art(landscape)]</value>
-		<value condition="!String.IsEmpty(ListItem.Art(thumb))">$INFO[ListItem.Art(thumb)]</value>
+		<value condition="Control.HasFocus(6200) + !String.IsEmpty(Container(6200).ListItem.Art(logo))">$INFO[Container(6200).ListItem.Art(logo)]</value>
 		<value></value>
 	</variable>
 

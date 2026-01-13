@@ -34,7 +34,7 @@
 			<align>right</align>
 			<label>Home:$INFO[Skin.String(Home_WidgetIndex)] | Movies:$INFO[Skin.String(Movies_WidgetIndex)] | TV:$INFO[Skin.String(TV_WidgetIndex)]
 ActiveID:$VAR[ActiveWidgetID] | Title:$VAR[CurrentWidgetTitle]
-SideFocus:$INFO[Skin.String(SideMenuFocus)] | VER: 6.0.299</label>
+SideFocus:$INFO[Skin.String(SideMenuFocus)] | VER: 6.0.300</label>
 			<textcolor>red</textcolor>
 			<font>font13</font>
 			<visible>true</visible>
@@ -81,7 +81,7 @@ SideFocus:$INFO[Skin.String(SideMenuFocus)] | VER: 6.0.299</label>
 				<height>180</height>
 				<aspectratio align="left" aligny="bottom">keep</aspectratio>
 				<texture background="true">$VAR[CurrentWidgetClearLogo]</texture>
-				<visible>!String.IsEmpty($VAR[CurrentWidgetClearLogo])</visible>
+				<visible>!String.IsEmpty('$VAR[CurrentWidgetClearLogo]')</visible>
 			</control>
 
 
@@ -94,12 +94,25 @@ SideFocus:$INFO[Skin.String(SideMenuFocus)] | VER: 6.0.299</label>
 				<width>800</width>
 				<height>180</height>
 				<font>font45_title</font>
-				<textcolor>FFFFFFFF</textcolor>
+				<textcolor>white</textcolor>
 				<label>$VAR[CurrentWidgetTitle]</label>
 				<shadowcolor>text_shadow</shadowcolor>
 				<aligny>bottom</aligny>
-				<visible>String.IsEmpty($VAR[CurrentWidgetClearLogo])</visible>
+				<visible>String.IsEmpty('$VAR[CurrentWidgetClearLogo]')</visible>
 			</control>
+
+			<!-- DEBUG LOGO DATA -->
+			<control type="label">
+				<left>0</left>
+				<top>190</top>
+				<width>1000</width>
+				<height>30</height>
+				<font>font12</font>
+				<textcolor>red</textcolor>
+				<label>LOGO_VAR: [$VAR[CurrentWidgetClearLogo]]</label>
+				<visible>true</visible>
+			</control>
+
 
 			<!-- Info Title -->
 			<control type="label">
