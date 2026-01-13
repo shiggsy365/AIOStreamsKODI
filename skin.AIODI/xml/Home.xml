@@ -34,7 +34,7 @@
 			<align>right</align>
 			<label>Home:$INFO[Skin.String(Home_WidgetIndex)] | Movies:$INFO[Skin.String(Movies_WidgetIndex)] | TV:$INFO[Skin.String(TV_WidgetIndex)]
 ActiveID:$VAR[ActiveWidgetID] | Title:$VAR[CurrentWidgetTitle]
-SideFocus:$INFO[Skin.String(SideMenuFocus)] | VER: 6.0.307</label>
+SideFocus:$INFO[Skin.String(SideMenuFocus)] | VER: 6.0.309</label>
 			<textcolor>red</textcolor>
 			<font>font13</font>
 			<visible>true</visible>
@@ -46,7 +46,7 @@ SideFocus:$INFO[Skin.String(SideMenuFocus)] | VER: 6.0.307</label>
 		<control type="image">
 			<depth>DepthBackground</depth>
 			<include>FullScreenDimensions</include>
-			<texture background="true" colordiffuse="BBFFFFFF">$VAR[CurrentWidgetFanart]</texture>
+			<texture background="true" colordiffuse="FFFFFFFF">$VAR[CurrentWidgetFanart]</texture>
 			<fadetime>600</fadetime>
 			<aspectratio>scale</aspectratio>
 		</control>
@@ -57,8 +57,8 @@ SideFocus:$INFO[Skin.String(SideMenuFocus)] | VER: 6.0.307</label>
 			<left>0</left>
 			<top>0</top>
 			<bottom>0</bottom>
-			<width>800</width>
-			<texture>colors/gradient_left_to_right.png</texture>
+			<width>1000</width>
+			<texture colordiffuse="E0FFFFFF">colors/gradient_left_to_right.png</texture>
 			<aspectratio>stretch</aspectratio>
 		</control>
 		
@@ -79,89 +79,29 @@ SideFocus:$INFO[Skin.String(SideMenuFocus)] | VER: 6.0.307</label>
 				<label>$VAR[CurrentWidgetClearLogo]</label>
 			</control>
 
-			<!-- TEST RED BOX (BOTTOM LAYER) -->
+			<!-- ClearLogo -->
 			<control type="image">
 				<left>0</left>
 				<top>0</top>
 				<width>500</width>
 				<height>180</height>
-				<texture>colors/white.png</texture>
-				<colordiffuse>40FF0000</colordiffuse>
-				<visible>true</visible>
-			</control>
-			
-			<!-- STATIC SKIN LOGO TEST (TOP LEFT) -->
-			<control type="image">
-				<left>0</left>
-				<top>0</top>
-				<width>100</width>
-				<height>50</height>
-				<texture>aiostreams_logo.png</texture>
-				<visible>true</visible>
-			</control>
-
-			<!-- LOGO DEBUG LABEL 1 (ALWAYS VISIBLE) -->
-			<control type="label">
-				<left>0</left>
-				<top>0</top>
-				<width>500</width>
-				<height>30</height>
-				<font>font13</font>
-				<textcolor>blue</textcolor>
-				<label>DEBUG_TOP: HAS_LABEL_8888: [!String.IsEmpty(Control.GetLabel(8888))]</label>
-				<visible>true</visible>
-			</control>
-
-			<!-- TEST LOGO (DYNAMIC) -->
-			<control type="image">
-				<left>0</left>
-				<top>0</top>
-				<width>500</width>
-				<height>180</height>
-				<aspectratio align="left" aligny="center">keep</aspectratio>
+				<aspectratio align="left" aligny="bottom">keep</aspectratio>
 				<texture background="false">$INFO[Control.GetLabel(8888)]</texture>
 				<visible>!String.IsEmpty(Control.GetLabel(8888))</visible>
 			</control>
-
-			<!-- LOGO DEBUG LABEL 2 (VALUE TEST) -->
-			<control type="label">
-				<left>0</left>
-				<top>35</top>
-				<width>1000</width>
-				<height>30</height>
-				<font>font12</font>
-				<textcolor>green</textcolor>
-				<label>PATH_8888: $INFO[Control.GetLabel(8888)]</label>
-				<visible>true</visible>
-			</control>
-
-
-
-
 			
-			<!-- TEST FALLBACK -->
+			<!-- Fallback Title (when no clearlogo) -->
 			<control type="label">
 				<left>0</left>
-				<top>70</top>
+				<top>0</top>
 				<width>800</width>
-				<height>80</height>
-				<font>font25</font>
+				<height>180</height>
+				<font>font45_title</font>
 				<textcolor>white</textcolor>
-				<label>FB: $VAR[CurrentWidgetTitle]</label>
+				<label>$VAR[CurrentWidgetTitle]</label>
+				<shadowcolor>text_shadow</shadowcolor>
+				<aligny>bottom</aligny>
 				<visible>String.IsEmpty(Control.GetLabel(8888))</visible>
-				<aligny>center</aligny>
-			</control>
-
-			<!-- DEBUG LOGO DATA -->
-			<control type="label">
-				<left>0</left>
-				<top>190</top>
-				<width>1000</width>
-				<height>30</height>
-				<font>font12</font>
-				<textcolor>red</textcolor>
-				<label>LOGO_VAR: [$VAR[CurrentWidgetClearLogo]]</label>
-				<visible>true</visible>
 			</control>
 
 
