@@ -1,0 +1,17 @@
+{
+    "name": "AIOStreams",
+    "description": "Search movies and TV shows from AIOStreams",
+    "id": "plugin.video.aiostreams",
+    "version": "1.0",
+    "script": "plugin://plugin.video.aiostreams/globalsearch",
+    "icon": "resources/icon.png",
+    "fanart": "resources/fanart.jpg",
+    "provides": [
+        "video"
+    ],
+    "search_types": [
+        "movies",
+        "tvshows",
+        "all"
+    ]
+}

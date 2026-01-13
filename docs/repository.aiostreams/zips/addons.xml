@@ -27,6 +27,10 @@
         <provides>video</provides>
     </extension>
     <extension point="xbmc.service" library="service.py" start="login" />
+    <!-- Global Search Provider -->
+    <extension point="xbmc.python.script" library="globalsearch.py">
+        <provides>executable</provides>
+    </extension>
     <extension point="xbmc.addon.metadata">
         <summary lang="en_GB">AIOStreams addon for Kodi with advanced features</summary>
         <description lang="en_GB">Search and stream content from AIOStreams.</description>
@@ -39,7 +43,7 @@
         </assets>
     </extension>
 </addon>
-<addon id="skin.AIODI" version="6.0.266" name="AIODI" provider-name="shiggsy365">
+<addon id="skin.AIODI" version="6.0.267" name="AIODI" provider-name="shiggsy365">
 	<requires>
 		<import addon="xbmc.gui" version="5.17.0"/>
 		<import addon="pvr.iptvsimple" version="20.0.0"/>

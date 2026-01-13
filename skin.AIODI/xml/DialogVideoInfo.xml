@@ -173,7 +173,7 @@
 						<param name="control_id" value="147" />
 						<param name="label" value="$INFO[ListItem.Director,[COLOR button_focus]$LOCALIZE[20339]: [/COLOR]]" />
 						<param name="altlabel" value="$INFO[ListItem.Director,$LOCALIZE[20339]: ]" />
-						<param name="onclick" value="ActivateWindow(Videos,plugin://plugin.video.aiostreams/?action=search_all&amp;query=$ESCINFO[ListItem.Director],return)" />
+						<param name="onclick" value="RunScript(script.globalsearch,searchstring=$ESCINFO[ListItem.Director])" />
 						<param name="visible" value="!String.IsEmpty(ListItem.Director)" />
 					</include>
 					<include content="InfoDialogMetadata">
@@ -308,7 +308,7 @@
 					<visible>Integer.IsEqual(Container(50).NumItems,0)</visible>
 				</control>
 				<control type="panel" id="50">
-					<onclick>ActivateWindow(Videos,plugin://plugin.video.aiostreams/?action=search_all&amp;query=$ESCINFO[ListItem.Label],return)</onclick>
+					<onclick>RunScript(script.globalsearch,searchstring=$ESCINFO[Container(50).ListItem.Label])</onclick>
 					<top>158</top>
 					<width>1235</width>
 					<height>370</height>
