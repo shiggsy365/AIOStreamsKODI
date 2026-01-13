@@ -1224,33 +1224,20 @@ def search():
 
 
 def search_unified_internal(query):
-    """Internal unified search with tabbed interface."""
-    # Create a selection dialog for tabs
-    tabs = ['Movies', 'TV Shows', 'All Results']
-    selected = xbmcgui.Dialog().select(f'Search: {query}', tabs)
-
-    if selected == -1:
-        # User cancelled
-        xbmcplugin.endOfDirectory(HANDLE, succeeded=False)
-        return
-
-    if selected == 0:
-        # Movies tab
-        search_by_tab(query, 'movie')
-    elif selected == 1:
-        # TV Shows tab
-        search_by_tab(query, 'series')
-    else:
-        # All Results - show both
-        search_all_results(query)
+    """Internal unified search. Go directly to unified results."""
+    # We no longer show a selection dialog to avoid interrupting the user flow
+    search_all_results(query)
 
 
 def search_by_tab(query, content_type):
-    """Search with tab-specific content type for proper poster view."""
+    """Search with tab-specific content type with navigation tabs."""
     xbmcplugin.setPluginCategory(HANDLE, f'Search {content_type.title()}: {query}')
 
     # Set proper content type for poster view
     xbmcplugin.setContent(HANDLE, 'movies' if content_type == 'movie' else 'tvshows')
+
+    # Add navigation tabs at the top
+    add_tab_switcher(query, content_type)
 
     # Show progress dialog
     progress = xbmcgui.DialogProgress()
@@ -1351,9 +1338,12 @@ def add_tab_switcher(query, current_tab):
 
 
 def search_all_results(query):
-    """Show all results (movies and TV shows) in one view."""
+    """Show all results (movies and TV shows) in one view with category headers."""
     xbmcplugin.setPluginCategory(HANDLE, f'Search: {query}')
     xbmcplugin.setContent(HANDLE, 'videos')
+
+    # Add navigation tabs at the top for easy filtering
+    add_tab_switcher(query, 'both') # Changed from add_search_tabs to add_tab_switcher as per existing code
 
     # Show progress dialog
     progress = xbmcgui.DialogProgress()
@@ -1373,23 +1363,27 @@ def search_all_results(query):
         if HAS_MODULES and filters:
             movies = filters.filter_items(movies)
 
-        # Add results directly without header
-        for meta in movies[:10]:
-            item_id = meta.get('id')
-            title = meta.get('name', 'Unknown')
-            poster = meta.get('poster', '')
-            fanart = meta.get('background', '')
-            clearlogo = meta.get('logo', '')
-            url = get_url(action='play', content_type='movie', imdb_id=item_id, title=title, poster=poster, fanart=fanart, clearlogo=clearlogo)
-            list_item = create_listitem_with_context(meta, 'movie', url)
-            list_item.setProperty('IsPlayable', 'true')
-            xbmcplugin.addDirectoryItem(HANDLE, url, list_item, False)
+        if movies:
+            # Add Movies Header
+            header = xbmcgui.ListItem(label='[B][COLOR blue]🎬 MOVIES[/COLOR][/B]')
+            header.setProperty('IsPlayable', 'false')
+            xbmcplugin.addDirectoryItem(HANDLE, '', header, False)
 
-        # More link
-        if len(movies) > 10:
-            list_item = xbmcgui.ListItem(label=f'[COLOR yellow]» View All Movies ({len(movies)} results)[/COLOR]')
-            url = get_url(action='search_tab', content_type='movie', query=query)
-            xbmcplugin.addDirectoryItem(HANDLE, url, list_item, True)
+            for meta in movies[:10]:
+                item_id = meta.get('id')
+                title = meta.get('name', 'Unknown')
+                poster = meta.get('poster', '')
+                fanart = meta.get('background', '')
+                clearlogo = meta.get('logo', '')
+                url = get_url(action='play', content_type='movie', imdb_id=item_id, title=title, poster=poster, fanart=fanart, clearlogo=clearlogo)
+                list_item = create_listitem_with_context(meta, 'movie', url)
+                list_item.setProperty('IsPlayable', 'true')
+                xbmcplugin.addDirectoryItem(HANDLE, url, list_item, False)
+
+            if len(movies) > 10:
+                list_item = xbmcgui.ListItem(label=f'[COLOR yellow]   » View All Movies ({len(movies)} results)[/COLOR]')
+                url = get_url(action='search_tab', content_type='movie', query=query)
+                xbmcplugin.addDirectoryItem(HANDLE, url, list_item, True)
 
     # TV Shows Section
     if series_results and 'metas' in series_results and len(series_results['metas']) > 0:
@@ -1397,116 +1391,45 @@ def search_all_results(query):
         if HAS_MODULES and filters:
             shows = filters.filter_items(shows)
 
-        # Add results directly without header
-        for meta in shows[:10]:
-            item_id = meta.get('id')
-            url = get_url(action='show_seasons', meta_id=item_id)
-            list_item = create_listitem_with_context(meta, 'series', url)
-            xbmcplugin.addDirectoryItem(HANDLE, url, list_item, True)
+        if shows:
+            # Add TV Shows Header
+            header = xbmcgui.ListItem(label='[B][COLOR blue]📺 TV SHOWS[/COLOR][/B]')
+            header.setProperty('IsPlayable', 'false')
+            xbmcplugin.addDirectoryItem(HANDLE, '', header, False)
 
-        # More link
-        if len(shows) > 10:
-            list_item = xbmcgui.ListItem(label=f'[COLOR yellow]» View All TV Shows ({len(shows)} results)[/COLOR]')
-            url = get_url(action='search_tab', content_type='series', query=query)
-            xbmcplugin.addDirectoryItem(HANDLE, url, list_item, True)
+            for meta in shows[:10]:
+                item_id = meta.get('id')
+                url = get_url(action='show_seasons', meta_id=item_id)
+                list_item = create_listitem_with_context(meta, 'series', url)
+                xbmcplugin.addDirectoryItem(HANDLE, url, list_item, True)
 
-    # No results
-    if (not movie_results or 'metas' not in movie_results or len(movie_results['metas']) == 0) and \
-       (not series_results or 'metas' not in series_results or len(series_results['metas']) == 0):
-        xbmcgui.Dialog().notification('AIOStreams', 'No results found', xbmcgui.NOTIFICATION_INFO)
+            if len(shows) > 10:
+                list_item = xbmcgui.ListItem(label=f'[COLOR yellow]   » View All TV Shows ({len(shows)} results)[/COLOR]')
+                url = get_url(action='search_tab', content_type='series', query=query)
+                xbmcplugin.addDirectoryItem(HANDLE, url, list_item, True)
+
+    # No results handling
+    if (not movie_results or not movie_results.get('metas')) and (not series_results or not series_results.get('metas')):
+        list_item = xbmcgui.ListItem(label=f'[COLOR red]No results found for "{query}"[/COLOR]')
+        xbmcplugin.addDirectoryItem(HANDLE, '', list_item, False)
 
     xbmcplugin.endOfDirectory(HANDLE)
 
 
 def search_unified():
-    """Unified search showing both movies and TV shows."""
+    """Wrapper for unified search action."""
     params = dict(parse_qsl(sys.argv[2][1:]))
-    query = params.get('query')
+    query = params.get('query', '').strip()
     
     if not query:
         keyboard = xbmcgui.Dialog().input('Search', type=xbmcgui.INPUT_ALPHANUM)
         if not keyboard:
+            xbmcplugin.endOfDirectory(HANDLE, succeeded=False)
             return
-        query = keyboard
+        query = keyboard.strip()
     
-    xbmcplugin.setPluginCategory(HANDLE, f'Search: {query}')
-    xbmcplugin.setContent(HANDLE, 'videos')
-    
-    # Show progress dialog
-    progress = xbmcgui.DialogProgress()
-    progress.create('AIOStreams', 'Searching movies and TV shows...')
-    
-    # Search movies
-    progress.update(25, 'Searching movies...')
-    movie_results = search_catalog(query, 'movie', skip=0)
-    
-    # Search TV shows
-    progress.update(50, 'Searching TV shows...')
-    series_results = search_catalog(query, 'series', skip=0)
-    
-    progress.close()
-    
-    # Movies Section Header
-    if movie_results and 'metas' in movie_results and len(movie_results['metas']) > 0:
-        # Apply filters
-        movies = movie_results['metas']
-        if HAS_MODULES and filters:
-            movies = filters.filter_items(movies)
-        
-        # Add "Movies" category header
-        header_item = xbmcgui.ListItem(label='[B][COLOR blue]Movies[/COLOR][/B]')
-        header_item.setProperty('IsPlayable', 'false')
-        xbmcplugin.addDirectoryItem(HANDLE, '', header_item, False)
-        
-        # Add movie results (limit to 10)
-        for meta in movies[:10]:
-            item_id = meta.get('id')
-            title = meta.get('name', 'Unknown')
-            poster = meta.get('poster', '')
-            fanart = meta.get('background', '')
-            clearlogo = meta.get('logo', '')
-            url = get_url(action='play', content_type='movie', imdb_id=item_id, title=title, poster=poster, fanart=fanart, clearlogo=clearlogo)
-            list_item = create_listitem_with_context(meta, 'movie', url)
-            list_item.setProperty('IsPlayable', 'true')
-            xbmcplugin.addDirectoryItem(HANDLE, url, list_item, False)
-        
-        # More movies link
-        if len(movies) > 10:
-            list_item = xbmcgui.ListItem(label=f'[COLOR yellow]» View All Movies ({len(movies)} results)[/COLOR]')
-            url = get_url(action='search', content_type='movie', query=query)
-            xbmcplugin.addDirectoryItem(HANDLE, url, list_item, True)
-    
-    # TV Shows Section Header
-    if series_results and 'metas' in series_results and len(series_results['metas']) > 0:
-        # Apply filters
-        shows = series_results['metas']
-        if HAS_MODULES and filters:
-            shows = filters.filter_items(shows)
-        
-        # Add "TV Shows" category header
-        header_item = xbmcgui.ListItem(label='[B][COLOR green]TV Shows[/COLOR][/B]')
-        header_item.setProperty('IsPlayable', 'false')
-        xbmcplugin.addDirectoryItem(HANDLE, '', header_item, False)
-        
-        # Add TV show results (limit to 10)
-        for meta in shows[:10]:
-            item_id = meta.get('id')
-            url = get_url(action='show_seasons', meta_id=item_id)
-            list_item = create_listitem_with_context(meta, 'series', url)
-            xbmcplugin.addDirectoryItem(HANDLE, url, list_item, True)
-        
-        # More shows link
-        if len(shows) > 10:
-            list_item = xbmcgui.ListItem(label=f'[COLOR yellow]» View All TV Shows ({len(shows)} results)[/COLOR]')
-            url = get_url(action='search', content_type='series', query=query)
-            xbmcplugin.addDirectoryItem(HANDLE, url, list_item, True)
-    
-    # No results
-    if (not movie_results or 'metas' not in movie_results or len(movie_results['metas']) == 0) and \
-       (not series_results or 'metas' not in series_results or len(series_results['metas']) == 0):
-        xbmcgui.Dialog().notification('AIOStreams', 'No results found', xbmcgui.NOTIFICATION_INFO)
-    
-    xbmcplugin.endOfDirectory(HANDLE)
+    # Use the shared unified results function
+    search_all_results(query)
 
 
 
@@ -4249,6 +4172,9 @@ def handle_search_tab(params):
         xbmcplugin.setPluginCategory(HANDLE, f'Search {content_type.title()}: {query}')
         xbmcplugin.setContent(HANDLE, 'movies' if content_type == 'movie' else 'tvshows')
 
+        # Add navigation tabs even on paginated results
+        add_tab_switcher(query, content_type)
+
         results = search_catalog(query, content_type, skip=skip)
         if results and 'metas' in results:
             items = results['metas']
@@ -4295,6 +4221,14 @@ def router(params):
     Uses action registry pattern for cleaner, more maintainable code.
     """
     action_name = params.get('action', '')
+    
+    # If no action but query exists, assume search
+    if not action_name and ('search' in params or 'query' in params or 'q' in params):
+        action_name = 'search'
+        if 'search' in params and not params.get('query'):
+            params['query'] = params['search']
+        elif 'q' in params and not params.get('query'):
+            params['query'] = params['q']
 
     # Look up action in registry
     handler = ACTION_REGISTRY.get(action_name)
