@@ -170,7 +170,8 @@ SideFocus:$INFO[Skin.String(SideMenuFocus)] | VER: 6.0.263</label>
 				<onup>9001</onup>
 				<ondown>9003</ondown>
 				<onright>SetFocus($VAR[ActiveWidgetID])</onright>
-				<onclick>ActivateWindow(Videos,plugin://plugin.video.aiostreams/?action=search&amp;content_type=both&amp;nonce=$VAR[SearchTimestamp],return)</onclick>
+				<onclick>Skin.SetString(AIOStreams_SearchQuery)</onclick>
+				<onclick condition="!String.IsEmpty(Skin.String(AIOStreams_SearchQuery))">ActivateWindow(1108)</onclick>
 			</control>
 			<control type="image">
 				<left>24</left>

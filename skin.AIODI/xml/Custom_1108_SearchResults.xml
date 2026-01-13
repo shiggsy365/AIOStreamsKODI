@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<window type="dialog" id="1108">
+	<defaultcontrol always="true">5100</defaultcontrol>
+	<onload condition="String.IsEmpty(Skin.String(AIOStreams_SearchQuery))">Skin.SetString(AIOStreams_SearchQuery)</onload>
+	<controls>
+		<include>DefaultBackground</include>
+		
+		<!-- Background Dim -->
+		<control type="image">
+			<include>FullScreenDimensions</include>
+			<texture>colors/black_70.png</texture>
+		</control>
+
+		<control type="group">
+			<left>150</left>
+			<top>80</top>
+			<width>1750</width>
+			<height>1000</height>
+			
+			<control type="label">
+				<left>0</left>
+				<top>0</top>
+				<width>1750</width>
+				<height>60</height>
+				<font>font36_title</font>
+				<textcolor>FFFFFFFF</textcolor>
+				<label>Search: $INFO[Skin.String(AIOStreams_SearchQuery)]</label>
+			</control>
+			
+			<control type="grouplist" id="9100">
+				<left>0</left>
+				<top>100</top>
+				<width>1750</width>
+				<height>900</height>
+				<itemgap>20</itemgap>
+				<orientation>vertical</orientation>
+				
+				<!-- Movies Row -->
+				<include content="WidgetListPoster">
+					<param name="list_id" value="5100" />
+					<param name="widget_header" value="MOVIES" />
+					<param name="content_path" value="plugin://plugin.video.aiostreams/?action=search_tab&amp;content_type=movie&amp;query=$INFO[Skin.String(AIOStreams_SearchQuery)]&amp;widget=true" />
+					<param name="ondown_action1" value="SetFocus(5200)" />
+				</include>
+				
+				<!-- TV Shows Row -->
+				<include content="WidgetListPoster">
+					<param name="list_id" value="5200" />
+					<param name="widget_header" value="TV SHOWS" />
+					<param name="content_path" value="plugin://plugin.video.aiostreams/?action=search_tab&amp;content_type=series&amp;query=$INFO[Skin.String(AIOStreams_SearchQuery)]&amp;widget=true" />
+					<param name="onup_action1" value="SetFocus(5100)" />
+				</include>
+			</control>
+		</control>
+	</controls>
+</window>

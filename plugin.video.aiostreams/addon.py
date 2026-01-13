@@ -1229,15 +1229,16 @@ def search_unified_internal(query):
     search_all_results(query)
 
 
-def search_by_tab(query, content_type):
+def search_by_tab(query, content_type, is_widget=False):
     """Search with tab-specific content type with navigation tabs."""
     xbmcplugin.setPluginCategory(HANDLE, f'Search {content_type.title()}: {query}')
 
     # Set proper content type for poster view
     xbmcplugin.setContent(HANDLE, 'movies' if content_type == 'movie' else 'tvshows')
 
-    # Add navigation tabs at the top
-    add_tab_switcher(query, content_type)
+    # Add navigation tabs at the top (unless widget)
+    if not is_widget:
+        add_tab_switcher(query, content_type)
 
     # Show progress dialog
     progress = xbmcgui.DialogProgress()
@@ -4179,6 +4180,7 @@ def handle_search_tab(params):
     query = params.get('query', '')
     content_type = params.get('content_type', 'movie')
     skip = int(params.get('skip', 0))
+    is_widget = params.get('widget') == 'true'
 
     if not query:
         keyboard = xbmcgui.Dialog().input('Search', type=xbmcgui.INPUT_ALPHANUM)
@@ -4193,8 +4195,9 @@ def handle_search_tab(params):
         xbmcplugin.setPluginCategory(HANDLE, f'Search {content_type.title()}: {query}')
         xbmcplugin.setContent(HANDLE, 'movies' if content_type == 'movie' else 'tvshows')
 
-        # Add navigation tabs even on paginated results
-        add_tab_switcher(query, content_type)
+        if not is_widget:
+            # Add navigation tabs even on paginated results
+            add_tab_switcher(query, content_type)
 
         results = search_catalog(query, content_type, skip=skip)
         if results and 'metas' in results:
@@ -4233,7 +4236,7 @@ def handle_search_tab(params):
         xbmcplugin.endOfDirectory(HANDLE)
     else:
         # Initial search - show with tabs
-        search_by_tab(query, content_type)
+        search_by_tab(query, content_type, is_widget=is_widget)
 
 
 def router(params):
