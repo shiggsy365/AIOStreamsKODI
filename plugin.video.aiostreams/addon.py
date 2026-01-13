@@ -4136,7 +4136,7 @@ def smart_widget():
         # For series: navigate to show (will then go to seasons/episodes)
         # For movies: direct play
         if content_type == 'series':
-            url = get_url(action='show_seasons', series_id=item_id)
+            url = get_url(action='show_seasons', meta_id=item_id)
             is_folder = True
         else:
             url = get_url(action='show_streams', content_type='movie', media_id=item_id,
