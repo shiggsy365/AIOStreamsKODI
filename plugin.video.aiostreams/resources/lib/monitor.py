@@ -6,7 +6,6 @@ import xbmcgui
 import threading
 import time
 from resources.lib import trakt
-from resources.lib.autoplay import AutoplayManager
 
 ADDON = xbmcaddon.Addon()
 
@@ -28,8 +27,7 @@ class AIOStreamsPlayer(xbmc.Player):
         self.progress_monitor_thread = None
         self.stop_monitoring = threading.Event()
 
-        # Autoplay manager
-        self.autoplay = AutoplayManager(self)
+        self.stop_monitoring = threading.Event()
     
     def set_media_info(self, media_type, imdb_id, season=None, episode=None):
         """Set media information for scrobbling."""
@@ -198,15 +196,10 @@ class AIOStreamsPlayer(xbmc.Player):
                 self.media_type in ('series', 'episode') and
                 self.imdb_id and
                 self.season is not None and
-                self.episode is not None):
+                self.episode is not None and
+                ADDON.getSetting('autoplay_next_episode') == 'true'):
 
-                # 1. Start internal AutoplayManager (for the dialog/background scraping)
-                if self.autoplay.is_enabled():
-                    xbmc.log(f'[AIOStreams] Starting autoplay monitoring for {self.media_type} S{self.season:02d}E{self.episode:02d}',
-                            xbmc.LOGINFO)
-                    self.autoplay.start_monitoring(self.imdb_id, self.season, self.episode)
-
-                # 2. Integrate with UpNext script (service.upnext)
+                # Integrate with UpNext script (service.upnext)
                 self._signal_upnext()
 
         except Exception as e:
@@ -297,11 +290,6 @@ class AIOStreamsPlayer(xbmc.Player):
     
     def onPlayBackStopped(self):
         """Called when playback stops."""
-        # Stop autoplay monitoring
-        try:
-            self.autoplay.stop()
-        except Exception as e:
-            xbmc.log(f'[AIOStreams] Error stopping autoplay: {e}', xbmc.LOGERROR)
 
         # Check if we should auto-mark as watched before cleanup
         try:
@@ -344,11 +332,6 @@ class AIOStreamsPlayer(xbmc.Player):
     
     def onPlayBackEnded(self):
         """Called when playback ends."""
-        # Stop autoplay monitoring (dialog may have handled this already)
-        try:
-            self.autoplay.stop()
-        except Exception as e:
-            xbmc.log(f'[AIOStreams] Error stopping autoplay: {e}', xbmc.LOGERROR)
 
         # Auto-mark as watched if enabled (playback completed)
         try:
