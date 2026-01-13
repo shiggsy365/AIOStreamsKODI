@@ -11,8 +11,9 @@
             <texture>colors/black_70.png</texture>
         </control>
 
-        <!-- TOP 20%: FOCUSED ITEM INFO -->
+        <!-- Header Section (logo/title/metadata) -->
         <control type="group">
+            <zorder>1</zorder>
             <left>150</left>
             <top>30</top>
             <width>1100</width>
@@ -28,7 +29,7 @@
                 <aspectratio align="left" aligny="bottom">keep</aspectratio>
                 <texture background="true">$VAR[SearchResultsClearLogo]</texture>
                 <visible>!String.IsEqual($VAR[SearchResultsClearLogo],None) + !String.IsEmpty($VAR[SearchResultsClearLogo])</visible>
-                <visible>false</visible> <!-- TEMPORARILY DISABLED TO TEST TEXT -->
+                <visible>!String.IsEqual($VAR[SearchResultsClearLogo],None) + !String.IsEmpty($VAR[SearchResultsClearLogo])</visible>
             </control>
             
             <control type="label">

@@ -64,6 +64,7 @@ SideFocus:$INFO[Skin.String(SideMenuFocus)] | VER: 6.0.263</label>
 		
 		<!-- Info Overlay -->
 		<control type="group">
+			<zorder>1</zorder>
 			<left>150</left>
 			<top>50</top>
 			<width>1100</width>
@@ -81,7 +82,7 @@ SideFocus:$INFO[Skin.String(SideMenuFocus)] | VER: 6.0.263</label>
 				<aspectratio align="left" aligny="bottom">keep</aspectratio>
 				<texture background="true">$VAR[CurrentWidgetClearLogo]</texture>
 				<visible>!String.IsEqual($VAR[CurrentWidgetClearLogo],None) + !String.IsEmpty($VAR[CurrentWidgetClearLogo])</visible>
-				<visible>false</visible> <!-- TEMPORARILY DISABLED TO TEST TEXT -->
+				<visible>!String.IsEqual($VAR[CurrentWidgetClearLogo],None) + !String.IsEmpty($VAR[CurrentWidgetClearLogo])</visible>
 			</control>
 			
 			<!-- Fallback Title (when no clearlogo) -->
@@ -181,7 +182,7 @@ SideFocus:$INFO[Skin.String(SideMenuFocus)] | VER: 6.0.263</label>
 
 		<!-- Search -->
 		<control type="group">
-			<top>80</top>
+			<top>120</top>
 			<width>120</width>
 			<height>85</height>
 			<control type="button" id="9002">
@@ -217,7 +218,7 @@ SideFocus:$INFO[Skin.String(SideMenuFocus)] | VER: 6.0.263</label>
 	<!-- Center Group (Main Menu) -->
 	<control type="grouplist" id="9000">
 		<left>0</left>
-		<top>180</top>
+		<top>220</top>
 		<width>120</width>
 		<bottom>180</bottom>
 		<align>center</align>

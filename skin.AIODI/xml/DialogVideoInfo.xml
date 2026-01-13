@@ -302,9 +302,9 @@
 					<fadetime>150</fadetime>
 					<aspectratio>keep</aspectratio>
 					<texture>$VAR[BannerVar]</texture>
-					<visible>Integer.IsEqual(Container(10050).NumItems,0)</visible>
+					<visible>Integer.IsEqual(Container(50).NumItems,0)</visible>
 				</control>
-				<control type="panel" id="10050">
+				<control type="panel" id="50">
 					<onclick>Skin.SetString(AIOStreams_SearchQuery, $ESCINFO[ListItem.Label]);ActivateWindow(1108)</onclick>
 					<top>158</top>
 					<width>1235</width>
