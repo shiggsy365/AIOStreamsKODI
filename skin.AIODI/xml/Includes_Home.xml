@@ -100,6 +100,11 @@
 					<onup>$PARAM[onup_action]</onup>
 					<ondown>$PARAM[ondown_action]</ondown>
 					<onfocus>Skin.SetString(ActiveWidgetID,$PARAM[list_id])</onfocus>
+t				<onfocus>Skin.SetString(CurrentWidgetArt, $INFO[ListItem.Art(clearlogo),,$INFO[ListItem.Art(logo)]])</onfocus>
+					<onfocus>Skin.SetString(CurrentWidgetTitle, $INFO[ListItem.Title])</onfocus>
+					<onfocus>Skin.SetString(CurrentWidgetPlot, $INFO[ListItem.Plot])</onfocus>
+					<onfocus>Skin.SetString(CurrentWidgetInfo, $INFO[ListItem.Season,S,]$INFO[ListItem.Episode,E,  |  ]$INFO[ListItem.Title])</onfocus>
+					<onfocus>Skin.SetString(CurrentWidgetFanart, $INFO[ListItem.Art(fanart)])</onfocus>
 					<itemlayout width="240" height="360">
 						<control type="image">
 							<width>230</width>
@@ -178,6 +183,11 @@
 					<onup>$PARAM[onup_action]</onup>
 					<ondown>$PARAM[ondown_action]</ondown>
 					<onfocus>Skin.SetString(ActiveWidgetID,$PARAM[list_id])</onfocus>
+t				<onfocus>Skin.SetString(CurrentWidgetArt, $INFO[ListItem.Art(clearlogo),,$INFO[ListItem.Art(logo)]])</onfocus>
+					<onfocus>Skin.SetString(CurrentWidgetTitle, $INFO[ListItem.Title])</onfocus>
+					<onfocus>Skin.SetString(CurrentWidgetPlot, $INFO[ListItem.Plot])</onfocus>
+					<onfocus>Skin.SetString(CurrentWidgetInfo, $INFO[ListItem.Season,S,]$INFO[ListItem.Episode,E,  |  ]$INFO[ListItem.Title])</onfocus>
+					<onfocus>Skin.SetString(CurrentWidgetFanart, $INFO[ListItem.Art(fanart)])</onfocus>
 					<itemlayout width="410" height="235">
 						<control type="image">
 							<width>390</width>
@@ -274,6 +284,11 @@
 					<ondown>$PARAM[ondown_action2]</ondown>
 					<onclick>Action(Select)</onclick>
 					<onfocus>Skin.SetString(ActiveWidgetID,$PARAM[list_id])</onfocus>
+t				<onfocus>Skin.SetString(CurrentWidgetArt, $INFO[ListItem.Art(clearlogo),,$INFO[ListItem.Art(logo)]])</onfocus>
+					<onfocus>Skin.SetString(CurrentWidgetTitle, $INFO[ListItem.Title])</onfocus>
+					<onfocus>Skin.SetString(CurrentWidgetPlot, $INFO[ListItem.Plot])</onfocus>
+					<onfocus>Skin.SetString(CurrentWidgetInfo, $INFO[ListItem.Season,S,]$INFO[ListItem.Episode,E,  |  ]$INFO[ListItem.Title])</onfocus>
+					<onfocus>Skin.SetString(CurrentWidgetFanart, $INFO[ListItem.Art(fanart)])</onfocus>
 					<itemlayout width="240" height="360">
 						<control type="image">
 							<width>230</width>
@@ -417,6 +432,11 @@
 					<ondown>$PARAM[ondown_action2]</ondown>
 					<onclick>Action(Select)</onclick>
 					<onfocus>Skin.SetString(ActiveWidgetID,$PARAM[list_id])</onfocus>
+t				<onfocus>Skin.SetString(CurrentWidgetArt, $INFO[ListItem.Art(clearlogo),,$INFO[ListItem.Art(logo)]])</onfocus>
+					<onfocus>Skin.SetString(CurrentWidgetTitle, $INFO[ListItem.Title])</onfocus>
+					<onfocus>Skin.SetString(CurrentWidgetPlot, $INFO[ListItem.Plot])</onfocus>
+					<onfocus>Skin.SetString(CurrentWidgetInfo, $INFO[ListItem.Season,S,]$INFO[ListItem.Episode,E,  |  ]$INFO[ListItem.Title])</onfocus>
+					<onfocus>Skin.SetString(CurrentWidgetFanart, $INFO[ListItem.Art(fanart)])</onfocus>
 					<itemlayout width="410" height="235">
 						<control type="image">
 							<width>390</width>

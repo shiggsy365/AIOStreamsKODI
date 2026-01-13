@@ -34,7 +34,7 @@
 			<align>right</align>
 			<label>Home:$INFO[Skin.String(Home_WidgetIndex)] | Movies:$INFO[Skin.String(Movies_WidgetIndex)] | TV:$INFO[Skin.String(TV_WidgetIndex)]
 ActiveID:$VAR[ActiveWidgetID] | Title:$VAR[CurrentWidgetTitle]
-SideFocus:$INFO[Skin.String(SideMenuFocus)] | VER: 6.0.253</label>
+SideFocus:$INFO[Skin.String(SideMenuFocus)] | VER: 6.0.254</label>
 			<textcolor>red</textcolor>
 			<font>font13</font>
 			<visible>true</visible>
@@ -46,7 +46,7 @@ SideFocus:$INFO[Skin.String(SideMenuFocus)] | VER: 6.0.253</label>
 		<control type="image">
 			<depth>DepthBackground</depth>
 			<include>FullScreenDimensions</include>
-			<texture background="true" colordiffuse="BBFFFFFF">$VAR[CurrentWidgetFanart]</texture>
+			<texture background="true" colordiffuse="BBFFFFFF">$INFO[Skin.String(CurrentWidgetFanart)]</texture>
 			<fadetime>600</fadetime>
 			<aspectratio>scale</aspectratio>
 		</control>
@@ -79,8 +79,8 @@ SideFocus:$INFO[Skin.String(SideMenuFocus)] | VER: 6.0.253</label>
 				<width>500</width>
 				<height>180</height>
 				<aspectratio align="left" aligny="bottom">keep</aspectratio>
-				<texture background="true">$VAR[CurrentWidgetClearLogo]</texture>
-				<visible>!String.IsEmpty($VAR[CurrentWidgetClearLogo])</visible>
+				<texture background="true">$INFO[Skin.String(CurrentWidgetArt)]</texture>
+				<visible>!String.IsEmpty(Skin.String(CurrentWidgetArt))</visible>
 			</control>
 			
 			<!-- Fallback Title (when no clearlogo) -->
@@ -91,10 +91,10 @@ SideFocus:$INFO[Skin.String(SideMenuFocus)] | VER: 6.0.253</label>
 				<height>180</height>
 				<font>font45_title</font>
 				<textcolor>FFFFFFFF</textcolor>
-				<label>$VAR[CurrentWidgetTitle]</label>
+				<label>$INFO[Skin.String(CurrentWidgetTitle)]</label>
 				<shadowcolor>text_shadow</shadowcolor>
 				<aligny>bottom</aligny>
-				<visible>String.IsEmpty($VAR[CurrentWidgetClearLogo])</visible>
+				<visible>String.IsEmpty(Skin.String(CurrentWidgetArt))</visible>
 			</control>
 
 			<!-- Info Title -->
@@ -105,7 +105,7 @@ SideFocus:$INFO[Skin.String(SideMenuFocus)] | VER: 6.0.253</label>
 				<height>40</height>
 				<font>font30_title</font>
 				<textcolor>FFFFFFFF</textcolor>
-				<label>$VAR[CurrentWidgetInfo]</label>
+				<label>$INFO[Skin.String(CurrentWidgetInfo)]</label>
 				<shadowcolor>text_shadow</shadowcolor>
 			</control>
 
@@ -117,7 +117,7 @@ SideFocus:$INFO[Skin.String(SideMenuFocus)] | VER: 6.0.253</label>
 				<height>200</height>
 				<font>font15</font>
 				<textcolor>FFFFFFFF</textcolor>
-				<label>$VAR[CurrentWidgetPlot]</label>
+				<label>$INFO[Skin.String(CurrentWidgetPlot)]</label>
 				<shadowcolor>text_shadow</shadowcolor>
 				<autoscroll time="3000" delay="4000" repeat="5000">true</autoscroll>
 			</control>
@@ -215,6 +215,11 @@ SideFocus:$INFO[Skin.String(SideMenuFocus)] | VER: 6.0.253</label>
 				<onup>9002</onup>
 				<ondown>9004</ondown>
 				<onfocus>Skin.SetString(SideMenuFocus,home)</onfocus>
+				<onfocus>Skin.SetString(CurrentWidgetArt, $INFO[Container(10100).ListItem.Art(clearlogo),,$INFO[Container(10100).ListItem.Art(logo)]])</onfocus>
+				<onfocus>Skin.SetString(CurrentWidgetTitle, $INFO[Container(10100).ListItem.Title])</onfocus>
+				<onfocus>Skin.SetString(CurrentWidgetPlot, $INFO[Container(10100).ListItem.Plot])</onfocus>
+				<onfocus>Skin.SetString(CurrentWidgetInfo, $INFO[Container(10100).ListItem.Year]$INFO[Container(10100).ListItem.Genre,  |  ])</onfocus>
+				<onfocus>Skin.SetString(CurrentWidgetFanart, $INFO[Container(10100).ListItem.Art(fanart)])</onfocus>
 				<onright>SetFocus(10100)</onright>
 				<onclick>ActivateWindow(Videos,plugin://plugin.video.aiostreams/,return)</onclick>
 
@@ -249,6 +254,11 @@ SideFocus:$INFO[Skin.String(SideMenuFocus)] | VER: 6.0.253</label>
 				<onup>9003</onup>
 				<ondown>9005</ondown>
 				<onfocus>Skin.SetString(SideMenuFocus,tvshows)</onfocus>
+				<onfocus>Skin.SetString(CurrentWidgetArt, $INFO[Container(6100).ListItem.Art(clearlogo),,$INFO[Container(6100).ListItem.Art(logo)]])</onfocus>
+				<onfocus>Skin.SetString(CurrentWidgetTitle, $INFO[Container(6100).ListItem.Title])</onfocus>
+				<onfocus>Skin.SetString(CurrentWidgetPlot, $INFO[Container(6100).ListItem.Plot])</onfocus>
+				<onfocus>Skin.SetString(CurrentWidgetInfo, $INFO[Container(6100).ListItem.Year]$INFO[Container(6100).ListItem.Genre,  |  ])</onfocus>
+				<onfocus>Skin.SetString(CurrentWidgetFanart, $INFO[Container(6100).ListItem.Art(fanart)])</onfocus>
 				<onright>SetFocus(6100)</onright>
 
 				<onclick>ActivateWindow(Videos,plugin://plugin.video.aiostreams/?action=series_lists,return)</onclick>
@@ -283,6 +293,11 @@ SideFocus:$INFO[Skin.String(SideMenuFocus)] | VER: 6.0.253</label>
 				<onup>9004</onup>
 				<ondown>9006</ondown>
 				<onfocus>Skin.SetString(SideMenuFocus,movies)</onfocus>
+				<onfocus>Skin.SetString(CurrentWidgetArt, $INFO[Container(5100).ListItem.Art(clearlogo),,$INFO[Container(5100).ListItem.Art(logo)]])</onfocus>
+				<onfocus>Skin.SetString(CurrentWidgetTitle, $INFO[Container(5100).ListItem.Title])</onfocus>
+				<onfocus>Skin.SetString(CurrentWidgetPlot, $INFO[Container(5100).ListItem.Plot])</onfocus>
+				<onfocus>Skin.SetString(CurrentWidgetInfo, $INFO[Container(5100).ListItem.Year]$INFO[Container(5100).ListItem.Genre,  |  ])</onfocus>
+				<onfocus>Skin.SetString(CurrentWidgetFanart, $INFO[Container(5100).ListItem.Art(fanart)])</onfocus>
 				<onright>SetFocus(5100)</onright>
 				<onclick>ActivateWindow(Videos,plugin://plugin.video.aiostreams/?action=movie_lists,return)</onclick>
 
