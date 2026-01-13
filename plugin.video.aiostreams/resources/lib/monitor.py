@@ -193,15 +193,15 @@ class AIOStreamsPlayer(xbmc.Player):
     def _check_autoplay_start(self):
         """Check if autoplay should be started for this episode."""
         try:
-            # Only autoplay for TV shows (not movies)
+            # Only autoplay for TV shows (series or episode media type)
             if (self.is_aiostreams and
-                self.media_type == 'series' and
+                self.media_type in ('series', 'episode') and
                 self.imdb_id and
                 self.season is not None and
                 self.episode is not None and
                 self.autoplay.is_enabled()):
 
-                xbmc.log(f'[AIOStreams] Starting autoplay for S{self.season:02d}E{self.episode:02d}',
+                xbmc.log(f'[AIOStreams] Starting autoplay for {self.media_type} S{self.season:02d}E{self.episode:02d}',
                         xbmc.LOGINFO)
                 self.autoplay.start_monitoring(self.imdb_id, self.season, self.episode)
 

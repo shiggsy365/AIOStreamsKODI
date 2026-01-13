@@ -305,11 +305,11 @@
 					<visible>Integer.IsEqual(Container(50).NumItems,0)</visible>
 				</control>
 				<control type="panel" id="50">
-					<onclick>Skin.SetString(AIOStreams_SearchQuery, $ESCINFO[ListItem.Label])</onclick>
-					<onclick>ActivateWindow(1108)</onclick>
 					<top>158</top>
 					<width>1235</width>
 					<height>370</height>
+					<onclick>Skin.SetString(AIOStreams_SearchQuery,$INFO[ListItem.Label])</onclick>
+					<onclick>ActivateWindow(1108)</onclick>
 					<onup>SetFocus(9000)</onup>
 					<onleft>50</onleft>
 					<onright>50</onright>

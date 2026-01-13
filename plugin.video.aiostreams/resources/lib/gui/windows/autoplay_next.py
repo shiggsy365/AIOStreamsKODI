@@ -69,6 +69,7 @@ class AutoplayNextDialog(xbmcgui.WindowXMLDialog):
     def onInit(self):
         """Called when dialog is initialized. Set up window properties and start countdown."""
         try:
+            self.setZOrder(100) # Ensure on top
             xbmc.log('[AIOStreams] AutoplayNextDialog onInit started', xbmc.LOGDEBUG)
 
             # Set window properties for the skin

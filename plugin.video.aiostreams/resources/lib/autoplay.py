@@ -256,22 +256,25 @@ class AutoplayManager:
         xbmc.log(f'[AIOStreams] Starting autoplay monitoring for S{season:02d}E{episode:02d}', xbmc.LOGINFO)
 
         try:
-            # Wait a bit for playback to stabilize
-            time.sleep(5)
+            # removing initial sleep as it blocks monitoring from starting immediately
+            # time.sleep(5)
 
-            # Get total duration
-            if not self.player.isPlaying():
-                xbmc.log('[AIOStreams] Playback stopped, ending autoplay monitoring', xbmc.LOGINFO)
-                return
-
-            try:
-                total_time = self.player.getTotalTime()
-            except:
-                xbmc.log('[AIOStreams] Could not get total time, ending autoplay monitoring', xbmc.LOGWARNING)
-                return
+            # Get total duration with retry (wait for player to be ready)
+            total_time = 0
+            for _ in range(10): # Try for 2 seconds
+                if not self.player.isPlaying():
+                    xbmc.log('[AIOStreams] Playback stopped, ending autoplay monitoring', xbmc.LOGINFO)
+                    return
+                try:
+                    total_time = self.player.getTotalTime()
+                    if total_time > 0:
+                        break
+                except:
+                    pass
+                time.sleep(0.2)
 
             if total_time <= 0:
-                xbmc.log('[AIOStreams] Invalid total time, ending autoplay monitoring', xbmc.LOGWARNING)
+                xbmc.log('[AIOStreams] Invalid total time (0), ending autoplay monitoring', xbmc.LOGWARNING)
                 return
 
             duration_minutes = total_time / 60.0
@@ -283,6 +286,14 @@ class AutoplayManager:
             # Calculate when to trigger (in seconds from start)
             trigger_scrape_at = total_time - scrape_time
             trigger_dialog_at = total_time - dialog_time
+            
+            # Safety check: ensure we don't trigger in the past if episode is very short or we joined late
+            current_time = self.player.getTime()
+            if trigger_scrape_at < current_time:
+                trigger_scrape_at = current_time + 1 # trigger almost immediately
+            
+            if trigger_dialog_at < current_time:
+                 trigger_dialog_at = current_time + 5 # give a little buffer if we joined late
 
             xbmc.log(f'[AIOStreams] Autoplay timing: total={total_time:.0f}s, '
                     f'scrape_at={trigger_scrape_at:.0f}s, dialog_at={trigger_dialog_at:.0f}s',

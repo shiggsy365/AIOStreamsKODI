@@ -81,8 +81,7 @@ SideFocus:$INFO[Skin.String(SideMenuFocus)] | VER: 6.0.263</label>
 				<height>180</height>
 				<aspectratio align="left" aligny="bottom">keep</aspectratio>
 				<texture background="true">$VAR[CurrentWidgetClearLogo]</texture>
-				<visible>!String.IsEqual($VAR[CurrentWidgetClearLogo],None)</visible>
-				<visible>!String.IsEmpty($VAR[CurrentWidgetClearLogo])</visible>
+				<visible>!String.IsEqual($VAR[CurrentWidgetClearLogo],None) + !String.IsEmpty($VAR[CurrentWidgetClearLogo])</visible>
 			</control>
 			
 			<!-- Fallback Title (when no clearlogo) -->
@@ -412,7 +411,7 @@ SideFocus:$INFO[Skin.String(SideMenuFocus)] | VER: 6.0.263</label>
 				<onup>9007</onup>
 				<ondown>noop</ondown>
 				<onfocus>Skin.SetString(SideMenuFocus,settings)</onfocus>
-				<onleft>ActivateWindow(1111)</onleft>
+				<onleft>SetFocus(9101)</onleft>
 				<onright>SetFocus($VAR[ActiveWidgetID])</onright>
 				<onclick>ActivateWindow(settings)</onclick>
 			</control>
@@ -876,7 +875,7 @@ SideFocus:$INFO[Skin.String(SideMenuFocus)] | VER: 6.0.263</label>
 		<left>10</left>
 		<top>10</top>
 		<width>280</width>
-		<height>100</height>
+		<height>150</height>
 		<onright>9008</onright>
 		<onback>9008</onback>
 		<control type="button" id="9010">
@@ -900,6 +899,17 @@ SideFocus:$INFO[Skin.String(SideMenuFocus)] | VER: 6.0.263</label>
 			<texturefocus />
 			<texturenofocus />
 			<onclick>Quit()</onclick>
+		</control>
+		<control type="button" id="9012">
+			<width>280</width>
+			<height>50</height>
+			<font>font13</font>
+			<label>AIO Widget Manager</label>
+			<textcolor>white</textcolor>
+			<focusedcolor>red</focusedcolor>
+			<texturefocus />
+			<texturenofocus />
+			<onclick>RunScript(special://skin/resources/lib/widget_manager.py,load_page,home)</onclick>
 		</control>
 	</control>
 </control>

@@ -29,7 +29,6 @@
                 <aspectratio align="left" aligny="bottom">keep</aspectratio>
                 <texture background="true">$VAR[SearchResultsClearLogo]</texture>
                 <visible>!String.IsEqual($VAR[SearchResultsClearLogo],None) + !String.IsEmpty($VAR[SearchResultsClearLogo])</visible>
-                <visible>!String.IsEqual($VAR[SearchResultsClearLogo],None) + !String.IsEmpty($VAR[SearchResultsClearLogo])</visible>
             </control>
             
             <control type="label">

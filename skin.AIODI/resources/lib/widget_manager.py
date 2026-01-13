@@ -63,8 +63,12 @@ def get_available_catalogs():
 
 def load_page(page_name):
     """Load catalogs for a specific page"""
-    window = xbmcgui.Window(1111)
-    window.setProperty('CurrentPage', page_name)
+    try:
+        window = xbmcgui.Window(1111)
+        window.setProperty('CurrentPage', page_name)
+    except RuntimeError:
+        xbmc.log('[AIOStreams] Widget Manager: Window 1111 not available', xbmc.LOGWARNING)
+        return
     
     config = load_config()
     current_catalogs = config.get(page_name, [])

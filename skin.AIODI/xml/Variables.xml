@@ -1192,7 +1192,18 @@
 		<value condition="Control.HasFocus(10300)">$INFO[Container(10300).ListItem.Year]$INFO[Container(10300).ListItem.Genre,  |  ]</value>
 		<value condition="Control.HasFocus(5100)">$INFO[Container(5100).ListItem.Year]$INFO[Container(5100).ListItem.Genre,  |  ]</value>
 		<value condition="Control.HasFocus(6100)">$INFO[Container(6100).ListItem.Year]$INFO[Container(6100).ListItem.Genre,  |  ]</value>
-		<value condition="!String.IsEmpty(ListItem.Season)">$INFO[ListItem.Season,S,]$INFO[ListItem.Episode,E,  |  ]$INFO[ListItem.Title]</value>
+		<value condition="!String.IsEmpty(ListItem.Season)">$VAR[EpisodeInfoPadded]</value>
 		<value>$INFO[ListItem.Year]$INFO[ListItem.Genre,  |  ]</value>
+	</variable>
+	<variable name="SeasonPadding">
+		<value condition="Integer.IsLess(ListItem.Season,10)">0</value>
+		<value></value>
+	</variable>
+	<variable name="EpisodePadding">
+		<value condition="Integer.IsLess(ListItem.Episode,10)">0</value>
+		<value></value>
+	</variable>
+	<variable name="EpisodeInfoPadded">
+		<value>$INFO[ListItem.Season,S,$VAR[SeasonPadding]]$INFO[ListItem.Episode,:E,$VAR[EpisodePadding]] - $INFO[ListItem.Title]</value>
 	</variable>
 </includes>

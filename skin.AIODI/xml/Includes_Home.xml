@@ -429,24 +429,7 @@
 								<texture background="true">$INFO[ListItem.Art(thumb)]</texture>
 								<fallback>DefaultVideo.png</fallback>
 							</control>
-							<!-- Episode Tag (SxxExx) or Title -->
-							<control type="group">
-								<left>10</left>
-								<top>170</top>
-								<control type="image">
-									<width>370</width>
-									<height>40</height>
-									<texture colordiffuse="CC000000">colors/white.png</texture>
-								</control>
-								<control type="label">
-									<left>10</left>
-									<width>350</width>
-									<height>40</height>
-									<font>font12</font>
-									<textcolor>white</textcolor>
-									<label>[B]$INFO[ListItem.Season,S,]$INFO[ListItem.Episode,E, - ]$INFO[ListItem.Title][/B]</label>
-								</control>
-							</control>
+
 						</control>
 					</itemlayout>
 					<focusedlayout width="410" height="235">
@@ -462,24 +445,7 @@
 								<borderradius>8</borderradius>
 								<fallback>DefaultVideo.png</fallback>
 							</control>
-							<!-- Episode Tag (SxxExx) or Title -->
-							<control type="group">
-								<left>10</left>
-								<top>170</top>
-								<control type="image">
-									<width>370</width>
-									<height>40</height>
-									<texture colordiffuse="CC000000">colors/white.png</texture>
-								</control>
-								<control type="label">
-									<left>10</left>
-									<width>350</width>
-									<height>40</height>
-									<font>font12_title</font>
-									<textcolor>yellow</textcolor>
-									<label>[B]$INFO[ListItem.Season,S,]$INFO[ListItem.Episode,E, - ]$INFO[ListItem.Title][/B]</label>
-								</control>
-							</control>
+
 						</control>
 					</focusedlayout>
 					<content limit="20" target="$PARAM[widget_target]" browse="$PARAM[browse_mode]" type="episodes">$PARAM[content_path]</content>
