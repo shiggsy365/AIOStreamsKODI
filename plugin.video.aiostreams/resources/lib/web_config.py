@@ -241,182 +241,129 @@ def configure_aiostreams(host_url=None):
         # Check if the host matches our current setting
         try:
             from urllib.parse import urlparse
-            manifest_parsed = urlparse(current_manifest)
-            manifest_host = f'{manifest_parsed.scheme}://{manifest_parsed.netloc}'
+            parsed = urlparse(current_manifest)
+            current_host = f'{parsed.scheme}://{parsed.netloc}'
             
-            # If hosts match (or close enough), use the manifest's configure URL (preserves state)
-            # If they differ, the user likely changed the setting to switch hosts, so use the new host
-            if host_url and manifest_host in host_url:
-                use_manifest_config = True
-            elif not host_url:
+            if current_host.lower() == host_url.lower():
+                # Open with existing configuration
                 use_manifest_config = True
         except:
             pass
 
+    # Build configure URL
     if use_manifest_config:
-        # Extract configure URL from manifest
-        if '/manifest.json' in current_manifest:
-            configure_url = current_manifest.replace('/manifest.json', '/configure')
-        else:
-            configure_url = current_manifest.rstrip('/') + '/configure'
+        # Open with existing manifest URL to modify settings
+        configure_url = current_manifest.replace('/manifest.json', '/configure')
     else:
-        # Use simple configure URL from the host setting
-        configure_url = host_url + '/stremio/configure'
+        # Fresh configuration
+        configure_url = f'{host_url}/stremio/configure'
 
-    # Check if on Android - use different flow (manual paste)
-    on_android = is_android()
-
-    if on_android:
-        # Android: Show instructions for manual paste
-        xbmcgui.Dialog().ok(
-            'AIOStreams Configuration',
-            'A browser will open to configure AIOStreams.\n\n'
-            '1. Configure your settings in the browser\n'
-            '2. Click [B]"Copy manifest to clipboard"[/B]\n'
-            '3. Return to Kodi and paste the URL when prompted'
-        )
-    else:
-        # Desktop: Show instructions for auto-detection
-        xbmcgui.Dialog().ok(
-            'AIOStreams Configuration',
-            'A browser will open to configure AIOStreams.\n\n'
-            '1. Configure your settings in the browser\n'
-            '2. Click [B]"Copy manifest to clipboard"[/B]\n'
-            '3. The URL will be detected automatically'
-        )
-
-        # Clear clipboard before starting to ensure clean detection
-        clear_clipboard()
-        xbmc.log('[AIOStreams WebConfig] Cleared clipboard before browser open', xbmc.LOGDEBUG)
+    xbmc.log(f'[AIOStreams WebConfig] Opening configure page: {configure_url}', xbmc.LOGINFO)
 
     # Open browser
-    browser_opened = open_browser(configure_url)
-    if not browser_opened:
-        # Offer to show URL manually
-        if xbmcgui.Dialog().yesno(
-            'Browser Failed',
-            'Could not open browser automatically.\n\nWould you like to see the URL to open manually?'
-        ):
-            xbmcgui.Dialog().textviewer('Configuration URL', configure_url)
-
-    # Give browser time to open before starting to monitor
-    xbmc.sleep(2000)
-
-    # Android: Skip clipboard monitoring, go straight to manual entry
-    if on_android:
-        manifest_url = xbmcgui.Dialog().input(
-            'Paste Manifest URL',
-            type=xbmcgui.INPUT_ALPHANUM
+    if not open_browser(configure_url):
+        xbmcgui.Dialog().ok(
+            'AIOStreams Error',
+            'Failed to open browser.\n'
+            'Please open the following URL manually:\n\n'
+            f'{configure_url}'
         )
-
-        if manifest_url:
-            manifest_url = manifest_url.strip()
-
-            # Handle stremio:// URLs
-            if manifest_url.startswith('stremio://'):
-                manifest_url = 'https://' + manifest_url[10:]
-
-            if is_valid_manifest_url(manifest_url) or manifest_url.startswith('http'):
-                # Save to settings
-                addon.setSetting('base_url', manifest_url)
-
-                try:
-                    from urllib.parse import urlparse
-                    parsed = urlparse(manifest_url)
-                    host_base = f'{parsed.scheme}://{parsed.netloc}'
-                    addon.setSetting('aiostreams_host', host_base)
-                except:
-                    pass
-
-                # Try to return to Kodi
-                close_browser()
-
-                xbmcgui.Dialog().notification(
-                    'AIOStreams',
-                    'Configuration saved successfully!',
-                    xbmcgui.NOTIFICATION_INFO,
-                    3000
-                )
-                return manifest_url
-            else:
-                xbmcgui.Dialog().ok('Invalid URL', 'The URL should contain manifest.json or start with https://')
-
-        xbmcgui.Dialog().notification('AIOStreams', 'Configuration cancelled', xbmcgui.NOTIFICATION_WARNING)
         return None
 
-    # Monitor clipboard for manifest URL
+    # Clear clipboard before monitoring
+    clear_clipboard()
+    xbmc.log('[AIOStreams WebConfig] Clipboard cleared, starting monitoring', xbmc.LOGDEBUG)
+
+    # Show progress dialog with instructions
     progress = xbmcgui.DialogProgress()
     progress.create(
-        'Waiting for Configuration',
-        'Configure AIOStreams in your browser...\n\n'
-        'Click "Copy manifest to clipboard" when done.\n'
-        'Press Cancel to enter URL manually.'
+        'AIOStreams Configuration',
+        'Configure AIOStreams in the browser that just opened.\n'
+        'When finished, copy the manifest URL and it will be automatically detected.'
     )
 
+    last_clipboard = ''
     timeout = 300  # 5 minutes
-    poll_interval = 1.5  # Check every 1.5 seconds
     start_time = time.time()
-    manifest_url = None
-    check_count = 0
+    poll_interval = 1  # Check every second
 
-    xbmc.log('[AIOStreams WebConfig] Starting clipboard monitoring loop', xbmc.LOGINFO)
+    try:
+        while not monitor.abortRequested():
+            # Check timeout
+            elapsed = time.time() - start_time
+            if elapsed > timeout:
+                progress.close()
+                xbmcgui.Dialog().notification(
+                    'AIOStreams',
+                    'Configuration timed out',
+                    xbmcgui.NOTIFICATION_WARNING
+                )
+                close_browser()
+                return None
 
-    while True:
-        # Check for abort
-        if monitor.abortRequested():
-            xbmc.log('[AIOStreams WebConfig] Abort requested', xbmc.LOGDEBUG)
-            break
+            # Update progress
+            percent = int((elapsed / timeout) * 100)
+            remaining = int(timeout - elapsed)
+            progress.update(
+                percent,
+                f'Waiting for manifest URL... ({remaining}s remaining)\n'
+                'Copy the manifest URL from the browser.'
+            )
 
-        elapsed = time.time() - start_time
-        remaining = timeout - elapsed
+            # Check if user cancelled
+            if progress.iscanceled():
+                progress.close()
+                xbmcgui.Dialog().notification(
+                    'AIOStreams',
+                    'Configuration cancelled',
+                    xbmcgui.NOTIFICATION_WARNING
+                )
+                close_browser()
+                return None
 
-        if remaining <= 0:
-            xbmc.log('[AIOStreams WebConfig] Timeout reached', xbmc.LOGINFO)
-            break
+            # Get clipboard content
+            clipboard_content = get_clipboard_content()
 
-        # Update progress
-        percent = int((elapsed / timeout) * 100)
-        mins, secs = divmod(int(remaining), 60)
-        progress.update(
-            percent,
-            f'Waiting for manifest URL...\n\n'
-            f'Copy manifest to clipboard in browser.\n'
-            f'Time remaining: {mins}:{secs:02d}'
-        )
+            if clipboard_content and clipboard_content != last_clipboard:
+                last_clipboard = clipboard_content
+                xbmc.log(f'[AIOStreams WebConfig] Clipboard changed, checking: {clipboard_content[:50]}...', xbmc.LOGDEBUG)
 
-        if progress.iscanceled():
-            xbmc.log('[AIOStreams WebConfig] User cancelled', xbmc.LOGINFO)
-            break
+                # Check if it's a valid manifest URL
+                if is_valid_manifest_url(clipboard_content):
+                    manifest_url = clipboard_content.strip()
 
-        # Check clipboard
-        check_count += 1
-        clipboard = get_clipboard_content()
+                    # Handle stremio:// protocol
+                    if manifest_url.startswith('stremio://'):
+                        manifest_url = 'https://' + manifest_url[10:]
 
-        if check_count % 10 == 0:  # Log every 10 checks
-            xbmc.log(f'[AIOStreams WebConfig] Clipboard check #{check_count}, content: {clipboard[:50] if clipboard else "None"}...', xbmc.LOGDEBUG)
+                    xbmc.log(f'[AIOStreams WebConfig] Valid manifest URL detected: {manifest_url}', xbmc.LOGINFO)
+                    break
 
-        # Since we cleared the clipboard, any valid manifest URL is new
-        if clipboard and is_valid_manifest_url(clipboard):
-            manifest_url = clipboard.strip()
-            xbmc.log(f'[AIOStreams WebConfig] Detected manifest URL: {manifest_url[:50]}...', xbmc.LOGINFO)
-            break
+            # Sleep before next poll
+            monitor.waitForAbort(poll_interval)
 
-        # Wait before next poll using Kodi's sleep (non-blocking)
-        xbmc.sleep(int(poll_interval * 1000))
+    except KeyboardInterrupt:
+        progress.close()
+        return None
 
+    # Close progress dialog
     progress.close()
 
-    # If we got a URL from clipboard
-    if manifest_url:
-        # Handle stremio:// URLs (convert to https://)
-        if manifest_url.startswith('stremio://'):
-            manifest_url = 'https://' + manifest_url[10:]
-            xbmc.log('[AIOStreams WebConfig] Converted stremio:// URL to https://', xbmc.LOGDEBUG)
+    # If we got here without a manifest_url, user cancelled or timed out
+    if not manifest_url:
+        xbmcgui.Dialog().notification(
+            'AIOStreams',
+            'Configuration cancelled',
+            xbmcgui.NOTIFICATION_WARNING
+        )
+        close_browser()
+        return None
 
-        # Save to settings
+    # Valid manifest URL detected - save it
+    if manifest_url:
         addon.setSetting('base_url', manifest_url)
 
-        # Also save/update the host URL for future use
+        # Try to extract and save the host URL
         try:
             from urllib.parse import urlparse
             parsed = urlparse(manifest_url)
@@ -526,7 +473,7 @@ def retrieve_manifest():
     Workflow:
     1. Get host URL, UUID, and password from settings
     2. Call [host url]/api/v1/user?uuid=[uuid]&password=[password]
-    3. Get 'encryptedPassword' from json response
+    3. Get 'encryptedPassword' from json response (nested in data.userData)
     4. Construct manifest URL as [host url]/stremio/[uuid]/[encryptedPassword]/manifest.json
     5. Save to base_url setting
     """
@@ -599,8 +546,21 @@ def retrieve_manifest():
         data = response.json()
         xbmc.log(f'[AIOStreams WebConfig] API response keys: {list(data.keys())}', xbmc.LOGDEBUG)
 
-        # Get encrypted password
-        encrypted_password = data.get('encryptedPassword')
+        # FIXED: Navigate to nested userData - encryptedPassword is in data.userData.encryptedPassword
+        user_data = data.get('data', {}).get('userData', {})
+        
+        if not user_data:
+            progress.close()
+            xbmcgui.Dialog().ok(
+                'AIOStreams Error',
+                'Could not retrieve user data from server.\n'
+                'Please check your UUID and password.'
+            )
+            xbmc.log('[AIOStreams WebConfig] No userData in response', xbmc.LOGERROR)
+            return None
+        
+        # Get encrypted password from nested location
+        encrypted_password = user_data.get('encryptedPassword')
         if not encrypted_password:
             progress.close()
             xbmcgui.Dialog().ok(
@@ -608,12 +568,12 @@ def retrieve_manifest():
                 'Could not retrieve encrypted password from server.\n'
                 'Please check your UUID and password.'
             )
-            xbmc.log('[AIOStreams WebConfig] No encryptedPassword in response', xbmc.LOGERROR)
+            xbmc.log('[AIOStreams WebConfig] No encryptedPassword in userData', xbmc.LOGERROR)
             return None
 
         progress.update(75, 'Building manifest URL...')
 
-        # Construct manifest URL
+        # Construct manifest URL with encrypted password
         manifest_url = f'{host_url}/stremio/{uuid}/{encrypted_password}/manifest.json'
         xbmc.log(f'[AIOStreams WebConfig] Constructed manifest URL: {manifest_url[:50]}...', xbmc.LOGINFO)
 
