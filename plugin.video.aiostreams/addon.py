@@ -2620,6 +2620,16 @@ def show_episodes():
 
         if meta.get('background'):
             list_item.setArt({'fanart': meta['background']})
+            
+        # Set clearlogo for episode from series meta
+        logo_url = meta.get('logo')
+        if logo_url:
+            cached_logo = get_cached_clearlogo_path('series', meta_id)
+            if cached_logo:
+                list_item.setArt({'clearlogo': cached_logo, 'logo': cached_logo})
+            else:
+                list_item.setArt({'clearlogo': logo_url, 'logo': logo_url})
+                _ensure_clearlogo_cached(meta, 'series', meta_id)
 
         # Set playcount if watched
         if is_watched:
@@ -3128,8 +3138,16 @@ def trakt_next_up():
             art['fanart'] = fanart
         
         if logo:
-            art['clearlogo'] = logo
-            art['logo'] = logo
+            # Check for cached logo
+            cached_logo = get_cached_clearlogo_path('series', show_imdb)
+            if cached_logo:
+                art['clearlogo'] = cached_logo
+                art['logo'] = cached_logo
+            else:
+                art['clearlogo'] = logo
+                art['logo'] = logo
+                # Ensure it's getting cached
+                _ensure_clearlogo_cached(meta_data if meta_data else {'logo': logo}, 'series', show_imdb)
             
         if art:
             list_item.setArt(art)
