@@ -88,7 +88,7 @@ build_plugin_zip() {
     local plugin_dir="$temp_dir/plugin.video.aiostreams"
     mkdir -p "$plugin_dir"
 
-    cp -r "$source_dir"/* "$plugin_dir/"
+    rsync -a "$source_dir/" "$plugin_dir/"
     (cd "$temp_dir" && zip -r -q "$destination" plugin.video.aiostreams/)
 
     rm -rf "$temp_dir"
