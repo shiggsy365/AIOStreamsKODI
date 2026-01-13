@@ -81,6 +81,7 @@ SideFocus:$INFO[Skin.String(SideMenuFocus)] | VER: 6.0.263</label>
 				<aspectratio align="left" aligny="bottom">keep</aspectratio>
 				<texture background="true">$VAR[CurrentWidgetClearLogo]</texture>
 				<visible>!String.IsEqual($VAR[CurrentWidgetClearLogo],None) + !String.IsEmpty($VAR[CurrentWidgetClearLogo])</visible>
+				<visible>false</visible> <!-- TEMPORARILY DISABLED TO TEST TEXT -->
 			</control>
 			
 			<!-- Fallback Title (when no clearlogo) -->
@@ -94,7 +95,7 @@ SideFocus:$INFO[Skin.String(SideMenuFocus)] | VER: 6.0.263</label>
 				<label>$VAR[CurrentWidgetTitle]</label>
 				<shadowcolor>text_shadow</shadowcolor>
 				<aligny>bottom</aligny>
-				<visible>String.IsEqual($VAR[CurrentWidgetClearLogo],None) | String.IsEmpty($VAR[CurrentWidgetClearLogo])</visible>
+				<visible>String.IsEqual($VAR[CurrentWidgetClearLogo],None) | String.IsEmpty($VAR[CurrentWidgetClearLogo]) | true</visible> <!-- TEMPORARILY ENABLED TO TEST TEXT -->
 			</control>
 
 			<!-- Info Title -->
@@ -163,7 +164,7 @@ SideFocus:$INFO[Skin.String(SideMenuFocus)] | VER: 6.0.263</label>
 				<top>7</top>
 				<width>71</width>
 				<height>71</height>
-				<texture>https://raw.githubusercontent.com/shiggsy365/AIOStreamsKODI/main/docs/plugin.video.aiostreams/resources/icon.png</texture>
+				<texture>https://raw.githubusercontent.com/shiggsy365/AIOStreamsKODI/main/docs/plugin.video.aiostreams/resources/icon(2).png</texture>
 				<colordiffuse>FFFFFFFF</colordiffuse>
 				<visible>!Control.HasFocus(9001)</visible>
 			</control>
@@ -172,8 +173,8 @@ SideFocus:$INFO[Skin.String(SideMenuFocus)] | VER: 6.0.263</label>
 				<top>7</top>
 				<width>71</width>
 				<height>71</height>
-				<texture>https://raw.githubusercontent.com/shiggsy365/AIOStreamsKODI/main/docs/plugin.video.aiostreams/resources/icon.png</texture>
-				<colordiffuse>button_focus</colordiffuse>
+				<texture>https://raw.githubusercontent.com/shiggsy365/AIOStreamsKODI/main/docs/plugin.video.aiostreams/resources/icon(1).png</texture>
+				<colordiffuse>FFFFFFFF</colordiffuse>
 				<visible>Control.HasFocus(9001)</visible>
 			</control>
 		</control>
