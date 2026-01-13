@@ -8,6 +8,7 @@ import xbmcaddon
 import time
 import threading
 import platform
+from collections import deque
 from resources.lib.monitor import AIOStreamsPlayer
 
 
