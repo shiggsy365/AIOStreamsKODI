@@ -27,7 +27,7 @@
                 <height>100</height>
                 <aspectratio align="left" aligny="bottom">keep</aspectratio>
                 <texture background="true">$VAR[SearchResultsClearLogo]</texture>
-                <visible>!String.IsEmpty($VAR[SearchResultsClearLogo])</visible>
+                <visible>!String.IsEqual($VAR[SearchResultsClearLogo],None) + !String.IsEmpty($VAR[SearchResultsClearLogo])</visible>
             </control>
             
             <control type="label">
@@ -40,7 +40,7 @@
                 <label>$VAR[SearchResultsTitle]</label>
                 <shadowcolor>text_shadow</shadowcolor>
                 <aligny>bottom</aligny>
-                <visible>String.IsEmpty($VAR[SearchResultsClearLogo])</visible>
+                <visible>String.IsEqual($VAR[SearchResultsClearLogo],None) | String.IsEmpty($VAR[SearchResultsClearLogo])</visible>
             </control>
             
             <!-- Metadata Line -->
@@ -76,7 +76,7 @@
             <include content="WidgetListPoster">
                 <param name="list_id" value="5100" />
                 <param name="widget_header" value="MOVIES" />
-                <param name="content_path" value="plugin://plugin.video.aiostreams/?action=search_tab&amp;content_type=movie&amp;query=$INFO[Skin.String(AIOStreams_SearchQuery)]&amp;widget=true" />
+                <param name="content_path" value="$INFO[Skin.String(AIOStreams_SearchQuery),plugin://plugin.video.aiostreams/?action=search_tab&amp;content_type=movie&amp;query=,&amp;widget=true]" />
                 <param name="ondown_action1" value="SetFocus(5200)" />
             </include>
         </control>
@@ -90,7 +90,7 @@
             <include content="WidgetListPoster">
                 <param name="list_id" value="5200" />
                 <param name="widget_header" value="TV SHOWS" />
-                <param name="content_path" value="plugin://plugin.video.aiostreams/?action=search_tab&amp;content_type=series&amp;query=$INFO[Skin.String(AIOStreams_SearchQuery)]&amp;widget=true" />
+                <param name="content_path" value="$INFO[Skin.String(AIOStreams_SearchQuery),plugin://plugin.video.aiostreams/?action=search_tab&amp;content_type=series&amp;query=,&amp;widget=true]" />
                 <param name="onup_action1" value="SetFocus(5100)" />
             </include>
         </control>

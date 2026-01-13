@@ -392,6 +392,7 @@
 		<param name="onclick_condition">false</param>
 		<param name="browse_mode">auto</param>
 		<param name="widget_type">videos</param>
+		<param name="onclick_action">noop</param>
 		<definition>
 			<control type="group">
 				<left>0</left>
@@ -416,8 +417,8 @@
 					<onup>$PARAM[onup_action2]</onup>
 					<ondown>$PARAM[ondown_action1]</ondown>
 					<ondown>$PARAM[ondown_action2]</ondown>
-					<onclick condition="!String.IsEqual($PARAM[onclick_action],noop)">$PARAM[onclick_action]</onclick>
-					<onclick condition="String.IsEqual($PARAM[onclick_action],noop)">Action(Select)</onclick>
+                    <onclick condition="String.IsEmpty($PARAM[onclick_action]) | String.IsEqual($PARAM[onclick_action],noop)">Action(Select)</onclick>
+					<onclick condition="!String.IsEmpty($PARAM[onclick_action]) + !String.IsEqual($PARAM[onclick_action],noop)">$PARAM[onclick_action]</onclick>
 					<onfocus>Skin.SetString(ActiveWidgetID,$PARAM[list_id])</onfocus>
 					<itemlayout width="410" height="235">
 						<control type="group">
@@ -1384,3 +1385,4 @@
 		</control>
 	</include>
 </includes>
+```

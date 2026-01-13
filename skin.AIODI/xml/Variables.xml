@@ -114,6 +114,7 @@
 		<value condition="Control.HasFocus(5100) + !String.IsEmpty(Container(5100).ListItem.Art(logo))">$INFO[Container(5100).ListItem.Art(logo)]</value>
 		<value condition="Control.HasFocus(5200) + !String.IsEmpty(Container(5200).ListItem.Art(clearlogo))">$INFO[Container(5200).ListItem.Art(clearlogo)]</value>
 		<value condition="Control.HasFocus(5200) + !String.IsEmpty(Container(5200).ListItem.Art(logo))">$INFO[Container(5200).ListItem.Art(logo)]</value>
+		<value>None</value>
 	</variable>
 
 	<variable name="ListLabel2Var">
@@ -1173,6 +1174,7 @@
 		<value condition="Control.HasFocus(6200) + !String.IsEmpty(Container(6200).ListItem.Art(logo))">$INFO[Container(6200).ListItem.Art(logo)]</value>
 		<value condition="!String.IsEmpty(ListItem.Art(clearlogo))">$INFO[ListItem.Art(clearlogo)]</value>
 		<value condition="!String.IsEmpty(ListItem.Art(logo))">$INFO[ListItem.Art(logo)]</value>
+		<value>None</value>
 	</variable>
 
 	<variable name="CurrentWidgetPlot">
