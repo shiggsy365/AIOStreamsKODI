@@ -1311,25 +1311,38 @@ def search_by_tab(query, content_type):
 def add_tab_switcher(query, current_tab):
     """Add tab navigation buttons at the top of search results."""
     tabs = [
-        ('Movies', 'movie', '🎬'),
-        ('TV Shows', 'series', '📺'),
-        ('All', 'both', '🔍')
+        ('Movies', 'movie', '●'),
+        ('TV Shows', 'series', '●'),
+        ('All', 'both', '●')
     ]
 
     for label, tab_type, icon in tabs:
         if tab_type == current_tab:
             # Current tab - highlighted
-            item_label = f'[B][COLOR blue]{icon} {label}[/COLOR][/B]'
+            item_label = f'[B][COLOR lightblue]{icon} {label.upper()}[/COLOR][/B]'
         else:
             # Other tabs - clickable
-            item_label = f'{icon} {label}'
+            item_label = f'[COLOR grey]{icon} {label}[/COLOR]'
 
         list_item = xbmcgui.ListItem(label=item_label)
         list_item.setProperty('IsPlayable', 'false')
+        
+        # Set icons to avoid generic folder look
+        icon = 'DefaultAddonsSearch.png' if tab_type == 'both' else ('DefaultMovies.png' if tab_type == 'movie' else 'DefaultTVShows.png')
+        list_item.setArt({
+            'icon': icon,
+            'thumb': icon,
+            'poster': icon
+        })
+        
+        # Add metadata to fill skin's info panel
+        info_tag = list_item.getVideoInfoTag()
+        info_tag.setTitle(label)
+        info_tag.setPlot(f"Switch view to {label} results for '{query}'")
 
         if tab_type != current_tab:
             if tab_type == 'both':
-                url = get_url(action='search_unified', query=query)
+                url = get_url(action='search_tab', content_type='both', query=query)
             else:
                 url = get_url(action='search_tab', content_type=tab_type, query=query)
             xbmcplugin.addDirectoryItem(HANDLE, url, list_item, True)
@@ -1365,8 +1378,12 @@ def search_all_results(query):
 
         if movies:
             # Add Movies Header
-            header = xbmcgui.ListItem(label='[B][COLOR blue]🎬 MOVIES[/COLOR][/B]')
+            header = xbmcgui.ListItem(label='[B][COLOR lightblue]─── MOVIES ───[/COLOR][/B]')
             header.setProperty('IsPlayable', 'false')
+            header.setArt({'icon': 'DefaultMovies.png', 'thumb': 'DefaultMovies.png'})
+            info_tag = header.getVideoInfoTag()
+            info_tag.setTitle("MOVIES")
+            info_tag.setPlot(f"Found {len(movies)} movie results for '{query}'")
             xbmcplugin.addDirectoryItem(HANDLE, '', header, False)
 
             for meta in movies[:10]:
@@ -1393,8 +1410,12 @@ def search_all_results(query):
 
         if shows:
             # Add TV Shows Header
-            header = xbmcgui.ListItem(label='[B][COLOR blue]📺 TV SHOWS[/COLOR][/B]')
+            header = xbmcgui.ListItem(label='[B][COLOR lightblue]─── TV SHOWS ───[/COLOR][/B]')
             header.setProperty('IsPlayable', 'false')
+            header.setArt({'icon': 'DefaultTVShows.png', 'thumb': 'DefaultTVShows.png'})
+            info_tag = header.getVideoInfoTag()
+            info_tag.setTitle("TV SHOWS")
+            info_tag.setPlot(f"Found {len(shows)} TV show results for '{query}'")
             xbmcplugin.addDirectoryItem(HANDLE, '', header, False)
 
             for meta in shows[:10]:
