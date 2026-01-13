@@ -141,7 +141,8 @@ def get_cached_clearlogo_path(content_type, meta_id):
     
     if xbmcvfs.exists(clearlogo_path):
         xbmc.log(f'[AIOStreams] Cached clearlogo found for {content_type}/{meta_id}', xbmc.LOGDEBUG)
-        return clearlogo_path
+        # Add file:// prefix for Kodi to handle local paths correctly in skin variables
+        return f"file://{clearlogo_path}"
     
     return None
 
