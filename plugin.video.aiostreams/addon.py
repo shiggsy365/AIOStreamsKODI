@@ -7,6 +7,11 @@ import xbmcvfs
 from urllib.parse import urlencode, parse_qsl
 import requests
 import json
+import threading
+import hashlib
+import os
+import time
+import pickle
 
 # Import new modules with enhanced architecture
 try:
@@ -103,7 +108,6 @@ def get_url(**kwargs):
 
 def get_clearlogo_cache_dir():
     """Get the clearlogo cache directory path, creating it if needed."""
-    import os
     addon_data_path = xbmcvfs.translatePath(ADDON.getAddonInfo('profile'))
     clearlogo_dir = os.path.join(addon_data_path, 'clearlogos')
     
@@ -124,9 +128,6 @@ def get_cached_clearlogo_path(content_type, meta_id):
     Returns:
         str: Path to cached clearlogo file, or None if not cached
     """
-    import os
-    import hashlib
-    
     # Use hash of meta_id to avoid filesystem issues with special characters
     safe_id = hashlib.md5(f"{content_type}_{meta_id}".encode()).hexdigest()
     clearlogo_dir = get_clearlogo_cache_dir()
@@ -150,9 +151,6 @@ def download_and_cache_clearlogo(url, content_type, meta_id):
     Returns:
         str: Path to cached clearlogo file, or None if download failed
     """
-    import os
-    import hashlib
-    
     if not url:
         return None
     
@@ -185,7 +183,6 @@ def download_and_cache_clearlogo(url, content_type, meta_id):
 
 def clear_clearlogo_cache():
     """Delete all cached clearlogo files."""
-    import os
     import shutil
     
     try:
@@ -213,8 +210,6 @@ def check_missing_clearlogos_on_startup():
     This scans the metadata cache for items with clearlogo URLs but no cached file,
     and downloads them in a background thread to avoid blocking addon startup.
     """
-    import threading
-    
     def background_check():
         try:
             if not HAS_MODULES:
@@ -243,7 +238,6 @@ def check_missing_clearlogos_on_startup():
                             if not get_cached_clearlogo_path(content_type, meta_id):
                                 # Try to get clearlogo URL from metadata
                                 try:
-                                    import pickle
                                     metadata = pickle.loads(row['metadata'])
                                     clearlogo_url = metadata.get('meta', {}).get('logo')
                                     
@@ -271,7 +265,6 @@ def check_missing_clearlogos_on_startup():
                             if not get_cached_clearlogo_path(content_type, meta_id):
                                 # Try to get clearlogo URL from metadata
                                 try:
-                                    import pickle
                                     metadata = pickle.loads(row['metadata'])
                                     clearlogo_url = metadata.get('meta', {}).get('logo')
                                     
@@ -713,6 +706,8 @@ def get_meta(content_type, meta_id):
                 cached_sql = db.get_meta(content_type, meta_id)
                 if cached_sql:
                     xbmc.log(f'[AIOStreams] SQL Metadata cache hit for {meta_id}', xbmc.LOGDEBUG)
+                    # Ensure clearlogo is cached even on metadata hit
+                    _ensure_clearlogo_cached(cached_sql, content_type, meta_id)
                     return cached_sql
         except:
             pass
@@ -728,6 +723,8 @@ def get_meta(content_type, meta_id):
             cached = cache.get_cached_meta(content_type, meta_id, ttl_seconds=ttl)
             if cached:
                 xbmc.log(f'[AIOStreams] File Metadata cache hit for {meta_id} (TTL: {ttl//86400} days)', xbmc.LOGDEBUG)
+                # Ensure clearlogo is cached even on metadata hit
+                _ensure_clearlogo_cached(cached, content_type, meta_id)
                 return cached
 
     # Cache miss, fetch from API
@@ -759,6 +756,36 @@ def get_meta(content_type, meta_id):
                 xbmc.log(f'[AIOStreams] Error caching clearlogo during metadata fetch: {e}', xbmc.LOGDEBUG)
 
     return result
+
+
+def _ensure_clearlogo_cached(meta_item, content_type, meta_id):
+    """Ensure clearlogo is cached locally if present in metadata.
+    
+    This is called to handle cases where the clearlogo file might 
+    be missing or was never downloaded.
+    """
+    try:
+        if not meta_item or not isinstance(meta_item, dict):
+            return
+            
+        # Handle both full response structure {'meta': {...}} and direct item {...}
+        meta = meta_item.get('meta')
+        if not meta or not isinstance(meta, dict):
+            meta = meta_item
+            
+        clearlogo_url = meta.get('logo')
+        if clearlogo_url:
+            # Check if already cached (fast check)
+            if not get_cached_clearlogo_path(content_type, meta_id):
+                # Download and cache (will only happen if missing)
+                xbmc.log(f'[AIOStreams] Clearlogo missing for item {meta_id}, downloading in background...', xbmc.LOGDEBUG)
+                # Run in background to avoid blocking UI too much
+                thread = threading.Thread(target=download_and_cache_clearlogo, 
+                                          args=(clearlogo_url, content_type, meta_id))
+                thread.daemon = True
+                thread.start()
+    except:
+        pass
 
 
 def create_listitem_with_context(meta, content_type, action_url):
@@ -950,9 +977,10 @@ def create_listitem_with_context(meta, content_type, action_url):
             art['logo'] = cached_clearlogo
             xbmc.log(f'[AIOStreams] Using cached clearlogo for {item_id}', xbmc.LOGDEBUG)
         else:
-            # Fallback to URL
+            # Fallback to URL and trigger background download
             art['clearlogo'] = meta['logo']
             art['logo'] = meta['logo']
+            _ensure_clearlogo_cached(meta, content_type, item_id)
     
     if art:
         list_item.setArt(art)
@@ -964,7 +992,8 @@ def create_listitem_with_context(meta, content_type, action_url):
     title = meta.get('name', 'Unknown')
     poster = meta.get('poster', '')
     fanart = meta.get('background', '')
-    clearlogo = meta.get('logo', '')
+    # Use the actual clearlogo being used (cached path or URL)
+    clearlogo = art.get('clearlogo', meta.get('logo', ''))
 
     xbmc.log(f'[AIOStreams] Metadata for {title}: poster={poster}, fanart={fanart}, clearlogo={clearlogo}', xbmc.LOGINFO)
 
