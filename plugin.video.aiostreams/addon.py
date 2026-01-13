@@ -4171,6 +4171,7 @@ ACTION_REGISTRY = {
     'configure_aiostreams': lambda p: configure_aiostreams_action(),
     'retrieve_manifest': lambda p: retrieve_manifest_action(),
     'refresh_manifest_cache': lambda p: refresh_manifest_cache(),
+    'get_all_catalogs': lambda p: get_all_catalogs_action(),
 }
 
 
@@ -4287,3 +4288,23 @@ if __name__ == '__main__':
             g.deinit()
         except:
             pass
+
+def get_all_catalogs_action():
+    """Get all available catalogs for the Modify Lists feature."""
+    xbmcplugin.setPluginCategory(HANDLE, 'All Catalogs')
+    xbmcplugin.setContent(HANDLE, 'files')
+    
+    manifest = get_manifest()
+    if not manifest:
+        xbmcplugin.endOfDirectory(HANDLE, succeeded=False)
+        return
+    
+    for catalog in manifest.get('catalogs', []):
+        list_item = xbmcgui.ListItem(label=catalog.get('name', 'Unknown'))
+        list_item.setLabel2(catalog.get('type', 'unknown'))
+        list_item.setProperty('catalog_id', catalog.get('id', ''))
+        list_item.setProperty('content_type', catalog.get('type', ''))
+        url = get_url(action='browse_catalog', catalog_id=catalog.get('id'), content_type=catalog.get('type'), catalog_name=catalog.get('name'))
+        xbmcplugin.addDirectoryItem(HANDLE, url, list_item, True)
+    
+    xbmcplugin.endOfDirectory(HANDLE)

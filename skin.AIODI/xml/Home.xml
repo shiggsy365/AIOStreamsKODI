@@ -82,7 +82,6 @@ SideFocus:$INFO[Skin.String(SideMenuFocus)] | VER: 6.0.263</label>
 				<aspectratio align="left" aligny="bottom">keep</aspectratio>
 				<texture background="true">$VAR[CurrentWidgetClearLogo]</texture>
 				<visible>!String.IsEqual($VAR[CurrentWidgetClearLogo],None) + !String.IsEmpty($VAR[CurrentWidgetClearLogo])</visible>
-				<visible>!String.IsEqual($VAR[CurrentWidgetClearLogo],None) + !String.IsEmpty($VAR[CurrentWidgetClearLogo])</visible>
 			</control>
 			
 			<!-- Fallback Title (when no clearlogo) -->
@@ -158,7 +157,7 @@ SideFocus:$INFO[Skin.String(SideMenuFocus)] | VER: 6.0.263</label>
 				<onup>noop</onup>
 				<ondown>9002</ondown>
 				<onright>SetFocus($VAR[ActiveWidgetID])</onright>
-				<onclick>ActivateWindow(Profiles)</onclick>
+				<onclick>System.LogOff</onclick>
 			</control>
 			<control type="image">
 				<left>24</left>
@@ -412,7 +411,7 @@ SideFocus:$INFO[Skin.String(SideMenuFocus)] | VER: 6.0.263</label>
 				<onup>9007</onup>
 				<ondown>noop</ondown>
 				<onfocus>Skin.SetString(SideMenuFocus,settings)</onfocus>
-				<onleft>SetFocus(9010)</onleft>
+				<onleft>ActivateWindow(1109)</onleft>
 				<onright>SetFocus($VAR[ActiveWidgetID])</onright>
 				<onclick>ActivateWindow(settings)</onclick>
 			</control>
