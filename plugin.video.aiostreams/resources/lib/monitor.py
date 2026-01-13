@@ -198,17 +198,70 @@ class AIOStreamsPlayer(xbmc.Player):
                 self.media_type in ('series', 'episode') and
                 self.imdb_id and
                 self.season is not None and
-                self.episode is not None and
-                self.autoplay.is_enabled()):
+                self.episode is not None):
 
-                xbmc.log(f'[AIOStreams] Starting autoplay for {self.media_type} S{self.season:02d}E{self.episode:02d}',
-                        xbmc.LOGINFO)
-                self.autoplay.start_monitoring(self.imdb_id, self.season, self.episode)
+                # 1. Start internal AutoplayManager (for the dialog/background scraping)
+                if self.autoplay.is_enabled():
+                    xbmc.log(f'[AIOStreams] Starting autoplay monitoring for {self.media_type} S{self.season:02d}E{self.episode:02d}',
+                            xbmc.LOGINFO)
+                    self.autoplay.start_monitoring(self.imdb_id, self.season, self.episode)
+
+                # 2. Integrate with UpNext script (service.upnext)
+                self._signal_upnext()
 
         except Exception as e:
             xbmc.log(f'[AIOStreams] Error checking autoplay start: {e}', xbmc.LOGERROR)
-    
-    def onPlayBackPaused(self):
+
+    def _signal_upnext(self):
+        """Signal the UpNext script if available."""
+        if xbmc.getCondVisibility('System.HasAddon(service.upnext)'):
+            try:
+                xbmc.log('[AIOStreams] Signaling UpNext script', xbmc.LOGINFO)
+                
+                # UpNext expect a JSON document with play details
+                # We trigger it via a specific property or command depending on its version
+                # Most common is setting a property or calling its service directly
+                
+                # Build the next episode data
+                next_season = self.season
+                next_episode = self.episode + 1
+                
+                # Fetch next episode info if possible
+                from addon import get_meta
+                next_meta = get_meta('series', f"{self.imdb_id}:{next_season}:{next_episode}")
+                
+                if next_meta:
+                    meta = next_meta.get('meta', {})
+                    upnext_data = {
+                        'current_episode': {
+                            'title': xbmc.getInfoLabel('ListItem.Title'),
+                            'season': self.season,
+                            'episode': self.episode,
+                            'tvshowid': self.imdb_id
+                        },
+                        'next_episode': {
+                            'title': meta.get('title', meta.get('name', 'Next Episode')),
+                            'season': next_season,
+                            'episode': next_episode,
+                            'art': {
+                                'thumb': meta.get('thumb', ''),
+                                'poster': meta.get('poster', ''),
+                                'fanart': meta.get('background', '')
+                            }
+                        },
+                        'play_url': f'plugin://plugin.video.aiostreams/?action=play&content_type=series&imdb_id={self.imdb_id}&season={next_season}&episode={next_episode}'
+                    }
+                    
+                    # Set the property for UpNext to find
+                    window = xbmcgui.Window(10000)
+                    window.setProperty('UpNext.Data', json.dumps(upnext_data))
+                    
+                    # Also trigger the specialized signal if needed
+                    xbmc.executebuiltin(f'NotifyAll(service.upnext, {json.dumps(upnext_data)})')
+            except Exception as e:
+                xbmc.log(f'[AIOStreams] Error signaling UpNext: {e}', xbmc.LOGERROR)
+
+    def onPlayBackEnded(self):
         """Called when playback is paused."""
         if not self.should_scrobble() or not self.started:
             return

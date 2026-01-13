@@ -314,6 +314,11 @@ class AutoplayManager:
                     xbmc.log('[AIOStreams] Playback stopped, ending autoplay monitoring', xbmc.LOGINFO)
                     return
 
+                # Check if UpNext dialog is already visible (if we want to suppress ours)
+                if xbmc.getCondVisibility('Window.IsVisible(script-upnext-notification.xml)'):
+                    xbmc.log('[AIOStreams] UpNext notification visible, suppressing internal autoplay dialog', xbmc.LOGINFO)
+                    return
+
                 try:
                     current_time = self.player.getTime()
                 except:
