@@ -16,13 +16,13 @@
 			<texture>colors/black_50.png</texture>
 		</control>
 		<control type="group">
-			<centertop>50%</centertop>
+			<top>50</top>
 			<height>1080</height>
 			<centerleft>50%</centerleft>
 			<width>1920</width>
 			<animation effect="fade" start="100" end="0" time="200" tween="sine" condition="Window.IsVisible(script-embuary-video.xml) | Window.IsVisible(script-embuary-person.xml) | Window.IsVisible(script-embuary-image.xml)">Conditional</animation>
 			<control type="group">
-				<top>150</top>
+				<top>0</top>
 				<left>66</left>
 				<include>OpenClose_Left</include>
 				<control type="image">
@@ -65,9 +65,37 @@
 						<bordersize>20</bordersize>
 					</control>
 				</control>
+				<!-- Action Buttons under Poster - Vertically Stacked -->
+				<control type="grouplist" id="8000">
+					<left>4</left>
+					<top>815</top>
+					<width>526</width>
+					<height>250</height>
+					<itemgap>10</itemgap>
+					<orientation>vertical</orientation>
+					<align>left</align>
+					<onup>SetFocus(1011)</onup>
+					<onright>50</onright>
+					<ondown>5000</ondown>
+					
+					<include content="InfoDialogButton">
+						<param name="id" value="8" />
+						<param name="width" value="526" />
+						<param name="icon" value="icons/infodialogs/play.png" />
+						<param name="label" value="$VAR[VideoInfoPlayButtonLabelVar]" />
+						<param name="visible" value="Control.IsEnabled(8)" />
+					</include>
+					<include content="InfoDialogButton">
+						<param name="id" value="11" />
+						<param name="width" value="526" />
+						<param name="icon" value="icons/infodialogs/trailer.png" />
+						<param name="label" value="$LOCALIZE[20410]" />
+						<param name="visible" value="Control.IsEnabled(11)" />
+					</include>
+				</control>
 			</control>
 			<control type="group">
-				<top>154</top>
+				<top>0</top>
 				<left>70</left>
 				<visible>String.IsEqual(ListItem.DBType,musicvideo) + !Skin.HasSetting(show_musicvideoposter)</visible>
 				<include>OpenClose_Left</include>
@@ -89,13 +117,14 @@
 			</control>
 			<control type="group">
 				<include>OpenClose_Right</include>
-				<left>620</left>
-				<top>-30</top>
+				<left>648</left>
+				<top>0</top>
 				<control type="group" id="140">
-					<top>468</top>
+					<left>-3</left>
+					<top>0</top>
 					<control type="button" id="138">
-						<width>754</width>
-						<height>418</height>
+						<width>757</width>
+						<height>393</height>
 						<textoffsetx>40</textoffsetx>
 						<textoffsety>20</textoffsety>
 						<aligny>bottom</aligny>
@@ -103,24 +132,24 @@
 						<onclick condition="!String.IsEmpty(ListItem.Plot)">SetProperty(TextViewer_Header,$LOCALIZE[207],home)</onclick>
 						<onclick condition="!String.IsEmpty(ListItem.Plot)">SetProperty(TextViewer_Text,$ESCINFO[ListItem.Plot],home)</onclick>
 						<onclick condition="!String.IsEmpty(ListItem.Plot)">ActivateWindow(1102)</onclick>
-						<onup>50</onup>
-						<onleft>4000</onleft>
+						<onup>SetFocus(1011)</onup>
+						<onleft>8</onleft>
 						<onright>4000</onright>
-						<ondown>5000</ondown>
+						<ondown>50</ondown>
 						<texturenofocus border="21">dialogs/dialog-bg.png</texturenofocus>
 						<visible>Integer.IsGreater(Container(4000).NumItems,0)</visible>
 					</control>
 					<control type="image">
-						<left>735</left>
-						<width>512</width>
-						<height>418</height>
+						<left>738</left>
+						<width>412</width>
+						<height>393</height>
 						<aligny>bottom</aligny>
 						<texture border="21">dialogs/dialog-bg.png</texture>
 						<visible>Integer.IsGreater(Container(4000).NumItems,0)</visible>
 					</control>
 					<control type="button" id="139">
-						<width>1245</width>
-						<height>418</height>
+						<width>1153</width>
+						<height>393</height>
 						<textoffsetx>40</textoffsetx>
 						<textoffsety>20</textoffsety>
 						<aligny>bottom</aligny>
@@ -128,10 +157,10 @@
 						<onclick condition="!String.IsEmpty(ListItem.Plot)">SetProperty(TextViewer_Header,$LOCALIZE[207],home)</onclick>
 						<onclick condition="!String.IsEmpty(ListItem.Plot)">SetProperty(TextViewer_Text,$ESCINFO[ListItem.Plot],home)</onclick>
 						<onclick condition="!String.IsEmpty(ListItem.Plot)">ActivateWindow(1102)</onclick>
-						<onup>50</onup>
-						<onleft>4000</onleft>
+						<onup>SetFocus(1011)</onup>
+						<onleft>8</onleft>
 						<onright>4000</onright>
-						<ondown>5000</ondown>
+						<ondown>50</ondown>
 						<texturenofocus border="21">dialogs/dialog-bg.png</texturenofocus>
 						<visible>!Integer.IsGreater(Container(4000).NumItems,0)</visible>
 					</control>
@@ -139,7 +168,7 @@
 						<left>40</left>
 						<top>25</top>
 						<width>670</width>
-						<height>363</height>
+						<height>358</height>
 						<label fallback="19055">$INFO[ListItem.Plot]</label>
 						<autoscroll delay="10000" time="5000" repeat="10000">Skin.HasSetting(AutoScroll)</autoscroll>
 						<visible>Integer.IsGreater(Container(4000).NumItems,0)</visible>
@@ -147,8 +176,8 @@
 					<control type="textbox">
 						<left>40</left>
 						<top>25</top>
-						<width>1165</width>
-						<height>363</height>
+						<width>1073</width>
+						<height>358</height>
 						<label fallback="19055">$INFO[ListItem.Plot]</label>
 						<autoscroll delay="10000" time="5000" repeat="10000">Skin.HasSetting(AutoScroll)</autoscroll>
 						<visible>!Integer.IsGreater(Container(4000).NumItems,0)</visible>
@@ -156,14 +185,14 @@
 				</control>
 				<control type="grouplist" id="4000">
 					<orientation>vertical</orientation>
-					<left>755</left>
-					<top>488</top>
-					<height>377</height>
+					<left>752</left>
+					<top>20</top>
+					<height>402</height>
 					<itemgap>-8</itemgap>
-					<ondown>5000</ondown>
-					<onup>50</onup>
+					<ondown>50</ondown>
+					<onup>SetFocus(1011)</onup>
 					<onright>140</onright>
-					<onleft>140</onleft>
+					<onleft>8</onleft>
 					<include content="InfoDialogMetadata">
 						<param name="control_id" value="146" />
 						<param name="label" value="[COLOR button_focus]$LOCALIZE[40003]: [/COLOR]$INFO[ListItem.VideoVersionName]" />
@@ -275,26 +304,6 @@
 						<param name="visible" value="!String.IsEmpty(ListItem.DBType)" />
 					</include>
 				</control>
-				<control type="group">
-					<visible>Integer.IsEqual(Container(50).NumItems,0) + String.IsEmpty(ListItem.Art(tvshow.banner)) + String.IsEmpty(ListItem.Art(banner))</visible>
-					<control type="image">
-						<left>0</left>
-						<top>164</top>
-						<width>1245</width>
-						<height>328</height>
-						<texture border="21">dialogs/dialog-bg.png</texture>
-					</control>
-					<control type="textbox">
-						<left>17</left>
-						<top>185</top>
-						<width>1210</width>
-						<height>283</height>
-						<align>center</align>
-						<aligny>center</aligny>
-						<font>font36_title</font>
-						<label>$LOCALIZE[31079]</label>
-					</control>
-				</control>
 				<control type="image">
 					<left>77</left>
 					<top>185</top>
@@ -304,29 +313,35 @@
 					<aspectratio>keep</aspectratio>
 					<texture>$VAR[BannerVar]</texture>
 				</control>
-				<!-- Custom Cast Buttons - Using Database Properties -->
+				<!-- Relocated Cast Area -->
 				<control type="group">
-					<left>77</left>
-					<top>158</top>
-					<width>1090</width>
+					<left>0</left>
+					<top>400</top>
+					<width>1245</width>
 					<height>370</height>
 					
-					<!-- Cast Button 1 -->
-					<control type="button" id="50">
+					<!-- Cast Tile 1 -->
+					<control type="group">
 						<left>0</left>
 						<top>0</top>
 						<width>200</width>
 						<height>350</height>
-						<texturefocus />
-						<texturenofocus />
-						<onclick>Dialog.Close(MovieInformation)</onclick>
-						<onclick>Skin.SetString(AIOStreams_SearchQuery,$INFO[Window(Home).Property(InfoWindow.Cast.1.Name)])</onclick>
-						<onclick>ActivateWindow(1108)</onclick>
-						<onup>SetFocus(9000)</onup>
-						<onleft>54</onleft>
-						<onright>51</onright>
-						<ondown>140</ondown>
-						
+						<!-- 3px Red Focus Border -->
+						<control type="image">
+							<left>-3</left>
+							<top>-3</top>
+							<width>206</width>
+							<height>356</height>
+							<texture colordiffuse="FFFF0000">colors/white.png</texture>
+							<visible>Control.HasFocus(50)</visible>
+						</control>
+						<control type="image">
+							<left>0</left>
+							<top>0</top>
+							<width>200</width>
+							<height>350</height>
+							<texture colordiffuse="33FFFFFF">colors/white.png</texture>
+						</control>
 						<control type="image">
 							<left>10</left>
 							<top>10</top>
@@ -334,10 +349,7 @@
 							<height>270</height>
 							<texture background="true">$INFO[Window(Home).Property(InfoWindow.Cast.1.Thumb)]</texture>
 							<aspectratio aligny="center">scale</aspectratio>
-							<bordertexture border="8">overlays/shadow.png</bordertexture>
-							<bordersize>8</bordersize>
 						</control>
-						
 						<control type="label">
 							<left>10</left>
 							<top>290</top>
@@ -347,36 +359,47 @@
 							<aligny>center</aligny>
 							<font>font12</font>
 							<textcolor>white</textcolor>
-							<selectedcolor>button_focus</selectedcolor>
 							<label>$INFO[Window(Home).Property(InfoWindow.Cast.1.Name)]</label>
 						</control>
-						
-						<control type="image">
-							<left>8</left>
-							<top>8</top>
-							<width>184</width>
-							<height>274</height>
-							<texture border="8" colordiffuse="button_focus">buttons/thumbnail_focused.png</texture>
-							<visible>Control.HasFocus(50)</visible>
+						<control type="button" id="50">
+							<left>0</left>
+							<top>0</top>
+							<width>200</width>
+							<height>350</height>
+							<texturefocus>-</texturefocus>
+							<texturenofocus>-</texturenofocus>
+							<onclick>Dialog.Close(MovieInformation)</onclick>
+							<onclick>Skin.SetString(AIOStreams_SearchQuery,$INFO[Window(Home).Property(InfoWindow.Cast.1.Name)])</onclick>
+							<onclick>ActivateWindow(1108)</onclick>
+							<onup>140</onup>
+							<onleft>8</onleft>
+							<onright>51</onright>
+							<ondown>8</ondown>
 						</control>
 					</control>
-					
-					<!-- Cast Button 2 -->
-					<control type="button" id="51">
-						<left>218</left>
+
+					<!-- Cast Tile 2 -->
+					<control type="group">
+						<left>236</left>
 						<top>0</top>
 						<width>200</width>
 						<height>350</height>
-						<texturefocus />
-						<texturenofocus />
-						<onclick>Dialog.Close(MovieInformation)</onclick>
-						<onclick>Skin.SetString(AIOStreams_SearchQuery,$INFO[Window(Home).Property(InfoWindow.Cast.2.Name)])</onclick>
-						<onclick>ActivateWindow(1108)</onclick>
-						<onup>SetFocus(9000)</onup>
-						<onleft>50</onleft>
-						<onright>52</onright>
-						<ondown>140</ondown>
-						
+						<!-- 3px Red Focus Border -->
+						<control type="image">
+							<left>-3</left>
+							<top>-3</top>
+							<width>206</width>
+							<height>356</height>
+							<texture colordiffuse="FFFF0000">colors/white.png</texture>
+							<visible>Control.HasFocus(51)</visible>
+						</control>
+						<control type="image">
+							<left>0</left>
+							<top>0</top>
+							<width>200</width>
+							<height>350</height>
+							<texture colordiffuse="33FFFFFF">colors/white.png</texture>
+						</control>
 						<control type="image">
 							<left>10</left>
 							<top>10</top>
@@ -384,10 +407,7 @@
 							<height>270</height>
 							<texture background="true">$INFO[Window(Home).Property(InfoWindow.Cast.2.Thumb)]</texture>
 							<aspectratio aligny="center">scale</aspectratio>
-							<bordertexture border="8">overlays/shadow.png</bordertexture>
-							<bordersize>8</bordersize>
 						</control>
-						
 						<control type="label">
 							<left>10</left>
 							<top>290</top>
@@ -397,36 +417,47 @@
 							<aligny>center</aligny>
 							<font>font12</font>
 							<textcolor>white</textcolor>
-							<selectedcolor>button_focus</selectedcolor>
 							<label>$INFO[Window(Home).Property(InfoWindow.Cast.2.Name)]</label>
 						</control>
-						
-						<control type="image">
-							<left>8</left>
-							<top>8</top>
-							<width>184</width>
-							<height>274</height>
-							<texture border="8" colordiffuse="button_focus">buttons/thumbnail_focused.png</texture>
-							<visible>Control.HasFocus(51)</visible>
+						<control type="button" id="51">
+							<left>0</left>
+							<top>0</top>
+							<width>200</width>
+							<height>350</height>
+							<texturefocus>-</texturefocus>
+							<texturenofocus>-</texturenofocus>
+							<onclick>Dialog.Close(MovieInformation)</onclick>
+							<onclick>Skin.SetString(AIOStreams_SearchQuery,$INFO[Window(Home).Property(InfoWindow.Cast.2.Name)])</onclick>
+							<onclick>ActivateWindow(1108)</onclick>
+							<onup>140</onup>
+							<onleft>50</onleft>
+							<onright>52</onright>
+							<ondown>8</ondown>
 						</control>
 					</control>
-					
-					<!-- Cast Button 3 -->
-					<control type="button" id="52">
-						<left>436</left>
+
+					<!-- Cast Tile 3 -->
+					<control type="group">
+						<left>472</left>
 						<top>0</top>
 						<width>200</width>
 						<height>350</height>
-						<texturefocus />
-						<texturenofocus />
-						<onclick>Dialog.Close(MovieInformation)</onclick>
-						<onclick>Skin.SetString(AIOStreams_SearchQuery,$INFO[Window(Home).Property(InfoWindow.Cast.3.Name)])</onclick>
-						<onclick>ActivateWindow(1108)</onclick>
-						<onup>SetFocus(9000)</onup>
-						<onleft>51</onleft>
-						<onright>53</onright>
-						<ondown>140</ondown>
-						
+						<!-- 3px Red Focus Border -->
+						<control type="image">
+							<left>-3</left>
+							<top>-3</top>
+							<width>206</width>
+							<height>356</height>
+							<texture colordiffuse="FFFF0000">colors/white.png</texture>
+							<visible>Control.HasFocus(52)</visible>
+						</control>
+						<control type="image">
+							<left>0</left>
+							<top>0</top>
+							<width>200</width>
+							<height>350</height>
+							<texture colordiffuse="33FFFFFF">colors/white.png</texture>
+						</control>
 						<control type="image">
 							<left>10</left>
 							<top>10</top>
@@ -434,10 +465,7 @@
 							<height>270</height>
 							<texture background="true">$INFO[Window(Home).Property(InfoWindow.Cast.3.Thumb)]</texture>
 							<aspectratio aligny="center">scale</aspectratio>
-							<bordertexture border="8">overlays/shadow.png</bordertexture>
-							<bordersize>8</bordersize>
 						</control>
-						
 						<control type="label">
 							<left>10</left>
 							<top>290</top>
@@ -447,36 +475,47 @@
 							<aligny>center</aligny>
 							<font>font12</font>
 							<textcolor>white</textcolor>
-							<selectedcolor>button_focus</selectedcolor>
 							<label>$INFO[Window(Home).Property(InfoWindow.Cast.3.Name)]</label>
 						</control>
-						
-						<control type="image">
-							<left>8</left>
-							<top>8</top>
-							<width>184</width>
-							<height>274</height>
-							<texture border="8" colordiffuse="button_focus">buttons/thumbnail_focused.png</texture>
-							<visible>Control.HasFocus(52)</visible>
+						<control type="button" id="52">
+							<left>0</left>
+							<top>0</top>
+							<width>200</width>
+							<height>350</height>
+							<texturefocus>-</texturefocus>
+							<texturenofocus>-</texturenofocus>
+							<onclick>Dialog.Close(MovieInformation)</onclick>
+							<onclick>Skin.SetString(AIOStreams_SearchQuery,$INFO[Window(Home).Property(InfoWindow.Cast.3.Name)])</onclick>
+							<onclick>ActivateWindow(1108)</onclick>
+							<onup>140</onup>
+							<onleft>51</onleft>
+							<onright>53</onright>
+							<ondown>8</ondown>
 						</control>
 					</control>
-					
-					<!-- Cast Button 4 -->
-					<control type="button" id="53">
-						<left>654</left>
+
+					<!-- Cast Tile 4 -->
+					<control type="group">
+						<left>708</left>
 						<top>0</top>
 						<width>200</width>
 						<height>350</height>
-						<texturefocus />
-						<texturenofocus />
-						<onclick>Dialog.Close(MovieInformation)</onclick>
-						<onclick>Skin.SetString(AIOStreams_SearchQuery,$INFO[Window(Home).Property(InfoWindow.Cast.4.Name)])</onclick>
-						<onclick>ActivateWindow(1108)</onclick>
-						<onup>SetFocus(9000)</onup>
-						<onleft>52</onleft>
-						<onright>54</onright>
-						<ondown>140</ondown>
-						
+						<!-- 3px Red Focus Border -->
+						<control type="image">
+							<left>-3</left>
+							<top>-3</top>
+							<width>206</width>
+							<height>356</height>
+							<texture colordiffuse="FFFF0000">colors/white.png</texture>
+							<visible>Control.HasFocus(53)</visible>
+						</control>
+						<control type="image">
+							<left>0</left>
+							<top>0</top>
+							<width>200</width>
+							<height>350</height>
+							<texture colordiffuse="33FFFFFF">colors/white.png</texture>
+						</control>
 						<control type="image">
 							<left>10</left>
 							<top>10</top>
@@ -484,10 +523,7 @@
 							<height>270</height>
 							<texture background="true">$INFO[Window(Home).Property(InfoWindow.Cast.4.Thumb)]</texture>
 							<aspectratio aligny="center">scale</aspectratio>
-							<bordertexture border="8">overlays/shadow.png</bordertexture>
-							<bordersize>8</bordersize>
 						</control>
-						
 						<control type="label">
 							<left>10</left>
 							<top>290</top>
@@ -497,36 +533,47 @@
 							<aligny>center</aligny>
 							<font>font12</font>
 							<textcolor>white</textcolor>
-							<selectedcolor>button_focus</selectedcolor>
 							<label>$INFO[Window(Home).Property(InfoWindow.Cast.4.Name)]</label>
 						</control>
-						
-						<control type="image">
-							<left>8</left>
-							<top>8</top>
-							<width>184</width>
-							<height>274</height>
-							<texture border="8" colordiffuse="button_focus">buttons/thumbnail_focused.png</texture>
-							<visible>Control.HasFocus(53)</visible>
+						<control type="button" id="53">
+							<left>0</left>
+							<top>0</top>
+							<width>200</width>
+							<height>350</height>
+							<texturefocus>-</texturefocus>
+							<texturenofocus>-</texturenofocus>
+							<onclick>Dialog.Close(MovieInformation)</onclick>
+							<onclick>Skin.SetString(AIOStreams_SearchQuery,$INFO[Window(Home).Property(InfoWindow.Cast.4.Name)])</onclick>
+							<onclick>ActivateWindow(1108)</onclick>
+							<onup>140</onup>
+							<onleft>52</onleft>
+							<onright>54</onright>
+							<ondown>8</ondown>
 						</control>
 					</control>
-					
-					<!-- Cast Button 5 -->
-					<control type="button" id="54">
-						<left>872</left>
+
+					<!-- Cast Tile 5 -->
+					<control type="group">
+						<left>944</left>
 						<top>0</top>
 						<width>200</width>
 						<height>350</height>
-						<texturefocus />
-						<texturenofocus />
-						<onclick>Dialog.Close(MovieInformation)</onclick>
-						<onclick>Skin.SetString(AIOStreams_SearchQuery,$INFO[Window(Home).Property(InfoWindow.Cast.5.Name)])</onclick>
-						<onclick>ActivateWindow(1108)</onclick>
-						<onup>SetFocus(9000)</onup>
-						<onleft>53</onleft>
-						<onright>50</onright>
-						<ondown>140</ondown>
-						
+						<!-- 3px Red Focus Border -->
+						<control type="image">
+							<left>-3</left>
+							<top>-3</top>
+							<width>206</width>
+							<height>356</height>
+							<texture colordiffuse="FFFF0000">colors/white.png</texture>
+							<visible>Control.HasFocus(54)</visible>
+						</control>
+						<control type="image">
+							<left>0</left>
+							<top>0</top>
+							<width>200</width>
+							<height>350</height>
+							<texture colordiffuse="33FFFFFF">colors/white.png</texture>
+						</control>
 						<control type="image">
 							<left>10</left>
 							<top>10</top>
@@ -534,10 +581,7 @@
 							<height>270</height>
 							<texture background="true">$INFO[Window(Home).Property(InfoWindow.Cast.5.Thumb)]</texture>
 							<aspectratio aligny="center">scale</aspectratio>
-							<bordertexture border="8">overlays/shadow.png</bordertexture>
-							<bordersize>8</bordersize>
 						</control>
-						
 						<control type="label">
 							<left>10</left>
 							<top>290</top>
@@ -547,129 +591,25 @@
 							<aligny>center</aligny>
 							<font>font12</font>
 							<textcolor>white</textcolor>
-							<selectedcolor>button_focus</selectedcolor>
 							<label>$INFO[Window(Home).Property(InfoWindow.Cast.5.Name)]</label>
 						</control>
-						
-						<control type="image">
-							<left>8</left>
-							<top>8</top>
-							<width>184</width>
-							<height>274</height>
-							<texture border="8" colordiffuse="button_focus">buttons/thumbnail_focused.png</texture>
-							<visible>Control.HasFocus(54)</visible>
+						<control type="button" id="54">
+							<left>0</left>
+							<top>0</top>
+							<width>200</width>
+							<height>350</height>
+							<texturefocus>-</texturefocus>
+							<texturenofocus>-</texturenofocus>
+							<onclick>Dialog.Close(MovieInformation)</onclick>
+							<onclick>Skin.SetString(AIOStreams_SearchQuery,$INFO[Window(Home).Property(InfoWindow.Cast.5.Name)])</onclick>
+							<onclick>ActivateWindow(1108)</onclick>
+							<onup>140</onup>
+							<onleft>8</onleft>
+							<onright>50</onright>
+							<ondown>5000</ondown>
 						</control>
 					</control>
 				</control>
-				<control type="grouplist" id="5000">
-					<left>0</left>
-					<top>864</top>
-					<width>1246</width>
-					<height>400</height>
-					<onleft>5000</onleft>
-					<onright>5000</onright>
-					<onup>140</onup>
-					<ondown condition="!Integer.IsGreater(Container(5000).Position,4)">SetFocus(50,$INFO[Container(5000).Position])</ondown>
-					<ondown condition="Integer.IsGreater(Container(5000).Position,4)">SetFocus(50,4)</ondown>
-					<itemgap>-18</itemgap>
-					<align>center</align>
-					<orientation>horizontal</orientation>
-					<scrolltime tween="quadratic">200</scrolltime>
-					<include content="InfoDialogToggleButton">
-						<param name="id" value="8" />
-						<param name="icon_on" value="icons/filemanager.png" />
-						<param name="icon_off" value="icons/infodialogs/play.png" />
-						<param name="selected" value="String.IsEqual(ListItem.DBType,tvshow) | String.IsEqual(ListItem.DBType,season) | String.IsEqual(ListItem.DBType,set)" />
-						<param name="label" value="$VAR[VideoInfoPlayButtonLabelVar]" />
-						<!-- Default action for TV shows/seasons: Browse episodes -->
-						<param name="onclick_1" value="ActivateWindow(Videos,$INFO[ListItem.FolderPath],return)" />
-						<!-- Default action for movies: Play -->
-						<param name="onclick_2" value="PlayMedia($INFO[ListItem.FileNameAndPath])" />
-					</include>
-					<include content="InfoDialogButton">
-						<param name="id" value="11" />
-						<param name="icon" value="icons/infodialogs/trailer.png" />
-						<param name="label" value="$LOCALIZE[20410]" />
-						<param name="visible" value="!String.IsEmpty(ListItem.Trailer) + ![String.StartsWith(Container.FolderPath,plugin://) + String.Contains(Container.FolderPath,trailer)]" />
-					</include>
-					<include content="InfoDialogButton">
-						<param name="id" value="441" />
-						<param name="icon" value="icons/infodialogs/cinema.png" />
-						<param name="onclick_1" value="Dialog.Close(MovieInformation)" />
-						<param name="onclick_2" value="RunScript(script.cinemavision,experience)" />
-						<param name="label" value="$LOCALIZE[31003]" />
-						<param name="visible" value="System.AddonIsEnabled(script.cinemavision) + [String.IsEqual(ListItem.DBType,movie) | String.IsEqual(ListItem.DBType,tvshow) | String.IsEqual(ListItem.DBType,season) | String.IsEqual(ListItem.DBType,episode)]" />
-					</include>
-					<control type="group" id="400">
-						<width>1</width>
-						<height>1</height>
-						<visible>false</visible>
-					</control>
-					<include content="InfoDialogButton">
-						<param name="id" value="101" />
-						<param name="icon" value="icons/infodialogs/info.png" />
-						<param name="label" value="$LOCALIZE[31034]" />
-						<param name="onclick_1_condition" value="!String.IsEmpty(ListItem.DBID) + String.IsEqual(ListItem.DBType,movie)" />
-						<param name="onclick_1" value="RunScript(script.embuary.info,call=movie,dbid=$INFO[ListItem.DBID])" />
-						<param name="onclick_2_condition" value="!String.IsEmpty(ListItem.DBID) + String.IsEqual(ListItem.DBType,tvshow)" />
-						<param name="onclick_2" value="RunScript(script.embuary.info,call=tv,dbid=$INFO[ListItem.DBID])" />
-						<param name="onclick_3_condition" value="!String.IsEmpty(ListItem.DBID) + String.IsEqual(ListItem.DBType,episode)" />
-						<param name="onclick_3" value="RunScript(script.embuary.info,call=tv,query='$ESCINFO[ListItem.TVShowTitle]',year=$INFO[ListItem.Year])" />
-						<param name="visible" value="System.AddonIsEnabled(script.embuary.info) + !String.IsEmpty(ListItem.DBID) + [String.IsEqual(ListItem.DbType,movie) | String.IsEqual(ListItem.DbType,tvshow) | String.IsEqual(ListItem.DbType,episode)]" />
-					</include>
-
-					<include content="InfoDialogButton">
-						<param name="id" value="13" />
-						<param name="icon" value="icons/infodialogs/director.png" />
-						<param name="label" value="$LOCALIZE[31123]" />
-						<param name="onclick_1" value="Dialog.Close(MovieInformation)" />
-						<param name="onclick_2" value="Skin.SetString(AIOStreams_SearchQuery,$ESCINFO[ListItem.Director])" />
-						<param name="onclick_3" value="ActivateWindow(1108)" />
-						<param name="visible" value="!String.IsEmpty(ListItem.Director)" />
-					</include>
-					<include content="InfoDialogButton">
-						<param name="id" value="999" />
-						<param name="icon" value="DefaultMusicAlbums.png" />
-						<param name="onclick_1" value="Dialog.Close(all,true)" />
-						<param name="onclick_2" value="ActivateWindow(Music,musicdb://albums/?artist=$INFO[ListItem.Artist]&amp;albumartistonly=true&amp;compilation=false)" />
-						<param name="label" value="$LOCALIZE[132]" />
-						<param name="visible" value="String.IsEqual(ListItem.DBType,musicvideo)" />
-					</include>
-					<include content="InfoDialogButton">
-						<param name="id" value="14" />
-						<param name="icon" value="icons/infodialogs/versions.png" />
-						<param name="label" value="$LOCALIZE[40000]" />
-						<param name="visible" value="String.IsEqual(ListItem.DBType,movie)" />
-					</include>
-					<include content="InfoDialogButton">
-						<param name="id" value="15" />
-						<param name="icon" value="icons/infodialogs/extras.png" />
-						<param name="label" value="$LOCALIZE[40211]" />
-						<param name="visible" value="String.IsEqual(ListItem.DBType,movie)" />
-					</include>
-					<include content="InfoDialogButton">
-						<param name="id" value="443" />
-						<param name="icon" value="icons/infodialogs/set.png" />
-						<param name="label" value="$LOCALIZE[20457]" />
-						<param name="onclick_1" value="Dialog.Close(all,true)" />
-						<param name="onclick_2" value="ActivateWindow(Videos,videodb://movies/sets/$INFO[ListItem.SetId]/?setid=$INFO[ListItem.SetId])" />
-						<param name="visible" value="!String.IsEmpty(ListItem.SetID)" />
-					</include>
-
-					<include content="InfoDialogButton">
-						<param name="id" value="6" />
-						<param name="icon" value="icons/infodialogs/update.png" />
-						<param name="label" value="$LOCALIZE[184]" />
-						<param name="visible" value="Control.IsEnabled(6)" />
-					</include>
-				</control>
-				<include content="LeftRightArrows">
-					<param name="list_id" value="5000" />
-					<param name="left_posx" value="-15" />
-					<param name="right_posx" value="1240" />
-					<param name="posy" value="924" />
-					<param name="visible" value="true" />
-				</include>
 				<include content="LeftRightArrows">
 					<param name="list_id" value="50" />
 					<param name="left_posx" value="-15" />
