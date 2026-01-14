@@ -18,7 +18,7 @@
     </extension>
 </addon>
 
-<addon id="plugin.video.aiostreams" name="AIOStreams" version="1.1.127" provider-name="Jon">
+<addon id="plugin.video.aiostreams" name="AIOStreams" version="1.1.128" provider-name="Jon">
     <requires>
         <import addon="xbmc.python" version="3.0.0"/>
         <import addon="script.module.requests" version="2.25.1"/>
@@ -43,7 +43,7 @@
         </assets>
     </extension>
 </addon>
-<addon id="skin.AIODI" version="6.0.323" name="AIODI" provider-name="shiggsy365">
+<addon id="skin.AIODI" version="6.0.329" name="AIODI" provider-name="shiggsy365">
 	<requires>
 		<import addon="xbmc.gui" version="5.17.0"/>
 		<import addon="pvr.iptvsimple" version="20.0.0"/>

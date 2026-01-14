@@ -952,6 +952,20 @@ def create_listitem_with_context(meta, content_type, action_url):
     # Only use cast from AIOStreams (no Trakt API calls to avoid rate limiting)
     if cast_list:
         info_tag.setCast(cast_list)
+        
+        # Also set window properties for custom info window (first 5 cast members)
+        window = xbmcgui.Window(10000)  # Home window
+        for i in range(1, 6):
+            if i <= len(aio_cast):
+                cast_member = aio_cast[i-1]
+                window.setProperty(f'AIOStreams.Cast.{i}.Name', cast_member.get('name', ''))
+                window.setProperty(f'AIOStreams.Cast.{i}.Role', cast_member.get('character', ''))
+                window.setProperty(f'AIOStreams.Cast.{i}.Thumb', cast_member.get('photo', ''))
+            else:
+                # Clear if no more cast
+                window.clearProperty(f'AIOStreams.Cast.{i}.Name')
+                window.clearProperty(f'AIOStreams.Cast.{i}.Role')
+                window.clearProperty(f'AIOStreams.Cast.{i}.Thumb')
 
     # Add directors - try app_extras first (array format), then top level (comma-separated string)
     directors = app_extras.get('directors', [])

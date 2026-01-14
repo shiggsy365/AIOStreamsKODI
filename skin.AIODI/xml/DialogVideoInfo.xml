@@ -2,6 +2,7 @@
 <window>
 	<defaultcontrol always="true">8</defaultcontrol>
 	<onload>SetProperty(infobackground,$ESCINFO[ListItem.Art(fanart)],home)</onload>
+	<onload>RunScript(special://skin/resources/lib/info_window_helper.py)</onload>
 	<onunload>ClearProperty(infobackground,home)</onunload>
 	<controls>
 		<control type="image">
@@ -302,16 +303,15 @@
 					<fadetime>150</fadetime>
 					<aspectratio>keep</aspectratio>
 					<texture>$VAR[BannerVar]</texture>
-					<visible>String.IsEmpty(ListItem.Cast.1.Name)</visible>
 				</control>
-				<!-- Custom Cast Panel - 5 Tiles -->
+				<!-- Custom Cast Buttons - Using Database Properties -->
 				<control type="group">
 					<left>77</left>
 					<top>158</top>
 					<width>1090</width>
 					<height>370</height>
 					
-					<!-- Cast Tile 1 -->
+					<!-- Cast Button 1 -->
 					<control type="button" id="50">
 						<left>0</left>
 						<top>0</top>
@@ -320,27 +320,24 @@
 						<texturefocus />
 						<texturenofocus />
 						<onclick>Dialog.Close(MovieInformation)</onclick>
-						<onclick>Skin.SetString(AIOStreams_SearchQuery,$INFO[ListItem.Cast.1.Name])</onclick>
+						<onclick>Skin.SetString(AIOStreams_SearchQuery,$INFO[Window(Home).Property(InfoWindow.Cast.1.Name)])</onclick>
 						<onclick>ActivateWindow(1108)</onclick>
 						<onup>SetFocus(9000)</onup>
 						<onleft>54</onleft>
 						<onright>51</onright>
 						<ondown>140</ondown>
-						<visible>!String.IsEmpty(ListItem.Cast.1.Name)</visible>
 						
-						<!-- Actor Photo -->
 						<control type="image">
 							<left>10</left>
 							<top>10</top>
 							<width>180</width>
 							<height>270</height>
-							<texture background="true">$INFO[ListItem.Cast.1.Thumb]</texture>
+							<texture background="true">$INFO[Window(Home).Property(InfoWindow.Cast.1.Thumb)]</texture>
 							<aspectratio aligny="center">scale</aspectratio>
 							<bordertexture border="8">overlays/shadow.png</bordertexture>
 							<bordersize>8</bordersize>
 						</control>
 						
-						<!-- Actor Name -->
 						<control type="label">
 							<left>10</left>
 							<top>290</top>
@@ -351,10 +348,9 @@
 							<font>font12</font>
 							<textcolor>white</textcolor>
 							<selectedcolor>button_focus</selectedcolor>
-							<label>$INFO[ListItem.Cast.1.Name]</label>
+							<label>$INFO[Window(Home).Property(InfoWindow.Cast.1.Name)]</label>
 						</control>
 						
-						<!-- Focus Border -->
 						<control type="image">
 							<left>8</left>
 							<top>8</top>
@@ -365,7 +361,7 @@
 						</control>
 					</control>
 					
-					<!-- Cast Tile 2 -->
+					<!-- Cast Button 2 -->
 					<control type="button" id="51">
 						<left>218</left>
 						<top>0</top>
@@ -374,20 +370,19 @@
 						<texturefocus />
 						<texturenofocus />
 						<onclick>Dialog.Close(MovieInformation)</onclick>
-						<onclick>Skin.SetString(AIOStreams_SearchQuery,$INFO[ListItem.Cast.2.Name])</onclick>
+						<onclick>Skin.SetString(AIOStreams_SearchQuery,$INFO[Window(Home).Property(InfoWindow.Cast.2.Name)])</onclick>
 						<onclick>ActivateWindow(1108)</onclick>
 						<onup>SetFocus(9000)</onup>
 						<onleft>50</onleft>
 						<onright>52</onright>
 						<ondown>140</ondown>
-						<visible>!String.IsEmpty(ListItem.Cast.2.Name)</visible>
 						
 						<control type="image">
 							<left>10</left>
 							<top>10</top>
 							<width>180</width>
 							<height>270</height>
-							<texture background="true">$INFO[ListItem.Cast.2.Thumb]</texture>
+							<texture background="true">$INFO[Window(Home).Property(InfoWindow.Cast.2.Thumb)]</texture>
 							<aspectratio aligny="center">scale</aspectratio>
 							<bordertexture border="8">overlays/shadow.png</bordertexture>
 							<bordersize>8</bordersize>
@@ -403,7 +398,7 @@
 							<font>font12</font>
 							<textcolor>white</textcolor>
 							<selectedcolor>button_focus</selectedcolor>
-							<label>$INFO[ListItem.Cast.2.Name]</label>
+							<label>$INFO[Window(Home).Property(InfoWindow.Cast.2.Name)]</label>
 						</control>
 						
 						<control type="image">
@@ -416,7 +411,7 @@
 						</control>
 					</control>
 					
-					<!-- Cast Tile 3 -->
+					<!-- Cast Button 3 -->
 					<control type="button" id="52">
 						<left>436</left>
 						<top>0</top>
@@ -425,20 +420,19 @@
 						<texturefocus />
 						<texturenofocus />
 						<onclick>Dialog.Close(MovieInformation)</onclick>
-						<onclick>Skin.SetString(AIOStreams_SearchQuery,$INFO[ListItem.Cast.3.Name])</onclick>
+						<onclick>Skin.SetString(AIOStreams_SearchQuery,$INFO[Window(Home).Property(InfoWindow.Cast.3.Name)])</onclick>
 						<onclick>ActivateWindow(1108)</onclick>
 						<onup>SetFocus(9000)</onup>
 						<onleft>51</onleft>
 						<onright>53</onright>
 						<ondown>140</ondown>
-						<visible>!String.IsEmpty(ListItem.Cast.3.Name)</visible>
 						
 						<control type="image">
 							<left>10</left>
 							<top>10</top>
 							<width>180</width>
 							<height>270</height>
-							<texture background="true">$INFO[ListItem.Cast.3.Thumb]</texture>
+							<texture background="true">$INFO[Window(Home).Property(InfoWindow.Cast.3.Thumb)]</texture>
 							<aspectratio aligny="center">scale</aspectratio>
 							<bordertexture border="8">overlays/shadow.png</bordertexture>
 							<bordersize>8</bordersize>
@@ -454,7 +448,7 @@
 							<font>font12</font>
 							<textcolor>white</textcolor>
 							<selectedcolor>button_focus</selectedcolor>
-							<label>$INFO[ListItem.Cast.3.Name]</label>
+							<label>$INFO[Window(Home).Property(InfoWindow.Cast.3.Name)]</label>
 						</control>
 						
 						<control type="image">
@@ -467,7 +461,7 @@
 						</control>
 					</control>
 					
-					<!-- Cast Tile 4 -->
+					<!-- Cast Button 4 -->
 					<control type="button" id="53">
 						<left>654</left>
 						<top>0</top>
@@ -476,20 +470,19 @@
 						<texturefocus />
 						<texturenofocus />
 						<onclick>Dialog.Close(MovieInformation)</onclick>
-						<onclick>Skin.SetString(AIOStreams_SearchQuery,$INFO[ListItem.Cast.4.Name])</onclick>
+						<onclick>Skin.SetString(AIOStreams_SearchQuery,$INFO[Window(Home).Property(InfoWindow.Cast.4.Name)])</onclick>
 						<onclick>ActivateWindow(1108)</onclick>
 						<onup>SetFocus(9000)</onup>
 						<onleft>52</onleft>
 						<onright>54</onright>
 						<ondown>140</ondown>
-						<visible>!String.IsEmpty(ListItem.Cast.4.Name)</visible>
 						
 						<control type="image">
 							<left>10</left>
 							<top>10</top>
 							<width>180</width>
 							<height>270</height>
-							<texture background="true">$INFO[ListItem.Cast.4.Thumb]</texture>
+							<texture background="true">$INFO[Window(Home).Property(InfoWindow.Cast.4.Thumb)]</texture>
 							<aspectratio aligny="center">scale</aspectratio>
 							<bordertexture border="8">overlays/shadow.png</bordertexture>
 							<bordersize>8</bordersize>
@@ -505,7 +498,7 @@
 							<font>font12</font>
 							<textcolor>white</textcolor>
 							<selectedcolor>button_focus</selectedcolor>
-							<label>$INFO[ListItem.Cast.4.Name]</label>
+							<label>$INFO[Window(Home).Property(InfoWindow.Cast.4.Name)]</label>
 						</control>
 						
 						<control type="image">
@@ -518,7 +511,7 @@
 						</control>
 					</control>
 					
-					<!-- Cast Tile 5 -->
+					<!-- Cast Button 5 -->
 					<control type="button" id="54">
 						<left>872</left>
 						<top>0</top>
@@ -527,20 +520,19 @@
 						<texturefocus />
 						<texturenofocus />
 						<onclick>Dialog.Close(MovieInformation)</onclick>
-						<onclick>Skin.SetString(AIOStreams_SearchQuery,$INFO[ListItem.Cast.5.Name])</onclick>
+						<onclick>Skin.SetString(AIOStreams_SearchQuery,$INFO[Window(Home).Property(InfoWindow.Cast.5.Name)])</onclick>
 						<onclick>ActivateWindow(1108)</onclick>
 						<onup>SetFocus(9000)</onup>
 						<onleft>53</onleft>
 						<onright>50</onright>
 						<ondown>140</ondown>
-						<visible>!String.IsEmpty(ListItem.Cast.5.Name)</visible>
 						
 						<control type="image">
 							<left>10</left>
 							<top>10</top>
 							<width>180</width>
 							<height>270</height>
-							<texture background="true">$INFO[ListItem.Cast.5.Thumb]</texture>
+							<texture background="true">$INFO[Window(Home).Property(InfoWindow.Cast.5.Thumb)]</texture>
 							<aspectratio aligny="center">scale</aspectratio>
 							<bordertexture border="8">overlays/shadow.png</bordertexture>
 							<bordersize>8</bordersize>
@@ -556,7 +548,7 @@
 							<font>font12</font>
 							<textcolor>white</textcolor>
 							<selectedcolor>button_focus</selectedcolor>
-							<label>$INFO[ListItem.Cast.5.Name]</label>
+							<label>$INFO[Window(Home).Property(InfoWindow.Cast.5.Name)]</label>
 						</control>
 						
 						<control type="image">
@@ -568,100 +560,6 @@
 							<visible>Control.HasFocus(54)</visible>
 						</control>
 					</control>
-				</control>
-					<itemlayout height="319" width="205" condition="Container.Content(Sets)">
-						<control type="group">
-							<left>0</left>
-							<top>10</top>
-							<control type="image">
-								<top>0</top>
-								<width>226</width>
-								<height>319</height>
-								<texture>DefaultMovies.png</texture>
-								<aspectratio aligny="center">scale</aspectratio>
-								<bordertexture border="21" infill="false">overlays/shadow.png</bordertexture>
-								<bordersize>20</bordersize>
-							</control>
-							<control type="image">
-								<top>20</top>
-								<left>20</left>
-								<width>186</width>
-								<height>279</height>
-								<texture background="true">$INFO[ListItem.Art(poster)]</texture>
-								<aspectratio aligny="center">scale</aspectratio>
-							</control>
-							<control type="image">
-								<left>20</left>
-								<width>186</width>
-								<height>180</height>
-								<bottom>10</bottom>
-								<texture>overlays/overlayfade.png</texture>
-								<animation effect="fade" start="100" end="80" time="0" condition="true">Conditional</animation>
-								<visible>String.IsEmpty(ListItem.Art(poster))</visible>
-							</control>
-							<control type="textbox">
-								<left>25</left>
-								<width>166</width>
-								<height>84</height>
-								<top>210</top>
-								<align>center</align>
-								<aligny>center</aligny>
-								<font>font23_narrow</font>
-								<label>$INFO[ListItem.Label]</label>
-								<visible>String.IsEmpty(ListItem.Art(poster))</visible>
-							</control>
-						</control>
-					</itemlayout>
-					<focusedlayout height="319" width="205" condition="Container.Content(Sets)">
-						<control type="group">
-							<left>0</left>
-							<top>10</top>
-							<control type="image">
-								<top>0</top>
-								<width>226</width>
-								<height>319</height>
-								<texture>DefaultMovies.png</texture>
-								<aspectratio aligny="center">scale</aspectratio>
-								<bordertexture border="21" infill="false">overlays/shadow.png</bordertexture>
-								<bordersize>20</bordersize>
-							</control>
-							<control type="image">
-								<top>20</top>
-								<left>20</left>
-								<width>186</width>
-								<height>279</height>
-								<texture background="true">$INFO[ListItem.Art(poster)]</texture>
-								<aspectratio aligny="center">scale</aspectratio>
-							</control>
-							<control type="image">
-								<left>20</left>
-								<width>186</width>
-								<height>180</height>
-								<bottom>10</bottom>
-								<texture>overlays/overlayfade.png</texture>
-								<animation effect="fade" start="100" end="80" time="0" condition="true">Conditional</animation>
-								<visible>String.IsEmpty(ListItem.Art(poster))</visible>
-							</control>
-							<control type="textbox">
-								<left>25</left>
-								<width>166</width>
-								<height>84</height>
-								<top>210</top>
-								<align>center</align>
-								<aligny>center</aligny>
-								<font>font23_narrow</font>
-								<label>$INFO[ListItem.Label]</label>
-								<visible>String.IsEmpty(ListItem.Art(poster))</visible>
-							</control>
-							<control type="image">
-								<left>16</left>
-								<top>16</top>
-								<width>194</width>
-								<height>287</height>
-								<texture border="8" colordiffuse="button_focus">buttons/thumbnail_focused.png</texture>
-							</control>
-						</control>
-					</focusedlayout>
 				</control>
 				<control type="grouplist" id="5000">
 					<left>0</left>
