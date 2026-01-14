@@ -4,6 +4,24 @@
 	<onload>SetProperty(infobackground,$ESCINFO[ListItem.Art(fanart)],home)</onload>
 	<onload>RunScript(special://skin/resources/lib/info_window_helper.py)</onload>
 	<onunload>ClearProperty(infobackground,home)</onunload>
+	<include name="VideoInfoStackButton">
+		<param name="width">526</param>
+		<definition>
+			<control type="button" id="$PARAM[id]">
+				<width>$PARAM[width]</width>
+				<height>100</height>
+				<align>center</align>
+				<aligny>center</aligny>
+				<font>font13</font>
+				<textoffsetx>20</textoffsetx>
+				<texturefocus border="21" colordiffuse="button_focus">buttons/dialogbutton-fo.png</texturefocus>
+				<texturenofocus border="21">buttons/dialogbutton-nofo.png</texturenofocus>
+				<label>$PARAM[label]</label>
+				<onclick>$PARAM[onclick]</onclick>
+				<visible>$PARAM[visible]</visible>
+			</control>
+		</definition>
+	</include>
 	<controls>
 		<control type="image">
 			<include>FullScreenDimensions</include>
@@ -73,23 +91,20 @@
 					<height>250</height>
 					<itemgap>10</itemgap>
 					<orientation>vertical</orientation>
-					<align>left</align>
 					<onup>SetFocus(1011)</onup>
 					<onright>50</onright>
 					<ondown>5000</ondown>
 					
-					<include content="InfoDialogButton">
+					<include content="VideoInfoStackButton">
 						<param name="id" value="8" />
-						<param name="width" value="526" />
-						<param name="icon" value="icons/infodialogs/play.png" />
 						<param name="label" value="$VAR[VideoInfoPlayButtonLabelVar]" />
+						<param name="onclick" value="SendClick(8)" />
 						<param name="visible" value="Control.IsEnabled(8)" />
 					</include>
-					<include content="InfoDialogButton">
+					<include content="VideoInfoStackButton">
 						<param name="id" value="11" />
-						<param name="width" value="526" />
-						<param name="icon" value="icons/infodialogs/trailer.png" />
 						<param name="label" value="$LOCALIZE[20410]" />
+						<param name="onclick" value="SendClick(11)" />
 						<param name="visible" value="Control.IsEnabled(11)" />
 					</include>
 				</control>
@@ -141,14 +156,14 @@
 					</control>
 					<control type="image">
 						<left>738</left>
-						<width>412</width>
+						<width>415</width>
 						<height>393</height>
 						<aligny>bottom</aligny>
 						<texture border="21">dialogs/dialog-bg.png</texture>
 						<visible>Integer.IsGreater(Container(4000).NumItems,0)</visible>
 					</control>
 					<control type="button" id="139">
-						<width>1153</width>
+						<width>1156</width>
 						<height>393</height>
 						<textoffsetx>40</textoffsetx>
 						<textoffsety>20</textoffsety>
@@ -176,7 +191,7 @@
 					<control type="textbox">
 						<left>40</left>
 						<top>25</top>
-						<width>1073</width>
+						<width>1076</width>
 						<height>358</height>
 						<label fallback="19055">$INFO[ListItem.Plot]</label>
 						<autoscroll delay="10000" time="5000" repeat="10000">Skin.HasSetting(AutoScroll)</autoscroll>
