@@ -45,15 +45,48 @@ def fetch_cast_from_api(imdb_id, content_type='movie'):
         app_extras = meta.get('app_extras', {})
         cast_list = app_extras.get('cast', [])
         
-        log(f'Successfully fetched {len(cast_list)} cast members from API')
-        return cast_list
+        # Extract Trailer
+        trailers = []
+        if api_type == 'movie':
+             trailers = meta.get('trailers', [])
+        else:
+             trailers = meta.get('trailerStreams', []) # Some endpoints use this
+
+        # Fallback: Check both if specific one is empty
+        if not trailers:
+            trailers = meta.get('trailers', []) or meta.get('trailerStreams', [])
+
+        trailer_url = None
+        if trailers and isinstance(trailers, list) and len(trailers) > 0:
+             # Try explicit Youtube ID first
+             youtube_id = trailers[0].get('ytId', '')
+             
+             # If no ID, check source
+             if not youtube_id:
+                 source = trailers[0].get('source', '')
+                 if 'youtube.com' in source or 'youtu.be' in source:
+                     # Attempt to extract ID from URL
+                     import re
+                     # Matches v=ID or short url /ID
+                     match = re.search(r'(?:v=|\/)([0-9A-Za-z_-]{11})', source)
+                     if match:
+                         youtube_id = match.group(1)
+                 elif source and not source.startswith('http'):
+                     # Assume source IS the ID if it's not a URL
+                     youtube_id = source
+            
+             if youtube_id:
+                 trailer_url = f'plugin://plugin.video.youtube/play/?video_id={youtube_id}'
+
+        log(f'Successfully fetched {len(cast_list)} cast members. Trailer found: {bool(trailer_url)} ({trailer_url})')
+        return cast_list, trailer_url
         
     except requests.exceptions.Timeout:
         log(f'Timeout fetching cast from API for {imdb_id}', xbmc.LOGWARNING)
-        return []
+        return [], None
     except requests.exceptions.RequestException as e:
         log(f'Error fetching cast from API: {e}', xbmc.LOGERROR)
-        return []
+        return [], None
     except Exception as e:
         log(f'Unexpected error fetching cast: {e}', xbmc.LOGERROR)
-        return []
+        return [], None

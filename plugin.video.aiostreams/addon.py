@@ -1067,8 +1067,10 @@ def create_listitem_with_context(meta, content_type, action_url):
 
         # Add trailer if available
         trailers = meta.get('trailers', [])
+        xbmc.log(f'[AIOStreams] Movie Trailers found: {trailers}', xbmc.LOGINFO)
         if trailers and isinstance(trailers, list) and len(trailers) > 0:
             youtube_id = trailers[0].get('ytId', '') or trailers[0].get('source', '')
+            xbmc.log(f'[AIOStreams] Movie Trailer YouTube ID: {youtube_id}', xbmc.LOGINFO)
             if youtube_id:
                 trailer_url = f'https://www.youtube.com/watch?v={youtube_id}'
                 info_tag.setTrailer(trailer_url)
@@ -1096,8 +1098,10 @@ def create_listitem_with_context(meta, content_type, action_url):
         # Show context menu: View Trailer, Mark as Watched, Watchlist
         # Add trailer if available
         trailers = meta.get('trailerStreams', [])
+        xbmc.log(f'[AIOStreams] Series Trailers found: {trailers}', xbmc.LOGINFO)
         if trailers and isinstance(trailers, list) and len(trailers) > 0:
             youtube_id = trailers[0].get('ytId', '') or trailers[0].get('source', '')
+            xbmc.log(f'[AIOStreams] Series Trailer YouTube ID: {youtube_id}', xbmc.LOGINFO)
             if youtube_id:
                 trailer_url = f'https://www.youtube.com/watch?v={youtube_id}'
                 info_tag.setTrailer(trailer_url)

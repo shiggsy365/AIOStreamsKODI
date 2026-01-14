@@ -18,7 +18,7 @@
     </extension>
 </addon>
 
-<addon id="plugin.video.aiostreams" name="AIOStreams" version="1.1.130" provider-name="Jon">
+<addon id="plugin.video.aiostreams" name="AIOStreams" version="1.1.133" provider-name="Jon">
     <requires>
         <import addon="xbmc.python" version="3.0.0"/>
         <import addon="script.module.requests" version="2.25.1"/>
@@ -31,19 +31,27 @@
     <extension point="xbmc.python.script" library="globalsearch.py">
         <provides>executable</provides>
     </extension>
+    <extension point="kodi.context.item">
+        <menu id="kodi.core.main">
+            <item library="context_trailer.py">
+                <label>Play Trailer</label>
+                <visible>!String.IsEmpty(ListItem.Trailer)</visible>
+            </item>
+        </menu>
+    </extension>
     <extension point="xbmc.addon.metadata">
         <summary lang="en_GB">AIOStreams addon for Kodi with advanced features</summary>
         <description lang="en_GB">Search and stream content from AIOStreams.</description>
         <platform>all</platform>
         <license>MIT</license>
-        <news>v1.1.27: Absolute Alignment & Integrity Fix.</news>
+        <news>v1.1.27: Absolute Alignment &amp; Integrity Fix.</news>
         <assets>
             <icon>resources/icon.png</icon>
             <fanart>resources/fanart.jpg</fanart>
         </assets>
     </extension>
 </addon>
-<addon id="skin.AIODI" version="6.0.336" name="AIODI" provider-name="shiggsy365">
+<addon id="skin.AIODI" version="6.0.339" name="AIODI" provider-name="shiggsy365">
 	<requires>
 		<import addon="xbmc.gui" version="5.17.0"/>
 		<import addon="pvr.iptvsimple" version="20.0.0"/>

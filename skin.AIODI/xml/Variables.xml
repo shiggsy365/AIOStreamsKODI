@@ -1,5 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <includes>
+    <variable name="TrailerUrlVar">
+        <value condition="!String.IsEmpty(Window(Home).Property(InfoWindow.Trailer))">$INFO[Window(Home).Property(InfoWindow.Trailer)]</value>
+        <value>$INFO[ListItem.Trailer]</value>
+    </variable>
 	<variable name="PVRStatusImageVar">
 		<value condition="ListItem.IsRecording">windows/pvr/record.png</value>
 		<value condition="ListItem.HasTimer | ListItem.HasTimerSchedule">windows/pvr/timer.png</value>
@@ -1211,5 +1215,18 @@
 	</variable>
 	<variable name="EpisodeInfoPadded">
 		<value>$VAR[SeasonNumberPadded]:$VAR[EpisodeNumberPadded] - $INFO[ListItem.Title]</value>
+	</variable>
+	<variable name="HasVideoInfoMetadata">
+		<value condition="!String.IsEmpty(ListItem.Director)">true</value>
+		<value condition="!String.IsEmpty(ListItem.Writer)">true</value>
+		<value condition="!String.IsEmpty(ListItem.Genre)">true</value>
+		<value condition="!String.IsEmpty(ListItem.Rating)">true</value>
+		<value condition="!String.IsEmpty(ListItem.Year)">true</value>
+		<value condition="!String.IsEmpty(ListItem.Premiered)">true</value>
+		<value condition="!String.IsEmpty(ListItem.Studio)">true</value>
+		<value condition="!String.IsEmpty(ListItem.Country)">true</value>
+		<value condition="!String.IsEmpty(ListItem.Mpaa)">true</value>
+		<value condition="!String.IsEmpty(ListItem.VideoVersionName)">true</value>
+		<value></value>
 	</variable>
 </includes>
