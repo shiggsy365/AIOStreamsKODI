@@ -6,16 +6,24 @@
 	<onunload>ClearProperty(infobackground,home)</onunload>
 	<include name="VideoInfoStackButton">
 		<param name="width">526</param>
+		<param name="height">60</param>
 		<definition>
-			<control type="button" id="$PARAM[id]">
+			<control type="radiobutton" id="$PARAM[id]">
 				<width>$PARAM[width]</width>
-				<height>100</height>
+				<height>$PARAM[height]</height>
 				<align>center</align>
 				<aligny>center</aligny>
 				<font>font13</font>
-				<textoffsetx>20</textoffsetx>
-				<texturefocus border="21" colordiffuse="button_focus">buttons/dialogbutton-fo.png</texturefocus>
-				<texturenofocus border="21">buttons/dialogbutton-nofo.png</texturenofocus>
+				<textoffsetx>60</textoffsetx>
+				<texturefocus border="21" colordiffuse="button_focus">buttons/button-fo.png</texturefocus>
+				<texturenofocus border="21">buttons/button-nofo.png</texturenofocus>
+				<textureradioonfocus colordiffuse="white">$PARAM[icon]</textureradioonfocus>
+				<textureradioonnofocus colordiffuse="grey">$PARAM[icon]</textureradioonnofocus>
+				<textureradioofffocus colordiffuse="white">$PARAM[icon]</textureradioofffocus>
+				<textureradiooffnofocus colordiffuse="grey">$PARAM[icon]</textureradiooffnofocus>
+				<radioposx>20</radioposx>
+				<radioposy>6</radioposy>
+				<radiowidth>48</radiowidth>
 				<label>$PARAM[label]</label>
 				<onclick>$PARAM[onclick]</onclick>
 				<visible>$PARAM[visible]</visible>
@@ -86,10 +94,10 @@
 				<!-- Action Buttons under Poster - Vertically Stacked -->
 				<control type="grouplist" id="8000">
 					<left>4</left>
-					<top>815</top>
+					<top>810</top>
 					<width>526</width>
-					<height>250</height>
-					<itemgap>10</itemgap>
+					<height>150</height>
+					<itemgap>5</itemgap>
 					<orientation>vertical</orientation>
 					<onup>SetFocus(1011)</onup>
 					<onright>50</onright>
@@ -98,14 +106,14 @@
 					<include content="VideoInfoStackButton">
 						<param name="id" value="8" />
 						<param name="label" value="$VAR[VideoInfoPlayButtonLabelVar]" />
-						<param name="onclick" value="SendClick(8)" />
-						<param name="visible" value="Control.IsEnabled(8)" />
+						<param name="icon" value="icons/infodialogs/play.png" />
+						<param name="visible" value="!String.IsEmpty(ListItem.Title)" />
 					</include>
 					<include content="VideoInfoStackButton">
 						<param name="id" value="11" />
 						<param name="label" value="$LOCALIZE[20410]" />
-						<param name="onclick" value="SendClick(11)" />
-						<param name="visible" value="Control.IsEnabled(11)" />
+						<param name="icon" value="icons/infodialogs/trailer.png" />
+						<param name="visible" value="!String.IsEmpty(ListItem.Trailer)" />
 					</include>
 				</control>
 			</control>
@@ -134,74 +142,91 @@
 				<include>OpenClose_Right</include>
 				<left>648</left>
 				<top>0</top>
-				<control type="group" id="140">
-					<left>-3</left>
+			<control type="group" id="140">
+				<description>Plot description</description>
+				<left>-3</left>
+				<top>0</top>
+				<width>1147</width>
+				<height>393</height>
+				<control type="image" id="137_bg">
+					<left>0</left>
 					<top>0</top>
-					<control type="button" id="138">
-						<width>757</width>
-						<height>393</height>
-						<textoffsetx>40</textoffsetx>
-						<textoffsety>20</textoffsety>
-						<aligny>bottom</aligny>
-						<label></label>
-						<onclick condition="!String.IsEmpty(ListItem.Plot)">SetProperty(TextViewer_Header,$LOCALIZE[207],home)</onclick>
-						<onclick condition="!String.IsEmpty(ListItem.Plot)">SetProperty(TextViewer_Text,$ESCINFO[ListItem.Plot],home)</onclick>
-						<onclick condition="!String.IsEmpty(ListItem.Plot)">ActivateWindow(1102)</onclick>
-						<onup>SetFocus(1011)</onup>
-						<onleft>8</onleft>
-						<onright>4000</onright>
-						<ondown>50</ondown>
-						<texturenofocus border="21">dialogs/dialog-bg.png</texturenofocus>
-						<visible>Integer.IsGreater(Container(4000).NumItems,0)</visible>
-					</control>
-					<control type="image">
-						<left>738</left>
-						<width>415</width>
-						<height>393</height>
-						<aligny>bottom</aligny>
-						<texture border="21">dialogs/dialog-bg.png</texture>
-						<visible>Integer.IsGreater(Container(4000).NumItems,0)</visible>
-					</control>
-					<control type="button" id="139">
-						<width>1156</width>
-						<height>393</height>
-						<textoffsetx>40</textoffsetx>
-						<textoffsety>20</textoffsety>
-						<aligny>bottom</aligny>
-						<label></label>
-						<onclick condition="!String.IsEmpty(ListItem.Plot)">SetProperty(TextViewer_Header,$LOCALIZE[207],home)</onclick>
-						<onclick condition="!String.IsEmpty(ListItem.Plot)">SetProperty(TextViewer_Text,$ESCINFO[ListItem.Plot],home)</onclick>
-						<onclick condition="!String.IsEmpty(ListItem.Plot)">ActivateWindow(1102)</onclick>
-						<onup>SetFocus(1011)</onup>
-						<onleft>8</onleft>
-						<onright>4000</onright>
-						<ondown>50</ondown>
-						<texturenofocus border="21">dialogs/dialog-bg.png</texturenofocus>
-						<visible>!Integer.IsGreater(Container(4000).NumItems,0)</visible>
-					</control>
-					<control type="textbox">
-						<left>40</left>
-						<top>25</top>
-						<width>670</width>
-						<height>358</height>
-						<label fallback="19055">$INFO[ListItem.Plot]</label>
-						<autoscroll delay="10000" time="5000" repeat="10000">Skin.HasSetting(AutoScroll)</autoscroll>
-						<visible>Integer.IsGreater(Container(4000).NumItems,0)</visible>
-					</control>
-					<control type="textbox">
-						<left>40</left>
-						<top>25</top>
-						<width>1076</width>
-						<height>358</height>
-						<label fallback="19055">$INFO[ListItem.Plot]</label>
-						<autoscroll delay="10000" time="5000" repeat="10000">Skin.HasSetting(AutoScroll)</autoscroll>
-						<visible>!Integer.IsGreater(Container(4000).NumItems,0)</visible>
-					</control>
+					<width>761</width>
+					<height>393</height>
+					<texture>colors/black_50.png</texture>
+					<visible>Integer.IsGreater(Container(4000).NumItems,0)</visible>
 				</control>
-				<control type="grouplist" id="4000">
-					<orientation>vertical</orientation>
-					<left>752</left>
-					<top>20</top>
+				<control type="button" id="138">
+					<width>761</width>
+					<height>393</height>
+					<font></font>
+					<label></label>
+					<onclick condition="!String.IsEmpty(ListItem.Plot)">SetProperty(TextViewer_Header,$LOCALIZE[207],home)</onclick>
+					<onclick condition="!String.IsEmpty(ListItem.Plot)">SetProperty(TextViewer_Text,$ESCINFO[ListItem.Plot],home)</onclick>
+					<onclick condition="!String.IsEmpty(ListItem.Plot)">ActivateWindow(1102)</onclick>
+					<onup>SetFocus(1011)</onup>
+					<onleft>8</onleft>
+					<onright>4000</onright>
+					<ondown>50</ondown>
+					<texturenofocus />
+					<texturefocus colordiffuse="white">colors/white.png</texturefocus>
+					<visible>Integer.IsGreater(Container(4000).NumItems,0)</visible>
+				</control>
+				<control type="image" id="138_bg_full">
+					<left>0</left>
+					<top>0</top>
+					<width>1147</width>
+					<height>393</height>
+					<texture>colors/black_50.png</texture>
+					<visible>!Integer.IsGreater(Container(4000).NumItems,0)</visible>
+				</control>
+				<control type="button" id="139">
+					<width>1147</width>
+					<height>393</height>
+					<font></font>
+					<label></label>
+					<onclick condition="!String.IsEmpty(ListItem.Plot)">SetProperty(TextViewer_Header,$LOCALIZE[207],home)</onclick>
+					<onclick condition="!String.IsEmpty(ListItem.Plot)">SetProperty(TextViewer_Text,$ESCINFO[ListItem.Plot],home)</onclick>
+					<onclick condition="!String.IsEmpty(ListItem.Plot)">ActivateWindow(1102)</onclick>
+					<onup>SetFocus(1011)</onup>
+					<onleft>8</onleft>
+					<onright>4000</onright>
+					<ondown>50</ondown>
+					<texturenofocus />
+					<texturefocus colordiffuse="white">colors/white.png</texturefocus>
+					<visible>!Integer.IsGreater(Container(4000).NumItems,0)</visible>
+				</control>
+				<control type="textbox">
+					<left>40</left>
+					<top>25</top>
+					<width>690</width>
+					<height>358</height>
+					<label fallback="19055">$INFO[ListItem.Plot]</label>
+					<autoscroll delay="10000" time="5000" repeat="10000">Skin.HasSetting(AutoScroll)</autoscroll>
+					<visible>Integer.IsGreater(Container(4000).NumItems,0)</visible>
+				</control>
+				<control type="textbox">
+					<left>40</left>
+					<top>25</top>
+					<width>1064</width>
+					<height>358</height>
+					<label fallback="19055">$INFO[ListItem.Plot]</label>
+					<autoscroll delay="10000" time="5000" repeat="10000">Skin.HasSetting(AutoScroll)</autoscroll>
+					<visible>!Integer.IsGreater(Container(4000).NumItems,0)</visible>
+				</control>
+			</control>
+			<control type="image" id="4000_bg">
+				<left>758</left>
+				<top>0</top>
+				<width>386</width>
+				<height>393</height>
+				<texture>colors/black_50.png</texture>
+				<visible>Integer.IsGreater(Container(4000).NumItems,0)</visible>
+			</control>
+			<control type="grouplist" id="4000">
+				<orientation>vertical</orientation>
+				<left>758</left>
+				<top>20</top>
 					<height>402</height>
 					<itemgap>-8</itemgap>
 					<ondown>50</ondown>
