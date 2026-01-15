@@ -1,11 +1,12 @@
 <?xml version="4.0.3" encoding="UTF-8"?>
-<addon id="skin.AIODI" version="6.0.345" name="AIODI" provider-name="shiggsy365">
+<addon id="skin.AIODI" version="6.0.346" name="AIODI" provider-name="shiggsy365">
 	<requires>
 		<import addon="xbmc.gui" version="5.17.0"/>
 		<import addon="pvr.iptvsimple" version="20.0.0"/>
 		<import addon="service.upnext" version="1.1.9"/>
 		<import addon="plugin.video.imvdb" version="1.0.3"/>
 		<import addon="plugin.video.youtube" version="6.8.18"/>
+		<import addon="plugin.video.aiostreams" version="1.1.139"/>
 	</requires>
 	<extension point="xbmc.gui.skin" debugging="false">
 		<res width="1920" height="1440" aspect="4:3" default="false" folder="xml" />
