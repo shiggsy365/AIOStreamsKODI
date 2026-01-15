@@ -295,6 +295,20 @@
 					<font>font12</font>
 					<textcolor>grey</textcolor>
 				</control>
+				<control type="label">
+					<height>25</height>
+					<label>Release: [COLOR white]$INFO[ListItem.Premiered][/COLOR]</label>
+					<font>font12</font>
+					<textcolor>grey</textcolor>
+					<visible>!String.IsEmpty(ListItem.Premiered)</visible>
+				</control>
+				<control type="label">
+					<height>25</height>
+					<label>Runtime: [COLOR white]$INFO[ListItem.Duration, , min][/COLOR]</label>
+					<font>font12</font>
+					<textcolor>grey</textcolor>
+					<visible>!String.IsEmpty(ListItem.Duration)</visible>
+				</control>
 				</control>
 				<control type="image">
 					<left>77</left>
