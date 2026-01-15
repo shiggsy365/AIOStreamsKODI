@@ -53,6 +53,39 @@ class OnboardingWizard:
                         self.dialog.notification("AIODI Wizard", "Retrieving Manifest...", xbmcgui.NOTIFICATION_INFO, 3000)
                         xbmc.executebuiltin('RunPlugin(plugin://plugin.video.aiostreams/?action=retrieve_manifest)')
                         xbmc.sleep(2000)
+                        
+                        # Check if manifest retrieved (base_url populated)
+                        manifest_url = self.aiostreams.getSetting('base_url')
+                        if not manifest_url:
+                            # Wait a bit longer and try again
+                             xbmc.sleep(3000)
+                             manifest_url = self.aiostreams.getSetting('base_url')
+
+                        if manifest_url:
+                             self.dialog.ok("Success", f"Manifest retrieved:\n{manifest_url}")
+                             
+                             # Default Behavior
+                             modes = ["Show Streams (Default)", "Play First Stream"]
+                             sel = self.dialog.select("Preferred Default Behavior", modes)
+                             if sel == 1:
+                                 self.aiostreams.setSetting('default_behavior', 'play_first')
+                             else:
+                                 self.aiostreams.setSetting('default_behavior', 'show_streams')
+
+                             # Subtitles
+                             if self.dialog.yesno("Subtitles", "Do you want to filter subtitle languages?\n(e.g. only show English, Spanish)"):
+                                 langs = self.dialog.input("Three letter country definitions, comma separated, eg eng, spa", 
+                                                         defaultt=self.aiostreams.getSetting('subtitle_languages'))
+                                 if langs:
+                                     self.aiostreams.setSetting('subtitle_languages', langs)
+
+                             # UpNext
+                             if self.dialog.yesno("UpNext", "Enable UpNext Integration?\n(Shows 'Next Episode' popup at end of playback)"):
+                                 self.aiostreams.setSetting('autoplay_next_episode', 'true')
+                             else:
+                                 self.aiostreams.setSetting('autoplay_next_episode', 'false')
+                        else:
+                             self.dialog.ok("Warning", "Manifest not retrieved yet.\nPlease check settings later.")
 
         # 3. YouTube Config
         if self.dialog.yesno("YouTube", "Do you want to configure YouTube API keys?"):
@@ -68,7 +101,9 @@ class OnboardingWizard:
                 if client_secret: youtube.setSetting('youtube.api.secret', client_secret)
                 
                 if self.dialog.yesno("YouTube Sign In", "Launch YouTube Sign In now?"):
-                    xbmc.executebuiltin('RunPlugin(plugin://plugin.video.youtube/sign_in/)')
+                    # Use ActivateWindow to open the root, usually Sign In is there or use action=login
+                    # Try standard action
+                    xbmc.executebuiltin('ActivateWindow(Videos,plugin://plugin.video.youtube/,return)')
             except Exception as e:
                 self.dialog.ok("Error", f"YouTube plugin not found or error: {str(e)}")
 
@@ -104,6 +139,8 @@ class OnboardingWizard:
         # 7. Completion
         self.dialog.ok("Setup Complete", "All configurations have been saved!\nEnjoy your AIODI experience.")
         self.skin_addon.setSetting('first_run', 'false')
+        # Vital: Set the Skin string that Home.xml checks
+        xbmc.executebuiltin('Skin.SetString(first_run, done)')
 
 if __name__ == '__main__':
     OnboardingWizard().run()
