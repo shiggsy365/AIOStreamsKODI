@@ -60,34 +60,14 @@
 							<height>85</height>
 							<align>center</align>
 							<aligny>center</aligny>
-							<font>font13</font>
-							<textoffsetx>60</textoffsetx>
-							<label>$VAR[VideoInfoPlayButtonLabelVar]</label>
-							<texturefocus border="21" colordiffuse="button_focus">buttons/button-fo.png</texturefocus>
-							<texturenofocus border="21">buttons/button-nofo.png</texturenofocus>
+							<font></font>
+							<label></label>
+							<texturefocus colordiffuse="button_focus">$VAR[VideoInfoPlayButtonTexture]</texturefocus>
+							<texturenofocus>$VAR[VideoInfoPlayButtonTexture]</texturenofocus>
 							<onclick>Dialog.Close(movieinformation,true)</onclick>
 							<onclick condition="String.IsEqual(ListItem.DBType,tvshow) | String.IsEqual(ListItem.DBType,season) | String.IsEqual(ListItem.DBType,series)">ActivateWindow(Videos,$INFO[ListItem.FileNameAndPath],return)</onclick>
 							<onclick condition="!String.IsEqual(ListItem.DBType,tvshow) + !String.IsEqual(ListItem.DBType,season) + !String.IsEqual(ListItem.DBType,series)">PlayMedia($INFO[ListItem.FileNameAndPath])</onclick>
 							<visible>!String.IsEmpty(ListItem.Title)</visible>
-							<!-- Icon Overlay -->
-							<control type="image">
-								<left>20</left>
-								<top>6</top>
-								<width>48</width>
-								<height>60</height>
-								<texture colordiffuse="grey">icons/infodialogs/play.png</texture>
-								<aspectratio>keep</aspectratio>
-								<visible>!Control.HasFocus(8)</visible>
-							</control>
-							<control type="image">
-								<left>20</left>
-								<top>6</top>
-								<width>48</width>
-								<height>60</height>
-								<texture colordiffuse="white">icons/infodialogs/play.png</texture>
-								<aspectratio>keep</aspectratio>
-								<visible>Control.HasFocus(8)</visible>
-							</control>
 						</control>
 						<!-- Custom Trailer Button -->
 						<control type="button" id="2001">

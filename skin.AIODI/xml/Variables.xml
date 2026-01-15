@@ -431,8 +431,8 @@
 	</variable>
 
 	<variable name="VideoInfoPlayButtonTexture">
-		<value condition="String.IsEqual(ListItem.DBType,tvshow) | String.IsEqual(ListItem.DBType,season)">icons/infodialog/browse.png</value>
-		<value>icons/infodialog/play.png</value>
+		<value condition="String.IsEqual(ListItem.DBType,tvshow) | String.IsEqual(ListItem.DBType,season)">icons/infodialog/browse-button.png</value>
+		<value>icons/infodialog/play-button.png</value>
 	</variable>
 	<variable name="PictureInfoMainLabelVar">
 		<value condition="Window.IsActive(Slideshow)">$INFO[SlideShow.Filename]</value>
