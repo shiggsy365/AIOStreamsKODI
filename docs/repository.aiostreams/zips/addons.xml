@@ -92,7 +92,7 @@
     </extension>
 </addon>
 
-<addon id="skin.AIODI" version="6.0.362" name="AIODI" provider-name="shiggsy365">
+<addon id="skin.AIODI" version="6.0.363" name="AIODI" provider-name="shiggsy365">
 	<requires>
 		<import addon="xbmc.gui" version="5.17.0"/>
 		<import addon="pvr.iptvsimple" version="20.0.0"/>
