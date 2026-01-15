@@ -127,11 +127,23 @@ class OnboardingWizard:
         if self.dialog.yesno("IPTV", "Do you want to configure IPTV Simple Client?"):
             try:
                 iptv = xbmcaddon.Addon('pvr.iptvsimple')
-                m3u = self.dialog.input("M3U Playlist URL", defaultt=iptv.getSetting('m3uPath'))
-                if m3u: iptv.setSetting('m3uPath', m3u)
                 
-                epg = self.dialog.input("EPG URL", defaultt=iptv.getSetting('epgPath'))
-                if epg: iptv.setSetting('epgPath', epg)
+                # Try getting existing value from new or old keys
+                curr_m3u = iptv.getSetting('m3u_url') or iptv.getSetting('m3uPath')
+                m3u = self.dialog.input("M3U Playlist URL", defaultt=curr_m3u)
+                
+                if m3u: 
+                    # Set both new and old keys to ensure compatibility with "Migrated" instances
+                    iptv.setSetting('m3u_url', m3u)
+                    iptv.setSetting('m3uPath', m3u)
+                
+                curr_epg = iptv.getSetting('epg_url') or iptv.getSetting('epgPath')
+                epg = self.dialog.input("EPG URL", defaultt=curr_epg)
+                
+                if epg: 
+                    iptv.setSetting('epg_url', epg)
+                    iptv.setSetting('epgPath', epg)
+                    
             except Exception as e:
                 self.dialog.ok("Error", f"IPTV Simple Client not found: {str(e)}")
 
