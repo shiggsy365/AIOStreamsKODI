@@ -64,6 +64,9 @@
 							<texturefocus colordiffuse="button_focus">$VAR[VideoInfoPlayButtonTexture]</texturefocus>
                             <texturenofocus>$VAR[VideoInfoPlayButtonTexture]</texturenofocus>
 							<visible>true</visible>
+							<onclick>Dialog.Close(movieinformation)</onclick>
+							<onclick condition="String.IsEqual(ListItem.DBType,tvshow) | String.IsEqual(ListItem.DBType,season)">ActivateWindow(Videos,$INFO[ListItem.FileNameAndPath],return)</onclick>
+							<onclick condition="!String.IsEqual(ListItem.DBType,tvshow) + !String.IsEqual(ListItem.DBType,season)">PlayMedia($INFO[ListItem.FileNameAndPath])</onclick>
 						</control>
 						<!-- Custom Trailer Button -->
 						<control type="button" id="2001">
