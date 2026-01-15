@@ -119,12 +119,23 @@
                         <control type="label">
                             <left>10</left>
                             <top>0</top>
-                            <width>630</width>
+                            <width>470</width>
                             <height>50</height>
                             <font>font13</font>
                             <textcolor>FFFFFFFF</textcolor>
                             <label>$INFO[ListItem.Label]</label>
                             <aligny>center</aligny>
+                        </control>
+                        <control type="label">
+                            <left>490</left>
+                            <top>0</top>
+                            <width>150</width>
+                            <height>50</height>
+                            <font>font12</font>
+                            <textcolor>grey</textcolor>
+                            <label>$INFO[ListItem.Label2]</label>
+                            <aligny>center</aligny>
+                            <align>right</align>
                         </control>
                     </itemlayout>
                     <focusedlayout height="50">
@@ -138,12 +149,23 @@
                         <control type="label">
                             <left>10</left>
                             <top>0</top>
-                            <width>630</width>
+                            <width>470</width>
                             <height>50</height>
                             <font>font13</font>
                             <textcolor>FF000000</textcolor>
                             <label>$INFO[ListItem.Label]</label>
                             <aligny>center</aligny>
+                        </control>
+                        <control type="label">
+                            <left>490</left>
+                            <top>0</top>
+                            <width>150</width>
+                            <height>50</height>
+                            <font>font12</font>
+                            <textcolor>FF000000</textcolor>
+                            <label>$INFO[ListItem.Label2]</label>
+                            <aligny>center</aligny>
+                            <align>right</align>
                         </control>
                     </focusedlayout>
                 </control>

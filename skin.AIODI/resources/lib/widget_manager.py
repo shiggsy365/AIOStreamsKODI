@@ -4,6 +4,7 @@ import xbmcvfs
 import json
 import os
 import sys
+from urllib.parse import parse_qs, urlparse
 
 # Get the addon data directory (preferred for configuration)
 ADDON_DATA_DIR = xbmcvfs.translatePath('special://profile/addon_data/plugin.video.aiostreams/')
@@ -45,7 +46,7 @@ def get_available_catalogs():
     """Get all available catalogs from the plugin via JSON-RPC"""
     catalogs = []
     plugin_url = 'plugin://plugin.video.aiostreams/?action=get_folder_browser_catalogs'
-    
+
     log(f'Fetching available catalogs from {plugin_url}...')
     try:
         rpc_query = {
@@ -56,21 +57,31 @@ def get_available_catalogs():
         }
         result = xbmc.executeJSONRPC(json.dumps(rpc_query))
         result_data = json.loads(result)
-        
+
         if 'result' in result_data and 'files' in result_data['result']:
             files = result_data['result']['files']
             log(f'Received {len(files)} catalogs from plugin')
             for item in files:
+                # Extract content_type from URL parameters
+                url = item.get('file', '')
+                content_type = 'unknown'
+                try:
+                    parsed = urlparse(url)
+                    params = parse_qs(parsed.query)
+                    content_type = params.get('content_type', ['unknown'])[0]
+                except Exception as e:
+                    log(f'Error parsing URL {url}: {e}', xbmc.LOGDEBUG)
+
                 catalogs.append({
                     'label': item.get('label', 'Unknown'),
-                    'path': item.get('file', ''),
-                    'type': item.get('filetype', 'unknown') or item.get('filetype', 'directory')
+                    'path': url,
+                    'type': content_type
                 })
         else:
             log(f'JSON-RPC call failed or returned no files: {result}', xbmc.LOGERROR)
     except Exception as e:
         log(f'Exception in get_available_catalogs: {e}', xbmc.LOGERROR)
-    
+
     return catalogs
 
 def load_page(page_name):
@@ -117,8 +128,12 @@ def load_page(page_name):
             label = catalog.get('label', 'Unknown')
             log(f'  [{i}] Adding catalog: {label}')
             item = xbmcgui.ListItem(label)
+            # Capitalize the type for better display
+            content_type = catalog.get('type', 'unknown')
+            display_type = content_type.capitalize() if content_type != 'unknown' else ''
+            item.setLabel2(display_type)
             item.setProperty('path', catalog.get('path', ''))
-            item.setProperty('type', catalog.get('type', 'unknown'))
+            item.setProperty('type', content_type)
             current_list.addItem(item)
         log(f'Current list populated successfully with {current_list.size()} items')
     except Exception as e:
@@ -132,9 +147,12 @@ def load_page(page_name):
         log(f'Total available catalogs: {len(all_catalogs)}')
         for catalog in all_catalogs:
             item = xbmcgui.ListItem(catalog.get('label', 'Unknown'))
-            item.setLabel2(catalog.get('type', ''))
+            # Capitalize the type for better display (e.g., "movie" -> "Movie", "series" -> "Series")
+            content_type = catalog.get('type', 'unknown')
+            display_type = content_type.capitalize() if content_type != 'unknown' else ''
+            item.setLabel2(display_type)
             item.setProperty('path', catalog.get('path', ''))
-            item.setProperty('type', catalog.get('type', 'unknown'))
+            item.setProperty('type', content_type)
             available_list.addItem(item)
     except Exception as e:
         log(f'Error populating available_list (5000): {e}', xbmc.LOGERROR)
