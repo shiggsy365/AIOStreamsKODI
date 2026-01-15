@@ -101,9 +101,8 @@ class OnboardingWizard:
                 if client_secret: youtube.setSetting('youtube.api.secret', client_secret)
                 
                 if self.dialog.yesno("YouTube Sign In", "Launch YouTube Sign In now?"):
-                    # Use ActivateWindow to open the root, usually Sign In is there or use action=login
-                    # Try standard action
-                    xbmc.executebuiltin('ActivateWindow(Videos,plugin://plugin.video.youtube/,return)')
+                    # Use specific sign-in path provided by user
+                    xbmc.executebuiltin('RunPlugin(plugin://plugin.video.youtube/kodion/route/sign/)')
             except Exception as e:
                 self.dialog.ok("Error", f"YouTube plugin not found or error: {str(e)}")
 
