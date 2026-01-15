@@ -1,4 +1,8 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <settings>
     <setting id="api_key" type="text" label="IMVDb API Key" help="Enter your IMVDb-APP-KEY from imvdb.com/developers" default=""/>
+    <category label="Filters">
+        <setting id="manage_blocklist" type="action" label="Manage Blocked Countries (Blacklist)" action="RunPlugin(plugin://plugin.video.imvdb/?action=manage_country_blocklist)"/>
+        <setting id="blocked_countries" type="text" label="Blocked Countries" default="" visible="false"/>
+    </category>
 </settings>

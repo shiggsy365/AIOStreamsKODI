@@ -58,18 +58,36 @@
 						<control type="button" id="8">
 							<width>255</width>
 							<height>85</height>
-							<label>$VAR[VideoInfoPlayButtonLabelVar]</label>
-                            <font></font>
-							<textoffsetx>60</textoffsetx>
 							<align>center</align>
-                            <aligny>center</aligny>
-                            <textcolor>00FFFFFF</textcolor>
-                            <texturefocus colordiffuse="button_focus">$VAR[VideoInfoPlayButtonTexture]</texturefocus>
-                            <texturenofocus>$VAR[VideoInfoPlayButtonTexture]</texturenofocus>
-							<visible>true</visible>
+							<aligny>center</aligny>
+							<font>font13</font>
+							<textoffsetx>60</textoffsetx>
+							<label>$VAR[VideoInfoPlayButtonLabelVar]</label>
+							<texturefocus border="21" colordiffuse="button_focus">buttons/button-fo.png</texturefocus>
+							<texturenofocus border="21">buttons/button-nofo.png</texturenofocus>
 							<onclick>Dialog.Close(movieinformation,true)</onclick>
-							<onclick condition="String.IsEqual(ListItem.DBType,tvshow) | String.IsEqual(ListItem.DBType,season)">ActivateWindow(Videos,$INFO[ListItem.FileNameAndPath],return)</onclick>
-							<onclick condition="!String.IsEqual(ListItem.DBType,tvshow) + !String.IsEqual(ListItem.DBType,season)">PlayMedia($INFO[ListItem.FileNameAndPath])</onclick>
+							<onclick condition="String.IsEqual(ListItem.DBType,tvshow) | String.IsEqual(ListItem.DBType,season) | String.IsEqual(ListItem.DBType,series)">ActivateWindow(Videos,$INFO[ListItem.FileNameAndPath],return)</onclick>
+							<onclick condition="!String.IsEqual(ListItem.DBType,tvshow) + !String.IsEqual(ListItem.DBType,season) + !String.IsEqual(ListItem.DBType,series)">PlayMedia($INFO[ListItem.FileNameAndPath])</onclick>
+							<visible>!String.IsEmpty(ListItem.Title)</visible>
+							<!-- Icon Overlay -->
+							<control type="image">
+								<left>20</left>
+								<top>6</top>
+								<width>48</width>
+								<height>60</height>
+								<texture colordiffuse="grey">icons/infodialogs/play.png</texture>
+								<aspectratio>keep</aspectratio>
+								<visible>!Control.HasFocus(8)</visible>
+							</control>
+							<control type="image">
+								<left>20</left>
+								<top>6</top>
+								<width>48</width>
+								<height>60</height>
+								<texture colordiffuse="white">icons/infodialogs/play.png</texture>
+								<aspectratio>keep</aspectratio>
+								<visible>Control.HasFocus(8)</visible>
+							</control>
 						</control>
 						<!-- Custom Trailer Button -->
 						<control type="button" id="2001">
@@ -140,7 +158,7 @@
 					<onright>4000</onright>
 					<ondown>50</ondown>
 					<texturenofocus />
-					<texturefocus border="5">lists/focus.png</texturefocus>
+					<texturefocus border="5" colordiffuse="FFFF0000">borders/border-focus.png</texturefocus>
 					<visible>true</visible>
 				</control>
 				<control type="image" id="138_bg_full">
@@ -640,7 +658,7 @@
 						<visible>!String.IsEmpty(Window(Home).Property(InfoWindow.Related.1.Title))</visible>
 					</control>
 					<control type="fixedlist" id="5000">
-						<left>0</left>
+						<left>5</left>
 						<top>320</top>
 						<width>1245</width>
 						<height>280</height>

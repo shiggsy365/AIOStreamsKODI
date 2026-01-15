@@ -19,6 +19,47 @@ try:
 except AttributeError:
     translatePath = xbmc.translatePath
 
+COUNTRIES = [
+    ('us', 'United States'), ('gb', 'United Kingdom'), ('ca', 'Canada'), ('au', 'Australia'),
+    ('de', 'Germany'), ('fr', 'France'), ('jp', 'Japan'), ('kr', 'South Korea'),
+    ('is', 'Iceland'), ('se', 'Sweden'), ('ar', 'Argentina'), ('it', 'Italy'),
+    ('at', 'Austria'), ('mx', 'Mexico'), ('be', 'Belgium'), ('nl', 'Netherlands'),
+    ('br', 'Brazil'), ('no', 'Norway'), ('ch', 'Switzerland'), ('nz', 'New Zealand'),
+    ('dk', 'Denmark'), ('pl', 'Poland'), ('es', 'Spain'), ('ru', 'Russia'),
+    ('fi', 'Finland'), ('za', 'South Africa')
+]
+
+def is_blocked(video):
+    blocked = ADDON.getSetting('blocked_countries')
+    if not blocked: return False
+    blocked_list = blocked.split(',')
+    
+    country = video.get('country')
+    if not country: return False
+    
+    return country.lower() in blocked_list
+
+def manage_country_blocklist():
+    current = ADDON.getSetting('blocked_countries')
+    current_blocked = current.split(',') if current else []
+    
+    items = []
+    preselect = []
+    
+    for idx, (code, name) in enumerate(COUNTRIES):
+        items.append(f"{name} ({code.upper()})")
+        if code in current_blocked:
+            preselect.append(idx)
+            
+    dialog = xbmcgui.Dialog()
+    selection = dialog.multiselect("Select Countries to Block", items, preselect=preselect)
+    
+    if selection is None: return
+    
+    new_blocked = [COUNTRIES[i][0] for i in selection]
+    ADDON.setSetting('blocked_countries', ','.join(new_blocked))
+    xbmcgui.Dialog().notification(ADDON_ID, "Filter Saved", xbmcgui.NOTIFICATION_INFO, 3000)
+
 def log(msg, level=xbmc.LOGINFO):
     xbmc.log(f"[{ADDON_ID}] {msg}", level)
 
@@ -98,6 +139,7 @@ def search_artist():
         lower_query = query.lower()
         filtered_videos = []
         for v in results:
+            if is_blocked(v): continue
             artists = v.get('artists', [])
             if any(artist and isinstance(artist.get('name'), str) and lower_query in artist.get('name').lower() for artist in artists):
                 filtered_videos.append(v)
@@ -123,7 +165,7 @@ def fetch_videos_for_year(year):
         response.raise_for_status()
         data = response.json()
         results = data.get('results', [])
-        videos = [v for v in results if str(v.get('year')) == str(year)]
+        videos = [v for v in results if str(v.get('year')) == str(year) and not is_blocked(v)]
         return videos
     except Exception as e:
         log(f"Error fetching year videos: {str(e)}", xbmc.LOGERROR)
@@ -220,6 +262,8 @@ def router(paramstring):
             select_year(params.get('year'))
         elif action == 'search_artist':
             search_artist()
+        elif action == 'manage_country_blocklist':
+            manage_country_blocklist()
         elif action == 'search_year_exec': # Reserved for future
              pass
 
