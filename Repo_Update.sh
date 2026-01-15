@@ -128,6 +128,34 @@ build_skin_zip() {
     echo -e "  ${GREEN}[+]${GRAY} Created: $destination (${zip_size} KB)${NC}"
 }
 
+build_onboarding_zip() {
+    local destination="$1"
+    local source_dir="$2"
+
+    local dest_dir=$(dirname "$destination")
+    mkdir -p "$dest_dir"
+
+    if [[ -f "$destination" ]]; then
+        rm -f "$destination"
+    fi
+
+    local temp_dir=$(mktemp -d)
+    local addon_dir="$temp_dir/script.aiodi.onboarding"
+    mkdir -p "$addon_dir"
+
+    rsync -a --exclude='__pycache__' \
+             --exclude='*.pyc' \
+             --exclude='.DS_Store' \
+             --exclude='.git*' \
+             "$source_dir/" "$addon_dir/"
+    (cd "$temp_dir" && zip -r -q "$destination" script.aiodi.onboarding/)
+
+    rm -rf "$temp_dir"
+
+    local zip_size=$(du -k "$destination" | cut -f1)
+    echo -e "  ${GREEN}[+]${GRAY} Created: $destination (${zip_size} KB)${NC}"
+}
+
 build_repository_zip() {
     local destination="$1"
     local source_dir="$2"
@@ -167,6 +195,8 @@ rebuild_addons_xml() {
     local source_files=(
         "$BASE_DIR/docs/repository.aiostreams/addon.xml"
         "$BASE_DIR/plugin.video.aiostreams/addon.xml"
+        "$BASE_DIR/plugin.video.imvdb/addon.xml"
+        "$BASE_DIR/script.aiodi.onboarding/addon.xml"
         "$BASE_DIR/skin.AIODI/addon.xml"
     )
     
@@ -263,6 +293,148 @@ update_plugin() {
     fi
 
     echo -e "\n${GREEN}[+] Plugin update complete: $new_version${NC}"
+}
+
+update_imvdb() {
+    local old_version="$1"
+    local new_version="$2"
+
+    echo -e "\n${CYAN}========================================${NC}"
+    echo -e "${CYAN}Updating IMVDb Plugin: $old_version -> $new_version${NC}"
+    echo -e "${CYAN}========================================${NC}"
+
+    local xml_paths=(
+        "$BASE_DIR/plugin.video.imvdb/addon.xml"
+        "$BASE_DIR/docs/plugin.video.imvdb/addon.xml"
+        "$BASE_DIR/docs/repository.aiostreams/addon.xml"
+    )
+
+    local zip_dest1="$BASE_DIR/docs/repository.aiostreams/zips/plugin.video.imvdb/plugin.video.imvdb-$new_version.zip"
+    local zip_dest2="$BASE_DIR/docs/plugin.video.imvdb/plugin.video.imvdb-$new_version.zip"
+
+    echo -e "\n${CYAN}[1/4] Updating version numbers...${NC}"
+    for xml_path in "${xml_paths[@]}"; do
+        update_kodi_file "$xml_path" "$old_version" "$new_version"
+    done
+
+    echo -e "\n${CYAN}[2/4] Building plugin ZIP files...${NC}"
+    build_plugin_zip "$zip_dest1" "$BASE_DIR/plugin.video.imvdb"
+    build_plugin_zip "$zip_dest2" "$BASE_DIR/plugin.video.imvdb"
+    
+    write_md5 "$zip_dest1" "$zip_dest1.md5"
+    write_md5 "$zip_dest2" "$zip_dest2.md5"
+    
+    local repo_xml="$BASE_DIR/docs/repository.aiostreams/addon.xml"
+    local repo_version=$(grep -m 1 "id=\"repository.aiostreams\"" "$repo_xml" | sed -n 's/.*version="\([^"]*\)".*/\1/p')
+    if [[ -z "$repo_version" ]]; then repo_version="1.0.0"; fi
+
+    echo -e "\n${CYAN}[3/4] Rebuilding repository ZIPs...${NC}"
+    local repo_zip_id_dir="$BASE_DIR/docs/repository.aiostreams/zips/repository.aiostreams"
+    mkdir -p "$repo_zip_id_dir"
+    
+    build_repository_zip "$BASE_DIR/docs/repository.aiostreams-1.0.0.zip" "$BASE_DIR/docs/repository.aiostreams"
+    local internal_repo_zip="$repo_zip_id_dir/repository.aiostreams-$repo_version.zip"
+    cp "$BASE_DIR/docs/repository.aiostreams-1.0.0.zip" "$internal_repo_zip"
+    
+    write_md5 "$BASE_DIR/docs/repository.aiostreams-1.0.0.zip" "$BASE_DIR/docs/repository.aiostreams-1.0.0.zip.md5"
+    write_md5 "$internal_repo_zip" "$internal_repo_zip.md5"
+
+    echo -e "  ${GREEN}[+]${GRAY} Copying assets to repository directory${NC}"
+    mkdir -p "$BASE_DIR/docs/repository.aiostreams/zips/plugin.video.imvdb/"
+    cp "$BASE_DIR/plugin.video.imvdb/icon.png" "$BASE_DIR/docs/repository.aiostreams/zips/plugin.video.imvdb/" 2>/dev/null || true
+    cp "$BASE_DIR/plugin.video.imvdb/fanart.jpg" "$BASE_DIR/docs/repository.aiostreams/zips/plugin.video.imvdb/" 2>/dev/null || true
+    cp "$BASE_DIR/plugin.video.imvdb/addon.xml" "$BASE_DIR/docs/repository.aiostreams/zips/plugin.video.imvdb/addon.xml"
+
+    echo -e "\n${CYAN}[4/4] Checking for old version files...${NC}"
+    local old_zip_path1="$BASE_DIR/docs/repository.aiostreams/zips/plugin.video.imvdb/plugin.video.imvdb-$old_version.zip"
+    local old_zip_path2="$BASE_DIR/docs/plugin.video.imvdb/plugin.video.imvdb-$old_version.zip"
+
+    if [[ -f "$old_zip_path1" ]] || [[ -f "$old_zip_path2" ]]; then
+        read -p "Found old IMVDb plugin version $old_version. Delete old ZIP files? (y/n) " cleanup
+        if [[ "$cleanup" == "y" ]] || [[ "$cleanup" == "Y" ]]; then
+            if [[ -f "$old_zip_path1" ]]; then
+                rm -f "$old_zip_path1" "$old_zip_path1.md5"
+                echo -e "  ${GREEN}[+]${GRAY} Deleted: $old_zip_path1${NC}"
+            fi
+            if [[ -f "$old_zip_path2" ]]; then
+                rm -f "$old_zip_path2" "$old_zip_path2.md5"
+                echo -e "  ${GREEN}[+]${GRAY} Deleted: $old_zip_path2${NC}"
+            fi
+        fi
+    fi
+
+    echo -e "\n${GREEN}[+] IMVDb update complete: $new_version${NC}"
+}
+
+update_onboarding() {
+    local old_version="$1"
+    local new_version="$2"
+
+    echo -e "\n${CYAN}========================================${NC}"
+    echo -e "${CYAN}Updating Onboarding Wizard: $old_version -> $new_version${NC}"
+    echo -e "${CYAN}========================================${NC}"
+
+    local xml_paths=(
+        "$BASE_DIR/script.aiodi.onboarding/addon.xml"
+        "$BASE_DIR/docs/script.aiodi.onboarding/addon.xml"
+        "$BASE_DIR/docs/repository.aiostreams/addon.xml"
+    )
+
+    local zip_dest1="$BASE_DIR/docs/repository.aiostreams/zips/script.aiodi.onboarding/script.aiodi.onboarding-$new_version.zip"
+    local zip_dest2="$BASE_DIR/docs/script.aiodi.onboarding/script.aiodi.onboarding-$new_version.zip"
+
+    echo -e "\n${CYAN}[1/4] Updating version numbers...${NC}"
+    for xml_path in "${xml_paths[@]}"; do
+        update_kodi_file "$xml_path" "$old_version" "$new_version"
+    done
+
+    echo -e "\n${CYAN}[2/4] Building addon ZIP files...${NC}"
+    build_onboarding_zip "$zip_dest1" "$BASE_DIR/script.aiodi.onboarding"
+    build_onboarding_zip "$zip_dest2" "$BASE_DIR/script.aiodi.onboarding"
+    
+    write_md5 "$zip_dest1" "$zip_dest1.md5"
+    write_md5 "$zip_dest2" "$zip_dest2.md5"
+    
+    local repo_xml="$BASE_DIR/docs/repository.aiostreams/addon.xml"
+    local repo_version=$(grep -m 1 "id=\"repository.aiostreams\"" "$repo_xml" | sed -n 's/.*version="\([^"]*\)".*/\1/p')
+    if [[ -z "$repo_version" ]]; then repo_version="1.0.0"; fi
+
+    echo -e "\n${CYAN}[3/4] Rebuilding repository ZIPs...${NC}"
+    local repo_zip_id_dir="$BASE_DIR/docs/repository.aiostreams/zips/repository.aiostreams"
+    mkdir -p "$repo_zip_id_dir"
+    
+    build_repository_zip "$BASE_DIR/docs/repository.aiostreams-1.0.0.zip" "$BASE_DIR/docs/repository.aiostreams"
+    local internal_repo_zip="$repo_zip_id_dir/repository.aiostreams-$repo_version.zip"
+    cp "$BASE_DIR/docs/repository.aiostreams-1.0.0.zip" "$internal_repo_zip"
+    
+    write_md5 "$BASE_DIR/docs/repository.aiostreams-1.0.0.zip" "$BASE_DIR/docs/repository.aiostreams-1.0.0.zip.md5"
+    write_md5 "$internal_repo_zip" "$internal_repo_zip.md5"
+
+    echo -e "  ${GREEN}[+]${GRAY} Copying assets to repository directory${NC}"
+    mkdir -p "$BASE_DIR/docs/repository.aiostreams/zips/script.aiodi.onboarding/"
+    cp "$BASE_DIR/script.aiodi.onboarding/icon.png" "$BASE_DIR/docs/repository.aiostreams/zips/script.aiodi.onboarding/" 2>/dev/null || true
+    cp "$BASE_DIR/script.aiodi.onboarding/fanart.jpg" "$BASE_DIR/docs/repository.aiostreams/zips/script.aiodi.onboarding/" 2>/dev/null || true
+    cp "$BASE_DIR/script.aiodi.onboarding/addon.xml" "$BASE_DIR/docs/repository.aiostreams/zips/script.aiodi.onboarding/addon.xml"
+
+    echo -e "\n${CYAN}[4/4] Checking for old version files...${NC}"
+    local old_zip_path1="$BASE_DIR/docs/repository.aiostreams/zips/script.aiodi.onboarding/script.aiodi.onboarding-$old_version.zip"
+    local old_zip_path2="$BASE_DIR/docs/script.aiodi.onboarding/script.aiodi.onboarding-$old_version.zip"
+
+    if [[ -f "$old_zip_path1" ]] || [[ -f "$old_zip_path2" ]]; then
+        read -p "Found old Onboarding version $old_version. Delete old ZIP files? (y/n) " cleanup
+        if [[ "$cleanup" == "y" ]] || [[ "$cleanup" == "Y" ]]; then
+            if [[ -f "$old_zip_path1" ]]; then
+                rm -f "$old_zip_path1" "$old_zip_path1.md5"
+                echo -e "  ${GREEN}[+]${GRAY} Deleted: $old_zip_path1${NC}"
+            fi
+            if [[ -f "$old_zip_path2" ]]; then
+                rm -f "$old_zip_path2" "$old_zip_path2.md5"
+                echo -e "  ${GREEN}[+]${GRAY} Deleted: $old_zip_path2${NC}"
+            fi
+        fi
+    fi
+
+    echo -e "\n${GREEN}[+] Onboarding update complete: $new_version${NC}"
 }
 
 update_skin() {
@@ -367,12 +539,26 @@ echo -e "${CYAN}========================================${NC}"
 echo -e "\n${YELLOW}Detecting current versions...${NC}"
 
 plugin_version=$(get_source_version "$BASE_DIR/plugin.video.aiostreams/addon.xml")
+imvdb_version=$(get_source_version "$BASE_DIR/plugin.video.imvdb/addon.xml")
+script_version=$(get_source_version "$BASE_DIR/script.aiodi.onboarding/addon.xml")
 skin_version=$(get_source_version "$BASE_DIR/skin.AIODI/addon.xml")
 
 if [[ -n "$plugin_version" ]]; then
-    echo -e "  ${WHITE}Plugin current version: $plugin_version${NC}"
+    echo -e "  ${WHITE}AIOStreams Plugin version: $plugin_version${NC}"
 else
-    echo -e "  ${GRAY}Plugin version: Not found${NC}"
+    echo -e "  ${GRAY}AIOStreams Plugin version: Not found${NC}"
+fi
+
+if [[ -n "$imvdb_version" ]]; then
+    echo -e "  ${WHITE}IMVDb Plugin version: $imvdb_version${NC}"
+else
+    echo -e "  ${GRAY}IMVDb Plugin version: Not found${NC}"
+fi
+
+if [[ -n "$script_version" ]]; then
+    echo -e "  ${WHITE}Onboarding Wizard version: $script_version${NC}"
+else
+    echo -e "  ${GRAY}Onboarding Wizard version: Not found${NC}"
 fi
 
 if [[ -n "$skin_version" ]]; then
@@ -383,12 +569,14 @@ fi
 
 echo -e "\n${CYAN}========================================${NC}"
 echo -e "${YELLOW}What would you like to update?${NC}"
-echo -e "  ${WHITE}1. Plugin only${NC}"
+echo -e "  ${WHITE}1. AIOStreams Plugin only${NC}"
 echo -e "  ${WHITE}2. Skin only${NC}"
-echo -e "  ${WHITE}3. Both plugin and skin${NC}"
+echo -e "  ${WHITE}3. IMVDb Plugin only${NC}"
+echo -e "  ${WHITE}4. Onboarding Wizard only${NC}"
+echo -e "  ${WHITE}5. All Components${NC}"
 echo -e "${CYAN}========================================${NC}"
 
-read -p $'\nEnter your choice (1, 2, or 3): ' choice
+read -p $'\nEnter your choice (1, 2, 3, 4, or 5): ' choice
 
 case "$choice" in
     1)
@@ -418,20 +606,52 @@ case "$choice" in
         fi
         ;;
     3)
-        if [[ -z "$plugin_version" ]] || [[ -z "$skin_version" ]]; then
-            echo -e "\n${RED}[!] Error: Could not detect both versions${NC}"
+        if [[ -z "$imvdb_version" ]]; then
+            echo -e "\n${RED}[!] Error: Could not detect IMVDb plugin version${NC}"
+            exit 1
+        fi
+        new_imvdb_version=$(increment_version "$imvdb_version")
+        echo -e "\n${YELLOW}IMVDb Plugin will be updated: $imvdb_version -> $new_imvdb_version${NC}"
+        read -p "Continue? (y/n) " confirm
+        if [[ "$confirm" == "y" ]] || [[ "$confirm" == "Y" ]]; then
+            update_imvdb "$imvdb_version" "$new_imvdb_version"
+            rebuild_addons_xml
+        fi
+        ;;
+    4)
+        if [[ -z "$script_version" ]]; then
+            echo -e "\n${RED}[!] Error: Could not detect Onboarding Wizard version${NC}"
+            exit 1
+        fi
+        new_script_version=$(increment_version "$script_version")
+        echo -e "\n${YELLOW}Onboarding Wizard will be updated: $script_version -> $new_script_version${NC}"
+        read -p "Continue? (y/n) " confirm
+        if [[ "$confirm" == "y" ]] || [[ "$confirm" == "Y" ]]; then
+            update_onboarding "$script_version" "$new_script_version"
+            rebuild_addons_xml
+        fi
+        ;;
+    5)
+        if [[ -z "$plugin_version" ]] || [[ -z "$skin_version" ]] || [[ -z "$imvdb_version" ]] || [[ -z "$script_version" ]]; then
+            echo -e "\n${RED}[!] Error: Could not detect all versions${NC}"
             exit 1
         fi
         new_plugin_version=$(increment_version "$plugin_version")
         new_skin_version=$(increment_version "$skin_version")
+        new_imvdb_version=$(increment_version "$imvdb_version")
+        new_script_version=$(increment_version "$script_version")
 
         echo -e "\n${YELLOW}Updates planned:${NC}"
-        echo -e "  ${WHITE}Plugin: $plugin_version -> $new_plugin_version${NC}"
+        echo -e "  ${WHITE}AIOStreams Plugin: $plugin_version -> $new_plugin_version${NC}"
+        echo -e "  ${WHITE}IMVDb Plugin: $imvdb_version -> $new_imvdb_version${NC}"
+        echo -e "  ${WHITE}Onboarding Wizard: $script_version -> $new_script_version${NC}"
         echo -e "  ${WHITE}Skin: $skin_version -> $new_skin_version${NC}"
 
         read -p $'\nContinue? (y/n) ' confirm
         if [[ "$confirm" == "y" ]] || [[ "$confirm" == "Y" ]]; then
             update_plugin "$plugin_version" "$new_plugin_version"
+            update_imvdb "$imvdb_version" "$new_imvdb_version"
+            update_onboarding "$script_version" "$new_script_version"
             update_skin "$skin_version" "$new_skin_version"
             rebuild_addons_xml
         fi

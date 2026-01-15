@@ -4,6 +4,7 @@
 	<onload>Skin.SetString(Movies_WidgetIndex,0)</onload>
 	<onload>Skin.SetString(TV_WidgetIndex,0)</onload>
 <onload>Skin.SetString(SideMenuFocus,home)</onload>
+	<onload condition="String.IsEmpty(Skin.String(first_run))">RunScript(script.aiodi.onboarding)</onload>
 
 
 
@@ -382,7 +383,8 @@ SideFocus:$INFO[Skin.String(SideMenuFocus)] | VER: 6.0.311</label>
 				<onup>9006</onup>
 				<ondown>9008</ondown>
 				<onfocus>Skin.SetString(SideMenuFocus,music)</onfocus>
-				<onclick>ActivateWindow(Music,root,return)</onclick>
+				<onright>SetFocus(7100)</onright>
+				<onclick>SetFocus(7100)</onclick>
 			</control>
 			<control type="image">
 				<left>24</left>
@@ -1316,6 +1318,29 @@ SideFocus:$INFO[Skin.String(SideMenuFocus)] | VER: 6.0.311</label>
 			<param name="ondown_action1">noop</param>
 		</include>
 	</control>
+	</control>
+
+	<!-- Music Widgets -->
+	<control type="group" id="7000">
+		<zorder>10</zorder>
+		<bottom>20</bottom>
+		<left>150</left>
+		<width>1750</width>
+		<height>550</height>
+		<visible>String.IsEqual(Skin.String(SideMenuFocus),music)</visible>
+
+		<!-- Widget 0: IMVDb Hits by Year -->
+		<control type="group">
+			<include content="WidgetListSquare">
+				<param name="content_path">plugin://plugin.video.imvdb/</param>
+				<param name="widget_header">IMVDb Music Videos</param>
+				<param name="list_id">7100</param>
+				<param name="onclick_condition">true</param>
+				<param name="onclick_action">RunPlugin($INFO[ListItem.FolderPath])</param>
+				<param name="onup_action1">noop</param>
+				<param name="ondown_action1">noop</param>
+			</include>
+		</control>
 	</control>
 </controls>
 </window>

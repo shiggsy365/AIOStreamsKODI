@@ -521,14 +521,7 @@
 						</include>
 					</control>
 				</focusedlayout>
-				<content sortby="$PARAM[sortby]" sortorder="$PARAM[sortorder]" target="$PARAM[widget_target]" limit="$PARAM[widget_limit]" browse="$PARAM[browse_mode]">
-					<item>
-						<label>WIDGET DUMMY (EPISODE)</label>
-						<thumb>icons/sidemenu/home_white.png</thumb>
-						<onclick>noop</onclick>
-					</item>
-					$PARAM[content_path]
-				</content>
+				<content sortby="$PARAM[sortby]" sortorder="$PARAM[sortorder]" target="$PARAM[widget_target]" limit="$PARAM[widget_limit]" browse="$PARAM[browse_mode]">$PARAM[content_path]</content>
 			</control>
 		</definition>
 	</include>
@@ -883,14 +876,7 @@
 						</control>
 					</control>
 				</focusedlayout>
-				<content sortby="$PARAM[sortby]" sortorder="$PARAM[sortorder]" target="$PARAM[widget_target]" limit="15" browse="$PARAM[browse_mode]">
-					<item>
-						<label>WIDGET DUMMY (POSTER)</label>
-						<thumb>icons/sidemenu/home_white.png</thumb>
-						<onclick>noop</onclick>
-					</item>
-					$PARAM[content_path]
-				</content>
+				<content sortby="$PARAM[sortby]" sortorder="$PARAM[sortorder]" target="$PARAM[widget_target]" limit="15" browse="$PARAM[browse_mode]">$PARAM[content_path]</content>
 			</control>
 		</definition>
 	</include>

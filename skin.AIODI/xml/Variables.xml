@@ -1140,6 +1140,7 @@
 <value>overlays/checkbox-off.png</value>
 </variable>
 	<variable name="CurrentWidgetTitle">
+		<value condition="Control.HasFocus(7100)">$INFO[Container(7100).ListItem.Label]</value>
 		<value condition="Control.HasFocus(10100) + !String.IsEmpty(Container(10100).ListItem.Title) + !String.Contains(Container(10100).ListItem.Title,unknown)">$INFO[Container(10100).ListItem.Title]</value>
 		<value condition="Control.HasFocus(10100)">$INFO[Container(10100).ListItem.Label]</value>
 		<value condition="Control.HasFocus(10200) + !String.IsEmpty(Container(10200).ListItem.Title) + !String.Contains(Container(10200).ListItem.Title,unknown)">$INFO[Container(10200).ListItem.Title]</value>
@@ -1154,6 +1155,7 @@
 		<value>$INFO[ListItem.Label]</value>
 	</variable>
 	<variable name="CurrentWidgetFanart">
+		<value condition="Control.HasFocus(7100)">$INFO[Container(7100).ListItem.Art(fanart)]</value>
 		<value condition="Control.HasFocus(10100)">$INFO[Container(10100).ListItem.Art(fanart)]</value>
 		<value condition="Control.HasFocus(10200)">$INFO[Container(10200).ListItem.Art(fanart)]</value>
 		<value condition="Control.HasFocus(10300)">$INFO[Container(10300).ListItem.Art(fanart)]</value>
@@ -1187,6 +1189,7 @@
 	</variable>
 
 	<variable name="CurrentWidgetPlot">
+		<value condition="Control.HasFocus(7100)">$INFO[Container(7100).ListItem.Plot]</value>
 		<value condition="Control.HasFocus(10100)">$INFO[Container(10100).ListItem.Plot]</value>
 		<value condition="Control.HasFocus(10200)">$INFO[Container(10200).ListItem.Plot]</value>
 		<value condition="Control.HasFocus(10300)">$INFO[Container(10300).ListItem.Plot]</value>
@@ -1196,6 +1199,7 @@
 	</variable>
 
 	<variable name="CurrentWidgetInfo">
+		<value condition="Control.HasFocus(7100)">$INFO[Container(7100).ListItem.Year]$INFO[Container(7100).ListItem.Genre,  |  ]</value>
 		<value condition="Control.HasFocus(10100) + !String.IsEmpty(Container(10100).ListItem.Season)">$VAR[EpisodeInfoPadded]</value>
 		<value condition="Control.HasFocus(10100)">$INFO[Container(10100).ListItem.Year]$INFO[Container(10100).ListItem.Genre,  |  ]</value>
 		<value condition="Control.HasFocus(10200)">$INFO[Container(10200).ListItem.Year]$INFO[Container(10200).ListItem.Genre,  |  ]</value>
