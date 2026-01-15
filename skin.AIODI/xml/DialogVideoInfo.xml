@@ -60,11 +60,14 @@
 							<height>85</height>
 							<label>$VAR[VideoInfoPlayButtonLabelVar]</label>
                             <font></font>
+							<textoffsetx>60</textoffsetx>
+							<align>center</align>
+                            <aligny>center</aligny>
                             <textcolor>00FFFFFF</textcolor>
-							<texturefocus colordiffuse="button_focus">$VAR[VideoInfoPlayButtonTexture]</texturefocus>
+                            <texturefocus colordiffuse="button_focus">$VAR[VideoInfoPlayButtonTexture]</texturefocus>
                             <texturenofocus>$VAR[VideoInfoPlayButtonTexture]</texturenofocus>
 							<visible>true</visible>
-							<onclick>Dialog.Close(movieinformation)</onclick>
+							<onclick>Dialog.Close(movieinformation,true)</onclick>
 							<onclick condition="String.IsEqual(ListItem.DBType,tvshow) | String.IsEqual(ListItem.DBType,season)">ActivateWindow(Videos,$INFO[ListItem.FileNameAndPath],return)</onclick>
 							<onclick condition="!String.IsEqual(ListItem.DBType,tvshow) + !String.IsEqual(ListItem.DBType,season)">PlayMedia($INFO[ListItem.FileNameAndPath])</onclick>
 						</control>
