@@ -159,9 +159,9 @@ class OnboardingWizard:
                         # Find all instance-settings-*.xml files
                         for filename in files:
                             full_path = os.path.join(addon_data_path, filename)
-                                try:
-                                    tree = ET.parse(full_path)
-                                    root = tree.getroot()
+                            try:
+                                tree = ET.parse(full_path)
+                                root = tree.getroot()
                                     
                                     # Update or create settings
                                     updated = False
