@@ -187,8 +187,9 @@
                 <control type="button" id="4001">
                     <width>100</width>
                     <height>80</height>
-                    <label>↑</label>
-                    <font>font30</font>
+                    <label />
+                    <texturenofocus>icons/arrows/arrow_up.png</texturenofocus>
+                    <texturefocus colordiffuse="button_focus">icons/arrows/arrow_up.png</texturefocus>
                     <onclick>RunScript(special://skin/resources/lib/widget_manager.py,move_up)</onclick>
                 </control>
                 
@@ -196,8 +197,9 @@
                 <control type="button" id="4002">
                     <width>100</width>
                     <height>80</height>
-                    <label>↓</label>
-                    <font>font30</font>
+                    <label />
+                    <texturenofocus>icons/arrows/arrow_down.png</texturenofocus>
+                    <texturefocus colordiffuse="button_focus">icons/arrows/arrow_down.png</texturefocus>
                     <onclick>RunScript(special://skin/resources/lib/widget_manager.py,move_down)</onclick>
                 </control>
                 
@@ -205,8 +207,9 @@
                 <control type="button" id="4003">
                     <width>100</width>
                     <height>80</height>
-                    <label>→</label>
-                    <font>font30</font>
+                    <label />
+                    <texturenofocus>icons/arrows/arrow_right.png</texturenofocus>
+                    <texturefocus colordiffuse="button_focus">icons/arrows/arrow_right.png</texturefocus>
                     <onclick>RunScript(special://skin/resources/lib/widget_manager.py,remove_catalog)</onclick>
                 </control>
                 
@@ -214,8 +217,9 @@
                 <control type="button" id="4004">
                     <width>100</width>
                     <height>80</height>
-                    <label>←</label>
-                    <font>font30</font>
+                    <label />
+                    <texturenofocus>icons/arrows/arrow_left.png</texturenofocus>
+                    <texturefocus colordiffuse="button_focus">icons/arrows/arrow_left.png</texturefocus>
                     <onclick>RunScript(special://skin/resources/lib/widget_manager.py,add_catalog)</onclick>
                 </control>
             </control>
