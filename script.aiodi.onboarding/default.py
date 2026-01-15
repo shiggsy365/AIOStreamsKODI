@@ -126,26 +126,79 @@ class OnboardingWizard:
         # 6. IPTV Simple Client Config
         if self.dialog.yesno("IPTV", "Do you want to configure IPTV Simple Client?"):
             try:
-                iptv = xbmcaddon.Addon('pvr.iptvsimple')
+                # Direct XML editing due to PVR instance limitations
+                import os
+                import xml.etree.ElementTree as ET
                 
-                # Try getting existing value from new or old keys
-                curr_m3u = iptv.getSetting('m3u_url') or iptv.getSetting('m3uPath')
-                m3u = self.dialog.input("M3U Playlist URL", defaultt=curr_m3u)
+                addon_data_path = xbmc.translatePath('special://profile/addon_data/pvr.iptvsimple/')
                 
-                if m3u: 
-                    # Set both new and old keys to ensure compatibility with "Migrated" instances
-                    iptv.setSetting('m3u_url', m3u)
-                    iptv.setSetting('m3uPath', m3u)
+                # Get user input first
+                m3u = self.dialog.input("M3U Playlist URL")
+                epg = self.dialog.input("EPG URL")
                 
-                curr_epg = iptv.getSetting('epg_url') or iptv.getSetting('epgPath')
-                epg = self.dialog.input("EPG URL", defaultt=curr_epg)
-                
-                if epg: 
-                    iptv.setSetting('epg_url', epg)
-                    iptv.setSetting('epgPath', epg)
+                if not m3u and not epg:
+                    pass # Skip if nothing entered
+                else:
+                    mapped_updates = 0
+                    if os.path.exists(addon_data_path):
+                        # Find all instance-settings-*.xml files
+                        for filename in os.listdir(addon_data_path):
+                            if filename.startswith('instance-settings-') and filename.endswith('.xml'):
+                                full_path = os.path.join(addon_data_path, filename)
+                                try:
+                                    tree = ET.parse(full_path)
+                                    root = tree.getroot()
+                                    
+                                    # Update or create settings
+                                    updated = False
+                                    
+                                    # M3U
+                                    if m3u:
+                                        m3u_node = root.find(".//setting[@id='m3u_url']")
+                                        if m3u_node is not None:
+                                            m3u_node.text = m3u
+                                            m3u_node.set('value', m3u) # Some versions use attribute
+                                            # Some also use default="true", remove that if exists
+                                            if 'default' in m3u_node.attrib: del m3u_node.attrib['default']
+                                            updated = True
+                                        else:
+                                            # Create if missing
+                                            new_elem = ET.SubElement(root, 'setting', {'id': 'm3u_url'})
+                                            new_elem.text = m3u
+                                            updated = True
+
+                                    # EPG
+                                    if epg:
+                                        epg_node = root.find(".//setting[@id='epg_url']")
+                                        if epg_node is not None:
+                                            epg_node.text = epg
+                                            epg_node.set('value', epg)
+                                            if 'default' in epg_node.attrib: del epg_node.attrib['default']
+                                            updated = True
+                                        else:
+                                            new_elem = ET.SubElement(root, 'setting', {'id': 'epg_url'})
+                                            new_elem.text = epg
+                                            updated = True
+                                    
+                                    if updated:
+                                        tree.write(full_path, encoding='utf-8', xml_declaration=True)
+                                        mapped_updates += 1
+                                        xbmc.log(f'[AIODI Wizard] Updated IPTV config: {filename}', xbmc.LOGINFO)
+                                        
+                                except Exception as e:
+                                    xbmc.log(f'[AIODI Wizard] Failed to update {filename}: {e}', xbmc.LOGERROR)
                     
+                    if mapped_updates > 0:
+                        self.dialog.ok("IPTV Configured", f"Updated {mapped_updates} IPTV profiles.\nRestart Kodi to apply changes.")
+                    else:
+                        # Fallback to standard API if no files found
+                        iptv = xbmcaddon.Addon('pvr.iptvsimple')
+                        if m3u: iptv.setSetting('m3u_url', m3u)
+                        if epg: iptv.setSetting('epg_url', epg)
+                        self.dialog.ok("IPTV Configured", "Settings saved via API.\nIf usage fails, please check PVR settings manually.")
+
             except Exception as e:
-                self.dialog.ok("Error", f"IPTV Simple Client not found: {str(e)}")
+                self.dialog.ok("Error", f"IPTV configuration failed: {str(e)}")
 
         # 7. Completion
         self.dialog.ok("Setup Complete", "All configurations have been saved!\nEnjoy your AIODI experience.")
