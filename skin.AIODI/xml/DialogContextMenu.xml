@@ -26,8 +26,8 @@
 			<onclick>Action(close)</onclick>
 		</control>
 		<control type="group">
-			<centerleft>50%</centerleft>
-			<centertop>50%</centertop>
+			<left>50%</left>
+			<top>50%</top>
 			<control type="image" id="999">
 				<description>background image</description>
 				<left>-225</left>

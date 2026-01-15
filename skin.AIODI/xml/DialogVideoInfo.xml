@@ -365,9 +365,16 @@
 							<texture background="true">$INFO[Window(Home).Property(InfoWindow.Cast.1.Thumb)]</texture>
 							<aspectratio aligny="center">scale</aspectratio>
 						</control>
+						<control type="image">
+							<left>10</left>
+							<top>230</top>
+							<width>180</width>
+							<height>50</height>
+							<texture>colors/black_50.png</texture>
+						</control>
 						<control type="label">
 							<left>10</left>
-							<top>290</top>
+							<top>230</top>
 							<width>180</width>
 							<height>50</height>
 							<align>center</align>
@@ -380,7 +387,7 @@
 							<left>0</left>
 							<top>0</top>
 							<width>200</width>
-							<height>350</height>
+							<height>280</height>
 							<texturefocus>-</texturefocus>
 							<texturenofocus>-</texturenofocus>
 							<onclick>Dialog.Close(MovieInformation)</onclick>
@@ -422,9 +429,16 @@
 							<texture background="true">$INFO[Window(Home).Property(InfoWindow.Cast.2.Thumb)]</texture>
 							<aspectratio aligny="center">scale</aspectratio>
 						</control>
+						<control type="image">
+							<left>10</left>
+							<top>230</top>
+							<width>180</width>
+							<height>50</height>
+							<texture>colors/black_50.png</texture>
+						</control>
 						<control type="label">
 							<left>10</left>
-							<top>290</top>
+							<top>230</top>
 							<width>180</width>
 							<height>50</height>
 							<align>center</align>
@@ -437,7 +451,7 @@
 							<left>0</left>
 							<top>0</top>
 							<width>200</width>
-							<height>350</height>
+							<height>280</height>
 							<texturefocus>-</texturefocus>
 							<texturenofocus>-</texturenofocus>
 							<onclick>Dialog.Close(MovieInformation)</onclick>
@@ -479,9 +493,16 @@
 							<texture background="true">$INFO[Window(Home).Property(InfoWindow.Cast.3.Thumb)]</texture>
 							<aspectratio aligny="center">scale</aspectratio>
 						</control>
+						<control type="image">
+							<left>10</left>
+							<top>230</top>
+							<width>180</width>
+							<height>50</height>
+							<texture>colors/black_50.png</texture>
+						</control>
 						<control type="label">
 							<left>10</left>
-							<top>290</top>
+							<top>230</top>
 							<width>180</width>
 							<height>50</height>
 							<align>center</align>
@@ -494,7 +515,7 @@
 							<left>0</left>
 							<top>0</top>
 							<width>200</width>
-							<height>350</height>
+							<height>280</height>
 							<texturefocus>-</texturefocus>
 							<texturenofocus>-</texturenofocus>
 							<onclick>Dialog.Close(MovieInformation)</onclick>
@@ -536,9 +557,16 @@
 							<texture background="true">$INFO[Window(Home).Property(InfoWindow.Cast.4.Thumb)]</texture>
 							<aspectratio aligny="center">scale</aspectratio>
 						</control>
+						<control type="image">
+							<left>10</left>
+							<top>230</top>
+							<width>180</width>
+							<height>50</height>
+							<texture>colors/black_50.png</texture>
+						</control>
 						<control type="label">
 							<left>10</left>
-							<top>290</top>
+							<top>230</top>
 							<width>180</width>
 							<height>50</height>
 							<align>center</align>
@@ -551,7 +579,7 @@
 							<left>0</left>
 							<top>0</top>
 							<width>200</width>
-							<height>350</height>
+							<height>280</height>
 							<texturefocus>-</texturefocus>
 							<texturenofocus>-</texturenofocus>
 							<onclick>Dialog.Close(MovieInformation)</onclick>
@@ -593,9 +621,16 @@
 							<texture background="true">$INFO[Window(Home).Property(InfoWindow.Cast.5.Thumb)]</texture>
 							<aspectratio aligny="center">scale</aspectratio>
 						</control>
+						<control type="image">
+							<left>10</left>
+							<top>230</top>
+							<width>180</width>
+							<height>50</height>
+							<texture>colors/black_50.png</texture>
+						</control>
 						<control type="label">
 							<left>10</left>
-							<top>290</top>
+							<top>230</top>
 							<width>180</width>
 							<height>50</height>
 							<align>center</align>
@@ -608,7 +643,7 @@
 							<left>0</left>
 							<top>0</top>
 							<width>200</width>
-							<height>350</height>
+							<height>280</height>
 							<texturefocus>-</texturefocus>
 							<texturenofocus>-</texturenofocus>
 							<onclick>Dialog.Close(MovieInformation)</onclick>
@@ -622,7 +657,7 @@
 					<!-- Related Content Row -->
 					<control type="label">
 						<left>0</left>
-						<top>380</top>
+						<top>300</top>
 						<width>1245</width>
 						<height>30</height>
 						<font>font13_title</font>
@@ -632,7 +667,7 @@
 					</control>
 					<control type="fixedlist" id="5000">
 						<left>0</left>
-						<top>420</top>
+						<top>340</top>
 						<width>1245</width>
 						<height>360</height>
 						<onup>50</onup>

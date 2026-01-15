@@ -2371,7 +2371,10 @@ def show_streams_dialog(content_type, media_id, stream_data, title, poster='', f
 
     # Play selected stream
     # Use direct playback since we're called from RunPlugin (show_streams action)
-    play_stream_by_index(content_type, media_id, stream_data, selected, use_player=True)
+    if not play_stream_by_index(content_type, media_id, stream_data, selected, use_player=True):
+        # Playback failed, try next streams
+        xbmc.log('[AIOStreams] Selected stream failed, trying next available...', xbmc.LOGINFO)
+        try_next_streams(content_type, media_id, stream_data, start_index=selected+1, use_player=True)
 
 
 def play_stream_by_index(content_type, media_id, stream_data, index, use_player=False):
@@ -2473,13 +2476,29 @@ def play_stream_by_index(content_type, media_id, stream_data, index, use_player=
         # Return False to trigger fallback behavior
         return False
 
+    # Check runtime duration to filter out short/broken streams
+    if use_player and playback_started:
+        total_time = player.getTotalTime()
+        if total_time > 0 and total_time < 95:
+            xbmc.log(f'[AIOStreams] Stream duration too short ({total_time}s), skipping...', xbmc.LOGWARNING)
+            player.stop()
+            if HAS_MODULES:
+                stream_mgr = streams.get_stream_manager()
+                stream_mgr.record_stream_result(stream_url, False) # Mark as failure
+            return False
+
     return True
 
 
-def try_next_streams(content_type, media_id, stream_data, start_index=1):
+def try_next_streams(content_type, media_id, stream_data, start_index=1, use_player=False):
     """Try to play streams sequentially starting from start_index."""
     for i in range(start_index, len(stream_data['streams'])):
-        success = play_stream_by_index(content_type, media_id, stream_data, i)
+        # Check for abort before playing next
+        if xbmc.Monitor().abortRequested():
+            return
+
+        xbmc.log(f'[AIOStreams] Auto-trying stream index {i}', xbmc.LOGINFO)
+        success = play_stream_by_index(content_type, media_id, stream_data, i, use_player=use_player)
         if success:
             return
 

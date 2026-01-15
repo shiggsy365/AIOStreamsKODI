@@ -264,7 +264,7 @@ SideFocus:$INFO[Skin.String(SideMenuFocus)] | VER: 6.0.311</label>
 				<width>71</width>
 				<height>71</height>
 				<texture>icons/sidemenu/home_red.png</texture>
-				<visible>Control.HasFocus(9003) | [!ControlGroup(9000).HasFocus + String.IsEqual(Skin.String(SideMenuFocus),home) + !ControlGroup(9100).HasFocus]</visible>
+				<visible>Control.HasFocus(9003) | [!ControlGroup(9000).HasFocus + String.IsEqual(Skin.String(SideMenuFocus),home) + !ControlGroup(9100).HasFocus + !Control.HasFocus(9002)]</visible>
 			</control>
 		</control>
 
