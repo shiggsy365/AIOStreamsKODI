@@ -254,7 +254,7 @@
                             <width>700</width>
                             <height>50</height>
                             <font>font13</font>
-                            <textcolor>$VAR[TraktWidgetColor]</textcolor>
+                            <textcolor>$VAR[AvailableCatalogColor]</textcolor>
                             <label>$INFO[ListItem.Label]</label>
                             <aligny>center</aligny>
                         </control>
@@ -264,7 +264,7 @@
                             <width>200</width>
                             <height>50</height>
                             <font>font12</font>
-                            <textcolor>$VAR[TraktWidgetTypeColor]</textcolor>
+                            <textcolor>$VAR[AvailableCatalogTypeColor]</textcolor>
                             <label>$INFO[ListItem.Label2]</label>
                             <aligny>center</aligny>
                             <align>right</align>
@@ -276,7 +276,7 @@
                             <top>0</top>
                             <width>930</width>
                             <height>50</height>
-                            <texture colordiffuse="$VAR[TraktWidgetFocusColor]">colors/white.png</texture>
+                            <texture colordiffuse="$VAR[AvailableCatalogFocusColor]">colors/white.png</texture>
                         </control>
                         <control type="label">
                             <left>10</left>
@@ -303,9 +303,20 @@
                 </control>
             </control>
             
+            <!-- Clear All Button -->
+            <control type="button" id="6001">
+                <left>480</left>
+                <top>880</top>
+                <width>200</width>
+                <height>60</height>
+                <label>Clear All</label>
+                <font>font13</font>
+                <onclick>RunScript(special://skin/resources/lib/widget_manager.py,clear_all)</onclick>
+            </control>
+
             <!-- Close Button -->
             <control type="button" id="6000">
-                <left>760</left>
+                <left>700</left>
                 <top>880</top>
                 <width>200</width>
                 <height>60</height>

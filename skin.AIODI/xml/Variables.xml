@@ -1247,4 +1247,21 @@
 		<value condition="String.IsEqual(ListItem.Property(is_trakt),true)">FFFFFF00</value>
 		<value>button_focus</value>
 	</variable>
+
+	<!-- Widget Manager: Available Catalog Colors (Red if in use) -->
+	<variable name="AvailableCatalogColor">
+		<value condition="String.IsEqual(ListItem.Property(is_used),true)">FFFF0000</value>
+		<value condition="String.IsEqual(ListItem.Property(is_trakt),true)">FFFFFF00</value>
+		<value>FFFFFFFF</value>
+	</variable>
+	<variable name="AvailableCatalogTypeColor">
+		<value condition="String.IsEqual(ListItem.Property(is_used),true)">FFFF0000</value>
+		<value condition="String.IsEqual(ListItem.Property(is_trakt),true)">FFFFFF00</value>
+		<value>grey</value>
+	</variable>
+	<variable name="AvailableCatalogFocusColor">
+		<value condition="String.IsEqual(ListItem.Property(is_used),true)">FFFF0000</value>
+		<value condition="String.IsEqual(ListItem.Property(is_trakt),true)">FFFFFF00</value>
+		<value>button_focus</value>
+	</variable>
 </includes>
