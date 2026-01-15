@@ -488,26 +488,24 @@ def retrieve_manifest():
     password = addon.getSetting('aiostreams_password')
 
     # Validate inputs
+    # Validate inputs with interactive prompts
     if not host_url:
-        xbmcgui.Dialog().ok(
-            'AIOStreams',
-            'Please enter the Host Base URL first.'
-        )
-        return None
+        host_url = xbmcgui.Dialog().input('AIOStreams Host (e.g. https://aiostreams.elfhosted.com)', defaultt='https://aiostreams.elfhosted.com')
+        if not host_url:
+            return None
+        addon.setSetting('aiostreams_host', host_url)
 
     if not uuid:
-        xbmcgui.Dialog().ok(
-            'AIOStreams',
-            'Please enter your UUID first.'
-        )
-        return None
+        uuid = xbmcgui.Dialog().input('AIOStreams UUID')
+        if not uuid:
+            return None
+        addon.setSetting('aiostreams_uuid', uuid)
 
     if not password:
-        xbmcgui.Dialog().ok(
-            'AIOStreams',
-            'Please enter your Password first.'
-        )
-        return None
+        password = xbmcgui.Dialog().input('AIOStreams Password', option=xbmcgui.INPUT_PASSWORD)
+        if not password:
+            return None
+        addon.setSetting('aiostreams_password', password)
 
     # Clean up host URL
     host_url = host_url.rstrip('/')

@@ -31,15 +31,15 @@ class OnboardingWizard:
         if self.dialog.yesno("AIOStreams", "Do you want to configure AIOStreams now?"):
             # 1. Host URL
             host = self.dialog.input("AIOStreams Host URL (e.g. https://aiostreams.elfhosted.com)", 
-                                   defaultt=self.aiostreams.getSetting('base_url'))
+                                   defaultt=self.aiostreams.getSetting('aiostreams_host'))
             
             if host:
-                self.aiostreams.setSetting('base_url', host)
+                self.aiostreams.setSetting('aiostreams_host', host)
                 
                 # 2. UUID
-                uuid = self.dialog.input("AIOStreams UUID", defaultt=self.aiostreams.getSetting('aiostreams_username'))
+                uuid = self.dialog.input("AIOStreams UUID", defaultt=self.aiostreams.getSetting('aiostreams_uuid'))
                 if uuid:
-                    self.aiostreams.setSetting('aiostreams_username', uuid)
+                    self.aiostreams.setSetting('aiostreams_uuid', uuid)
                     
                     # 3. Password (API Key)
                     # Use standard INPUT_PASSWORD (5)
