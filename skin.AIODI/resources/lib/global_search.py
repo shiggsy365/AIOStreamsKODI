@@ -12,7 +12,11 @@ try:
     xbmc.log('[Global Search] Current dialog ID: %s' % current_dialog_id, xbmc.LOGINFO)
     
     # Try to get the window
-    dialog = xbmcgui.Window(current_dialog_id)
+    dialog = None
+    try:
+        dialog = xbmcgui.Window(current_dialog_id)
+    except:
+        pass
     
     # Get the search query from arguments, the edit control, or keyboard
     search_query = None
