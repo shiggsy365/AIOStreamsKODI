@@ -96,7 +96,7 @@
                 <control type="button" id="50">
                     <left>0</left>
                     <top>0</top>
-                    <width>320</width>
+                    <width>120</width>
                     <height>60</height>
                     <font></font>
                     <label>$INFO[Window(10000).Property(GlobalSearch.MoviesTabLabel)]</label>
@@ -114,7 +114,7 @@
                 <control type="button" id="51">
                     <left>340</left>
                     <top>0</top>
-                    <width>320</width>
+                    <width>120</width>
                     <height>60</height>
                     <font></font>
                     <label>$INFO[Window(10000).Property(GlobalSearch.TVShowsTabLabel)]</label>
@@ -134,7 +134,7 @@
                 <control type="button" id="52">
                     <left>680</left>
                     <top>0</top>
-                    <width>320</width>
+                    <width>120</width>
                     <height>60</height>
                     <font></font>
                     <label>$INFO[Window(10000).Property(GlobalSearch.YouTubeTabLabel)]</label>
