@@ -29,20 +29,30 @@ class OnboardingWizard:
 
         # 2. AIOStreams Config
         if self.dialog.yesno("AIOStreams", "Do you want to configure AIOStreams now?"):
-            host = self.dialog.input("AIOStreams Host URL (e.g. https://example.com/manifest.json)", defaultt=self.aiostreams.getSetting('base_url'))
+            # 1. Host URL
+            host = self.dialog.input("AIOStreams Host URL (e.g. https://aiostreams.elfhosted.com)", 
+                                   defaultt=self.aiostreams.getSetting('base_url'))
+            
             if host:
                 self.aiostreams.setSetting('base_url', host)
                 
-                username = self.dialog.input("Username", defaultt=self.aiostreams.getSetting('aiostreams_username'))
-                self.aiostreams.setSetting('aiostreams_username', username)
-                
-                password = self.dialog.input("Password", option=xbmcgui.ALPHANUM_HIDE, defaultt=self.aiostreams.getSetting('aiostreams_password'))
-                self.aiostreams.setSetting('aiostreams_password', password)
-                
-                # Trigger manifest retrieval
-                self.dialog.notification("AIODI Wizard", "Retrieving Manifest...", xbmcgui.NOTIFICATION_INFO, 3000)
-                xbmc.executebuiltin('RunPlugin(plugin://plugin.video.aiostreams/?action=retrieve_manifest)')
-                xbmc.sleep(2000) # Wait a bit for it to start
+                # 2. UUID
+                uuid = self.dialog.input("AIOStreams UUID", defaultt=self.aiostreams.getSetting('aiostreams_username'))
+                if uuid:
+                    self.aiostreams.setSetting('aiostreams_username', uuid)
+                    
+                    # 3. Password (API Key)
+                    # Use standard INPUT_PASSWORD (5)
+                    password = self.dialog.input("Password", option=xbmcgui.INPUT_PASSWORD, 
+                                               defaultt=self.aiostreams.getSetting('aiostreams_password'))
+                    
+                    if password:
+                        self.aiostreams.setSetting('aiostreams_password', password)
+                        
+                        # Only trigger if we have everything
+                        self.dialog.notification("AIODI Wizard", "Retrieving Manifest...", xbmcgui.NOTIFICATION_INFO, 3000)
+                        xbmc.executebuiltin('RunPlugin(plugin://plugin.video.aiostreams/?action=retrieve_manifest)')
+                        xbmc.sleep(2000)
 
         # 3. YouTube Config
         if self.dialog.yesno("YouTube", "Do you want to configure YouTube API keys?"):
