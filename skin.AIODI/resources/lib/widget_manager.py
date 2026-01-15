@@ -114,25 +114,33 @@ def get_available_catalogs():
 def load_page(page_name):
     """Load catalogs for a specific page"""
     log(f'Loading page: {page_name}')
-    
+
     # Give the window a moment to fully initialize
-    xbmc.sleep(200)
-    
+    xbmc.sleep(100)
+
     window = None
     try:
         # Try finding the window by ID first
         window = xbmcgui.Window(1111)
         # Verify it's actually our window (this will fail if not active)
-        window.getControl(3000)
-        log('Found window 1111')
-    except:
+        test_control = window.getControl(3000)
+        log(f'Found window 1111, control 3000 exists: {test_control is not None}')
+    except Exception as first_error:
+        log(f'Window 1111 not accessible: {first_error}', xbmc.LOGDEBUG)
         try:
-            # Fallback to current window
-            window = xbmcgui.getCurrentWindowDialogId()
-            log(f'Fallback: Using current window dialog ID {window}')
-            window = xbmcgui.Window(window)
+            # Fallback to current window dialog
+            current_dialog_id = xbmcgui.getCurrentWindowDialogId()
+            log(f'Trying current dialog ID: {current_dialog_id}')
+            if current_dialog_id == 1111:
+                window = xbmcgui.Window(current_dialog_id)
+                window.getControl(3000)  # Verify it works
+                log('Successfully using current dialog window')
+            else:
+                log(f'Current dialog ID {current_dialog_id} is not our widget manager', xbmc.LOGERROR)
+                return
         except Exception as e:
             log(f'Critical: Could not access window: {e}', xbmc.LOGERROR)
+            log('Widget manager window is not open', xbmc.LOGERROR)
             return
 
     try:
@@ -373,13 +381,18 @@ def clear_all():
             }
             save_config(config)
 
-            # Reload current page to show empty state
-            window = xbmcgui.Window(1111)
-            page_name = window.getProperty('CurrentPage')
-            if page_name:
-                load_page(page_name)
-            else:
-                load_page('home')
+            # Try to reload current page to show empty state
+            try:
+                window = xbmcgui.Window(1111)
+                page_name = window.getProperty('CurrentPage')
+                if page_name:
+                    load_page(page_name)
+                else:
+                    load_page('home')
+            except Exception as e:
+                log(f'Could not reload page after clearing: {e}', xbmc.LOGDEBUG)
+                # Window might not be available, but config is already saved
+                pass
 
             log('All catalogs cleared')
     except Exception as e:
