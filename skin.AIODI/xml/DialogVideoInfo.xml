@@ -63,7 +63,7 @@
                             <textcolor>00FFFFFF</textcolor>
 							<texturefocus colordiffuse="button_focus">$VAR[VideoInfoPlayButtonTexture]</texturefocus>
                             <texturenofocus>$VAR[VideoInfoPlayButtonTexture]</texturenofocus>
-							<visible>!String.IsEmpty(ListItem.Title)</visible>
+							<visible>true</visible>
 						</control>
 						<!-- Custom Trailer Button -->
 						<control type="button" id="2001">
