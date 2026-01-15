@@ -142,10 +142,23 @@ class OnboardingWizard:
                 else:
                     mapped_updates = 0
                     if os.path.exists(addon_data_path):
+                        # Create directory if it exists (it does), but check for XMLs
+                        files = [f for f in os.listdir(addon_data_path) if f.startswith('instance-settings-') and f.endswith('.xml')]
+                        
+                        if not files:
+                            # Create default instance file if none exist
+                            default_file = os.path.join(addon_data_path, 'instance-settings-1.xml')
+                            xbmc.log('[AIODI Wizard] No IPTV instances found, creating default.', xbmc.LOGINFO)
+                            root = ET.Element('settings')
+                            # Add basic structure if needed, usually just <settings version="2">
+                            root.set('version', '2') 
+                            tree = ET.ElementTree(root)
+                            tree.write(default_file, encoding='utf-8', xml_declaration=True)
+                            files = ['instance-settings-1.xml']
+
                         # Find all instance-settings-*.xml files
-                        for filename in os.listdir(addon_data_path):
-                            if filename.startswith('instance-settings-') and filename.endswith('.xml'):
-                                full_path = os.path.join(addon_data_path, filename)
+                        for filename in files:
+                            full_path = os.path.join(addon_data_path, filename)
                                 try:
                                     tree = ET.parse(full_path)
                                     root = tree.getroot()

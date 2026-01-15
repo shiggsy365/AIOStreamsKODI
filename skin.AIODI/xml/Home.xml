@@ -350,7 +350,7 @@ SideFocus:$INFO[Skin.String(SideMenuFocus)] | VER: 6.0.311</label>
 				<onup>9005</onup>
 				<ondown>9007</ondown>
 				<onfocus>Skin.SetString(SideMenuFocus,livetv)</onfocus>
-				<onclick>ActivateWindow(TVChannels)</onclick>
+				<onclick>ActivateWindow(TVGuide)</onclick>
 				<onclick>SetFocus($VAR[ActiveWidgetID])</onclick>
 			</control>
 			<control type="image">
