@@ -119,9 +119,9 @@ class OnboardingWizard:
 
         # 5. IMVDb Config
         if self.dialog.yesno("IMVDb", "Do you want to configure IMVDb (Music Videos)?"):
-            api_key = self.dialog.input("IMVDb API Key", defaultt=self.imvdb.getSetting('imvdb_api_key'))
+            api_key = self.dialog.input("IMVDb API Key", defaultt=self.imvdb.getSetting('api_key'))
             if api_key:
-                self.imvdb.setSetting('imvdb_api_key', api_key)
+                self.imvdb.setSetting('api_key', api_key)
 
         # 6. IPTV Simple Client Config
         if self.dialog.yesno("IPTV", "Do you want to configure IPTV Simple Client?"):

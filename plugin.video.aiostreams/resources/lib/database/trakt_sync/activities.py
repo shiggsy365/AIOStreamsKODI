@@ -168,8 +168,8 @@ class TraktSyncDatabase(BaseTraktDB):
         Returns:
             bool: True if remote is newer than local
         """
-        local_time = local_activities.get(f'{category}_{field}', '1970-01-01T00:00:00')
-        remote_time = remote_activities.get(category, {}).get(field, '1970-01-01T00:00:00')
+        local_time = local_activities.get(f'{category}_{field}') or '1970-01-01T00:00:00'
+        remote_time = remote_activities.get(category, {}).get(field) or '1970-01-01T00:00:00'
         
         # Parse ISO timestamps and compare
         needs_sync = remote_time > local_time
