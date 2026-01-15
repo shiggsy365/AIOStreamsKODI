@@ -23,7 +23,7 @@
 			<onclick>Action(close)</onclick>
 		</control>
 		<control type="group">
-			<left>735</left>
+			<centerleft>50%</centerleft>
 			<top>150</top>
 			<width>450</width>
 			<height>780</height>
