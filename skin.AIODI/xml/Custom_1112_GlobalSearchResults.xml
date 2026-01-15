@@ -195,8 +195,15 @@
                                 <height>400</height>
                                 <texture>$INFO[ListItem.Art(poster)]</texture>
                                 <aspectratio>scale</aspectratio>
-                                <bordertexture border="8">borders/border-focus.png</bordertexture>
-                                <bordersize>8</bordersize>
+                            </control>
+                            <control type="image">
+                                <left>10</left>
+                                <top>10</top>
+                                <width>280</width>
+                                <height>400</height>
+                                <texture border="5">borders/border-focus.png</texture>
+                                <colordiffuse>FFFF0000</colordiffuse>
+                                <bordersize>3</bordersize>
                             </control>
                         </control>
                     </focusedlayout>
@@ -211,7 +218,7 @@
                     <width>1600</width>
                     <height>100</height>
                     <font>font25</font>
-                    <label>Loading movies...</label>
+                    <label>Searching movies...</label>
                     <textcolor>FFAAAAAA</textcolor>
                     <align>center</align>
                     <visible>Integer.IsEqual(Container(100).NumItems,0)</visible>
@@ -263,8 +270,15 @@
                                 <height>400</height>
                                 <texture>$INFO[ListItem.Art(poster)]</texture>
                                 <aspectratio>scale</aspectratio>
-                                <bordertexture border="8">borders/border-focus.png</bordertexture>
-                                <bordersize>8</bordersize>
+                            </control>
+                            <control type="image">
+                                <left>10</left>
+                                <top>10</top>
+                                <width>280</width>
+                                <height>400</height>
+                                <texture border="5">borders/border-focus.png</texture>
+                                <colordiffuse>FFFF0000</colordiffuse>
+                                <bordersize>3</bordersize>
                             </control>
                         </control>
                     </focusedlayout>
@@ -279,7 +293,7 @@
                     <width>1600</width>
                     <height>100</height>
                     <font>font25</font>
-                    <label>Loading TV shows...</label>
+                    <label>Searching TV shows...</label>
                     <textcolor>FFAAAAAA</textcolor>
                     <align>center</align>
                     <visible>Integer.IsEqual(Container(101).NumItems,0)</visible>
@@ -357,8 +371,15 @@
                             <height>120</height>
                             <texture>$INFO[ListItem.Art(thumb)]</texture>
                             <aspectratio>scale</aspectratio>
-                            <bordertexture border="4">borders/border-focus.png</bordertexture>
-                            <bordersize>4</bordersize>
+                        </control>
+                        <control type="image">
+                            <left>10</left>
+                            <top>10</top>
+                            <width>240</width>
+                            <height>120</height>
+                            <texture border="5">borders/border-focus.png</texture>
+                            <colordiffuse>FFFF0000</colordiffuse>
+                            <bordersize>3</bordersize>
                         </control>
                         <control type="label">
                             <left>270</left>
@@ -399,7 +420,7 @@
                     <width>1600</width>
                     <height>100</height>
                     <font>font25</font>
-                    <label>Loading YouTube results...</label>
+                    <label>Searching YouTube...</label>
                     <textcolor>FFAAAAAA</textcolor>
                     <align>center</align>
                     <visible>Integer.IsEqual(Container(102).NumItems,0)</visible>
