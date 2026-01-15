@@ -198,6 +198,13 @@ class AIOStreamsService:
         self.addon = xbmcaddon.Addon()
         self.monitor = AIOStreamsMonitor(self)
         self.player = AIOStreamsPlayer()
+        
+        # Replace the global PLAYER instance in monitor.py with our persistent one
+        # This ensures addon.py uses the same player instance that receives callbacks
+        import resources.lib.monitor as monitor_module
+        monitor_module.PLAYER = self.player
+        xbmc.log('[AIOStreams Service] Replaced global PLAYER instance with service player', xbmc.LOGINFO)
+        
         self.task_queue = get_task_queue()
         self.sync_interval = 5 * 60  # 5 minutes in seconds
         self.last_sync = 0

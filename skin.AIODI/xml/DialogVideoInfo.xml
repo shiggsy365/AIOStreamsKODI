@@ -384,8 +384,7 @@
 							<texturefocus>-</texturefocus>
 							<texturenofocus>-</texturenofocus>
 							<onclick>Dialog.Close(MovieInformation)</onclick>
-							<onclick>Skin.SetString(AIOStreams_SearchQuery,$INFO[Window(Home).Property(InfoWindow.Cast.1.Name)])</onclick>
-							<onclick>ActivateWindow(1108)</onclick>
+							<onclick>RunScript(special://skin/resources/lib/global_search.py, $INFO[Window(Home).Property(InfoWindow.Cast.1.Name)])</onclick>
 							<onup>140</onup>
 							<onleft>8</onleft>
 							<onright>51</onright>
@@ -442,8 +441,7 @@
 							<texturefocus>-</texturefocus>
 							<texturenofocus>-</texturenofocus>
 							<onclick>Dialog.Close(MovieInformation)</onclick>
-							<onclick>Skin.SetString(AIOStreams_SearchQuery,$INFO[Window(Home).Property(InfoWindow.Cast.2.Name)])</onclick>
-							<onclick>ActivateWindow(1108)</onclick>
+							<onclick>RunScript(special://skin/resources/lib/global_search.py, $INFO[Window(Home).Property(InfoWindow.Cast.2.Name)])</onclick>
 							<onup>140</onup>
 							<onleft>50</onleft>
 							<onright>52</onright>
@@ -500,8 +498,7 @@
 							<texturefocus>-</texturefocus>
 							<texturenofocus>-</texturenofocus>
 							<onclick>Dialog.Close(MovieInformation)</onclick>
-							<onclick>Skin.SetString(AIOStreams_SearchQuery,$INFO[Window(Home).Property(InfoWindow.Cast.3.Name)])</onclick>
-							<onclick>ActivateWindow(1108)</onclick>
+							<onclick>RunScript(special://skin/resources/lib/global_search.py, $INFO[Window(Home).Property(InfoWindow.Cast.3.Name)])</onclick>
 							<onup>140</onup>
 							<onleft>51</onleft>
 							<onright>53</onright>
@@ -558,8 +555,7 @@
 							<texturefocus>-</texturefocus>
 							<texturenofocus>-</texturenofocus>
 							<onclick>Dialog.Close(MovieInformation)</onclick>
-							<onclick>Skin.SetString(AIOStreams_SearchQuery,$INFO[Window(Home).Property(InfoWindow.Cast.4.Name)])</onclick>
-							<onclick>ActivateWindow(1108)</onclick>
+							<onclick>RunScript(special://skin/resources/lib/global_search.py, $INFO[Window(Home).Property(InfoWindow.Cast.4.Name)])</onclick>
 							<onup>140</onup>
 							<onleft>52</onleft>
 							<onright>54</onright>
@@ -616,8 +612,7 @@
 							<texturefocus>-</texturefocus>
 							<texturenofocus>-</texturenofocus>
 							<onclick>Dialog.Close(MovieInformation)</onclick>
-							<onclick>Skin.SetString(AIOStreams_SearchQuery,$INFO[Window(Home).Property(InfoWindow.Cast.5.Name)])</onclick>
-							<onclick>ActivateWindow(1108)</onclick>
+							<onclick>RunScript(special://skin/resources/lib/global_search.py, $INFO[Window(Home).Property(InfoWindow.Cast.5.Name)])</onclick>
 							<onup>140</onup>
 							<onleft>53</onleft>
 							<onright>50</onright>
@@ -733,8 +728,7 @@
 								<property name="Year">$INFO[Window(Home).Property(InfoWindow.Related.1.Year)]</property>
 								<property name="IMDB">$INFO[Window(Home).Property(InfoWindow.Related.1.IMDB)]</property>
 								<onclick>Dialog.Close(MovieInformation)</onclick>
-								<onclick>Skin.SetString(AIOStreams_SearchQuery,$INFO[Window(Home).Property(InfoWindow.Related.1.IMDB)])</onclick>
-								<onclick>ActivateWindow(1108)</onclick>
+								<onclick>RunScript(special://skin/resources/lib/global_search.py, $INFO[Window(Home).Property(InfoWindow.Related.1.IMDB)])</onclick>
 								<visible>!String.IsEmpty(Window(Home).Property(InfoWindow.Related.1.Title))</visible>
 							</item>
 							<item>
@@ -743,8 +737,7 @@
 								<property name="Year">$INFO[Window(Home).Property(InfoWindow.Related.2.Year)]</property>
 								<property name="IMDB">$INFO[Window(Home).Property(InfoWindow.Related.2.IMDB)]</property>
 								<onclick>Dialog.Close(MovieInformation)</onclick>
-								<onclick>Skin.SetString(AIOStreams_SearchQuery,$INFO[Window(Home).Property(InfoWindow.Related.2.IMDB)])</onclick>
-								<onclick>ActivateWindow(1108)</onclick>
+								<onclick>RunScript(special://skin/resources/lib/global_search.py, $INFO[Window(Home).Property(InfoWindow.Related.2.IMDB)])</onclick>
 								<visible>!String.IsEmpty(Window(Home).Property(InfoWindow.Related.2.Title))</visible>
 							</item>
 							<item>
@@ -753,8 +746,7 @@
 								<property name="Year">$INFO[Window(Home).Property(InfoWindow.Related.3.Year)]</property>
 								<property name="IMDB">$INFO[Window(Home).Property(InfoWindow.Related.3.IMDB)]</property>
 								<onclick>Dialog.Close(MovieInformation)</onclick>
-								<onclick>Skin.SetString(AIOStreams_SearchQuery,$INFO[Window(Home).Property(InfoWindow.Related.3.IMDB)])</onclick>
-								<onclick>ActivateWindow(1108)</onclick>
+								<onclick>RunScript(special://skin/resources/lib/global_search.py, $INFO[Window(Home).Property(InfoWindow.Related.3.IMDB)])</onclick>
 								<visible>!String.IsEmpty(Window(Home).Property(InfoWindow.Related.3.Title))</visible>
 							</item>
 							<item>
@@ -763,8 +755,7 @@
 								<property name="Year">$INFO[Window(Home).Property(InfoWindow.Related.4.Year)]</property>
 								<property name="IMDB">$INFO[Window(Home).Property(InfoWindow.Related.4.IMDB)]</property>
 								<onclick>Dialog.Close(MovieInformation)</onclick>
-								<onclick>Skin.SetString(AIOStreams_SearchQuery,$INFO[Window(Home).Property(InfoWindow.Related.4.IMDB)])</onclick>
-								<onclick>ActivateWindow(1108)</onclick>
+								<onclick>RunScript(special://skin/resources/lib/global_search.py, $INFO[Window(Home).Property(InfoWindow.Related.4.IMDB)])</onclick>
 								<visible>!String.IsEmpty(Window(Home).Property(InfoWindow.Related.4.Title))</visible>
 							</item>
 							<item>
@@ -773,8 +764,7 @@
 								<property name="Year">$INFO[Window(Home).Property(InfoWindow.Related.5.Year)]</property>
 								<property name="IMDB">$INFO[Window(Home).Property(InfoWindow.Related.5.IMDB)]</property>
 								<onclick>Dialog.Close(MovieInformation)</onclick>
-								<onclick>Skin.SetString(AIOStreams_SearchQuery,$INFO[Window(Home).Property(InfoWindow.Related.5.IMDB)])</onclick>
-								<onclick>ActivateWindow(1108)</onclick>
+								<onclick>RunScript(special://skin/resources/lib/global_search.py, $INFO[Window(Home).Property(InfoWindow.Related.5.IMDB)])</onclick>
 								<visible>!String.IsEmpty(Window(Home).Property(InfoWindow.Related.5.Title))</visible>
 							</item>
 							<item>
@@ -783,8 +773,7 @@
 								<property name="Year">$INFO[Window(Home).Property(InfoWindow.Related.6.Year)]</property>
 								<property name="IMDB">$INFO[Window(Home).Property(InfoWindow.Related.6.IMDB)]</property>
 								<onclick>Dialog.Close(MovieInformation)</onclick>
-								<onclick>Skin.SetString(AIOStreams_SearchQuery,$INFO[Window(Home).Property(InfoWindow.Related.6.IMDB)])</onclick>
-								<onclick>ActivateWindow(1108)</onclick>
+								<onclick>RunScript(special://skin/resources/lib/global_search.py, $INFO[Window(Home).Property(InfoWindow.Related.6.IMDB)])</onclick>
 								<visible>!String.IsEmpty(Window(Home).Property(InfoWindow.Related.6.Title))</visible>
 							</item>
 							<item>
@@ -793,8 +782,7 @@
 								<property name="Year">$INFO[Window(Home).Property(InfoWindow.Related.7.Year)]</property>
 								<property name="IMDB">$INFO[Window(Home).Property(InfoWindow.Related.7.IMDB)]</property>
 								<onclick>Dialog.Close(MovieInformation)</onclick>
-								<onclick>Skin.SetString(AIOStreams_SearchQuery,$INFO[Window(Home).Property(InfoWindow.Related.7.IMDB)])</onclick>
-								<onclick>ActivateWindow(1108)</onclick>
+								<onclick>RunScript(special://skin/resources/lib/global_search.py, $INFO[Window(Home).Property(InfoWindow.Related.7.IMDB)])</onclick>
 								<visible>!String.IsEmpty(Window(Home).Property(InfoWindow.Related.7.Title))</visible>
 							</item>
 							<item>
@@ -803,8 +791,7 @@
 								<property name="Year">$INFO[Window(Home).Property(InfoWindow.Related.8.Year)]</property>
 								<property name="IMDB">$INFO[Window(Home).Property(InfoWindow.Related.8.IMDB)]</property>
 								<onclick>Dialog.Close(MovieInformation)</onclick>
-								<onclick>Skin.SetString(AIOStreams_SearchQuery,$INFO[Window(Home).Property(InfoWindow.Related.8.IMDB)])</onclick>
-								<onclick>ActivateWindow(1108)</onclick>
+								<onclick>RunScript(special://skin/resources/lib/global_search.py, $INFO[Window(Home).Property(InfoWindow.Related.8.IMDB)])</onclick>
 								<visible>!String.IsEmpty(Window(Home).Property(InfoWindow.Related.8.Title))</visible>
 							</item>
 							<item>
@@ -813,8 +800,7 @@
 								<property name="Year">$INFO[Window(Home).Property(InfoWindow.Related.9.Year)]</property>
 								<property name="IMDB">$INFO[Window(Home).Property(InfoWindow.Related.9.IMDB)]</property>
 								<onclick>Dialog.Close(MovieInformation)</onclick>
-								<onclick>Skin.SetString(AIOStreams_SearchQuery,$INFO[Window(Home).Property(InfoWindow.Related.9.IMDB)])</onclick>
-								<onclick>ActivateWindow(1108)</onclick>
+								<onclick>RunScript(special://skin/resources/lib/global_search.py, $INFO[Window(Home).Property(InfoWindow.Related.9.IMDB)])</onclick>
 								<visible>!String.IsEmpty(Window(Home).Property(InfoWindow.Related.9.Title))</visible>
 							</item>
 							<item>
@@ -823,8 +809,7 @@
 								<property name="Year">$INFO[Window(Home).Property(InfoWindow.Related.10.Year)]</property>
 								<property name="IMDB">$INFO[Window(Home).Property(InfoWindow.Related.10.IMDB)]</property>
 								<onclick>Dialog.Close(MovieInformation)</onclick>
-								<onclick>Skin.SetString(AIOStreams_SearchQuery,$INFO[Window(Home).Property(InfoWindow.Related.10.IMDB)])</onclick>
-								<onclick>ActivateWindow(1108)</onclick>
+								<onclick>RunScript(special://skin/resources/lib/global_search.py, $INFO[Window(Home).Property(InfoWindow.Related.10.IMDB)])</onclick>
 								<visible>!String.IsEmpty(Window(Home).Property(InfoWindow.Related.10.Title))</visible>
 							</item>
 						</content>

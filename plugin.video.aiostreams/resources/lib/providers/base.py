@@ -166,7 +166,7 @@ class ProviderManager:
             reverse=True
         )
 
-        xbmc.log(f'[AIOStreams] Registered provider: {provider.name} (priority: {provider.priority})', xbmc.LOGINFO)
+        xbmc.log(f'[AIOStreams] Registered provider: {provider.name} (priority: {provider.priority})', xbmc.LOGDEBUG)
 
     def unregister(self, provider_name):
         """

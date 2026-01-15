@@ -1805,4 +1805,27 @@
 			</control>
 		</definition>
 	</include>
+	<!-- Global Search Content Includes -->
+	<include name="GlobalSearchMoviesContent">
+		<content target="video">
+			plugin://plugin.video.aiostreams/?action=search&amp;content_type=movie&amp;query=$ESCINFO[Window(10000).Property(GlobalSearch.Query)]
+		</content>
+	</include>
+	
+	<include name="GlobalSearchSeriesContent">
+		<content target="video">
+			plugin://plugin.video.aiostreams/?action=search&amp;content_type=series&amp;query=$ESCINFO[Window(10000).Property(GlobalSearch.Query)]
+		</content>
+	</include>
+	
+	<include name="GlobalSearchYouTubeContent">
+		<content target="video">
+			plugin://plugin.video.youtube/kodion/search/query/?q=$ESCINFO[Window(10000).Property(GlobalSearch.Query)]
+		</content>
+	</include>
+	<variable name="SearchResultsHeader">
+		<value condition="!String.IsEmpty(ListItem.Label)">$INFO[ListItem.Label]</value>
+		<value>Search: "$INFO[Window(10000).Property(GlobalSearch.Query)]"</value>
+	</variable>
+	
 </includes>

@@ -1067,10 +1067,10 @@ def create_listitem_with_context(meta, content_type, action_url):
 
         # Add trailer if available
         trailers = meta.get('trailers', [])
-        xbmc.log(f'[AIOStreams] Movie Trailers found: {trailers}', xbmc.LOGINFO)
+        # xbmc.log(f'[AIOStreams] Movie Trailers found: {trailers}', xbmc.LOGDEBUG)
         if trailers and isinstance(trailers, list) and len(trailers) > 0:
             youtube_id = trailers[0].get('ytId', '') or trailers[0].get('source', '')
-            xbmc.log(f'[AIOStreams] Movie Trailer YouTube ID: {youtube_id}', xbmc.LOGINFO)
+            # xbmc.log(f'[AIOStreams] Movie Trailer YouTube ID: {youtube_id}', xbmc.LOGDEBUG)
             if youtube_id:
                 trailer_url = f'https://www.youtube.com/watch?v={youtube_id}'
                 info_tag.setTrailer(trailer_url)
@@ -1098,10 +1098,10 @@ def create_listitem_with_context(meta, content_type, action_url):
         # Show context menu: View Trailer, Mark as Watched, Watchlist
         # Add trailer if available
         trailers = meta.get('trailerStreams', [])
-        xbmc.log(f'[AIOStreams] Series Trailers found: {trailers}', xbmc.LOGINFO)
+        # xbmc.log(f'[AIOStreams] Series Trailers found: {trailers}', xbmc.LOGDEBUG)
         if trailers and isinstance(trailers, list) and len(trailers) > 0:
             youtube_id = trailers[0].get('ytId', '') or trailers[0].get('source', '')
-            xbmc.log(f'[AIOStreams] Series Trailer YouTube ID: {youtube_id}', xbmc.LOGINFO)
+            # xbmc.log(f'[AIOStreams] Series Trailer YouTube ID: {youtube_id}', xbmc.LOGDEBUG)
             if youtube_id:
                 trailer_url = f'https://www.youtube.com/watch?v={youtube_id}'
                 info_tag.setTrailer(trailer_url)
@@ -1523,19 +1523,14 @@ def search_unified():
 
 
 
-def play():
+def play(params=None):
     """Play content - behavior depends on settings (show streams or auto-play first)."""
-    # IMPORTANT: Cancel resolver state immediately if called from resolvable context
-    # This prevents "failed to play item" errors when using xbmc.Player().play() directly
-    if HANDLE >= 0:
-        try:
-            xbmcplugin.setResolvedUrl(HANDLE, False, xbmcgui.ListItem())
-        except:
-            pass  # Not in a resolvable context, ignore
-
-    params = dict(parse_qsl(sys.argv[2][1:]))
-    content_type = params['content_type']
-    imdb_id = params['imdb_id']
+    
+    if not params:
+        params = dict(parse_qsl(sys.argv[2][1:]))
+        
+    content_type = params.get('content_type', 'movie')
+    imdb_id = params.get('imdb_id', '')
 
     # Extract metadata for stream dialog
     poster = params.get('poster', '')
@@ -1588,8 +1583,15 @@ def play():
         # Check default_behavior setting
         default_behavior = get_setting('default_behavior', 'show_streams')
 
+        # Check if forced auto-play (e.g. from UpNext or Play First)
+        # Check for explicit force_autoplay flag or specific actions
+        action = params.get('action', '')
+        force_autoplay = (params.get('force_autoplay') == 'true' or 
+                         action in ['play_next', 'play_next_source', 'play_first'])
+
         # If set to show streams, show dialog instead of auto-playing
-        if default_behavior == 'show_streams':
+        # BUT only if not forced to auto-play
+        if default_behavior == 'show_streams' and not force_autoplay:
             progress.update(100)
             progress.close()
             show_streams_dialog(content_type, media_id, stream_data, title, poster, fanart, clearlogo, from_playable=True)
@@ -1639,8 +1641,57 @@ def play():
         progress.update(100, 'Starting playback...')
         progress.close()
 
-        # Use xbmc.Player().play() for direct playback
-        xbmc.Player().play(stream_url, list_item)
+        # Save stream list for auto-skip functionality
+        try:
+            # We save the list and the current index (0)
+            # Filter stream list to minimal data to save memory/complexity
+            min_streams = []
+            for s in stream_data['streams']:
+                # Save URL, title/name/info needed for playback
+                min_streams.append({
+                    'url': s.get('url') or s.get('externalUrl'),
+                    'title': s.get('title', ''),
+                    'source': s.get('source', '') 
+                })
+            
+            window = xbmcgui.Window(10000)
+            window.setProperty('AIOStreams.StreamList', json.dumps(min_streams))
+            window.setProperty('AIOStreams.StreamIndex', '0')
+            window.setProperty('AIOStreams.StreamMetadata', json.dumps({
+                'content_type': content_type,
+                'imdb_id': imdb_id,
+                'season': season,
+                'episode': episode,
+                'title': title,
+                'poster': poster,
+                'fanart': fanart,
+                'clearlogo': clearlogo
+            }))
+            xbmc.log(f'[AIOStreams] Saved {len(min_streams)} streams for auto-skip', xbmc.LOGINFO)
+        except Exception as e:
+            xbmc.log(f'[AIOStreams] Failed to save stream list: {e}', xbmc.LOGWARNING)
+
+        # Decide how to play:
+        # If we have a valid HANDLE (called as a plugin source), we MUST use setResolvedUrl.
+        # If we don't (called via RunScript or similar), we use xbmc.Player().play().
+        if HANDLE >= 0:
+            xbmc.log(f'[AIOStreams] Resolving URL for playback (HANDLE={HANDLE}): {stream_url}', xbmc.LOGINFO)
+            list_item.setPath(stream_url)
+            xbmcplugin.setResolvedUrl(HANDLE, True, list_item)
+            
+            # When using setResolvedUrl, Kodi's internal player handles playback
+            # We need to manually trigger our monitoring since callbacks won't fire on PLAYER
+            # Use a small delay to let playback start, then call onPlayBackStarted manually
+            def trigger_monitoring():
+                xbmc.sleep(1000)  # Wait 1 second for playback to start
+                if xbmc.Player().isPlaying():
+                    PLAYER.onPlayBackStarted()
+            
+            import threading
+            threading.Thread(target=trigger_monitoring, daemon=True).start()
+        else:
+            xbmc.log(f'[AIOStreams] Initiating Player (HANDLE={HANDLE}): {stream_url}', xbmc.LOGINFO)
+            PLAYER.play(stream_url, list_item)
 
     except Exception as e:
         progress.close()
@@ -4092,7 +4143,7 @@ def smart_widget():
     index = int(params.get('index', 0))
     content_type = params.get('content_type', 'movie')
     
-    xbmc.log(f'[AIOStreams] smart_widget: index={index}, content_type={content_type}', xbmc.LOGINFO)
+    xbmc.log(f'[AIOStreams] smart_widget: index={index}, content_type={content_type}', xbmc.LOGDEBUG)
     
     # Handle home widgets (Trakt lists)
     if content_type == 'home':
@@ -4123,7 +4174,7 @@ def smart_widget():
                 if c.get('type') == content_type 
                 and not c.get('id', '').endswith('.search')]
     
-    xbmc.log(f'[AIOStreams] DEBUG: smart_widget filtered catalogs for {content_type}: {len(catalogs)} found. Accessing index {index}', xbmc.LOGINFO)
+    xbmc.log(f'[AIOStreams] DEBUG: smart_widget filtered catalogs for {content_type}: {len(catalogs)} found. Accessing index {index}', xbmc.LOGDEBUG)
     
     # Check if index is valid
     if index >= len(catalogs):
@@ -4136,7 +4187,7 @@ def smart_widget():
     catalog_id = catalog.get('id')
     catalog_name = catalog.get('name', 'Unknown')
     
-    xbmc.log(f'[AIOStreams] smart_widget: Using catalog "{catalog_name}" (id: {catalog_id})', xbmc.LOGINFO)
+    xbmc.log(f'[AIOStreams] smart_widget: Using catalog "{catalog_name}" (id: {catalog_id})', xbmc.LOGDEBUG)
 
     # Update the window property to ensure it uses the clean name
     # This overwrites any previous long path headers
@@ -4197,6 +4248,25 @@ def smart_widget():
 # ============================================================================
 
 # Action handler registry - maps action names to handler functions
+def play_next(params):
+    """
+    Handle play_next request (e.g. from UpNext).
+    This just wraps the standard play logic but ensures we pass explicit params.
+    """
+    xbmc.log(f'[AIOStreams] ===== PLAY_NEXT INVOKED =====', xbmc.LOGINFO)
+    xbmc.log(f'[AIOStreams] play_next params: {params}', xbmc.LOGINFO)
+    xbmc.log(f'[AIOStreams] HANDLE value: {HANDLE}', xbmc.LOGINFO)
+    
+    if not HAS_MODULES:
+        xbmc.log(f'[AIOStreams] play_next: HAS_MODULES is False, aborting', xbmc.LOGWARNING)
+        return
+    
+    # Call play() directly with the extracted params
+    xbmc.log(f'[AIOStreams] play_next: Calling play() with params', xbmc.LOGINFO)
+    play(params)
+    xbmc.log(f'[AIOStreams] play_next: play() completed', xbmc.LOGINFO)
+
+
 ACTION_REGISTRY = {
     # Search actions
     'search': lambda p: search(),
@@ -4205,6 +4275,8 @@ ACTION_REGISTRY = {
 
     # Playback actions
     'play': lambda p: play(),
+    'play_next': lambda p: play_next(p),
+    'play_next_source': lambda p: play_next_source(p),
     'play_first': lambda p: play_first(),
     'select_stream': lambda p: select_stream(),
     'show_streams': lambda p: show_streams(),
@@ -4360,9 +4432,14 @@ def router(params):
 # ============================================================================
 
 if __name__ == '__main__':
+    xbmc.log(f'[AIOStreams] ===== PLUGIN INVOKED =====', xbmc.LOGINFO)
+    xbmc.log(f'[AIOStreams] sys.argv: {sys.argv}', xbmc.LOGINFO)
     initialize()
     params = dict(parse_qsl(sys.argv[2][1:]))
+    xbmc.log(f'[AIOStreams] Parsed params: {params}', xbmc.LOGINFO)
+    xbmc.log(f'[AIOStreams] Action: {params.get("action", "<none>")}', xbmc.LOGINFO)
     router(params)
+    xbmc.log(f'[AIOStreams] ===== PLUGIN EXECUTION COMPLETE =====', xbmc.LOGINFO)
 
     # Cleanup on exit if using new modules
     if HAS_NEW_MODULES:

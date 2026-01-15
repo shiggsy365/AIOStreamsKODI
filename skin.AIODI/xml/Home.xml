@@ -199,8 +199,7 @@ SideFocus:$INFO[Skin.String(SideMenuFocus)] | VER: 6.0.311</label>
 				<onup>9001</onup>
 				<ondown>9003</ondown>
 				<onright>SetFocus($VAR[ActiveWidgetID])</onright>
-				<onclick>Skin.SetString(AIOStreams_SearchQuery)</onclick>
-				<onclick condition="!String.IsEmpty(Skin.String(AIOStreams_SearchQuery))">ActivateWindow(1108)</onclick>
+				<onclick>ActivateWindow(1106)</onclick>
 			</control>
 			<control type="image">
 				<left>24</left>
