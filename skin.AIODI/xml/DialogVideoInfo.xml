@@ -61,6 +61,7 @@
 							<param name="icon" value="icons/infodialogs/play.png" />
 							<param name="width" value="255" />
 							<param name="height" value="85" />
+							<param name="onclick" value="Close" />
 							<param name="visible" value="!String.IsEmpty(ListItem.Title)" />
 						</include>
 						<!-- Custom Trailer Button -->
