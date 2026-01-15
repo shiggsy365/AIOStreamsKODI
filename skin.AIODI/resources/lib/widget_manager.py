@@ -45,8 +45,33 @@ def save_config(config):
 def get_available_catalogs():
     """Get all available catalogs from the plugin via JSON-RPC"""
     catalogs = []
-    plugin_url = 'plugin://plugin.video.aiostreams/?action=get_folder_browser_catalogs'
 
+    # Add hardcoded Trakt widgets first (shown in yellow)
+    trakt_widgets = [
+        {
+            'label': 'Trakt Next Up',
+            'path': 'plugin://plugin.video.aiostreams/?action=trakt_next_up',
+            'type': 'series',
+            'is_trakt': True
+        },
+        {
+            'label': 'Trakt Watchlist Movies',
+            'path': 'plugin://plugin.video.aiostreams/?action=trakt_watchlist&media_type=movies',
+            'type': 'movie',
+            'is_trakt': True
+        },
+        {
+            'label': 'Trakt Watchlist Series',
+            'path': 'plugin://plugin.video.aiostreams/?action=trakt_watchlist&media_type=shows',
+            'type': 'series',
+            'is_trakt': True
+        }
+    ]
+    catalogs.extend(trakt_widgets)
+    log(f'Added {len(trakt_widgets)} hardcoded Trakt widgets')
+
+    # Fetch AIOStreams catalogs from the plugin
+    plugin_url = 'plugin://plugin.video.aiostreams/?action=get_folder_browser_catalogs'
     log(f'Fetching available catalogs from {plugin_url}...')
     try:
         rpc_query = {
@@ -75,13 +100,15 @@ def get_available_catalogs():
                 catalogs.append({
                     'label': item.get('label', 'Unknown'),
                     'path': url,
-                    'type': content_type
+                    'type': content_type,
+                    'is_trakt': False
                 })
         else:
             log(f'JSON-RPC call failed or returned no files: {result}', xbmc.LOGERROR)
     except Exception as e:
         log(f'Exception in get_available_catalogs: {e}', xbmc.LOGERROR)
 
+    log(f'Total available catalogs: {len(catalogs)}')
     return catalogs
 
 def load_page(page_name):
@@ -134,6 +161,7 @@ def load_page(page_name):
             item.setLabel2(display_type)
             item.setProperty('path', catalog.get('path', ''))
             item.setProperty('type', content_type)
+            item.setProperty('is_trakt', 'true' if catalog.get('is_trakt', False) else 'false')
             current_list.addItem(item)
         log(f'Current list populated successfully with {current_list.size()} items')
     except Exception as e:
@@ -145,6 +173,16 @@ def load_page(page_name):
         available_list.reset()
         all_catalogs = get_available_catalogs()
         log(f'Total available catalogs: {len(all_catalogs)}')
+
+        # Build a set of paths that are currently in use on ANY page
+        used_paths = set()
+        for page in ['home', 'tvshows', 'movies']:
+            page_catalogs = config.get(page, [])
+            for cat in page_catalogs:
+                used_paths.add(cat.get('path', ''))
+
+        log(f'Found {len(used_paths)} catalogs in use across all pages')
+
         for catalog in all_catalogs:
             item = xbmcgui.ListItem(catalog.get('label', 'Unknown'))
             # Capitalize the type for better display (e.g., "movie" -> "Movie", "series" -> "Series")
@@ -153,6 +191,10 @@ def load_page(page_name):
             item.setLabel2(display_type)
             item.setProperty('path', catalog.get('path', ''))
             item.setProperty('type', content_type)
+            item.setProperty('is_trakt', 'true' if catalog.get('is_trakt', False) else 'false')
+            # Mark if this catalog is currently in use on any page
+            is_used = catalog.get('path', '') in used_paths
+            item.setProperty('is_used', 'true' if is_used else 'false')
             available_list.addItem(item)
     except Exception as e:
         log(f'Error populating available_list (5000): {e}', xbmc.LOGERROR)
@@ -234,28 +276,57 @@ def add_catalog():
         window = xbmcgui.Window(1111)
         available_list = window.getControl(5000)
         pos = available_list.getSelectedPosition()
-        
+
         if pos >= 0:
             item = available_list.getSelectedItem()
             catalog = {
                 'label': item.getLabel(),
                 'path': item.getProperty('path'),
-                'type': item.getProperty('type')
+                'type': item.getProperty('type'),
+                'is_trakt': item.getProperty('is_trakt') == 'true'
             }
-            
+
             page_name = window.getProperty('CurrentPage')
             config = load_config()
             catalogs = config.get(page_name, [])
-            
+
             # Add to end of list
             catalogs.append(catalog)
             config[page_name] = catalogs
             save_config(config)
-            
+
             # Reload
             load_page(page_name)
     except Exception as e:
         log(f'Error in add_catalog: {e}', xbmc.LOGERROR)
+
+def clear_all():
+    """Clear all catalogs from all pages"""
+    try:
+        # Show confirmation dialog
+        dialog = xbmcgui.Dialog()
+        if dialog.yesno('Clear All Catalogs',
+                       'This will remove all catalogs from Home, TV Shows, and Movies pages.',
+                       'Are you sure?'):
+            log('Clearing all catalogs from all pages')
+            config = {
+                'home': [],
+                'tvshows': [],
+                'movies': []
+            }
+            save_config(config)
+
+            # Reload current page to show empty state
+            window = xbmcgui.Window(1111)
+            page_name = window.getProperty('CurrentPage')
+            if page_name:
+                load_page(page_name)
+            else:
+                load_page('home')
+
+            log('All catalogs cleared')
+    except Exception as e:
+        log(f'Error in clear_all: {e}', xbmc.LOGERROR)
 
 def save_and_exit():
     """Save configuration and reload skin"""
@@ -278,5 +349,7 @@ if __name__ == '__main__':
             remove_catalog()
         elif action == 'add_catalog':
             add_catalog()
+        elif action == 'clear_all':
+            clear_all()
         elif action == 'save_and_exit':
             save_and_exit()

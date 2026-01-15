@@ -46,7 +46,7 @@
                 <orientation>horizontal</orientation>
                 <itemgap>20</itemgap>
                 <align>center</align>
-                <ondown>3000</ondown>
+                <ondown>4001</ondown>
                 
                 <control type="button" id="2001">
                     <width>400</width>
@@ -112,7 +112,7 @@
                     <width>650</width>
                     <height>650</height>
                     <onleft>noop</onleft>
-                    <onright>4000</onright>
+                    <onright>4001</onright>
                     <onup>2000</onup>
                     <ondown>noop</ondown>
                     <itemlayout height="50">
@@ -122,7 +122,7 @@
                             <width>470</width>
                             <height>50</height>
                             <font>font13</font>
-                            <textcolor>FFFFFFFF</textcolor>
+                            <textcolor>$VAR[TraktWidgetColor]</textcolor>
                             <label>$INFO[ListItem.Label]</label>
                             <aligny>center</aligny>
                         </control>
@@ -132,7 +132,7 @@
                             <width>150</width>
                             <height>50</height>
                             <font>font12</font>
-                            <textcolor>grey</textcolor>
+                            <textcolor>$VAR[TraktWidgetTypeColor]</textcolor>
                             <label>$INFO[ListItem.Label2]</label>
                             <aligny>center</aligny>
                             <align>right</align>
@@ -144,7 +144,7 @@
                             <top>0</top>
                             <width>650</width>
                             <height>50</height>
-                            <texture colordiffuse="button_focus">colors/white.png</texture>
+                            <texture colordiffuse="$VAR[TraktWidgetFocusColor]">colors/white.png</texture>
                         </control>
                         <control type="label">
                             <left>10</left>
@@ -181,6 +181,7 @@
                 <itemgap>20</itemgap>
                 <onleft>3000</onleft>
                 <onright>5000</onright>
+                <onup>2000</onup>
                 
                 <!-- Move Up -->
                 <control type="button" id="4001">
@@ -242,7 +243,7 @@
                     <top>50</top>
                     <width>930</width>
                     <height>650</height>
-                    <onleft>4000</onleft>
+                    <onleft>4001</onleft>
                     <onright>noop</onright>
                     <onup>2000</onup>
                     <ondown>noop</ondown>
@@ -253,7 +254,7 @@
                             <width>700</width>
                             <height>50</height>
                             <font>font13</font>
-                            <textcolor>FFFFFFFF</textcolor>
+                            <textcolor>$VAR[AvailableCatalogColor]</textcolor>
                             <label>$INFO[ListItem.Label]</label>
                             <aligny>center</aligny>
                         </control>
@@ -263,7 +264,7 @@
                             <width>200</width>
                             <height>50</height>
                             <font>font12</font>
-                            <textcolor>grey</textcolor>
+                            <textcolor>$VAR[AvailableCatalogTypeColor]</textcolor>
                             <label>$INFO[ListItem.Label2]</label>
                             <aligny>center</aligny>
                             <align>right</align>
@@ -275,7 +276,7 @@
                             <top>0</top>
                             <width>930</width>
                             <height>50</height>
-                            <texture colordiffuse="button_focus">colors/white.png</texture>
+                            <texture colordiffuse="$VAR[AvailableCatalogFocusColor]">colors/white.png</texture>
                         </control>
                         <control type="label">
                             <left>10</left>
@@ -302,9 +303,20 @@
                 </control>
             </control>
             
+            <!-- Clear All Button -->
+            <control type="button" id="6001">
+                <left>480</left>
+                <top>880</top>
+                <width>200</width>
+                <height>60</height>
+                <label>Clear All</label>
+                <font>font13</font>
+                <onclick>RunScript(special://skin/resources/lib/widget_manager.py,clear_all)</onclick>
+            </control>
+
             <!-- Close Button -->
             <control type="button" id="6000">
-                <left>760</left>
+                <left>700</left>
                 <top>880</top>
                 <width>200</width>
                 <height>60</height>
