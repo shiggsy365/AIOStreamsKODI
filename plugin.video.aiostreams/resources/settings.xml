@@ -78,6 +78,7 @@
         <setting id="show_database_info" type="action" label="Show Database Info" action="RunPlugin(plugin://plugin.video.aiostreams/?action=show_database_info)"/>
         <setting id="clear_stream_stats" type="action" label="Clear Stream Statistics" action="RunPlugin(plugin://plugin.video.aiostreams/?action=clear_stream_stats)"/>
         <setting id="clear_preferences" type="action" label="Clear Learned Preferences" action="RunPlugin(plugin://plugin.video.aiostreams/?action=clear_preferences)"/>
+        <setting id="clear_clearlogo_cache" type="action" label="Clear Clearlogo Cache" action="RunPlugin(plugin://plugin.video.aiostreams/?action=clear_clearlogos)"/>
         <setting id="test_connection" type="action" label="Test AIOStreams Connection" action="RunPlugin(plugin://plugin.video.aiostreams/?action=test_connection)"/>
     </category>
 

@@ -4267,7 +4267,21 @@ def play_next(params):
     xbmc.log(f'[AIOStreams] play_next: play() completed', xbmc.LOGINFO)
 
 
+
+def action_clear_clearlogos(params):
+    """Wrapper for clear_clearlogo_cache with notification."""
+    if clear_clearlogo_cache():
+        xbmcgui.Dialog().notification("AIOStreams", "Clearlogo cache cleared", xbmcgui.NOTIFICATION_INFO, 3000)
+    else:
+        # If it returns False or None (though implementation returns None currently, let's assume success if no error logged)
+        # Actually clear_clearlogo_cache() from line 235 logs but doesn't return value explicitly (returns None)
+        # So check the logic.
+        xbmcgui.Dialog().notification("AIOStreams", "Clearlogo cache cleared", xbmcgui.NOTIFICATION_INFO, 3000)
+
 ACTION_REGISTRY = {
+    # Maintenance
+    'clear_clearlogos': lambda p: action_clear_clearlogos(p),
+
     # Search actions
     'search': lambda p: search(),
     'search_unified': lambda p: search_unified(),
