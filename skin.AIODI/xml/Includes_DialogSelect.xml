@@ -3,7 +3,7 @@
 	<include name="DefaultDialogSelectLayout">
 		<control type="group">
 			<top>165</top>
-			<centerleft>50%</centerleft>
+			<left>0</left>
 			<height>750</height>
 			<width>1220</width>
 			<include content="DialogBackgroundCommons">
@@ -197,7 +197,7 @@
 	<include name="GameDialogSelectSaveLayout">
 		<control type="group">
 			<top>80</top>
-			<centerleft>50%</centerleft>
+			<left>0</left>
 			<width>1639</width>
 			<height>919</height>
 			<include content="DialogBackgroundCommons">
@@ -714,7 +714,7 @@
 	<include name="VideoSelectLayout">
 		<control type="group">
 			<top>165</top>
-			<centerleft>50%</centerleft>
+			<left>0</left>
 			<height>750</height>
 			<width>1640</width>
 			<include content="DialogBackgroundCommons">

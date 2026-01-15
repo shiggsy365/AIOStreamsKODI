@@ -23,10 +23,20 @@
 			<onclick>Action(close)</onclick>
 		</control>
 		<control type="group">
-			<centerleft>50%</centerleft>
-			<top>150</top>
+			<left>0</left>
+			<top>200</top>
 			<width>450</width>
 			<height>780</height>
+			<control type="label">
+				<description>Debug Label</description>
+				<left>0</left>
+				<top>0</top>
+				<width>450</width>
+				<height>50</height>
+				<label>DEBUG_V360_LEFT_0</label>
+				<textcolor>red</textcolor>
+				<align>center</align>
+			</control>
 			<control type="image" id="999">
 				<description>background image</description>
 				<left>0</left>
