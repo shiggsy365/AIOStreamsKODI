@@ -137,6 +137,15 @@ def load_page(page_name):
 
     try:
         window.setProperty('CurrentPage', page_name)
+        # Set a user-friendly page name for display
+        page_display_names = {
+            'home': 'Home',
+            'tvshows': 'TV Shows',
+            'movies': 'Movies'
+        }
+        display_name = page_display_names.get(page_name, page_name.capitalize())
+        window.setProperty('CurrentPageName', display_name)
+        log(f'Set window properties: CurrentPage={page_name}, CurrentPageName={display_name}')
     except Exception as e:
         log(f'Error setting property on window: {e}', xbmc.LOGERROR)
         return
@@ -151,18 +160,32 @@ def load_page(page_name):
         current_list = window.getControl(3000)
         current_list.reset()
         log(f'Populating current list with {len(current_catalogs)} catalogs')
-        for i, catalog in enumerate(current_catalogs):
-            label = catalog.get('label', 'Unknown')
-            log(f'  [{i}] Adding catalog: {label}')
-            item = xbmcgui.ListItem(label)
-            # Capitalize the type for better display
-            content_type = catalog.get('type', 'unknown')
-            display_type = content_type.capitalize() if content_type != 'unknown' else ''
-            item.setLabel2(display_type)
-            item.setProperty('path', catalog.get('path', ''))
-            item.setProperty('type', content_type)
-            item.setProperty('is_trakt', 'true' if catalog.get('is_trakt', False) else 'false')
-            current_list.addItem(item)
+
+        if len(current_catalogs) == 0:
+            # Add a placeholder item when the list is empty
+            placeholder = xbmcgui.ListItem('[I]No catalogs added[/I]')
+            placeholder.setLabel2('[I]Use ← to add[/I]')
+            placeholder.setProperty('is_trakt', 'false')
+            placeholder.setProperty('is_used', 'false')
+            placeholder.setProperty('is_placeholder', 'true')
+            current_list.addItem(placeholder)
+            log('Added placeholder item to empty current list')
+        else:
+            for i, catalog in enumerate(current_catalogs):
+                label = catalog.get('label', 'Unknown')
+                log(f'  [{i}] Adding catalog: {label}')
+                item = xbmcgui.ListItem(label)
+                # Capitalize the type for better display
+                content_type = catalog.get('type', 'unknown')
+                display_type = content_type.capitalize() if content_type != 'unknown' else ''
+                item.setLabel2(display_type)
+                item.setProperty('path', catalog.get('path', ''))
+                item.setProperty('type', content_type)
+                item.setProperty('is_trakt', 'true' if catalog.get('is_trakt', False) else 'false')
+                # Set is_used to false for current items (not used by color variables, but set for consistency)
+                item.setProperty('is_used', 'false')
+                log(f'    Label: {label}, Label2: {display_type}, is_trakt: {item.getProperty("is_trakt")}')
+                current_list.addItem(item)
         log(f'Current list populated successfully with {current_list.size()} items')
     except Exception as e:
         log(f'Error populating current_list (3000): {e}', xbmc.LOGERROR)
@@ -205,17 +228,24 @@ def move_up():
         window = xbmcgui.Window(1111)
         current_list = window.getControl(3000)
         pos = current_list.getSelectedPosition()
-        
+
+        # Check if this is a placeholder item
+        if current_list.size() > 0:
+            item = current_list.getSelectedItem()
+            if item.getProperty('is_placeholder') == 'true':
+                log('Cannot move placeholder item')
+                return
+
         if pos > 0:
             page_name = window.getProperty('CurrentPage')
             config = load_config()
             catalogs = config.get(page_name, [])
-            
+
             # Swap positions
             catalogs[pos], catalogs[pos-1] = catalogs[pos-1], catalogs[pos]
             config[page_name] = catalogs
             save_config(config)
-            
+
             # Reload
             load_page(page_name)
             current_list.selectItem(pos-1)
@@ -228,17 +258,24 @@ def move_down():
         window = xbmcgui.Window(1111)
         current_list = window.getControl(3000)
         pos = current_list.getSelectedPosition()
-        
+
+        # Check if this is a placeholder item
+        if current_list.size() > 0:
+            item = current_list.getSelectedItem()
+            if item.getProperty('is_placeholder') == 'true':
+                log('Cannot move placeholder item')
+                return
+
         page_name = window.getProperty('CurrentPage')
         config = load_config()
         catalogs = config.get(page_name, [])
-        
+
         if pos < len(catalogs) - 1:
             # Swap positions
             catalogs[pos], catalogs[pos+1] = catalogs[pos+1], catalogs[pos]
             config[page_name] = catalogs
             save_config(config)
-            
+
             # Reload
             load_page(page_name)
             current_list.selectItem(pos+1)
@@ -251,16 +288,25 @@ def remove_catalog():
         window = xbmcgui.Window(1111)
         current_list = window.getControl(3000)
         pos = current_list.getSelectedPosition()
-        
+
+        # Check if this is a placeholder item
+        if current_list.size() > 0:
+            item = current_list.getSelectedItem()
+            if item.getProperty('is_placeholder') == 'true':
+                log('Cannot remove placeholder item')
+                return
+
         page_name = window.getProperty('CurrentPage')
         config = load_config()
         catalogs = config.get(page_name, [])
-        
+
         if pos >= 0 and pos < len(catalogs):
+            removed_label = catalogs[pos].get('label', 'Unknown')
+            log(f'Removing catalog: {removed_label}')
             catalogs.pop(pos)
             config[page_name] = catalogs
             save_config(config)
-            
+
             # Reload
             load_page(page_name)
             if pos > 0:
@@ -277,6 +323,8 @@ def add_catalog():
         available_list = window.getControl(5000)
         pos = available_list.getSelectedPosition()
 
+        log(f'add_catalog: Selected position: {pos}')
+
         if pos >= 0:
             item = available_list.getSelectedItem()
             catalog = {
@@ -286,19 +334,28 @@ def add_catalog():
                 'is_trakt': item.getProperty('is_trakt') == 'true'
             }
 
+            log(f'add_catalog: Adding catalog: {catalog["label"]} (type: {catalog["type"]}, path: {catalog["path"][:50]}...)')
+
             page_name = window.getProperty('CurrentPage')
+            log(f'add_catalog: Current page: {page_name}')
+
             config = load_config()
             catalogs = config.get(page_name, [])
+            log(f'add_catalog: Current page has {len(catalogs)} catalogs before adding')
 
             # Add to end of list
             catalogs.append(catalog)
             config[page_name] = catalogs
             save_config(config)
+            log(f'add_catalog: Saved config with {len(catalogs)} catalogs for {page_name}')
 
             # Reload
             load_page(page_name)
+            log('add_catalog: Reloaded page')
     except Exception as e:
         log(f'Error in add_catalog: {e}', xbmc.LOGERROR)
+        import traceback
+        log(traceback.format_exc(), xbmc.LOGERROR)
 
 def clear_all():
     """Clear all catalogs from all pages"""
