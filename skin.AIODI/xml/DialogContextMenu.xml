@@ -2,10 +2,7 @@
 <window>
 	<defaultcontrol>996</defaultcontrol>
 	<include>Animation_DialogPopupOpenClose</include>
-	<coordinates>
-		<left>0</left>
-		<top>0</top>
-	</coordinates>
+
 	<controls>
 		<control type="image">
 			<left>-1920</left>
