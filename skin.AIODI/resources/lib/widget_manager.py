@@ -137,6 +137,15 @@ def load_page(page_name):
 
     try:
         window.setProperty('CurrentPage', page_name)
+        # Set a user-friendly page name for display
+        page_display_names = {
+            'home': 'Home',
+            'tvshows': 'TV Shows',
+            'movies': 'Movies'
+        }
+        display_name = page_display_names.get(page_name, page_name.capitalize())
+        window.setProperty('CurrentPageName', display_name)
+        log(f'Set window properties: CurrentPage={page_name}, CurrentPageName={display_name}')
     except Exception as e:
         log(f'Error setting property on window: {e}', xbmc.LOGERROR)
         return
