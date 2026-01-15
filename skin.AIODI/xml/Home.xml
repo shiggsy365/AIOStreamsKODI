@@ -187,7 +187,7 @@
 				<onup>9001</onup>
 				<ondown>9003</ondown>
 				<onright>SetFocus($VAR[ActiveWidgetID])</onright>
-				<onclick>ActivateWindow(1106)</onclick>
+				<onclick>RunScript(special://skin/resources/lib/global_search.py)</onclick>
 			</control>
 			<control type="image">
 				<left>24</left>
