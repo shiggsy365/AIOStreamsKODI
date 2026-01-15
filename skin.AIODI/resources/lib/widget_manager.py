@@ -151,18 +151,32 @@ def load_page(page_name):
         current_list = window.getControl(3000)
         current_list.reset()
         log(f'Populating current list with {len(current_catalogs)} catalogs')
-        for i, catalog in enumerate(current_catalogs):
-            label = catalog.get('label', 'Unknown')
-            log(f'  [{i}] Adding catalog: {label}')
-            item = xbmcgui.ListItem(label)
-            # Capitalize the type for better display
-            content_type = catalog.get('type', 'unknown')
-            display_type = content_type.capitalize() if content_type != 'unknown' else ''
-            item.setLabel2(display_type)
-            item.setProperty('path', catalog.get('path', ''))
-            item.setProperty('type', content_type)
-            item.setProperty('is_trakt', 'true' if catalog.get('is_trakt', False) else 'false')
-            current_list.addItem(item)
+
+        if len(current_catalogs) == 0:
+            # Add a placeholder item when the list is empty
+            placeholder = xbmcgui.ListItem('[I]No catalogs added[/I]')
+            placeholder.setLabel2('[I]Use ← to add[/I]')
+            placeholder.setProperty('is_trakt', 'false')
+            placeholder.setProperty('is_used', 'false')
+            placeholder.setProperty('is_placeholder', 'true')
+            current_list.addItem(placeholder)
+            log('Added placeholder item to empty current list')
+        else:
+            for i, catalog in enumerate(current_catalogs):
+                label = catalog.get('label', 'Unknown')
+                log(f'  [{i}] Adding catalog: {label}')
+                item = xbmcgui.ListItem(label)
+                # Capitalize the type for better display
+                content_type = catalog.get('type', 'unknown')
+                display_type = content_type.capitalize() if content_type != 'unknown' else ''
+                item.setLabel2(display_type)
+                item.setProperty('path', catalog.get('path', ''))
+                item.setProperty('type', content_type)
+                item.setProperty('is_trakt', 'true' if catalog.get('is_trakt', False) else 'false')
+                # Set is_used to false for current items (not used by color variables, but set for consistency)
+                item.setProperty('is_used', 'false')
+                log(f'    Label: {label}, Label2: {display_type}, is_trakt: {item.getProperty("is_trakt")}')
+                current_list.addItem(item)
         log(f'Current list populated successfully with {current_list.size()} items')
     except Exception as e:
         log(f'Error populating current_list (3000): {e}', xbmc.LOGERROR)
