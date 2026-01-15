@@ -429,6 +429,11 @@
 		<value condition="Control.HasFocus(8)">$INFO[ListItem.LastPlayed,$LOCALIZE[568]: ]</value>
 		<value condition="Control.HasFocus(6)">$INFO[ListItem.FileNameAndPath]</value>
 	</variable>
+
+	<variable name="VideoInfoPlayButtonTexture">
+		<value condition="String.IsEqual(ListItem.DBType,tvshow) | String.IsEqual(ListItem.DBType,season)">icons/infodialog/browse.png</value>
+		<value>icons/infodialog/play.png</value>
+	</variable>
 	<variable name="PictureInfoMainLabelVar">
 		<value condition="Window.IsActive(Slideshow)">$INFO[SlideShow.Filename]</value>
 		<value>$INFO[ListItem.Label]</value>

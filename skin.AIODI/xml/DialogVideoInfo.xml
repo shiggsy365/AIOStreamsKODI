@@ -61,8 +61,8 @@
 							<label>$VAR[VideoInfoPlayButtonLabelVar]</label>
                             <font></font>
                             <textcolor>00FFFFFF</textcolor>
-							<texturefocus colordiffuse="button_focus">icons/infodialogs/play.png</texturefocus>
-                            <texturenofocus>icons/infodialogs/play.png</texturenofocus>
+							<texturefocus colordiffuse="button_focus">$VAR[VideoInfoPlayButtonTexture]</texturefocus>
+                            <texturenofocus>$VAR[VideoInfoPlayButtonTexture]</texturenofocus>
 							<visible>!String.IsEmpty(ListItem.Title)</visible>
 						</control>
 						<!-- Custom Trailer Button -->
@@ -72,8 +72,8 @@
 							<label>$LOCALIZE[20410]</label>
 							<font></font>
 							<textoffsetx>60</textoffsetx>
-							<texturefocus colordiffuse="button_focus">icons/infodialogs/trailer.png</texturefocus>
-							<texturenofocus>icons/infodialogs/trailer.png</texturenofocus>
+							<texturefocus colordiffuse="button_focus">icons/infodialog/trailer.png</texturefocus>
+							<texturenofocus>icons/infodialog/trailer.png</texturenofocus>
 							<align>center</align>
 							<aligny>center</aligny>
 							<visible>!String.IsEmpty(Window(Home).Property(InfoWindow.Trailer))</visible>
