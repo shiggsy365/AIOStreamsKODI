@@ -1594,6 +1594,7 @@ def play(params=None):
         if default_behavior == 'show_streams' and not force_autoplay:
             progress.update(100)
             progress.close()
+            xbmc.sleep(500)  # Wait for dialog to close
             show_streams_dialog(content_type, media_id, stream_data, title, poster, fanart, clearlogo, from_playable=True)
             return
 
@@ -1604,6 +1605,7 @@ def play(params=None):
 
         if not stream_url:
             progress.close()
+            xbmc.sleep(500)  # Wait for dialog to close
             xbmcgui.Dialog().notification('AIOStreams', 'No playable URL found', xbmcgui.NOTIFICATION_ERROR)
             return
 
@@ -1640,6 +1642,7 @@ def play(params=None):
         # Close progress and start playback
         progress.update(100, 'Starting playback...')
         progress.close()
+        xbmc.sleep(500)  # Wait for dialog to close
 
         # Save stream list for auto-skip functionality
         try:

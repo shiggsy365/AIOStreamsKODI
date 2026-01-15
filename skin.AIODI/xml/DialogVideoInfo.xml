@@ -69,34 +69,15 @@
 							<width>255</width>
 							<height>85</height>
 							<label>$LOCALIZE[20410]</label>
-							<font>font13</font>
+							<font></font>
 							<textoffsetx>60</textoffsetx>
-							<texturefocus border="21" colordiffuse="button_focus">buttons/button-fo.png</texturefocus>
-							<texturenofocus border="21">buttons/button-nofo.png</texturenofocus>
+							<texturefocus colordiffuse="button_focus">icons/infodialog/trailer.png</texturefocus>
+							<texturenofocus>icons/infodialog/trailer.png</texturenofocus>
 							<align>center</align>
 							<aligny>center</aligny>
 							<visible>!String.IsEmpty(Window(Home).Property(InfoWindow.Trailer))</visible>
 							<onclick>Dialog.Close(movieinformation)</onclick>
 							<onclick>PlayMedia($INFO[Window(Home).Property(InfoWindow.Trailer)])</onclick>
-							<!-- Icon Image Overlay -->
-							<control type="image">
-								<left>20</left>
-								<top>6</top>
-								<width>48</width>
-								<height>60</height>
-								<texture colordiffuse="grey">icons/infodialogs/trailer.png</texture>
-								<aspectratio>keep</aspectratio>
-								<visible>!Control.HasFocus(2001)</visible>
-							</control>
-							<control type="image">
-								<left>20</left>
-								<top>6</top>
-								<width>48</width>
-								<height>60</height>
-								<texture colordiffuse="white">icons/infodialogs/trailer.png</texture>
-								<aspectratio>keep</aspectratio>
-								<visible>Control.HasFocus(2001)</visible>
-							</control>
 						</control>
 					</control>
 				</control>

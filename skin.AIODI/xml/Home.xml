@@ -187,14 +187,14 @@
 				<onup>9001</onup>
 				<ondown>9003</ondown>
 				<onright>SetFocus($VAR[ActiveWidgetID])</onright>
-				<onclick>ActivateWindow(1106)</onclick>
+				<onclick>RunScript(special://skin/resources/lib/global_search.py)</onclick>
 			</control>
 			<control type="image">
 				<left>24</left>
 				<top>7</top>
 				<width>71</width>
 				<height>71</height>
-				<texture>icons/sidemenu/search_white.png</texture>
+				<texture>icons/sidemenu/search_new.png</texture>
 				<visible>!Control.HasFocus(9002)</visible>
 			</control>
 			<control type="image">
@@ -202,7 +202,7 @@
 				<top>7</top>
 				<width>71</width>
 				<height>71</height>
-				<texture>icons/sidemenu/search_red.png</texture>
+				<texture colordiffuse="button_focus">icons/sidemenu/search_new.png</texture>
 				<visible>Control.HasFocus(9002)</visible>
 			</control>
 		</control>
@@ -242,16 +242,16 @@
 				<top>7</top>
 				<width>71</width>
 				<height>71</height>
-				<texture>icons/sidemenu/home_white.png</texture>
-				<visible>!Control.HasFocus(9003) + [!String.IsEqual(Skin.String(SideMenuFocus),home) | Control.HasFocus(9002)]</visible>
+				<texture>icons/sidemenu/home_new.png</texture>
+				<visible>!Control.HasFocus(9003) + [!String.IsEqual(Skin.String(SideMenuFocus),home) | Control.HasFocus(9002) | Control.HasFocus(9001)]</visible>
 			</control>
 			<control type="image">
 				<left>24</left>
 				<top>7</top>
 				<width>71</width>
 				<height>71</height>
-				<texture>icons/sidemenu/home_red.png</texture>
-				<visible>Control.HasFocus(9003) | [!ControlGroup(9000).HasFocus + String.IsEqual(Skin.String(SideMenuFocus),home) + !ControlGroup(9100).HasFocus + !Control.HasFocus(9002)]</visible>
+				<texture colordiffuse="button_focus">icons/sidemenu/home_new.png</texture>
+				<visible>Control.HasFocus(9003) | [!ControlGroup(9000).HasFocus + String.IsEqual(Skin.String(SideMenuFocus),home) + !ControlGroup(9100).HasFocus + !Control.HasFocus(9002) + !Control.HasFocus(9001)]</visible>
 			</control>
 		</control>
 
@@ -277,7 +277,7 @@
 				<top>7</top>
 				<width>71</width>
 				<height>71</height>
-				<texture>icons/sidemenu/tv_white.png</texture>
+				<texture>icons/sidemenu/tv_new.png</texture>
 				<visible>!Control.HasFocus(9004) + !String.IsEqual(Skin.String(SideMenuFocus),tvshows)</visible>
 			</control>
 			<control type="image">
@@ -285,7 +285,7 @@
 				<top>7</top>
 				<width>71</width>
 				<height>71</height>
-				<texture>icons/sidemenu/tv_red.png</texture>
+				<texture colordiffuse="button_focus">icons/sidemenu/tv_new.png</texture>
 				<visible>Control.HasFocus(9004) | [!ControlGroup(9000).HasFocus + String.IsEqual(Skin.String(SideMenuFocus),tvshows) + !ControlGroup(9100).HasFocus]</visible>
 			</control>
 		</control>
@@ -312,7 +312,7 @@
 				<top>7</top>
 				<width>71</width>
 				<height>71</height>
-				<texture>icons/sidemenu/movies_white.png</texture>
+				<texture>icons/sidemenu/movies_new.png</texture>
 				<visible>!Control.HasFocus(9005) + !String.IsEqual(Skin.String(SideMenuFocus),movies)</visible>
 			</control>
 			<control type="image">
@@ -320,7 +320,7 @@
 				<top>7</top>
 				<width>71</width>
 				<height>71</height>
-				<texture>icons/sidemenu/movies_red.png</texture>
+				<texture colordiffuse="button_focus">icons/sidemenu/movies_new.png</texture>
 				<visible>Control.HasFocus(9005) | [!ControlGroup(9000).HasFocus + String.IsEqual(Skin.String(SideMenuFocus),movies) + !ControlGroup(9100).HasFocus]</visible>
 			</control>
 		</control>
@@ -345,7 +345,7 @@
 				<top>7</top>
 				<width>71</width>
 				<height>71</height>
-				<texture>icons/sidemenu/livetv_white.png</texture>
+				<texture>icons/sidemenu/livetv_new.png</texture>
 				<visible>!Control.HasFocus(9006) + !String.IsEqual(Skin.String(SideMenuFocus),livetv)</visible>
 			</control>
 			<control type="image">
@@ -353,7 +353,7 @@
 				<top>7</top>
 				<width>71</width>
 				<height>71</height>
-				<texture>icons/sidemenu/livetv_red.png</texture>
+				<texture colordiffuse="button_focus">icons/sidemenu/livetv_new.png</texture>
 				<visible>Control.HasFocus(9006) | [!ControlGroup(9000).HasFocus + String.IsEqual(Skin.String(SideMenuFocus),livetv) + !ControlGroup(9100).HasFocus]</visible>
 			</control>
 		</control>
@@ -378,7 +378,7 @@
 				<top>7</top>
 				<width>71</width>
 				<height>71</height>
-				<texture>icons/sidemenu/music_white.png</texture>
+				<texture>icons/sidemenu/music_new.png</texture>
 				<visible>!Control.HasFocus(9007) + !String.IsEqual(Skin.String(SideMenuFocus),music)</visible>
 			</control>
 			<control type="image">
@@ -386,7 +386,7 @@
 				<top>7</top>
 				<width>71</width>
 				<height>71</height>
-				<texture>icons/sidemenu/music_red.png</texture>
+				<texture colordiffuse="button_focus">icons/sidemenu/music_new.png</texture>
 				<visible>Control.HasFocus(9007) | [!ControlGroup(9000).HasFocus + String.IsEqual(Skin.String(SideMenuFocus),music) + !ControlGroup(9100).HasFocus]</visible>
 			</control>
 		</control>
@@ -419,7 +419,7 @@
 				<top>7</top>
 				<width>71</width>
 				<height>71</height>
-				<texture>icons/sidemenu/settings_white.png</texture>
+				<texture>icons/sidemenu/settings_new.png</texture>
 				<visible>!Control.HasFocus(9008) + !String.IsEqual(Skin.String(SideMenuFocus),settings)</visible>
 			</control>
 			<control type="image">
@@ -427,7 +427,7 @@
 				<top>7</top>
 				<width>71</width>
 				<height>71</height>
-				<texture>icons/sidemenu/settings_red.png</texture>
+				<texture colordiffuse="button_focus">icons/sidemenu/settings_new.png</texture>
 				<visible>Control.HasFocus(9008) | [!ControlGroup(9000).HasFocus + String.IsEqual(Skin.String(SideMenuFocus),settings) + !ControlGroup(9100).HasFocus]</visible>
 			</control>
 		</control>
