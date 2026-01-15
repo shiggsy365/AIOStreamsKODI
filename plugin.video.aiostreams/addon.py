@@ -1277,13 +1277,12 @@ def search():
 
         xbmcplugin.addDirectoryItem(HANDLE, url, list_item, is_folder)
     
-    # Check if next page exists by attempting to fetch it
-    next_skip = skip + 20
-    next_results = search_catalog(query, content_type, skip=next_skip)
-    
-    if next_results and 'metas' in next_results and len(next_results['metas']) > 0:
-        # Next page has items, show "Load More"
+    # Check if next page likely exists based on result count
+    # Default limit is usually 20 items per page
+    if len(results['metas']) >= 20:
+        # Next page likely exists, show "Load More"
         list_item = xbmcgui.ListItem(label='[COLOR yellow]» Load More...[/COLOR]')
+        next_skip = skip + 20
         url = get_url(action='search', content_type=content_type, query=query, skip=next_skip)
         xbmcplugin.addDirectoryItem(HANDLE, url, list_item, True)
     
@@ -1365,11 +1364,10 @@ def search_by_tab(query, content_type, is_widget=False):
 
         xbmcplugin.addDirectoryItem(HANDLE, url, list_item, is_folder)
 
-    # Load more if available
-    next_skip = 20
-    next_results = search_catalog(query, content_type, skip=next_skip)
-    if next_results and 'metas' in next_results and len(next_results['metas']) > 0:
+    # Load more if available (heuristic check)
+    if items and len(items) >= 20:
         list_item = xbmcgui.ListItem(label='[COLOR yellow]» Load More...[/COLOR]')
+        next_skip = 20
         url = get_url(action='search_tab', content_type=content_type, query=query, skip=next_skip)
         xbmcplugin.addDirectoryItem(HANDLE, url, list_item, True)
 
@@ -4527,11 +4525,10 @@ def handle_search_tab(params):
 
                 xbmcplugin.addDirectoryItem(HANDLE, url, list_item, is_folder)
 
-            # Check for next page
-            next_skip = skip + 20
-            next_results = search_catalog(query, content_type, skip=next_skip)
-            if next_results and 'metas' in next_results and len(next_results['metas']) > 0:
+            # Check for next page (heuristic check)
+            if items and len(items) >= 20:
                 list_item = xbmcgui.ListItem(label='[COLOR yellow]» Load More...[/COLOR]')
+                next_skip = skip + 20
                 url = get_url(action='search_tab', content_type=content_type, query=query, skip=next_skip)
                 xbmcplugin.addDirectoryItem(HANDLE, url, list_item, True)
 
