@@ -345,7 +345,7 @@
 							<top>0</top>
 							<width>180</width>
 							<height>270</height>
-							<texture colordiffuse="33FFFFFF">colors/white.png</texture>
+							<texture colordiffuse="00FFFFFF">colors/white.png</texture>
 						</control>
 						<control type="image">
 							<left>0</left>
@@ -409,7 +409,7 @@
 							<top>0</top>
 							<width>180</width>
 							<height>270</height>
-							<texture colordiffuse="33FFFFFF">colors/white.png</texture>
+							<texture colordiffuse="00FFFFFF">colors/white.png</texture>
 						</control>
 						<control type="image">
 							<left>0</left>
@@ -473,7 +473,7 @@
 							<top>0</top>
 							<width>180</width>
 							<height>270</height>
-							<texture colordiffuse="33FFFFFF">colors/white.png</texture>
+							<texture colordiffuse="00FFFFFF">colors/white.png</texture>
 						</control>
 						<control type="image">
 							<left>0</left>
@@ -537,7 +537,7 @@
 							<top>0</top>
 							<width>180</width>
 							<height>270</height>
-							<texture colordiffuse="33FFFFFF">colors/white.png</texture>
+							<texture colordiffuse="00FFFFFF">colors/white.png</texture>
 						</control>
 						<control type="image">
 							<left>0</left>
@@ -601,7 +601,7 @@
 							<top>0</top>
 							<width>180</width>
 							<height>270</height>
-							<texture colordiffuse="33FFFFFF">colors/white.png</texture>
+							<texture colordiffuse="00FFFFFF">colors/white.png</texture>
 						</control>
 						<control type="image">
 							<left>0</left>
@@ -669,7 +669,7 @@
 						<pagecontrol>60</pagecontrol>
 						<focusposition>0</focusposition>
 						<preloaditems>2</preloaditems>
-						<itemlayout width="180" height="270">
+						<itemlayout width="205" height="270">
 							<control type="group">
 								<left>0</left>
 								<top>0</top>
@@ -680,7 +680,7 @@
 									<top>0</top>
 									<width>180</width>
 									<height>270</height>
-									<texture colordiffuse="33FFFFFF">colors/white.png</texture>
+									<texture colordiffuse="00FFFFFF">colors/white.png</texture>
 								</control>
 								<control type="image">
 									<left>0</left>
@@ -710,7 +710,7 @@
 								</control>
 							</control>
 						</itemlayout>
-						<focusedlayout width="180" height="270">
+						<focusedlayout width="205" height="270">
 							<control type="group">
 								<left>0</left>
 								<top>0</top>
@@ -730,7 +730,7 @@
 									<top>0</top>
 									<width>180</width>
 									<height>270</height>
-									<texture colordiffuse="33FFFFFF">colors/white.png</texture>
+									<texture colordiffuse="00FFFFFF">colors/white.png</texture>
 								</control>
 								<control type="image">
 									<left>0</left>
