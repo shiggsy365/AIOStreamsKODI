@@ -118,18 +118,18 @@
 				<left>-3</left>
 				<top>0</top>
 				<width>1147</width>
-				<height>393</height>
+				<height>300</height>
 				<control type="image" id="137_bg">
 					<left>0</left>
 					<top>0</top>
-					<width>761</width>
-					<height>393</height>
+					<width>1147</width>
+					<height>300</height>
 					<texture>colors/black_50.png</texture>
 					<visible>true</visible>
 				</control>
 				<control type="button" id="138">
-					<width>761</width>
-					<height>393</height>
+					<width>1147</width>
+					<height>300</height>
 					<font></font>
 					<label></label>
 					<onclick condition="!String.IsEmpty(ListItem.Plot)">SetProperty(TextViewer_Header,$LOCALIZE[207],home)</onclick>
@@ -147,13 +147,13 @@
 					<left>0</left>
 					<top>0</top>
 					<width>1147</width>
-					<height>393</height>
+					<height>300</height>
 					<texture>colors/black_50.png</texture>
 					<visible>false</visible>
 				</control>
 				<control type="button" id="139">
 					<width>1147</width>
-					<height>393</height>
+					<height>300</height>
 					<font></font>
 					<label></label>
 					<onclick condition="!String.IsEmpty(ListItem.Plot)">SetProperty(TextViewer_Header,$LOCALIZE[207],home)</onclick>
@@ -170,8 +170,8 @@
 				<control type="textbox">
 					<left>40</left>
 					<top>25</top>
-					<width>690</width>
-					<height>358</height>
+					<width>1067</width>
+					<height>250</height>
 					<label fallback="19055">$INFO[ListItem.Plot]</label>
 					<autoscroll delay="10000" time="5000" repeat="10000">Skin.HasSetting(AutoScroll)</autoscroll>
 					<visible>true</visible>
@@ -179,137 +179,107 @@
 				<control type="textbox">
 					<left>40</left>
 					<top>25</top>
-					<width>1064</width>
-					<height>358</height>
+					<width>1067</width>
+					<height>250</height>
 					<label fallback="19055">$INFO[ListItem.Plot]</label>
 					<autoscroll delay="10000" time="5000" repeat="10000">Skin.HasSetting(AutoScroll)</autoscroll>
 					<visible>false</visible>
 				</control>
 			</control>
-			<control type="image" id="4000_bg">
-				<left>758</left>
-				<top>0</top>
-				<width>386</width>
-				<height>393</height>
-				<texture>colors/black_50.png</texture>
-				<visible>true</visible>
-			</control>
-			<control type="grouplist" id="4000">
-				<orientation>vertical</orientation>
-				<left>758</left>
-				<top>20</top>
-				<height>402</height>
-				<itemgap>10</itemgap>
-				<ondown>50</ondown>
-				<onup>SetFocus(1011)</onup>
-				<onright>140</onright>
-				<onleft>8</onleft>
-				<visible>true</visible>
+			<control type="grouplist">
+				<left>0</left>
+				<top>310</top>
+				<width>1147</width>
+				<height>90</height>
+				<itemgap>5</itemgap>
+				<orientation>horizontal</orientation>
+				<usecontrolcoords>true</usecontrolcoords>
 				
-				<!-- Row 1: Metrics (Rating, Year, Duration) -->
-				<control type="grouplist">
-					<height>40</height>
-					<itemgap>20</itemgap>
-					<orientation>horizontal</orientation>
-					<usecontrolcoords>true</usecontrolcoords>
-					
-					<!-- Rating -->
-					<control type="group">
-						<width>100</width>
-						<control type="image">
-							<left>0</left>
-							<top>2</top>
-							<width>32</width>
-							<height>32</height>
-							<texture colordiffuse="button_focus">overlays/badge.png</texture>
-							<visible>!String.IsEmpty(ListItem.Rating)</visible>
-						</control>
-						<control type="label">
-							<left>40</left>
-							<top>0</top>
-							<width>60</width>
-							<height>40</height>
-							<aligny>center</aligny>
-							<label>$INFO[ListItem.Rating]</label>
-							<font>font13_title</font>
-							<textcolor>white</textcolor>
-						</control>
-					</control>
-					
-					<!-- Year -->
+				<control type="group">
+					<width>280</width>
+					<height>90</height>
 					<control type="label">
-						<width>80</width>
-						<height>40</height>
-						<aligny>center</aligny>
-						<label>$INFO[ListItem.Year]</label>
-						<font>font13_title</font>
+						<top>10</top>
+						<width>270</width>
+						<height>25</height>
+						<label>Director</label>
+						<font>font12</font>
 						<textcolor>grey</textcolor>
 					</control>
-					
-					<!-- Duration -->
 					<control type="label">
-						<width>120</width>
-						<height>40</height>
-						<aligny>center</aligny>
+						<top>35</top>
+						<width>270</width>
+						<height>30</height>
+						<label>$INFO[ListItem.Director]</label>
+						<font>font13</font>
+						<textcolor>white</textcolor>
+						<scroll>true</scroll>
+					</control>
+				</control>
+				
+				<control type="group">
+					<width>280</width>
+					<height>90</height>
+					<control type="label">
+						<top>10</top>
+						<width>270</width>
+						<height>25</height>
+						<label>Released</label>
+						<font>font12</font>
+						<textcolor>grey</textcolor>
+					</control>
+					<control type="label">
+						<top>35</top>
+						<width>270</width>
+						<height>30</height>
+						<label>$INFO[ListItem.Premiered]</label>
+						<font>font13</font>
+						<textcolor>white</textcolor>
+					</control>
+				</control>
+
+				<control type="group">
+					<width>280</width>
+					<height>90</height>
+					<control type="label">
+						<top>10</top>
+						<width>270</width>
+						<height>25</height>
+						<label>Duration</label>
+						<font>font12</font>
+						<textcolor>grey</textcolor>
+					</control>
+					<control type="label">
+						<top>35</top>
+						<width>270</width>
+						<height>30</height>
 						<label>$INFO[ListItem.Duration, , min]</label>
-						<font>font13_title</font>
-						<textcolor>grey</textcolor>
+						<font>font13</font>
+						<textcolor>white</textcolor>
 					</control>
 				</control>
-				
-				<!-- Row 2: Genre -->
-				<control type="label">
-					<height>40</height>
-					<width>380</width>
-					<label>$INFO[ListItem.Genre]</label>
-					<font>font13_title</font>
-					<textcolor>button_focus</textcolor>
-					<wrapmultiline>true</wrapmultiline>
+
+				<control type="group">
+					<width>280</width>
+					<height>90</height>
+					<control type="label">
+						<top>10</top>
+						<width>270</width>
+						<height>25</height>
+						<label>Type</label>
+						<font>font12</font>
+						<textcolor>grey</textcolor>
+					</control>
+					<control type="label">
+						<top>35</top>
+						<width>270</width>
+						<height>30</height>
+						<label>$INFO[ListItem.DBType]</label>
+						<font>font13</font>
+						<textcolor>white</textcolor>
+					</control>
 				</control>
-				
-				<!-- Row 3: Details -->
-				<control type="label">
-					<height>25</height>
-					<label>Director: [COLOR white]$INFO[ListItem.Director][/COLOR]</label>
-					<font>font12</font>
-					<textcolor>grey</textcolor>
-					<visible>!String.IsEmpty(ListItem.Director)</visible>
-				</control>
-				<control type="label">
-					<height>25</height>
-					<label>Writer: [COLOR white]$INFO[ListItem.Writer][/COLOR]</label>
-					<font>font12</font>
-					<textcolor>grey</textcolor>
-					<visible>!String.IsEmpty(ListItem.Writer)</visible>
-				</control>
-				<control type="label">
-					<height>25</height>
-					<label>Studio: [COLOR white]$INFO[ListItem.Studio][/COLOR]</label>
-					<font>font12</font>
-					<textcolor>grey</textcolor>
-					<visible>!String.IsEmpty(ListItem.Studio)</visible>
-				</control>
-				<control type="label">
-					<height>25</height>
-					<label>Type: [COLOR white]$INFO[ListItem.DBType][/COLOR]</label>
-					<font>font12</font>
-					<textcolor>grey</textcolor>
-				</control>
-				<control type="label">
-					<height>25</height>
-					<label>Release: [COLOR white]$INFO[ListItem.Premiered][/COLOR]</label>
-					<font>font12</font>
-					<textcolor>grey</textcolor>
-					<visible>!String.IsEmpty(ListItem.Premiered)</visible>
-				</control>
-				<control type="label">
-					<height>25</height>
-					<label>Runtime: [COLOR white]$INFO[ListItem.Duration, , min][/COLOR]</label>
-					<font>font12</font>
-					<textcolor>grey</textcolor>
-					<visible>!String.IsEmpty(ListItem.Duration)</visible>
-				</control>
-				</control>
+			</control>
 				<control type="image">
 					<left>77</left>
 					<top>185</top>
