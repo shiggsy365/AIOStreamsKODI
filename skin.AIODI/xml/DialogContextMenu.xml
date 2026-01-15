@@ -1,64 +1,76 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <window>
 	<defaultcontrol>996</defaultcontrol>
-	<include>Animation_DialogPopupOpenClose</include>
-
 	<controls>
+		<!-- Background Dimmer -->
 		<control type="image">
-			<left>-1920</left>
-			<top>-1080</top>
-			<width>5760</width>
-			<height>3240</height>
-			<animation effect="fade" start="0" end="100" time="300">WindowOpen</animation>
+			<left>-960</left>
+			<top>-540</top>
+			<width>1920</width>
+			<height>1080</height>
+			<texture colordiffuse="C0000000">colors/black.png</texture>
+			<animation effect="fade" start="0" end="100" time="200">WindowOpen</animation>
 			<animation effect="fade" start="100" end="0" time="200">WindowClose</animation>
-			<texture colordiffuse="B0FFFFFF">colors/black.png</texture>
 		</control>
-		<control type="button">
-			<left>-1920</left>
-			<top>-1080</top>
-			<width>5760</width>
-			<height>3240</height>
-			<texturefocus />
-			<texturenofocus />
-			<onclick>Action(close)</onclick>
-		</control>
+
+		<!-- Right Side Panel -->
 		<control type="group">
-			<left>-225</left>
-			<top>-390</top>
-			<width>450</width>
-			<height>780</height>
-			<control type="image" id="999">
-				<description>background image</description>
+			<left>460</left>
+			<top>-540</top>
+			<width>500</width>
+			<height>1080</height>
+			<animation type="WindowOpen">
+				<effect type="slide" start="500" end="0" time="300" tween="cubic" easing="out" />
+			</animation>
+			<animation type="WindowClose">
+				<effect type="slide" start="0" end="500" time="300" tween="cubic" easing="in" />
+			</animation>
+
+			<!-- Panel Background -->
+			<control type="image">
 				<left>0</left>
 				<top>0</top>
-				<width>450</width>
-				<height>780</height>
-				<texture colordiffuse="dialog_tint">colors/white.png</texture>
+				<width>500</width>
+				<height>1080</height>
+				<texture colordiffuse="FF1A1A1A">colors/white.png</texture>
+                <!-- Add a left border/shadow -->
 			</control>
+            
+            <!-- Side Shadow/Border -->
+            <control type="image">
+                <left>-5</left>
+                <top>0</top>
+                <width>5</width>
+                <height>1080</height>
+                <texture colordiffuse="FF000000">colors/white.png</texture>
+            </control>
+
+            <!-- List Content -->
 			<control type="grouplist" id="996">
 				<description>grouplist for context buttons</description>
-				<left>0</left>
-				<top>0</top>
+				<left>25</left>
+				<top>50</top>
 				<width>450</width>
-				<height max="780">auto</height>
+				<height>980</height>
+				<itemgap>2</itemgap>
+				<onleft>Close</onleft>
+				<onright>Close</onright>
+                <align>center</align>
 				<usecontrolcoords>true</usecontrolcoords>
 			</control>
-			<include content="UpDownArrows">
-				<param name="container_id" value="996" />
-				<param name="posx" value="201" />
-				<param name="up_posy" value="-40" />
-				<param name="down_posy" value="798" />
-			</include>
 		</control>
+
+		<!-- Button Template -->
 		<control type="button" id="1000">
 			<description>button template</description>
 			<left>0</left>
-			<top></top>
+			<top>0</top>
 			<width>450</width>
 			<height>65</height>
-			<align>center</align>
+			<align>left</align>
+            <textoffsetx>20</textoffsetx>
 			<texturefocus colordiffuse="button_focus">lists/focus.png</texturefocus>
-			<texturenofocus />
+			<texturenofocus colordiffuse="00FFFFFF">colors/white.png</texturenofocus>
 		</control>
 	</controls>
 </window>
