@@ -219,17 +219,24 @@ def move_up():
         window = xbmcgui.Window(1111)
         current_list = window.getControl(3000)
         pos = current_list.getSelectedPosition()
-        
+
+        # Check if this is a placeholder item
+        if current_list.size() > 0:
+            item = current_list.getSelectedItem()
+            if item.getProperty('is_placeholder') == 'true':
+                log('Cannot move placeholder item')
+                return
+
         if pos > 0:
             page_name = window.getProperty('CurrentPage')
             config = load_config()
             catalogs = config.get(page_name, [])
-            
+
             # Swap positions
             catalogs[pos], catalogs[pos-1] = catalogs[pos-1], catalogs[pos]
             config[page_name] = catalogs
             save_config(config)
-            
+
             # Reload
             load_page(page_name)
             current_list.selectItem(pos-1)
@@ -242,17 +249,24 @@ def move_down():
         window = xbmcgui.Window(1111)
         current_list = window.getControl(3000)
         pos = current_list.getSelectedPosition()
-        
+
+        # Check if this is a placeholder item
+        if current_list.size() > 0:
+            item = current_list.getSelectedItem()
+            if item.getProperty('is_placeholder') == 'true':
+                log('Cannot move placeholder item')
+                return
+
         page_name = window.getProperty('CurrentPage')
         config = load_config()
         catalogs = config.get(page_name, [])
-        
+
         if pos < len(catalogs) - 1:
             # Swap positions
             catalogs[pos], catalogs[pos+1] = catalogs[pos+1], catalogs[pos]
             config[page_name] = catalogs
             save_config(config)
-            
+
             # Reload
             load_page(page_name)
             current_list.selectItem(pos+1)
@@ -265,16 +279,25 @@ def remove_catalog():
         window = xbmcgui.Window(1111)
         current_list = window.getControl(3000)
         pos = current_list.getSelectedPosition()
-        
+
+        # Check if this is a placeholder item
+        if current_list.size() > 0:
+            item = current_list.getSelectedItem()
+            if item.getProperty('is_placeholder') == 'true':
+                log('Cannot remove placeholder item')
+                return
+
         page_name = window.getProperty('CurrentPage')
         config = load_config()
         catalogs = config.get(page_name, [])
-        
+
         if pos >= 0 and pos < len(catalogs):
+            removed_label = catalogs[pos].get('label', 'Unknown')
+            log(f'Removing catalog: {removed_label}')
             catalogs.pop(pos)
             config[page_name] = catalogs
             save_config(config)
-            
+
             # Reload
             load_page(page_name)
             if pos > 0:
@@ -291,6 +314,8 @@ def add_catalog():
         available_list = window.getControl(5000)
         pos = available_list.getSelectedPosition()
 
+        log(f'add_catalog: Selected position: {pos}')
+
         if pos >= 0:
             item = available_list.getSelectedItem()
             catalog = {
@@ -300,19 +325,28 @@ def add_catalog():
                 'is_trakt': item.getProperty('is_trakt') == 'true'
             }
 
+            log(f'add_catalog: Adding catalog: {catalog["label"]} (type: {catalog["type"]}, path: {catalog["path"][:50]}...)')
+
             page_name = window.getProperty('CurrentPage')
+            log(f'add_catalog: Current page: {page_name}')
+
             config = load_config()
             catalogs = config.get(page_name, [])
+            log(f'add_catalog: Current page has {len(catalogs)} catalogs before adding')
 
             # Add to end of list
             catalogs.append(catalog)
             config[page_name] = catalogs
             save_config(config)
+            log(f'add_catalog: Saved config with {len(catalogs)} catalogs for {page_name}')
 
             # Reload
             load_page(page_name)
+            log('add_catalog: Reloaded page')
     except Exception as e:
         log(f'Error in add_catalog: {e}', xbmc.LOGERROR)
+        import traceback
+        log(traceback.format_exc(), xbmc.LOGERROR)
 
 def clear_all():
     """Clear all catalogs from all pages"""
