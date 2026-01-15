@@ -1249,7 +1249,7 @@
 			<depth>DepthBackground</depth>
 			<include>FullScreenDimensions</include>
 			<aspectratio>scale</aspectratio>
-			<texture colordiffuse="primary_background">special://skin/extras/backgrounds/primary.jpg</texture>
+			<texture>special://skin/extras/background.png</texture>
 			<visible>!Window.IsActive(settings) + !Window.IsActive(skinsettings) + !Window.IsActive(systeminfo) + !Window.IsActive(filemanager) + !Window.IsActive(addonbrowser)</visible>
 		</control>
 		<control type="image">
