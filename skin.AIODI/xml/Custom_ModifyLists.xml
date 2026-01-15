@@ -46,7 +46,7 @@
                 <orientation>horizontal</orientation>
                 <itemgap>20</itemgap>
                 <align>center</align>
-                <ondown>3000</ondown>
+                <ondown>4001</ondown>
                 
                 <control type="button" id="2001">
                     <width>400</width>
@@ -112,7 +112,7 @@
                     <width>650</width>
                     <height>650</height>
                     <onleft>noop</onleft>
-                    <onright>4000</onright>
+                    <onright>4001</onright>
                     <onup>2000</onup>
                     <ondown>noop</ondown>
                     <itemlayout height="50">
@@ -181,6 +181,7 @@
                 <itemgap>20</itemgap>
                 <onleft>3000</onleft>
                 <onright>5000</onright>
+                <onup>2000</onup>
                 
                 <!-- Move Up -->
                 <control type="button" id="4001">
@@ -242,7 +243,7 @@
                     <top>50</top>
                     <width>930</width>
                     <height>650</height>
-                    <onleft>4000</onleft>
+                    <onleft>4001</onleft>
                     <onright>noop</onright>
                     <onup>2000</onup>
                     <ondown>noop</ondown>

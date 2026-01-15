@@ -4261,6 +4261,117 @@ def smart_widget():
     xbmcplugin.endOfDirectory(HANDLE)
 
 
+def configured_widget():
+    """
+    Dynamic widget content from widget_config.json
+
+    URL Parameters:
+        index: Widget index (0, 1, 2, ...)
+        page: 'home', 'tvshows', or 'movies'
+
+    Returns:
+        Widget content based on configuration
+    """
+    from resources.lib.widget_config_loader import get_widget_at_index
+
+    params = dict(parse_qsl(sys.argv[2][1:]))
+    index = int(params.get('index', 0))
+    page = params.get('page', 'home')
+
+    xbmc.log(f'[AIOStreams] configured_widget: index={index}, page={page}', xbmc.LOGDEBUG)
+
+    # Get the configured widget
+    widget = get_widget_at_index(page, index)
+
+    if not widget:
+        xbmc.log(f'[AIOStreams] configured_widget: No widget configured at index {index} for {page}', xbmc.LOGDEBUG)
+        xbmcplugin.endOfDirectory(HANDLE)
+        return
+
+    # Extract widget details
+    label = widget.get('label', 'Unknown')
+    path = widget.get('path', '')
+    widget_type = widget.get('type', 'unknown')
+    is_trakt = widget.get('is_trakt', False)
+
+    xbmc.log(f'[AIOStreams] configured_widget: Loading "{label}" (type: {widget_type}, is_trakt: {is_trakt})', xbmc.LOGINFO)
+
+    # Parse the widget path to extract action and parameters
+    try:
+        if '?' in path:
+            path_parts = path.split('?')
+            query_string = path_parts[1] if len(path_parts) > 1 else ''
+            widget_params = dict(parse_qsl(query_string))
+            action = widget_params.get('action', '')
+
+            xbmc.log(f'[AIOStreams] configured_widget: Redirecting to action "{action}" with params {widget_params}', xbmc.LOGDEBUG)
+
+            # Route to the appropriate action
+            if action == 'trakt_next_up':
+                return trakt_next_up()
+            elif action == 'trakt_watchlist':
+                media_type = widget_params.get('media_type', 'movies')
+                return trakt_watchlist({'media_type': media_type})
+            elif action == 'browse_catalog':
+                # Browse a specific catalog
+                catalog_id = widget_params.get('catalog_id', '')
+                content_type = widget_params.get('content_type', 'movie')
+                catalog_name = widget_params.get('catalog_name', label)
+
+                # Set the window property for the header
+                try:
+                    xbmcgui.Window(10000).setProperty(f'{page}_widget_{index}_name', catalog_name)
+                except:
+                    pass
+
+                # Fetch catalog content
+                catalog_data = get_catalog(content_type, catalog_id, genre=None, skip=0)
+
+                if not catalog_data or 'metas' not in catalog_data:
+                    xbmc.log(f'[AIOStreams] configured_widget: No content in catalog {catalog_id}', xbmc.LOGWARNING)
+                    xbmcplugin.endOfDirectory(HANDLE)
+                    return
+
+                # Set plugin metadata
+                xbmcplugin.setPluginCategory(HANDLE, catalog_name)
+                xbmcplugin.setContent(HANDLE, 'tvshows' if content_type == 'series' else 'movies')
+
+                # Add items
+                for meta in catalog_data['metas']:
+                    item_id = meta.get('id')
+                    if not item_id:
+                        continue
+
+                    # For series: navigate to show
+                    if content_type == 'series':
+                        url = get_url(action='show_seasons', meta_id=item_id)
+                        is_folder = True
+                    else:
+                        url = get_url(action='show_streams', content_type='movie', media_id=item_id,
+                                     title=meta.get('name', ''), poster=meta.get('poster', ''),
+                                     fanart=meta.get('background', ''), clearlogo=meta.get('logo', ''))
+                        is_folder = False
+
+                    list_item = create_listitem_with_context(meta, content_type, url)
+                    xbmcplugin.addDirectoryItem(HANDLE, url, list_item, is_folder)
+
+                xbmcplugin.endOfDirectory(HANDLE)
+                return
+            else:
+                xbmc.log(f'[AIOStreams] configured_widget: Unknown action "{action}"', xbmc.LOGWARNING)
+                xbmcplugin.endOfDirectory(HANDLE)
+                return
+        else:
+            xbmc.log(f'[AIOStreams] configured_widget: Invalid widget path "{path}"', xbmc.LOGERROR)
+            xbmcplugin.endOfDirectory(HANDLE)
+            return
+    except Exception as e:
+        xbmc.log(f'[AIOStreams] configured_widget: Error processing widget: {e}', xbmc.LOGERROR)
+        import traceback
+        xbmc.log(traceback.format_exc(), xbmc.LOGERROR)
+        xbmcplugin.endOfDirectory(HANDLE)
+        return
+
 
 # ============================================================================
 # Action Registry - Cleaner routing using dictionary pattern
@@ -4319,6 +4430,7 @@ ACTION_REGISTRY = {
     'series_lists': lambda p: series_lists(),
     'catalogs': lambda p: list_catalogs(),
     'smart_widget': lambda p: smart_widget(),
+    'configured_widget': lambda p: configured_widget(),
     'catalog_genres': lambda p: list_catalog_genres(),
     'browse_catalog': lambda p: browse_catalog(),
 
