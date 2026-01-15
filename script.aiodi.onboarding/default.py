@@ -128,9 +128,10 @@ class OnboardingWizard:
             try:
                 # Direct XML editing due to PVR instance limitations
                 import os
+                import xbmcvfs
                 import xml.etree.ElementTree as ET
                 
-                addon_data_path = xbmc.translatePath('special://profile/addon_data/pvr.iptvsimple/')
+                addon_data_path = xbmcvfs.translatePath('special://profile/addon_data/pvr.iptvsimple/')
                 
                 # Get user input first
                 m3u = self.dialog.input("M3U Playlist URL")
