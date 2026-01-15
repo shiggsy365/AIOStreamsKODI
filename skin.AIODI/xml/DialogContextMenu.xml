@@ -26,20 +26,22 @@
 			<onclick>Action(close)</onclick>
 		</control>
 		<control type="group">
-			<left>50%</left>
-			<top>50%</top>
+			<centerleft>50%</centerleft>
+			<centertop>50%</centertop>
+			<width>450</width>
+			<height>780</height>
 			<control type="image" id="999">
 				<description>background image</description>
-				<left>-225</left>
-				<top>-390</top>
+				<left>0</left>
+				<top>0</top>
 				<width>450</width>
 				<height>780</height>
 				<texture colordiffuse="dialog_tint">colors/white.png</texture>
 			</control>
 			<control type="grouplist" id="996">
 				<description>grouplist for context buttons</description>
-				<left>-225</left>
-				<top>-390</top>
+				<left>0</left>
+				<top>0</top>
 				<width>450</width>
 				<height max="780">auto</height>
 				<usecontrolcoords>true</usecontrolcoords>

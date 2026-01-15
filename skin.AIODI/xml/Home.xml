@@ -256,7 +256,7 @@ SideFocus:$INFO[Skin.String(SideMenuFocus)] | VER: 6.0.311</label>
 				<width>71</width>
 				<height>71</height>
 				<texture>icons/sidemenu/home_white.png</texture>
-				<visible>!Control.HasFocus(9003) + !String.IsEqual(Skin.String(SideMenuFocus),home)</visible>
+				<visible>!Control.HasFocus(9003) + [!String.IsEqual(Skin.String(SideMenuFocus),home) | Control.HasFocus(9002)]</visible>
 			</control>
 			<control type="image">
 				<left>24</left>

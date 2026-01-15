@@ -336,45 +336,46 @@
 						</control>
 					</control>
 					
+					<!-- Cast Tile 1 -->
 					<control type="group">
 						<left>0</left>
 						<top>0</top>
-						<width>200</width>
-						<height>350</height>
+						<width>180</width>
+						<height>270</height>
 						<!-- 3px Red Focus Border -->
 						<control type="image">
 							<left>-3</left>
 							<top>-3</top>
-							<width>206</width>
-							<height>356</height>
+							<width>186</width>
+							<height>276</height>
 							<texture colordiffuse="FFFF0000">colors/white.png</texture>
 							<visible>Control.HasFocus(50)</visible>
 						</control>
 						<control type="image">
 							<left>0</left>
 							<top>0</top>
-							<width>200</width>
-							<height>350</height>
+							<width>180</width>
+							<height>270</height>
 							<texture colordiffuse="33FFFFFF">colors/white.png</texture>
 						</control>
 						<control type="image">
-							<left>10</left>
-							<top>10</top>
+							<left>0</left>
+							<top>0</top>
 							<width>180</width>
 							<height>270</height>
 							<texture background="true">$INFO[Window(Home).Property(InfoWindow.Cast.1.Thumb)]</texture>
 							<aspectratio aligny="center">scale</aspectratio>
 						</control>
 						<control type="image">
-							<left>10</left>
-							<top>230</top>
+							<left>0</left>
+							<top>220</top>
 							<width>180</width>
 							<height>50</height>
 							<texture>colors/black_50.png</texture>
 						</control>
 						<control type="label">
-							<left>10</left>
-							<top>230</top>
+							<left>0</left>
+							<top>220</top>
 							<width>180</width>
 							<height>50</height>
 							<align>center</align>
@@ -386,8 +387,8 @@
 						<control type="button" id="50">
 							<left>0</left>
 							<top>0</top>
-							<width>200</width>
-							<height>280</height>
+							<width>180</width>
+							<height>270</height>
 							<texturefocus>-</texturefocus>
 							<texturenofocus>-</texturenofocus>
 							<onclick>Dialog.Close(MovieInformation)</onclick>
@@ -401,44 +402,44 @@
 
 					<!-- Cast Tile 2 -->
 					<control type="group">
-						<left>236</left>
+						<left>200</left>
 						<top>0</top>
-						<width>200</width>
-						<height>350</height>
+						<width>180</width>
+						<height>270</height>
 						<!-- 3px Red Focus Border -->
 						<control type="image">
 							<left>-3</left>
 							<top>-3</top>
-							<width>206</width>
-							<height>356</height>
+							<width>186</width>
+							<height>276</height>
 							<texture colordiffuse="FFFF0000">colors/white.png</texture>
 							<visible>Control.HasFocus(51)</visible>
 						</control>
 						<control type="image">
 							<left>0</left>
 							<top>0</top>
-							<width>200</width>
-							<height>350</height>
+							<width>180</width>
+							<height>270</height>
 							<texture colordiffuse="33FFFFFF">colors/white.png</texture>
 						</control>
 						<control type="image">
-							<left>10</left>
-							<top>10</top>
+							<left>0</left>
+							<top>0</top>
 							<width>180</width>
 							<height>270</height>
 							<texture background="true">$INFO[Window(Home).Property(InfoWindow.Cast.2.Thumb)]</texture>
 							<aspectratio aligny="center">scale</aspectratio>
 						</control>
 						<control type="image">
-							<left>10</left>
-							<top>230</top>
+							<left>0</left>
+							<top>220</top>
 							<width>180</width>
 							<height>50</height>
 							<texture>colors/black_50.png</texture>
 						</control>
 						<control type="label">
-							<left>10</left>
-							<top>230</top>
+							<left>0</left>
+							<top>220</top>
 							<width>180</width>
 							<height>50</height>
 							<align>center</align>
@@ -450,8 +451,8 @@
 						<control type="button" id="51">
 							<left>0</left>
 							<top>0</top>
-							<width>200</width>
-							<height>280</height>
+							<width>180</width>
+							<height>270</height>
 							<texturefocus>-</texturefocus>
 							<texturenofocus>-</texturenofocus>
 							<onclick>Dialog.Close(MovieInformation)</onclick>
@@ -465,44 +466,44 @@
 
 					<!-- Cast Tile 3 -->
 					<control type="group">
-						<left>472</left>
+						<left>400</left>
 						<top>0</top>
-						<width>200</width>
-						<height>350</height>
+						<width>180</width>
+						<height>270</height>
 						<!-- 3px Red Focus Border -->
 						<control type="image">
 							<left>-3</left>
 							<top>-3</top>
-							<width>206</width>
-							<height>356</height>
+							<width>186</width>
+							<height>276</height>
 							<texture colordiffuse="FFFF0000">colors/white.png</texture>
 							<visible>Control.HasFocus(52)</visible>
 						</control>
 						<control type="image">
 							<left>0</left>
 							<top>0</top>
-							<width>200</width>
-							<height>350</height>
+							<width>180</width>
+							<height>270</height>
 							<texture colordiffuse="33FFFFFF">colors/white.png</texture>
 						</control>
 						<control type="image">
-							<left>10</left>
-							<top>10</top>
+							<left>0</left>
+							<top>0</top>
 							<width>180</width>
 							<height>270</height>
 							<texture background="true">$INFO[Window(Home).Property(InfoWindow.Cast.3.Thumb)]</texture>
 							<aspectratio aligny="center">scale</aspectratio>
 						</control>
 						<control type="image">
-							<left>10</left>
-							<top>230</top>
+							<left>0</left>
+							<top>220</top>
 							<width>180</width>
 							<height>50</height>
 							<texture>colors/black_50.png</texture>
 						</control>
 						<control type="label">
-							<left>10</left>
-							<top>230</top>
+							<left>0</left>
+							<top>220</top>
 							<width>180</width>
 							<height>50</height>
 							<align>center</align>
@@ -514,8 +515,8 @@
 						<control type="button" id="52">
 							<left>0</left>
 							<top>0</top>
-							<width>200</width>
-							<height>280</height>
+							<width>180</width>
+							<height>270</height>
 							<texturefocus>-</texturefocus>
 							<texturenofocus>-</texturenofocus>
 							<onclick>Dialog.Close(MovieInformation)</onclick>
@@ -529,44 +530,44 @@
 
 					<!-- Cast Tile 4 -->
 					<control type="group">
-						<left>708</left>
+						<left>600</left>
 						<top>0</top>
-						<width>200</width>
-						<height>350</height>
+						<width>180</width>
+						<height>270</height>
 						<!-- 3px Red Focus Border -->
 						<control type="image">
 							<left>-3</left>
 							<top>-3</top>
-							<width>206</width>
-							<height>356</height>
+							<width>186</width>
+							<height>276</height>
 							<texture colordiffuse="FFFF0000">colors/white.png</texture>
 							<visible>Control.HasFocus(53)</visible>
 						</control>
 						<control type="image">
 							<left>0</left>
 							<top>0</top>
-							<width>200</width>
-							<height>350</height>
+							<width>180</width>
+							<height>270</height>
 							<texture colordiffuse="33FFFFFF">colors/white.png</texture>
 						</control>
 						<control type="image">
-							<left>10</left>
-							<top>10</top>
+							<left>0</left>
+							<top>0</top>
 							<width>180</width>
 							<height>270</height>
 							<texture background="true">$INFO[Window(Home).Property(InfoWindow.Cast.4.Thumb)]</texture>
 							<aspectratio aligny="center">scale</aspectratio>
 						</control>
 						<control type="image">
-							<left>10</left>
-							<top>230</top>
+							<left>0</left>
+							<top>220</top>
 							<width>180</width>
 							<height>50</height>
 							<texture>colors/black_50.png</texture>
 						</control>
 						<control type="label">
-							<left>10</left>
-							<top>230</top>
+							<left>0</left>
+							<top>220</top>
 							<width>180</width>
 							<height>50</height>
 							<align>center</align>
@@ -578,8 +579,8 @@
 						<control type="button" id="53">
 							<left>0</left>
 							<top>0</top>
-							<width>200</width>
-							<height>280</height>
+							<width>180</width>
+							<height>270</height>
 							<texturefocus>-</texturefocus>
 							<texturenofocus>-</texturenofocus>
 							<onclick>Dialog.Close(MovieInformation)</onclick>
@@ -593,44 +594,44 @@
 
 					<!-- Cast Tile 5 -->
 					<control type="group">
-						<left>944</left>
+						<left>800</left>
 						<top>0</top>
-						<width>200</width>
-						<height>350</height>
+						<width>180</width>
+						<height>270</height>
 						<!-- 3px Red Focus Border -->
 						<control type="image">
 							<left>-3</left>
 							<top>-3</top>
-							<width>206</width>
-							<height>356</height>
+							<width>186</width>
+							<height>276</height>
 							<texture colordiffuse="FFFF0000">colors/white.png</texture>
 							<visible>Control.HasFocus(54)</visible>
 						</control>
 						<control type="image">
 							<left>0</left>
 							<top>0</top>
-							<width>200</width>
-							<height>350</height>
+							<width>180</width>
+							<height>270</height>
 							<texture colordiffuse="33FFFFFF">colors/white.png</texture>
 						</control>
 						<control type="image">
-							<left>10</left>
-							<top>10</top>
+							<left>0</left>
+							<top>0</top>
 							<width>180</width>
 							<height>270</height>
 							<texture background="true">$INFO[Window(Home).Property(InfoWindow.Cast.5.Thumb)]</texture>
 							<aspectratio aligny="center">scale</aspectratio>
 						</control>
 						<control type="image">
-							<left>10</left>
-							<top>230</top>
+							<left>0</left>
+							<top>220</top>
 							<width>180</width>
 							<height>50</height>
 							<texture>colors/black_50.png</texture>
 						</control>
 						<control type="label">
-							<left>10</left>
-							<top>230</top>
+							<left>0</left>
+							<top>220</top>
 							<width>180</width>
 							<height>50</height>
 							<align>center</align>
@@ -642,8 +643,8 @@
 						<control type="button" id="54">
 							<left>0</left>
 							<top>0</top>
-							<width>200</width>
-							<height>280</height>
+							<width>180</width>
+							<height>270</height>
 							<texturefocus>-</texturefocus>
 							<texturenofocus>-</texturenofocus>
 							<onclick>Dialog.Close(MovieInformation)</onclick>
@@ -657,7 +658,7 @@
 					<!-- Related Content Row -->
 					<control type="label">
 						<left>0</left>
-						<top>300</top>
+						<top>280</top>
 						<width>1245</width>
 						<height>30</height>
 						<font>font13_title</font>
@@ -667,9 +668,9 @@
 					</control>
 					<control type="fixedlist" id="5000">
 						<left>0</left>
-						<top>340</top>
+						<top>320</top>
 						<width>1245</width>
-						<height>360</height>
+						<height>280</height>
 						<onup>50</onup>
 						<onleft>8</onleft>
 						<onright>5000</onright>
@@ -679,73 +680,87 @@
 						<pagecontrol>60</pagecontrol>
 						<focusposition>0</focusposition>
 						<preloaditems>2</preloaditems>
-						<itemlayout width="200" height="350">
+						<itemlayout width="180" height="270">
 							<control type="group">
 								<left>0</left>
 								<top>0</top>
-								<width>200</width>
-								<height>350</height>
+								<width>180</width>
+								<height>270</height>
 								<control type="image">
 									<left>0</left>
 									<top>0</top>
-									<width>200</width>
-									<height>350</height>
+									<width>180</width>
+									<height>270</height>
 									<texture colordiffuse="33FFFFFF">colors/white.png</texture>
 								</control>
 								<control type="image">
-									<left>10</left>
-									<top>10</top>
+									<left>0</left>
+									<top>0</top>
 									<width>180</width>
 									<height>270</height>
 									<aspectratio align="center" aligny="center" scale="scale">keep</aspectratio>
 									<texture background="true">$INFO[ListItem.Thumb]</texture>
 								</control>
+								<control type="image">
+									<left>0</left>
+									<top>220</top>
+									<width>180</width>
+									<height>50</height>
+									<texture>colors/black_50.png</texture>
+								</control>
 								<control type="label">
-									<left>10</left>
-									<top>290</top>
+									<left>0</left>
+									<top>220</top>
 									<width>180</width>
 									<height>50</height>
 									<align>center</align>
 									<aligny>center</aligny>
 									<font>font12</font>
-									<textcolor>grey</textcolor>
+									<textcolor>white</textcolor>
 									<label>$INFO[ListItem.Label]</label>
 								</control>
 							</control>
 						</itemlayout>
-						<focusedlayout width="200" height="350">
+						<focusedlayout width="180" height="270">
 							<control type="group">
 								<left>0</left>
 								<top>0</top>
-								<width>200</width>
-								<height>350</height>
+								<width>180</width>
+								<height>270</height>
 								<!-- 3px Red Focus Border -->
 								<control type="image">
 									<left>-3</left>
 									<top>-3</top>
-									<width>206</width>
-									<height>356</height>
+									<width>186</width>
+									<height>276</height>
 									<texture colordiffuse="FFFF0000">colors/white.png</texture>
 									<visible>Control.HasFocus(5000)</visible>
 								</control>
 								<control type="image">
 									<left>0</left>
 									<top>0</top>
-									<width>200</width>
-									<height>350</height>
+									<width>180</width>
+									<height>270</height>
 									<texture colordiffuse="33FFFFFF">colors/white.png</texture>
 								</control>
 								<control type="image">
-									<left>10</left>
-									<top>10</top>
+									<left>0</left>
+									<top>0</top>
 									<width>180</width>
 									<height>270</height>
 									<aspectratio align="center" aligny="center" scale="scale">keep</aspectratio>
 									<texture background="true">$INFO[ListItem.Thumb]</texture>
 								</control>
+								<control type="image">
+									<left>0</left>
+									<top>220</top>
+									<width>180</width>
+									<height>50</height>
+									<texture>colors/black_50.png</texture>
+								</control>
 								<control type="label">
-									<left>10</left>
-									<top>290</top>
+									<left>0</left>
+									<top>220</top>
 									<width>180</width>
 									<height>50</height>
 									<align>center</align>
