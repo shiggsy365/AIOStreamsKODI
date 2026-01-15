@@ -2371,11 +2371,13 @@ def show_streams_dialog(content_type, media_id, stream_data, title, poster='', f
         stream_mgr.record_stream_selection(stream_data['streams'][selected].get('name', ''))
 
     # Play selected stream
-    # Use direct playback since we're called from RunPlugin (show_streams action)
-    if not play_stream_by_index(content_type, media_id, stream_data, selected, use_player=True):
+    # Use resolved playback if from_playable is True (Kodi waiting for resolution)
+    # Use direct playback if from_playable is False (RunPlugin context)
+    use_player_actual = not from_playable
+    if not play_stream_by_index(content_type, media_id, stream_data, selected, use_player=use_player_actual):
         # Playback failed, try next streams
         xbmc.log('[AIOStreams] Selected stream failed, trying next available...', xbmc.LOGINFO)
-        try_next_streams(content_type, media_id, stream_data, start_index=selected+1, use_player=True)
+        try_next_streams(content_type, media_id, stream_data, start_index=selected+1, use_player=use_player_actual)
 
 
 def play_stream_by_index(content_type, media_id, stream_data, index, use_player=False):
