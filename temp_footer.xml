@@ -1,3 +1,0 @@
-		<include condition="Skin.HasSetting(touchmode)">TouchBackButton</include>
-	</controls>
-</window>
