@@ -243,7 +243,7 @@
 				<width>71</width>
 				<height>71</height>
 				<texture>icons/sidemenu/home_new.png</texture>
-				<visible>!Control.HasFocus(9003) + [!String.IsEqual(Skin.String(SideMenuFocus),home) | Control.HasFocus(9002)]</visible>
+				<visible>!Control.HasFocus(9003) + [!String.IsEqual(Skin.String(SideMenuFocus),home) | Control.HasFocus(9002) | Control.HasFocus(9001)]</visible>
 			</control>
 			<control type="image">
 				<left>24</left>
@@ -251,7 +251,7 @@
 				<width>71</width>
 				<height>71</height>
 				<texture colordiffuse="button_focus">icons/sidemenu/home_new.png</texture>
-				<visible>Control.HasFocus(9003) | [!ControlGroup(9000).HasFocus + String.IsEqual(Skin.String(SideMenuFocus),home) + !ControlGroup(9100).HasFocus + !Control.HasFocus(9002)]</visible>
+				<visible>Control.HasFocus(9003) | [!ControlGroup(9000).HasFocus + String.IsEqual(Skin.String(SideMenuFocus),home) + !ControlGroup(9100).HasFocus + !Control.HasFocus(9002) + !Control.HasFocus(9001)]</visible>
 			</control>
 		</control>
 
