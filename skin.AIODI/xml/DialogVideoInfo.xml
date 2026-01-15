@@ -55,47 +55,30 @@
 						<onright>50</onright>
 						<ondown>5000</ondown>
 						
-						<include content="VideoInfoStackButton">
-							<param name="id" value="8" />
-							<param name="label" value="$VAR[VideoInfoPlayButtonLabelVar]" />
-							<param name="icon" value="icons/infodialogs/play.png" />
-							<param name="width" value="255" />
-							<param name="height" value="85" />
-							<param name="visible" value="!String.IsEmpty(ListItem.Title)" />
-						</include>
+						<control type="button" id="8">
+							<width>255</width>
+							<height>85</height>
+							<label>$VAR[VideoInfoPlayButtonLabelVar]</label>
+                            <font></font>
+                            <textcolor>00FFFFFF</textcolor>
+							<texturefocus colordiffuse="button_focus">icons/infodialogs/play.png</texturefocus>
+                            <texturenofocus>icons/infodialogs/play.png</texturenofocus>
+							<visible>!String.IsEmpty(ListItem.Title)</visible>
+						</control>
 						<!-- Custom Trailer Button -->
 						<control type="button" id="2001">
 							<width>255</width>
 							<height>85</height>
 							<label>$LOCALIZE[20410]</label>
-							<font>font13</font>
+							<font></font>
 							<textoffsetx>60</textoffsetx>
-							<texturefocus border="21" colordiffuse="button_focus">buttons/button-fo.png</texturefocus>
-							<texturenofocus border="21">buttons/button-nofo.png</texturenofocus>
+							<texturefocus colordiffuse="button_focus">icons/infodialogs/trailer.png</texturefocus>
+							<texturenofocus>icons/infodialogs/trailer.png</texturenofocus>
 							<align>center</align>
 							<aligny>center</aligny>
 							<visible>!String.IsEmpty(Window(Home).Property(InfoWindow.Trailer))</visible>
 							<onclick>Dialog.Close(movieinformation)</onclick>
 							<onclick>PlayMedia($INFO[Window(Home).Property(InfoWindow.Trailer)])</onclick>
-							<!-- Icon Image Overlay -->
-							<control type="image">
-								<left>20</left>
-								<top>6</top>
-								<width>48</width>
-								<height>60</height>
-								<texture colordiffuse="grey">icons/infodialogs/trailer.png</texture>
-								<aspectratio>keep</aspectratio>
-								<visible>!Control.HasFocus(2001)</visible>
-							</control>
-							<control type="image">
-								<left>20</left>
-								<top>6</top>
-								<width>48</width>
-								<height>60</height>
-								<texture colordiffuse="white">icons/infodialogs/trailer.png</texture>
-								<aspectratio>keep</aspectratio>
-								<visible>Control.HasFocus(2001)</visible>
-							</control>
 						</control>
 					</control>
 				</control>

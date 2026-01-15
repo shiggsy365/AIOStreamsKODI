@@ -51,40 +51,43 @@
                 <control type="button" id="2001">
                     <width>400</width>
                     <height>60</height>
-                    <font>font13</font>
-                    <label>Home</label>
+                    <font></font>
+                    <label />
                     <align>center</align>
                     <onclick>SetProperty(CurrentPage,home)</onclick>
                     <onclick>RunScript(special://skin/resources/lib/widget_manager.py,load_page,home)</onclick>
-                    <texturefocus colordiffuse="button_focus">colors/white.png</texturefocus>
-                    <textcolor>FFFFFFFF</textcolor>
-                    <focusedcolor>FF000000</focusedcolor>
+                    <texturefocus colordiffuse="button_focus">icons/widgetmanager/home.png</texturefocus>
+                    <texturenofocus>icons/widgetmanager/home.png</texturenofocus>
+                    <textcolor>00FFFFFF</textcolor>
+                    <focusedcolor>00FFFFFF</focusedcolor>
                 </control>
                 
                 <control type="button" id="2002">
                     <width>400</width>
                     <height>60</height>
-                    <font>font13</font>
-                    <label>TV Shows</label>
+                    <font></font>
+                    <label />
                     <align>center</align>
                     <onclick>SetProperty(CurrentPage,tvshows)</onclick>
                     <onclick>RunScript(special://skin/resources/lib/widget_manager.py,load_page,tvshows)</onclick>
-                    <texturefocus colordiffuse="button_focus">colors/white.png</texturefocus>
-                    <textcolor>FFFFFFFF</textcolor>
-                    <focusedcolor>FF000000</focusedcolor>
+                    <texturefocus colordiffuse="button_focus">icons/widgetmanager/tvshows.png</texturefocus>
+                    <texturenofocus>icons/widgetmanager/tvshows.png</texturenofocus>
+                    <textcolor>00FFFFFF</textcolor>
+                    <focusedcolor>00FFFFFF</focusedcolor>
                 </control>
                 
                 <control type="button" id="2003">
                     <width>400</width>
                     <height>60</height>
-                    <font>font13</font>
-                    <label>Movies</label>
+                    <font></font>
+                    <label />
                     <align>center</align>
                     <onclick>SetProperty(CurrentPage,movies)</onclick>
                     <onclick>RunScript(special://skin/resources/lib/widget_manager.py,load_page,movies)</onclick>
-                    <texturefocus colordiffuse="button_focus">colors/white.png</texturefocus>
-                    <textcolor>FFFFFFFF</textcolor>
-                    <focusedcolor>FF000000</focusedcolor>
+                    <texturefocus colordiffuse="button_focus">icons/widgetmanager/movies.png</texturefocus>
+                    <texturenofocus>icons/widgetmanager/movies.png</texturenofocus>
+                    <textcolor>00FFFFFF</textcolor>
+                    <focusedcolor>00FFFFFF</focusedcolor>
                 </control>
             </control>
             

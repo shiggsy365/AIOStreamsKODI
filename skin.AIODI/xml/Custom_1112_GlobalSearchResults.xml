@@ -98,12 +98,12 @@
                     <top>0</top>
                     <width>320</width>
                     <height>60</height>
-                    <font>font20</font>
-                    <label>Movies</label>
-                    <textcolor>FFAAAAAA</textcolor>
-                    <focusedcolor>FFFFFFFF</focusedcolor>
-                    <texturefocus border="21" colordiffuse="button_focus">buttons/button-fo.png</texturefocus>
-                    <texturenofocus border="21">buttons/button-nofo.png</texturenofocus>
+                    <font></font>
+                    <label>$INFO[Window(10000).Property(GlobalSearch.MoviesTabLabel)]</label>
+                    <textcolor>00FFFFFF</textcolor>
+                    <focusedcolor>00FFFFFF</focusedcolor>
+                    <texturefocus colordiffuse="button_focus">icons/search/movies.png</texturefocus>
+                    <texturenofocus>icons/search/movies.png</texturenofocus>
                     <onup>9000</onup>
                     <ondown>100</ondown>
                     <onright>51</onright>
@@ -116,12 +116,12 @@
                     <top>0</top>
                     <width>320</width>
                     <height>60</height>
-                    <font>font20</font>
-                    <label>TV Shows</label>
-                    <textcolor>FFAAAAAA</textcolor>
-                    <focusedcolor>FFFFFFFF</focusedcolor>
-                    <texturefocus border="21" colordiffuse="button_focus">buttons/button-fo.png</texturefocus>
-                    <texturenofocus border="21">buttons/button-nofo.png</texturenofocus>
+                    <font></font>
+                    <label>$INFO[Window(10000).Property(GlobalSearch.TVShowsTabLabel)]</label>
+                    <textcolor>00FFFFFF</textcolor>
+                    <focusedcolor>00FFFFFF</focusedcolor>
+                    <texturefocus colordiffuse="button_focus">icons/search/tvshows.png</texturefocus>
+                    <texturenofocus>icons/search/tvshows.png</texturenofocus>
                     <onup>9000</onup>
                     <ondown>101</ondown>
                     <onleft>50</onleft>
@@ -136,12 +136,12 @@
                     <top>0</top>
                     <width>320</width>
                     <height>60</height>
-                    <font>font20</font>
-                    <label>YouTube</label>
-                    <textcolor>FFAAAAAA</textcolor>
-                    <focusedcolor>FFFFFFFF</focusedcolor>
-                    <texturefocus border="21" colordiffuse="button_focus">buttons/button-fo.png</texturefocus>
-                    <texturenofocus border="21">buttons/button-nofo.png</texturenofocus>
+                    <font></font>
+                    <label>$INFO[Window(10000).Property(GlobalSearch.YouTubeTabLabel)]</label>
+                    <textcolor>00FFFFFF</textcolor>
+                    <focusedcolor>00FFFFFF</focusedcolor>
+                    <texturefocus colordiffuse="button_focus">icons/search/youtube.png</texturefocus>
+                    <texturenofocus>icons/search/youtube.png</texturenofocus>
                     <onup>9000</onup>
                     <ondown>102</ondown>
                     <onleft>51</onleft>
