@@ -21,7 +21,7 @@ class MemoryCache:
     Thread-safe with automatic expiration.
     """
 
-    def __init__(self, max_size=100):
+    def __init__(self, max_size=500):
         """
         Initialize memory cache.
 

@@ -747,6 +747,36 @@ class TraktSyncDatabase(Database):
             if connected:
                 self.disconnect()
 
+    def execute_sql_batch(self, sql, params_list):
+        """Execute batch SQL with connection management.
+        
+        Args:
+            sql: SQL statement to execute
+            params_list: List of parameter tuples
+        
+        Returns:
+            bool: True if successful, False otherwise
+        """
+        connected = False
+        if not self.connection:
+            if not self.connect():
+                return False
+            connected = True
+        
+        try:
+            cursor = self.executemany(sql, params_list)
+            if cursor is not None:
+                self.commit()
+                return True
+            return False
+        except Exception as e:
+            xbmc.log(f'[AIOStreams] Error executing batch SQL: {e}', xbmc.LOGERROR)
+            self.rollback()
+            return False
+        finally:
+            if connected:
+                self.disconnect()
+
     def fetchone(self, sql, params=None):
         """Fetch one row with connection management.
         

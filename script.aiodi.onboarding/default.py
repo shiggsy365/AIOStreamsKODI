@@ -163,44 +163,44 @@ class OnboardingWizard:
                                 tree = ET.parse(full_path)
                                 root = tree.getroot()
                                     
-                                    # Update or create settings
-                                    updated = False
-                                    
-                                    # M3U
-                                    if m3u:
-                                        m3u_node = root.find(".//setting[@id='m3u_url']")
-                                        if m3u_node is not None:
-                                            m3u_node.text = m3u
-                                            m3u_node.set('value', m3u) # Some versions use attribute
-                                            # Some also use default="true", remove that if exists
-                                            if 'default' in m3u_node.attrib: del m3u_node.attrib['default']
-                                            updated = True
-                                        else:
-                                            # Create if missing
-                                            new_elem = ET.SubElement(root, 'setting', {'id': 'm3u_url'})
-                                            new_elem.text = m3u
-                                            updated = True
+                                # Update or create settings
+                                updated = False
+                                
+                                # M3U
+                                if m3u:
+                                    m3u_node = root.find(".//setting[@id='m3u_url']")
+                                    if m3u_node is not None:
+                                        m3u_node.text = m3u
+                                        m3u_node.set('value', m3u) # Some versions use attribute
+                                        # Some also use default="true", remove that if exists
+                                        if 'default' in m3u_node.attrib: del m3u_node.attrib['default']
+                                        updated = True
+                                    else:
+                                        # Create if missing
+                                        new_elem = ET.SubElement(root, 'setting', {'id': 'm3u_url'})
+                                        new_elem.text = m3u
+                                        updated = True
 
-                                    # EPG
-                                    if epg:
-                                        epg_node = root.find(".//setting[@id='epg_url']")
-                                        if epg_node is not None:
-                                            epg_node.text = epg
-                                            epg_node.set('value', epg)
-                                            if 'default' in epg_node.attrib: del epg_node.attrib['default']
-                                            updated = True
-                                        else:
-                                            new_elem = ET.SubElement(root, 'setting', {'id': 'epg_url'})
-                                            new_elem.text = epg
-                                            updated = True
+                                # EPG
+                                if epg:
+                                    epg_node = root.find(".//setting[@id='epg_url']")
+                                    if epg_node is not None:
+                                        epg_node.text = epg
+                                        epg_node.set('value', epg)
+                                        if 'default' in epg_node.attrib: del epg_node.attrib['default']
+                                        updated = True
+                                    else:
+                                        new_elem = ET.SubElement(root, 'setting', {'id': 'epg_url'})
+                                        new_elem.text = epg
+                                        updated = True
+                                
+                                if updated:
+                                    tree.write(full_path, encoding='utf-8', xml_declaration=True)
+                                    mapped_updates += 1
+                                    xbmc.log(f'[AIODI Wizard] Updated IPTV config: {filename}', xbmc.LOGINFO)
                                     
-                                    if updated:
-                                        tree.write(full_path, encoding='utf-8', xml_declaration=True)
-                                        mapped_updates += 1
-                                        xbmc.log(f'[AIODI Wizard] Updated IPTV config: {filename}', xbmc.LOGINFO)
-                                        
-                                except Exception as e:
-                                    xbmc.log(f'[AIODI Wizard] Failed to update {filename}: {e}', xbmc.LOGERROR)
+                            except Exception as e:
+                                xbmc.log(f'[AIODI Wizard] Failed to update {filename}: {e}', xbmc.LOGERROR)
                     
                     if mapped_updates > 0:
                         self.dialog.ok("IPTV Configured", f"Updated {mapped_updates} IPTV profiles.\nRestart Kodi to apply changes.")
