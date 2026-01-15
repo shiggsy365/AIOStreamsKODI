@@ -122,7 +122,7 @@
                             <width>470</width>
                             <height>50</height>
                             <font>font13</font>
-                            <textcolor>FFFFFFFF</textcolor>
+                            <textcolor>$VAR[TraktWidgetColor]</textcolor>
                             <label>$INFO[ListItem.Label]</label>
                             <aligny>center</aligny>
                         </control>
@@ -132,7 +132,7 @@
                             <width>150</width>
                             <height>50</height>
                             <font>font12</font>
-                            <textcolor>grey</textcolor>
+                            <textcolor>$VAR[TraktWidgetTypeColor]</textcolor>
                             <label>$INFO[ListItem.Label2]</label>
                             <aligny>center</aligny>
                             <align>right</align>
@@ -144,7 +144,7 @@
                             <top>0</top>
                             <width>650</width>
                             <height>50</height>
-                            <texture colordiffuse="button_focus">colors/white.png</texture>
+                            <texture colordiffuse="$VAR[TraktWidgetFocusColor]">colors/white.png</texture>
                         </control>
                         <control type="label">
                             <left>10</left>
@@ -253,7 +253,7 @@
                             <width>700</width>
                             <height>50</height>
                             <font>font13</font>
-                            <textcolor>FFFFFFFF</textcolor>
+                            <textcolor>$VAR[TraktWidgetColor]</textcolor>
                             <label>$INFO[ListItem.Label]</label>
                             <aligny>center</aligny>
                         </control>
@@ -263,7 +263,7 @@
                             <width>200</width>
                             <height>50</height>
                             <font>font12</font>
-                            <textcolor>grey</textcolor>
+                            <textcolor>$VAR[TraktWidgetTypeColor]</textcolor>
                             <label>$INFO[ListItem.Label2]</label>
                             <aligny>center</aligny>
                             <align>right</align>
@@ -275,7 +275,7 @@
                             <top>0</top>
                             <width>930</width>
                             <height>50</height>
-                            <texture colordiffuse="button_focus">colors/white.png</texture>
+                            <texture colordiffuse="$VAR[TraktWidgetFocusColor]">colors/white.png</texture>
                         </control>
                         <control type="label">
                             <left>10</left>

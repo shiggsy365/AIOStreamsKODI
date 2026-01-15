@@ -45,8 +45,33 @@ def save_config(config):
 def get_available_catalogs():
     """Get all available catalogs from the plugin via JSON-RPC"""
     catalogs = []
-    plugin_url = 'plugin://plugin.video.aiostreams/?action=get_folder_browser_catalogs'
 
+    # Add hardcoded Trakt widgets first (shown in yellow)
+    trakt_widgets = [
+        {
+            'label': 'Trakt Next Up',
+            'path': 'plugin://plugin.video.aiostreams/?action=trakt_next_up',
+            'type': 'series',
+            'is_trakt': True
+        },
+        {
+            'label': 'Trakt Watchlist Movies',
+            'path': 'plugin://plugin.video.aiostreams/?action=trakt_watchlist&media_type=movies',
+            'type': 'movie',
+            'is_trakt': True
+        },
+        {
+            'label': 'Trakt Watchlist Series',
+            'path': 'plugin://plugin.video.aiostreams/?action=trakt_watchlist&media_type=shows',
+            'type': 'series',
+            'is_trakt': True
+        }
+    ]
+    catalogs.extend(trakt_widgets)
+    log(f'Added {len(trakt_widgets)} hardcoded Trakt widgets')
+
+    # Fetch AIOStreams catalogs from the plugin
+    plugin_url = 'plugin://plugin.video.aiostreams/?action=get_folder_browser_catalogs'
     log(f'Fetching available catalogs from {plugin_url}...')
     try:
         rpc_query = {
@@ -75,13 +100,15 @@ def get_available_catalogs():
                 catalogs.append({
                     'label': item.get('label', 'Unknown'),
                     'path': url,
-                    'type': content_type
+                    'type': content_type,
+                    'is_trakt': False
                 })
         else:
             log(f'JSON-RPC call failed or returned no files: {result}', xbmc.LOGERROR)
     except Exception as e:
         log(f'Exception in get_available_catalogs: {e}', xbmc.LOGERROR)
 
+    log(f'Total available catalogs: {len(catalogs)}')
     return catalogs
 
 def load_page(page_name):
@@ -134,6 +161,7 @@ def load_page(page_name):
             item.setLabel2(display_type)
             item.setProperty('path', catalog.get('path', ''))
             item.setProperty('type', content_type)
+            item.setProperty('is_trakt', 'true' if catalog.get('is_trakt', False) else 'false')
             current_list.addItem(item)
         log(f'Current list populated successfully with {current_list.size()} items')
     except Exception as e:
@@ -153,6 +181,7 @@ def load_page(page_name):
             item.setLabel2(display_type)
             item.setProperty('path', catalog.get('path', ''))
             item.setProperty('type', content_type)
+            item.setProperty('is_trakt', 'true' if catalog.get('is_trakt', False) else 'false')
             available_list.addItem(item)
     except Exception as e:
         log(f'Error populating available_list (5000): {e}', xbmc.LOGERROR)
@@ -234,24 +263,25 @@ def add_catalog():
         window = xbmcgui.Window(1111)
         available_list = window.getControl(5000)
         pos = available_list.getSelectedPosition()
-        
+
         if pos >= 0:
             item = available_list.getSelectedItem()
             catalog = {
                 'label': item.getLabel(),
                 'path': item.getProperty('path'),
-                'type': item.getProperty('type')
+                'type': item.getProperty('type'),
+                'is_trakt': item.getProperty('is_trakt') == 'true'
             }
-            
+
             page_name = window.getProperty('CurrentPage')
             config = load_config()
             catalogs = config.get(page_name, [])
-            
+
             # Add to end of list
             catalogs.append(catalog)
             config[page_name] = catalogs
             save_config(config)
-            
+
             # Reload
             load_page(page_name)
     except Exception as e:
