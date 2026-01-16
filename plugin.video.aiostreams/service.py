@@ -347,6 +347,15 @@ class AIOStreamsService:
         except Exception as e:
             xbmc.log(f'[AIOStreams Service] Cache cleanup failed: {e}', xbmc.LOGERROR)
 
+    def run_clearlogo_check(self):
+        """Run clearlogo check on startup."""
+        try:
+            from resources.lib.clearlogo import check_missing_clearlogos_on_startup
+            check_missing_clearlogos_on_startup()
+            xbmc.log('[AIOStreams Service] Clearlogo check initiated', xbmc.LOGDEBUG)
+        except Exception as e:
+            xbmc.log(f'[AIOStreams Service] Clearlogo check failed: {e}', xbmc.LOGERROR)
+
     def run(self):
         """Main service loop."""
         xbmc.log('[AIOStreams Service] Service started', xbmc.LOGINFO)
@@ -354,6 +363,7 @@ class AIOStreamsService:
         # Run startup tasks
         self.run_migrations()
         self.run_cache_cleanup()
+        self.run_clearlogo_check()
 
         # Main loop - check for sync every 30 seconds
         loop_count = 0

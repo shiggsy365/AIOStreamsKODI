@@ -24,6 +24,7 @@ try:
     from resources.lib.providers import ProviderManager, AIOStreamsProvider
     from resources.lib.providers.base import get_provider_manager
     from resources.lib.gui import show_source_select_dialog
+    from resources.lib.clearlogo import clear_clearlogo_cache, get_cached_clearlogo_path, download_and_cache_clearlogo, get_clearlogo_cache_dir
     HAS_MODULES = True
     HAS_NEW_MODULES = True
 except Exception as e:
@@ -53,34 +54,17 @@ if HAS_NEW_MODULES:
         xbmc.log(f'[AIOStreams] Failed to initialize providers: {e}', xbmc.LOGERROR)
 
 # Run initialize logic once per addon execution
-def initialize():
-    """Perform startup checks and tasks (async when possible)."""
-    if not HAS_MODULES:
-        return
-
-    # Run cache cleanup on startup (async, won't block)
-    try:
-        cache.cleanup_expired_cache()
-    except:
-        pass
-
-    # Run migration check on addon startup (once per install)
-    try:
-        from resources.lib.database.migration import DatabaseMigration
-        migration = DatabaseMigration()
-        if migration.is_migration_needed():
-            xbmc.log('[AIOStreams] Running database migration on startup...', xbmc.LOGINFO)
-            migration.migrate()
-    except Exception as e:
-        xbmc.log(f'[AIOStreams] Migration check failed: {e}', xbmc.LOGERROR)
-    
-    # Run clearlogo check on startup (background thread, won't block)
-    try:
-        check_missing_clearlogos_on_startup()
-    except Exception as e:
-        xbmc.log(f'[AIOStreams] Clearlogo startup check failed: {e}', xbmc.LOGERROR)
+# Run initialize logic once per addon execution - MOVED TO SERVICE.PY (Background)
+# def initialize():
+#     pass
 
 
+
+def clear_window_properties(properties):
+    """Clear a list of window properties."""
+    win = xbmcgui.Window(10000)
+    for prop in properties:
+        win.clearProperty(prop)
 
 def get_setting(setting_id, default=None):
     """Get addon setting."""
@@ -156,198 +140,7 @@ def get_url(**kwargs):
     return '{}?{}'.format(sys.argv[0], urlencode(kwargs))
 
 
-def get_clearlogo_cache_dir():
-    """Get the clearlogo cache directory path, creating it if needed."""
-    addon_data_path = xbmcvfs.translatePath(ADDON.getAddonInfo('profile'))
-    clearlogo_dir = os.path.join(addon_data_path, 'clearlogos')
-    
-    if not xbmcvfs.exists(clearlogo_dir):
-        xbmcvfs.mkdirs(clearlogo_dir)
-        xbmc.log(f'[AIOStreams] Created clearlogo cache directory: {clearlogo_dir}', xbmc.LOGDEBUG)
-    
-    return clearlogo_dir
-
-
-def get_cached_clearlogo_path(content_type, meta_id):
-    """Get the cached clearlogo file path if it exists.
-    
-    Args:
-        content_type: 'movie' or 'series'
-        meta_id: IMDB ID or other unique identifier
-    
-    Returns:
-        str: Path to cached clearlogo file, or None if not cached
-    """
-    # Use hash of meta_id to avoid filesystem issues with special characters
-    safe_id = hashlib.md5(f"{content_type}_{meta_id}".encode()).hexdigest()
-    clearlogo_dir = get_clearlogo_cache_dir()
-    clearlogo_path = os.path.join(clearlogo_dir, f"{safe_id}.png")
-    
-    if xbmcvfs.exists(clearlogo_path):
-        xbmc.log(f'[AIOStreams] Cached clearlogo found for {content_type}/{meta_id}', xbmc.LOGDEBUG)
-        # Return special:// path for better skin compatibility
-        return f"special://userdata/addon_data/plugin.video.aiostreams/clearlogos/{safe_id}.png"
-    
-    return None
-
-
-def download_and_cache_clearlogo(url, content_type, meta_id):
-    """Download clearlogo image and cache it to local file.
-    
-    Args:
-        url: URL of the clearlogo image
-        content_type: 'movie' or 'series'
-        meta_id: IMDB ID or other unique identifier
-    
-    Returns:
-        str: Path to cached clearlogo file, or None if download failed
-    """
-    if not url:
-        return None
-    
-    try:
-        # Check if already cached
-        cached_path = get_cached_clearlogo_path(content_type, meta_id)
-        if cached_path:
-            return cached_path
-        
-        # Download clearlogo
-        timeout = get_timeout()
-        response = requests.get(url, timeout=timeout)
-        response.raise_for_status()
-        
-        # Save to cache
-        safe_id = hashlib.md5(f"{content_type}_{meta_id}".encode()).hexdigest()
-        clearlogo_dir = get_clearlogo_cache_dir()
-        clearlogo_path = os.path.join(clearlogo_dir, f"{safe_id}.png")
-        
-        with open(clearlogo_path, 'wb') as f:
-            f.write(response.content)
-        
-        xbmc.log(f'[AIOStreams] Cached clearlogo for {content_type}/{meta_id}: {clearlogo_path}', xbmc.LOGINFO)
-        return clearlogo_path
-        
-    except Exception as e:
-        xbmc.log(f'[AIOStreams] Error caching clearlogo for {content_type}/{meta_id}: {e}', xbmc.LOGERROR)
-        return None
-
-
-def clear_clearlogo_cache():
-    """Delete all cached clearlogo files."""
-    import shutil
-    
-    try:
-        clearlogo_dir = get_clearlogo_cache_dir()
-        
-        if xbmcvfs.exists(clearlogo_dir):
-            # Use shutil to remove directory and all contents
-            shutil.rmtree(clearlogo_dir)
-            xbmc.log('[AIOStreams] Cleared clearlogo cache', xbmc.LOGINFO)
-            
-            # Recreate empty directory
-            xbmcvfs.mkdirs(clearlogo_dir)
-            return True
-        
-        return True
-        
-    except Exception as e:
-        xbmc.log(f'[AIOStreams] Error clearing clearlogo cache: {e}', xbmc.LOGERROR)
-        return False
-
-
-def check_missing_clearlogos_on_startup():
-    """Check for missing clearlogos and download them in background.
-    
-    This scans the metadata cache for items with clearlogo URLs but no cached file,
-    and downloads them in a background thread to avoid blocking addon startup.
-    """
-    def background_check():
-        try:
-            if not HAS_MODULES:
-                return
-            
-            xbmc.log('[AIOStreams] Starting background clearlogo check', xbmc.LOGINFO)
-            
-            # Get all cached metadata from database
-            db = trakt.get_trakt_db()
-            if not db:
-                return
-            
-            missing_count = 0
-            downloaded_count = 0
-            
-            # Check movies
-            try:
-                if db.connect():
-                    cursor = db.execute("SELECT id, content_type, metadata FROM metas WHERE content_type = 'movie'")
-                    if cursor:
-                        for row in cursor.fetchall():
-                            meta_id = row['id']
-                            content_type = row['content_type']
-                            
-                            # Check if clearlogo is cached
-                            if not get_cached_clearlogo_path(content_type, meta_id):
-                                # Try to get clearlogo URL from metadata
-                                try:
-                                    metadata = pickle.loads(row['metadata'])
-                                    clearlogo_url = metadata.get('meta', {}).get('logo')
-                                    
-                                    if clearlogo_url:
-                                        missing_count += 1
-                                        if download_and_cache_clearlogo(clearlogo_url, content_type, meta_id):
-                                            downloaded_count += 1
-                                except:
-                                    pass
-                    
-                    db.disconnect()
-            except Exception as e:
-                xbmc.log(f'[AIOStreams] Error checking movie clearlogos: {e}', xbmc.LOGERROR)
-            
-            # Check shows
-            try:
-                if db.connect():
-                    cursor = db.execute("SELECT id, content_type, metadata FROM metas WHERE content_type = 'series'")
-                    if cursor:
-                        for row in cursor.fetchall():
-                            meta_id = row['id']
-                            content_type = row['content_type']
-                            
-                            # Check if clearlogo is cached
-                            if not get_cached_clearlogo_path(content_type, meta_id):
-                                # Try to get clearlogo URL from metadata
-                                try:
-                                    metadata = pickle.loads(row['metadata'])
-                                    clearlogo_url = metadata.get('meta', {}).get('logo')
-                                    
-                                    if clearlogo_url:
-                                        missing_count += 1
-                                        if download_and_cache_clearlogo(clearlogo_url, content_type, meta_id):
-                                            downloaded_count += 1
-                                except:
-                                    pass
-                    
-                    db.disconnect()
-            except Exception as e:
-                xbmc.log(f'[AIOStreams] Error checking show clearlogos: {e}', xbmc.LOGERROR)
-            
-            if missing_count > 0:
-                xbmc.log(f'[AIOStreams] Clearlogo check complete: {downloaded_count}/{missing_count} downloaded', xbmc.LOGINFO)
-            else:
-                xbmc.log('[AIOStreams] No missing clearlogos found', xbmc.LOGDEBUG)
-                
-        except Exception as e:
-            xbmc.log(f'[AIOStreams] Error in background clearlogo check: {e}', xbmc.LOGERROR)
-    
-    # Run in background thread
-    try:
-        # Only run if setting is enabled
-        if get_setting('startup_clearlogo_check', 'false') == 'true':
-            thread = threading.Thread(target=background_check)
-            thread.daemon = True
-            thread.start()
-            xbmc.log('[AIOStreams] Started background clearlogo check thread', xbmc.LOGDEBUG)
-    except Exception as e:
-        xbmc.log(f'[AIOStreams] Failed to start clearlogo check thread: {e}', xbmc.LOGERROR)
+# Clearlogo Helpers moved to resources/lib/clearlogo.py
 
 
 
@@ -645,8 +438,8 @@ def download_subtitle_with_language(subtitle_url, language, media_id, subtitle_i
         else:
             ext = '.srt'
 
-        # Format: "{media_hash}_{subtitle_id}.AIOStreams - 4290498 - eng.srt"
-        # Kodi displays this as "AIOStreams - 4290498 - eng" (strips hash and extension)
+        # Format: "{media_hash}_{unique_id}.AIOStreams - {unique_id} - {lang_code}{ext}"
+        # Kodi displays this as "AIOStreams - {unique_id} - {lang_code}" (strips hash and extension)
         # The subtitle_id ensures each subtitle has a unique filename
         subtitle_filename = f"{media_hash}_{unique_id}.AIOStreams - {unique_id} - {lang_code}{ext}"
         subtitle_path = os.path.join(subtitle_cache_dir, subtitle_filename)
@@ -848,6 +641,10 @@ def create_listitem_with_context(meta, content_type, action_url):
     info_tag = list_item.getVideoInfoTag()
     info_tag.setTitle(title)
     info_tag.setPlot(meta.get('description', ''))
+    
+    # Set properties for Skin access (crucial for Search Info)
+    list_item.setProperty('id', str(meta.get('id', '')))
+    list_item.setProperty('content_type', str(content_type))
     
     # Set genres
     genres = meta.get('genres', [])
@@ -1223,23 +1020,8 @@ def search():
     progress.close()
 
     if not results or 'metas' not in results or len(results['metas']) == 0:
-        # No results found - offer to try again in case of typo
-        dialog = xbmcgui.Dialog()
-        retry = dialog.yesno(
-            'No Results Found',
-            f'No results found for "{query}".',
-            'Check spelling and try again?',
-            nolabel='Cancel',
-            yeslabel='Try Again'
-        )
-        if retry:
-            # Let user correct the search query
-            keyboard = dialog.input('Search', query, type=xbmcgui.INPUT_ALPHANUM)
-            if keyboard and keyboard.strip():
-                # Recursively call search with corrected query
-                corrected_query = keyboard.strip()
-                xbmc.log(f'[AIOStreams] Retrying search with corrected query: {corrected_query}', xbmc.LOGINFO)
-                xbmc.executebuiltin(f'Container.Update({get_url(action="search", content_type=content_type, query=corrected_query)})')
+        # No results found - log and exit (silent fail)
+        xbmc.log(f'[AIOStreams] Search returned no results for "{query}"', xbmc.LOGINFO)
         xbmcplugin.endOfDirectory(HANDLE, succeeded=False)
         return
     
@@ -1249,6 +1031,19 @@ def search():
     
     xbmcplugin.setPluginCategory(HANDLE, f'Search: {query}')
     xbmcplugin.setContent(HANDLE, 'movies' if content_type == 'movie' else 'tvshows')
+    
+    # Calculate counts
+    movie_count = len(results['metas']) if content_type == 'movie' else 0
+    series_count = len(results['metas']) if content_type == 'series' else 0
+    
+    # Clear stale properties first to avoid flash of old content
+    clear_window_properties(['GlobalSearch.MoviesCount', 'GlobalSearch.SeriesCount', 'GlobalSearch.YoutubeCount'])
+
+    # Set properties for skin visibility
+    win = xbmcgui.Window(10000)
+    win.setProperty('GlobalSearch.MoviesCount', str(movie_count))
+    win.setProperty('GlobalSearch.SeriesCount', str(series_count))
+    win.setProperty('GlobalSearch.YoutubeCount', '0') # Placeholder
     
     # Display search results
     for meta in results['metas']:
@@ -4208,6 +4003,12 @@ def smart_widget():
     index = int(params.get('index', 0))
     content_type = params.get('content_type', 'movie')
     
+    # Optimization: If Search Dialog (1112) or Info Dialog (12003) OR ANY MODAL is open, skip background widget loading
+    if xbmc.getCondVisibility('Window.IsVisible(1112)') or xbmc.getCondVisibility('Window.IsVisible(12003)') or xbmc.getCondVisibility('System.HasModalDialog'):
+        xbmc.log(f'[AIOStreams] smart_widget: Skipping background load (Dialog Open) - index={index}', xbmc.LOGDEBUG)
+        xbmcplugin.endOfDirectory(HANDLE)
+        return
+
     xbmc.log(f'[AIOStreams] smart_widget: index={index}, content_type={content_type}', xbmc.LOGDEBUG)
     
     # Handle home widgets (Trakt lists)
@@ -4252,7 +4053,7 @@ def smart_widget():
     catalog_id = catalog.get('id')
     catalog_name = catalog.get('name', 'Unknown')
     
-    xbmc.log(f'[AIOStreams] smart_widget: Using catalog "{catalog_name}" (id: {catalog_id})', xbmc.LOGDEBUG)
+    xbmc.log(f'[AIOStreams] smart_widget: Using catalog "{catalog_name}" (id: {catalog_id})', xbmc.LOGINFO)
 
     # Update the window property to ensure it uses the clean name
     # This overwrites any previous long path headers
@@ -4324,7 +4125,13 @@ def configured_widget():
     index = int(params.get('index', 0))
     page = params.get('page', 'home')
 
-    xbmc.log(f'[AIOStreams] configured_widget: index={index}, page={page}', xbmc.LOGDEBUG)
+    # Optimization: If Search Dialog (1112) or Info Dialog (12003) OR ANY MODAL is open, skip background widget loading
+    if xbmc.getCondVisibility('Window.IsVisible(1112)') or xbmc.getCondVisibility('Window.IsVisible(12003)') or xbmc.getCondVisibility('System.HasModalDialog'):
+        xbmc.log(f'[AIOStreams] configured_widget: Skipping background load (Dialog Open) - index={index}', xbmc.LOGDEBUG)
+        xbmcplugin.endOfDirectory(HANDLE)
+        return
+
+    xbmc.log(f'[AIOStreams] configured_widget: index={index}, page={page}', xbmc.LOGINFO)
 
     # Get the configured widget
     widget = get_widget_at_index(page, index)
@@ -4444,8 +4251,116 @@ def play_next(params):
 
 
 
-def action_clear_clearlogos(params):
-    """Wrapper for clear_clearlogo_cache with notification."""
+def action_info(params):
+    """Handle info action."""
+    meta_id = params.get('id') or params.get('imdb_id')
+    content_type = params.get('content_type', 'movie')
+    
+    if not meta_id:
+        xbmc.log('[AIOStreams] action_info: No ID provided', xbmc.LOGERROR)
+        return
+
+    xbmc.log(f'[AIOStreams] Fetching info for {content_type}/{meta_id}', xbmc.LOGINFO)
+    
+    # Clear stale properties first to avoid flash of old content
+    clear_window_properties(['InfoWindow.Title', 'InfoWindow.Plot', 'InfoWindow.Director', 
+                           'InfoWindow.Writer', 'InfoWindow.Cast', 'InfoWindow.Duration', 
+                           'InfoWindow.Year', 'InfoWindow.Genre', 'InfoWindow.Rating', 
+                           'InfoWindow.Votes', 'InfoWindow.Trailer', 'InfoWindow.IsCustom'])
+    
+    # Show busy dialog while fetching
+    xbmc.executebuiltin('ActivateWindow(busydialog)')
+    
+    try:
+        # Fetch metadata
+        meta = get_meta(content_type, meta_id)
+        
+        if not meta:
+            xbmc.executebuiltin('Dialog.Close(busydialog)')
+            xbmcgui.Dialog().notification('AIOStreams', 'Metadata not found', xbmcgui.NOTIFICATION_ERROR)
+            return
+
+        # Create list item with full context
+        # We need a dummy URL since we aren't playing it immediately, but it might be used for Play button in dialog
+        play_url = get_url(action='play', content_type=content_type, imdb_id=meta_id)
+        list_item = create_listitem_with_context(meta, content_type, play_url)
+        
+        # Close busy dialog
+        xbmc.executebuiltin('Dialog.Close(busydialog)')
+        
+        # Open Info Dialog
+        # Note: We can't easily "push" a List Item to the standard DialogVideoInfo.
+        # However, we can use the 'open_info_dialog' helper pattern if available, or extended script.
+        # But a trick is to open a hidden directory containing this item and trigger Info? No.
+        
+        # Best approach for skin integration:
+        # 1. Set Window Properties (which the skin uses for Cast, etc.)
+        # Open Info Dialog explicitly to ensure it opens with new properties
+        # We use ID 12003 which is the standard id for MovieInformation
+        xbmc.executebuiltin('ActivateWindow(12003)')
+        
+        # If the user wants a full "scrape", we might need to update the focused item?
+        # That's hard from here.
+        
+        # Alternative: Use script.extendedinfo if available?
+        # xbmc.executebuiltin(f'RunScript(script.extendedinfo,info=extendedinfo,dbid={meta_id})') # if library?
+        
+        # Let's rely on standard Kodi behavior: 
+        # If we have the metadata, maybe we can just show a custom notification or assume the skin reads properties?
+        # The user said "calling for info ... should scrape and give me the information".
+        
+        # Let's try populating Window(Home) properties with EVERYTHING, just like we did for Cast.
+        # If the skin's DialogVideoInfo.xml uses $INFO[ListItem.Title], it uses the focused item.
+        # We cannot easily change the focused item's data on the fly.
+        
+        # However, we can use xbmcgui.Dialog().info(list_item) IF it existed. 
+        # Since it doesn't, we can try OpenInfo script format.
+        
+        # Let's populate Window Properties and hope the skin uses them or we modify the skin to key off a "ScrapedInfo" property.
+        # Actually, let's look at DialogVideoInfo.xml again. It uses $INFO[ListItem.Thumb], etc.
+        
+        # If we cannot update the ListItem, we are stuck unless we open a *different* window or reload the container.
+        # Refreshing the container with new data is too slow/disruptive.
+        
+        # Proxy solution: Open a temporary playlist? No.
+        
+        # Let's assume the user is okay with us setting Properties and they might edit the skin to read them 
+        # OR (better) we modify the skin to use a variable: $VAR[InfoTitle] which checks Window Property first.
+        
+        # But wait, checking the code for Cast Refactor:
+        # We used $INFO[Window(Home).Property(InfoWindow.Cast.X.Name)]
+        # So using Window Properties is established pattern here!
+        
+        # Let's set standard InfoWindow properties
+        window = xbmcgui.Window(10000)
+        window.setProperty('InfoWindow.IsCustom', 'true')
+        window.setProperty('InfoWindow.Title', meta.get('name', ''))
+        window.setProperty('InfoWindow.Plot', meta.get('description', ''))
+        window.setProperty('InfoWindow.Year', str(meta.get('year', '')))
+        window.setProperty('InfoWindow.Director', meta.get('director', ''))
+        window.setProperty('InfoWindow.Premiered', meta.get('released', '').split('T')[0])
+        window.setProperty('InfoWindow.DBType', content_type)
+        window.setProperty('InfoWindow.Poster', meta.get('poster', ''))
+        window.setProperty('InfoWindow.Fanart', meta.get('background', ''))
+        
+        # Duration handling
+        try:
+            runtime = meta.get('runtime', 0)
+            if isinstance(runtime, int):
+                window.setProperty('InfoWindow.Duration', str(runtime))
+            else:
+                 window.setProperty('InfoWindow.Duration', str(runtime).replace('min', '').strip())
+        except:
+            pass
+
+        # Now open the dialog.
+        # Short sleep to ensure properties are propagated
+        xbmc.sleep(200)
+        xbmc.executebuiltin('ActivateWindow(12003)') # DialogVideoInfo
+        
+    except Exception as e:
+        xbmc.executebuiltin('Dialog.Close(busydialog)')
+        xbmc.log(f'[AIOStreams] action_info error: {e}', xbmc.LOGERROR)
     if clear_clearlogo_cache():
         xbmcgui.Dialog().notification("AIOStreams", "Clearlogo cache cleared", xbmcgui.NOTIFICATION_INFO, 3000)
     else:
@@ -4517,6 +4432,7 @@ ACTION_REGISTRY = {
     'refresh_manifest_cache': lambda p: refresh_manifest_cache(),
     'get_all_catalogs': lambda p: get_all_catalogs_action(),
     'get_folder_browser_catalogs': lambda p: get_folder_browser_catalogs_action(),
+    'info': lambda p: action_info(p),
 }
 
 
@@ -4624,7 +4540,7 @@ def router(params):
 if __name__ == '__main__':
     xbmc.log(f'[AIOStreams] ===== PLUGIN INVOKED =====', xbmc.LOGINFO)
     xbmc.log(f'[AIOStreams] sys.argv: {sys.argv}', xbmc.LOGINFO)
-    initialize()
+    # initialize() # Maintenance moved to service.py
     params = dict(parse_qsl(sys.argv[2][1:]))
     xbmc.log(f'[AIOStreams] Parsed params: {params}', xbmc.LOGINFO)
     xbmc.log(f'[AIOStreams] Action: {params.get("action", "<none>")}', xbmc.LOGINFO)

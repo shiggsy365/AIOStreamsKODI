@@ -1,5 +1,43 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <includes>
+    <variable name="InfoTitleVar">
+        <value condition="!String.IsEmpty(Window(Home).Property(InfoWindow.IsCustom))">$INFO[Window(Home).Property(InfoWindow.Title)]</value>
+        <value>$INFO[ListItem.Title]</value>
+    </variable>
+    <variable name="InfoPlotVar">
+        <value condition="!String.IsEmpty(Window(Home).Property(InfoWindow.IsCustom))">$INFO[Window(Home).Property(InfoWindow.Plot)]</value>
+        <value>$INFO[ListItem.Plot]</value>
+    </variable>
+    <variable name="InfoDirectorVar">
+        <value condition="!String.IsEmpty(Window(Home).Property(InfoWindow.IsCustom))">$INFO[Window(Home).Property(InfoWindow.Director)]</value>
+        <value>$INFO[ListItem.Director]</value>
+    </variable>
+    <variable name="InfoPremieredVar">
+        <value condition="!String.IsEmpty(Window(Home).Property(InfoWindow.IsCustom))">$INFO[Window(Home).Property(InfoWindow.Premiered)]</value>
+        <value>$INFO[ListItem.Premiered]</value>
+    </variable>
+    <variable name="InfoYearVar">
+        <value condition="!String.IsEmpty(Window(Home).Property(InfoWindow.IsCustom))">$INFO[Window(Home).Property(InfoWindow.Year)]</value>
+        <value>$INFO[ListItem.Year]</value>
+    </variable>
+    <variable name="InfoDurationVar">
+        <value condition="!String.IsEmpty(Window(Home).Property(InfoWindow.IsCustom))">$INFO[Window(Home).Property(InfoWindow.Duration)]</value>
+        <value>$INFO[ListItem.Duration, , min]</value>
+    </variable>
+    <variable name="InfoDBTypeVar">
+        <value condition="!String.IsEmpty(Window(Home).Property(InfoWindow.IsCustom))">$INFO[Window(Home).Property(InfoWindow.DBType)]</value>
+        <value>$INFO[ListItem.DBType]</value>
+    </variable>
+    <variable name="InfoDialogPosterVar">
+        <value condition="!String.IsEmpty(Window(Home).Property(InfoWindow.IsCustom))">$INFO[Window(Home).Property(InfoWindow.Poster)]</value>
+        <value condition="!String.IsEmpty(Listitem.Art(poster))">$INFO[Listitem.Art(poster)]</value>
+        <value condition="!String.IsEmpty(ListItem.Icon)">$INFO[ListItem.Icon]</value>
+        <value>DefaultVideo.png</value>
+    </variable>
+    <variable name="InfoDialogFanartVar">
+        <value condition="!String.IsEmpty(Window(Home).Property(InfoWindow.IsCustom))">$INFO[Window(Home).Property(InfoWindow.Fanart)]</value>
+        <value>$INFO[ListItem.Art(fanart)]</value>
+    </variable>
     <variable name="TrailerUrlVar">
         <value condition="!String.IsEmpty(Window(Home).Property(InfoWindow.Trailer))">$INFO[Window(Home).Property(InfoWindow.Trailer)]</value>
         <value>$INFO[ListItem.Trailer]</value>

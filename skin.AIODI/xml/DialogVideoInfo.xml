@@ -4,10 +4,11 @@
 	<onload>SetProperty(infobackground,$ESCINFO[ListItem.Art(fanart)],home)</onload>
 	<onload>RunScript(special://skin/resources/lib/info_window_helper.py)</onload>
 	<onunload>ClearProperty(infobackground,home)</onunload>
+	<onunload>ClearProperty(InfoWindow.IsCustom,home)</onunload>
 	<controls>
 		<control type="image">
 			<include>FullScreenDimensions</include>
-			<texture background="true">$INFO[ListItem.Art(fanart)]</texture>
+			<texture background="true">$VAR[InfoDialogFanartVar]</texture>
 			<fadetime>600</fadetime>
 			<aspectratio>scale</aspectratio>
 		</control>
@@ -52,22 +53,8 @@
 						<itemgap>10</itemgap>
 						<orientation>horizontal</orientation>
 						<onup>SetFocus(1011)</onup>
-						<onright>50</onright>
 						<ondown>50</ondown>
 						
-						<control type="button" id="8">
-							<width>255</width>
-							<height>85</height>
-							<label></label>
-							<font></font>
-							<align>center</align>
-							<aligny>center</aligny>
-							<texturefocus colordiffuse="button_focus">icons/infodialog/play.png</texturefocus>
-							<texturenofocus>icons/infodialog/play.png</texturenofocus>
-							<onclick condition="String.IsEqual(ListItem.DBType,tvshow) | String.IsEqual(ListItem.DBType,season) | String.IsEqual(ListItem.DBType,series)">ActivateWindow(Videos,$INFO[ListItem.FileNameAndPath],return)</onclick>
-							<onclick condition="!String.IsEqual(ListItem.DBType,tvshow) + !String.IsEqual(ListItem.DBType,season) + !String.IsEqual(ListItem.DBType,series)">PlayMedia($INFO[ListItem.FileNameAndPath])</onclick>
-							<visible>!String.IsEmpty(ListItem.Title) | !String.IsEmpty(ListItem.Label)</visible>
-						</control>
 						<!-- Custom Trailer Button -->
 						<control type="button" id="2001">
 							<width>255</width>
@@ -80,9 +67,25 @@
 							<align>center</align>
 							<aligny>center</aligny>
 							<visible>!String.IsEmpty(Window(Home).Property(InfoWindow.Trailer))</visible>
-							<onright>50</onright>
 							<onclick>Dialog.Close(movieinformation)</onclick>
 							<onclick>PlayMedia($INFO[Window(Home).Property(InfoWindow.Trailer)])</onclick>
+						</control>
+						
+						<control type="button" id="8">
+							<width>255</width>
+							<height>85</height>
+							<label></label>
+							<font></font>
+							<align>center</align>
+							<aligny>center</aligny>
+							<texturefocus colordiffuse="button_focus">icons/infodialog/play.png</texturefocus>
+							<texturenofocus>icons/infodialog/play.png</texturenofocus>
+							<onclick condition="String.IsEqual(ListItem.DBType,tvshow) | String.IsEqual(ListItem.DBType,season) | String.IsEqual(ListItem.DBType,series)">ActivateWindow(Videos,$INFO[ListItem.FileNameAndPath],return)</onclick>
+							<onclick condition="!String.IsEqual(ListItem.DBType,tvshow) + !String.IsEqual(ListItem.DBType,season) + !String.IsEqual(ListItem.DBType,series)">PlayMedia($INFO[ListItem.FileNameAndPath])</onclick>
+							<onclick condition="String.IsEqual(ListItem.DBType,tvshow) | String.IsEqual(ListItem.DBType,season) | String.IsEqual(ListItem.DBType,series)">ActivateWindow(Videos,$INFO[ListItem.FileNameAndPath],return)</onclick>
+							<onclick condition="!String.IsEqual(ListItem.DBType,tvshow) + !String.IsEqual(ListItem.DBType,season) + !String.IsEqual(ListItem.DBType,series)">PlayMedia($INFO[ListItem.FileNameAndPath])</onclick>
+							<visible>!String.IsEmpty(ListItem.Title) | !String.IsEmpty(ListItem.Label)</visible>
+							<onright>50</onright>
 						</control>
 					</control>
 				</control>
@@ -102,7 +105,7 @@
 					<width>506</width>
 					<height>801</height>
 					<aspectratio>keep</aspectratio>
-					<texture>$INFO[ListItem.Thumb]</texture>
+					<texture>$VAR[InfoDialogPosterVar]</texture>
 					<bordertexture border="21" infill="false">overlays/shadow.png</bordertexture>
 					<bordersize>20</bordersize>
 				</control>
@@ -131,7 +134,7 @@
 					<font></font>
 					<label></label>
 					<onclick condition="!String.IsEmpty(ListItem.Plot)">SetProperty(TextViewer_Header,$LOCALIZE[207],home)</onclick>
-					<onclick condition="!String.IsEmpty(ListItem.Plot)">SetProperty(TextViewer_Text,$ESCINFO[ListItem.Plot],home)</onclick>
+					<onclick condition="!String.IsEmpty(ListItem.Plot)">SetProperty(TextViewer_Text,$ESCVAR[InfoPlotVar],home)</onclick>
 					<onclick condition="!String.IsEmpty(ListItem.Plot)">ActivateWindow(1102)</onclick>
 					<onup>SetFocus(1011)</onup>
 					<onleft>8</onleft>
@@ -155,7 +158,7 @@
 					<font></font>
 					<label></label>
 					<onclick condition="!String.IsEmpty(ListItem.Plot)">SetProperty(TextViewer_Header,$LOCALIZE[207],home)</onclick>
-					<onclick condition="!String.IsEmpty(ListItem.Plot)">SetProperty(TextViewer_Text,$ESCINFO[ListItem.Plot],home)</onclick>
+					<onclick condition="!String.IsEmpty(ListItem.Plot)">SetProperty(TextViewer_Text,$ESCVAR[InfoPlotVar],home)</onclick>
 					<onclick condition="!String.IsEmpty(ListItem.Plot)">ActivateWindow(1102)</onclick>
 					<onup>SetFocus(1011)</onup>
 					<onleft>8</onleft>
@@ -170,7 +173,7 @@
 					<top>25</top>
 					<width>1067</width>
 					<height>250</height>
-					<label fallback="19055">$INFO[ListItem.Plot]</label>
+					<label fallback="19055">$VAR[InfoPlotVar]</label>
 					<autoscroll delay="10000" time="5000" repeat="10000">Skin.HasSetting(AutoScroll)</autoscroll>
 					<visible>true</visible>
 				</control>
@@ -179,7 +182,7 @@
 					<top>25</top>
 					<width>1067</width>
 					<height>250</height>
-					<label fallback="19055">$INFO[ListItem.Plot]</label>
+					<label fallback="19055">$VAR[InfoPlotVar]</label>
 					<autoscroll delay="10000" time="5000" repeat="10000">Skin.HasSetting(AutoScroll)</autoscroll>
 					<visible>false</visible>
 				</control>
@@ -208,7 +211,7 @@
 						<top>35</top>
 						<width>270</width>
 						<height>30</height>
-						<label>$INFO[ListItem.Director]</label>
+						<label>$VAR[InfoDirectorVar]</label>
 						<font>font13</font>
 						<textcolor>white</textcolor>
 						<scroll>true</scroll>
@@ -230,7 +233,7 @@
 						<top>35</top>
 						<width>270</width>
 						<height>30</height>
-						<label>$INFO[ListItem.Premiered]</label>
+						<label>$VAR[InfoPremieredVar]</label>
 						<font>font13</font>
 						<textcolor>white</textcolor>
 					</control>
@@ -251,7 +254,7 @@
 						<top>35</top>
 						<width>270</width>
 						<height>30</height>
-						<label>$INFO[ListItem.Duration, , min]</label>
+						<label>$VAR[InfoDurationVar]</label>
 						<font>font13</font>
 						<textcolor>white</textcolor>
 					</control>
@@ -272,7 +275,7 @@
 						<top>35</top>
 						<width>270</width>
 						<height>30</height>
-						<label>$INFO[ListItem.DBType]</label>
+						<label>$VAR[InfoDBTypeVar]</label>
 						<font>font13</font>
 						<textcolor>white</textcolor>
 					</control>
@@ -307,180 +310,243 @@
 						</control>
 					</control>
 					
-					<!-- Cast Tile 1 -->
-					<control type="group">
+					<!-- Cast List (Refactored) -->
+					<control type="fixedlist" id="50">
 						<left>0</left>
 						<top>0</top>
-						<width>180</width>
-						<height>270</height>
-                        <animation effect="zoom" start="100" end="110" time="200" tween="sine" easing="out" center="90,135" condition="Control.HasFocus(50)">Conditional</animation>
-						<control type="image">
-							<left>0</left>
-							<top>0</top>
-							<width>180</width>
-							<height>270</height>
-							<texture colordiffuse="00FFFFFF">colors/white.png</texture>
-						</control>
-						<control type="image">
-							<left>0</left>
-							<top>0</top>
-							<width>180</width>
-							<height>270</height>
-							<texture background="true">$INFO[Window(Home).Property(InfoWindow.Cast.1.Thumb)]</texture>
-							<aspectratio aligny="center">scale</aspectratio>
-						</control>
-						<control type="image">
-							<left>0</left>
-							<top>0</top>
-							<width>180</width>
-							<height>270</height>
-							<texture background="true">$INFO[Window(Home).Property(InfoWindow.Cast.1.Thumb)]</texture>
-							<aspectratio aligny="center">scale</aspectratio>
-							<bordertexture border="3" colordiffuse="FFFF0000">colors/white.png</bordertexture>
-							<bordersize>3</bordersize>
-							<visible>Control.HasFocus(50)</visible>
-						</control>
+						<width>1245</width>
+						<height>280</height>
+						<onup>8000</onup>
+						<onleft>8</onleft>
+						<onright>50</onright>
+						<ondown>5000</ondown>
+						<orientation>horizontal</orientation>
+						<viewtype label="535">list</viewtype>
+						<pagecontrol>60</pagecontrol>
+						<focusposition>0</focusposition>
+						<preloaditems>2</preloaditems>
+						<itemlayout width="200" height="270">
+							<control type="group">
+								<left>0</left>
+								<top>0</top>
+								<width>180</width>
+								<height>270</height>
+								<control type="image">
+									<left>0</left>
+									<top>0</top>
+									<width>180</width>
+									<height>270</height>
+									<texture background="true">$INFO[ListItem.Thumb]</texture>
+									<aspectratio aligny="center">scale</aspectratio>
+								</control>
+								<control type="image">
+									<left>0</left>
+									<top>220</top>
+									<width>180</width>
+									<height>50</height>
+									<texture>colors/black_50.png</texture>
+								</control>
+								<control type="label">
+									<left>0</left>
+									<top>220</top>
+									<width>180</width>
+									<height>50</height>
+									<align>center</align>
+									<aligny>center</aligny>
+									<font>font12</font>
+									<textcolor>white</textcolor>
+									<label>$INFO[ListItem.Label]</label>
+								</control>
+							</control>
+						</itemlayout>
+						<focusedlayout width="200" height="270">
+							<control type="group">
+								<animation effect="zoom" center="90,135" start="100" end="110" time="200" tween="sine" easing="out">Focus</animation>
+								<left>0</left>
+								<top>0</top>
+								<width>180</width>
+								<height>270</height>
+								<control type="image">
+									<left>0</left>
+									<top>0</top>
+									<width>180</width>
+									<height>270</height>
+									<texture background="true">$INFO[ListItem.Thumb]</texture>
+									<aspectratio aligny="center">scale</aspectratio>
+									<bordertexture border="3" colordiffuse="FFFF0000">colors/white.png</bordertexture>
+									<bordersize>3</bordersize>
+								</control>
+								<control type="image">
+									<left>0</left>
+									<top>220</top>
+									<width>180</width>
+									<height>50</height>
+									<texture>colors/black_50.png</texture>
+								</control>
+								<control type="label">
+									<left>0</left>
+									<top>220</top>
+									<width>180</width>
+									<height>50</height>
+									<align>center</align>
+									<aligny>center</aligny>
+									<font>font12</font>
+									<textcolor>white</textcolor>
+									<label>$INFO[ListItem.Label]</label>
+								</control>
+							</control>
+						</focusedlayout>
+						<content>
+							<item>
+								<label>$INFO[Window(Home).Property(InfoWindow.Cast.1.Name)]</label>
+								<thumb>$INFO[Window(Home).Property(InfoWindow.Cast.1.Thumb)]</thumb>
+								<onclick>Dialog.Close(MovieInformation)</onclick>
+								<onclick>RunScript(special://skin/resources/lib/global_search.py, $INFO[Window(Home).Property(InfoWindow.Cast.1.Name)])</onclick>
+								<visible>!String.IsEmpty(Window(Home).Property(InfoWindow.Cast.1.Name))</visible>
+							</item>
+							<item>
+								<label>$INFO[Window(Home).Property(InfoWindow.Cast.2.Name)]</label>
+								<thumb>$INFO[Window(Home).Property(InfoWindow.Cast.2.Thumb)]</thumb>
+								<onclick>Dialog.Close(MovieInformation)</onclick>
+								<onclick>RunScript(special://skin/resources/lib/global_search.py, $INFO[Window(Home).Property(InfoWindow.Cast.2.Name)])</onclick>
+								<visible>!String.IsEmpty(Window(Home).Property(InfoWindow.Cast.2.Name))</visible>
+							</item>
+							<item>
+								<label>$INFO[Window(Home).Property(InfoWindow.Cast.3.Name)]</label>
+								<thumb>$INFO[Window(Home).Property(InfoWindow.Cast.3.Thumb)]</thumb>
+								<onclick>Dialog.Close(MovieInformation)</onclick>
+								<onclick>RunScript(special://skin/resources/lib/global_search.py, $INFO[Window(Home).Property(InfoWindow.Cast.3.Name)])</onclick>
+								<visible>!String.IsEmpty(Window(Home).Property(InfoWindow.Cast.3.Name))</visible>
+							</item>
+							<item>
+								<label>$INFO[Window(Home).Property(InfoWindow.Cast.4.Name)]</label>
+								<thumb>$INFO[Window(Home).Property(InfoWindow.Cast.4.Thumb)]</thumb>
+								<onclick>Dialog.Close(MovieInformation)</onclick>
+								<onclick>RunScript(special://skin/resources/lib/global_search.py, $INFO[Window(Home).Property(InfoWindow.Cast.4.Name)])</onclick>
+								<visible>!String.IsEmpty(Window(Home).Property(InfoWindow.Cast.4.Name))</visible>
+							</item>
+							<item>
+								<label>$INFO[Window(Home).Property(InfoWindow.Cast.5.Name)]</label>
+								<thumb>$INFO[Window(Home).Property(InfoWindow.Cast.5.Thumb)]</thumb>
+								<onclick>Dialog.Close(MovieInformation)</onclick>
+								<onclick>RunScript(special://skin/resources/lib/global_search.py, $INFO[Window(Home).Property(InfoWindow.Cast.5.Name)])</onclick>
+								<visible>!String.IsEmpty(Window(Home).Property(InfoWindow.Cast.5.Name))</visible>
+							</item>
+							<item>
+								<label>$INFO[Window(Home).Property(InfoWindow.Cast.6.Name)]</label>
+								<thumb>$INFO[Window(Home).Property(InfoWindow.Cast.6.Thumb)]</thumb>
+								<onclick>Dialog.Close(MovieInformation)</onclick>
+								<onclick>RunScript(special://skin/resources/lib/global_search.py, $INFO[Window(Home).Property(InfoWindow.Cast.6.Name)])</onclick>
+								<visible>!String.IsEmpty(Window(Home).Property(InfoWindow.Cast.6.Name))</visible>
+							</item>
+							<item>
+								<label>$INFO[Window(Home).Property(InfoWindow.Cast.7.Name)]</label>
+								<thumb>$INFO[Window(Home).Property(InfoWindow.Cast.7.Thumb)]</thumb>
+								<onclick>Dialog.Close(MovieInformation)</onclick>
+								<onclick>RunScript(special://skin/resources/lib/global_search.py, $INFO[Window(Home).Property(InfoWindow.Cast.7.Name)])</onclick>
+								<visible>!String.IsEmpty(Window(Home).Property(InfoWindow.Cast.7.Name))</visible>
+							</item>
+							<item>
+								<label>$INFO[Window(Home).Property(InfoWindow.Cast.8.Name)]</label>
+								<thumb>$INFO[Window(Home).Property(InfoWindow.Cast.8.Thumb)]</thumb>
+								<onclick>Dialog.Close(MovieInformation)</onclick>
+								<onclick>RunScript(special://skin/resources/lib/global_search.py, $INFO[Window(Home).Property(InfoWindow.Cast.8.Name)])</onclick>
+								<visible>!String.IsEmpty(Window(Home).Property(InfoWindow.Cast.8.Name))</visible>
+							</item>
+							<item>
+								<label>$INFO[Window(Home).Property(InfoWindow.Cast.9.Name)]</label>
+								<thumb>$INFO[Window(Home).Property(InfoWindow.Cast.9.Thumb)]</thumb>
+								<onclick>Dialog.Close(MovieInformation)</onclick>
+								<onclick>RunScript(special://skin/resources/lib/global_search.py, $INFO[Window(Home).Property(InfoWindow.Cast.9.Name)])</onclick>
+								<visible>!String.IsEmpty(Window(Home).Property(InfoWindow.Cast.9.Name))</visible>
+							</item>
+							<item>
+								<label>$INFO[Window(Home).Property(InfoWindow.Cast.10.Name)]</label>
+								<thumb>$INFO[Window(Home).Property(InfoWindow.Cast.10.Thumb)]</thumb>
+								<onclick>Dialog.Close(MovieInformation)</onclick>
+								<onclick>RunScript(special://skin/resources/lib/global_search.py, $INFO[Window(Home).Property(InfoWindow.Cast.10.Name)])</onclick>
+								<visible>!String.IsEmpty(Window(Home).Property(InfoWindow.Cast.10.Name))</visible>
+							</item>
+							<item>
+								<label>$INFO[Window(Home).Property(InfoWindow.Cast.11.Name)]</label>
+								<thumb>$INFO[Window(Home).Property(InfoWindow.Cast.11.Thumb)]</thumb>
+								<onclick>Dialog.Close(MovieInformation)</onclick>
+								<onclick>RunScript(special://skin/resources/lib/global_search.py, $INFO[Window(Home).Property(InfoWindow.Cast.11.Name)])</onclick>
+								<visible>!String.IsEmpty(Window(Home).Property(InfoWindow.Cast.11.Name))</visible>
+							</item>
+							<item>
+								<label>$INFO[Window(Home).Property(InfoWindow.Cast.12.Name)]</label>
+								<thumb>$INFO[Window(Home).Property(InfoWindow.Cast.12.Thumb)]</thumb>
+								<onclick>Dialog.Close(MovieInformation)</onclick>
+								<onclick>RunScript(special://skin/resources/lib/global_search.py, $INFO[Window(Home).Property(InfoWindow.Cast.12.Name)])</onclick>
+								<visible>!String.IsEmpty(Window(Home).Property(InfoWindow.Cast.12.Name))</visible>
+							</item>
+							<item>
+								<label>$INFO[Window(Home).Property(InfoWindow.Cast.13.Name)]</label>
+								<thumb>$INFO[Window(Home).Property(InfoWindow.Cast.13.Thumb)]</thumb>
+								<onclick>Dialog.Close(MovieInformation)</onclick>
+								<onclick>RunScript(special://skin/resources/lib/global_search.py, $INFO[Window(Home).Property(InfoWindow.Cast.13.Name)])</onclick>
+								<visible>!String.IsEmpty(Window(Home).Property(InfoWindow.Cast.13.Name))</visible>
+							</item>
+							<item>
+								<label>$INFO[Window(Home).Property(InfoWindow.Cast.14.Name)]</label>
+								<thumb>$INFO[Window(Home).Property(InfoWindow.Cast.14.Thumb)]</thumb>
+								<onclick>Dialog.Close(MovieInformation)</onclick>
+								<onclick>RunScript(special://skin/resources/lib/global_search.py, $INFO[Window(Home).Property(InfoWindow.Cast.14.Name)])</onclick>
+								<visible>!String.IsEmpty(Window(Home).Property(InfoWindow.Cast.14.Name))</visible>
+							</item>
+							<item>
+								<label>$INFO[Window(Home).Property(InfoWindow.Cast.15.Name)]</label>
+								<thumb>$INFO[Window(Home).Property(InfoWindow.Cast.15.Thumb)]</thumb>
+								<onclick>Dialog.Close(MovieInformation)</onclick>
+								<onclick>RunScript(special://skin/resources/lib/global_search.py, $INFO[Window(Home).Property(InfoWindow.Cast.15.Name)])</onclick>
+								<visible>!String.IsEmpty(Window(Home).Property(InfoWindow.Cast.15.Name))</visible>
+							</item>
+							<item>
+								<label>$INFO[Window(Home).Property(InfoWindow.Cast.16.Name)]</label>
+								<thumb>$INFO[Window(Home).Property(InfoWindow.Cast.16.Thumb)]</thumb>
+								<onclick>Dialog.Close(MovieInformation)</onclick>
+								<onclick>RunScript(special://skin/resources/lib/global_search.py, $INFO[Window(Home).Property(InfoWindow.Cast.16.Name)])</onclick>
+								<visible>!String.IsEmpty(Window(Home).Property(InfoWindow.Cast.16.Name))</visible>
+							</item>
+							<item>
+								<label>$INFO[Window(Home).Property(InfoWindow.Cast.17.Name)]</label>
+								<thumb>$INFO[Window(Home).Property(InfoWindow.Cast.17.Thumb)]</thumb>
+								<onclick>Dialog.Close(MovieInformation)</onclick>
+								<onclick>RunScript(special://skin/resources/lib/global_search.py, $INFO[Window(Home).Property(InfoWindow.Cast.17.Name)])</onclick>
+								<visible>!String.IsEmpty(Window(Home).Property(InfoWindow.Cast.17.Name))</visible>
+							</item>
+							<item>
+								<label>$INFO[Window(Home).Property(InfoWindow.Cast.18.Name)]</label>
+								<thumb>$INFO[Window(Home).Property(InfoWindow.Cast.18.Thumb)]</thumb>
+								<onclick>Dialog.Close(MovieInformation)</onclick>
+								<onclick>RunScript(special://skin/resources/lib/global_search.py, $INFO[Window(Home).Property(InfoWindow.Cast.18.Name)])</onclick>
+								<visible>!String.IsEmpty(Window(Home).Property(InfoWindow.Cast.18.Name))</visible>
+							</item>
+							<item>
+								<label>$INFO[Window(Home).Property(InfoWindow.Cast.19.Name)]</label>
+								<thumb>$INFO[Window(Home).Property(InfoWindow.Cast.19.Thumb)]</thumb>
+								<onclick>Dialog.Close(MovieInformation)</onclick>
+								<onclick>RunScript(special://skin/resources/lib/global_search.py, $INFO[Window(Home).Property(InfoWindow.Cast.19.Name)])</onclick>
+								<visible>!String.IsEmpty(Window(Home).Property(InfoWindow.Cast.19.Name))</visible>
+							</item>
+							<item>
+								<label>$INFO[Window(Home).Property(InfoWindow.Cast.20.Name)]</label>
+								<thumb>$INFO[Window(Home).Property(InfoWindow.Cast.20.Thumb)]</thumb>
+								<onclick>Dialog.Close(MovieInformation)</onclick>
+								<onclick>RunScript(special://skin/resources/lib/global_search.py, $INFO[Window(Home).Property(InfoWindow.Cast.20.Name)])</onclick>
+								<visible>!String.IsEmpty(Window(Home).Property(InfoWindow.Cast.20.Name))</visible>
+							</item>
+						</content>
 					</control>
 
-					<!-- Cast Tile 2 -->
-					<control type="group">
-						<left>200</left>
-						<top>0</top>
-						<width>180</width>
-						<height>270</height>
-                        <animation effect="zoom" start="100" end="110" time="200" tween="sine" easing="out" center="90,135" condition="Control.HasFocus(51)">Conditional</animation>
-						<control type="image">
-							<left>0</left>
-							<top>0</top>
-							<width>180</width>
-							<height>270</height>
-							<texture colordiffuse="00FFFFFF">colors/white.png</texture>
-						</control>
-						<control type="image">
-							<left>0</left>
-							<top>0</top>
-							<width>180</width>
-							<height>270</height>
-							<texture background="true">$INFO[Window(Home).Property(InfoWindow.Cast.2.Thumb)]</texture>
-							<aspectratio aligny="center">scale</aspectratio>
-						</control>
-						<control type="image">
-							<left>0</left>
-							<top>0</top>
-							<width>180</width>
-							<height>270</height>
-							<texture background="true">$INFO[Window(Home).Property(InfoWindow.Cast.2.Thumb)]</texture>
-							<aspectratio aligny="center">scale</aspectratio>
-							<bordertexture border="3" colordiffuse="FFFF0000">colors/white.png</bordertexture>
-							<bordersize>3</bordersize>
-							<visible>Control.HasFocus(51)</visible>
-						</control>
-					</control>
 
-					<!-- Cast Tile 3 -->
-					<control type="group">
-						<left>400</left>
-						<top>0</top>
-						<width>180</width>
-						<height>270</height>
-                        <animation effect="zoom" start="100" end="110" time="200" tween="sine" easing="out" center="90,135" condition="Control.HasFocus(52)">Conditional</animation>
-						<control type="image">
-							<left>0</left>
-							<top>0</top>
-							<width>180</width>
-							<height>270</height>
-							<texture colordiffuse="00FFFFFF">colors/white.png</texture>
-						</control>
-						<control type="image">
-							<left>0</left>
-							<top>0</top>
-							<width>180</width>
-							<height>270</height>
-							<texture background="true">$INFO[Window(Home).Property(InfoWindow.Cast.3.Thumb)]</texture>
-							<aspectratio aligny="center">scale</aspectratio>
-						</control>
-						<control type="image">
-							<left>0</left>
-							<top>0</top>
-							<width>180</width>
-							<height>270</height>
-							<texture background="true">$INFO[Window(Home).Property(InfoWindow.Cast.3.Thumb)]</texture>
-							<aspectratio aligny="center">scale</aspectratio>
-							<bordertexture border="3" colordiffuse="FFFF0000">colors/white.png</bordertexture>
-							<bordersize>3</bordersize>
-							<visible>Control.HasFocus(52)</visible>
-						</control>
-					</control>
 
-					<!-- Cast Tile 4 -->
-					<control type="group">
-						<left>600</left>
-						<top>0</top>
-						<width>180</width>
-						<height>270</height>
-                        <animation effect="zoom" start="100" end="110" time="200" tween="sine" easing="out" center="90,135" condition="Control.HasFocus(53)">Conditional</animation>
-						<control type="image">
-							<left>0</left>
-							<top>0</top>
-							<width>180</width>
-							<height>270</height>
-							<texture colordiffuse="00FFFFFF">colors/white.png</texture>
-						</control>
-						<control type="image">
-							<left>0</left>
-							<top>0</top>
-							<width>180</width>
-							<height>270</height>
-							<texture background="true">$INFO[Window(Home).Property(InfoWindow.Cast.4.Thumb)]</texture>
-							<aspectratio aligny="center">scale</aspectratio>
-						</control>
-						<control type="image">
-							<left>0</left>
-							<top>0</top>
-							<width>180</width>
-							<height>270</height>
-							<texture background="true">$INFO[Window(Home).Property(InfoWindow.Cast.4.Thumb)]</texture>
-							<aspectratio aligny="center">scale</aspectratio>
-							<bordertexture border="3" colordiffuse="FFFF0000">colors/white.png</bordertexture>
-							<bordersize>3</bordersize>
-							<visible>Control.HasFocus(53)</visible>
-						</control>
-					</control>
 
-					<!-- Cast Tile 5 -->
-					<control type="group">
-						<left>800</left>
-						<top>0</top>
-						<width>180</width>
-						<height>270</height>
-                        <animation effect="zoom" start="100" end="110" time="200" tween="sine" easing="out" center="90,135" condition="Control.HasFocus(54)">Conditional</animation>
-						<control type="image">
-							<left>0</left>
-							<top>0</top>
-							<width>180</width>
-							<height>270</height>
-							<texture colordiffuse="00FFFFFF">colors/white.png</texture>
-						</control>
-						<control type="image">
-							<left>0</left>
-							<top>0</top>
-							<width>180</width>
-							<height>270</height>
-							<texture background="true">$INFO[Window(Home).Property(InfoWindow.Cast.5.Thumb)]</texture>
-							<aspectratio aligny="center">scale</aspectratio>
-						</control>
-						<control type="image">
-							<left>0</left>
-							<top>0</top>
-							<width>180</width>
-							<height>270</height>
-							<texture background="true">$INFO[Window(Home).Property(InfoWindow.Cast.5.Thumb)]</texture>
-							<aspectratio aligny="center">scale</aspectratio>
-							<bordertexture border="3" colordiffuse="FFFF0000">colors/white.png</bordertexture>
-							<bordersize>3</bordersize>
-							<visible>Control.HasFocus(54)</visible>
-						</control>
-					</control>
+
+
+
+
 					<!-- Related Content Row -->
 					<control type="label">
 						<left>0</left>

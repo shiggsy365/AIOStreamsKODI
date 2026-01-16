@@ -1,11 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <window type="dialog" id="1112">
     <defaultcontrol always="true">50</defaultcontrol>
-    <onload>RunScript(special://skin/resources/lib/debug_search_results.py)</onload>
-    <onload condition="String.IsEmpty(Window(10000).Property(GlobalSearch.ActiveTab))">SetFocus(50)</onload>
+    <!-- <onload>RunScript(special://skin/resources/lib/debug_search_results.py)</onload> -->
+    <onload condition="String.IsEmpty(Window(10000).Property(GlobalSearch.ActiveTab)) + !String.IsEqual(Window(10000).Property(GlobalSearch.MoviesCount),0)">SetFocus(50)</onload>
+    <onload condition="String.IsEmpty(Window(10000).Property(GlobalSearch.ActiveTab)) + String.IsEqual(Window(10000).Property(GlobalSearch.MoviesCount),0) + !String.IsEqual(Window(10000).Property(GlobalSearch.SeriesCount),0)">SetFocus(51)</onload>
+    <onload condition="String.IsEmpty(Window(10000).Property(GlobalSearch.ActiveTab)) + String.IsEqual(Window(10000).Property(GlobalSearch.MoviesCount),0) + String.IsEqual(Window(10000).Property(GlobalSearch.SeriesCount),0) + !String.IsEqual(Window(10000).Property(GlobalSearch.YoutubeCount),0)">SetFocus(52)</onload>
     <onload condition="String.IsEqual(Window(10000).Property(GlobalSearch.ActiveTab),movies)">SetFocus(50)</onload>
     <onload condition="String.IsEqual(Window(10000).Property(GlobalSearch.ActiveTab),series)">SetFocus(51)</onload>
     <onload condition="String.IsEqual(Window(10000).Property(GlobalSearch.ActiveTab),youtube)">SetFocus(52)</onload>
+    <onunload>ClearProperty(GlobalSearch.MoviesCount,10000)</onunload>
+    <onunload>ClearProperty(GlobalSearch.SeriesCount,10000)</onunload>
+    <onunload>ClearProperty(GlobalSearch.YoutubeCount,10000)</onunload>
+    <onunload>ClearProperty(GlobalSearch.ActiveTab,10000)</onunload>
     <coordinates>
         <left>0</left>
         <top>0</top>
@@ -107,9 +113,12 @@
                     <texturenofocus>icons/search/movies.png</texturenofocus>
                     <onup>9000</onup>
                     <ondown>100</ondown>
-                    <onright>51</onright>
+                    <onright condition="!String.IsEqual(Window(10000).Property(GlobalSearch.SeriesCount),0)">51</onright>
+                    <onright condition="String.IsEqual(Window(10000).Property(GlobalSearch.SeriesCount),0) + !String.IsEqual(Window(10000).Property(GlobalSearch.YoutubeCount),0)">52</onright>
+                    <onright condition="String.IsEqual(Window(10000).Property(GlobalSearch.SeriesCount),0) + String.IsEqual(Window(10000).Property(GlobalSearch.YoutubeCount),0)">50</onright>
                     <onclick>SetProperty(GlobalSearch.ActiveTab,movies,10000)</onclick>
                     <onclick>SetFocus(100)</onclick>
+                    <visible>!String.IsEqual(Window(10000).Property(GlobalSearch.MoviesCount),0)</visible>
                 </control>
                 
                 <control type="button" id="51">
@@ -125,10 +134,15 @@
                     <texturenofocus>icons/search/tvshows.png</texturenofocus>
                     <onup>9000</onup>
                     <ondown>101</ondown>
-                    <onleft>50</onleft>
-                    <onright>52</onright>
+                    <onleft condition="!String.IsEqual(Window(10000).Property(GlobalSearch.MoviesCount),0)">50</onleft>
+                    <onleft condition="String.IsEqual(Window(10000).Property(GlobalSearch.MoviesCount),0) + !String.IsEqual(Window(10000).Property(GlobalSearch.YoutubeCount),0)">52</onleft>
+                    <onleft condition="String.IsEqual(Window(10000).Property(GlobalSearch.MoviesCount),0) + String.IsEqual(Window(10000).Property(GlobalSearch.YoutubeCount),0)">51</onleft>
+                    <onright condition="!String.IsEqual(Window(10000).Property(GlobalSearch.YoutubeCount),0)">52</onright>
+                    <onright condition="String.IsEqual(Window(10000).Property(GlobalSearch.YoutubeCount),0) + !String.IsEqual(Window(10000).Property(GlobalSearch.MoviesCount),0)">50</onright>
+                    <onright condition="String.IsEqual(Window(10000).Property(GlobalSearch.YoutubeCount),0) + String.IsEqual(Window(10000).Property(GlobalSearch.MoviesCount),0)">51</onright>
                     <onclick>SetProperty(GlobalSearch.ActiveTab,series,10000)</onclick>
                     <onclick>SetFocus(101)</onclick>
+                    <visible>!String.IsEqual(Window(10000).Property(GlobalSearch.SeriesCount),0)</visible>
                 </control>
                 
                 <!-- YouTube Tab -->
@@ -145,9 +159,12 @@
                     <texturenofocus>icons/search/youtube.png</texturenofocus>
                     <onup>9000</onup>
                     <ondown>102</ondown>
-                    <onleft>51</onleft>
+                    <onleft condition="!String.IsEqual(Window(10000).Property(GlobalSearch.SeriesCount),0)">51</onleft>
+                    <onleft condition="String.IsEqual(Window(10000).Property(GlobalSearch.SeriesCount),0) + !String.IsEqual(Window(10000).Property(GlobalSearch.MoviesCount),0)">50</onleft>
+                    <onleft condition="String.IsEqual(Window(10000).Property(GlobalSearch.SeriesCount),0) + String.IsEqual(Window(10000).Property(GlobalSearch.MoviesCount),0)">52</onleft>
                     <onclick>SetProperty(GlobalSearch.ActiveTab,youtube,10000)</onclick>
                     <onclick>SetFocus(102)</onclick>
+                    <visible>!String.IsEqual(Window(10000).Property(GlobalSearch.YoutubeCount),0)</visible>
                 </control>
             </control>
             
@@ -168,6 +185,7 @@
                     <onup>50</onup>
                     <onleft>100</onleft>
                     <onright>100</onright>
+                    <oninfo>RunPlugin(plugin://plugin.video.aiostreams/?action=info&amp;id=$INFO[ListItem.Property(id)]&amp;content_type=$INFO[ListItem.Property(content_type)])</oninfo>
                     <pagecontrol>-</pagecontrol>
                     <scrolltime>200</scrolltime>
                     <orientation>vertical</orientation>
@@ -236,6 +254,7 @@
                     <onup>51</onup>
                     <onleft>101</onleft>
                     <onright>101</onright>
+                    <oninfo>RunPlugin(plugin://plugin.video.aiostreams/?action=info&amp;id=$INFO[ListItem.Property(id)]&amp;content_type=$INFO[ListItem.Property(content_type)])</oninfo>
                     <pagecontrol>-</pagecontrol>
                     <scrolltime>200</scrolltime>
                     <orientation>vertical</orientation>
