@@ -369,6 +369,47 @@
 							<onright>51</onright>
 							<ondown>5000</ondown>
 						</control>
+					</focusedlayout>
+				</control>
+				<control type="grouplist" id="5000">
+					<left>0</left>
+					<top>864</top>
+					<width>1246</width>
+					<height>400</height>
+					<onleft>5000</onleft>
+					<onright>5000</onright>
+					<onup>140</onup>
+					<ondown condition="!Integer.IsGreater(Container(5000).Position,4)">SetFocus(50,$INFO[Container(5000).Position])</ondown>
+					<ondown condition="Integer.IsGreater(Container(5000).Position,4)">SetFocus(50,4)</ondown>
+					<itemgap>-18</itemgap>
+					<align>center</align>
+					<orientation>horizontal</orientation>
+					<scrolltime tween="quadratic">200</scrolltime>
+					<include content="InfoDialogToggleButton">
+						<param name="id" value="8" />
+						<param name="icon_on" value="icons/infodialogs/set.png" />
+						<param name="icon_off" value="icons/infodialogs/play.png" />
+						<param name="selected" value="String.IsEqual(ListItem.DBType,tvshow) | String.IsEqual(ListItem.DBType,season) | String.IsEqual(ListItem.DBType,set)" />
+						<param name="label" value="$VAR[VideoInfoPlayButtonLabelVar]" />
+					</include>
+					<include content="InfoDialogButton">
+						<param name="id" value="11" />
+						<param name="icon" value="icons/infodialogs/trailer.png" />
+						<param name="label" value="$LOCALIZE[20410]" />
+						<param name="visible" value="!String.IsEmpty(ListItem.Trailer) + ![String.StartsWith(Container.FolderPath,plugin://) + String.Contains(Container.FolderPath,trailer)]" />
+					</include>
+					<include content="InfoDialogButton">
+						<param name="id" value="441" />
+						<param name="icon" value="icons/infodialogs/cinema.png" />
+						<param name="onclick_1" value="Dialog.Close(MovieInformation)" />
+						<param name="onclick_2" value="RunScript(script.cinemavision,experience)" />
+						<param name="label" value="$LOCALIZE[31003]" />
+						<param name="visible" value="System.AddonIsEnabled(script.cinemavision) + [String.IsEqual(ListItem.DBType,movie) | String.IsEqual(ListItem.DBType,tvshow) | String.IsEqual(ListItem.DBType,season) | String.IsEqual(ListItem.DBType,episode)]" />
+					</include>
+					<control type="group" id="400">
+						<width>1</width>
+						<height>1</height>
+						<visible>false</visible>
 					</control>
 
 					<!-- Cast Tile 2 -->
