@@ -542,7 +542,7 @@
 					<scrolltime tween="quadratic">200</scrolltime>
 					<include content="InfoDialogToggleButton">
 						<param name="id" value="8" />
-						<param name="icon_on" value="icons/filemanager.png" />
+						<param name="icon_on" value="icons/infodialogs/set.png" />
 						<param name="icon_off" value="icons/infodialogs/play.png" />
 						<param name="selected" value="String.IsEqual(ListItem.DBType,tvshow) | String.IsEqual(ListItem.DBType,season) | String.IsEqual(ListItem.DBType,set)" />
 						<param name="label" value="$VAR[VideoInfoPlayButtonLabelVar]" />
