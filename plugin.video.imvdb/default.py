@@ -39,7 +39,44 @@ def is_blocked(video):
     
     return country.lower() in blocked_list
 
+def list_blocked_countries():
+    xbmcplugin.setContent(HANDLE, 'files')
+    current = ADDON.getSetting('blocked_countries')
+    current_blocked = [c for c in current.split(',') if c] if current else []
+    
+    for code, name in COUNTRIES:
+        is_blocked_status = code in current_blocked
+        marker = "●" if is_blocked_status else "○"
+        status_text = "[BLOCKED]" if is_blocked_status else "[ALLOWED]"
+        label = f"{marker} {name} ({code.upper()}) - {status_text}"
+        
+        list_item = xbmcgui.ListItem(label=label)
+        if is_blocked_status:
+            list_item.setLabel(f"[COLOR red]{label}[/COLOR]")
+        else:
+            list_item.setLabel(f"[COLOR green]{label}[/COLOR]")
+            
+        list_item.setProperty('IsPlayable', 'false')
+        url = build_url({'action': 'toggle_country_block', 'country_code': code})
+        xbmcplugin.addDirectoryItem(HANDLE, url, list_item, isFolder=False)
+        
+    xbmcplugin.addSortMethod(HANDLE, xbmcplugin.SORT_METHOD_LABEL)
+    xbmcplugin.endOfDirectory(HANDLE, succeeded=True)
+
+def toggle_country_block(code):
+    current = ADDON.getSetting('blocked_countries')
+    current_blocked = [c for c in current.split(',') if c] if current else []
+    
+    if code in current_blocked:
+        current_blocked.remove(code)
+    else:
+        current_blocked.append(code)
+        
+    ADDON.setSetting('blocked_countries', ','.join(current_blocked))
+    xbmc.executebuiltin('Container.Refresh')
+
 def manage_country_blocklist():
+    # Deprecated in favor of list_blocked_countries but kept for legacy setting action if needed
     current = ADDON.getSetting('blocked_countries')
     current_blocked = current.split(',') if current else []
     
@@ -99,7 +136,8 @@ def list_menu():
     xbmcplugin.setContent(HANDLE, 'files')
     items = [
         ('Artist Search', 'search_artist', 'DefaultArtist.png'),
-        ('Year Search', 'search_year', 'DefaultYear.png')
+        ('Year Search', 'search_year', 'DefaultYear.png'),
+        ('[COLOR yellow]Manage Blocked Countries[/COLOR]', 'list_blocked_countries', 'DefaultAddonService.png')
     ]
     for label, action, icon in items:
         list_item = xbmcgui.ListItem(label=label)
@@ -264,6 +302,10 @@ def router(paramstring):
             search_artist()
         elif action == 'manage_country_blocklist':
             manage_country_blocklist()
+        elif action == 'list_blocked_countries':
+            list_blocked_countries()
+        elif action == 'toggle_country_block':
+            toggle_country_block(params.get('country_code'))
         elif action == 'search_year_exec': # Reserved for future
              pass
 
