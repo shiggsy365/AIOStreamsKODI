@@ -58,15 +58,16 @@
 						<control type="button" id="8">
 							<width>255</width>
 							<height>85</height>
+							<label>$VAR[VideoInfoPlayButtonLabelVar]</label>
+							<font>font13</font>
 							<align>center</align>
 							<aligny>center</aligny>
-							<font></font>
-							<label></label>
+							<textoffsetx>60</textoffsetx>
 							<texturefocus colordiffuse="button_focus">$VAR[VideoInfoPlayButtonTexture]</texturefocus>
 							<texturenofocus>$VAR[VideoInfoPlayButtonTexture]</texturenofocus>
 							<onclick condition="String.IsEqual(ListItem.DBType,tvshow) | String.IsEqual(ListItem.DBType,season) | String.IsEqual(ListItem.DBType,series)">ActivateWindow(Videos,$INFO[ListItem.FileNameAndPath],return)</onclick>
 							<onclick condition="!String.IsEqual(ListItem.DBType,tvshow) + !String.IsEqual(ListItem.DBType,season) + !String.IsEqual(ListItem.DBType,series)">PlayMedia($INFO[ListItem.FileNameAndPath])</onclick>
-							<visible>!String.IsEmpty(ListItem.Title)</visible>
+							<visible>!String.IsEmpty(ListItem.Title) | !String.IsEmpty(ListItem.Label)</visible>
 						</control>
 						<!-- Custom Trailer Button -->
 						<control type="button" id="2001">
