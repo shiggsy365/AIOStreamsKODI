@@ -53,18 +53,17 @@
 						<orientation>horizontal</orientation>
 						<onup>SetFocus(1011)</onup>
 						<onright>50</onright>
-						<ondown>5000</ondown>
+						<ondown>50</ondown>
 						
 						<control type="button" id="8">
 							<width>255</width>
 							<height>85</height>
-							<label>$VAR[VideoInfoPlayButtonLabelVar]</label>
-							<font>font13</font>
+							<label></label>
+							<font></font>
 							<align>center</align>
 							<aligny>center</aligny>
-							<textoffsetx>60</textoffsetx>
-							<texturefocus colordiffuse="button_focus">$VAR[VideoInfoPlayButtonTexture]</texturefocus>
-							<texturenofocus>$VAR[VideoInfoPlayButtonTexture]</texturenofocus>
+							<texturefocus colordiffuse="button_focus">icons/infodialog/play.png</texturefocus>
+							<texturenofocus>icons/infodialog/play.png</texturenofocus>
 							<onclick condition="String.IsEqual(ListItem.DBType,tvshow) | String.IsEqual(ListItem.DBType,season) | String.IsEqual(ListItem.DBType,series)">ActivateWindow(Videos,$INFO[ListItem.FileNameAndPath],return)</onclick>
 							<onclick condition="!String.IsEqual(ListItem.DBType,tvshow) + !String.IsEqual(ListItem.DBType,season) + !String.IsEqual(ListItem.DBType,series)">PlayMedia($INFO[ListItem.FileNameAndPath])</onclick>
 							<visible>!String.IsEmpty(ListItem.Title) | !String.IsEmpty(ListItem.Label)</visible>
@@ -81,6 +80,7 @@
 							<align>center</align>
 							<aligny>center</aligny>
 							<visible>!String.IsEmpty(Window(Home).Property(InfoWindow.Trailer))</visible>
+							<onright>5000</onright>
 							<onclick>Dialog.Close(movieinformation)</onclick>
 							<onclick>PlayMedia($INFO[Window(Home).Property(InfoWindow.Trailer)])</onclick>
 						</control>
@@ -313,15 +313,6 @@
 						<top>0</top>
 						<width>180</width>
 						<height>270</height>
-						<!-- 3px Red Focus Border -->
-						<control type="image">
-							<left>-3</left>
-							<top>-3</top>
-							<width>186</width>
-							<height>276</height>
-							<texture colordiffuse="FFFF0000">colors/white.png</texture>
-							<visible>Control.HasFocus(50)</visible>
-						</control>
 						<control type="image">
 							<left>0</left>
 							<top>0</top>
@@ -364,52 +355,19 @@
 							<texturenofocus>-</texturenofocus>
 							<onclick>Dialog.Close(MovieInformation)</onclick>
 							<onclick>RunScript(special://skin/resources/lib/global_search.py, $INFO[Window(Home).Property(InfoWindow.Cast.1.Name)])</onclick>
-							<onup>140</onup>
+							<onup>8000</onup>
 							<onleft>8</onleft>
 							<onright>51</onright>
 							<ondown>5000</ondown>
 						</control>
-					</focusedlayout>
-				</control>
-				<control type="grouplist" id="5000">
-					<left>0</left>
-					<top>864</top>
-					<width>1246</width>
-					<height>400</height>
-					<onleft>5000</onleft>
-					<onright>5000</onright>
-					<onup>140</onup>
-					<ondown condition="!Integer.IsGreater(Container(5000).Position,4)">SetFocus(50,$INFO[Container(5000).Position])</ondown>
-					<ondown condition="Integer.IsGreater(Container(5000).Position,4)">SetFocus(50,4)</ondown>
-					<itemgap>-18</itemgap>
-					<align>center</align>
-					<orientation>horizontal</orientation>
-					<scrolltime tween="quadratic">200</scrolltime>
-					<include content="InfoDialogToggleButton">
-						<param name="id" value="8" />
-						<param name="icon_on" value="icons/infodialog/browse.png" />
-						<param name="icon_off" value="icons/infodialog/play.png" />
-						<param name="selected" value="String.IsEqual(ListItem.DBType,tvshow) | String.IsEqual(ListItem.DBType,season) | String.IsEqual(ListItem.DBType,set)" />
-						<param name="label" value="$VAR[VideoInfoPlayButtonLabelVar]" />
-					</include>
-					<include content="InfoDialogButton">
-						<param name="id" value="11" />
-						<param name="icon" value="icons/infodialog/trailer.png" />
-						<param name="label" value="$LOCALIZE[20410]" />
-						<param name="visible" value="!String.IsEmpty(ListItem.Trailer) + ![String.StartsWith(Container.FolderPath,plugin://) + String.Contains(Container.FolderPath,trailer)]" />
-					</include>
-					<include content="InfoDialogButton">
-						<param name="id" value="441" />
-						<param name="icon" value="icons/infodialogs/cinema.png" />
-						<param name="onclick_1" value="Dialog.Close(MovieInformation)" />
-						<param name="onclick_2" value="RunScript(script.cinemavision,experience)" />
-						<param name="label" value="$LOCALIZE[31003]" />
-						<param name="visible" value="System.AddonIsEnabled(script.cinemavision) + [String.IsEqual(ListItem.DBType,movie) | String.IsEqual(ListItem.DBType,tvshow) | String.IsEqual(ListItem.DBType,season) | String.IsEqual(ListItem.DBType,episode)]" />
-					</include>
-					<control type="group" id="400">
-						<width>1</width>
-						<height>1</height>
-						<visible>false</visible>
+						<!-- Red Focus Border (Home Style) -->
+						<control type="image">
+							<left>0</left><top>0</top><width>180</width><height>270</height>
+							<texture colordiffuse="00FFFFFF">colors/white.png</texture>
+							<bordertexture border="3" colordiffuse="FFFF0000">colors/white.png</bordertexture>
+							<bordersize>3</bordersize>
+							<visible>Control.HasFocus(50)</visible>
+						</control>
 					</control>
 
 					<!-- Cast Tile 2 -->
@@ -418,15 +376,6 @@
 						<top>0</top>
 						<width>180</width>
 						<height>270</height>
-						<!-- 3px Red Focus Border -->
-						<control type="image">
-							<left>-3</left>
-							<top>-3</top>
-							<width>186</width>
-							<height>276</height>
-							<texture colordiffuse="FFFF0000">colors/white.png</texture>
-							<visible>Control.HasFocus(51)</visible>
-						</control>
 						<control type="image">
 							<left>0</left>
 							<top>0</top>
@@ -469,10 +418,18 @@
 							<texturenofocus>-</texturenofocus>
 							<onclick>Dialog.Close(MovieInformation)</onclick>
 							<onclick>RunScript(special://skin/resources/lib/global_search.py, $INFO[Window(Home).Property(InfoWindow.Cast.2.Name)])</onclick>
-							<onup>140</onup>
+							<onup>8000</onup>
 							<onleft>50</onleft>
 							<onright>52</onright>
 							<ondown>5000</ondown>
+						</control>
+						<!-- Red Focus Border (Home Style) -->
+						<control type="image">
+							<left>0</left><top>0</top><width>180</width><height>270</height>
+							<texture colordiffuse="00FFFFFF">colors/white.png</texture>
+							<bordertexture border="3" colordiffuse="FFFF0000">colors/white.png</bordertexture>
+							<bordersize>3</bordersize>
+							<visible>Control.HasFocus(51)</visible>
 						</control>
 					</control>
 
@@ -482,15 +439,6 @@
 						<top>0</top>
 						<width>180</width>
 						<height>270</height>
-						<!-- 3px Red Focus Border -->
-						<control type="image">
-							<left>-3</left>
-							<top>-3</top>
-							<width>186</width>
-							<height>276</height>
-							<texture colordiffuse="FFFF0000">colors/white.png</texture>
-							<visible>Control.HasFocus(52)</visible>
-						</control>
 						<control type="image">
 							<left>0</left>
 							<top>0</top>
@@ -533,10 +481,18 @@
 							<texturenofocus>-</texturenofocus>
 							<onclick>Dialog.Close(MovieInformation)</onclick>
 							<onclick>RunScript(special://skin/resources/lib/global_search.py, $INFO[Window(Home).Property(InfoWindow.Cast.3.Name)])</onclick>
-							<onup>140</onup>
+							<onup>8000</onup>
 							<onleft>51</onleft>
 							<onright>53</onright>
 							<ondown>5000</ondown>
+						</control>
+						<!-- Red Focus Border (Home Style) -->
+						<control type="image">
+							<left>0</left><top>0</top><width>180</width><height>270</height>
+							<texture colordiffuse="00FFFFFF">colors/white.png</texture>
+							<bordertexture border="3" colordiffuse="FFFF0000">colors/white.png</bordertexture>
+							<bordersize>3</bordersize>
+							<visible>Control.HasFocus(52)</visible>
 						</control>
 					</control>
 
@@ -546,15 +502,6 @@
 						<top>0</top>
 						<width>180</width>
 						<height>270</height>
-						<!-- 3px Red Focus Border -->
-						<control type="image">
-							<left>-3</left>
-							<top>-3</top>
-							<width>186</width>
-							<height>276</height>
-							<texture colordiffuse="FFFF0000">colors/white.png</texture>
-							<visible>Control.HasFocus(53)</visible>
-						</control>
 						<control type="image">
 							<left>0</left>
 							<top>0</top>
@@ -597,10 +544,18 @@
 							<texturenofocus>-</texturenofocus>
 							<onclick>Dialog.Close(MovieInformation)</onclick>
 							<onclick>RunScript(special://skin/resources/lib/global_search.py, $INFO[Window(Home).Property(InfoWindow.Cast.4.Name)])</onclick>
-							<onup>140</onup>
+							<onup>8000</onup>
 							<onleft>52</onleft>
 							<onright>54</onright>
 							<ondown>5000</ondown>
+						</control>
+						<!-- Red Focus Border (Home Style) -->
+						<control type="image">
+							<left>0</left><top>0</top><width>180</width><height>270</height>
+							<texture colordiffuse="00FFFFFF">colors/white.png</texture>
+							<bordertexture border="3" colordiffuse="FFFF0000">colors/white.png</bordertexture>
+							<bordersize>3</bordersize>
+							<visible>Control.HasFocus(53)</visible>
 						</control>
 					</control>
 
@@ -610,15 +565,6 @@
 						<top>0</top>
 						<width>180</width>
 						<height>270</height>
-						<!-- 3px Red Focus Border -->
-						<control type="image">
-							<left>-3</left>
-							<top>-3</top>
-							<width>186</width>
-							<height>276</height>
-							<texture colordiffuse="FFFF0000">colors/white.png</texture>
-							<visible>Control.HasFocus(54)</visible>
-						</control>
 						<control type="image">
 							<left>0</left>
 							<top>0</top>
@@ -661,11 +607,19 @@
 							<texturenofocus>-</texturenofocus>
 							<onclick>Dialog.Close(MovieInformation)</onclick>
 							<onclick>RunScript(special://skin/resources/lib/global_search.py, $INFO[Window(Home).Property(InfoWindow.Cast.5.Name)])</onclick>
-							<onup>140</onup>
+							<onup>8000</onup>
 							<onleft>53</onleft>
 							<onright>50</onright>
 							<ondown>5000</ondown>
-					</control>
+						</control>
+						<!-- Red Focus Border (Home Style) -->
+						<control type="image">
+							<left>0</left><top>0</top><width>180</width><height>270</height>
+							<texture colordiffuse="00FFFFFF">colors/white.png</texture>
+							<bordertexture border="3" colordiffuse="FFFF0000">colors/white.png</bordertexture>
+							<bordersize>3</bordersize>
+							<visible>Control.HasFocus(54)</visible>
+						</control>
 					</control>
 					<!-- Related Content Row -->
 					<control type="label">
@@ -739,15 +693,6 @@
 								<top>0</top>
 								<width>180</width>
 								<height>270</height>
-								<!-- 3px Red Focus Border -->
-								<control type="image">
-									<left>-3</left>
-									<top>-3</top>
-									<width>186</width>
-									<height>276</height>
-									<texture colordiffuse="FFFF0000">colors/white.png</texture>
-									<visible>Control.HasFocus(5000)</visible>
-								</control>
 								<control type="image">
 									<left>0</left>
 									<top>0</top>
@@ -780,6 +725,14 @@
 									<font>font12</font>
 									<textcolor>white</textcolor>
 									<label>$INFO[ListItem.Label]</label>
+								</control>
+								<!-- Red Focus Border (Home Style) -->
+								<control type="image">
+									<left>-3</left><top>-3</top><width>186</width><height>276</height>
+									<texture colordiffuse="00FFFFFF">colors/white.png</texture>
+									<bordertexture border="3" colordiffuse="FFFF0000">colors/white.png</bordertexture>
+									<bordersize>3</bordersize>
+									<visible>Control.HasFocus(5000)</visible>
 								</control>
 							</control>
 						</focusedlayout>
