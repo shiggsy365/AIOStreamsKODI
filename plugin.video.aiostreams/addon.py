@@ -1322,6 +1322,10 @@ def play():
         if default_behavior == 'show_streams':
             progress.update(100)
             progress.close()
+            # Small delay to allow Kodi to fully clean up progress dialog before showing modal
+            # Without this, Kodi may refuse to activate the stream selection dialog with error:
+            # "Activate of window refused because there are active modal dialogs"
+            xbmc.sleep(200)
             show_streams_dialog(content_type, media_id, stream_data, title, poster, fanart, clearlogo, from_playable=True)
             return
 
@@ -1605,6 +1609,11 @@ def select_stream():
         stream_data = get_streams(content_type, media_id)
     finally:
         progress.close()
+
+    # Small delay to allow Kodi to fully clean up progress dialog before showing modal
+    # Without this, Kodi may refuse to activate the stream selection dialog with error:
+    # "Activate of window refused because there are active modal dialogs"
+    xbmc.sleep(200)
 
     if not stream_data or 'streams' not in stream_data or len(stream_data['streams']) == 0:
         xbmcgui.Dialog().notification('AIOStreams', 'No streams available', xbmcgui.NOTIFICATION_ERROR)
@@ -1962,6 +1971,11 @@ def show_streams():
         xbmcgui.Dialog().notification('AIOStreams', 'No streams available', xbmcgui.NOTIFICATION_ERROR)
         xbmcplugin.endOfDirectory(HANDLE, succeeded=False)
         return
+
+    # Small delay to allow Kodi to fully clean up progress dialog before showing modal
+    # Without this, Kodi may refuse to activate the stream selection dialog with error:
+    # "Activate of window refused because there are active modal dialogs"
+    xbmc.sleep(200)
 
     # Always show streams dialog (ignore default behavior - user explicitly requested stream selection)
     show_streams_dialog(content_type, media_id, stream_data, title, poster, fanart, clearlogo)
