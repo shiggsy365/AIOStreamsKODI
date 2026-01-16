@@ -1,0 +1,337 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<window id="1111" type="dialog">
+    <defaultcontrol always="true">2000</defaultcontrol>
+    <onload>RunScript(special://skin/resources/lib/widget_manager.py,load_page,home)</onload>
+    <coordinates>
+        <left>0</left>
+        <top>0</top>
+    </coordinates>
+    <include>DefaultBackground</include>
+    
+    <controls>
+        <!-- Background -->
+        <control type="image">
+            <left>0</left>
+            <top>0</top>
+            <width>1920</width>
+            <height>1080</height>
+            <texture>colors/black.png</texture>
+        </control>
+        
+        <!-- Main Container -->
+        <control type="group">
+            <left>100</left>
+            <top>80</top>
+            <width>1720</width>
+            <height>920</height>
+            
+            <!-- Header -->
+            <control type="label">
+                <left>0</left>
+                <top>0</top>
+                <width>1720</width>
+                <height>60</height>
+                <font>font45_title</font>
+                <textcolor>FFFFFFFF</textcolor>
+                <label>Modify Lists - $INFO[Window.Property(CurrentPageName)]</label>
+                <align>center</align>
+            </control>
+            
+            <!-- Page Selection Tabs -->
+            <control type="grouplist" id="2000">
+                <left>0</left>
+                <top>80</top>
+                <width>1720</width>
+                <height>60</height>
+                <orientation>horizontal</orientation>
+                <itemgap>20</itemgap>
+                <align>center</align>
+                <ondown>4001</ondown>
+                
+                <control type="button" id="2001">
+                    <width>120</width>
+                    <height>60</height>
+                    <font></font>
+                    <label />
+                    <align>center</align>
+                    <onclick>SetProperty(CurrentPage,home)</onclick>
+                    <onclick>RunScript(special://skin/resources/lib/widget_manager.py,load_page,home)</onclick>
+                    <texturefocus colordiffuse="button_focus">icons/widgetmanager/home.png</texturefocus>
+                    <texturenofocus>icons/widgetmanager/home.png</texturenofocus>
+                    <textcolor>00FFFFFF</textcolor>
+                    <focusedcolor>00FFFFFF</focusedcolor>
+                </control>
+                
+                <control type="button" id="2002">
+                    <width>120</width>
+                    <height>60</height>
+                    <font></font>
+                    <label />
+                    <align>center</align>
+                    <onclick>SetProperty(CurrentPage,tvshows)</onclick>
+                    <onclick>RunScript(special://skin/resources/lib/widget_manager.py,load_page,tvshows)</onclick>
+                    <texturefocus colordiffuse="button_focus">icons/widgetmanager/tvshows.png</texturefocus>
+                    <texturenofocus>icons/widgetmanager/tvshows.png</texturenofocus>
+                    <textcolor>00FFFFFF</textcolor>
+                    <focusedcolor>00FFFFFF</focusedcolor>
+                </control>
+                
+                <control type="button" id="2003">
+                    <width>120</width>
+                    <height>60</height>
+                    <font></font>
+                    <label />
+                    <align>center</align>
+                    <onclick>SetProperty(CurrentPage,movies)</onclick>
+                    <onclick>RunScript(special://skin/resources/lib/widget_manager.py,load_page,movies)</onclick>
+                    <texturefocus colordiffuse="button_focus">icons/widgetmanager/movies.png</texturefocus>
+                    <texturenofocus>icons/widgetmanager/movies.png</texturenofocus>
+                    <textcolor>00FFFFFF</textcolor>
+                    <focusedcolor>00FFFFFF</focusedcolor>
+                </control>
+            </control>
+            
+            <!-- Current Page Catalogs (Left Panel) -->
+            <control type="group">
+                <left>0</left>
+                <top>160</top>
+                <width>650</width>
+                <height>700</height>
+                
+                <control type="label">
+                    <left>0</left>
+                    <top>0</top>
+                    <width>650</width>
+                    <height>40</height>
+                    <font>font13</font>
+                    <textcolor>button_focus</textcolor>
+                    <label>Current Catalogs</label>
+                    <align>center</align>
+                </control>
+                
+                <control type="list" id="3000">
+                    <left>0</left>
+                    <top>50</top>
+                    <width>650</width>
+                    <height>650</height>
+                    <onleft>noop</onleft>
+                    <onright>4001</onright>
+                    <onup>2000</onup>
+                    <ondown>noop</ondown>
+                    <itemlayout height="50">
+                        <control type="label">
+                            <left>10</left>
+                            <top>0</top>
+                            <width>470</width>
+                            <height>50</height>
+                            <font>font13</font>
+                            <textcolor>$VAR[TraktWidgetColor]</textcolor>
+                            <label>$INFO[ListItem.Label]</label>
+                            <aligny>center</aligny>
+                        </control>
+                        <control type="label">
+                            <left>490</left>
+                            <top>0</top>
+                            <width>150</width>
+                            <height>50</height>
+                            <font>font12</font>
+                            <textcolor>$VAR[TraktWidgetTypeColor]</textcolor>
+                            <label>$INFO[ListItem.Label2]</label>
+                            <aligny>center</aligny>
+                            <align>right</align>
+                        </control>
+                    </itemlayout>
+                    <focusedlayout height="50">
+                        <control type="image">
+                            <left>0</left>
+                            <top>0</top>
+                            <width>650</width>
+                            <height>50</height>
+                            <texture colordiffuse="$VAR[TraktWidgetFocusColor]">colors/white.png</texture>
+                        </control>
+                        <control type="label">
+                            <left>10</left>
+                            <top>0</top>
+                            <width>470</width>
+                            <height>50</height>
+                            <font>font13</font>
+                            <textcolor>FF000000</textcolor>
+                            <label>$INFO[ListItem.Label]</label>
+                            <aligny>center</aligny>
+                        </control>
+                        <control type="label">
+                            <left>490</left>
+                            <top>0</top>
+                            <width>150</width>
+                            <height>50</height>
+                            <font>font12</font>
+                            <textcolor>FF000000</textcolor>
+                            <label>$INFO[ListItem.Label2]</label>
+                            <aligny>center</aligny>
+                            <align>right</align>
+                        </control>
+                    </focusedlayout>
+                </control>
+            </control>
+            
+            <!-- Control Buttons (Center) -->
+            <control type="grouplist" id="4000">
+                <left>670</left>
+                <top>300</top>
+                <width>100</width>
+                <height>400</height>
+                <orientation>vertical</orientation>
+                <itemgap>20</itemgap>
+                <onleft>3000</onleft>
+                <onright>5000</onright>
+                <onup>2000</onup>
+                
+                <!-- Move Up -->
+                <control type="button" id="4001">
+                    <width>100</width>
+                    <height>80</height>
+                    <label />
+                    <texturenofocus>icons/arrows/arrow_up.png</texturenofocus>
+                    <texturefocus colordiffuse="button_focus">icons/arrows/arrow_up.png</texturefocus>
+                    <onclick>RunScript(special://skin/resources/lib/widget_manager.py,move_up)</onclick>
+                </control>
+                
+                <!-- Move Down -->
+                <control type="button" id="4002">
+                    <width>100</width>
+                    <height>80</height>
+                    <label />
+                    <texturenofocus>icons/arrows/arrow_down.png</texturenofocus>
+                    <texturefocus colordiffuse="button_focus">icons/arrows/arrow_down.png</texturefocus>
+                    <onclick>RunScript(special://skin/resources/lib/widget_manager.py,move_down)</onclick>
+                </control>
+                
+                <!-- Remove (Right Arrow) -->
+                <control type="button" id="4003">
+                    <width>100</width>
+                    <height>80</height>
+                    <label />
+                    <texturenofocus>icons/arrows/arrow_right.png</texturenofocus>
+                    <texturefocus colordiffuse="button_focus">icons/arrows/arrow_right.png</texturefocus>
+                    <onclick>RunScript(special://skin/resources/lib/widget_manager.py,remove_catalog)</onclick>
+                </control>
+                
+                <!-- Add (Left Arrow) -->
+                <control type="button" id="4004">
+                    <width>100</width>
+                    <height>80</height>
+                    <label />
+                    <texturenofocus>icons/arrows/arrow_left.png</texturenofocus>
+                    <texturefocus colordiffuse="button_focus">icons/arrows/arrow_left.png</texturefocus>
+                    <onclick>RunScript(special://skin/resources/lib/widget_manager.py,add_catalog)</onclick>
+                </control>
+            </control>
+            
+            <!-- Available Catalogs (Right Panel) -->
+            <control type="group">
+                <left>790</left>
+                <top>160</top>
+                <width>930</width>
+                <height>700</height>
+                
+                <control type="label">
+                    <left>0</left>
+                    <top>0</top>
+                    <width>930</width>
+                    <height>40</height>
+                    <font>font13</font>
+                    <textcolor>button_focus</textcolor>
+                    <label>Available Catalogs</label>
+                    <align>center</align>
+                </control>
+                
+                <control type="list" id="5000">
+                    <left>0</left>
+                    <top>50</top>
+                    <width>930</width>
+                    <height>650</height>
+                    <onleft>4001</onleft>
+                    <onright>noop</onright>
+                    <onup>2000</onup>
+                    <ondown>noop</ondown>
+                    <itemlayout height="50">
+                        <control type="label">
+                            <left>10</left>
+                            <top>0</top>
+                            <width>700</width>
+                            <height>50</height>
+                            <font>font13</font>
+                            <textcolor>$VAR[AvailableCatalogColor]</textcolor>
+                            <label>$INFO[ListItem.Label]</label>
+                            <aligny>center</aligny>
+                        </control>
+                        <control type="label">
+                            <left>720</left>
+                            <top>0</top>
+                            <width>200</width>
+                            <height>50</height>
+                            <font>font12</font>
+                            <textcolor>$VAR[AvailableCatalogTypeColor]</textcolor>
+                            <label>$INFO[ListItem.Label2]</label>
+                            <aligny>center</aligny>
+                            <align>right</align>
+                        </control>
+                    </itemlayout>
+                    <focusedlayout height="50">
+                        <control type="image">
+                            <left>0</left>
+                            <top>0</top>
+                            <width>930</width>
+                            <height>50</height>
+                            <texture colordiffuse="$VAR[AvailableCatalogFocusColor]">colors/white.png</texture>
+                        </control>
+                        <control type="label">
+                            <left>10</left>
+                            <top>0</top>
+                            <width>700</width>
+                            <height>50</height>
+                            <font>font13</font>
+                            <textcolor>FF000000</textcolor>
+                            <label>$INFO[ListItem.Label]</label>
+                            <aligny>center</aligny>
+                        </control>
+                        <control type="label">
+                            <left>720</left>
+                            <top>0</top>
+                            <width>200</width>
+                            <height>50</height>
+                            <font>font12</font>
+                            <textcolor>FF000000</textcolor>
+                            <label>$INFO[ListItem.Label2]</label>
+                            <aligny>center</aligny>
+                            <align>right</align>
+                        </control>
+                    </focusedlayout>
+                </control>
+            </control>
+            
+            <!-- Clear All Button -->
+            <control type="button" id="6001">
+                <left>480</left>
+                <top>880</top>
+                <width>200</width>
+                <height>60</height>
+                <label>Clear All</label>
+                <font>font13</font>
+                <onclick>RunScript(special://skin/resources/lib/widget_manager.py,clear_all)</onclick>
+            </control>
+
+            <!-- Close Button -->
+            <control type="button" id="6000">
+                <left>700</left>
+                <top>880</top>
+                <width>200</width>
+                <height>60</height>
+                <label>Close</label>
+                <font>font13</font>
+                <onclick>RunScript(special://skin/resources/lib/widget_manager.py,save_and_exit)</onclick>
+                <onclick>PreviousMenu</onclick>
+            </control>
+        </control>
+    </controls>
+</window>

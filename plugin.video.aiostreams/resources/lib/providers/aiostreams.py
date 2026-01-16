@@ -36,6 +36,7 @@ class AIOStreamsProvider(BaseProvider):
         self._base_url = base_url
         self._timeout = timeout
         self._manifest = None
+        self._session = None
 
     def initialize(self):
         """Initialize provider and validate connection."""
@@ -109,7 +110,10 @@ class AIOStreamsProvider(BaseProvider):
                     headers['If-Modified-Since'] = cached_headers['last-modified']
 
         try:
-            response = requests.get(url, headers=headers, timeout=self.timeout)
+            # Use session for connection pooling
+            if not self._session:
+                self._session = requests.Session()
+            response = self._session.get(url, headers=headers, timeout=self.timeout)
 
             # 304 Not Modified - use cached data
             if response.status_code == 304:

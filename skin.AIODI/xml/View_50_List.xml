@@ -146,6 +146,39 @@
 						<texture colordiffuse="button_focus">lists/focus.png</texture>
 						<visible>Control.HasFocus($PARAM[list_id])</visible>
 					</control>
+					<!-- Red Border for Search Results -->
+					<control type="image">
+						<left>0</left>
+						<top>0</top>
+						<width>100%</width>
+						<height>3</height>
+						<texture colordiffuse="red">colors/white.png</texture>
+						<visible>Control.HasFocus($PARAM[list_id]) + String.Contains(Container.FolderPath,search)</visible>
+					</control>
+					<control type="image">
+						<left>0</left>
+						<bottom>0</bottom>
+						<width>100%</width>
+						<height>3</height>
+						<texture colordiffuse="red">colors/white.png</texture>
+						<visible>Control.HasFocus($PARAM[list_id]) + String.Contains(Container.FolderPath,search)</visible>
+					</control>
+					<control type="image">
+						<left>0</left>
+						<top>0</top>
+						<width>3</width>
+						<height>100%</height>
+						<texture colordiffuse="red">colors/white.png</texture>
+						<visible>Control.HasFocus($PARAM[list_id]) + String.Contains(Container.FolderPath,search)</visible>
+					</control>
+					<control type="image">
+						<right>0</right>
+						<top>0</top>
+						<width>3</width>
+						<height>100%</height>
+						<texture colordiffuse="red">colors/white.png</texture>
+						<visible>Control.HasFocus($PARAM[list_id]) + String.Contains(Container.FolderPath,search)</visible>
+					</control>
 					<control type="label">
 						<left>70</left>
 						<right>70</right>

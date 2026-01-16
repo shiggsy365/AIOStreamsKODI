@@ -15,7 +15,7 @@
 			<animation effect="fade" start="100" end="0" time="300">WindowClose</animation>
 			<animation effect="fade" time="400">VisibleChange</animation>
 			<imagepath background="true" colordiffuse="bg_overlay">$INFO[Skin.String(HomeFanart.path)]settings$INFO[Skin.String(HomeFanart.ext)]</imagepath>
-			<visible>!Player.HasMedia + !String.IsEmpty(Skin.String(HomeFanart.path))</visible>
+			<visible>false</visible>
 		</control>
 		<control type="group" id="10000">
 			<left>470</left>
@@ -72,6 +72,12 @@
 					<include>DefaultSettingButton</include>
 					<onclick>Skin.SelectBool(31164, 31165|show_profilename, 31166|show_profileavatar, 16018|show_none)</onclick>
 					<label2>$VAR[ProfileIdentificationLabel2Var]</label2>
+				</control>
+				<control type="button" id="708">
+					<label>Run Setup Wizard</label>
+					<include>DefaultSettingButton</include>
+					<onclick>RunScript(script.aiodi.onboarding)</onclick>
+					<visible>System.HasAddon(script.aiodi.onboarding)</visible>
 				</control>
 			</control>
 			<control type="grouplist" id="600">
@@ -327,7 +333,7 @@
 				<top>130</top>
 				<width>470</width>
 				<height>700</height>
-				<onleft>10000</onleft>
+				<onleft>9001</onleft>
 				<onright>10000</onright>
 				<onup>9000</onup>
 				<ondown>9000</ondown>
@@ -404,6 +410,91 @@
 			<param name="breadcrumbs_label" value="$LOCALIZE[5] / $LOCALIZE[20077]" />
 		</include>
 		<include>BottomBar</include>
+
+        <!-- Right Side Panel (Context Menu Style) -->
+        <control type="group">
+            <left>1420</left>
+            <top>0</top>
+            <width>500</width>
+            <height>1080</height>
+            <visible>ControlGroup(9001).HasFocus()</visible>
+            <animation type="Visible">
+                <effect type="slide" start="500" end="0" time="300" tween="cubic" easing="out" />
+            </animation>
+            <animation type="Hidden">
+                <effect type="slide" start="0" end="500" time="300" tween="cubic" easing="in" />
+            </animation>
+
+            <!-- Panel Background -->
+            <control type="image">
+                <left>0</left>
+                <top>0</top>
+                <width>500</width>
+                <height>1080</height>
+                <texture colordiffuse="FF1A1A1A">colors/white.png</texture>
+            </control>
+            
+            <!-- Side Shadow/Border -->
+            <control type="image">
+                <left>-5</left>
+                <top>0</top>
+                <width>5</width>
+                <height>1080</height>
+                <texture colordiffuse="FF000000">colors/white.png</texture>
+            </control>
+
+            <!-- List Content -->
+            <control type="grouplist" id="9001">
+                <description>Settings Context Menu</description>
+                <left>25</left>
+                <top>150</top>
+                <width>450</width>
+                <height>900</height>
+                <itemgap>2</itemgap>
+                <onleft>9000</onleft>
+                <onright>9000</onright>
+                <onback>9000</onback>
+                <align>center</align>
+                <usecontrolcoords>true</usecontrolcoords>
+                
+                <control type="button" id="90011">
+                    <description>Reload Skin</description>
+                    <width>450</width>
+                    <height>65</height>
+                    <align>left</align>
+                    <textoffsetx>20</textoffsetx>
+                    <label>$LOCALIZE[20183]</label> <!-- Reload Skin -->
+                    <onclick>ReloadSkin()</onclick>
+                    <font>font12</font>
+                    <texturefocus colordiffuse="button_focus">lists/focus.png</texturefocus>
+                    <texturenofocus colordiffuse="00FFFFFF">colors/white.png</texturenofocus>
+                </control>
+                 <control type="button" id="90012">
+                    <description>File Manager</description>
+                    <width>450</width>
+                    <height>65</height>
+                    <align>left</align>
+                    <textoffsetx>20</textoffsetx>
+                    <label>$LOCALIZE[10003]</label> <!-- File Manager -->
+                    <onclick>ActivateWindow(filemanager)</onclick>
+                    <font>font12</font>
+                    <texturefocus colordiffuse="button_focus">lists/focus.png</texturefocus>
+                    <texturenofocus colordiffuse="00FFFFFF">colors/white.png</texturenofocus>
+                </control>
+                <control type="button" id="90013">
+                    <description>System Info</description>
+                    <width>450</width>
+                    <height>65</height>
+                    <align>left</align>
+                    <textoffsetx>20</textoffsetx>
+                    <label>$LOCALIZE[130]</label> <!-- System Info -->
+                    <onclick>ActivateWindow(systeminfo)</onclick>
+                    <font>font12</font>
+                    <texturefocus colordiffuse="button_focus">lists/focus.png</texturefocus>
+                    <texturenofocus colordiffuse="00FFFFFF">colors/white.png</texturenofocus>
+                </control>
+            </control>
+        </control>
 		<control type="textbox" id="6">
 			<include>OpenClose_Right</include>
 			<description>description area</description>

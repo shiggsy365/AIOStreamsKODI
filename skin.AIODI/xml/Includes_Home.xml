@@ -246,6 +246,7 @@
 		<param name="ondown_action1">noop</param>
 		<param name="ondown_action2">noop</param>
 		<param name="onclick_condition">false</param>
+		<param name="onclick_action">noop</param>
 		<param name="browse_mode">auto</param>
 		<param name="widget_type">videos</param>
 		<definition>
@@ -253,7 +254,7 @@
 				<left>0</left>
 				<top>0</top>
 				<width>1750</width>
-				<height>550</height>
+				<height>470</height>
 				<!-- HEADER -->
 				<include content="CategoryLabel">
 					<param name="label">$PARAM[widget_header]</param>
@@ -264,7 +265,7 @@
 					<left>0</left>
 					<top>65</top>
 					<width>1750</width>
-					<height>485</height>
+					<height>405</height>
 					<orientation>horizontal</orientation>
 					<onleft>9000</onleft>
 					<onright>noop</onright>
@@ -272,9 +273,9 @@
 					<onup>$PARAM[onup_action2]</onup>
 					<ondown>$PARAM[ondown_action1]</ondown>
 					<ondown>$PARAM[ondown_action2]</ondown>
-					<onclick>Action(Select)</onclick>
+					<onclick condition="String.IsEmpty($PARAM[onclick_action]) | String.IsEqual($PARAM[onclick_action],noop)">PlayMedia($INFO[ListItem.FileNameAndPath])</onclick>
+					<onclick condition="!String.IsEqual($PARAM[onclick_action],noop) + !String.IsEmpty($PARAM[onclick_action])">$PARAM[onclick_action]</onclick>
 					<onfocus>Skin.SetString(ActiveWidgetID,$PARAM[list_id])</onfocus>
-					<onfocus>Control.SetItem($PARAM[list_id],1)</onfocus>
 					<itemlayout width="240" height="360">
 						<control type="image">
 							<width>230</width>
@@ -392,6 +393,7 @@
 		<param name="onclick_condition">false</param>
 		<param name="browse_mode">auto</param>
 		<param name="widget_type">videos</param>
+		<param name="onclick_action">noop</param>
 		<definition>
 			<control type="group">
 				<left>0</left>
@@ -416,16 +418,20 @@
 					<onup>$PARAM[onup_action2]</onup>
 					<ondown>$PARAM[ondown_action1]</ondown>
 					<ondown>$PARAM[ondown_action2]</ondown>
-					<onclick>Action(Select)</onclick>
+					<onclick condition="String.IsEmpty($PARAM[onclick_action]) | String.IsEqual($PARAM[onclick_action],noop)">PlayMedia($INFO[ListItem.FileNameAndPath])</onclick>
+					<onclick condition="!String.IsEmpty($PARAM[onclick_action]) + !String.IsEqual($PARAM[onclick_action],noop)">$PARAM[onclick_action]</onclick>
 					<onfocus>Skin.SetString(ActiveWidgetID,$PARAM[list_id])</onfocus>
-					<onfocus>Control.SetItem($PARAM[list_id],1)</onfocus>
 					<itemlayout width="410" height="235">
-						<control type="image">
-							<width>390</width>
-							<height>220</height>
-							<aspectratio align="center" aligny="center">scale</aspectratio>
-							<texture background="true">$INFO[ListItem.Art(thumb)]</texture>
-							<fallback>DefaultVideo.png</fallback>
+						<control type="group">
+							<animation effect="zoom" center="auto" start="100" end="110" time="200" tween="sine" easing="out">Focus</animation>
+							<control type="image">
+								<width>390</width>
+								<height>220</height>
+								<aspectratio align="center" aligny="center">scale</aspectratio>
+								<texture background="true">$INFO[ListItem.Art(thumb)]</texture>
+								<fallback>DefaultVideo.png</fallback>
+							</control>
+
 						</control>
 					</itemlayout>
 					<focusedlayout width="410" height="235">
@@ -441,9 +447,10 @@
 								<borderradius>8</borderradius>
 								<fallback>DefaultVideo.png</fallback>
 							</control>
+
 						</control>
 					</focusedlayout>
-					<content limit="20" target="$PARAM[widget_target]" browse="$PARAM[browse_mode]" type="$PARAM[widget_type]">$PARAM[content_path]</content>
+					<content limit="20" target="$PARAM[widget_target]" browse="$PARAM[browse_mode]" type="episodes">$PARAM[content_path]</content>
 				</control>
 				<!-- LOADING INDICATOR -->
 				<include content="BusyListSpinner">
@@ -516,14 +523,7 @@
 						</include>
 					</control>
 				</focusedlayout>
-				<content sortby="$PARAM[sortby]" sortorder="$PARAM[sortorder]" target="$PARAM[widget_target]" limit="$PARAM[widget_limit]" browse="$PARAM[browse_mode]">
-					<item>
-						<label>WIDGET DUMMY (EPISODE)</label>
-						<thumb>icons/sidemenu/home_white.png</thumb>
-						<onclick>noop</onclick>
-					</item>
-					$PARAM[content_path]
-				</content>
+				<content sortby="$PARAM[sortby]" sortorder="$PARAM[sortorder]" target="$PARAM[widget_target]" limit="$PARAM[widget_limit]" browse="$PARAM[browse_mode]">$PARAM[content_path]</content>
 			</control>
 		</definition>
 	</include>
@@ -878,14 +878,7 @@
 						</control>
 					</control>
 				</focusedlayout>
-				<content sortby="$PARAM[sortby]" sortorder="$PARAM[sortorder]" target="$PARAM[widget_target]" limit="15" browse="$PARAM[browse_mode]">
-					<item>
-						<label>WIDGET DUMMY (POSTER)</label>
-						<thumb>icons/sidemenu/home_white.png</thumb>
-						<onclick>noop</onclick>
-					</item>
-					$PARAM[content_path]
-				</content>
+				<content sortby="$PARAM[sortby]" sortorder="$PARAM[sortorder]" target="$PARAM[widget_target]" limit="15" browse="$PARAM[browse_mode]">$PARAM[content_path]</content>
 			</control>
 		</definition>
 	</include>
@@ -1345,3 +1338,4 @@
 		</control>
 	</include>
 </includes>
+```

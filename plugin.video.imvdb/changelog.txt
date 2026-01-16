@@ -1,0 +1,7 @@
+[1.0.0] - 2026-01-15
+- Initial release
+- Browse music videos by Year and Artist
+- Native YouTube playback via plugin.video.youtube
+- Randomized playlist generation
+- Lazy-loading background service for seamless playback
+- Built-in error recovery and automatic skipping

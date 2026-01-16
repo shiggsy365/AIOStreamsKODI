@@ -19,8 +19,10 @@
 		<radioposy>0</radioposy>
 	</include>
 	<include name="InfoDialogMetadata">
-		<param name="onclick_condition">false</param>
+		<param name="onclick_condition">true</param>
 		<param name="onclick">noop</param>
+		<param name="onclick_condition_2">false</param>
+		<param name="onclick_2">noop</param>
 		<param name="altclick_condition">false</param>
 		<param name="altclick">noop</param>
 		<definition>
@@ -36,6 +38,7 @@
 				<alttexturenofocus />
 				<onclick>noop</onclick>
 				<onclick condition="$PARAM[onclick_condition]">$PARAM[onclick]</onclick>
+				<onclick condition="$PARAM[onclick_condition_2]">$PARAM[onclick_2]</onclick>
 				<altclick>noop</altclick>
 				<altclick condition="$PARAM[altclick_condition]">$PARAM[altclick]</altclick>
 				<label>$PARAM[label]</label>

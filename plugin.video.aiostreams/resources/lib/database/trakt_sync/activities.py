@@ -168,8 +168,8 @@ class TraktSyncDatabase(BaseTraktDB):
         Returns:
             bool: True if remote is newer than local
         """
-        local_time = local_activities.get(f'{category}_{field}', '1970-01-01T00:00:00')
-        remote_time = remote_activities.get(category, {}).get(field, '1970-01-01T00:00:00')
+        local_time = local_activities.get(f'{category}_{field}') or '1970-01-01T00:00:00'
+        remote_time = remote_activities.get(category, {}).get(field) or '1970-01-01T00:00:00'
         
         # Parse ISO timestamps and compare
         needs_sync = remote_time > local_time
@@ -189,7 +189,7 @@ class TraktSyncDatabase(BaseTraktDB):
         if not activities:
             # Initialize activities table if empty
             self.execute_sql(
-                "INSERT INTO activities (sync_id, trakt_username) VALUES (1, ?)",
+                "INSERT OR IGNORE INTO activities (sync_id, trakt_username) VALUES (1, ?)",
                 (trakt.get_trakt_username(),)
             )
             return {}
@@ -241,7 +241,8 @@ class TraktSyncDatabase(BaseTraktDB):
         if not watched_movies:
             return
         
-        # Process each movie
+        # Prepare batch data
+        batch_data = []
         for item in watched_movies:
             movie = item.get('movie', {})
             trakt_id = movie.get('ids', {}).get('trakt')
@@ -249,17 +250,20 @@ class TraktSyncDatabase(BaseTraktDB):
             if not trakt_id:
                 continue
             
-            # Update or insert movie
-            self.execute_sql("""
-                INSERT OR REPLACE INTO movies (
-                    trakt_id, imdb_id, tmdb_id, watched, last_watched_at, last_updated
-                ) VALUES (?, ?, ?, 1, ?, datetime('now'))
-            """, (
+            batch_data.append((
                 trakt_id,
                 movie.get('ids', {}).get('imdb'),
                 movie.get('ids', {}).get('tmdb'),
                 item.get('watched_at')
             ))
+            
+        # Execute batch update
+        if batch_data:
+            self.execute_sql_batch("""
+                INSERT OR REPLACE INTO movies (
+                    trakt_id, imdb_id, tmdb_id, watched, last_watched_at, last_updated
+                ) VALUES (?, ?, ?, 1, ?, datetime('now'))
+            """, batch_data)
         
         xbmc.log(f'[AIOStreams] Synced {len(watched_movies)} watched movies', xbmc.LOGDEBUG)
     
@@ -272,6 +276,8 @@ class TraktSyncDatabase(BaseTraktDB):
         if not collected_movies:
             return
         
+        # Prepare batch data
+        batch_data = []
         for item in collected_movies:
             movie = item.get('movie', {})
             trakt_id = movie.get('ids', {}).get('trakt')
@@ -279,16 +285,20 @@ class TraktSyncDatabase(BaseTraktDB):
             if not trakt_id:
                 continue
             
-            self.execute_sql("""
-                INSERT OR REPLACE INTO movies (
-                    trakt_id, imdb_id, tmdb_id, collected, collected_at, last_updated
-                ) VALUES (?, ?, ?, 1, ?, datetime('now'))
-            """, (
+            batch_data.append((
                 trakt_id,
                 movie.get('ids', {}).get('imdb'),
                 movie.get('ids', {}).get('tmdb'),
                 item.get('collected_at')
             ))
+            
+        # Execute batch update
+        if batch_data:
+            self.execute_sql_batch("""
+                INSERT OR REPLACE INTO movies (
+                    trakt_id, imdb_id, tmdb_id, collected, collected_at, last_updated
+                ) VALUES (?, ?, ?, 1, ?, datetime('now'))
+            """, batch_data)
         
         xbmc.log(f'[AIOStreams] Synced {len(collected_movies)} collected movies', xbmc.LOGDEBUG)
     
@@ -305,6 +315,8 @@ class TraktSyncDatabase(BaseTraktDB):
         if not watchlist_movies:
             return
         
+        # Prepare batch data
+        batch_data = []
         for item in watchlist_movies:
             movie = item.get('movie', {})
             trakt_id = movie.get('ids', {}).get('trakt')
@@ -312,14 +324,18 @@ class TraktSyncDatabase(BaseTraktDB):
             if not trakt_id:
                 continue
             
-            self.execute_sql("""
-                INSERT OR REPLACE INTO watchlist (trakt_id, mediatype, imdb_id, listed_at)
-                VALUES (?, 'movie', ?, ?)
-            """, (
+            batch_data.append((
                 trakt_id,
                 movie.get('ids', {}).get('imdb'),
                 item.get('listed_at')
             ))
+            
+        # Execute batch update
+        if batch_data:
+            self.execute_sql_batch("""
+                INSERT OR REPLACE INTO watchlist (trakt_id, mediatype, imdb_id, listed_at)
+                VALUES (?, 'movie', ?, ?)
+            """, batch_data)
         
         xbmc.log(f'[AIOStreams] Synced {len(watchlist_movies)} watchlist movies', xbmc.LOGDEBUG)
     
@@ -381,37 +397,42 @@ class TraktSyncDatabase(BaseTraktDB):
         episode_count = 0
         show_count = 0
 
+        # 1. Batch insert/update shows
+        batch_shows = []
         for item in watched_shows:
             show = item.get('show', {})
             show_trakt_id = show.get('ids', {}).get('trakt')
-
-            # Insert/update show
-            self.execute_sql("""
-                INSERT OR IGNORE INTO shows (trakt_id, imdb_id, tmdb_id, tvdb_id, last_updated)
-                VALUES (?, ?, ?, ?, datetime('now'))
-            """, (
+            
+            batch_shows.append((
                 show_trakt_id,
                 show.get('ids', {}).get('imdb'),
                 show.get('ids', {}).get('tmdb'),
                 show.get('ids', {}).get('tvdb')
             ))
+        
+        if batch_shows:
+            self.execute_sql_batch("""
+                INSERT OR IGNORE INTO shows (trakt_id, imdb_id, tmdb_id, tvdb_id, last_updated)
+                VALUES (?, ?, ?, ?, datetime('now'))
+            """, batch_shows)
+            
+        import pickle
+
+        # 2. Process episodes for each show
+        for item in watched_shows:
+            show = item.get('show', {})
+            show_trakt_id = show.get('ids', {}).get('trakt')
 
             # Fetch ALL episodes for this show (needed for Next Up calculation)
             xbmc.log(f'[AIOStreams] Fetching all episodes for show {show_trakt_id}', xbmc.LOGDEBUG)
             all_episodes = self._fetch_all_episodes_for_show(show_trakt_id)
 
-            # Insert all episodes with watched=0 initially
+            # 2a. Batch insert all episodes
+            batch_episodes = []
             for ep in all_episodes:
-                # Pickle episode metadata for storage
-                import pickle
                 pickled_metadata = pickle.dumps(ep.get('metadata', {}))
-
-                self.execute_sql("""
-                    INSERT OR IGNORE INTO episodes (
-                        show_trakt_id, season, episode, trakt_id, imdb_id, tmdb_id, tvdb_id,
-                        air_date, metadata, watched, last_updated
-                    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 0, datetime('now'))
-                """, (
+                
+                batch_episodes.append((
                     show_trakt_id,
                     ep['season'],
                     ep['number'],
@@ -422,27 +443,37 @@ class TraktSyncDatabase(BaseTraktDB):
                     ep['air_date'],
                     pickled_metadata
                 ))
+            
+            if batch_episodes:
+                self.execute_sql_batch("""
+                    INSERT OR IGNORE INTO episodes (
+                        show_trakt_id, season, episode, trakt_id, imdb_id, tmdb_id, tvdb_id,
+                        air_date, metadata, watched, last_updated
+                    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 0, datetime('now'))
+                """, batch_episodes)
 
-            # Now mark watched episodes
+            # 2b. Batch update watched episodes
+            batch_watched = []
             for season in item.get('seasons', []):
                 season_num = season.get('number')
 
                 for episode in season.get('episodes', []):
                     episode_num = episode.get('number')
-
-                    # Update episode as watched
-                    self.execute_sql("""
-                        UPDATE episodes
-                        SET watched=1, last_watched_at=?, last_updated=datetime('now')
-                        WHERE show_trakt_id=? AND season=? AND episode=?
-                    """, (
+                    
+                    batch_watched.append((
                         item.get('last_watched_at'),
                         show_trakt_id,
                         season_num,
                         episode_num
                     ))
-
                     episode_count += 1
+            
+            if batch_watched:
+                self.execute_sql_batch("""
+                    UPDATE episodes
+                    SET watched=1, last_watched_at=?, last_updated=datetime('now')
+                    WHERE show_trakt_id=? AND season=? AND episode=?
+                """, batch_watched)
 
             show_count += 1
 
@@ -463,6 +494,7 @@ class TraktSyncDatabase(BaseTraktDB):
         if not collected_shows:
             return
         
+        batch_data = []
         episode_count = 0
         
         for item in collected_shows:
@@ -474,20 +506,22 @@ class TraktSyncDatabase(BaseTraktDB):
                 
                 for episode in season.get('episodes', []):
                     episode_num = episode.get('number')
-
-                    self.execute_sql("""
-                        INSERT OR REPLACE INTO episodes (
-                            show_trakt_id, season, episode, collected,
-                            collected_at, last_updated
-                        ) VALUES (?, ?, ?, 1, ?, datetime('now'))
-                    """, (
+                    
+                    batch_data.append((
                         show_trakt_id,
                         season_num,
                         episode_num,
                         episode.get('collected_at')
                     ))
-                    
                     episode_count += 1
+        
+        if batch_data:
+            self.execute_sql_batch("""
+                INSERT OR REPLACE INTO episodes (
+                    show_trakt_id, season, episode, collected,
+                    collected_at, last_updated
+                ) VALUES (?, ?, ?, 1, ?, datetime('now'))
+            """, batch_data)
         
         xbmc.log(f'[AIOStreams] Synced {episode_count} collected episodes', xbmc.LOGDEBUG)
     
@@ -503,6 +537,7 @@ class TraktSyncDatabase(BaseTraktDB):
         if not watchlist_shows:
             return
         
+        batch_data = []
         for item in watchlist_shows:
             show = item.get('show', {})
             trakt_id = show.get('ids', {}).get('trakt')
@@ -510,14 +545,17 @@ class TraktSyncDatabase(BaseTraktDB):
             if not trakt_id:
                 continue
             
-            self.execute_sql("""
-                INSERT OR REPLACE INTO watchlist (trakt_id, mediatype, imdb_id, listed_at)
-                VALUES (?, 'show', ?, ?)
-            """, (
+            batch_data.append((
                 trakt_id,
                 show.get('ids', {}).get('imdb'),
                 item.get('listed_at')
             ))
+            
+        if batch_data:
+            self.execute_sql_batch("""
+                INSERT OR REPLACE INTO watchlist (trakt_id, mediatype, imdb_id, listed_at)
+                VALUES (?, 'show', ?, ?)
+            """, batch_data)
         
         xbmc.log(f'[AIOStreams] Synced {len(watchlist_shows)} watchlist shows', xbmc.LOGDEBUG)
     
@@ -533,6 +571,7 @@ class TraktSyncDatabase(BaseTraktDB):
         if not playback_progress:
             return
         
+        batch_data = []
         for item in playback_progress:
             item_type = item.get('type')  # 'movie' or 'episode'
             trakt_id = item.get(item_type, {}).get('ids', {}).get('trakt')
@@ -540,16 +579,19 @@ class TraktSyncDatabase(BaseTraktDB):
             if not trakt_id:
                 continue
             
-            self.execute_sql("""
-                INSERT OR REPLACE INTO bookmarks (trakt_id, resume_time, percent_played, type, paused_at)
-                VALUES (?, ?, ?, ?, ?)
-            """, (
+            batch_data.append((
                 trakt_id,
-                item.get('progress', 0) * item.get('duration', 0) / 100,  # Convert percent to seconds
+                item.get('progress', 0) * item.get('duration', 0) / 100,
                 item.get('progress', 0),
                 item_type,
                 item.get('paused_at')
             ))
+            
+        if batch_data:
+            self.execute_sql_batch("""
+                INSERT OR REPLACE INTO bookmarks (trakt_id, resume_time, percent_played, type, paused_at)
+                VALUES (?, ?, ?, ?, ?)
+            """, batch_data)
         
         xbmc.log(f'[AIOStreams] Synced {len(playback_progress)} bookmarks', xbmc.LOGDEBUG)
     
@@ -570,6 +612,7 @@ class TraktSyncDatabase(BaseTraktDB):
                 if not hidden_items:
                     continue
                 
+                batch_data = []
                 for item in hidden_items:
                     # Determine media type
                     if 'movie' in item:
@@ -581,10 +624,13 @@ class TraktSyncDatabase(BaseTraktDB):
                     else:
                         continue
                     
-                    self.execute_sql("""
+                    batch_data.append((trakt_id, media_type, section))
+                
+                if batch_data:
+                    self.execute_sql_batch("""
                         INSERT OR IGNORE INTO hidden (trakt_id, mediatype, section)
                         VALUES (?, ?, ?)
-                    """, (trakt_id, media_type, section))
+                    """, batch_data)
                 
                 xbmc.log(f'[AIOStreams] Synced {len(hidden_items)} hidden items for {section}', xbmc.LOGDEBUG)
             

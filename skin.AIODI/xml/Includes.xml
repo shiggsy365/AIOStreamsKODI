@@ -774,9 +774,18 @@
 				<top>$PARAM[posy]</top>
 				<animation effect="fade" start="0" end="100" time="300" delay="300">WindowOpen</animation>
 				<animation effect="fade" start="100" end="0" time="200">WindowClose</animation>
-				<height>150</height>
+				<height>180</height>
 				<itemgap>0</itemgap>
 				<orientation>vertical</orientation>
+				<!-- ClearLogo -->
+				<control type="image">
+					<width>100%</width>
+					<height>110</height>
+					<aspectratio align="center" aligny="bottom">keep</aspectratio>
+					<texture background="true">$INFO[ListItem.Art(clearlogo),,$INFO[ListItem.Art(logo)]]</texture>
+					<visible>!String.IsEmpty(ListItem.Art(clearlogo)) | !String.IsEmpty(ListItem.Art(logo))</visible>
+				</control>
+				<!-- Fallback Label -->
 				<control type="label">
 					<width>100%</width>
 					<label>$PARAM[main_label]</label>
@@ -785,11 +794,12 @@
 					<height>65</height>
 					<align>center</align>
 					<scroll>true</scroll>
+					<visible>String.IsEmpty(ListItem.Art(clearlogo)) + String.IsEmpty(ListItem.Art(logo))</visible>
 					<animation effect="slide" start="0,0" end="0,25" time="0" condition="String.IsEmpty(Control.GetLabel($PARAM[id]))">Conditional</animation>
 				</control>
 				<control type="label" id="$PARAM[id]">
 					<label>$PARAM[sub_label]</label>
-					<left>85</left>
+					<left>0</left>
 					<shadowcolor>text_shadow</shadowcolor>
 					<align>center</align>
 					<height>100</height>
@@ -1239,13 +1249,15 @@
 			<depth>DepthBackground</depth>
 			<include>FullScreenDimensions</include>
 			<aspectratio>scale</aspectratio>
-			<texture colordiffuse="primary_background">special://skin/extras/backgrounds/primary.jpg</texture>
+			<texture>special://skin/extras/background.png</texture>
+			<visible>!Window.IsActive(settings) + !Window.IsActive(skinsettings) + !Window.IsActive(systeminfo) + !Window.IsActive(filemanager) + !Window.IsActive(addonbrowser)</visible>
 		</control>
 		<control type="image">
 			<depth>DepthBackground</depth>
 			<include>FullScreenDimensions</include>
 			<aspectratio>scale</aspectratio>
 			<texture colordiffuse="secondary_background" fallback="special://skin/extras/backgrounds/pattern1.jpg">$INFO[Skin.String(background_overlay),special://skin/extras/backgrounds/pattern,.jpg]</texture>
+			<visible>!Window.IsActive(settings) + !Window.IsActive(settingscategory) + !Window.IsActive(skinsettings) + !Window.IsActive(systeminfo) + !Window.IsActive(filemanager) + !Window.IsActive(addonbrowser)</visible>
 		</control>
 	</include>
 	<include name="DefaultBackground">
@@ -1280,7 +1292,7 @@
 						<aspectratio>scale</aspectratio>
 						<fadetime>400</fadetime>
 						<animation effect="fade" time="400">VisibleChange</animation>
-						<texture background="true" colordiffuse="37FFFFFF">$VAR[MediaFanartVar]</texture>
+						<texture background="true" colordiffuse="2CFFFFFF">$VAR[MediaFanartVar]</texture>
 						<visible>!Control.IsVisible(502) | $EXP[infodialog_active]</visible>
 					</control>
 					<control type="image">
@@ -1292,7 +1304,7 @@
 						<fadetime>400</fadetime>
 						<include>OpenClose_Left</include>
 						<animation effect="fade" time="400">VisibleChange</animation>
-						<texture background="true" colordiffuse="37FFFFFF">$VAR[PosterVar]</texture>
+						<texture background="true" colordiffuse="2CFFFFFF">$VAR[PosterVar]</texture>
 						<visible>!Control.IsVisible(32111)</visible>
 					</control>
 				</control>
@@ -1767,4 +1779,53 @@
 			</focusedlayout>
 		</definition>
 	</include>
+	<include name="VideoInfoStackButton">
+		<param name="width">526</param>
+		<param name="height">60</param>
+		<definition>
+			<control type="radiobutton" id="$PARAM[id]">
+				<width>$PARAM[width]</width>
+				<height>$PARAM[height]</height>
+				<align>center</align>
+				<aligny>center</aligny>
+				<font>font13</font>
+				<textoffsetx>60</textoffsetx>
+				<texturefocus border="21" colordiffuse="button_focus">buttons/button-fo.png</texturefocus>
+				<texturenofocus border="21">buttons/button-nofo.png</texturenofocus>
+				<textureradioonfocus colordiffuse="white">$PARAM[icon]</textureradioonfocus>
+				<textureradioonnofocus colordiffuse="grey">$PARAM[icon]</textureradioonnofocus>
+				<textureradioofffocus colordiffuse="white">$PARAM[icon]</textureradioofffocus>
+				<textureradiooffnofocus colordiffuse="grey">$PARAM[icon]</textureradiooffnofocus>
+				<radioposx>20</radioposx>
+				<radioposy>6</radioposy>
+				<radiowidth>48</radiowidth>
+				<label>$PARAM[label]</label>
+				<onclick>$PARAM[onclick]</onclick>
+				<visible>$PARAM[visible]</visible>
+			</control>
+		</definition>
+	</include>
+	<!-- Global Search Content Includes -->
+	<include name="GlobalSearchMoviesContent">
+		<content target="video">
+			plugin://plugin.video.aiostreams/?action=search&amp;content_type=movie&amp;query=$ESCINFO[Window(10000).Property(GlobalSearch.Query)]
+		</content>
+	</include>
+	
+	<include name="GlobalSearchSeriesContent">
+		<content target="video">
+			plugin://plugin.video.aiostreams/?action=search&amp;content_type=series&amp;query=$ESCINFO[Window(10000).Property(GlobalSearch.Query)]
+		</content>
+	</include>
+	
+	<include name="GlobalSearchYouTubeContent">
+		<content target="video">
+			plugin://plugin.video.youtube/kodion/search/query/?q=$ESCINFO[Window(10000).Property(GlobalSearch.Query)]
+		</content>
+	</include>
+	<variable name="SearchResultsHeader">
+		<value condition="!String.IsEmpty(ListItem.Label)">$INFO[ListItem.Label]</value>
+		<value>Search: "$INFO[Window(10000).Property(GlobalSearch.Query)]"</value>
+	</variable>
+	
 </includes>

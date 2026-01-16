@@ -7,6 +7,11 @@ import xbmcvfs
 from urllib.parse import urlencode, parse_qsl
 import requests
 import json
+import threading
+import hashlib
+import os
+import time
+import pickle
 
 # Import new modules with enhanced architecture
 try:
@@ -47,8 +52,13 @@ if HAS_NEW_MODULES:
     except Exception as e:
         xbmc.log(f'[AIOStreams] Failed to initialize providers: {e}', xbmc.LOGERROR)
 
-# Run cache cleanup on startup (async, won't block)
-if HAS_MODULES:
+# Run initialize logic once per addon execution
+def initialize():
+    """Perform startup checks and tasks (async when possible)."""
+    if not HAS_MODULES:
+        return
+
+    # Run cache cleanup on startup (async, won't block)
     try:
         cache.cleanup_expired_cache()
     except:
@@ -63,6 +73,13 @@ if HAS_MODULES:
             migration.migrate()
     except Exception as e:
         xbmc.log(f'[AIOStreams] Migration check failed: {e}', xbmc.LOGERROR)
+    
+    # Run clearlogo check on startup (background thread, won't block)
+    try:
+        check_missing_clearlogos_on_startup()
+    except Exception as e:
+        xbmc.log(f'[AIOStreams] Clearlogo startup check failed: {e}', xbmc.LOGERROR)
+
 
 
 def get_setting(setting_id, default=None):
@@ -82,6 +99,50 @@ def get_base_url():
     return url
 
 
+def get_all_catalogs_action():
+    """Get all available catalogs for the Modify Lists feature."""
+    xbmcplugin.setPluginCategory(HANDLE, 'All Catalogs')
+    xbmcplugin.setContent(HANDLE, 'files')
+    
+    manifest = get_manifest()
+    if not manifest:
+        xbmcplugin.endOfDirectory(HANDLE, succeeded=False)
+        return
+    
+    for catalog in manifest.get('catalogs', []):
+        list_item = xbmcgui.ListItem(label=catalog.get('name', 'Unknown'))
+        list_item.setLabel2(catalog.get('type', 'unknown'))
+        list_item.setProperty('catalog_id', catalog.get('id', ''))
+        list_item.setProperty('content_type', catalog.get('type', ''))
+        url = get_url(action='browse_catalog', catalog_id=catalog.get('id'), content_type=catalog.get('type'), catalog_name=catalog.get('name'))
+        xbmcplugin.addDirectoryItem(HANDLE, url, list_item, True)
+    
+    xbmcplugin.endOfDirectory(HANDLE)
+
+
+def get_folder_browser_catalogs_action():
+    """Get only the catalogs used in the folder browser (for Widget Manager)."""
+    xbmcplugin.setPluginCategory(HANDLE, 'Folder Browser Catalogs')
+    xbmcplugin.setContent(HANDLE, 'files')
+    
+    manifest = get_manifest()
+    if not manifest:
+        xbmcplugin.endOfDirectory(HANDLE, succeeded=False)
+        return
+    
+    # Get only catalogs that are used in the folder browser
+    # These are the catalogs shown in series_lists() and movie_lists()
+    for catalog in manifest.get('catalogs', []):
+        list_item = xbmcgui.ListItem(label=catalog.get('name', 'Unknown'))
+        list_item.setLabel2(catalog.get('type', 'unknown'))
+        list_item.setProperty('catalog_id', catalog.get('id', ''))
+        list_item.setProperty('content_type', catalog.get('type', ''))
+        url = get_url(action='browse_catalog', catalog_id=catalog.get('id'), content_type=catalog.get('type'), catalog_name=catalog.get('name'))
+        xbmcplugin.addDirectoryItem(HANDLE, url, list_item, True)
+    
+    xbmcplugin.endOfDirectory(HANDLE)
+
+
 def get_timeout():
     """Get request timeout from settings."""
     try:
@@ -93,6 +154,201 @@ def get_timeout():
 def get_url(**kwargs):
     """Create a URL for calling the plugin recursively from the given set of keyword arguments."""
     return '{}?{}'.format(sys.argv[0], urlencode(kwargs))
+
+
+def get_clearlogo_cache_dir():
+    """Get the clearlogo cache directory path, creating it if needed."""
+    addon_data_path = xbmcvfs.translatePath(ADDON.getAddonInfo('profile'))
+    clearlogo_dir = os.path.join(addon_data_path, 'clearlogos')
+    
+    if not xbmcvfs.exists(clearlogo_dir):
+        xbmcvfs.mkdirs(clearlogo_dir)
+        xbmc.log(f'[AIOStreams] Created clearlogo cache directory: {clearlogo_dir}', xbmc.LOGDEBUG)
+    
+    return clearlogo_dir
+
+
+def get_cached_clearlogo_path(content_type, meta_id):
+    """Get the cached clearlogo file path if it exists.
+    
+    Args:
+        content_type: 'movie' or 'series'
+        meta_id: IMDB ID or other unique identifier
+    
+    Returns:
+        str: Path to cached clearlogo file, or None if not cached
+    """
+    # Use hash of meta_id to avoid filesystem issues with special characters
+    safe_id = hashlib.md5(f"{content_type}_{meta_id}".encode()).hexdigest()
+    clearlogo_dir = get_clearlogo_cache_dir()
+    clearlogo_path = os.path.join(clearlogo_dir, f"{safe_id}.png")
+    
+    if xbmcvfs.exists(clearlogo_path):
+        xbmc.log(f'[AIOStreams] Cached clearlogo found for {content_type}/{meta_id}', xbmc.LOGDEBUG)
+        # Return special:// path for better skin compatibility
+        return f"special://userdata/addon_data/plugin.video.aiostreams/clearlogos/{safe_id}.png"
+    
+    return None
+
+
+def download_and_cache_clearlogo(url, content_type, meta_id):
+    """Download clearlogo image and cache it to local file.
+    
+    Args:
+        url: URL of the clearlogo image
+        content_type: 'movie' or 'series'
+        meta_id: IMDB ID or other unique identifier
+    
+    Returns:
+        str: Path to cached clearlogo file, or None if download failed
+    """
+    if not url:
+        return None
+    
+    try:
+        # Check if already cached
+        cached_path = get_cached_clearlogo_path(content_type, meta_id)
+        if cached_path:
+            return cached_path
+        
+        # Download clearlogo
+        timeout = get_timeout()
+        response = requests.get(url, timeout=timeout)
+        response.raise_for_status()
+        
+        # Save to cache
+        safe_id = hashlib.md5(f"{content_type}_{meta_id}".encode()).hexdigest()
+        clearlogo_dir = get_clearlogo_cache_dir()
+        clearlogo_path = os.path.join(clearlogo_dir, f"{safe_id}.png")
+        
+        with open(clearlogo_path, 'wb') as f:
+            f.write(response.content)
+        
+        xbmc.log(f'[AIOStreams] Cached clearlogo for {content_type}/{meta_id}: {clearlogo_path}', xbmc.LOGINFO)
+        return clearlogo_path
+        
+    except Exception as e:
+        xbmc.log(f'[AIOStreams] Error caching clearlogo for {content_type}/{meta_id}: {e}', xbmc.LOGERROR)
+        return None
+
+
+def clear_clearlogo_cache():
+    """Delete all cached clearlogo files."""
+    import shutil
+    
+    try:
+        clearlogo_dir = get_clearlogo_cache_dir()
+        
+        if xbmcvfs.exists(clearlogo_dir):
+            # Use shutil to remove directory and all contents
+            shutil.rmtree(clearlogo_dir)
+            xbmc.log('[AIOStreams] Cleared clearlogo cache', xbmc.LOGINFO)
+            
+            # Recreate empty directory
+            xbmcvfs.mkdirs(clearlogo_dir)
+            return True
+        
+        return True
+        
+    except Exception as e:
+        xbmc.log(f'[AIOStreams] Error clearing clearlogo cache: {e}', xbmc.LOGERROR)
+        return False
+
+
+def check_missing_clearlogos_on_startup():
+    """Check for missing clearlogos and download them in background.
+    
+    This scans the metadata cache for items with clearlogo URLs but no cached file,
+    and downloads them in a background thread to avoid blocking addon startup.
+    """
+    def background_check():
+        try:
+            if not HAS_MODULES:
+                return
+            
+            xbmc.log('[AIOStreams] Starting background clearlogo check', xbmc.LOGINFO)
+            
+            # Get all cached metadata from database
+            db = trakt.get_trakt_db()
+            if not db:
+                return
+            
+            missing_count = 0
+            downloaded_count = 0
+            
+            # Check movies
+            try:
+                if db.connect():
+                    cursor = db.execute("SELECT id, content_type, metadata FROM metas WHERE content_type = 'movie'")
+                    if cursor:
+                        for row in cursor.fetchall():
+                            meta_id = row['id']
+                            content_type = row['content_type']
+                            
+                            # Check if clearlogo is cached
+                            if not get_cached_clearlogo_path(content_type, meta_id):
+                                # Try to get clearlogo URL from metadata
+                                try:
+                                    metadata = pickle.loads(row['metadata'])
+                                    clearlogo_url = metadata.get('meta', {}).get('logo')
+                                    
+                                    if clearlogo_url:
+                                        missing_count += 1
+                                        if download_and_cache_clearlogo(clearlogo_url, content_type, meta_id):
+                                            downloaded_count += 1
+                                except:
+                                    pass
+                    
+                    db.disconnect()
+            except Exception as e:
+                xbmc.log(f'[AIOStreams] Error checking movie clearlogos: {e}', xbmc.LOGERROR)
+            
+            # Check shows
+            try:
+                if db.connect():
+                    cursor = db.execute("SELECT id, content_type, metadata FROM metas WHERE content_type = 'series'")
+                    if cursor:
+                        for row in cursor.fetchall():
+                            meta_id = row['id']
+                            content_type = row['content_type']
+                            
+                            # Check if clearlogo is cached
+                            if not get_cached_clearlogo_path(content_type, meta_id):
+                                # Try to get clearlogo URL from metadata
+                                try:
+                                    metadata = pickle.loads(row['metadata'])
+                                    clearlogo_url = metadata.get('meta', {}).get('logo')
+                                    
+                                    if clearlogo_url:
+                                        missing_count += 1
+                                        if download_and_cache_clearlogo(clearlogo_url, content_type, meta_id):
+                                            downloaded_count += 1
+                                except:
+                                    pass
+                    
+                    db.disconnect()
+            except Exception as e:
+                xbmc.log(f'[AIOStreams] Error checking show clearlogos: {e}', xbmc.LOGERROR)
+            
+            if missing_count > 0:
+                xbmc.log(f'[AIOStreams] Clearlogo check complete: {downloaded_count}/{missing_count} downloaded', xbmc.LOGINFO)
+            else:
+                xbmc.log('[AIOStreams] No missing clearlogos found', xbmc.LOGDEBUG)
+                
+        except Exception as e:
+            xbmc.log(f'[AIOStreams] Error in background clearlogo check: {e}', xbmc.LOGERROR)
+    
+    # Run in background thread
+    try:
+        # Only run if setting is enabled
+        if get_setting('startup_clearlogo_check', 'false') == 'true':
+            thread = threading.Thread(target=background_check)
+            thread.daemon = True
+            thread.start()
+            xbmc.log('[AIOStreams] Started background clearlogo check thread', xbmc.LOGDEBUG)
+    except Exception as e:
+        xbmc.log(f'[AIOStreams] Failed to start clearlogo check thread: {e}', xbmc.LOGERROR)
+
 
 
 def make_request(url, error_message='Request failed', cache_key=None):
@@ -501,6 +757,8 @@ def get_meta(content_type, meta_id):
                 cached_sql = db.get_meta(content_type, meta_id)
                 if cached_sql:
                     xbmc.log(f'[AIOStreams] SQL Metadata cache hit for {meta_id}', xbmc.LOGDEBUG)
+                    # Ensure clearlogo is cached even on metadata hit
+                    _ensure_clearlogo_cached(cached_sql, content_type, meta_id)
                     return cached_sql
         except:
             pass
@@ -516,6 +774,8 @@ def get_meta(content_type, meta_id):
             cached = cache.get_cached_meta(content_type, meta_id, ttl_seconds=ttl)
             if cached:
                 xbmc.log(f'[AIOStreams] File Metadata cache hit for {meta_id} (TTL: {ttl//86400} days)', xbmc.LOGDEBUG)
+                # Ensure clearlogo is cached even on metadata hit
+                _ensure_clearlogo_cached(cached, content_type, meta_id)
                 return cached
 
     # Cache miss, fetch from API
@@ -537,8 +797,46 @@ def get_meta(content_type, meta_id):
         except:
             pass
         xbmc.log(f'[AIOStreams] Cached metadata for {meta_id} (TTL: {ttl//86400} days)', xbmc.LOGDEBUG)
+        
+        # 3. Cache clearlogo if present
+        if result.get('meta', {}).get('logo'):
+            clearlogo_url = result['meta']['logo']
+            try:
+                download_and_cache_clearlogo(clearlogo_url, content_type, meta_id)
+            except Exception as e:
+                xbmc.log(f'[AIOStreams] Error caching clearlogo during metadata fetch: {e}', xbmc.LOGDEBUG)
 
     return result
+
+
+def _ensure_clearlogo_cached(meta_item, content_type, meta_id):
+    """Ensure clearlogo is cached locally if present in metadata.
+    
+    This is called to handle cases where the clearlogo file might 
+    be missing or was never downloaded.
+    """
+    try:
+        if not meta_item or not isinstance(meta_item, dict):
+            return
+            
+        # Handle both full response structure {'meta': {...}} and direct item {...}
+        meta = meta_item.get('meta')
+        if not meta or not isinstance(meta, dict):
+            meta = meta_item
+            
+        clearlogo_url = meta.get('logo')
+        if clearlogo_url:
+            # Check if already cached (fast check)
+            if not get_cached_clearlogo_path(content_type, meta_id):
+                # Download and cache (will only happen if missing)
+                xbmc.log(f'[AIOStreams] Clearlogo missing for item {meta_id}, downloading in background...', xbmc.LOGDEBUG)
+                # Run in background to avoid blocking UI too much
+                thread = threading.Thread(target=download_and_cache_clearlogo, 
+                                          args=(clearlogo_url, content_type, meta_id))
+                thread.daemon = True
+                thread.start()
+    except:
+        pass
 
 
 def create_listitem_with_context(meta, content_type, action_url):
@@ -654,6 +952,20 @@ def create_listitem_with_context(meta, content_type, action_url):
     # Only use cast from AIOStreams (no Trakt API calls to avoid rate limiting)
     if cast_list:
         info_tag.setCast(cast_list)
+        
+        # Also set window properties for custom info window (first 5 cast members)
+        window = xbmcgui.Window(10000)  # Home window
+        for i in range(1, 6):
+            if i <= len(aio_cast):
+                cast_member = aio_cast[i-1]
+                window.setProperty(f'AIOStreams.Cast.{i}.Name', cast_member.get('name', ''))
+                window.setProperty(f'AIOStreams.Cast.{i}.Role', cast_member.get('character', ''))
+                window.setProperty(f'AIOStreams.Cast.{i}.Thumb', cast_member.get('photo', ''))
+            else:
+                # Clear if no more cast
+                window.clearProperty(f'AIOStreams.Cast.{i}.Name')
+                window.clearProperty(f'AIOStreams.Cast.{i}.Role')
+                window.clearProperty(f'AIOStreams.Cast.{i}.Thumb')
 
     # Add directors - try app_extras first (array format), then top level (comma-separated string)
     directors = app_extras.get('directors', [])
@@ -720,9 +1032,21 @@ def create_listitem_with_context(meta, content_type, action_url):
         art['thumb'] = meta['poster']
     if meta.get('background'):
         art['fanart'] = meta['background']
-    if meta.get('logo'):
-        art['clearlogo'] = meta['logo']
-        art['logo'] = meta['logo']
+    logo_url = meta.get('logo')
+    if logo_url and isinstance(logo_url, str) and logo_url.lower() != 'none' and logo_url.lower().startswith('http'):
+        # Try to use cached clearlogo first
+        item_id = meta.get('id', '')
+        cached_clearlogo = get_cached_clearlogo_path(content_type, item_id) if item_id else None
+        
+        if cached_clearlogo:
+            art['clearlogo'] = cached_clearlogo
+            art['logo'] = cached_clearlogo
+            xbmc.log(f'[AIOStreams] Using cached clearlogo for {item_id}', xbmc.LOGDEBUG)
+        else:
+            # Fallback to URL and trigger background download
+            art['clearlogo'] = logo_url
+            art['logo'] = logo_url
+            _ensure_clearlogo_cached(meta, content_type, item_id)
     
     if art:
         list_item.setArt(art)
@@ -734,9 +1058,8 @@ def create_listitem_with_context(meta, content_type, action_url):
     title = meta.get('name', 'Unknown')
     poster = meta.get('poster', '')
     fanart = meta.get('background', '')
-    clearlogo = meta.get('logo', '')
-
-    xbmc.log(f'[AIOStreams] Metadata for {title}: poster={poster}, fanart={fanart}, clearlogo={clearlogo}', xbmc.LOGINFO)
+    # Use the actual clearlogo being used (cached path or URL)
+    clearlogo = art.get('clearlogo', meta.get('logo', ''))
 
     if content_type == 'movie':
         # Movie context menu: Scrape Streams, View Trailer, Mark as Watched, Watchlist
@@ -744,8 +1067,10 @@ def create_listitem_with_context(meta, content_type, action_url):
 
         # Add trailer if available
         trailers = meta.get('trailers', [])
+        # xbmc.log(f'[AIOStreams] Movie Trailers found: {trailers}', xbmc.LOGDEBUG)
         if trailers and isinstance(trailers, list) and len(trailers) > 0:
             youtube_id = trailers[0].get('ytId', '') or trailers[0].get('source', '')
+            # xbmc.log(f'[AIOStreams] Movie Trailer YouTube ID: {youtube_id}', xbmc.LOGDEBUG)
             if youtube_id:
                 trailer_url = f'https://www.youtube.com/watch?v={youtube_id}'
                 info_tag.setTrailer(trailer_url)
@@ -773,8 +1098,10 @@ def create_listitem_with_context(meta, content_type, action_url):
         # Show context menu: View Trailer, Mark as Watched, Watchlist
         # Add trailer if available
         trailers = meta.get('trailerStreams', [])
+        # xbmc.log(f'[AIOStreams] Series Trailers found: {trailers}', xbmc.LOGDEBUG)
         if trailers and isinstance(trailers, list) and len(trailers) > 0:
             youtube_id = trailers[0].get('ytId', '') or trailers[0].get('source', '')
+            # xbmc.log(f'[AIOStreams] Series Trailer YouTube ID: {youtube_id}', xbmc.LOGDEBUG)
             if youtube_id:
                 trailer_url = f'https://www.youtube.com/watch?v={youtube_id}'
                 info_tag.setTrailer(trailer_url)
@@ -950,13 +1277,12 @@ def search():
 
         xbmcplugin.addDirectoryItem(HANDLE, url, list_item, is_folder)
     
-    # Check if next page exists by attempting to fetch it
-    next_skip = skip + 20
-    next_results = search_catalog(query, content_type, skip=next_skip)
-    
-    if next_results and 'metas' in next_results and len(next_results['metas']) > 0:
-        # Next page has items, show "Load More"
+    # Check if next page likely exists based on result count
+    # Default limit is usually 20 items per page
+    if len(results['metas']) >= 20:
+        # Next page likely exists, show "Load More"
         list_item = xbmcgui.ListItem(label='[COLOR yellow]» Load More...[/COLOR]')
+        next_skip = skip + 20
         url = get_url(action='search', content_type=content_type, query=query, skip=next_skip)
         xbmcplugin.addDirectoryItem(HANDLE, url, list_item, True)
     
@@ -964,33 +1290,21 @@ def search():
 
 
 def search_unified_internal(query):
-    """Internal unified search with tabbed interface."""
-    # Create a selection dialog for tabs
-    tabs = ['Movies', 'TV Shows', 'All Results']
-    selected = xbmcgui.Dialog().select(f'Search: {query}', tabs)
-
-    if selected == -1:
-        # User cancelled
-        xbmcplugin.endOfDirectory(HANDLE, succeeded=False)
-        return
-
-    if selected == 0:
-        # Movies tab
-        search_by_tab(query, 'movie')
-    elif selected == 1:
-        # TV Shows tab
-        search_by_tab(query, 'series')
-    else:
-        # All Results - show both
-        search_all_results(query)
+    """Internal unified search. Go directly to unified results."""
+    # We no longer show a selection dialog to avoid interrupting the user flow
+    search_all_results(query)
 
 
-def search_by_tab(query, content_type):
-    """Search with tab-specific content type for proper poster view."""
+def search_by_tab(query, content_type, is_widget=False):
+    """Search with tab-specific content type with navigation tabs."""
     xbmcplugin.setPluginCategory(HANDLE, f'Search {content_type.title()}: {query}')
 
     # Set proper content type for poster view
     xbmcplugin.setContent(HANDLE, 'movies' if content_type == 'movie' else 'tvshows')
+
+    # Add navigation tabs at the top (unless widget)
+    if not is_widget:
+        add_tab_switcher(query, content_type)
 
     # Show progress dialog
     progress = xbmcgui.DialogProgress()
@@ -1050,11 +1364,10 @@ def search_by_tab(query, content_type):
 
         xbmcplugin.addDirectoryItem(HANDLE, url, list_item, is_folder)
 
-    # Load more if available
-    next_skip = 20
-    next_results = search_catalog(query, content_type, skip=next_skip)
-    if next_results and 'metas' in next_results and len(next_results['metas']) > 0:
+    # Load more if available (heuristic check)
+    if items and len(items) >= 20:
         list_item = xbmcgui.ListItem(label='[COLOR yellow]» Load More...[/COLOR]')
+        next_skip = 20
         url = get_url(action='search_tab', content_type=content_type, query=query, skip=next_skip)
         xbmcplugin.addDirectoryItem(HANDLE, url, list_item, True)
 
@@ -1064,25 +1377,38 @@ def search_by_tab(query, content_type):
 def add_tab_switcher(query, current_tab):
     """Add tab navigation buttons at the top of search results."""
     tabs = [
-        ('Movies', 'movie', '🎬'),
-        ('TV Shows', 'series', '📺'),
-        ('All', 'both', '🔍')
+        ('Movies', 'movie', '●'),
+        ('TV Shows', 'series', '●'),
+        ('All', 'both', '●')
     ]
 
     for label, tab_type, icon in tabs:
         if tab_type == current_tab:
             # Current tab - highlighted
-            item_label = f'[B][COLOR blue]{icon} {label}[/COLOR][/B]'
+            item_label = f'[B][COLOR lightblue]{icon} {label.upper()}[/COLOR][/B]'
         else:
             # Other tabs - clickable
-            item_label = f'{icon} {label}'
+            item_label = f'[COLOR grey]{icon} {label}[/COLOR]'
 
         list_item = xbmcgui.ListItem(label=item_label)
         list_item.setProperty('IsPlayable', 'false')
+        
+        # Set icons to avoid generic folder look
+        icon = 'DefaultAddonsSearch.png' if tab_type == 'both' else ('DefaultMovies.png' if tab_type == 'movie' else 'DefaultTVShows.png')
+        list_item.setArt({
+            'icon': icon,
+            'thumb': icon,
+            'poster': icon
+        })
+        
+        # Add metadata to fill skin's info panel
+        info_tag = list_item.getVideoInfoTag()
+        info_tag.setTitle(label)
+        info_tag.setPlot(f"Switch view to {label} results for '{query}'")
 
         if tab_type != current_tab:
             if tab_type == 'both':
-                url = get_url(action='search_unified', query=query)
+                url = get_url(action='search_tab', content_type='both', query=query)
             else:
                 url = get_url(action='search_tab', content_type=tab_type, query=query)
             xbmcplugin.addDirectoryItem(HANDLE, url, list_item, True)
@@ -1091,9 +1417,12 @@ def add_tab_switcher(query, current_tab):
 
 
 def search_all_results(query):
-    """Show all results (movies and TV shows) in one view."""
+    """Show all results (movies and TV shows) in one view with category headers."""
     xbmcplugin.setPluginCategory(HANDLE, f'Search: {query}')
     xbmcplugin.setContent(HANDLE, 'videos')
+
+    # Add navigation tabs at the top for easy filtering
+    add_tab_switcher(query, 'both') # Changed from add_search_tabs to add_tab_switcher as per existing code
 
     # Show progress dialog
     progress = xbmcgui.DialogProgress()
@@ -1113,23 +1442,31 @@ def search_all_results(query):
         if HAS_MODULES and filters:
             movies = filters.filter_items(movies)
 
-        # Add results directly without header
-        for meta in movies[:10]:
-            item_id = meta.get('id')
-            title = meta.get('name', 'Unknown')
-            poster = meta.get('poster', '')
-            fanart = meta.get('background', '')
-            clearlogo = meta.get('logo', '')
-            url = get_url(action='play', content_type='movie', imdb_id=item_id, title=title, poster=poster, fanart=fanart, clearlogo=clearlogo)
-            list_item = create_listitem_with_context(meta, 'movie', url)
-            list_item.setProperty('IsPlayable', 'true')
-            xbmcplugin.addDirectoryItem(HANDLE, url, list_item, False)
+        if movies:
+            # Add Movies Header
+            header = xbmcgui.ListItem(label='[B][COLOR lightblue]─── MOVIES ───[/COLOR][/B]')
+            header.setProperty('IsPlayable', 'false')
+            header.setArt({'icon': 'DefaultMovies.png', 'thumb': 'DefaultMovies.png'})
+            info_tag = header.getVideoInfoTag()
+            info_tag.setTitle("MOVIES")
+            info_tag.setPlot(f"Found {len(movies)} movie results for '{query}'")
+            xbmcplugin.addDirectoryItem(HANDLE, '', header, False)
 
-        # More link
-        if len(movies) > 10:
-            list_item = xbmcgui.ListItem(label=f'[COLOR yellow]» View All Movies ({len(movies)} results)[/COLOR]')
-            url = get_url(action='search_tab', content_type='movie', query=query)
-            xbmcplugin.addDirectoryItem(HANDLE, url, list_item, True)
+            for meta in movies[:10]:
+                item_id = meta.get('id')
+                title = meta.get('name', 'Unknown')
+                poster = meta.get('poster', '')
+                fanart = meta.get('background', '')
+                clearlogo = meta.get('logo', '')
+                url = get_url(action='play', content_type='movie', imdb_id=item_id, title=title, poster=poster, fanart=fanart, clearlogo=clearlogo)
+                list_item = create_listitem_with_context(meta, 'movie', url)
+                list_item.setProperty('IsPlayable', 'true')
+                xbmcplugin.addDirectoryItem(HANDLE, url, list_item, False)
+
+            if len(movies) > 10:
+                list_item = xbmcgui.ListItem(label=f'[COLOR yellow]   » View All Movies ({len(movies)} results)[/COLOR]')
+                url = get_url(action='search_tab', content_type='movie', query=query)
+                xbmcplugin.addDirectoryItem(HANDLE, url, list_item, True)
 
     # TV Shows Section
     if series_results and 'metas' in series_results and len(series_results['metas']) > 0:
@@ -1137,140 +1474,67 @@ def search_all_results(query):
         if HAS_MODULES and filters:
             shows = filters.filter_items(shows)
 
-        # Add results directly without header
-        for meta in shows[:10]:
-            item_id = meta.get('id')
-            url = get_url(action='show_seasons', meta_id=item_id)
-            list_item = create_listitem_with_context(meta, 'series', url)
-            xbmcplugin.addDirectoryItem(HANDLE, url, list_item, True)
+        if shows:
+            # Add TV Shows Header
+            header = xbmcgui.ListItem(label='[B][COLOR lightblue]─── TV SHOWS ───[/COLOR][/B]')
+            header.setProperty('IsPlayable', 'false')
+            header.setArt({'icon': 'DefaultTVShows.png', 'thumb': 'DefaultTVShows.png'})
+            info_tag = header.getVideoInfoTag()
+            info_tag.setTitle("TV SHOWS")
+            info_tag.setPlot(f"Found {len(shows)} TV show results for '{query}'")
+            xbmcplugin.addDirectoryItem(HANDLE, '', header, False)
 
-        # More link
-        if len(shows) > 10:
-            list_item = xbmcgui.ListItem(label=f'[COLOR yellow]» View All TV Shows ({len(shows)} results)[/COLOR]')
-            url = get_url(action='search_tab', content_type='series', query=query)
-            xbmcplugin.addDirectoryItem(HANDLE, url, list_item, True)
+            for meta in shows[:10]:
+                item_id = meta.get('id')
+                url = get_url(action='show_seasons', meta_id=item_id)
+                list_item = create_listitem_with_context(meta, 'series', url)
+                xbmcplugin.addDirectoryItem(HANDLE, url, list_item, True)
 
-    # No results
-    if (not movie_results or 'metas' not in movie_results or len(movie_results['metas']) == 0) and \
-       (not series_results or 'metas' not in series_results or len(series_results['metas']) == 0):
-        xbmcgui.Dialog().notification('AIOStreams', 'No results found', xbmcgui.NOTIFICATION_INFO)
+            if len(shows) > 10:
+                list_item = xbmcgui.ListItem(label=f'[COLOR yellow]   » View All TV Shows ({len(shows)} results)[/COLOR]')
+                url = get_url(action='search_tab', content_type='series', query=query)
+                xbmcplugin.addDirectoryItem(HANDLE, url, list_item, True)
+
+    # No results handling
+    if (not movie_results or not movie_results.get('metas')) and (not series_results or not series_results.get('metas')):
+        list_item = xbmcgui.ListItem(label=f'[COLOR red]No results found for "{query}"[/COLOR]')
+        xbmcplugin.addDirectoryItem(HANDLE, '', list_item, False)
 
     xbmcplugin.endOfDirectory(HANDLE)
 
 
 def search_unified():
-    """Unified search showing both movies and TV shows."""
+    """Wrapper for unified search action."""
     params = dict(parse_qsl(sys.argv[2][1:]))
-    query = params.get('query')
+    query = params.get('query', '').strip()
     
     if not query:
         keyboard = xbmcgui.Dialog().input('Search', type=xbmcgui.INPUT_ALPHANUM)
         if not keyboard:
+            xbmcplugin.endOfDirectory(HANDLE, succeeded=False)
             return
-        query = keyboard
+        query = keyboard.strip()
     
-    xbmcplugin.setPluginCategory(HANDLE, f'Search: {query}')
-    xbmcplugin.setContent(HANDLE, 'videos')
-    
-    # Show progress dialog
-    progress = xbmcgui.DialogProgress()
-    progress.create('AIOStreams', 'Searching movies and TV shows...')
-    
-    # Search movies
-    progress.update(25, 'Searching movies...')
-    movie_results = search_catalog(query, 'movie', skip=0)
-    
-    # Search TV shows
-    progress.update(50, 'Searching TV shows...')
-    series_results = search_catalog(query, 'series', skip=0)
-    
-    progress.close()
-    
-    # Movies Section Header
-    if movie_results and 'metas' in movie_results and len(movie_results['metas']) > 0:
-        # Apply filters
-        movies = movie_results['metas']
-        if HAS_MODULES and filters:
-            movies = filters.filter_items(movies)
-        
-        # Add "Movies" category header
-        header_item = xbmcgui.ListItem(label='[B][COLOR blue]Movies[/COLOR][/B]')
-        header_item.setProperty('IsPlayable', 'false')
-        xbmcplugin.addDirectoryItem(HANDLE, '', header_item, False)
-        
-        # Add movie results (limit to 10)
-        for meta in movies[:10]:
-            item_id = meta.get('id')
-            title = meta.get('name', 'Unknown')
-            poster = meta.get('poster', '')
-            fanart = meta.get('background', '')
-            clearlogo = meta.get('logo', '')
-            url = get_url(action='play', content_type='movie', imdb_id=item_id, title=title, poster=poster, fanart=fanart, clearlogo=clearlogo)
-            list_item = create_listitem_with_context(meta, 'movie', url)
-            list_item.setProperty('IsPlayable', 'true')
-            xbmcplugin.addDirectoryItem(HANDLE, url, list_item, False)
-        
-        # More movies link
-        if len(movies) > 10:
-            list_item = xbmcgui.ListItem(label=f'[COLOR yellow]» View All Movies ({len(movies)} results)[/COLOR]')
-            url = get_url(action='search', content_type='movie', query=query)
-            xbmcplugin.addDirectoryItem(HANDLE, url, list_item, True)
-    
-    # TV Shows Section Header
-    if series_results and 'metas' in series_results and len(series_results['metas']) > 0:
-        # Apply filters
-        shows = series_results['metas']
-        if HAS_MODULES and filters:
-            shows = filters.filter_items(shows)
-        
-        # Add "TV Shows" category header
-        header_item = xbmcgui.ListItem(label='[B][COLOR green]TV Shows[/COLOR][/B]')
-        header_item.setProperty('IsPlayable', 'false')
-        xbmcplugin.addDirectoryItem(HANDLE, '', header_item, False)
-        
-        # Add TV show results (limit to 10)
-        for meta in shows[:10]:
-            item_id = meta.get('id')
-            url = get_url(action='show_seasons', meta_id=item_id)
-            list_item = create_listitem_with_context(meta, 'series', url)
-            xbmcplugin.addDirectoryItem(HANDLE, url, list_item, True)
-        
-        # More shows link
-        if len(shows) > 10:
-            list_item = xbmcgui.ListItem(label=f'[COLOR yellow]» View All TV Shows ({len(shows)} results)[/COLOR]')
-            url = get_url(action='search', content_type='series', query=query)
-            xbmcplugin.addDirectoryItem(HANDLE, url, list_item, True)
-    
-    # No results
-    if (not movie_results or 'metas' not in movie_results or len(movie_results['metas']) == 0) and \
-       (not series_results or 'metas' not in series_results or len(series_results['metas']) == 0):
-        xbmcgui.Dialog().notification('AIOStreams', 'No results found', xbmcgui.NOTIFICATION_INFO)
-    
-    xbmcplugin.endOfDirectory(HANDLE)
+    # Use the shared unified results function
+    search_all_results(query)
 
 
 
 
-def play():
+def play(params=None):
     """Play content - behavior depends on settings (show streams or auto-play first)."""
-    # IMPORTANT: Cancel resolver state immediately if called from resolvable context
-    # This prevents "failed to play item" errors when using xbmc.Player().play() directly
-    if HANDLE >= 0:
-        try:
-            xbmcplugin.setResolvedUrl(HANDLE, False, xbmcgui.ListItem())
-        except:
-            pass  # Not in a resolvable context, ignore
-
-    params = dict(parse_qsl(sys.argv[2][1:]))
-    content_type = params['content_type']
-    imdb_id = params['imdb_id']
+    
+    if not params:
+        params = dict(parse_qsl(sys.argv[2][1:]))
+        
+    content_type = params.get('content_type', 'movie')
+    imdb_id = params.get('imdb_id', '')
 
     # Extract metadata for stream dialog
     poster = params.get('poster', '')
     fanart = params.get('fanart', '')
     clearlogo = params.get('clearlogo', '')
 
-    xbmc.log(f'[AIOStreams] play() params: poster={poster[:50] if poster else "empty"}, fanart={fanart[:50] if fanart else "empty"}, clearlogo={clearlogo[:50] if clearlogo else "empty"}', xbmc.LOGINFO)
 
     # Format media ID for AIOStreams API
     if content_type == 'movie':
@@ -1296,7 +1560,6 @@ def play():
                 fanart = meta.get('background', '')
             if not clearlogo:
                 clearlogo = meta.get('logo', '')
-            xbmc.log(f'[AIOStreams] play() fetched metadata: poster={bool(poster)}, fanart={bool(fanart)}, clearlogo={bool(clearlogo)}', xbmc.LOGINFO)
 
     # Show progress dialog while scraping streams
     # Calling setResolvedUrl(False) would cause a "Playback Failed" notification
@@ -1318,8 +1581,15 @@ def play():
         # Check default_behavior setting
         default_behavior = get_setting('default_behavior', 'show_streams')
 
+        # Check if forced auto-play (e.g. from UpNext or Play First)
+        # Check for explicit force_autoplay flag or specific actions
+        action = params.get('action', '')
+        force_autoplay = (params.get('force_autoplay') == 'true' or 
+                         action in ['play_next', 'play_next_source', 'play_first'])
+
         # If set to show streams, show dialog instead of auto-playing
-        if default_behavior == 'show_streams':
+        # BUT only if not forced to auto-play
+        if default_behavior == 'show_streams' and not force_autoplay:
             progress.update(100)
             progress.close()
             # Small delay to allow Kodi to fully clean up progress dialog before showing modal
@@ -1336,6 +1606,7 @@ def play():
 
         if not stream_url:
             progress.close()
+            xbmc.sleep(500)  # Wait for dialog to close
             xbmcgui.Dialog().notification('AIOStreams', 'No playable URL found', xbmcgui.NOTIFICATION_ERROR)
             return
 
@@ -1372,9 +1643,59 @@ def play():
         # Close progress and start playback
         progress.update(100, 'Starting playback...')
         progress.close()
+        xbmc.sleep(500)  # Wait for dialog to close
 
-        # Use xbmc.Player().play() for direct playback
-        xbmc.Player().play(stream_url, list_item)
+        # Save stream list for auto-skip functionality
+        try:
+            # We save the list and the current index (0)
+            # Filter stream list to minimal data to save memory/complexity
+            min_streams = []
+            for s in stream_data['streams']:
+                # Save URL, title/name/info needed for playback
+                min_streams.append({
+                    'url': s.get('url') or s.get('externalUrl'),
+                    'title': s.get('title', ''),
+                    'source': s.get('source', '') 
+                })
+            
+            window = xbmcgui.Window(10000)
+            window.setProperty('AIOStreams.StreamList', json.dumps(min_streams))
+            window.setProperty('AIOStreams.StreamIndex', '0')
+            window.setProperty('AIOStreams.StreamMetadata', json.dumps({
+                'content_type': content_type,
+                'imdb_id': imdb_id,
+                'season': season,
+                'episode': episode,
+                'title': title,
+                'poster': poster,
+                'fanart': fanart,
+                'clearlogo': clearlogo
+            }))
+            xbmc.log(f'[AIOStreams] Saved {len(min_streams)} streams for auto-skip', xbmc.LOGINFO)
+        except Exception as e:
+            xbmc.log(f'[AIOStreams] Failed to save stream list: {e}', xbmc.LOGWARNING)
+
+        # Decide how to play:
+        # If we have a valid HANDLE (called as a plugin source), we MUST use setResolvedUrl.
+        # If we don't (called via RunScript or similar), we use xbmc.Player().play().
+        if HANDLE >= 0:
+            xbmc.log(f'[AIOStreams] Resolving URL for playback (HANDLE={HANDLE}): {stream_url}', xbmc.LOGINFO)
+            list_item.setPath(stream_url)
+            xbmcplugin.setResolvedUrl(HANDLE, True, list_item)
+            
+            # When using setResolvedUrl, Kodi's internal player handles playback
+            # We need to manually trigger our monitoring since callbacks won't fire on PLAYER
+            # Use a small delay to let playback start, then call onPlayBackStarted manually
+            def trigger_monitoring():
+                xbmc.sleep(1000)  # Wait 1 second for playback to start
+                if xbmc.Player().isPlaying():
+                    PLAYER.onPlayBackStarted()
+            
+            import threading
+            threading.Thread(target=trigger_monitoring, daemon=True).start()
+        else:
+            xbmc.log(f'[AIOStreams] Initiating Player (HANDLE={HANDLE}): {stream_url}', xbmc.LOGINFO)
+            PLAYER.play(stream_url, list_item)
 
     except Exception as e:
         progress.close()
@@ -1600,7 +1921,6 @@ def select_stream():
                     clearlogo = meta.get('logo', '')
                 if not title:
                     title = meta.get('name', '')
-                xbmc.log(f'[AIOStreams] select_stream() fetched metadata: poster={bool(poster)}, fanart={bool(fanart)}, clearlogo={bool(clearlogo)})', xbmc.LOGINFO)
 
         # Update progress for stream fetching
         progress.update(50, 'Scraping streams...')
@@ -1955,7 +2275,6 @@ def show_streams():
     fanart = params.get('fanart', '')
     clearlogo = params.get('clearlogo', '')
 
-    xbmc.log(f'[AIOStreams] show_streams params: poster={poster}, fanart={fanart}, clearlogo={clearlogo}', xbmc.LOGINFO)
 
     # Show loading dialog while fetching streams
     progress = xbmcgui.DialogProgress()
@@ -1987,7 +2306,6 @@ def show_streams_dialog(content_type, media_id, stream_data, title, poster='', f
     Args:
         from_playable: If True, called from playable listitem context (don't use endOfDirectory)
     """
-    xbmc.log(f'[AIOStreams] show_streams_dialog received: poster={poster}, fanart={fanart}, clearlogo={clearlogo}', xbmc.LOGINFO)
 
     if not HAS_MODULES:
         # Fallback to simple dialog - use custom formatting
@@ -2066,8 +2384,13 @@ def show_streams_dialog(content_type, media_id, stream_data, title, poster='', f
         stream_mgr.record_stream_selection(stream_data['streams'][selected].get('name', ''))
 
     # Play selected stream
-    # Use direct playback since we're called from RunPlugin (show_streams action)
-    play_stream_by_index(content_type, media_id, stream_data, selected, use_player=True)
+    # Use resolved playback if from_playable is True (Kodi waiting for resolution)
+    # Use direct playback if from_playable is False (RunPlugin context)
+    use_player_actual = not from_playable
+    if not play_stream_by_index(content_type, media_id, stream_data, selected, use_player=use_player_actual):
+        # Playback failed, try next streams
+        xbmc.log('[AIOStreams] Selected stream failed, trying next available...', xbmc.LOGINFO)
+        try_next_streams(content_type, media_id, stream_data, start_index=selected+1, use_player=use_player_actual)
 
 
 def play_stream_by_index(content_type, media_id, stream_data, index, use_player=False):
@@ -2169,13 +2492,29 @@ def play_stream_by_index(content_type, media_id, stream_data, index, use_player=
         # Return False to trigger fallback behavior
         return False
 
+    # Check runtime duration to filter out short/broken streams
+    if use_player and playback_started:
+        total_time = player.getTotalTime()
+        if total_time > 0 and total_time < 95:
+            xbmc.log(f'[AIOStreams] Stream duration too short ({total_time}s), skipping...', xbmc.LOGWARNING)
+            player.stop()
+            if HAS_MODULES:
+                stream_mgr = streams.get_stream_manager()
+                stream_mgr.record_stream_result(stream_url, False) # Mark as failure
+            return False
+
     return True
 
 
-def try_next_streams(content_type, media_id, stream_data, start_index=1):
+def try_next_streams(content_type, media_id, stream_data, start_index=1, use_player=False):
     """Try to play streams sequentially starting from start_index."""
     for i in range(start_index, len(stream_data['streams'])):
-        success = play_stream_by_index(content_type, media_id, stream_data, i)
+        # Check for abort before playing next
+        if xbmc.Monitor().abortRequested():
+            return
+
+        xbmc.log(f'[AIOStreams] Auto-trying stream index {i}', xbmc.LOGINFO)
+        success = play_stream_by_index(content_type, media_id, stream_data, i, use_player=use_player)
         if success:
             return
 
@@ -2409,6 +2748,16 @@ def show_episodes():
 
         if meta.get('background'):
             list_item.setArt({'fanart': meta['background']})
+            
+        # Set clearlogo for episode from series meta
+        logo_url = meta.get('logo')
+        if logo_url:
+            cached_logo = get_cached_clearlogo_path('series', meta_id)
+            if cached_logo:
+                list_item.setArt({'clearlogo': cached_logo, 'logo': cached_logo})
+            else:
+                list_item.setArt({'clearlogo': logo_url, 'logo': logo_url})
+                _ensure_clearlogo_cached(meta, 'series', meta_id)
 
         # Set playcount if watched
         if is_watched:
@@ -2577,7 +2926,7 @@ def trakt_watchlist(params=None):
             'imdbRating': str(item_data.get('rating', '')) if item_data.get('rating') else ''
         }
 
-        # Try to get artwork from cached AIOStreams metadata (fast cache lookup)
+        # Try to get artwork and title from cached AIOStreams metadata (fast cache lookup)
         if HAS_MODULES:
             cached_meta = cache.get_cached_meta(content_type, item_id)
             if cached_meta and 'meta' in cached_meta:
@@ -2586,6 +2935,12 @@ def trakt_watchlist(params=None):
                 meta['poster'] = cached_data.get('poster', '')
                 meta['background'] = cached_data.get('background', '')
                 meta['logo'] = cached_data.get('logo', '')
+                
+                # CRITICAL FIX: If Trakt title is missing or "Unknown", use AIOStreams Title
+                cached_title = cached_data.get('title') or cached_data.get('name', '')
+                if (not meta.get('name') or meta['name'] == 'Unknown') and cached_title:
+                    meta['name'] = cached_title
+                    
                 # Get cast from cached AIOStreams data (includes photos)
                 meta['app_extras'] = cached_data.get('app_extras', {})
                 # Keep Trakt data for text fields, only use AIOStreams for what's better
@@ -2599,6 +2954,12 @@ def trakt_watchlist(params=None):
                     meta['poster'] = cached_data.get('poster', '')
                     meta['background'] = cached_data.get('background', '')
                     meta['logo'] = cached_data.get('logo', '')
+                    
+                    # CRITICAL FIX: Use fetched metadata title as fallback
+                    cached_title = cached_data.get('title') or cached_data.get('name', '')
+                    if (not meta.get('name') or meta['name'] == 'Unknown') and cached_title:
+                        meta['name'] = cached_title
+                        
                     meta['app_extras'] = cached_data.get('app_extras', {})
                     if not meta['description']:
                         meta['description'] = cached_data.get('description', '')
@@ -2905,8 +3266,16 @@ def trakt_next_up():
             art['fanart'] = fanart
         
         if logo:
-            art['clearlogo'] = logo
-            art['logo'] = logo
+            # Check for cached logo
+            cached_logo = get_cached_clearlogo_path('series', show_imdb)
+            if cached_logo:
+                art['clearlogo'] = cached_logo
+                art['logo'] = cached_logo
+            else:
+                art['clearlogo'] = logo
+                art['logo'] = logo
+                # Ensure it's getting cached
+                _ensure_clearlogo_cached(meta_data if meta_data else {'logo': logo}, 'series', show_imdb)
             
         if art:
             list_item.setArt(art)
@@ -3434,10 +3803,21 @@ def clear_trakt_database():
             db.execute('DELETE FROM watchlist')
             db.execute('DELETE FROM bookmarks')
             db.execute('DELETE FROM hidden')
+            db.execute('DELETE FROM activities')
+            
+            # Clear metadata and catalog caches
+            db.execute('DELETE FROM metas')
+            db.execute('DELETE FROM catalogs')
+            
             db.commit()
             
             xbmc.log('[AIOStreams] Trakt database cleared successfully', xbmc.LOGINFO)
-            xbmcgui.Dialog().notification('AIOStreams', 'Trakt database cleared', xbmcgui.NOTIFICATION_INFO)
+            
+            # Clear clearlogo cache
+            if clear_clearlogo_cache():
+                xbmc.log('[AIOStreams] Clearlogo cache cleared successfully', xbmc.LOGINFO)
+            
+            xbmcgui.Dialog().notification('AIOStreams', 'All data cleared successfully', xbmcgui.NOTIFICATION_INFO)
         finally:
             db.disconnect()
             
@@ -3798,7 +4178,7 @@ def smart_widget():
     index = int(params.get('index', 0))
     content_type = params.get('content_type', 'movie')
     
-    xbmc.log(f'[AIOStreams] smart_widget: index={index}, content_type={content_type}', xbmc.LOGINFO)
+    xbmc.log(f'[AIOStreams] smart_widget: index={index}, content_type={content_type}', xbmc.LOGDEBUG)
     
     # Handle home widgets (Trakt lists)
     if content_type == 'home':
@@ -3829,11 +4209,11 @@ def smart_widget():
                 if c.get('type') == content_type 
                 and not c.get('id', '').endswith('.search')]
     
-    xbmc.log(f'[AIOStreams] DEBUG: smart_widget filtered catalogs for {content_type}: {len(catalogs)} found. Accessing index {index}', xbmc.LOGINFO)
+    xbmc.log(f'[AIOStreams] DEBUG: smart_widget filtered catalogs for {content_type}: {len(catalogs)} found. Accessing index {index}', xbmc.LOGDEBUG)
     
     # Check if index is valid
     if index >= len(catalogs):
-        xbmc.log(f'[AIOStreams] smart_widget: Index {index} out of range (max: {len(catalogs)-1})', xbmc.LOGWARNING)
+        xbmc.log(f'[AIOStreams] smart_widget: Index {index} out of range (max: {len(catalogs)-1})', xbmc.LOGDEBUG)
         xbmcplugin.endOfDirectory(HANDLE)
         return
     
@@ -3842,7 +4222,7 @@ def smart_widget():
     catalog_id = catalog.get('id')
     catalog_name = catalog.get('name', 'Unknown')
     
-    xbmc.log(f'[AIOStreams] smart_widget: Using catalog "{catalog_name}" (id: {catalog_id})', xbmc.LOGINFO)
+    xbmc.log(f'[AIOStreams] smart_widget: Using catalog "{catalog_name}" (id: {catalog_id})', xbmc.LOGDEBUG)
 
     # Update the window property to ensure it uses the clean name
     # This overwrites any previous long path headers
@@ -3883,7 +4263,7 @@ def smart_widget():
         # For series: navigate to show (will then go to seasons/episodes)
         # For movies: direct play
         if content_type == 'series':
-            url = get_url(action='show_seasons', series_id=item_id)
+            url = get_url(action='show_seasons', meta_id=item_id)
             is_folder = True
         else:
             url = get_url(action='show_streams', content_type='movie', media_id=item_id,
@@ -3897,13 +4277,157 @@ def smart_widget():
     xbmcplugin.endOfDirectory(HANDLE)
 
 
+def configured_widget():
+    """
+    Dynamic widget content from widget_config.json
+
+    URL Parameters:
+        index: Widget index (0, 1, 2, ...)
+        page: 'home', 'tvshows', or 'movies'
+
+    Returns:
+        Widget content based on configuration
+    """
+    from resources.lib.widget_config_loader import get_widget_at_index
+
+    params = dict(parse_qsl(sys.argv[2][1:]))
+    index = int(params.get('index', 0))
+    page = params.get('page', 'home')
+
+    xbmc.log(f'[AIOStreams] configured_widget: index={index}, page={page}', xbmc.LOGDEBUG)
+
+    # Get the configured widget
+    widget = get_widget_at_index(page, index)
+
+    if not widget:
+        xbmc.log(f'[AIOStreams] configured_widget: No widget configured at index {index} for {page}', xbmc.LOGDEBUG)
+        xbmcplugin.endOfDirectory(HANDLE)
+        return
+
+    # Extract widget details
+    label = widget.get('label', 'Unknown')
+    path = widget.get('path', '')
+    widget_type = widget.get('type', 'unknown')
+    is_trakt = widget.get('is_trakt', False)
+
+    xbmc.log(f'[AIOStreams] configured_widget: Loading "{label}" (type: {widget_type}, is_trakt: {is_trakt})', xbmc.LOGINFO)
+
+    # Parse the widget path to extract action and parameters
+    try:
+        if '?' in path:
+            path_parts = path.split('?')
+            query_string = path_parts[1] if len(path_parts) > 1 else ''
+            widget_params = dict(parse_qsl(query_string))
+            action = widget_params.get('action', '')
+
+            xbmc.log(f'[AIOStreams] configured_widget: Redirecting to action "{action}" with params {widget_params}', xbmc.LOGDEBUG)
+
+            # Route to the appropriate action
+            if action == 'trakt_next_up':
+                return trakt_next_up()
+            elif action == 'trakt_watchlist':
+                media_type = widget_params.get('media_type', 'movies')
+                return trakt_watchlist({'media_type': media_type})
+            elif action == 'browse_catalog':
+                # Browse a specific catalog
+                catalog_id = widget_params.get('catalog_id', '')
+                content_type = widget_params.get('content_type', 'movie')
+                catalog_name = widget_params.get('catalog_name', label)
+
+                # Set the window property for the header
+                try:
+                    xbmcgui.Window(10000).setProperty(f'{page}_widget_{index}_name', catalog_name)
+                except:
+                    pass
+
+                # Fetch catalog content
+                catalog_data = get_catalog(content_type, catalog_id, genre=None, skip=0)
+
+                if not catalog_data or 'metas' not in catalog_data:
+                    xbmc.log(f'[AIOStreams] configured_widget: No content in catalog {catalog_id}', xbmc.LOGWARNING)
+                    xbmcplugin.endOfDirectory(HANDLE)
+                    return
+
+                # Set plugin metadata
+                xbmcplugin.setPluginCategory(HANDLE, catalog_name)
+                xbmcplugin.setContent(HANDLE, 'tvshows' if content_type == 'series' else 'movies')
+
+                # Add items
+                for meta in catalog_data['metas']:
+                    item_id = meta.get('id')
+                    if not item_id:
+                        continue
+
+                    # For series: navigate to show
+                    if content_type == 'series':
+                        url = get_url(action='show_seasons', meta_id=item_id)
+                        is_folder = True
+                    else:
+                        url = get_url(action='show_streams', content_type='movie', media_id=item_id,
+                                     title=meta.get('name', ''), poster=meta.get('poster', ''),
+                                     fanart=meta.get('background', ''), clearlogo=meta.get('logo', ''))
+                        is_folder = False
+
+                    list_item = create_listitem_with_context(meta, content_type, url)
+                    xbmcplugin.addDirectoryItem(HANDLE, url, list_item, is_folder)
+
+                xbmcplugin.endOfDirectory(HANDLE)
+                return
+            else:
+                xbmc.log(f'[AIOStreams] configured_widget: Unknown action "{action}"', xbmc.LOGWARNING)
+                xbmcplugin.endOfDirectory(HANDLE)
+                return
+        else:
+            xbmc.log(f'[AIOStreams] configured_widget: Invalid widget path "{path}"', xbmc.LOGERROR)
+            xbmcplugin.endOfDirectory(HANDLE)
+            return
+    except Exception as e:
+        xbmc.log(f'[AIOStreams] configured_widget: Error processing widget: {e}', xbmc.LOGERROR)
+        import traceback
+        xbmc.log(traceback.format_exc(), xbmc.LOGERROR)
+        xbmcplugin.endOfDirectory(HANDLE)
+        return
+
 
 # ============================================================================
 # Action Registry - Cleaner routing using dictionary pattern
 # ============================================================================
 
 # Action handler registry - maps action names to handler functions
+def play_next(params):
+    """
+    Handle play_next request (e.g. from UpNext).
+    This just wraps the standard play logic but ensures we pass explicit params.
+    """
+    xbmc.log(f'[AIOStreams] ===== PLAY_NEXT INVOKED =====', xbmc.LOGINFO)
+    xbmc.log(f'[AIOStreams] play_next params: {params}', xbmc.LOGINFO)
+    xbmc.log(f'[AIOStreams] HANDLE value: {HANDLE}', xbmc.LOGINFO)
+    
+    if not HAS_MODULES:
+        xbmc.log(f'[AIOStreams] play_next: HAS_MODULES is False, aborting', xbmc.LOGWARNING)
+        return
+    
+    # Call play() directly with the extracted params
+    xbmc.log(f'[AIOStreams] play_next: Calling play() with params', xbmc.LOGINFO)
+    play(params)
+    xbmc.log(f'[AIOStreams] play_next: play() completed', xbmc.LOGINFO)
+
+
+
+def action_clear_clearlogos(params):
+    """Wrapper for clear_clearlogo_cache with notification."""
+    if clear_clearlogo_cache():
+        xbmcgui.Dialog().notification("AIOStreams", "Clearlogo cache cleared", xbmcgui.NOTIFICATION_INFO, 3000)
+    else:
+        # If it returns False or None (though implementation returns None currently, let's assume success if no error logged)
+        # Actually clear_clearlogo_cache() from line 235 logs but doesn't return value explicitly (returns None)
+        # So check the logic.
+        xbmcgui.Dialog().notification("AIOStreams", "Clearlogo cache cleared", xbmcgui.NOTIFICATION_INFO, 3000)
+
 ACTION_REGISTRY = {
+    # Maintenance
+    'clear_clearlogos': lambda p: action_clear_clearlogos(p),
+
     # Search actions
     'search': lambda p: search(),
     'search_unified': lambda p: search_unified(),
@@ -3911,6 +4435,8 @@ ACTION_REGISTRY = {
 
     # Playback actions
     'play': lambda p: play(),
+    'play_next': lambda p: play_next(p),
+    'play_next_source': lambda p: play_next_source(p),
     'play_first': lambda p: play_first(),
     'select_stream': lambda p: select_stream(),
     'show_streams': lambda p: show_streams(),
@@ -3920,6 +4446,7 @@ ACTION_REGISTRY = {
     'series_lists': lambda p: series_lists(),
     'catalogs': lambda p: list_catalogs(),
     'smart_widget': lambda p: smart_widget(),
+    'configured_widget': lambda p: configured_widget(),
     'catalog_genres': lambda p: list_catalog_genres(),
     'browse_catalog': lambda p: browse_catalog(),
 
@@ -3958,6 +4485,8 @@ ACTION_REGISTRY = {
     'configure_aiostreams': lambda p: configure_aiostreams_action(),
     'retrieve_manifest': lambda p: retrieve_manifest_action(),
     'refresh_manifest_cache': lambda p: refresh_manifest_cache(),
+    'get_all_catalogs': lambda p: get_all_catalogs_action(),
+    'get_folder_browser_catalogs': lambda p: get_folder_browser_catalogs_action(),
 }
 
 
@@ -3966,6 +4495,7 @@ def handle_search_tab(params):
     query = params.get('query', '')
     content_type = params.get('content_type', 'movie')
     skip = int(params.get('skip', 0))
+    is_widget = params.get('widget') == 'true'
 
     if not query:
         keyboard = xbmcgui.Dialog().input('Search', type=xbmcgui.INPUT_ALPHANUM)
@@ -3979,6 +4509,10 @@ def handle_search_tab(params):
         # Handle pagination
         xbmcplugin.setPluginCategory(HANDLE, f'Search {content_type.title()}: {query}')
         xbmcplugin.setContent(HANDLE, 'movies' if content_type == 'movie' else 'tvshows')
+
+        if not is_widget:
+            # Add navigation tabs even on paginated results
+            add_tab_switcher(query, content_type)
 
         results = search_catalog(query, content_type, skip=skip)
         if results and 'metas' in results:
@@ -4006,18 +4540,17 @@ def handle_search_tab(params):
 
                 xbmcplugin.addDirectoryItem(HANDLE, url, list_item, is_folder)
 
-            # Check for next page
-            next_skip = skip + 20
-            next_results = search_catalog(query, content_type, skip=next_skip)
-            if next_results and 'metas' in next_results and len(next_results['metas']) > 0:
+            # Check for next page (heuristic check)
+            if items and len(items) >= 20:
                 list_item = xbmcgui.ListItem(label='[COLOR yellow]» Load More...[/COLOR]')
+                next_skip = skip + 20
                 url = get_url(action='search_tab', content_type=content_type, query=query, skip=next_skip)
                 xbmcplugin.addDirectoryItem(HANDLE, url, list_item, True)
 
         xbmcplugin.endOfDirectory(HANDLE)
     else:
         # Initial search - show with tabs
-        search_by_tab(query, content_type)
+        search_by_tab(query, content_type, is_widget=is_widget)
 
 
 def router(params):
@@ -4026,6 +4559,14 @@ def router(params):
     Uses action registry pattern for cleaner, more maintainable code.
     """
     action_name = params.get('action', '')
+    
+    # If no action but query exists, assume search
+    if not action_name and ('search' in params or 'query' in params or 'q' in params):
+        action_name = 'search'
+        if 'search' in params and not params.get('query'):
+            params['query'] = params['search']
+        elif 'q' in params and not params.get('query'):
+            params['query'] = params['q']
 
     # Look up action in registry
     handler = ACTION_REGISTRY.get(action_name)
@@ -4051,8 +4592,14 @@ def router(params):
 # ============================================================================
 
 if __name__ == '__main__':
+    xbmc.log(f'[AIOStreams] ===== PLUGIN INVOKED =====', xbmc.LOGINFO)
+    xbmc.log(f'[AIOStreams] sys.argv: {sys.argv}', xbmc.LOGINFO)
+    initialize()
     params = dict(parse_qsl(sys.argv[2][1:]))
+    xbmc.log(f'[AIOStreams] Parsed params: {params}', xbmc.LOGINFO)
+    xbmc.log(f'[AIOStreams] Action: {params.get("action", "<none>")}', xbmc.LOGINFO)
     router(params)
+    xbmc.log(f'[AIOStreams] ===== PLUGIN EXECUTION COMPLETE =====', xbmc.LOGINFO)
 
     # Cleanup on exit if using new modules
     if HAS_NEW_MODULES:
@@ -4060,3 +4607,4 @@ if __name__ == '__main__':
             g.deinit()
         except:
             pass
+

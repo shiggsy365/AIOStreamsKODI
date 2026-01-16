@@ -4,9 +4,15 @@ import xbmc
 import xbmcaddon
 import xbmcgui
 import threading
+import xbmc
+import xbmcgui
+import threading
 import time
+import json
+import sys
+import base64
+from urllib.parse import quote_plus, parse_qsl, unquote_plus
 from resources.lib import trakt
-from resources.lib.autoplay import AutoplayManager
 
 ADDON = xbmcaddon.Addon()
 
@@ -28,16 +34,22 @@ class AIOStreamsPlayer(xbmc.Player):
         self.progress_monitor_thread = None
         self.stop_monitoring = threading.Event()
 
-        # Autoplay manager
-        self.autoplay = AutoplayManager(self)
+        self.stop_monitoring = threading.Event()
     
     def set_media_info(self, media_type, imdb_id, season=None, episode=None):
         """Set media information for scrobbling."""
         self.is_aiostreams = True
         self.media_type = media_type
         self.imdb_id = imdb_id
-        self.season = season
-        self.episode = episode
+        try:
+            self.season = int(season) if season is not None else None
+        except ValueError:
+            self.season = season
+            
+        try:
+            self.episode = int(episode) if episode is not None else None
+        except ValueError:
+            self.episode = episode
         self.started = False
         xbmc.log(f'[AIOStreams] Player set for {media_type}: {imdb_id}', xbmc.LOGINFO)
     
@@ -87,6 +99,23 @@ class AIOStreamsPlayer(xbmc.Player):
 
                 # Calculate progress
                 if self.total_time > 0:
+                    # Auto-Skip Short Streams (e.g. trailers/wrong files < 95s)
+                    # Helper prevents looping if the next stream is also short (we could add logic for that, but safe for now)
+                    if self.total_time < 95 and self.total_time > 0 and self.current_time > 5 and not getattr(self, 'skipped_short_stream', False):
+                        xbmc.log(f'[AIOStreams] Stream too short ({self.total_time}s < 95s) - Auto-skipping to next source', xbmc.LOGINFO)
+                        self.skipped_short_stream = True
+                        
+                        # Stop current playback
+                        # We use Player().stop() but we need to trigger the next action cleanly
+                        # If we just run the plugin command, it might conflict if player is still running?
+                        # UpNext uses Player().play(url) which internally stops current.
+                        
+                        # Trigger Play Next Source
+                        # We use executebuiltin to run the plugin action asynchronously
+                        url = 'plugin://plugin.video.aiostreams/?action=play_next_source'
+                        xbmc.executebuiltin(f'RunPlugin({url})')
+                        break
+
                     progress = (self.current_time / self.total_time) * 100
 
                     # Auto-mark as watched at 90%+
@@ -193,22 +222,184 @@ class AIOStreamsPlayer(xbmc.Player):
     def _check_autoplay_start(self):
         """Check if autoplay should be started for this episode."""
         try:
-            # Only autoplay for TV shows (not movies)
+            # Only autoplay for TV shows (series or episode media type)
             if (self.is_aiostreams and
-                self.media_type == 'series' and
+                self.media_type in ('series', 'episode') and
                 self.imdb_id and
                 self.season is not None and
                 self.episode is not None and
-                self.autoplay.is_enabled()):
+                ADDON.getSetting('autoplay_next_episode') == 'true'):
 
-                xbmc.log(f'[AIOStreams] Starting autoplay for S{self.season:02d}E{self.episode:02d}',
-                        xbmc.LOGINFO)
-                self.autoplay.start_monitoring(self.imdb_id, self.season, self.episode)
+                # Integrate with UpNext script (service.upnext)
+                self._signal_upnext()
 
         except Exception as e:
             xbmc.log(f'[AIOStreams] Error checking autoplay start: {e}', xbmc.LOGERROR)
-    
-    def onPlayBackPaused(self):
+
+    def _signal_upnext(self):
+        """Signal the UpNext script if available (async)."""
+        if xbmc.getCondVisibility('System.HasAddon(service.upnext)'):
+            threading.Thread(target=self._upnext_worker).start()
+
+    def _upnext_worker(self):
+        """Worker to wait for metadata/duration before signaling UpNext."""
+        try:
+            # Wait for valid duration and metadata
+            # UpNext will stop tracking if it thinks the file isn't playing (duration 0)
+            retries = 20
+            while retries > 0:
+                if not self.isPlaying():
+                    return
+                
+                duration = self.getTotalTime()
+                title = xbmc.getInfoLabel('ListItem.Title')
+                
+                if duration > 0 and title:
+                    break
+                    
+                time.sleep(0.5)
+                retries -= 1
+            
+            xbmc.log('[AIOStreams] Signaling UpNext script', xbmc.LOGINFO)
+            
+            from addon import get_meta
+            
+            # Build the next episode data
+            next_season = self.season
+            next_episode = self.episode + 1
+            
+            # Fetch next episode info if possible
+            next_meta = get_meta('series', f"{self.imdb_id}:{next_season}:{next_episode}")
+            
+            if next_meta:
+                meta = next_meta.get('meta', {})
+                current_runtime = str(int(self.getTotalTime()))
+                
+                # Encode params to avoid URL issues
+                from urllib.parse import urlencode
+                play_params = {
+                    'action': 'play',  # Use 'play' instead of 'play_next' - it's marked as IsPlayable
+                    'content_type': 'series',
+                    'imdb_id': self.imdb_id,
+                    'season': str(next_season),
+                    'episode': str(next_episode),
+                    'force_autoplay': 'true'  # Flag to bypass show_streams dialog
+                }
+                play_url = f'plugin://plugin.video.aiostreams/?{urlencode(play_params)}'
+                
+                xbmc.log(f'[AIOStreams] UpNext play_url: {play_url}', xbmc.LOGINFO)
+                
+                # Store next episode params for our custom playback handler
+                # We'll monitor for when service.upnext tries to play and intercept it
+                window = xbmcgui.Window(10000)
+                window.setProperty('AIOStreams.UpNext.IMDbID', self.imdb_id)
+                window.setProperty('AIOStreams.UpNext.Season', str(next_season))
+                window.setProperty('AIOStreams.UpNext.Episode', str(next_episode))
+                
+                # Signal service.upnext for the popup, but we'll handle playback ourselves
+                upnext_data = {
+                    'current_episode': {
+                        'episodeid': str(self.episode),
+                        'tvshowid': self.imdb_id,
+                        'title': xbmc.getInfoLabel('ListItem.Title'),
+                        'art': {
+                            'thumb': xbmc.getInfoLabel('ListItem.Art(thumb)'),
+                            'tvshow.poster': xbmc.getInfoLabel('ListItem.Art(tvshow.poster)'),
+                            'tvshow.fanart': xbmc.getInfoLabel('ListItem.Art(tvshow.fanart)'),
+                            'tvshow.clearart': xbmc.getInfoLabel('ListItem.Art(tvshow.clearart)'),
+                            'tvshow.clearlogo': xbmc.getInfoLabel('ListItem.Art(tvshow.clearlogo)'),
+                            'tvshow.landscape': xbmc.getInfoLabel('ListItem.Art(tvshow.landscape)')
+                        },
+                        'season': str(self.season),
+                        'episode': str(self.episode),
+                        'showtitle': xbmc.getInfoLabel('ListItem.TVShowTitle'),
+                        'plot': xbmc.getInfoLabel('ListItem.Plot'),
+                        'playcount': 0,
+                        'rating': 0,
+                        'firstaired': xbmc.getInfoLabel('ListItem.Premiered'),
+                        'runtime': current_runtime
+                    },
+                    'next_episode': {
+                        'episodeid': str(next_episode),
+                        'tvshowid': self.imdb_id,
+                        'title': meta.get('title', meta.get('name', 'Next Episode')),
+                        'art': {
+                            'thumb': meta.get('thumb', ''),
+                            'tvshow.poster': meta.get('poster', ''),
+                            'tvshow.fanart': meta.get('background', ''),
+                            'tvshow.clearart': '',
+                            'tvshow.clearlogo': '',
+                            'tvshow.landscape': ''
+                        },
+                        'season': str(next_season),
+                        'episode': str(next_episode),
+                        'showtitle': xbmc.getInfoLabel('ListItem.TVShowTitle'),
+                        'plot': meta.get('plot', meta.get('description', '')),
+                        'playcount': 0,
+                        'rating': 0,
+                        'firstaired': meta.get('released', '').split('T')[0] if meta.get('released') else ''
+                    },
+                    'play_url': play_url,  # Provide URL for service.upnext popup
+                    'notification_time': 30,
+                    'notification_offset': 30,
+                    'id': 'plugin.video.aiostreams_play_action'
+                }
+                
+                # Set the property for UpNext to find
+                window.setProperty('UpNext.Data', json.dumps(upnext_data))
+                
+                # Signal via JSON-RPC
+                data_b64 = base64.b64encode(json.dumps(upnext_data).encode('utf-8')).decode('utf-8')
+                rpc_request = json.dumps({
+                    "jsonrpc": "2.0",
+                    "method": "JSONRPC.NotifyAll",
+                    "params": {
+                        "sender": "plugin.video.aiostreams",
+                        "message": "upnext_data",
+                        "data": [data_b64]
+                    },
+                    "id": 1
+                })
+                
+                xbmc.executeJSONRPC(rpc_request)
+                xbmc.log('[AIOStreams] Signaled UpNext (custom playback mode)', xbmc.LOGINFO)
+                self._send_upnext_signal('upnext_data', upnext_data)
+        except Exception as e:
+            xbmc.log(f'[AIOStreams] Error signaling UpNext: {e}', xbmc.LOGERROR)
+
+    def _send_upnext_signal(self, signal, data):
+        """Send a signal via JSON-RPC to service.upnext."""
+        try:
+            # Service.upnext expects the data to be a list containing a single base64 encoded JSON string
+            # [ base64_encoded_json_string ]
+            
+            # 1. Dump data to JSON string
+            json_str = json.dumps(data)
+            
+            # 2. Base64 encode the string
+            b64_data = base64.b64encode(json_str.encode('utf-8')).decode('utf-8')
+            
+            # Construct the JSON-RPC payload
+            payload = {
+                'jsonrpc': '2.0',
+                'method': 'JSONRPC.NotifyAll',
+                'params': {
+                    'sender': 'plugin.video.aiostreams',
+                    'message': signal,
+                    'data': [b64_data]  # Wrap base64 string in list
+                },
+                'id': 1
+            }
+            
+            # Execute the JSON-RPC call
+            json_command = json.dumps(payload)
+            response = xbmc.executeJSONRPC(json_command)
+            
+            xbmc.log(f'[AIOStreams] Sent UpNext signal via JSONRPC. Response: {response}', xbmc.LOGDEBUG)
+        except Exception as e:
+            xbmc.log(f'[AIOStreams] Error sending JSONRPC signal: {e}', xbmc.LOGERROR)
+
+    def onPlayBackEnded(self):
         """Called when playback is paused."""
         if not self.should_scrobble() or not self.started:
             return
@@ -244,11 +435,40 @@ class AIOStreamsPlayer(xbmc.Player):
     
     def onPlayBackStopped(self):
         """Called when playback stops."""
-        # Stop autoplay monitoring
+        
+        # Check if we have Up Next params stored (meaning service.upnext popup was shown)
         try:
-            self.autoplay.stop()
+            window = xbmcgui.Window(10000)
+            imdb_id = window.getProperty('AIOStreams.UpNext.IMDbID')
+            season = window.getProperty('AIOStreams.UpNext.Season')
+            episode = window.getProperty('AIOStreams.UpNext.Episode')
+            
+            if imdb_id and season and episode:
+                xbmc.log(f'[AIOStreams] Playback stopped - triggering Up Next: {imdb_id} S{season}E{episode}', xbmc.LOGINFO)
+                
+                # Clear the properties
+                window.clearProperty('AIOStreams.UpNext.IMDbID')
+                window.clearProperty('AIOStreams.UpNext.Season')
+                window.clearProperty('AIOStreams.UpNext.Episode')
+                
+                # Trigger playback of next episode via RunPlugin
+                from urllib.parse import urlencode
+                play_params = {
+                    'action': 'play',
+                    'content_type': 'series',
+                    'imdb_id': imdb_id,
+                    'season': season,
+                    'episode': episode,
+                    'force_autoplay': 'true'
+                }
+                play_url = f'plugin://plugin.video.aiostreams/?{urlencode(play_params)}'
+                
+                # Use a small delay to ensure the player is fully stopped
+                xbmc.sleep(500)
+                xbmc.executebuiltin(f'RunPlugin({play_url})')
+                xbmc.log(f'[AIOStreams] Executed RunPlugin for next episode', xbmc.LOGINFO)
         except Exception as e:
-            xbmc.log(f'[AIOStreams] Error stopping autoplay: {e}', xbmc.LOGERROR)
+            xbmc.log(f'[AIOStreams] Error in Up Next handler: {e}', xbmc.LOGERROR)
 
         # Check if we should auto-mark as watched before cleanup
         try:
@@ -291,11 +511,6 @@ class AIOStreamsPlayer(xbmc.Player):
     
     def onPlayBackEnded(self):
         """Called when playback ends."""
-        # Stop autoplay monitoring (dialog may have handled this already)
-        try:
-            self.autoplay.stop()
-        except Exception as e:
-            xbmc.log(f'[AIOStreams] Error stopping autoplay: {e}', xbmc.LOGERROR)
 
         # Auto-mark as watched if enabled (playback completed)
         try:

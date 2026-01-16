@@ -129,6 +129,29 @@ class Database:
                 xbmc.log(f'[AIOStreams] Params: {params}', xbmc.LOGDEBUG)
             return None
 
+    def executemany(self, sql, params_list):
+        """
+        Execute a SQL statement against multiple parameter sets.
+
+        Args:
+            sql: SQL statement to execute
+            params_list: List of tuples/dicts parameters
+
+        Returns:
+            sqlite3.Cursor or None: Cursor object if successful, None otherwise
+        """
+        if not self.connection:
+            xbmc.log('[AIOStreams] No database connection', xbmc.LOGERROR)
+            return None
+
+        try:
+            cursor = self.connection.executemany(sql, params_list)
+            return cursor
+        except sqlite3.Error as e:
+            xbmc.log(f'[AIOStreams] SQL batch execution error: {e}', xbmc.LOGERROR)
+            xbmc.log(f'[AIOStreams] SQL: {sql}', xbmc.LOGDEBUG)
+            return None
+
     def fetch_one(self, sql, params=None):
         """
         Execute a SQL query and fetch one result.

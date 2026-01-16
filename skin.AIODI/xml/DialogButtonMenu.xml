@@ -4,9 +4,9 @@
 	<include>Animation_DialogPopupOpenClose</include>
 	<controls>
 		<control type="group">
-			<centerleft>50%</centerleft>
+			<left>-300</left>
 			<width>600</width>
-			<centertop>50%</centertop>
+			<top>-350</top>
 			<height>700</height>
 			<include content="DialogBackgroundCommons">
 				<param name="width" value="600" />
