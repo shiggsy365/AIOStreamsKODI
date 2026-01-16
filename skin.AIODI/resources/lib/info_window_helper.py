@@ -21,47 +21,58 @@ def populate_cast_properties(content_type=None):
     """
     try:
         log('Starting cast property population')
-        
-        # Get current item's IMDb ID - try multiple methods
-        imdb_id = xbmc.getInfoLabel('ListItem.IMDBNumber')
-        
-        # Debug: log all available info
-        log(f'ListItem.Title: {xbmc.getInfoLabel("ListItem.Title")}')
-        log(f'ListItem.Label: {xbmc.getInfoLabel("ListItem.Label")}')
-        log(f'ListItem.Year: {xbmc.getInfoLabel("ListItem.Year")}')
-        log(f'ListItem.IMDBNumber: {xbmc.getInfoLabel("ListItem.IMDBNumber")}')
-        log(f'ListItem.Property(imdb_id): {xbmc.getInfoLabel("ListItem.Property(imdb_id)")}')
-        log(f'ListItem.UniqueID(imdb): {xbmc.getInfoLabel("ListItem.UniqueID(imdb)")}')
-        log(f'ListItem.Filenameandpath: {xbmc.getInfoLabel("ListItem.Filenameandpath")}')
-        log(f'ListItem.Path: {xbmc.getInfoLabel("ListItem.Path")}')
-        
-        # If that's empty, try getting from custom property
-        if not imdb_id:
-            imdb_id = xbmc.getInfoLabel('ListItem.Property(imdb_id)')
-        
-        # If still empty, try from unique IDs
-        if not imdb_id:
-            imdb_id = xbmc.getInfoLabel('ListItem.UniqueID(imdb)')
-        
-        if not imdb_id:
-            path = xbmc.getInfoLabel('ListItem.Filenameandpath')
-            # Check for imdb_id or meta_id
-            import re
-            match = re.search(r'(?:imdb_id|meta_id)=([^&]+)', path)
-            if match:
-                imdb_id = match.group(1)
-                log(f'Extracted IMDb ID from Filenameandpath: {imdb_id}')
-            elif 'tt' in path:
-                # Fallback for just finding a tt ID in the path
-                match_tt = re.search(r'tt\d{7,}', path)
-                if match_tt:
-                    imdb_id = match_tt.group(0)
-                    log(f'Extracted IMDb ID from pattern match: {imdb_id}')
-        
+
+        # Check if this is a custom info window (opened from plugin action)
+        is_custom = xbmc.getInfoLabel('Window(Home).Property(InfoWindow.IsCustom)') == 'true'
+
+        if is_custom:
+            # Use Window Properties set by plugin
+            log('Custom info window detected - using Window Properties for cast')
+            imdb_id = xbmc.getInfoLabel('Window(Home).Property(InfoWindow.IMDB)')
+            if not content_type:
+                content_type = xbmc.getInfoLabel('Window(Home).Property(InfoWindow.DBType)')
+            log(f'Custom cast fetch - IMDB: {imdb_id}, Type: {content_type}')
+        else:
+            # Get current item's IMDb ID - try multiple methods
+            imdb_id = xbmc.getInfoLabel('ListItem.IMDBNumber')
+
+            # Debug: log all available info
+            log(f'ListItem.Title: {xbmc.getInfoLabel("ListItem.Title")}')
+            log(f'ListItem.Label: {xbmc.getInfoLabel("ListItem.Label")}')
+            log(f'ListItem.Year: {xbmc.getInfoLabel("ListItem.Year")}')
+            log(f'ListItem.IMDBNumber: {xbmc.getInfoLabel("ListItem.IMDBNumber")}')
+            log(f'ListItem.Property(imdb_id): {xbmc.getInfoLabel("ListItem.Property(imdb_id)")}')
+            log(f'ListItem.UniqueID(imdb): {xbmc.getInfoLabel("ListItem.UniqueID(imdb)")}')
+            log(f'ListItem.Filenameandpath: {xbmc.getInfoLabel("ListItem.Filenameandpath")}')
+            log(f'ListItem.Path: {xbmc.getInfoLabel("ListItem.Path")}')
+
+            # If that's empty, try getting from custom property
+            if not imdb_id:
+                imdb_id = xbmc.getInfoLabel('ListItem.Property(imdb_id)')
+
+            # If still empty, try from unique IDs
+            if not imdb_id:
+                imdb_id = xbmc.getInfoLabel('ListItem.UniqueID(imdb)')
+
+            if not imdb_id:
+                path = xbmc.getInfoLabel('ListItem.Filenameandpath')
+                # Check for imdb_id or meta_id
+                import re
+                match = re.search(r'(?:imdb_id|meta_id)=([^&]+)', path)
+                if match:
+                    imdb_id = match.group(1)
                     log(f'Extracted IMDb ID from Filenameandpath: {imdb_id}')
-        
-        if not content_type:
-            content_type = xbmc.getInfoLabel('ListItem.DBType')  # 'movie' or 'tvshow'
+                elif 'tt' in path:
+                    # Fallback for just finding a tt ID in the path
+                    match_tt = re.search(r'tt\d{7,}', path)
+                    if match_tt:
+                        imdb_id = match_tt.group(0)
+                        log(f'Extracted IMDb ID from pattern match: {imdb_id}')
+
+                        log(f'Extracted IMDb ID from Filenameandpath: {imdb_id}')
+
+            if not content_type:
+                content_type = xbmc.getInfoLabel('ListItem.DBType')  # 'movie' or 'tvshow'
         
         if not imdb_id:
             log(f'No IMDb ID found for current item. Tried: IMDBNumber, Property(imdb_id), UniqueID(imdb), Path extraction', xbmc.LOGWARNING)
@@ -156,23 +167,38 @@ def populate_all():
     """Populates all info window data asynchronously."""
     # Reset immediately to show loading state
     reset_info_properties()
-    
-    # Extract IDs safely
-    db_type = xbmc.getInfoLabel('ListItem.DBType')
-    title = xbmc.getInfoLabel('ListItem.Title')
-    imdb_id = xbmc.getInfoLabel('ListItem.IMDBNumber')
-    tmdb_id = xbmc.getInfoLabel('ListItem.Property(tmdb_id)')
-    season = xbmc.getInfoLabel('ListItem.Season')
-    episode = xbmc.getInfoLabel('ListItem.Episode')
-    
-    # Fallback ID extraction if needed
-    if not imdb_id and not tmdb_id:
-        path = xbmc.getInfoLabel('ListItem.Filenameandpath')
-        if 'plugin.video.aiostreams' in path:
-            import re
-            match = re.search(r'tt\d{7,}', path)
-            if match:
-                imdb_id = match.group(0)
+
+    # Check if this is a custom info window (opened from plugin action)
+    is_custom = xbmc.getInfoLabel('Window(Home).Property(InfoWindow.IsCustom)') == 'true'
+
+    if is_custom:
+        # Use Window Properties set by plugin
+        log('Custom info window detected - using Window Properties')
+        db_type = xbmc.getInfoLabel('Window(Home).Property(InfoWindow.DBType)')
+        title = xbmc.getInfoLabel('Window(Home).Property(InfoWindow.Title)')
+        imdb_id = xbmc.getInfoLabel('Window(Home).Property(InfoWindow.IMDB)')
+        tmdb_id = ''  # Plugin uses IMDb ID primarily
+        season = ''
+        episode = ''
+        log(f'Custom info - DBType: {db_type}, Title: {title}, IMDB: {imdb_id}')
+    else:
+        # Extract IDs from ListItem (normal flow)
+        log('Normal info window - using ListItem properties')
+        db_type = xbmc.getInfoLabel('ListItem.DBType')
+        title = xbmc.getInfoLabel('ListItem.Title')
+        imdb_id = xbmc.getInfoLabel('ListItem.IMDBNumber')
+        tmdb_id = xbmc.getInfoLabel('ListItem.Property(tmdb_id)')
+        season = xbmc.getInfoLabel('ListItem.Season')
+        episode = xbmc.getInfoLabel('ListItem.Episode')
+
+        # Fallback ID extraction if needed
+        if not imdb_id and not tmdb_id:
+            path = xbmc.getInfoLabel('ListItem.Filenameandpath')
+            if 'plugin.video.aiostreams' in path:
+                import re
+                match = re.search(r'tt\d{7,}', path)
+                if match:
+                    imdb_id = match.group(0)
 
     # Define the worker function
     def worker(worker_imdb_id, worker_tmdb_id):

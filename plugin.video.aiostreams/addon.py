@@ -4334,6 +4334,7 @@ def action_info(params):
         # Let's set standard InfoWindow properties
         window = xbmcgui.Window(10000)
         window.setProperty('InfoWindow.IsCustom', 'true')
+        window.setProperty('InfoWindow.IMDB', meta_id)
         window.setProperty('InfoWindow.Title', meta.get('name', ''))
         window.setProperty('InfoWindow.Plot', meta.get('description', ''))
         window.setProperty('InfoWindow.Year', str(meta.get('year', '')))
