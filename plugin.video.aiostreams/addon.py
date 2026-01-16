@@ -1596,6 +1596,9 @@ def play(params=None):
             # Without this, Kodi may refuse to activate the stream selection dialog with error:
             # "Activate of window refused because there are active modal dialogs"
             xbmc.sleep(200)
+            # Explicitly close any Kodi busy dialog that may be active
+            xbmc.executebuiltin("Dialog.Close(busydialog)")
+            xbmc.sleep(100)  # Brief delay to ensure busydialog is fully closed
             show_streams_dialog(content_type, media_id, stream_data, title, poster, fanart, clearlogo, from_playable=True)
             return
 
@@ -1964,6 +1967,10 @@ def select_stream():
     # Use custom multi-line dialog with emoji support
     xbmc.log(f'[AIOStreams] Showing stream selection dialog with {len(stream_data["streams"])} streams', xbmc.LOGDEBUG)
 
+    # Explicitly close any Kodi busy dialog that may be active
+    xbmc.executebuiltin("Dialog.Close(busydialog)")
+    xbmc.sleep(100)  # Brief delay to ensure busydialog is fully closed
+
     # Use custom dialog if available
     if HAS_MODULES:
         try:
@@ -2295,6 +2302,9 @@ def show_streams():
     # Without this, Kodi may refuse to activate the stream selection dialog with error:
     # "Activate of window refused because there are active modal dialogs"
     xbmc.sleep(200)
+    # Explicitly close any Kodi busy dialog that may be active
+    xbmc.executebuiltin("Dialog.Close(busydialog)")
+    xbmc.sleep(100)  # Brief delay to ensure busydialog is fully closed
 
     # Always show streams dialog (ignore default behavior - user explicitly requested stream selection)
     show_streams_dialog(content_type, media_id, stream_data, title, poster, fanart, clearlogo)
@@ -2339,6 +2349,10 @@ def show_streams_dialog(content_type, media_id, stream_data, title, poster='', f
 
     # Use custom multi-line dialog with emoji support
     xbmc.log(f'[AIOStreams] Showing stream selection dialog with {len(stream_data["streams"])} streams', xbmc.LOGDEBUG)
+
+    # Explicitly close any Kodi busy dialog that may be active
+    xbmc.executebuiltin("Dialog.Close(busydialog)")
+    xbmc.sleep(100)  # Brief delay to ensure busydialog is fully closed
 
     # Use custom dialog if available
     if HAS_MODULES:

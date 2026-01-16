@@ -71,8 +71,14 @@ try:
         # Close search dialog if open and open results
         if current_dialog_id == 1106:
             xbmc.executebuiltin('Dialog.Close(1106)')
-            
+
         xbmc.executebuiltin('ActivateWindow(1112)')
+
+        # Give window time to open, then refresh containers to load content
+        xbmc.sleep(100)
+        xbmc.executebuiltin('Container(100).Refresh')
+        xbmc.executebuiltin('Container(101).Refresh')
+        xbmc.executebuiltin('Container(102).Refresh')
     else:
         # Only notify if we were expecting an argument or valid input; 
         # canceling keyboard is a valid "do nothing" action.
