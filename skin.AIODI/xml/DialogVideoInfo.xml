@@ -330,40 +330,11 @@
 						</control>
 						<control type="image">
 							<left>0</left>
-							<top>220</top>
-							<width>180</width>
-							<height>50</height>
-							<texture>colors/black_50.png</texture>
-						</control>
-						<control type="label">
-							<left>0</left>
-							<top>220</top>
-							<width>180</width>
-							<height>50</height>
-							<align>center</align>
-							<aligny>center</aligny>
-							<font>font12</font>
-							<textcolor>white</textcolor>
-							<label>$INFO[Window(Home).Property(InfoWindow.Cast.1.Name)]</label>
-						</control>
-						<control type="button" id="50">
-							<left>0</left>
 							<top>0</top>
 							<width>180</width>
 							<height>270</height>
-							<texturefocus>-</texturefocus>
-							<texturenofocus>-</texturenofocus>
-							<onclick>Dialog.Close(MovieInformation)</onclick>
-							<onclick>RunScript(special://skin/resources/lib/global_search.py, $INFO[Window(Home).Property(InfoWindow.Cast.1.Name)])</onclick>
-							<onup>8000</onup>
-							<onleft>8</onleft>
-							<onright>51</onright>
-							<ondown>5000</ondown>
-						</control>
-						<!-- Red Focus Border (Home Style) -->
-						<control type="image">
-							<left>0</left><top>0</top><width>180</width><height>270</height>
-							<texture colordiffuse="00FFFFFF">colors/black.png</texture>
+							<texture background="true">$INFO[Window(Home).Property(InfoWindow.Cast.1.Thumb)]</texture>
+							<aspectratio aligny="center">scale</aspectratio>
 							<bordertexture border="3" colordiffuse="FFFF0000">colors/white.png</bordertexture>
 							<bordersize>3</bordersize>
 							<visible>Control.HasFocus(50)</visible>
@@ -393,40 +364,11 @@
 						</control>
 						<control type="image">
 							<left>0</left>
-							<top>220</top>
-							<width>180</width>
-							<height>50</height>
-							<texture>colors/black_50.png</texture>
-						</control>
-						<control type="label">
-							<left>0</left>
-							<top>220</top>
-							<width>180</width>
-							<height>50</height>
-							<align>center</align>
-							<aligny>center</aligny>
-							<font>font12</font>
-							<textcolor>white</textcolor>
-							<label>$INFO[Window(Home).Property(InfoWindow.Cast.2.Name)]</label>
-						</control>
-						<control type="button" id="51">
-							<left>0</left>
 							<top>0</top>
 							<width>180</width>
 							<height>270</height>
-							<texturefocus>-</texturefocus>
-							<texturenofocus>-</texturenofocus>
-							<onclick>Dialog.Close(MovieInformation)</onclick>
-							<onclick>RunScript(special://skin/resources/lib/global_search.py, $INFO[Window(Home).Property(InfoWindow.Cast.2.Name)])</onclick>
-							<onup>8000</onup>
-							<onleft>50</onleft>
-							<onright>52</onright>
-							<ondown>5000</ondown>
-						</control>
-						<!-- Red Focus Border (Home Style) -->
-						<control type="image">
-							<left>0</left><top>0</top><width>180</width><height>270</height>
-							<texture colordiffuse="00FFFFFF">colors/black.png</texture>
+							<texture background="true">$INFO[Window(Home).Property(InfoWindow.Cast.2.Thumb)]</texture>
+							<aspectratio aligny="center">scale</aspectratio>
 							<bordertexture border="3" colordiffuse="FFFF0000">colors/white.png</bordertexture>
 							<bordersize>3</bordersize>
 							<visible>Control.HasFocus(51)</visible>
@@ -456,40 +398,11 @@
 						</control>
 						<control type="image">
 							<left>0</left>
-							<top>220</top>
-							<width>180</width>
-							<height>50</height>
-							<texture>colors/black_50.png</texture>
-						</control>
-						<control type="label">
-							<left>0</left>
-							<top>220</top>
-							<width>180</width>
-							<height>50</height>
-							<align>center</align>
-							<aligny>center</aligny>
-							<font>font12</font>
-							<textcolor>white</textcolor>
-							<label>$INFO[Window(Home).Property(InfoWindow.Cast.3.Name)]</label>
-						</control>
-						<control type="button" id="52">
-							<left>0</left>
 							<top>0</top>
 							<width>180</width>
 							<height>270</height>
-							<texturefocus>-</texturefocus>
-							<texturenofocus>-</texturenofocus>
-							<onclick>Dialog.Close(MovieInformation)</onclick>
-							<onclick>RunScript(special://skin/resources/lib/global_search.py, $INFO[Window(Home).Property(InfoWindow.Cast.3.Name)])</onclick>
-							<onup>8000</onup>
-							<onleft>51</onleft>
-							<onright>53</onright>
-							<ondown>5000</ondown>
-						</control>
-						<!-- Red Focus Border (Home Style) -->
-						<control type="image">
-							<left>0</left><top>0</top><width>180</width><height>270</height>
-							<texture colordiffuse="00FFFFFF">colors/black.png</texture>
+							<texture background="true">$INFO[Window(Home).Property(InfoWindow.Cast.3.Thumb)]</texture>
+							<aspectratio aligny="center">scale</aspectratio>
 							<bordertexture border="3" colordiffuse="FFFF0000">colors/white.png</bordertexture>
 							<bordersize>3</bordersize>
 							<visible>Control.HasFocus(52)</visible>
@@ -519,40 +432,11 @@
 						</control>
 						<control type="image">
 							<left>0</left>
-							<top>220</top>
-							<width>180</width>
-							<height>50</height>
-							<texture>colors/black_50.png</texture>
-						</control>
-						<control type="label">
-							<left>0</left>
-							<top>220</top>
-							<width>180</width>
-							<height>50</height>
-							<align>center</align>
-							<aligny>center</aligny>
-							<font>font12</font>
-							<textcolor>white</textcolor>
-							<label>$INFO[Window(Home).Property(InfoWindow.Cast.4.Name)]</label>
-						</control>
-						<control type="button" id="53">
-							<left>0</left>
 							<top>0</top>
 							<width>180</width>
 							<height>270</height>
-							<texturefocus>-</texturefocus>
-							<texturenofocus>-</texturenofocus>
-							<onclick>Dialog.Close(MovieInformation)</onclick>
-							<onclick>RunScript(special://skin/resources/lib/global_search.py, $INFO[Window(Home).Property(InfoWindow.Cast.4.Name)])</onclick>
-							<onup>8000</onup>
-							<onleft>52</onleft>
-							<onright>54</onright>
-							<ondown>5000</ondown>
-						</control>
-						<!-- Red Focus Border (Home Style) -->
-						<control type="image">
-							<left>0</left><top>0</top><width>180</width><height>270</height>
-							<texture colordiffuse="00FFFFFF">colors/black.png</texture>
+							<texture background="true">$INFO[Window(Home).Property(InfoWindow.Cast.4.Thumb)]</texture>
+							<aspectratio aligny="center">scale</aspectratio>
 							<bordertexture border="3" colordiffuse="FFFF0000">colors/white.png</bordertexture>
 							<bordersize>3</bordersize>
 							<visible>Control.HasFocus(53)</visible>
@@ -582,40 +466,11 @@
 						</control>
 						<control type="image">
 							<left>0</left>
-							<top>220</top>
-							<width>180</width>
-							<height>50</height>
-							<texture>colors/black_50.png</texture>
-						</control>
-						<control type="label">
-							<left>0</left>
-							<top>220</top>
-							<width>180</width>
-							<height>50</height>
-							<align>center</align>
-							<aligny>center</aligny>
-							<font>font12</font>
-							<textcolor>white</textcolor>
-							<label>$INFO[Window(Home).Property(InfoWindow.Cast.5.Name)]</label>
-						</control>
-						<control type="button" id="54">
-							<left>0</left>
 							<top>0</top>
 							<width>180</width>
 							<height>270</height>
-							<texturefocus>-</texturefocus>
-							<texturenofocus>-</texturenofocus>
-							<onclick>Dialog.Close(MovieInformation)</onclick>
-							<onclick>RunScript(special://skin/resources/lib/global_search.py, $INFO[Window(Home).Property(InfoWindow.Cast.5.Name)])</onclick>
-							<onup>8000</onup>
-							<onleft>53</onleft>
-							<onright>50</onright>
-							<ondown>5000</ondown>
-						</control>
-						<!-- Red Focus Border (Home Style) -->
-						<control type="image">
-							<left>0</left><top>0</top><width>180</width><height>270</height>
-							<texture colordiffuse="00FFFFFF">colors/black.png</texture>
+							<texture background="true">$INFO[Window(Home).Property(InfoWindow.Cast.5.Thumb)]</texture>
+							<aspectratio aligny="center">scale</aspectratio>
 							<bordertexture border="3" colordiffuse="FFFF0000">colors/white.png</bordertexture>
 							<bordersize>3</bordersize>
 							<visible>Control.HasFocus(54)</visible>
@@ -698,41 +553,10 @@
 									<top>0</top>
 									<width>180</width>
 									<height>270</height>
-									<texture colordiffuse="00FFFFFF">colors/white.png</texture>
-								</control>
-								<control type="image">
-									<left>0</left>
-									<top>0</top>
-									<width>180</width>
-									<height>270</height>
-									<aspectratio align="center" aligny="center" scale="scale">keep</aspectratio>
 									<texture background="true">$INFO[ListItem.Thumb]</texture>
-								</control>
-								<control type="image">
-									<left>0</left>
-									<top>220</top>
-									<width>180</width>
-									<height>50</height>
-									<texture>colors/black_50.png</texture>
-								</control>
-								<control type="label">
-									<left>0</left>
-									<top>220</top>
-									<width>180</width>
-									<height>50</height>
-									<align>center</align>
-									<aligny>center</aligny>
-									<font>font12</font>
-									<textcolor>white</textcolor>
-									<label>$INFO[ListItem.Label]</label>
-								</control>
-								<!-- Red Focus Border (Home Style) -->
-								<control type="image">
-									<left>-3</left><top>-3</top><width>186</width><height>276</height>
-									<texture colordiffuse="00FFFFFF">colors/black.png</texture>
+									<aspectratio align="center" aligny="center" scale="scale">keep</aspectratio>
 									<bordertexture border="3" colordiffuse="FFFF0000">colors/white.png</bordertexture>
 									<bordersize>3</bordersize>
-									<visible>Control.HasFocus(5000)</visible>
 								</control>
 							</control>
 						</focusedlayout>
