@@ -38,7 +38,16 @@
 			<fadetime>600</fadetime>
 			<aspectratio>scale</aspectratio>
 		</control>
-		
+
+		<!-- 50% Black Overlay -->
+		<control type="image">
+			<depth>DepthBackground</depth>
+			<include>FullScreenDimensions</include>
+			<texture>colors/white.png</texture>
+			<colordiffuse>80000000</colordiffuse>
+			<aspectratio>scale</aspectratio>
+		</control>
+
 		<!-- Gradient Overlay (Left to Right Black) -->
 		<control type="image">
 			<depth>DepthBackground</depth>

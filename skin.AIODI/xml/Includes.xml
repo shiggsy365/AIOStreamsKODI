@@ -1295,6 +1295,14 @@
 						<texture background="true" colordiffuse="2CFFFFFF">$VAR[MediaFanartVar]</texture>
 						<visible>!Control.IsVisible(502) | $EXP[infodialog_active]</visible>
 					</control>
+					<!-- 50% Black Overlay -->
+					<control type="image">
+						<include>FullScreenDimensions</include>
+						<aspectratio>scale</aspectratio>
+						<texture>colors/white.png</texture>
+						<colordiffuse>80000000</colordiffuse>
+						<visible>!Control.IsVisible(502) | $EXP[infodialog_active]</visible>
+					</control>
 					<control type="image">
 						<left>-3</left>
 						<top>0</top>
