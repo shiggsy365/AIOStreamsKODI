@@ -66,9 +66,10 @@
 							<texturenofocus>icons/infodialog/trailer.png</texturenofocus>
 							<align>center</align>
 							<aligny>center</aligny>
-							<visible>!String.IsEmpty(Window(Home).Property(InfoWindow.Trailer))</visible>
-							<onclick>Dialog.Close(movieinformation)</onclick>
-							<onclick>PlayMedia($INFO[Window(Home).Property(InfoWindow.Trailer)])</onclick>
+							<!-- Always visible, no visibility condition -->
+							<onclick condition="!String.IsEmpty(Window(Home).Property(InfoWindow.Trailer))">Dialog.Close(movieinformation)</onclick>
+							<onclick condition="!String.IsEmpty(Window(Home).Property(InfoWindow.Trailer))">PlayMedia($INFO[Window(Home).Property(InfoWindow.Trailer)])</onclick>
+							<onclick condition="String.IsEmpty(Window(Home).Property(InfoWindow.Trailer))">Notification(No Trailers Found, No trailer available for this item, 3000)</onclick>
 						</control>
 						
 						<control type="button" id="8">
