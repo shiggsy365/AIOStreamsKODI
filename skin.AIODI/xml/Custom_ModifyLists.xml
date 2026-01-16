@@ -33,7 +33,7 @@
                 <height>60</height>
                 <font>font45_title</font>
                 <textcolor>FFFFFFFF</textcolor>
-                <label>Modify Lists - $INFO[Window.Property(CurrentPageName)]</label>
+                <label>Modify Lists - $INFO[Window(Home).Property(WidgetManager.CurrentPageName)]</label>
                 <align>center</align>
             </control>
             

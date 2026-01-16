@@ -363,7 +363,6 @@
 						<!-- Red Focus Border (Home Style) -->
 						<control type="image">
 							<left>0</left><top>0</top><width>180</width><height>270</height>
-							<texture colordiffuse="00FFFFFF">colors/white.png</texture>
 							<bordertexture border="3" colordiffuse="FFFF0000">colors/white.png</bordertexture>
 							<bordersize>3</bordersize>
 							<visible>Control.HasFocus(50)</visible>

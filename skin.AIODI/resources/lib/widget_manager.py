@@ -144,6 +144,7 @@ def load_page(page_name):
             return
 
     try:
+        # Set properties on both the dialog window and home window for accessibility
         window.setProperty('CurrentPage', page_name)
         # Set a user-friendly page name for display
         page_display_names = {
@@ -153,6 +154,12 @@ def load_page(page_name):
         }
         display_name = page_display_names.get(page_name, page_name.capitalize())
         window.setProperty('CurrentPageName', display_name)
+
+        # Also set on home window so dialog can access it
+        home_window = xbmcgui.Window(10000)
+        home_window.setProperty('WidgetManager.CurrentPage', page_name)
+        home_window.setProperty('WidgetManager.CurrentPageName', display_name)
+
         log(f'Set window properties: CurrentPage={page_name}, CurrentPageName={display_name}')
     except Exception as e:
         log(f'Error setting property on window: {e}', xbmc.LOGERROR)

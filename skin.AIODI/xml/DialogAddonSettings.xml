@@ -2,143 +2,180 @@
 <window>
 	<defaultcontrol>5</defaultcontrol>
 	<include>Animation_DialogPopupOpenClose</include>
+	<coordinates>
+		<left>0</left>
+		<top>0</top>
+	</coordinates>
 	<controls>
+		<!-- Dimmer -->
+		<control type="image">
+			<left>0</left>
+			<top>0</top>
+			<width>1920</width>
+			<height>1080</height>
+			<texture colordiffuse="C0000000">colors/black.png</texture>
+		</control>
+
+		<!-- Right Side Panel (Width 1000) -->
 		<control type="group">
-			<top>90</top>
-			<centerleft>50%</centerleft>
-			<width>1820</width>
-			<include>Animation_DialogPopupVisible</include>
-			<include content="DialogBackgroundCommons">
-				<param name="width" value="1820" />
-				<param name="height" value="900" />
-				<param name="header_label" value="" />
-				<param name="header_id" value="2" />
-			</include>
+			<left>920</left> <!-- 1920 - 1000 -->
+			<top>0</top>
+			<width>1000</width>
+			<height>1080</height>
+			<animation type="WindowOpen">
+				<effect type="slide" start="1000" end="0" time="300" tween="cubic" easing="out" />
+			</animation>
+			<animation type="WindowClose">
+				<effect type="slide" start="0" end="1000" time="300" tween="cubic" easing="in" />
+			</animation>
+
+			<!-- Bg -->
+			<control type="image">
+				<width>1000</width>
+				<height>1080</height>
+				<texture colordiffuse="FF1A1A1A">colors/white.png</texture>
+			</control>
+			<control type="image">
+				<left>-5</left>
+				<width>5</width>
+				<height>1080</height>
+				<texture colordiffuse="FF000000">colors/white.png</texture>
+			</control>
+
+			<!-- Header -->
+			<control type="label" id="2">
+				<left>25</left>
+				<top>30</top>
+				<width>950</width>
+				<height>40</height>
+				<font>font45_title</font>
+				<textcolor>FFFFFFFF</textcolor>
+				<align>left</align>
+			</control>
+			<!-- Categories Area -->
 			<control type="grouplist" id="3">
 				<description>Categories Area</description>
-				<left>29</left>
-				<top>80</top>
-				<width>400</width>
-				<height>596</height>
-				<itemgap>-25</itemgap>
+				<left>25</left>
+				<top>90</top>
+				<width>300</width>
+				<height>750</height>
+				<itemgap>2</itemgap>
 				<orientation>vertical</orientation>
-				<onleft>9000</onleft>
+				<onleft>Close</onleft>
 				<onright>5</onright>
 				<onup>20</onup>
 				<ondown>20</ondown>
 			</control>
 			<control type="button" id="10">
 				<description>Default Category Button</description>
-				<height>120</height>
-				<width>390</width>
-				<textoffsetx>20</textoffsetx>
-				<align>center</align>
+				<height>60</height>
+				<width>300</width>
+				<textoffsetx>15</textoffsetx>
+				<align>left</align>
 				<aligny>center</aligny>
-				<font>font25_title</font>
-				<texturenofocus border="40">buttons/dialogbutton-nofo.png</texturenofocus>
+				<font>font13</font>
+				<texturefocus colordiffuse="button_focus">lists/focus.png</texturefocus>
+				<texturenofocus colordiffuse="00FFFFFF">colors/white.png</texturenofocus>
 			</control>
+
+			<!-- Settings Panel Background -->
 			<control type="image">
-				<left>410</left>
-				<top>80</top>
-				<width>1100</width>
-				<height>740</height>
-				<texture border="40">buttons/dialogbutton-nofo.png</texture>
+				<left>340</left>
+				<top>90</top>
+				<width>630</width>
+				<height>850</height>
+				<texture colordiffuse="FF252525">colors/white.png</texture>
 			</control>
+
+			<!-- Settings Grouplist -->
 			<control type="grouplist" id="5">
 				<description>control area</description>
-				<left>429</left>
+				<left>350</left>
 				<top>100</top>
-				<width>1060</width>
-				<height>700</height>
+				<width>610</width>
+				<height>830</height>
 				<pagecontrol>60</pagecontrol>
 				<onleft>3</onleft>
 				<onright>60</onright>
 				<onup>5</onup>
 				<ondown>5</ondown>
+				<itemgap>0</itemgap>
 			</control>
+			<!-- Description Area -->
 			<control type="textbox" id="6">
 				<description>description area</description>
-				<left>50</left>
-				<top>815</top>
-				<right>50</right>
-				<height>70</height>
+				<left>25</left>
+				<top>960</top>
+				<width>950</width>
+				<height>90</height>
 				<font>font12</font>
-				<align>justify</align>
+				<align>left</align>
 				<textcolor>button_focus</textcolor>
 				<autoscroll time="3000" delay="5000" repeat="5000">true</autoscroll>
 			</control>
+
+			<!-- Setting Control Templates -->
 			<control type="button" id="7">
 				<description>Default Button</description>
 				<include>DefaultSettingButton</include>
+				<width>610</width>
 			</control>
 			<control type="radiobutton" id="8">
 				<description>Default RadioButton</description>
 				<include>DefaultSettingButton</include>
-				<textwidth>880</textwidth>
+				<width>610</width>
+				<textwidth>460</textwidth>
 			</control>
 			<control type="spincontrolex" id="9">
 				<description>Default SpinControlex</description>
 				<include>DefaultSettingButton</include>
+				<width>610</width>
 			</control>
 			<control type="image" id="11">
 				<description>separator image</description>
 				<height>3</height>
+				<width>610</width>
 				<texture colordiffuse="AAAAAAAA" border="3">dialogs/separator-grey.png</texture>
 			</control>
 			<control type="edit" id="12">
 				<include>DefaultSettingButton</include>
+				<width>610</width>
 			</control>
 			<control type="sliderex" id="13">
 				<description>Default Slider</description>
 				<include>DefaultSettingButton</include>
-				<textwidth>700</textwidth>
+				<width>610</width>
+				<textwidth>400</textwidth>
 			</control>
 			<control type="label" id="14">
 				<description>Default Label</description>
 				<include>DefaultSettingLabel</include>
+				<width>610</width>
 			</control>
 			<control type="colorbutton" id="15">
 				<description>Default ColorButton</description>
 				<include>DefaultSettingButton</include>
+				<width>610</width>
 			</control>
-			<control type="grouplist" id="9000">
-				<left>1510</left>
-				<top>92</top>
-				<orientation>vertical</orientation>
-				<width>300</width>
-				<height>300</height>
-				<itemgap>-10</itemgap>
-				<onleft>5</onleft>
-				<onright>3</onright>
-				<include content="DefaultDialogButton">
-					<param name="id" value="28" />
-					<param name="label" value="" />
-				</include>
-				<include content="DefaultDialogButton">
-					<param name="id" value="29" />
-					<param name="label" value="" />
-				</include>
-				<include content="DefaultDialogButton">
-					<param name="id" value="30" />
-					<param name="label" value="" />
-				</include>
-			</control>
+
+			<!-- Advanced Settings Toggle -->
 			<control type="radiobutton" id="20">
-				<left>29</left>
-				<top>700</top>
-				<width>390</width>
-				<height>120</height>
-				<font>font25_title</font>
+				<left>25</left>
+				<top>860</top>
+				<width>300</width>
+				<height>60</height>
+				<font>font13</font>
 				<aligny>center</aligny>
 				<onclick>SettingsLevelChange</onclick>
-				<textoffsetx>100</textoffsetx>
+				<textoffsetx>50</textoffsetx>
 				<textoffsety>0</textoffsety>
-				<texturenofocus />
-				<radioposx>40</radioposx>
+				<texturefocus colordiffuse="button_focus">lists/focus.png</texturefocus>
+				<texturenofocus colordiffuse="00FFFFFF">colors/white.png</texturenofocus>
+				<radioposx>15</radioposx>
 				<radioposy>0</radioposy>
-				<radiowidth>40</radiowidth>
-				<radioheight>40</radioheight>
-				<onleft>9000</onleft>
+				<radiowidth>24</radiowidth>
+				<radioheight>24</radioheight>
+				<onleft>Close</onleft>
 				<onright>5</onright>
 				<onup>3</onup>
 				<ondown>3</ondown>
@@ -147,16 +184,16 @@
 				<textureradioofffocus>icons/settings.png</textureradioofffocus>
 				<textureradiooffnofocus>icons/settings.png</textureradiooffnofocus>
 			</control>
+
+			<!-- Scrollbar -->
 			<control type="scrollbar" id="60">
-				<left>1489</left>
+				<left>965</left>
 				<top>100</top>
 				<width>12</width>
-				<height>700</height>
+				<height>830</height>
 				<orientation>vertical</orientation>
 				<onleft>5</onleft>
-				<onright>9000</onright>
-				<animation effect="fade" start="0" end="100" delay="300" time="320">WindowOpen</animation>
-				<animation effect="fade" start="100" end="0" time="150">WindowClose</animation>
+				<onright>Close</onright>
 			</control>
 		</control>
 	</controls>
