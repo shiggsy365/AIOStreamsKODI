@@ -313,6 +313,7 @@
 						<top>0</top>
 						<width>180</width>
 						<height>270</height>
+                        <animation effect="zoom" start="100" end="110" time="200" tween="sine" easing="out" center="90,135" condition="Control.HasFocus(50)">Conditional</animation>
 						<control type="image">
 							<left>0</left>
 							<top>0</top>
@@ -347,6 +348,7 @@
 						<top>0</top>
 						<width>180</width>
 						<height>270</height>
+                        <animation effect="zoom" start="100" end="110" time="200" tween="sine" easing="out" center="90,135" condition="Control.HasFocus(51)">Conditional</animation>
 						<control type="image">
 							<left>0</left>
 							<top>0</top>
@@ -381,6 +383,7 @@
 						<top>0</top>
 						<width>180</width>
 						<height>270</height>
+                        <animation effect="zoom" start="100" end="110" time="200" tween="sine" easing="out" center="90,135" condition="Control.HasFocus(52)">Conditional</animation>
 						<control type="image">
 							<left>0</left>
 							<top>0</top>
@@ -415,6 +418,7 @@
 						<top>0</top>
 						<width>180</width>
 						<height>270</height>
+                        <animation effect="zoom" start="100" end="110" time="200" tween="sine" easing="out" center="90,135" condition="Control.HasFocus(53)">Conditional</animation>
 						<control type="image">
 							<left>0</left>
 							<top>0</top>
@@ -449,6 +453,7 @@
 						<top>0</top>
 						<width>180</width>
 						<height>270</height>
+                        <animation effect="zoom" start="100" end="110" time="200" tween="sine" easing="out" center="90,135" condition="Control.HasFocus(54)">Conditional</animation>
 						<control type="image">
 							<left>0</left>
 							<top>0</top>
@@ -544,6 +549,7 @@
 						</itemlayout>
 						<focusedlayout width="205" height="270">
 							<control type="group">
+                                <animation effect="zoom" center="auto" start="100" end="110" time="200" tween="sine" easing="out">Focus</animation>
 								<left>0</left>
 								<top>0</top>
 								<width>180</width>
