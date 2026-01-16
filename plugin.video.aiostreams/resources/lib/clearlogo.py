@@ -7,6 +7,7 @@ import hashlib
 import requests
 import threading
 import pickle
+import time
 
 # Try to import modules
 try:
@@ -14,6 +15,29 @@ try:
     HAS_MODULES = True
 except ImportError:
     HAS_MODULES = False
+
+# Cache for 404 responses to avoid retrying failed logo fetches
+# Format: {cache_key: timestamp}
+_clearlogo_404_cache = {}
+_404_cache_ttl = 86400  # 24 hours in seconds
+
+def _is_404_cached(content_type, meta_id):
+    """Check if this logo previously returned 404."""
+    cache_key = f"{content_type}_{meta_id}"
+    if cache_key in _clearlogo_404_cache:
+        age = time.time() - _clearlogo_404_cache[cache_key]
+        if age < _404_cache_ttl:
+            return True
+        else:
+            # Expired, remove it
+            del _clearlogo_404_cache[cache_key]
+    return False
+
+def _cache_404(content_type, meta_id):
+    """Mark this logo as 404 (not found)."""
+    cache_key = f"{content_type}_{meta_id}"
+    _clearlogo_404_cache[cache_key] = time.time()
+    xbmc.log(f'[AIOStreams] Cached 404 for clearlogo: {cache_key}', xbmc.LOGDEBUG)
 
 def get_addon():
     return xbmcaddon.Addon()
@@ -49,31 +73,44 @@ def download_and_cache_clearlogo(url, content_type, meta_id):
     """Download clearlogo image and cache it to local file."""
     if not url:
         return None
-    
+
+    # Check if this logo previously returned 404
+    if _is_404_cached(content_type, meta_id):
+        xbmc.log(f'[AIOStreams] Skipping clearlogo fetch (cached 404): {content_type}/{meta_id}', xbmc.LOGDEBUG)
+        return None
+
     try:
         cached_path = get_cached_clearlogo_path(content_type, meta_id)
         if cached_path:
             return cached_path
-        
+
         # Determine timeout from settings
         try:
             timeout = int(get_setting('timeout', '10'))
         except ValueError:
             timeout = 10
-            
+
         response = requests.get(url, timeout=timeout)
         response.raise_for_status()
-        
+
         safe_id = hashlib.md5(f"{content_type}_{meta_id}".encode()).hexdigest()
         clearlogo_dir = get_clearlogo_cache_dir()
         clearlogo_path = os.path.join(clearlogo_dir, f"{safe_id}.png")
-        
+
         with open(clearlogo_path, 'wb') as f:
             f.write(response.content)
-        
+
         xbmc.log(f'[AIOStreams] Cached clearlogo for {content_type}/{meta_id}: {clearlogo_path}', xbmc.LOGINFO)
         return clearlogo_path
-        
+
+    except requests.exceptions.HTTPError as e:
+        if e.response.status_code == 404:
+            # Cache 404 to avoid retrying
+            _cache_404(content_type, meta_id)
+            xbmc.log(f'[AIOStreams] Clearlogo not found (404), caching failure: {content_type}/{meta_id}', xbmc.LOGDEBUG)
+        else:
+            xbmc.log(f'[AIOStreams] Error caching clearlogo for {content_type}/{meta_id}: {e}', xbmc.LOGERROR)
+        return None
     except Exception as e:
         xbmc.log(f'[AIOStreams] Error caching clearlogo for {content_type}/{meta_id}: {e}', xbmc.LOGERROR)
         return None

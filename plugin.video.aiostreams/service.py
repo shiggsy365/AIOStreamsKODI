@@ -365,6 +365,17 @@ class AIOStreamsService:
         self.run_cache_cleanup()
         self.run_clearlogo_check()
 
+        # Wait for UI to fully load before starting sync (10 seconds delay)
+        xbmc.log('[AIOStreams Service] Waiting 10 seconds for UI to fully load...', xbmc.LOGINFO)
+        if self.monitor.waitForAbort(10):
+            xbmc.log('[AIOStreams Service] Service stopped during startup delay', xbmc.LOGINFO)
+            return
+
+        # Perform initial sync after UI is loaded
+        if self.should_sync():
+            xbmc.log('[AIOStreams Service] UI loaded, performing initial sync', xbmc.LOGINFO)
+            self.perform_sync()
+
         # Main loop - check for sync every 30 seconds
         loop_count = 0
         while not self.monitor.abortRequested():

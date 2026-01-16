@@ -3145,8 +3145,9 @@ def trakt_next_up():
     # Push Next Up data to window properties for instant widget updates
     _push_next_up_to_window(next_episodes)
 
-    # Trigger background prefetch for top 3 Next Up episodes
-    _prefetch_next_up_streams(next_episodes)
+    # OPTIMIZATION: Disabled aggressive stream prefetching to improve startup performance
+    # Streams will be fetched on-demand when user selects an item
+    # _prefetch_next_up_streams(next_episodes)
 
     xbmcplugin.endOfDirectory(HANDLE)
 
@@ -3986,14 +3987,39 @@ def retrieve_manifest_action():
         xbmc.log(f'[AIOStreams] Retrieve manifest action failed: {e}', xbmc.LOGERROR)
         xbmcgui.Dialog().ok('AIOStreams', f'Retrieve manifest failed:\n\n{str(e)}')
 
+# Widget cache: {cache_key: {'data': catalog_data, 'timestamp': time.time()}}
+_widget_cache = {}
+_widget_cache_ttl = 900  # 15 minutes in seconds
+
+def _get_cached_widget(cache_key):
+    """Get cached widget data if still valid."""
+    import time
+    if cache_key in _widget_cache:
+        cache_entry = _widget_cache[cache_key]
+        age = time.time() - cache_entry['timestamp']
+        if age < _widget_cache_ttl:
+            xbmc.log(f'[AIOStreams] Widget cache hit: {cache_key} (age: {int(age)}s)', xbmc.LOGDEBUG)
+            return cache_entry['data']
+        else:
+            # Expired, remove it
+            del _widget_cache[cache_key]
+            xbmc.log(f'[AIOStreams] Widget cache expired: {cache_key}', xbmc.LOGDEBUG)
+    return None
+
+def _cache_widget(cache_key, data):
+    """Cache widget data."""
+    import time
+    _widget_cache[cache_key] = {'data': data, 'timestamp': time.time()}
+    xbmc.log(f'[AIOStreams] Widget cached: {cache_key}', xbmc.LOGDEBUG)
+
 def smart_widget():
     """
     Dynamic widget content generator.
-    
+
     URL Parameters:
         index: Widget index (0, 1, 2, ...)
         content_type: 'series', 'movie', or 'home'
-    
+
     Returns:
         - For series: Navigatable show list from catalog[index]/All
         - For movies: Playable movie list from catalog[index]/All
@@ -4002,7 +4028,7 @@ def smart_widget():
     params = dict(parse_qsl(sys.argv[2][1:]))
     index = int(params.get('index', 0))
     content_type = params.get('content_type', 'movie')
-    
+
     # Optimization: If Search Dialog (1112) or Info Dialog (12003) OR ANY MODAL is open, skip background widget loading
     if xbmc.getCondVisibility('Window.IsVisible(1112)') or xbmc.getCondVisibility('Window.IsVisible(12003)') or xbmc.getCondVisibility('System.HasModalDialog'):
         xbmc.log(f'[AIOStreams] smart_widget: Skipping background load (Dialog Open) - index={index}', xbmc.LOGDEBUG)
@@ -4065,9 +4091,18 @@ def smart_widget():
     # Prime database cache for performance
     if HAS_MODULES:
         trakt.prime_database_cache(content_type)
-        
-    # Fetch catalog content with "All" genre filter (genre=None means "All")
-    catalog_data = get_catalog(content_type, catalog_id, genre=None, skip=0)
+
+    # Check cache first (15-minute TTL)
+    cache_key = f'widget_{content_type}_{catalog_id}_all'
+    catalog_data = _get_cached_widget(cache_key)
+
+    if catalog_data is None:
+        # Fetch catalog content with "All" genre filter (genre=None means "All")
+        catalog_data = get_catalog(content_type, catalog_id, genre=None, skip=0)
+
+        # Cache it if valid
+        if catalog_data and 'metas' in catalog_data:
+            _cache_widget(cache_key, catalog_data)
     
     if not catalog_data or 'metas' not in catalog_data:
         xbmc.log(f'[AIOStreams] smart_widget: No content in catalog {catalog_id}', xbmc.LOGWARNING)
