@@ -360,25 +360,13 @@
 							<onright>51</onright>
 							<ondown>5000</ondown>
 						</control>
-						<!-- 4-line Red Focus Border -->
-						<control type="group">
+						<!-- Red Focus Border (Home Style) -->
+						<control type="image">
+							<left>0</left><top>0</top><width>180</width><height>270</height>
+							<texture colordiffuse="00FFFFFF">colors/white.png</texture>
+							<bordertexture border="3" colordiffuse="FFFF0000">colors/white.png</bordertexture>
+							<bordersize>3</bordersize>
 							<visible>Control.HasFocus(50)</visible>
-							<control type="image">
-								<left>-3</left><top>-3</top><width>186</width><height>3</height>
-								<texture colordiffuse="FFFF0000">colors/white.png</texture>
-							</control>
-							<control type="image">
-								<left>-3</left><top>270</top><width>186</width><height>3</height>
-								<texture colordiffuse="FFFF0000">colors/white.png</texture>
-							</control>
-							<control type="image">
-								<left>-3</left><top>0</top><width>3</width><height>270</height>
-								<texture colordiffuse="FFFF0000">colors/white.png</texture>
-							</control>
-							<control type="image">
-								<left>180</left><top>0</top><width>3</width><height>270</height>
-								<texture colordiffuse="FFFF0000">colors/white.png</texture>
-							</control>
 						</control>
 					</control>
 
@@ -435,25 +423,13 @@
 							<onright>52</onright>
 							<ondown>5000</ondown>
 						</control>
-						<!-- 4-line Red Focus Border -->
-						<control type="group">
+						<!-- Red Focus Border (Home Style) -->
+						<control type="image">
+							<left>0</left><top>0</top><width>180</width><height>270</height>
+							<texture colordiffuse="00FFFFFF">colors/white.png</texture>
+							<bordertexture border="3" colordiffuse="FFFF0000">colors/white.png</bordertexture>
+							<bordersize>3</bordersize>
 							<visible>Control.HasFocus(51)</visible>
-							<control type="image">
-								<left>-3</left><top>-3</top><width>186</width><height>3</height>
-								<texture colordiffuse="FFFF0000">colors/white.png</texture>
-							</control>
-							<control type="image">
-								<left>-3</left><top>270</top><width>186</width><height>3</height>
-								<texture colordiffuse="FFFF0000">colors/white.png</texture>
-							</control>
-							<control type="image">
-								<left>-3</left><top>0</top><width>3</width><height>270</height>
-								<texture colordiffuse="FFFF0000">colors/white.png</texture>
-							</control>
-							<control type="image">
-								<left>180</left><top>0</top><width>3</width><height>270</height>
-							<texture colordiffuse="FFFF0000">colors/white.png</texture>
-							</control>
 						</control>
 					</control>
 
@@ -510,25 +486,13 @@
 							<onright>53</onright>
 							<ondown>5000</ondown>
 						</control>
-						<!-- 4-line Red Focus Border -->
-						<control type="group">
+						<!-- Red Focus Border (Home Style) -->
+						<control type="image">
+							<left>0</left><top>0</top><width>180</width><height>270</height>
+							<texture colordiffuse="00FFFFFF">colors/white.png</texture>
+							<bordertexture border="3" colordiffuse="FFFF0000">colors/white.png</bordertexture>
+							<bordersize>3</bordersize>
 							<visible>Control.HasFocus(52)</visible>
-							<control type="image">
-								<left>-3</left><top>-3</top><width>186</width><height>3</height>
-								<texture colordiffuse="FFFF0000">colors/white.png</texture>
-							</control>
-							<control type="image">
-								<left>-3</left><top>270</top><width>186</width><height>3</height>
-								<texture colordiffuse="FFFF0000">colors/white.png</texture>
-							</control>
-							<control type="image">
-								<left>-3</left><top>0</top><width>3</width><height>270</height>
-								<texture colordiffuse="FFFF0000">colors/white.png</texture>
-							</control>
-							<control type="image">
-								<left>180</left><top>0</top><width>3</width><height>270</height>
-								<texture colordiffuse="FFFF0000">colors/white.png</texture>
-							</control>
 						</control>
 					</control>
 
@@ -585,25 +549,13 @@
 							<onright>54</onright>
 							<ondown>5000</ondown>
 						</control>
-						<!-- 4-line Red Focus Border -->
-						<control type="group">
+						<!-- Red Focus Border (Home Style) -->
+						<control type="image">
+							<left>0</left><top>0</top><width>180</width><height>270</height>
+							<texture colordiffuse="00FFFFFF">colors/white.png</texture>
+							<bordertexture border="3" colordiffuse="FFFF0000">colors/white.png</bordertexture>
+							<bordersize>3</bordersize>
 							<visible>Control.HasFocus(53)</visible>
-							<control type="image">
-								<left>-3</left><top>-3</top><width>186</width><height>3</height>
-								<texture colordiffuse="FFFF0000">colors/white.png</texture>
-							</control>
-							<control type="image">
-								<left>-3</left><top>270</top><width>186</width><height>3</height>
-								<texture colordiffuse="FFFF0000">colors/white.png</texture>
-							</control>
-							<control type="image">
-								<left>-3</left><top>0</top><width>3</width><height>270</height>
-								<texture colordiffuse="FFFF0000">colors/white.png</texture>
-							</control>
-							<control type="image">
-								<left>180</left><top>0</top><width>3</width><height>270</height>
-								<texture colordiffuse="FFFF0000">colors/white.png</texture>
-							</control>
 						</control>
 					</control>
 
@@ -660,25 +612,13 @@
 							<onright>50</onright>
 							<ondown>5000</ondown>
 						</control>
-						<!-- 4-line Red Focus Border -->
-						<control type="group">
+						<!-- Red Focus Border (Home Style) -->
+						<control type="image">
+							<left>0</left><top>0</top><width>180</width><height>270</height>
+							<texture colordiffuse="00FFFFFF">colors/white.png</texture>
+							<bordertexture border="3" colordiffuse="FFFF0000">colors/white.png</bordertexture>
+							<bordersize>3</bordersize>
 							<visible>Control.HasFocus(54)</visible>
-							<control type="image">
-								<left>-3</left><top>-3</top><width>186</width><height>3</height>
-								<texture colordiffuse="FFFF0000">colors/white.png</texture>
-							</control>
-							<control type="image">
-								<left>-3</left><top>270</top><width>186</width><height>3</height>
-								<texture colordiffuse="FFFF0000">colors/white.png</texture>
-							</control>
-							<control type="image">
-								<left>-3</left><top>0</top><width>3</width><height>270</height>
-								<texture colordiffuse="FFFF0000">colors/white.png</texture>
-							</control>
-							<control type="image">
-								<left>180</left><top>0</top><width>3</width><height>270</height>
-								<texture colordiffuse="FFFF0000">colors/white.png</texture>
-							</control>
 						</control>
 					</control>
 					<!-- Related Content Row -->
@@ -786,25 +726,13 @@
 									<textcolor>white</textcolor>
 									<label>$INFO[ListItem.Label]</label>
 								</control>
-								<!-- 4-line Red Focus Border -->
-								<control type="group">
+								<!-- Red Focus Border (Home Style) -->
+								<control type="image">
+									<left>-3</left><top>-3</top><width>186</width><height>276</height>
+									<texture colordiffuse="00FFFFFF">colors/white.png</texture>
+									<bordertexture border="3" colordiffuse="FFFF0000">colors/white.png</bordertexture>
+									<bordersize>3</bordersize>
 									<visible>Control.HasFocus(5000)</visible>
-									<control type="image">
-										<left>-3</left><top>-3</top><width>186</width><height>3</height>
-										<texture colordiffuse="FFFF0000">colors/white.png</texture>
-									</control>
-									<control type="image">
-										<left>-3</left><top>270</top><width>186</width><height>3</height>
-										<texture colordiffuse="FFFF0000">colors/white.png</texture>
-									</control>
-									<control type="image">
-										<left>-3</left><top>0</top><width>3</width><height>270</height>
-										<texture colordiffuse="FFFF0000">colors/white.png</texture>
-									</control>
-									<control type="image">
-										<left>180</left><top>0</top><width>3</width><height>270</height>
-										<texture colordiffuse="FFFF0000">colors/white.png</texture>
-									</control>
 								</control>
 							</control>
 						</focusedlayout>

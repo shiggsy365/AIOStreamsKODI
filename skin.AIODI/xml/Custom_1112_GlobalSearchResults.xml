@@ -195,26 +195,9 @@
                                 <width>280</width>
                                 <height>400</height>
                                 <texture>$INFO[ListItem.Art(poster)]</texture>
+                                <bordertexture border="3" colordiffuse="FFFF0000">colors/white.png</bordertexture>
+                                <bordersize>3</bordersize>
                                 <aspectratio>scale</aspectratio>
-                            </control>
-                            <!-- 4-line Red Focus Border -->
-                            <control type="group">
-                                <control type="image">
-                                    <left>10</left><top>10</top><width>280</width><height>3</height>
-                                    <texture colordiffuse="FFFF0000">colors/white.png</texture>
-                                </control>
-                                <control type="image">
-                                    <left>10</left><top>407</top><width>280</width><height>3</height>
-                                    <texture colordiffuse="FFFF0000">colors/white.png</texture>
-                                </control>
-                                <control type="image">
-                                    <left>10</left><top>10</top><width>3</width><height>400</height>
-                                    <texture colordiffuse="FFFF0000">colors/white.png</texture>
-                                </control>
-                                <control type="image">
-                                    <left>287</left><top>10</top><width>3</width><height>400</height>
-                                    <texture colordiffuse="FFFF0000">colors/white.png</texture>
-                                </control>
                             </control>
                         </control>
                     </focusedlayout>
@@ -280,26 +263,9 @@
                                 <width>280</width>
                                 <height>400</height>
                                 <texture>$INFO[ListItem.Art(poster)]</texture>
+                                <bordertexture border="3" colordiffuse="FFFF0000">colors/white.png</bordertexture>
+                                <bordersize>3</bordersize>
                                 <aspectratio>scale</aspectratio>
-                            </control>
-                            <!-- 4-line Red Focus Border -->
-                            <control type="group">
-                                <control type="image">
-                                    <left>10</left><top>10</top><width>280</width><height>3</height>
-                                    <texture colordiffuse="FFFF0000">colors/white.png</texture>
-                                </control>
-                                <control type="image">
-                                    <left>10</left><top>407</top><width>280</width><height>3</height>
-                                    <texture colordiffuse="FFFF0000">colors/white.png</texture>
-                                </control>
-                                <control type="image">
-                                    <left>10</left><top>10</top><width>3</width><height>400</height>
-                                    <texture colordiffuse="FFFF0000">colors/white.png</texture>
-                                </control>
-                                <control type="image">
-                                    <left>287</left><top>10</top><width>3</width><height>400</height>
-                                    <texture colordiffuse="FFFF0000">colors/white.png</texture>
-                                </control>
                             </control>
                         </control>
                     </focusedlayout>
@@ -391,27 +357,10 @@
                             <width>240</width>
                             <height>120</height>
                             <texture>$INFO[ListItem.Art(thumb)]</texture>
+                            <bordertexture border="3" colordiffuse="FFFF0000">colors/white.png</bordertexture>
+                            <bordersize>3</bordersize>
                             <aspectratio>scale</aspectratio>
                         </control>
-                            <!-- 4-line Red Focus Border -->
-                            <control type="group">
-                                <control type="image">
-                                    <left>10</left><top>10</top><width>240</width><height>3</height>
-                                    <texture colordiffuse="FFFF0000">colors/white.png</texture>
-                                </control>
-                                <control type="image">
-                                    <left>10</left><top>127</top><width>240</width><height>3</height>
-                                    <texture colordiffuse="FFFF0000">colors/white.png</texture>
-                                </control>
-                                <control type="image">
-                                    <left>10</left><top>10</top><width>3</width><height>120</height>
-                                    <texture colordiffuse="FFFF0000">colors/white.png</texture>
-                                </control>
-                                <control type="image">
-                                    <left>247</left><top>10</top><width>3</width><height>120</height>
-                                    <texture colordiffuse="FFFF0000">colors/white.png</texture>
-                                </control>
-                            </control>
                         <control type="label">
                             <left>270</left>
                             <top>20</top>
