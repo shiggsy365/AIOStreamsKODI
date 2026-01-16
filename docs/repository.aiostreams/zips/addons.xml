@@ -18,7 +18,7 @@
     </extension>
 </addon>
 
-<addon id="plugin.video.aiostreams" name="AIOStreams" version="1.1.166" provider-name="Jon">
+<addon id="plugin.video.aiostreams" name="AIOStreams" version="1.1.167" provider-name="Jon">
     <requires>
         <import addon="xbmc.python" version="3.0.0"/>
         <import addon="script.module.requests" version="2.25.1"/>
@@ -51,7 +51,7 @@
         </assets>
     </extension>
 </addon>
-<addon id="plugin.video.imvdb" name="IMVDb Music Videos" version="1.0.27" provider-name="Jon">
+<addon id="plugin.video.imvdb" name="IMVDb Music Videos" version="1.0.29" provider-name="Jon">
     <requires>
         <import addon="xbmc.python" version="3.0.0"/>
         <import addon="script.module.requests" version="2.25.1"/>
@@ -73,7 +73,7 @@
     </extension>
 </addon>
 
-<addon id="script.aiodi.onboarding" name="AIODI Onboarding Wizard" version="1.0.32" provider-name="You">
+<addon id="script.aiodi.onboarding" name="AIODI Onboarding Wizard" version="1.0.33" provider-name="You">
     <requires>
         <import addon="xbmc.python" version="3.0.0"/>
         <import addon="script.module.requests" version="1.0.0"/>
@@ -92,7 +92,7 @@
     </extension>
 </addon>
 
-<addon id="skin.AIODI" version="6.0.401" name="AIODI" provider-name="shiggsy365">
+<addon id="skin.AIODI" version="6.0.403" name="AIODI" provider-name="shiggsy365">
 	<requires>
 		<import addon="xbmc.gui" version="5.17.0"/>
 		<import addon="pvr.iptvsimple" version="20.0.0"/>

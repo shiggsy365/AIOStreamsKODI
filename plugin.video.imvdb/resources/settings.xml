@@ -1,7 +1,32 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <settings>
     <setting id="api_key" type="text" label="IMVDb API Key" help="Enter your IMVDb-APP-KEY from imvdb.com/developers" default=""/>
-    <category label="Filters">
-        <setting id="blocked_countries" type="text" label="Blocked Countries" default="" visible="false"/>
+    <category label="Country Exclusions">
+        <setting id="block_us" type="bool" label="Block United States (US)" default="false"/>
+        <setting id="block_gb" type="bool" label="Block United Kingdom (GB)" default="false"/>
+        <setting id="block_ca" type="bool" label="Block Canada (CA)" default="false"/>
+        <setting id="block_au" type="bool" label="Block Australia (AU)" default="false"/>
+        <setting id="block_de" type="bool" label="Block Germany (DE)" default="false"/>
+        <setting id="block_fr" type="bool" label="Block France (FR)" default="false"/>
+        <setting id="block_jp" type="bool" label="Block Japan (JP)" default="false"/>
+        <setting id="block_kr" type="bool" label="Block South Korea (KR)" default="false"/>
+        <setting id="block_is" type="bool" label="Block Iceland (IS)" default="false"/>
+        <setting id="block_se" type="bool" label="Block Sweden (SE)" default="false"/>
+        <setting id="block_ar" type="bool" label="Block Argentina (AR)" default="false"/>
+        <setting id="block_it" type="bool" label="Block Italy (IT)" default="false"/>
+        <setting id="block_at" type="bool" label="Block Austria (AT)" default="false"/>
+        <setting id="block_mx" type="bool" label="Block Mexico (MX)" default="false"/>
+        <setting id="block_be" type="bool" label="Block Belgium (BE)" default="false"/>
+        <setting id="block_nl" type="bool" label="Block Netherlands (NL)" default="false"/>
+        <setting id="block_br" type="bool" label="Block Brazil (BR)" default="false"/>
+        <setting id="block_no" type="bool" label="Block Norway (NO)" default="false"/>
+        <setting id="block_ch" type="bool" label="Block Switzerland (CH)" default="false"/>
+        <setting id="block_nz" type="bool" label="Block New Zealand (NZ)" default="false"/>
+        <setting id="block_dk" type="bool" label="Block Denmark (DK)" default="false"/>
+        <setting id="block_pl" type="bool" label="Block Poland (PL)" default="false"/>
+        <setting id="block_es" type="bool" label="Block Spain (ES)" default="false"/>
+        <setting id="block_ru" type="bool" label="Block Russia (RU)" default="false"/>
+        <setting id="block_fi" type="bool" label="Block Finland (FI)" default="false"/>
+        <setting id="block_za" type="bool" label="Block South Africa (ZA)" default="false"/>
     </category>
 </settings>
