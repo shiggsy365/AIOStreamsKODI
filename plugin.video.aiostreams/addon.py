@@ -1523,10 +1523,14 @@ def search_unified():
 
 def play(params=None):
     """Play content - behavior depends on settings (show streams or auto-play first)."""
-    
+
+    # Close any existing DialogBusy without forcing it to stay closed
+    # This prevents it from appearing but doesn't interfere with other dialogs
+    xbmc.executebuiltin("Dialog.Close(busydialog)")
+
     if not params:
         params = dict(parse_qsl(sys.argv[2][1:]))
-        
+
     content_type = params.get('content_type', 'movie')
     imdb_id = params.get('imdb_id', '')
 
@@ -1708,6 +1712,10 @@ def play(params=None):
 
 def play_first():
     """Play first stream directly - ignores default_behavior setting (for TMDBHelper)."""
+    # Close any existing DialogBusy without forcing it to stay closed
+    # This prevents it from appearing but doesn't interfere with other dialogs
+    xbmc.executebuiltin("Dialog.Close(busydialog)")
+
     # IMPORTANT: Cancel resolver state immediately if called from resolvable context
     # This prevents "failed to play item" errors when using xbmc.Player().play() directly
     # We do this BEFORE any blocking operations to avoid Kodi waiting on resolver
@@ -1880,6 +1888,10 @@ def format_stream_title(stream, for_dialog=False):
 
 def select_stream():
     """TMDBHelper select stream - show dialog to select from available streams."""
+    # Close any existing DialogBusy without forcing it to stay closed
+    # This prevents it from appearing but doesn't interfere with other dialogs
+    xbmc.executebuiltin("Dialog.Close(busydialog)")
+
     params = dict(parse_qsl(sys.argv[2][1:]))
     content_type = params['content_type']
     imdb_id = params['imdb_id']
@@ -2274,6 +2286,10 @@ def browse_catalog():
 
 def show_streams():
     """Show streams for a catalog item in a dialog window."""
+    # Close any existing DialogBusy without forcing it to stay closed
+    # This prevents it from appearing but doesn't interfere with other dialogs
+    xbmc.executebuiltin("Dialog.Close(busydialog)")
+
     params = dict(parse_qsl(sys.argv[2][1:]))
     content_type = params['content_type']
     media_id = params['media_id']
