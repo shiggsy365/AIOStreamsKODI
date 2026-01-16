@@ -182,8 +182,8 @@ build_repository_zip() {
 }
 
 rebuild_addons_xml() {
-    local addons_xml="$BASE_DIR/docs/repository.aiostreams/zips/addons.xml"
-    local addons_md5="$addons_xml.md5"
+    local addons_xml="$BASE_DIR/docs/addons.xml"
+    local addons_md5="$BASE_DIR/docs/addons.xml.md5"
     
     echo -e "\n${CYAN}[*] Regenerating addons.xml...${NC}"
     
