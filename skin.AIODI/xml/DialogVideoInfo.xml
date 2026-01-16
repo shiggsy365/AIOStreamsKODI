@@ -80,6 +80,7 @@
 							<align>center</align>
 							<aligny>center</aligny>
 							<visible>!String.IsEmpty(Window(Home).Property(InfoWindow.Trailer))</visible>
+							<onright>5000</onright>
 							<onclick>Dialog.Close(movieinformation)</onclick>
 							<onclick>PlayMedia($INFO[Window(Home).Property(InfoWindow.Trailer)])</onclick>
 						</control>
