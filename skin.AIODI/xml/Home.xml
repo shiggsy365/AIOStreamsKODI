@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <window>
-	<onload>Skin.SetString(Home_WidgetIndex,0)</onload>
-	<onload>Skin.SetString(Movies_WidgetIndex,0)</onload>
-	<onload>Skin.SetString(TV_WidgetIndex,0)</onload>
+	<onload condition="String.IsEmpty(Skin.String(Home_WidgetIndex))">Skin.SetString(Home_WidgetIndex,0)</onload>
+	<onload condition="String.IsEmpty(Skin.String(Movies_WidgetIndex))">Skin.SetString(Movies_WidgetIndex,0)</onload>
+	<onload condition="String.IsEmpty(Skin.String(TV_WidgetIndex))">Skin.SetString(TV_WidgetIndex,0)</onload>
 <onload>Skin.SetString(SideMenuFocus,home)</onload>
 	<onload condition="String.IsEmpty(Skin.String(first_run))">RunScript(script.aiodi.onboarding)</onload>
 
