@@ -3265,6 +3265,9 @@ def _get_params():
 
 def _refresh_ui():
     """Refresh container and trigger background widget refresh."""
+    # Clear Trakt widget cache so Next Up and Watchlist refresh with new data
+    _clear_trakt_widget_cache()
+
     xbmc.executebuiltin('Container.Refresh')
     try:
         from resources.lib import utils
@@ -3989,7 +3992,7 @@ def retrieve_manifest_action():
 
 # Widget cache: {cache_key: {'data': catalog_data, 'timestamp': time.time()}}
 _widget_cache = {}
-_widget_cache_ttl = 900  # 15 minutes in seconds
+_widget_cache_ttl = 3600  # 1 hour in seconds (increased from 15 minutes)
 
 def _get_cached_widget(cache_key):
     """Get cached widget data if still valid."""
@@ -4011,6 +4014,29 @@ def _cache_widget(cache_key, data):
     import time
     _widget_cache[cache_key] = {'data': data, 'timestamp': time.time()}
     xbmc.log(f'[AIOStreams] Widget cached: {cache_key}', xbmc.LOGDEBUG)
+
+def _clear_trakt_widget_cache():
+    """
+    Clear widget cache for Trakt-related widgets only.
+    Called after Trakt actions (mark watched, add/remove watchlist).
+
+    Clears cache for:
+    - Trakt Next Up (home widget)
+    - Trakt Watchlist Movies (home widget)
+    - Trakt Watchlist Series (home widget)
+    - Any catalog-based Trakt widgets (trending, popular, recommendations)
+    """
+    global _widget_cache
+
+    # Clear catalog-based Trakt widgets (those with 'trakt' in the catalog ID)
+    trakt_keys = [k for k in _widget_cache.keys() if 'trakt' in k.lower()]
+
+    for key in trakt_keys:
+        del _widget_cache[key]
+        xbmc.log(f'[AIOStreams] Cleared Trakt widget cache: {key}', xbmc.LOGDEBUG)
+
+    if trakt_keys:
+        xbmc.log(f'[AIOStreams] Cleared {len(trakt_keys)} Trakt widget cache entries', xbmc.LOGINFO)
 
 def smart_widget():
     """
