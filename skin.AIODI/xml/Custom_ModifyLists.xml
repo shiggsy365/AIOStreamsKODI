@@ -307,6 +307,18 @@
                 </control>
             </control>
             
+            
+            <!-- Reset to Defaults Button -->
+            <control type="button" id="6002">
+                <left>260</left>
+                <top>880</top>
+                <width>200</width>
+                <height>60</height>
+                <label>Reset to Defaults</label>
+                <font>font13</font>
+                <onclick>RunScript(special://skin/resources/lib/widget_manager.py,reset_to_defaults)</onclick>
+            </control>
+
             <!-- Clear All Button -->
             <control type="button" id="6001">
                 <left>480</left>

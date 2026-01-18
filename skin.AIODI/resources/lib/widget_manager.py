@@ -10,26 +10,62 @@ from urllib.parse import parse_qs, urlparse
 ADDON_DATA_DIR = xbmcvfs.translatePath('special://profile/addon_data/plugin.video.aiostreams/')
 CONFIG_FILE = os.path.join(ADDON_DATA_DIR, 'widget_config.json')
 
-# Default configuration
+# Default configuration - matches widget_config_loader.py
 DEFAULT_CONFIG = {
-    'home': [],
-    'tvshows': [],
-    'movies': []
+    'home': [
+        {
+            'label': 'Trakt Next Up',
+            'path': 'plugin://plugin.video.aiostreams/?action=trakt_next_up',
+            'type': 'series',
+            'is_trakt': True
+        }
+    ],
+    'tvshows': [
+        {
+            'label': 'Trakt Watchlist Series',
+            'path': 'plugin://plugin.video.aiostreams/?action=trakt_watchlist&media_type=shows',
+            'type': 'series',
+            'is_trakt': True
+        }
+    ],
+    'movies': [
+        {
+            'label': 'Trakt Watchlist Movies',
+            'path': 'plugin://plugin.video.aiostreams/?action=trakt_watchlist&media_type=movies',
+            'type': 'movie',
+            'is_trakt': True
+        }
+    ],
+    'version': 2  # Config version for future migrations
 }
 
 def log(msg, level=xbmc.LOGINFO):
     xbmc.log(f'[AIOStreams] [WidgetManager] {msg}', level)
 
 def load_config():
-    """Load widget configuration from JSON file"""
+    """
+    Load widget configuration from JSON file.
+    Forces reset to defaults if version is old or missing.
+    """
     if os.path.exists(CONFIG_FILE):
         try:
             with open(CONFIG_FILE, 'r') as f:
-                return json.load(f)
+                config = json.load(f)
+            
+            # Check version - if old or missing, force reset to defaults
+            if config.get('version') != 2:
+                log('Old config version detected, resetting to defaults', xbmc.LOGINFO)
+                save_config(DEFAULT_CONFIG.copy())
+                return DEFAULT_CONFIG.copy()
+            
+            return config
         except Exception as e:
             log(f'Error loading config: {e}', xbmc.LOGERROR)
+            save_config(DEFAULT_CONFIG.copy())
             return DEFAULT_CONFIG.copy()
-    log(f'Config file not found at {CONFIG_FILE}, using defaults', xbmc.LOGDEBUG)
+    
+    log(f'Config file not found, creating with defaults', xbmc.LOGINFO)
+    save_config(DEFAULT_CONFIG.copy())
     return DEFAULT_CONFIG.copy()
 
 def save_config(config):
@@ -384,7 +420,8 @@ def clear_all():
             config = {
                 'home': [],
                 'tvshows': [],
-                'movies': []
+                'movies': [],
+                'version': 2
             }
             save_config(config)
 
@@ -404,6 +441,33 @@ def clear_all():
             log('All catalogs cleared')
     except Exception as e:
         log(f'Error in clear_all: {e}', xbmc.LOGERROR)
+
+
+def reset_to_defaults():
+    """Reset widget configuration to defaults"""
+    try:
+        dialog = xbmcgui.Dialog()
+        if dialog.yesno('Reset to Defaults',
+                       'This will reset all pages to default widgets:',
+                       'Home: Trakt Next Up | Movies: Trakt Watchlist Movies | TV Shows: Trakt Watchlist Series',
+                       'Are you sure?'):
+            log('Resetting all widgets to defaults')
+            save_config(DEFAULT_CONFIG.copy())
+            
+            # Reload current page
+            try:
+                window = xbmcgui.Window(1111)
+                page_name = window.getProperty('CurrentPage')
+                if page_name:
+                    load_page(page_name)
+                else:
+                    load_page('home')
+            except Exception as e:
+                log(f'Could not reload page after reset: {e}', xbmc.LOGDEBUG)
+            
+            log('Reset to defaults complete')
+    except Exception as e:
+        log(f'Error in reset_to_defaults: {e}', xbmc.LOGERROR)
 
 def save_and_exit():
     """Save configuration and reload skin"""
@@ -428,5 +492,7 @@ if __name__ == '__main__':
             add_catalog()
         elif action == 'clear_all':
             clear_all()
+        elif action == 'reset_to_defaults':
+            reset_to_defaults()
         elif action == 'save_and_exit':
             save_and_exit()

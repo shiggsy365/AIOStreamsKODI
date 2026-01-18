@@ -20,22 +20,95 @@ def get_config_file_path():
     return os.path.join(addon_data_dir, 'widget_config.json')
 
 
-def load_widget_config():
-    """Load widget configuration from JSON file"""
+def get_default_config():
+    """
+    Get default widget configuration for all users.
+    
+    Returns:
+        dict: Default configuration with sensible widget defaults
+    """
+    return {
+        'home': [
+            {
+                'label': 'Trakt Next Up',
+                'path': 'plugin://plugin.video.aiostreams/?action=trakt_next_up',
+                'type': 'series',
+                'is_trakt': True
+            }
+        ],
+        'tvshows': [
+            {
+                'label': 'Trakt Watchlist Series',
+                'path': 'plugin://plugin.video.aiostreams/?action=trakt_watchlist&media_type=shows',
+                'type': 'series',
+                'is_trakt': True
+            }
+        ],
+        'movies': [
+            {
+                'label': 'Trakt Watchlist Movies',
+                'path': 'plugin://plugin.video.aiostreams/?action=trakt_watchlist&media_type=movies',
+                'type': 'movie',
+                'is_trakt': True
+            }
+        ],
+        'version': 2  # Config version for future migrations
+    }
+
+
+def save_widget_config(config):
+    """
+    Save widget configuration to JSON file.
+    
+    Args:
+        config: Configuration dict to save
+    """
     config_file = get_config_file_path()
-
-    if not os.path.exists(config_file):
-        log(f'Config file not found at {config_file}, returning empty config', xbmc.LOGDEBUG)
-        return {'home': [], 'tvshows': [], 'movies': []}
-
     try:
-        with open(config_file, 'r') as f:
-            config = json.load(f)
-        log(f'Loaded widget config: {len(config.get("home", []))} home, {len(config.get("tvshows", []))} tvshows, {len(config.get("movies", []))} movies widgets')
-        return config
+        os.makedirs(os.path.dirname(config_file), exist_ok=True)
+        with open(config_file, 'w') as f:
+            json.dump(config, f, indent=2)
+        log('Widget config saved successfully')
     except Exception as e:
-        log(f'Error loading config: {e}', xbmc.LOGERROR)
-        return {'home': [], 'tvshows': [], 'movies': []}
+        log(f'Error saving config: {e}', xbmc.LOGERROR)
+
+
+def load_widget_config():
+    """
+    Load widget configuration from JSON file.
+    
+    All users are forced to use default configuration on first load.
+    Old configs (version < 2) are replaced with defaults.
+    
+    Returns:
+        dict: Widget configuration
+    """
+    config_file = get_config_file_path()
+    default_config = get_default_config()
+    
+    # Check if config exists and has correct version
+    if os.path.exists(config_file):
+        try:
+            with open(config_file, 'r') as f:
+                config = json.load(f)
+            
+            # Check version - if old or missing, force reset to defaults
+            if config.get('version') != 2:
+                log('Old config version detected, resetting to defaults', xbmc.LOGINFO)
+                save_widget_config(default_config)
+                return default_config
+            
+            log(f'Loaded widget config: {len(config.get("home", []))} home, {len(config.get("tvshows", []))} tvshows, {len(config.get("movies", []))} movies widgets')
+            return config
+        except Exception as e:
+            log(f'Error loading config: {e}, resetting to defaults', xbmc.LOGERROR)
+            save_widget_config(default_config)
+            return default_config
+    
+    # No config exists, create with defaults
+    log('No config found, creating with defaults', xbmc.LOGINFO)
+    save_widget_config(default_config)
+    return default_config
 
 
 def get_widget_at_index(page, index):
