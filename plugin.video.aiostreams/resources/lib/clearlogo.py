@@ -48,9 +48,22 @@ def get_setting(setting_id, default=None):
     return value if value else default
 
 def get_clearlogo_cache_dir():
-    """Get the clearlogo cache directory path, creating it if needed."""
-    addon_data_path = xbmcvfs.translatePath(get_addon().getAddonInfo('profile'))
-    clearlogo_dir = os.path.join(addon_data_path, 'clearlogos')
+    """
+    Get the clearlogo cache directory path, creating it if needed.
+    
+    Uses shared directory across all Kodi profiles to avoid duplicate downloads.
+    """
+    try:
+        from resources.lib.shared_cache import SharedCacheManager
+        clearlogo_dir = SharedCacheManager.get_shared_clearlogo_dir()
+    except Exception as e:
+        # Fallback to profile-specific directory on error
+        xbmc.log(
+            f'[AIOStreams] Failed to get shared clearlogo dir, using profile-specific: {e}',
+            xbmc.LOGWARNING
+        )
+        addon_data_path = xbmcvfs.translatePath(get_addon().getAddonInfo('profile'))
+        clearlogo_dir = os.path.join(addon_data_path, 'clearlogos')
     
     if not xbmcvfs.exists(clearlogo_dir):
         xbmcvfs.mkdirs(clearlogo_dir)
@@ -65,7 +78,8 @@ def get_cached_clearlogo_path(content_type, meta_id):
     clearlogo_path = os.path.join(clearlogo_dir, f"{safe_id}.png")
     
     if xbmcvfs.exists(clearlogo_path):
-        return f"special://userdata/addon_data/plugin.video.aiostreams/clearlogos/{safe_id}.png"
+        # Return the actual file path (works for both shared and profile-specific)
+        return clearlogo_path
     
     return None
 

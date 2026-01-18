@@ -36,6 +36,10 @@ except Exception as e:
 if HAS_NEW_MODULES:
     try:
         g.init(sys.argv)
+        
+        # Initialize shared cache directories for multi-profile support
+        from resources.lib.shared_cache import SharedCacheManager
+        SharedCacheManager.ensure_shared_dirs()
     except Exception as e:
         xbmc.log(f'[AIOStreams] Failed to initialize globals: {e}', xbmc.LOGERROR)
 

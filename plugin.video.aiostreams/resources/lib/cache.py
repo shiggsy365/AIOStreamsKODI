@@ -149,8 +149,38 @@ class TieredCache:
         self._pending_writes = {}
         self._write_lock = threading.Lock()
 
-    def _get_cache_dir(self):
-        """Get cache directory path, creating if needed."""
+    def _get_cache_dir(self, cache_type=None):
+        """
+        Get cache directory path, creating if needed.
+        
+        Uses shared cache for metadata and HTTP headers (accessible by all Kodi profiles).
+        Uses profile-specific cache for other data types.
+        
+        Args:
+            cache_type: Type of cache (metadata, http_headers, etc.)
+        
+        Returns:
+            str: Cache directory path
+        """
+        # Use shared cache for metadata and HTTP headers across all Kodi profiles
+        if cache_type in ['metadata', 'http_headers']:
+            try:
+                from resources.lib.shared_cache import SharedCacheManager
+                shared_dir = SharedCacheManager.get_shared_cache_dir()
+                
+                # Ensure directory exists
+                if not xbmcvfs.exists(shared_dir):
+                    xbmcvfs.mkdirs(shared_dir)
+                
+                return shared_dir
+            except Exception as e:
+                xbmc.log(
+                    f'[AIOStreams] Failed to get shared cache dir, falling back to profile cache: {e}',
+                    xbmc.LOGWARNING
+                )
+                # Fall through to profile-specific cache on error
+        
+        # Use profile-specific cache for other data types
         if self._cache_dir is None:
             addon = xbmcaddon.Addon()
             profile_path = xbmcvfs.translatePath(addon.getAddonInfo('profile'))
@@ -207,7 +237,7 @@ class TieredCache:
 
     def _get_from_disk(self, cache_type, identifier, ttl_seconds):
         """Get data from disk cache."""
-        cache_dir = self._get_cache_dir()
+        cache_dir = self._get_cache_dir(cache_type)
         cache_file = os.path.join(cache_dir, self._get_cache_key(cache_type, identifier))
 
         if not xbmcvfs.exists(cache_file):
@@ -252,7 +282,7 @@ class TieredCache:
 
     def _save_to_disk(self, cache_type, identifier, data, timestamp, checksum=None):
         """Save data to disk cache."""
-        cache_dir = self._get_cache_dir()
+        cache_dir = self._get_cache_dir(cache_type)
         cache_file = os.path.join(cache_dir, self._get_cache_key(cache_type, identifier))
 
         try:
@@ -292,7 +322,7 @@ class TieredCache:
         Returns:
             Age in seconds, or None if not cached
         """
-        cache_dir = self._get_cache_dir()
+        cache_dir = self._get_cache_dir(cache_type)
         cache_file = os.path.join(cache_dir, self._get_cache_key(cache_type, identifier))
 
         if not xbmcvfs.exists(cache_file):
@@ -311,7 +341,7 @@ class TieredCache:
         memory_key = self._get_memory_key(cache_type, identifier)
         self._memory.invalidate(memory_key)
 
-        cache_dir = self._get_cache_dir()
+        cache_dir = self._get_cache_dir(cache_type)
         cache_file = os.path.join(cache_dir, self._get_cache_key(cache_type, identifier))
         if xbmcvfs.exists(cache_file):
             xbmcvfs.delete(cache_file)
