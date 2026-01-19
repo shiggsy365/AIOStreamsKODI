@@ -1286,6 +1286,16 @@
         <value>buttons/fixed_trailer_nofo.png</value>
     </variable>
 
+    <variable name="PlayButtonLabelVar">
+        <value condition="String.IsEqual(ListItem.DBType,episode) | String.IsEqual(ListItem.DBType,movie)">Play</value>
+        <value>Browse</value>
+    </variable>
+
+    <variable name="PlayButtonLabelVar">
+        <value condition="String.IsEqual(ListItem.DBType,episode) | String.IsEqual(ListItem.DBType,movie)">Play</value>
+        <value>Browse</value>
+    </variable>
+
     <variable name="PlayButtonFocusVar">
         <value condition="String.IsEqual(ListItem.DBType,episode) | String.IsEqual(ListItem.DBType,movie)">buttons/fixed_play_fo.png</value>
         <value>buttons/fixed_browse_fo.png</value>

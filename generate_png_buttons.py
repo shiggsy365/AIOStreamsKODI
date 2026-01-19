@@ -17,18 +17,18 @@ if not os.path.exists(BUTTONS_DIR):
     os.makedirs(BUTTONS_DIR)
 
 BUTTONS = [
-    ('home', 'widgetmanager/home.png'),
+    ('home', 'sidemenu/home_white.png'),
     ('movies', 'sidemenu/movies_white.png'),
     ('tvshows', 'sidemenu/tv_white.png'),
-    ('youtube', 'search/youtube.png'),
-    ('play', 'infodialog/play.png'),
-    ('browse', 'infodialog/browse.png'),
-    ('trailer', 'infodialog/trailer.png'),
-    ('watchlist_add', 'DRAW_CROSS'),     # User: Not in list (Add) -> Cross
-    ('watchlist_remove', 'DRAW_CHECK'),  # User: In list (Remove) -> Tick
-    ('watched_add', 'DRAW_CROSS'),       # User: Not watched (Mark Watched) -> Cross
-    ('watched_remove', 'DRAW_CHECK'),    # User: Watched (Mark Unwatched) -> Tick
-    ('save', 'DRAW_CHECK'),              # Save button
+    ('youtube', 'DRAW_PLAY'),            # Simple Play triangle for YouTube
+    ('play', 'DRAW_PLAY'),               # Simple Play triangle
+    ('browse', 'DRAW_BROWSE'),           # List/Menu icon
+    ('trailer', 'DRAW_TRAILER'),         # Film strip / Play
+    ('watchlist_add', 'DRAW_CROSS'),     
+    ('watchlist_remove', 'DRAW_CHECK'),  
+    ('watched_add', 'DRAW_CROSS'),       
+    ('watched_remove', 'DRAW_CHECK'),    
+    ('save', 'DRAW_CHECK'),              
 ]
 
 def rounded_rectangle(draw, box, radius, fill, outline, width):
@@ -48,6 +48,34 @@ def draw_cross(draw, center_x, center_y, size, color):
     half = size // 2
     draw.line([center_x - half, center_y - half, center_x + half, center_y + half], fill=color, width=6)
     draw.line([center_x + half, center_y - half, center_x - half, center_y + half], fill=color, width=6)
+
+def draw_play(draw, center_x, center_y, size, color):
+    # Triangle pointing right
+    half = size // 2
+    points = [
+        (center_x - half, center_y - half),
+        (center_x - half, center_y + half),
+        (center_x + half, center_y)
+    ]
+    draw.polygon(points, fill=color)
+
+def draw_browse(draw, center_x, center_y, size, color):
+    # Hamburger menu (3 lines)
+    half = size // 2
+    draw.rectangle([center_x - half, center_y - half, center_x + half, center_y - half + 4], fill=color)
+    draw.rectangle([center_x - half, center_y - 2, center_x + half, center_y + 2], fill=color)
+    draw.rectangle([center_x - half, center_y + half - 4, center_x + half, center_y + half], fill=color)
+
+def draw_trailer(draw, center_x, center_y, size, color):
+    # Film strip simple: Rectangle with holes
+    half = size // 2
+    width_rect = size
+    height_rect = size * 0.8
+    rect_box = [center_x - width_rect//2, center_y - height_rect//2, center_x + width_rect//2, center_y + height_rect//2]
+    # Draw outline
+    draw.rectangle(rect_box, outline=color, width=4)
+    # Draw play triangle inside
+    draw_play(draw, center_x, center_y, size // 2, color)
 
 def create_button(name, icon_src, is_focus):
     img = Image.new('RGBA', (WIDTH, HEIGHT), (0, 0, 0, 0))
@@ -81,6 +109,12 @@ def create_button(name, icon_src, is_focus):
             draw_check(draw, icon_center_x, icon_center_y, ICON_SIZE - 20, color)
         elif icon_src == 'DRAW_CROSS':
             draw_cross(draw, icon_center_x, icon_center_y, ICON_SIZE - 20, color)
+        elif icon_src == 'DRAW_PLAY':
+            draw_play(draw, icon_center_x, icon_center_y, ICON_SIZE - 20, color)
+        elif icon_src == 'DRAW_BROWSE':
+            draw_browse(draw, icon_center_x, icon_center_y, ICON_SIZE - 20, color)
+        elif icon_src == 'DRAW_TRAILER':
+            draw_trailer(draw, icon_center_x, icon_center_y, ICON_SIZE - 20, color)
     else:
         icon_path = os.path.join(ICONS_DIR, icon_src)
         if os.path.exists(icon_path):
