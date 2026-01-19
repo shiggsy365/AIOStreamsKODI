@@ -2721,6 +2721,7 @@ def trakt_watchlist(params=None):
         params = dict(parse_qsl(sys.argv[2][1:]))
     
     media_type = params.get('media_type', 'movies')
+    items = []
 
     # Auto-sync if enabled (throttled to 5 minutes)
     auto_sync_enabled = get_setting('trakt_sync_auto', 'true') == 'true'
@@ -2732,43 +2733,42 @@ def trakt_watchlist(params=None):
         except Exception as e:
             xbmc.log(f'[AIOStreams] Auto-sync failed: {e}', xbmc.LOGWARNING)
     
-        # Fetch from database (instant) - use activities sync database
-        try:
-            from resources.lib.database.trakt_sync.activities import TraktSyncDatabase
-            db = TraktSyncDatabase()
-            
-            # Query watchlist from database using helper which unpickles metadata
-            mediatype_filter = 'movie' if media_type == 'movies' else 'show'
-            items_raw = db.get_watchlist_items(mediatype_filter)
-            
-            if not items_raw:
-                # Fallback to old Trakt API method if database is empty
-                xbmc.log('[AIOStreams] Watchlist database empty, using Trakt API fallback', xbmc.LOGDEBUG)
-                items = trakt.get_watchlist(media_type)
-            else:
-                # Convert database format to Trakt API format for compatibility
-                items = []
-                for row in items_raw:
-                    # Use metadata if available (contains extended info)
-                    content_key = media_type[:-1] if media_type.endswith('s') else media_type
-                    if row.get('metadata'):
-                        item_data = row['metadata']
-                    else:
-                        item_data = {
-                            'ids': {
-                                'trakt': row.get('trakt_id'),
-                                'imdb': row.get('imdb_id')
-                            }
+    # Try fetching from database first (instant)
+    try:
+        from resources.lib.database.trakt_sync.activities import TraktSyncDatabase
+        db = TraktSyncDatabase()
+        
+        # Query watchlist from database using helper which unpickles metadata
+        mediatype_filter = 'movie' if media_type == 'movies' else 'show'
+        items_raw = db.get_watchlist_items(mediatype_filter)
+        
+        if items_raw:
+            # Convert database format to Trakt API format for compatibility
+            content_key = media_type[:-1] if media_type.endswith('s') else media_type
+            for row in items_raw:
+                # Use metadata if available (contains extended info)
+                if row.get('metadata'):
+                    item_data = row['metadata']
+                else:
+                    item_data = {
+                        'ids': {
+                            'trakt': row.get('trakt_id'),
+                            'imdb': row.get('imdb_id')
                         }
-
-                    item_wrapper = {
-                        'listed_at': row.get('listed_at'),
-                        content_key: item_data
                     }
-                    items.append(item_wrapper)
-        except Exception as e:
+
+                item_wrapper = {
+                    'listed_at': row.get('listed_at'),
+                    content_key: item_data
+                }
+                items.append(item_wrapper)
+            xbmc.log(f'[AIOStreams] Watchlist: Loaded {len(items)} items from database', xbmc.LOGDEBUG)
+    except Exception as e:
         xbmc.log(f'[AIOStreams] Error accessing watchlist database: {e}', xbmc.LOGWARNING)
-        # Fallback to old method
+
+    # Fallback to old Trakt API method if database is empty or failed
+    if not items:
+        xbmc.log('[AIOStreams] Watchlist database empty/failed, using Trakt API', xbmc.LOGDEBUG)
         items = trakt.get_watchlist(media_type)
 
     if not items:

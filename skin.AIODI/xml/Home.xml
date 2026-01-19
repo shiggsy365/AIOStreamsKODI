@@ -422,7 +422,7 @@
 				<onup>9007</onup>
 				<ondown>noop</ondown>
 				<onfocus>Skin.SetString(SideMenuFocus,settings)</onfocus>
-				<onleft>SetFocus(9110)</onleft>
+				<onleft>SetFocus(9010)</onleft>
 				<onright>SetFocus($VAR[ActiveWidgetID])</onright>
 				<onclick>ActivateWindow(settings)</onclick>
 			</control>
@@ -1004,7 +1004,7 @@
 		<top>0</top>
 		<width>500</width>
 		<height>1080</height>
-		<visible>Control.HasFocus(9110)</visible>
+		<visible>ControlGroup(9110).HasFocus</visible>
 		<animation effect="slide" start="500,0" end="0,0" time="300" tween="sine" easing="out">Visible</animation>
 		<animation effect="slide" start="0,0" end="500,0" time="300" tween="sine" easing="in">Hidden</animation>
 		
