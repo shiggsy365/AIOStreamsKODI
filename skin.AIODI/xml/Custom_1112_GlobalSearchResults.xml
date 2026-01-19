@@ -110,8 +110,8 @@
                     <aligny>center</aligny>
                     <textcolor>FFFFFFFF</textcolor>
                     <focusedcolor>FFFFFFFF</focusedcolor>
-                    <texturefocus>buttons/fixed_movies_fo.png</texturefocus>
-                    <texturenofocus>buttons/fixed_movies_nofo.png</texturenofocus>
+                    <texturefocus>buttons/tr_movies_fo.png</texturefocus>
+                    <texturenofocus>buttons/tr_movies_nofo.png</texturenofocus>
                     <onup>9000</onup>
                     <ondown>100</ondown>
                     <onright>51</onright>
@@ -131,8 +131,8 @@
                     <aligny>center</aligny>
                     <textcolor>FFFFFFFF</textcolor>
                     <focusedcolor>FFFFFFFF</focusedcolor>
-                    <texturefocus>buttons/fixed_tvshows_fo.png</texturefocus>
-                    <texturenofocus>buttons/fixed_tvshows_nofo.png</texturenofocus>
+                    <texturefocus>buttons/tr_tvshows_fo.png</texturefocus>
+                    <texturenofocus>buttons/tr_tvshows_nofo.png</texturenofocus>
                     <onup>9000</onup>
                     <ondown>101</ondown>
                     <onleft>50</onleft>
@@ -154,8 +154,8 @@
                     <aligny>center</aligny>
                     <textcolor>FFFFFFFF</textcolor>
                     <focusedcolor>FFFFFFFF</focusedcolor>
-                    <texturefocus>buttons/fixed_youtube_fo.png</texturefocus>
-                    <texturenofocus>buttons/fixed_youtube_nofo.png</texturenofocus>
+                    <texturefocus>buttons/tr_youtube_fo.png</texturefocus>
+                    <texturenofocus>buttons/tr_youtube_nofo.png</texturenofocus>
                     <onup>9000</onup>
                     <ondown>102</ondown>
                     <onleft>51</onleft>

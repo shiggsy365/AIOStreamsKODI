@@ -31,6 +31,9 @@ BUTTONS = [
     ('save', 'DRAW_CHECK'),              
 ]
 
+# Output prefix
+PREFIX = "tr_"
+
 def rounded_rectangle(draw, box, radius, fill, outline, width):
     draw.rounded_rectangle(box, radius=radius, fill=fill, outline=outline, width=width)
 
@@ -139,7 +142,7 @@ def create_button(name, icon_src, is_focus):
         else:
             print(f"Warning: Icon not found: {icon_path}")
 
-    filename = f"fixed_{name}_{'fo' if is_focus else 'nofo'}.png"
+    filename = f"{PREFIX}{name}_{'fo' if is_focus else 'nofo'}.png"
     save_path = os.path.join(BUTTONS_DIR, filename)
     img.save(save_path)
     print(f"Created: {save_path}")

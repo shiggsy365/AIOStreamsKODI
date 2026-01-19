@@ -75,7 +75,7 @@ try:
         xbmc.executebuiltin('ActivateWindow(1112)')
 
         # Give window time to open, then refresh containers to load content
-        xbmc.sleep(100)
+        xbmc.sleep(1000)
         xbmc.executebuiltin('Container(100).Refresh')
         xbmc.executebuiltin('Container(101).Refresh')
         xbmc.executebuiltin('Container(102).Refresh')

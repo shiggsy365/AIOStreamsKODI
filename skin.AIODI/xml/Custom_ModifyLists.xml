@@ -57,8 +57,8 @@
                     <align>left</align>
                     <aligny>center</aligny>
                     <!-- OnClick handled by Python -->
-                    <texturefocus>buttons/fixed_home_fo.png</texturefocus>
-                    <texturenofocus>buttons/fixed_home_nofo.png</texturenofocus>
+                    <texturefocus>buttons/tr_home_fo.png</texturefocus>
+                    <texturenofocus>buttons/tr_home_nofo.png</texturenofocus>
                     <textcolor>FFFFFFFF</textcolor>
                     <focusedcolor>FFFFFFFF</focusedcolor>
                 </control>
@@ -72,8 +72,8 @@
                     <align>left</align>
                     <aligny>center</aligny>
                     <!-- OnClick handled by Python -->
-                    <texturefocus>buttons/fixed_tvshows_fo.png</texturefocus>
-                    <texturenofocus>buttons/fixed_tvshows_nofo.png</texturenofocus>
+                    <texturefocus>buttons/tr_tvshows_fo.png</texturefocus>
+                    <texturenofocus>buttons/tr_tvshows_nofo.png</texturenofocus>
                     <textcolor>FFFFFFFF</textcolor>
                     <focusedcolor>FFFFFFFF</focusedcolor>
                 </control>
@@ -87,8 +87,8 @@
                     <align>left</align>
                     <aligny>center</aligny>
                     <!-- OnClick handled by Python -->
-                    <texturefocus>buttons/fixed_movies_fo.png</texturefocus>
-                    <texturenofocus>buttons/fixed_movies_nofo.png</texturenofocus>
+                    <texturefocus>buttons/tr_movies_fo.png</texturefocus>
+                    <texturenofocus>buttons/tr_movies_nofo.png</texturenofocus>
                     <textcolor>FFFFFFFF</textcolor>
                     <focusedcolor>FFFFFFFF</focusedcolor>
                     <ondown>2004</ondown>
@@ -104,11 +104,9 @@
                     <align>left</align>
                     <aligny>center</aligny>
                     <!-- OnClick handled by Python -->
-                    <texturefocus>buttons/fixed_save_fo.png</texturefocus>
-                    <texturenofocus>buttons/fixed_save_nofo.png</texturenofocus>
-                    <textcolor>FFFFFFFF</textcolor>
+                    <texturefocus>buttons/tr_save_fo.png</texturefocus>
+                    <texturenofocus>buttons/tr_save_nofo.png</texturenofocus>
                     <focusedcolor>FFFFFFFF</focusedcolor>
-                    <onclick>Dialog.Close(1111)</onclick>
                     <onup>2003</onup>
                     <ondown>3000</ondown>
                 </control>
