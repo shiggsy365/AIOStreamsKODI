@@ -2,6 +2,5 @@
   <rect x="1.5" y="1.5" width="509" height="125" rx="22.5" fill="red" fill-opacity="1.0" stroke="white" stroke-width="3"/>
   <g transform="translate(185, 0)">
     <path d="M0 64L20 44L40 64V84H25V69H15V84H0V64Z" fill="white"/>
-    <text x="55" y="79" fill="white" font-family="Arial, sans-serif" font-size="36" font-weight="bold">Home</text>
   </g>
 </svg>

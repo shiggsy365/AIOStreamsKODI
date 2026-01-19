@@ -51,41 +51,46 @@
                 <control type="button" id="2001">
                     <width>240</width>
                     <height>60</height>
-                    <font></font>
-                    <label />
-                    <align>center</align>
+                    <font>font24_bold</font>
+                    <label>Home</label>
+                    <textoffsetx>60</textoffsetx>
+                    <align>left</align>
+                    <aligny>center</aligny>
                     <!-- OnClick handled by Python -->
-                    <!-- DEBUG: Testing with standard textures -->
-                    <texturefocus colordiffuse="FFFF0000">colors/white.png</texturefocus>
-                    <texturenofocus colordiffuse="FF808080">colors/white.png</texturenofocus>
+                    <texturefocus>buttons/home_fo.svg</texturefocus>
+                    <texturenofocus>buttons/home_nofo.svg</texturenofocus>
                     <textcolor>00FFFFFF</textcolor>
-                    <focusedcolor>00FFFFFF</focusedcolor>
+                    <focusedcolor>FFFFFFFF</focusedcolor>
                 </control>
 
                 <control type="button" id="2002">
                     <width>240</width>
                     <height>60</height>
-                    <font></font>
-                    <label />
-                    <align>center</align>
+                    <font>font24_bold</font>
+                    <label>TV Shows</label>
+                    <textoffsetx>60</textoffsetx>
+                    <align>left</align>
+                    <aligny>center</aligny>
                     <!-- OnClick handled by Python -->
                     <texturefocus>buttons/tvshows_fo.svg</texturefocus>
                     <texturenofocus>buttons/tvshows_nofo.svg</texturenofocus>
                     <textcolor>00FFFFFF</textcolor>
-                    <focusedcolor>00FFFFFF</focusedcolor>
+                    <focusedcolor>FFFFFFFF</focusedcolor>
                 </control>
 
                 <control type="button" id="2003">
                     <width>240</width>
                     <height>60</height>
-                    <font></font>
-                    <label />
-                    <align>center</align>
+                    <font>font24_bold</font>
+                    <label>Movies</label>
+                    <textoffsetx>60</textoffsetx>
+                    <align>left</align>
+                    <aligny>center</aligny>
                     <!-- OnClick handled by Python -->
                     <texturefocus>buttons/movies_fo.svg</texturefocus>
                     <texturenofocus>buttons/movies_nofo.svg</texturenofocus>
                     <textcolor>00FFFFFF</textcolor>
-                    <focusedcolor>00FFFFFF</focusedcolor>
+                    <focusedcolor>FFFFFFFF</focusedcolor>
                     <ondown>3000</ondown>
                 </control>
             </control>
