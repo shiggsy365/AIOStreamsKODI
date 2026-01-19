@@ -2761,22 +2761,28 @@ def trakt_watchlist(params=None):
             # Convert database format to Trakt API format for compatibility
             content_key = media_type[:-1] if media_type.endswith('s') else media_type
             for row in items_raw:
-                # Use metadata if available (contains extended info)
-                if row.get('metadata'):
-                    item_data = row['metadata']
-                else:
-                    item_data = {
-                        'ids': {
-                            'trakt': row.get('trakt_id'),
-                            'imdb': row.get('imdb_id')
+                try:
+                    # Use metadata if available (contains extended info)
+                    # sqlite3.Row uses dictionary-style access, not .get()
+                    metadata = row['metadata'] if 'metadata' in row.keys() else None
+                    if metadata:
+                        item_data = metadata
+                    else:
+                        item_data = {
+                            'ids': {
+                                'trakt': row['trakt_id'] if 'trakt_id' in row.keys() else None,
+                                'imdb': row['imdb_id'] if 'imdb_id' in row.keys() else None
+                            }
                         }
-                    }
 
-                item_wrapper = {
-                    'listed_at': row.get('listed_at'),
-                    content_key: item_data
-                }
-                items.append(item_wrapper)
+                    item_wrapper = {
+                        'listed_at': row['listed_at'] if 'listed_at' in row.keys() else None,
+                        content_key: item_data
+                    }
+                    items.append(item_wrapper)
+                except Exception as e:
+                    xbmc.log(f'[AIOStreams] Error unpacking watchlist row: {e}', xbmc.LOGWARNING)
+                    continue
             xbmc.log(f'[AIOStreams] Watchlist: Loaded {len(items)} items from database', xbmc.LOGDEBUG)
     except Exception as e:
         xbmc.log(f'[AIOStreams] Error accessing watchlist database: {e}', xbmc.LOGWARNING)
