@@ -1319,7 +1319,7 @@
         <value>special://skin/media/buttons/tr_watched_add_fo.png</value>
     </variable>
     <variable name="WatchedButtonNoFocusVar">
-        <value condition="String.IsEqual(Window(Home).Property(InfoWindow.IsWatched),true)">buttons/fixed_watched_remove_nofo.png</value>
-        <value>buttons/fixed_watched_add_nofo.png</value>
+        <value condition="String.IsEqual(Window(Home).Property(InfoWindow.IsWatched),true)">special://skin/media/buttons/tr_watched_remove_nofo.png</value>
+        <value>special://skin/media/buttons/tr_watched_add_nofo.png</value>
     </variable>
 </includes>
