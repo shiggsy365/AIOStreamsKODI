@@ -144,7 +144,6 @@ Right-click any movie/show for quick access to:
 ### Optional
 - **Trakt Account** for sync features
 - **TMDBHelper** for enhanced content discovery
-- **resource.fonts.noto-emoji** for enhanced emoji rendering
 
 ---
 
