@@ -3186,11 +3186,12 @@ def trakt_next_up():
                         if resume_time > 0:
                             list_item.setProperty('StartOffset', str(resume_time))
 
-                # Check if watched (though Next Up by definition is unwatched, bookmarks might be near end)
-                # This is more for the 'watched' indicator if it were somehow marked
-                is_watched = db.is_item_watched(episode_trakt_id, 'episode', season, episode)
-                if is_watched:
-                    list_item.setProperty('watched', 'true')
+                # Check if watched
+                show_trakt_id = ep_data.get('show_trakt_id')
+                if show_trakt_id:
+                    is_watched = db.is_item_watched(show_trakt_id, 'episode', season, episode)
+                    if is_watched:
+                        list_item.setProperty('watched', 'true')
         except:
             pass
 

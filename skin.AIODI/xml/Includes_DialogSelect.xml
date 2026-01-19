@@ -13,8 +13,8 @@
 
 		<!-- Right Side Panel -->
 		<control type="group">
-			<left>460</left> <!-- Center(0) + 460 = 1420 (Absolute) -->
-			<top>-540</top> <!-- Center(0) - 540 = 0 (Absolute) -->
+			<left>1420</left>
+			<top>0</top>
 			<width>500</width>
 			<height>1080</height>
 			<animation type="WindowOpen">
@@ -29,12 +29,17 @@
 
 			<!-- Panel Background -->
 			<control type="image">
+				<left>0</left>
+				<top>0</top>
 				<width>500</width>
 				<height>1080</height>
 				<texture colordiffuse="FF1A1A1A">colors/white.png</texture>
 			</control>
+
+			<!-- Side Shadow -->
 			<control type="image">
 				<left>-5</left>
+				<top>0</top>
 				<width>5</width>
 				<height>1080</height>
 				<texture colordiffuse="FF000000">colors/white.png</texture>

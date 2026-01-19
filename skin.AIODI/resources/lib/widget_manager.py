@@ -246,6 +246,12 @@ class WidgetManager(xbmcgui.WindowXMLDialog):
         }
         
         items = self.config.get(self.current_page, [])
+        
+        # Prevent duplicates
+        if any(i.get('path') == catalog['path'] for i in items):
+            xbmcgui.Dialog().notification('Widget Manager', 'Already added to this page', xbmcgui.NOTIFICATION_WARNING, 2000)
+            return
+
         items.append(catalog)
         self.config[self.current_page] = items
         self.save_config()

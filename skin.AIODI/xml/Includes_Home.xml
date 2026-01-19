@@ -125,7 +125,7 @@
 							<top>5</top>
 							<width>30</width>
 							<height>30</height>
-							<texture colordiffuse="FF00FF00">overlays/checkbox-on.png</texture>
+							<texture colordiffuse="FF00FF00">OverlayWatched.png</texture>
 							<visible>String.IsEqual(ListItem.Property(watched),true) | [Integer.IsGreater(ListItem.Playcount,0) + String.IsEmpty(ListItem.Property(PercentPlayed))]</visible>
 						</control>
 					</itemlayout>
@@ -159,7 +159,7 @@
 								<top>5</top>
 								<width>30</width>
 								<height>30</height>
-								<texture colordiffuse="FF00FF00">overlays/checkbox-on.png</texture>
+								<texture colordiffuse="FF00FF00">OverlayWatched.png</texture>
 								<visible>String.IsEqual(ListItem.Property(watched),true) | [Integer.IsGreater(ListItem.Playcount,0) + String.IsEmpty(ListItem.Property(PercentPlayed))]</visible>
 							</control>
 						</control>
@@ -245,7 +245,7 @@
 							<top>5</top>
 							<width>30</width>
 							<height>30</height>
-							<texture colordiffuse="FF00FF00">overlays/checkbox-on.png</texture>
+							<texture colordiffuse="FF00FF00">OverlayWatched.png</texture>
 							<visible>String.IsEqual(ListItem.Property(watched),true) | [Integer.IsGreater(ListItem.Playcount,0) + String.IsEmpty(ListItem.Property(PercentPlayed))]</visible>
 						</control>
 					</itemlayout>
@@ -279,7 +279,7 @@
 								<top>5</top>
 								<width>30</width>
 								<height>30</height>
-								<texture colordiffuse="FF00FF00">overlays/checkbox-on.png</texture>
+								<texture colordiffuse="FF00FF00">OverlayWatched.png</texture>
 								<visible>String.IsEqual(ListItem.Property(watched),true) | [Integer.IsGreater(ListItem.Playcount,0) + String.IsEmpty(ListItem.Property(PercentPlayed))]</visible>
 							</control>
 						</control>
