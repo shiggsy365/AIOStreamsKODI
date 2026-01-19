@@ -4630,46 +4630,7 @@ def action_info(params):
         # So check the logic.
         xbmcgui.Dialog().notification("AIOStreams", "Clearlogo cache cleared", xbmcgui.NOTIFICATION_INFO, 3000)
 
-ACTION_REGISTRY = {
-    # Maintenance
-    'clear_clearlogos': lambda p: action_clear_clearlogos(p),
 
-    # Search actions
-    'search': lambda p: search(),
-    'search_unified': lambda p: search_unified(),
-    'search_tab': lambda p: handle_search_tab(p),
-
-    # Playback actions
-    'play': lambda p: play(),
-    'play_next': lambda p: play_next(p),
-    'play_next_source': lambda p: play_next_source(p),
-    'play_first': lambda p: play_first(),
-    'select_stream': lambda p: select_stream(),
-    'show_streams': lambda p: show_streams(),
-
-
-def clear_cache():
-    """Clear all addon caches."""
-    if HAS_MODULES:
-        # Clear Memory/File Cache
-        try:
-            cache.clear_cache()
-        except: pass
-        
-        # Clear Shared Cache
-        try:
-            from resources.lib.shared_cache import SharedCacheManager
-            cache_dir = SharedCacheManager.get_shared_cache_dir()
-            if xbmcvfs.exists(cache_dir):
-                dirs, files = xbmcvfs.listdir(cache_dir)
-                for f in files:
-                    xbmcvfs.delete(os.path.join(cache_dir, f))
-            
-            xbmcgui.Dialog().notification('AIOStreams', 'Cache Cleared', xbmcgui.NOTIFICATION_INFO)
-        except Exception as e:
-            xbmc.log(f'[AIOStreams] Failed to clear shared cache: {e}', xbmc.LOGERROR)
-
-# ... (Registry Definition) ...
 
 ACTION_REGISTRY = {
     # Index/Home
