@@ -2125,10 +2125,11 @@ def browse_catalog():
     # If we got a full page (20 items), assume there might be more
     if len(catalog_data['metas']) >= 20:
         next_skip = skip + 20
-        # Show "Load More" if we got a full page
-        list_item = xbmcgui.ListItem(label='[COLOR yellow]» Load More...[/COLOR]')
+        # Show "More Results" with image
+        list_item = xbmcgui.ListItem(label='More Results')
+        list_item.setArt({'thumb': 'special://skin/media/more.png', 'poster': 'special://skin/media/more.png'})
         url = get_url(action='browse_catalog', catalog_id=catalog_id, content_type=content_type,
-                      genre=genre if genre else '', skip=next_skip)
+                      catalog_name=catalog_name, genre=genre if genre else '', skip=next_skip)
         xbmcplugin.addDirectoryItem(HANDLE, url, list_item, True)
     
     xbmcplugin.endOfDirectory(HANDLE)

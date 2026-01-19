@@ -30,12 +30,11 @@
 <include content="DefaultBackground" />
 	<control type="group">
 		<visible>!Player.HasMedia</visible>
-		<!-- Background Fanart -->
+		<!-- Background - Solid Black -->
 		<control type="image">
 			<depth>DepthBackground</depth>
 			<include>FullScreenDimensions</include>
-			<texture background="true" colordiffuse="FFFFFFFF">$VAR[CurrentWidgetFanart]</texture>
-			<fadetime>600</fadetime>
+			<texture>colors/black.png</texture>
 			<aspectratio>scale</aspectratio>
 		</control>
 
