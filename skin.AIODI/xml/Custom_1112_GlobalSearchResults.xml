@@ -108,10 +108,10 @@
                     <textoffsetx>60</textoffsetx>
                     <align>left</align>
                     <aligny>center</aligny>
-                    <textcolor>00FFFFFF</textcolor>
+                    <textcolor>FFFFFFFF</textcolor>
                     <focusedcolor>FFFFFFFF</focusedcolor>
-                    <texturefocus>buttons/movies_fo.png</texturefocus>
-                    <texturenofocus>buttons/movies_nofo.png</texturenofocus>
+                    <texturefocus>buttons/fixed_movies_fo.png</texturefocus>
+                    <texturenofocus>buttons/fixed_movies_nofo.png</texturenofocus>
                     <onup>9000</onup>
                     <ondown>100</ondown>
                     <onright>51</onright>
@@ -129,10 +129,10 @@
                     <textoffsetx>60</textoffsetx>
                     <align>left</align>
                     <aligny>center</aligny>
-                    <textcolor>00FFFFFF</textcolor>
+                    <textcolor>FFFFFFFF</textcolor>
                     <focusedcolor>FFFFFFFF</focusedcolor>
-                    <texturefocus>buttons/tvshows_fo.png</texturefocus>
-                    <texturenofocus>buttons/tvshows_nofo.png</texturenofocus>
+                    <texturefocus>buttons/fixed_tvshows_fo.png</texturefocus>
+                    <texturenofocus>buttons/fixed_tvshows_nofo.png</texturenofocus>
                     <onup>9000</onup>
                     <ondown>101</ondown>
                     <onleft>50</onleft>
@@ -152,10 +152,10 @@
                     <textoffsetx>60</textoffsetx>
                     <align>left</align>
                     <aligny>center</aligny>
-                    <textcolor>00FFFFFF</textcolor>
+                    <textcolor>FFFFFFFF</textcolor>
                     <focusedcolor>FFFFFFFF</focusedcolor>
-                    <texturefocus>buttons/youtube_fo.png</texturefocus>
-                    <texturenofocus>buttons/youtube_nofo.png</texturenofocus>
+                    <texturefocus>buttons/fixed_youtube_fo.png</texturefocus>
+                    <texturenofocus>buttons/fixed_youtube_nofo.png</texturenofocus>
                     <onup>9000</onup>
                     <ondown>102</ondown>
                     <onleft>51</onleft>
@@ -167,7 +167,7 @@
             <!-- Results Count Labels -->
             <!-- Movies Count -->
             <control type="label">
-                <left>40</left>
+                <left>100</left>
                 <top>75</top>
                 <width>120</width>
                 <height>25</height>
@@ -180,7 +180,7 @@
 
             <!-- TV Shows Count -->
             <control type="label">
-                <left>380</left>
+                <left>440</left>
                 <top>75</top>
                 <width>120</width>
                 <height>25</height>
@@ -193,7 +193,7 @@
 
             <!-- YouTube Count -->
             <control type="label">
-                <left>720</left>
+                <left>780</left>
                 <top>75</top>
                 <width>120</width>
                 <height>25</height>

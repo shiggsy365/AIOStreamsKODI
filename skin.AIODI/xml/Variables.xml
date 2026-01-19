@@ -1280,36 +1280,36 @@
 	</variable>
     <!-- SVG Button Variables for Info Dialog -->
     <variable name="TrailerButtonFocusVar">
-        <value>buttons/trailer_fo.png</value>
+        <value>buttons/fixed_trailer_fo.png</value>
     </variable>
     <variable name="TrailerButtonNoFocusVar">
-        <value>buttons/trailer_nofo.png</value>
+        <value>buttons/fixed_trailer_nofo.png</value>
     </variable>
 
     <variable name="PlayButtonFocusVar">
-        <value condition="String.IsEqual(ListItem.DBType,tvshow) | String.IsEqual(ListItem.DBType,season)">buttons/browse_fo.png</value>
-        <value>buttons/play_fo.png</value>
+        <value condition="String.IsEqual(ListItem.DBType,tvshow) | String.IsEqual(ListItem.DBType,season)">buttons/fixed_browse_fo.png</value>
+        <value>buttons/fixed_play_fo.png</value>
     </variable>
     <variable name="PlayButtonNoFocusVar">
-        <value condition="String.IsEqual(ListItem.DBType,tvshow) | String.IsEqual(ListItem.DBType,season)">buttons/browse_nofo.png</value>
-        <value>buttons/play_nofo.png</value>
+        <value condition="String.IsEqual(ListItem.DBType,tvshow) | String.IsEqual(ListItem.DBType,season)">buttons/fixed_browse_nofo.png</value>
+        <value>buttons/fixed_play_nofo.png</value>
     </variable>
 
     <variable name="WatchlistButtonFocusVar">
-        <value condition="String.IsEqual(Window(Home).Property(InfoWindow.IsWatchlist),true)">buttons/watchlist_remove_fo.png</value>
-        <value>buttons/watchlist_add_fo.png</value>
+        <value condition="String.IsEqual(Window(Home).Property(InfoWindow.IsWatchlist),true)">buttons/fixed_watchlist_remove_fo.png</value>
+        <value>buttons/fixed_watchlist_add_fo.png</value>
     </variable>
     <variable name="WatchlistButtonNoFocusVar">
-        <value condition="String.IsEqual(Window(Home).Property(InfoWindow.IsWatchlist),true)">buttons/watchlist_remove_nofo.png</value>
-        <value>buttons/watchlist_add_nofo.png</value>
+        <value condition="String.IsEqual(Window(Home).Property(InfoWindow.IsWatchlist),true)">buttons/fixed_watchlist_remove_nofo.png</value>
+        <value>buttons/fixed_watchlist_add_nofo.png</value>
     </variable>
 
     <variable name="WatchedButtonFocusVar">
-        <value condition="String.IsEqual(Window(Home).Property(InfoWindow.IsWatched),true)">buttons/watched_remove_fo.png</value>
-        <value>buttons/watched_add_fo.png</value>
+        <value condition="String.IsEqual(Window(Home).Property(InfoWindow.IsWatched),true)">buttons/fixed_watched_remove_fo.png</value>
+        <value>buttons/fixed_watched_add_fo.png</value>
     </variable>
     <variable name="WatchedButtonNoFocusVar">
-        <value condition="String.IsEqual(Window(Home).Property(InfoWindow.IsWatched),true)">buttons/watched_remove_nofo.png</value>
-        <value>buttons/watched_add_nofo.png</value>
+        <value condition="String.IsEqual(Window(Home).Property(InfoWindow.IsWatched),true)">buttons/fixed_watched_remove_nofo.png</value>
+        <value>buttons/fixed_watched_add_nofo.png</value>
     </variable>
 </includes>

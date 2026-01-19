@@ -115,7 +115,7 @@ def create_button(name, icon_src, is_focus):
         else:
             print(f"Warning: Icon not found: {icon_path}")
 
-    filename = f"{name}_{'fo' if is_focus else 'nofo'}.png"
+    filename = f"fixed_{name}_{'fo' if is_focus else 'nofo'}.png"
     save_path = os.path.join(BUTTONS_DIR, filename)
     img.save(save_path)
     print(f"Created: {save_path}")

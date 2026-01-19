@@ -57,9 +57,9 @@
                     <align>left</align>
                     <aligny>center</aligny>
                     <!-- OnClick handled by Python -->
-                    <texturefocus>buttons/home_fo.svg</texturefocus>
-                    <texturenofocus>buttons/home_nofo.svg</texturenofocus>
-                    <textcolor>00FFFFFF</textcolor>
+                    <texturefocus>buttons/fixed_home_fo.png</texturefocus>
+                    <texturenofocus>buttons/fixed_home_nofo.png</texturenofocus>
+                    <textcolor>FFFFFFFF</textcolor>
                     <focusedcolor>FFFFFFFF</focusedcolor>
                 </control>
 
@@ -72,9 +72,9 @@
                     <align>left</align>
                     <aligny>center</aligny>
                     <!-- OnClick handled by Python -->
-                    <texturefocus>buttons/tvshows_fo.svg</texturefocus>
-                    <texturenofocus>buttons/tvshows_nofo.svg</texturenofocus>
-                    <textcolor>00FFFFFF</textcolor>
+                    <texturefocus>buttons/fixed_tvshows_fo.png</texturefocus>
+                    <texturenofocus>buttons/fixed_tvshows_nofo.png</texturenofocus>
+                    <textcolor>FFFFFFFF</textcolor>
                     <focusedcolor>FFFFFFFF</focusedcolor>
                 </control>
 
@@ -87,9 +87,9 @@
                     <align>left</align>
                     <aligny>center</aligny>
                     <!-- OnClick handled by Python -->
-                    <texturefocus>buttons/movies_fo.svg</texturefocus>
-                    <texturenofocus>buttons/movies_nofo.svg</texturenofocus>
-                    <textcolor>00FFFFFF</textcolor>
+                    <texturefocus>buttons/fixed_movies_fo.png</texturefocus>
+                    <texturenofocus>buttons/fixed_movies_nofo.png</texturenofocus>
+                    <textcolor>FFFFFFFF</textcolor>
                     <focusedcolor>FFFFFFFF</focusedcolor>
                     <ondown>3000</ondown>
                 </control>

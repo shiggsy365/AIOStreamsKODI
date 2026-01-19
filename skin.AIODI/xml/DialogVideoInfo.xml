@@ -67,7 +67,7 @@
                             <textoffsetx>60</textoffsetx>
                             <align>left</align>
                             <aligny>center</aligny>
-                            <textcolor>00FFFFFF</textcolor>
+                            <textcolor>FFFFFFFF</textcolor>
                             <focusedcolor>FFFFFFFF</focusedcolor>
                             <texturefocus>$VAR[TrailerButtonFocusVar]</texturefocus>
                             <texturenofocus>$VAR[TrailerButtonNoFocusVar]</texturenofocus>
@@ -89,7 +89,7 @@
                             <textoffsetx>60</textoffsetx>
                             <align>left</align>
                             <aligny>center</aligny>
-                            <textcolor>00FFFFFF</textcolor>
+                            <textcolor>FFFFFFFF</textcolor>
                             <focusedcolor>FFFFFFFF</focusedcolor>
                             <texturefocus>$VAR[PlayButtonFocusVar]</texturefocus>
                             <texturenofocus>$VAR[PlayButtonNoFocusVar]</texturenofocus>
@@ -111,7 +111,7 @@
                             <textoffsetx>60</textoffsetx>
                             <align>left</align>
                             <aligny>center</aligny>
-                            <textcolor>00FFFFFF</textcolor>
+                            <textcolor>FFFFFFFF</textcolor>
                             <focusedcolor>FFFFFFFF</focusedcolor>
                             <texturefocus>$VAR[WatchlistButtonFocusVar]</texturefocus>
                             <texturenofocus>$VAR[WatchlistButtonNoFocusVar]</texturenofocus>
@@ -132,7 +132,7 @@
                             <textoffsetx>60</textoffsetx>
                             <align>left</align>
                             <aligny>center</aligny>
-                            <textcolor>00FFFFFF</textcolor>
+                            <textcolor>FFFFFFFF</textcolor>
                             <focusedcolor>FFFFFFFF</focusedcolor>
                             <texturefocus>$VAR[WatchedButtonFocusVar]</texturefocus>
                             <texturenofocus>$VAR[WatchedButtonNoFocusVar]</texturenofocus>
