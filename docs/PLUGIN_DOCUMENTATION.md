@@ -74,47 +74,21 @@ AIOStreams supports **custom stream title formatting** to display stream informa
 
 ### Format Specification
 
-Use the following placeholders in your format string:
+Use the following custom formatter parameters in your format string, all in the 'Name' section, leave Description empty:
 
-#### Available Placeholders:
+{stream.resolution::exists["RESOLUTION: {stream.resolution}"||""]}
+{service.name::exists["SERVICE: {service.name}"||""]}
+{addon.name::exists["ADDON: {addon.name}"||""]}
+{stream.size::>0["SIZE: {stream.size::bytes}"||""]}
+{stream.proxied::istrue["PROXIED: YES"||""]}{stream.proxied::isfalse["PROXIED: NO"||""]}
+{service.cached::istrue["CACHED: YES"||""]}{service.cached::isfalse["CACHED:NO"||""]}
+{stream.library::istrue["IN LIBRARY: YES"||""]}{stream.library::isfalse["IN LIBRARY: NO"||""]}
+{stream.duration::>0["DURATION: {stream.duration::time} "||""]}
+{stream.quality::exists["VIDEO: {stream.quality}"||""]} | {stream.visualTags} | {stream.encode}
+{stream.audioTags::exists["AUDIO: {stream.audioTags::join(' | ')} | {stream.audioChannels}"||""]}{stream.languages::exists[" | {stream.languages::join(' / ')}"||""]}
+{stream.indexer::exists["INDEXER: {stream.indexer} "||""]}{stream.seeders::exists["| {stream.seeders} Seeders"||""]}{stream.age::exists[" | {stream.age} Old"||""]}
+{stream.filename::exists["FILENAME: {stream.filename}"||""]}
 
-| Placeholder | Description | Example |
-|------------|-------------|---------|
-| `{quality}` | Stream quality | `1080p`, `720p`, `4K` |
-| `{source}` | Source/provider name | `Torrentio`, `RealDebrid` |
-| `{size}` | File size | `2.5 GB`, `850 MB` |
-| `{codec}` | Video codec | `H.264`, `H.265`, `AV1` |
-| `{audio}` | Audio codec | `AAC`, `DTS`, `Dolby Atmos` |
-| `{language}` | Audio language | `English`, `Multi` |
-| `{seeders}` | Number of seeders (torrents) | `45`, `120` |
-| `{reliability}` | Provider reliability rating | `★★★★☆` |
-
-#### Example Format Strings:
-
-**Default Format:**
-```
-[{quality}] {source} - {size}
-```
-Output: `[1080p] Torrentio - 2.5 GB`
-
-**Detailed Format:**
-```
-{quality} | {codec} {audio} | {source} ({reliability}) | {size}
-```
-Output: `1080p | H.265 AAC | Torrentio (★★★★☆) | 2.5 GB`
-
-**Compact Format:**
-```
-{quality} {source} {size}
-```
-Output: `1080p Torrentio 2.5GB`
-
-### Tips for Custom Formatting:
-
-- Use `|` or `-` as separators for readability
-- Include `{reliability}` to see provider success rates
-- Add `{seeders}` for torrent streams to gauge availability
-- Keep formats concise for better display on smaller screens
 
 ---
 
