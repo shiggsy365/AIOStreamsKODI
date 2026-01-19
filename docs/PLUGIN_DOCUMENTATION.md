@@ -2,9 +2,9 @@
 
 ## Overview
 
-**AIOStreams** is a powerful Kodi video plugin that connects to your self-hosted AIOStreams backend, providing seamless access to streaming content with advanced features like Trakt synchronization, intelligent stream selection, and comprehensive metadata integration.
+**AIOStreams for KODI** is a powerful Kodi video plugin that connects to your self-hosted AIOStreams backend, providing seamless access to streaming content with advanced features like Trakt synchronization, intelligent stream selection, and comprehensive metadata integration.
 
-### What Does AIOStreams Do?
+### What Does AIOStreams for KODI Do?
 
 AIOStreams acts as a frontend client for your [AIOStreams backend](https://github.com/Viren070/aiostreams), bringing powerful streaming aggregation directly into your Kodi media center:
 
