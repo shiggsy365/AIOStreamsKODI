@@ -159,11 +159,11 @@
             <!-- Movies Count -->
             <control type="label">
                 <left>40</left>
-                <top>165</top>
+                <top>75</top>
                 <width>120</width>
                 <height>25</height>
                 <font>font12</font>
-                <label>$INFO[Window(10000).Property(GlobalSearch.MoviesCount)] Results</label>
+                <label>[$INFO[Window(10000).Property(GlobalSearch.MoviesCount)]]</label>
                 <textcolor>FFAAAAAA</textcolor>
                 <align>center</align>
                 <visible>!String.IsEqual(Window(10000).Property(GlobalSearch.MoviesCount),0)</visible>
@@ -172,11 +172,11 @@
             <!-- TV Shows Count -->
             <control type="label">
                 <left>380</left>
-                <top>165</top>
+                <top>75</top>
                 <width>120</width>
                 <height>25</height>
                 <font>font12</font>
-                <label>$INFO[Window(10000).Property(GlobalSearch.SeriesCount)] Results</label>
+                <label>[$INFO[Window(10000).Property(GlobalSearch.SeriesCount)]]</label>
                 <textcolor>FFAAAAAA</textcolor>
                 <align>center</align>
                 <visible>!String.IsEqual(Window(10000).Property(GlobalSearch.SeriesCount),0)</visible>
@@ -185,11 +185,11 @@
             <!-- YouTube Count -->
             <control type="label">
                 <left>720</left>
-                <top>165</top>
+                <top>75</top>
                 <width>120</width>
                 <height>25</height>
                 <font>font12</font>
-                <label>$INFO[Window(10000).Property(GlobalSearch.YoutubeCount)] Results</label>
+                <label>[$INFO[Window(10000).Property(GlobalSearch.YoutubeCount)]]</label>
                 <textcolor>FFAAAAAA</textcolor>
                 <align>center</align>
                 <visible>!String.IsEqual(Window(10000).Property(GlobalSearch.YoutubeCount),0)</visible>

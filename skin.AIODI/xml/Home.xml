@@ -1044,7 +1044,7 @@
 				<font>font15</font>
 				<label>Reload Skin</label>
 				<textcolor>white</textcolor>
-				<focusedcolor>button_focus</focusedcolor>
+				<focusedcolor>ffffffff</focusedcolor>
 				<texturefocus colordiffuse="button_focus">colors/white.png</texturefocus>
 				<texturenofocus />
 				<onclick>ReloadSkin()</onclick>
@@ -1057,7 +1057,7 @@
 				<font>font15</font>
 				<label>AIO Widget Manager</label>
 				<textcolor>white</textcolor>
-				<focusedcolor>button_focus</focusedcolor>
+				<focusedcolor>ffffffff</focusedcolor>
 				<texturefocus colordiffuse="button_focus">colors/white.png</texturefocus>
 				<texturenofocus />
 				<onclick>RunScript(special://skin/resources/lib/widget_manager.py)</onclick>
@@ -1070,7 +1070,7 @@
 				<font>font15</font>
 				<label>Exit AIODI</label>
 				<textcolor>white</textcolor>
-				<focusedcolor>button_focus</focusedcolor>
+				<focusedcolor>ffffffff</focusedcolor>
 				<texturefocus colordiffuse="button_focus">colors/white.png</texturefocus>
 				<texturenofocus />
 				<onclick>Quit()</onclick>

@@ -978,6 +978,16 @@ def create_listitem_with_context(meta, content_type, action_url):
 
     list_item.addContextMenuItems(context_menu)
 
+    # Check watched status and set properties
+    is_watched = False
+    if HAS_MODULES and trakt.get_access_token() and meta.get('id'):
+        is_watched = trakt.is_watched(content_type, meta['id'])
+    
+    if is_watched:
+        info_tag.setPlaycount(1)
+        list_item.setProperty('watched', 'true')
+        list_item.setProperty('WatchedOverlay', 'OverlayWatched.png')
+
     return list_item
 
 
@@ -3191,7 +3201,9 @@ def trakt_next_up():
                 if show_trakt_id:
                     is_watched = db.is_item_watched(show_trakt_id, 'episode', season, episode)
                     if is_watched:
+                        info_tag.setPlaycount(1)
                         list_item.setProperty('watched', 'true')
+                        list_item.setProperty('WatchedOverlay', 'OverlayWatched.png')
         except:
             pass
 
@@ -3364,6 +3376,14 @@ def _refresh_ui():
     """Refresh container and trigger background widget refresh."""
     # Clear Trakt widget cache so Next Up and Watchlist refresh with new data
     _clear_trakt_widget_cache()
+    
+    # Update WidgetReloadToken skin string to force immediate background refresh
+    try:
+        current_token = xbmc.getSkinVariableString('WidgetReloadToken')
+        new_token = str(int(current_token) + 1) if current_token.isdigit() else "1"
+        xbmc.executebuiltin(f'Skin.SetString(WidgetReloadToken,{new_token})')
+    except:
+        xbmc.executebuiltin('Skin.SetString(WidgetReloadToken,1)')
 
     xbmc.executebuiltin('Container.Refresh')
     try:

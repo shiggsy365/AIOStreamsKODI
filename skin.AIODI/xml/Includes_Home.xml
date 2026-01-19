@@ -126,7 +126,7 @@
 							<width>30</width>
 							<height>30</height>
 							<texture colordiffuse="FF00FF00">OverlayWatched.png</texture>
-							<visible>String.IsEqual(ListItem.Property(watched),true) | [Integer.IsGreater(ListItem.Playcount,0) + String.IsEmpty(ListItem.Property(PercentPlayed))]</visible>
+							<visible>String.IsEqual(ListItem.Property(watched),true) | String.IsEqual(ListItem.Overlay,OverlayWatched.png) | Integer.IsGreater(ListItem.Playcount,0)</visible>
 						</control>
 					</itemlayout>
 					<focusedlayout width="240" height="360">
@@ -246,7 +246,7 @@
 							<width>30</width>
 							<height>30</height>
 							<texture colordiffuse="FF00FF00">OverlayWatched.png</texture>
-							<visible>String.IsEqual(ListItem.Property(watched),true) | [Integer.IsGreater(ListItem.Playcount,0) + String.IsEmpty(ListItem.Property(PercentPlayed))]</visible>
+							<visible>String.IsEqual(ListItem.Property(watched),true) | String.IsEqual(ListItem.Overlay,OverlayWatched.png) | Integer.IsGreater(ListItem.Playcount,0)</visible>
 						</control>
 					</itemlayout>
 					<focusedlayout width="410" height="235">
