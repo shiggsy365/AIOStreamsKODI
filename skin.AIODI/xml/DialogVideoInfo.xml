@@ -69,6 +69,7 @@
                             <aligny>center</aligny>
                             <textcolor>FFFFFFFF</textcolor>
                             <focusedcolor>FFFFFFFF</focusedcolor>
+                            <colordiffuse>FFFFFFFF</colordiffuse>
                             <texturefocus>$VAR[TrailerButtonFocusVar]</texturefocus>
                             <texturenofocus>$VAR[TrailerButtonNoFocusVar]</texturenofocus>
 							<onclick condition="!String.IsEmpty(Window(Home).Property(InfoWindow.Trailer))">Dialog.Close(movieinformation)</onclick>
@@ -91,6 +92,7 @@
                             <aligny>center</aligny>
                             <textcolor>FFFFFFFF</textcolor>
                             <focusedcolor>FFFFFFFF</focusedcolor>
+                            <colordiffuse>FFFFFFFF</colordiffuse>
                             <texturefocus>$VAR[PlayButtonFocusVar]</texturefocus>
                             <texturenofocus>$VAR[PlayButtonNoFocusVar]</texturenofocus>
 							<onclick condition="String.IsEqual(ListItem.DBType,tvshow) | String.IsEqual(ListItem.DBType,season) | String.IsEqual(ListItem.DBType,series)">ActivateWindow(Videos,$INFO[ListItem.FileNameAndPath],return)</onclick>
@@ -113,6 +115,7 @@
                             <aligny>center</aligny>
                             <textcolor>FFFFFFFF</textcolor>
                             <focusedcolor>FFFFFFFF</focusedcolor>
+                            <colordiffuse>FFFFFFFF</colordiffuse>
                             <texturefocus>$VAR[WatchlistButtonFocusVar]</texturefocus>
                             <texturenofocus>$VAR[WatchlistButtonNoFocusVar]</texturenofocus>
                             <onclick condition="String.IsEqual(Window(Home).Property(InfoWindow.IsWatchlist),true)">RunScript(plugin.video.aiostreams, action=trakt_remove_watchlist, dbid=$INFO[ListItem.DBID], type=$INFO[ListItem.DBType])</onclick>
@@ -134,6 +137,7 @@
                             <aligny>center</aligny>
                             <textcolor>FFFFFFFF</textcolor>
                             <focusedcolor>FFFFFFFF</focusedcolor>
+                            <colordiffuse>FFFFFFFF</colordiffuse>
                             <texturefocus>$VAR[WatchedButtonFocusVar]</texturefocus>
                             <texturenofocus>$VAR[WatchedButtonNoFocusVar]</texturenofocus>
                             <onclick condition="String.IsEqual(Window(Home).Property(InfoWindow.IsWatched),true)">RunScript(plugin.video.aiostreams, action=trakt_remove_watched, dbid=$INFO[ListItem.DBID], type=$INFO[ListItem.DBType])</onclick>

@@ -1083,17 +1083,13 @@ def search():
     xbmcplugin.setContent(HANDLE, 'movies' if content_type == 'movie' else 'tvshows')
     
     # Calculate counts
-    movie_count = len(results['metas']) if content_type == 'movie' else 0
-    series_count = len(results['metas']) if content_type == 'series' else 0
-    
-    # Clear stale properties first to avoid flash of old content
-    clear_window_properties(['GlobalSearch.MoviesCount', 'GlobalSearch.SeriesCount', 'GlobalSearch.YoutubeCount'])
-
-    # Set properties for skin visibility
-    win = xbmcgui.Window(10000)
-    win.setProperty('GlobalSearch.MoviesCount', str(movie_count))
-    win.setProperty('GlobalSearch.SeriesCount', str(series_count))
-    win.setProperty('GlobalSearch.YoutubeCount', '0') # Placeholder
+    # Only update the property for the current content type to avoid overwriting others
+    if content_type == 'movie':
+        win.setProperty('GlobalSearch.MoviesCount', str(len(results['metas'])))
+    elif content_type == 'tvshows' or content_type == 'series':
+        win.setProperty('GlobalSearch.SeriesCount', str(len(results['metas'])))
+    elif content_type == 'video' or 'youtube' in str(content_type): # Broad check for youtube
+        win.setProperty('GlobalSearch.YoutubeCount', str(len(results['metas'])))
     
     # Display search results
     for meta in results['metas']:

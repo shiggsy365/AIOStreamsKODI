@@ -87,8 +87,8 @@ def create_button(name, icon_src, is_focus):
         fill_color = (255, 0, 0, 255)
         outline_color = (255, 255, 255, 255)
     else:
-        # 50% Black background, White border
-        fill_color = (0, 0, 0, 128)
+        # Fully Transparent background
+        fill_color = (0, 0, 0, 0)
         outline_color = (255, 255, 255, 255)
 
     # Draw Button Background
