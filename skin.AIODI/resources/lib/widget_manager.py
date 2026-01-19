@@ -76,7 +76,6 @@ class WidgetManager(xbmcgui.WindowXMLDialog):
         elif controlId == 2003: # Movies
             self.load_page('movies')
         elif controlId == 2004: # Save and Close
-            self.save_widgets()
             self.save_and_exit()
         elif controlId == 6001: # Clear All
             self.clear_all()

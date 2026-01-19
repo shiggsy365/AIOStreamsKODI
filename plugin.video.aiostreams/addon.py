@@ -4686,6 +4686,14 @@ ACTION_REGISTRY = {
     'get_all_catalogs': lambda p: get_all_catalogs_action(),
     'get_folder_browser_catalogs': lambda p: get_folder_browser_catalogs_action(),
     'info': lambda p: action_info(p),
+    
+    # Playback actions
+    'play': lambda p: play(p),
+    'play_next': lambda p: play_next(p),
+    'play_next_source': lambda p: play_next_source(p),
+    'play_first': lambda p: play_first(),
+    'select_stream': lambda p: select_stream(),
+    'show_streams': lambda p: show_streams(),
 }
 
 
