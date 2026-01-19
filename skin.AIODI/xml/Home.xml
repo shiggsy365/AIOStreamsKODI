@@ -985,19 +985,6 @@
 <param name="breadcrumbs_label" value="" />
 </include>
 
-<!-- Settings Submenu -->
-<control type="group">
-	<include>FullScreenDimensions</include>
-	<visible>Control.HasFocus(9010) | Control.HasFocus(9011) | Control.HasFocus(9012)</visible>
-	<animation effect="fade" start="0" end="100" time="200">Visible</animation>
-	<animation effect="fade" start="100" end="0" time="200">Hidden</animation>
-	
-	<control type="group">
-		<left>810</left>
-		<top>450</top>
-		<width>300</width>
-		<height>180</height>
-		
 	<!-- RHS Sidebar Menu (Reload, Exit, Widget Manager) -->
 	<control type="group" id="9110">
 		<left>1420</left>
@@ -1007,6 +994,8 @@
 		<visible>ControlGroup(9110).HasFocus</visible>
 		<animation effect="slide" start="500,0" end="0,0" time="300" tween="sine" easing="out">Visible</animation>
 		<animation effect="slide" start="0,0" end="500,0" time="300" tween="sine" easing="in">Hidden</animation>
+		<animation effect="fade" start="0" end="100" time="200">Visible</animation>
+		<animation effect="fade" start="100" end="0" time="200">Hidden</animation>
 		
 		<!-- Background Panel -->
 		<control type="image">
@@ -1080,8 +1069,6 @@
 			</control>
 		</control>
 	</control>
-</control>
-</control>
 
 
 <!-- ========== TV SHOWS WIDGETS (20 ROWS) ========== -->
