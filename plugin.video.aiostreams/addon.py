@@ -503,6 +503,24 @@ def normalize_language_to_3letter(language):
     return lang_map_3.get(lang_lower, lang_lower[:3] if len(lang_lower) >= 3 else 'unk')
 
 
+def format_date_with_ordinal(date_str):
+    """Format YYYY-MM-DD date to 'dd mmm yyyy' format (e.g. 19 Jan 2026)."""
+    import datetime
+    try:
+        if not date_str:
+            return ''
+            
+        # Extract YYYY-MM-DD if ISO format
+        if 'T' in date_str:
+            date_str = date_str.split('T')[0]
+            
+        dt = datetime.datetime.strptime(date_str, '%Y-%m-%d')
+        return dt.strftime('%d %b %Y')
+    except Exception as e:
+        xbmc.log(f'[AIOStreams] Error formatting date {date_str}: {e}', xbmc.LOGDEBUG)
+        return date_str
+
+
 def get_metadata_ttl(meta_data):
     """Determine appropriate cache TTL based on content age.
 
@@ -688,6 +706,11 @@ def create_listitem_with_context(meta, content_type, action_url):
             # Extract date in YYYY-MM-DD format from ISO date
             premiered_date = released.split('T')[0]  # "2008-01-20T12:00:00.000Z" -> "2008-01-20"
             info_tag.setPremiered(premiered_date)
+            
+            # Format and set AiredDate for metadata display (dd mmm yyyy)
+            formatted_date = format_date_with_ordinal(premiered_date)
+            list_item.setProperty('AiredDate', formatted_date)
+            
             # Extract year
             year = premiered_date[:4]
             info_tag.setYear(int(year))
@@ -806,25 +829,38 @@ def create_listitem_with_context(meta, content_type, action_url):
     elif content_type == 'series':
         info_tag.setMediaType('tvshow')
     
-    # Check if watched in Trakt and add overlay
+    # Check if watched in Trakt and add overlay/properties
     if HAS_MODULES and trakt.get_access_token():
         item_id = meta.get('id', '')
         if item_id:
-            if content_type == 'movie':
-                # For movies, check watched status
-                if trakt.is_watched(content_type, item_id):
-                    info_tag.setPlaycount(1)
-                    list_item.setProperty('WatchedOverlay', 'OverlayWatched.png')
-            elif content_type == 'series':
-                # For shows, check if fully watched
-                progress = trakt.get_show_progress(item_id)
-                if progress:
-                    aired = progress.get('aired', 0)
-                    completed = progress.get('completed', 0)
-                    if aired > 0 and aired == completed:
-                        # All episodes watched
+            try:
+                from resources.lib.database.trakt_sync import TraktSyncDatabase
+                db = TraktSyncDatabase()
+                
+                # Retrieve Trakt ID for more accurate DB lookups if needed
+                # (AIOStreams ID usually matches IMDB ID, but DB primarily uses Trakt IDs)
+                trakt_id = db.get_trakt_id_for_item(item_id, content_type)
+                
+                if trakt_id:
+                    # Check watched status using local DB
+                    is_watched = db.is_item_watched(trakt_id, content_type)
+                    if is_watched:
                         info_tag.setPlaycount(1)
                         list_item.setProperty('WatchedOverlay', 'OverlayWatched.png')
+                        list_item.setProperty('watched', 'true')
+                    
+                    # Check for bookmarks (playback progress)
+                    bookmark = db.get_bookmark(trakt_id)
+                    if bookmark:
+                        percent = bookmark.get('percent_played', 0)
+                        if percent > 0:
+                            list_item.setProperty('PercentPlayed', str(int(percent)))
+                            # Set StartOffset for Kodi's internal resume prompt
+                            resume_time = bookmark.get('resume_time', 0)
+                            if resume_time > 0:
+                                list_item.setProperty('StartOffset', str(resume_time))
+            except Exception as e:
+                xbmc.log(f'[AIOStreams] Error setting watched/bookmark status for {item_id}: {e}', xbmc.LOGDEBUG)
     
     # Set artwork
     art = {}
@@ -2696,37 +2732,41 @@ def trakt_watchlist(params=None):
         except Exception as e:
             xbmc.log(f'[AIOStreams] Auto-sync failed: {e}', xbmc.LOGWARNING)
     
-    # Fetch from database (instant) - use activities sync database
-    try:
-        from resources.lib.database.trakt_sync.activities import TraktSyncDatabase
-        db = TraktSyncDatabase()
-        
-        # Query watchlist from database
-        mediatype_filter = 'movie' if media_type == 'movies' else 'show'
-        items_raw = db.fetchall(
-            "SELECT * FROM watchlist WHERE mediatype=? ORDER BY listed_at DESC",
-            (mediatype_filter,)
-        )
-        
-        if not items_raw:
-            # Fallback to old Trakt API method if database is empty
-            xbmc.log('[AIOStreams] Watchlist database empty, using Trakt API fallback', xbmc.LOGDEBUG)
-            items = trakt.get_watchlist(media_type)
-        else:
-            # Convert database format to Trakt API format for compatibility
-            items = []
-            for row in items_raw:
-                item_wrapper = {
-                    'listed_at': row.get('listed_at'),
-                    media_type[:-1] if media_type.endswith('s') else media_type: {
-                        'ids': {
-                            'trakt': row.get('trakt_id'),
-                            'imdb': row.get('imdb_id')
+        # Fetch from database (instant) - use activities sync database
+        try:
+            from resources.lib.database.trakt_sync.activities import TraktSyncDatabase
+            db = TraktSyncDatabase()
+            
+            # Query watchlist from database using helper which unpickles metadata
+            mediatype_filter = 'movie' if media_type == 'movies' else 'show'
+            items_raw = db.get_watchlist_items(mediatype_filter)
+            
+            if not items_raw:
+                # Fallback to old Trakt API method if database is empty
+                xbmc.log('[AIOStreams] Watchlist database empty, using Trakt API fallback', xbmc.LOGDEBUG)
+                items = trakt.get_watchlist(media_type)
+            else:
+                # Convert database format to Trakt API format for compatibility
+                items = []
+                for row in items_raw:
+                    # Use metadata if available (contains extended info)
+                    content_key = media_type[:-1] if media_type.endswith('s') else media_type
+                    if row.get('metadata'):
+                        item_data = row['metadata']
+                    else:
+                        item_data = {
+                            'ids': {
+                                'trakt': row.get('trakt_id'),
+                                'imdb': row.get('imdb_id')
+                            }
                         }
+
+                    item_wrapper = {
+                        'listed_at': row.get('listed_at'),
+                        content_key: item_data
                     }
-                }
-                items.append(item_wrapper)
-    except Exception as e:
+                    items.append(item_wrapper)
+        except Exception as e:
         xbmc.log(f'[AIOStreams] Error accessing watchlist database: {e}', xbmc.LOGWARNING)
         # Fallback to old method
         items = trakt.get_watchlist(media_type)
@@ -3112,6 +3152,48 @@ def trakt_next_up():
         if art:
             list_item.setArt(art)
 
+        # Enhancement: Add Director, Duration, and formatted Release Date
+        if meta_data:
+            # Add Duration (Runtime) from show metadata
+            runtime = meta_data.get('runtime', 0)
+            if runtime:
+                try:
+                    info_tag.setDuration(int(runtime) * 60)
+                except:
+                    pass
+            
+            # Add Directors from show metadata
+            app_extras = meta_data.get('app_extras', {})
+            directors = app_extras.get('directors', [])
+            if directors:
+                info_tag.setDirectors([d.get('name', '') for d in directors if d.get('name')])
+            elif meta_data.get('director'):
+                info_tag.setDirectors([d.strip() for d in str(meta_data['director']).split(',') if d.strip()])
+
+        # Add PercentPlayed and Watched status from database
+        try:
+            # We already have episodes in the results, but let's check for bookmarks
+            # The ep_data from get_next_up_episodes includes show_trakt_id and episode_trakt_id
+            episode_trakt_id = ep_data.get('episode_trakt_id')
+            if episode_trakt_id:
+                bookmark = db.get_bookmark(episode_trakt_id)
+                if bookmark:
+                    percent = bookmark.get('percent_played', 0)
+                    if percent > 0:
+                        list_item.setProperty('PercentPlayed', str(int(percent)))
+                        # Set StartOffset for resume
+                        resume_time = bookmark.get('resume_time', 0)
+                        if resume_time > 0:
+                            list_item.setProperty('StartOffset', str(resume_time))
+
+                # Check if watched (though Next Up by definition is unwatched, bookmarks might be near end)
+                # This is more for the 'watched' indicator if it were somehow marked
+                is_watched = db.is_item_watched(episode_trakt_id, 'episode', season, episode)
+                if is_watched:
+                    list_item.setProperty('watched', 'true')
+        except:
+            pass
+
         # Build context menu
         episode_media_id = f"{show_imdb}:{season}:{episode}"
         episode_title_str = f'{show_title} - S{season:02d}E{episode:02d}'
@@ -3147,6 +3229,13 @@ def trakt_next_up():
         if show_imdb:
             url = get_url(action='play', content_type='series', imdb_id=show_imdb, season=season, episode=episode, title=episode_title_str, poster=poster, fanart=fanart, clearlogo=logo)
             list_item.setProperty('IsPlayable', 'true')
+            
+            # Format and set aired date for metadata display
+            air_date = ep_data.get('air_date')
+            if air_date:
+                formatted_date = format_date_with_ordinal(air_date)
+                list_item.setProperty('AiredDate', formatted_date)
+                
             xbmcplugin.addDirectoryItem(HANDLE, url, list_item, False)
 
     # Push Next Up data to window properties for instant widget updates

@@ -1213,9 +1213,24 @@
 	</variable>
 
 	<variable name="CurrentWidgetInfo">
+		<!-- Focused Widget Manager item -->
 		<value condition="Control.HasFocus(7100)">$INFO[Container(7100).ListItem.Year]$INFO[Container(7100).ListItem.Genre,  |  ]</value>
-		<value condition="!String.IsEmpty(Container($VAR[ActiveWidgetID]).ListItem.Season)">$VAR[EpisodeInfoPadded]</value>
-		<value>$INFO[Container($VAR[ActiveWidgetID]).ListItem.Year]$INFO[Container($VAR[ActiveWidgetID]).ListItem.Genre,  |  ]</value>
+		
+		<!-- Trakt Next Up (10100) -->
+		<value condition="String.IsEqual($VAR[ActiveWidgetID],10100) + !String.IsEmpty(Container(10100).ListItem.Property(AiredDate))">
+			$INFO[Container(10100).ListItem.Property(AiredDate)]$INFO[Container(10100).ListItem.Duration,  |  , min]$INFO[Container(10100).ListItem.Director,  |  ]
+		</value>
+		
+		<!-- Episodes (Show/Season info + Title) -->
+		<value condition="!String.IsEmpty(Container($VAR[ActiveWidgetID]).ListItem.Season)">$VAR[EpisodeInfoPadded]$INFO[Container($VAR[ActiveWidgetID]).ListItem.Duration,  |  , min]</value>
+		
+		<!-- Default Trakt/Watchlist/Movies (Year | Genre | Released | Duration | Director) -->
+		<value condition="!String.IsEmpty(Container($VAR[ActiveWidgetID]).ListItem.Property(AiredDate))">
+			$INFO[Container($VAR[ActiveWidgetID]).ListItem.Property(AiredDate)]$INFO[Container($VAR[ActiveWidgetID]).ListItem.Genre,  |  ]$INFO[Container($VAR[ActiveWidgetID]).ListItem.Duration,  |  , min]$INFO[Container($VAR[ActiveWidgetID]).ListItem.Director,  |  ]
+		</value>
+		
+		<!-- Generic Fallback -->
+		<value>$INFO[Container($VAR[ActiveWidgetID]).ListItem.Year]$INFO[Container($VAR[ActiveWidgetID]).ListItem.Genre,  |  ]$INFO[Container($VAR[ActiveWidgetID]).ListItem.Duration,  |  , min]</value>
 	</variable>
 	<variable name="SeasonNumberPadded">
 		<value condition="Integer.IsLess(ListItem.Season,10)">S0$INFO[ListItem.Season]</value>
@@ -1244,32 +1259,23 @@
 
 	<!-- Widget Manager: Trakt Widget Colors -->
 	<variable name="TraktWidgetColor">
-		<value condition="String.IsEqual(ListItem.Property(is_trakt),true)">FFFFFF00</value>
 		<value>FFFFFFFF</value>
 	</variable>
 	<variable name="TraktWidgetTypeColor">
-		<value condition="String.IsEqual(ListItem.Property(is_trakt),true)">FFFFFF00</value>
 		<value>grey</value>
 	</variable>
 	<variable name="TraktWidgetFocusColor">
-		<value condition="String.IsEqual(ListItem.Property(is_trakt),true)">FFFFFF00</value>
 		<value>button_focus</value>
 	</variable>
 
-	<!-- Widget Manager: Available Catalog Colors (Red if in use) -->
+	<!-- Widget Manager: Available Catalog Colors -->
 	<variable name="AvailableCatalogColor">
-		<value condition="String.IsEqual(ListItem.Property(is_used),true)">FFFF0000</value>
-		<value condition="String.IsEqual(ListItem.Property(is_trakt),true)">FFFFFF00</value>
 		<value>FFFFFFFF</value>
 	</variable>
 	<variable name="AvailableCatalogTypeColor">
-		<value condition="String.IsEqual(ListItem.Property(is_used),true)">FFFF0000</value>
-		<value condition="String.IsEqual(ListItem.Property(is_trakt),true)">FFFFFF00</value>
 		<value>grey</value>
 	</variable>
 	<variable name="AvailableCatalogFocusColor">
-		<value condition="String.IsEqual(ListItem.Property(is_used),true)">FFFF0000</value>
-		<value condition="String.IsEqual(ListItem.Property(is_trakt),true)">FFFFFF00</value>
 		<value>button_focus</value>
 	</variable>
 </includes>

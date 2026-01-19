@@ -399,7 +399,7 @@ class AIOStreamsPlayer(xbmc.Player):
         except Exception as e:
             xbmc.log(f'[AIOStreams] Error sending JSONRPC signal: {e}', xbmc.LOGERROR)
 
-    def onPlayBackEnded(self):
+    def onPlayBackPaused(self):
         """Called when playback is paused."""
         if not self.should_scrobble() or not self.started:
             return

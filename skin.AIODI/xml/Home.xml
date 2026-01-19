@@ -422,7 +422,7 @@
 				<onup>9007</onup>
 				<ondown>noop</ondown>
 				<onfocus>Skin.SetString(SideMenuFocus,settings)</onfocus>
-				<onleft>SetFocus(9101)</onleft>
+				<onleft>SetFocus(9110)</onleft>
 				<onright>SetFocus($VAR[ActiveWidgetID])</onright>
 				<onclick>ActivateWindow(settings)</onclick>
 			</control>
@@ -998,55 +998,86 @@
 		<width>300</width>
 		<height>180</height>
 		
+	<!-- RHS Sidebar Menu (Reload, Exit, Widget Manager) -->
+	<control type="group" id="9110">
+		<left>1420</left>
+		<top>0</top>
+		<width>500</width>
+		<height>1080</height>
+		<visible>Control.HasFocus(9110)</visible>
+		<animation effect="slide" start="500,0" end="0,0" time="300" tween="sine" easing="out">Visible</animation>
+		<animation effect="slide" start="0,0" end="500,0" time="300" tween="sine" easing="in">Hidden</animation>
+		
+		<!-- Background Panel -->
 		<control type="image">
-			<width>300</width>
-			<height>180</height>
+			<left>0</left>
+			<top>0</top>
+			<width>500</width>
+			<height>100%</height>
 			<texture colordiffuse="E6000000">colors/white.png</texture>
 		</control>
-	
-	<control type="grouplist" id="9101">
-		<left>10</left>
-		<top>10</top>
-		<width>280</width>
-		<height>150</height>
-		<onright>9008</onright>
-		<onback>9008</onback>
-		<control type="button" id="9010">
-			<width>280</width>
-			<height>50</height>
-			<font>font13</font>
-			<label>Reload Skin</label>
-			<textcolor>white</textcolor>
-			<focusedcolor>red</focusedcolor>
-			<texturefocus />
-			<texturenofocus />
-			<onclick>ReloadSkin()</onclick>
-			<onclick>SetFocus(9008)</onclick>
+
+		<!-- Header -->
+		<control type="label">
+			<left>20</left>
+			<top>60</top>
+			<width>460</width>
+			<height>60</height>
+			<font>font24_title</font>
+			<textcolor>FFFFFFFF</textcolor>
+			<label>Menu</label>
+			<align>center</align>
 		</control>
-		<control type="button" id="9011">
-			<width>280</width>
-			<height>50</height>
-			<font>font13</font>
-			<label>Exit AIODI</label>
-			<textcolor>white</textcolor>
-			<focusedcolor>red</focusedcolor>
-			<texturefocus />
-			<texturenofocus />
-			<onclick>Quit()</onclick>
-			<onclick>SetFocus(9008)</onclick>
-		</control>
-		<control type="button" id="9012">
-			<width>280</width>
-			<height>50</height>
-			<font>font13</font>
-			<label>AIO Widget Manager</label>
-			<textcolor>white</textcolor>
-			<focusedcolor>red</focusedcolor>
-			<texturefocus />
-			<texturenofocus />
-			<texturenofocus />
-			<onclick>RunScript(special://skin/resources/lib/widget_manager.py)</onclick>
-			<onclick>SetFocus(9008)</onclick>
+
+		<!-- Menu Buttons -->
+		<control type="grouplist" id="9111">
+			<left>50</left>
+			<top>180</top>
+			<width>400</width>
+			<height>500</height>
+			<onright>9008</onright>
+			<onleft>9008</onleft>
+			<onback>9008</onback>
+			<itemgap>20</itemgap>
+			
+			<control type="button" id="9010">
+				<width>400</width>
+				<height>60</height>
+				<font>font15</font>
+				<label>Reload Skin</label>
+				<textcolor>white</textcolor>
+				<focusedcolor>button_focus</focusedcolor>
+				<texturefocus colordiffuse="button_focus">colors/white.png</texturefocus>
+				<texturenofocus />
+				<onclick>ReloadSkin()</onclick>
+				<onclick>SetFocus(9008)</onclick>
+			</control>
+			
+			<control type="button" id="9012">
+				<width>400</width>
+				<height>60</height>
+				<font>font15</font>
+				<label>AIO Widget Manager</label>
+				<textcolor>white</textcolor>
+				<focusedcolor>button_focus</focusedcolor>
+				<texturefocus colordiffuse="button_focus">colors/white.png</texturefocus>
+				<texturenofocus />
+				<onclick>RunScript(special://skin/resources/lib/widget_manager.py)</onclick>
+				<onclick>SetFocus(9008)</onclick>
+			</control>
+
+			<control type="button" id="9011">
+				<width>400</width>
+				<height>60</height>
+				<font>font15</font>
+				<label>Exit AIODI</label>
+				<textcolor>white</textcolor>
+				<focusedcolor>button_focus</focusedcolor>
+				<texturefocus colordiffuse="button_focus">colors/white.png</texturefocus>
+				<texturenofocus />
+				<onclick>Quit()</onclick>
+				<onclick>SetFocus(9008)</onclick>
+			</control>
 		</control>
 	</control>
 </control>

@@ -604,7 +604,7 @@ class TraktSyncDatabase(Database):
 
         try:
             if content_type:
-                sql = "SELECT * FROM watchlist WHERE content_type = ? ORDER BY listed_at DESC"
+                sql = "SELECT * FROM watchlist WHERE mediatype = ? ORDER BY listed_at DESC"
                 rows = self.fetch_all(sql, (content_type,))
             else:
                 sql = "SELECT * FROM watchlist ORDER BY listed_at DESC"
@@ -711,7 +711,8 @@ class TraktSyncDatabase(Database):
                 'mediatype': row['mediatype'],
                 'imdb_id': row['imdb_id'],
                 'listed_at': row['listed_at'],
-                'last_updated': row['last_updated']
+                'last_updated': row['last_updated'],
+                'metadata': pickle.loads(row['metadata']) if row.get('metadata') else None
             }
         except Exception as e:
             xbmc.log(f'[AIOStreams] Error unpacking watchlist row: {e}', xbmc.LOGERROR)
@@ -909,4 +910,50 @@ class TraktSyncDatabase(Database):
             return True
         except Exception as e:
             xbmc.log(f'[AIOStreams] DB error during cache cleanup: {e}', xbmc.LOGWARNING)
+            return False
+    def get_trakt_id_for_item(self, imdb_id, mediatype):
+        """Retrieve Trakt ID for an item by its IMDB ID."""
+        if not self.connection and not self.connect():
+            return None
+        try:
+            table = 'movies' if mediatype == 'movie' else 'shows'
+            sql = f"SELECT trakt_id FROM {table} WHERE imdb_id = ?"
+            row = self.fetch_one(sql, (imdb_id,))
+            return row['trakt_id'] if row else None
+        except Exception as e:
+            xbmc.log(f'[AIOStreams] DB error getting trakt_id: {e}', xbmc.LOGWARNING)
+            return None
+
+    def get_bookmark(self, trakt_id):
+        """Retrieve playback bookmark for an item."""
+        if not self.connection and not self.connect():
+            return None
+        try:
+            sql = "SELECT resume_time, percent_played FROM bookmarks WHERE trakt_id = ?"
+            return self.fetch_one(sql, (trakt_id,))
+        except Exception as e:
+            xbmc.log(f'[AIOStreams] DB error getting bookmark: {e}', xbmc.LOGWARNING)
+            return None
+
+    def is_item_watched(self, trakt_id, mediatype, season=None, episode=None):
+        """Check if an item is marked as watched."""
+        if not self.connection and not self.connect():
+            return False
+        try:
+            if mediatype == 'movie':
+                sql = "SELECT watched FROM movies WHERE trakt_id = ?"
+                row = self.fetch_one(sql, (trakt_id,))
+                return bool(row and row['watched'])
+            elif mediatype == 'episode':
+                sql = "SELECT watched FROM episodes WHERE show_trakt_id = ? AND season = ? AND episode = ?"
+                row = self.fetch_one(sql, (trakt_id, season, episode))
+                return bool(row and row['watched'])
+            elif mediatype == 'series':
+                # Check show statistics
+                sql = "SELECT unwatched_episodes FROM shows WHERE trakt_id = ?"
+                row = self.fetch_one(sql, (trakt_id,))
+                return bool(row and row['unwatched_episodes'] == 0)
+            return False
+        except Exception as e:
+            xbmc.log(f'[AIOStreams] DB error checking watched status: {e}', xbmc.LOGWARNING)
             return False

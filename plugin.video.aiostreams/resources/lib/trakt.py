@@ -549,7 +549,7 @@ def get_watchlist(list_type='movies', force_refresh=False, check_delta=True):
             if check_delta and last_sync:
                 xbmc.log(f'[AIOStreams] Checking for watchlist changes since {last_sync}', xbmc.LOGDEBUG)
                 extra_headers = {'X-Start-Date': last_sync}
-                delta = call_trakt(f'sync/watchlist/{list_type}', params={'limit': 1000}, extra_headers=extra_headers)
+                delta = call_trakt(f'sync/watchlist/{list_type}', params={'limit': 1000, 'extended': 'full'}, extra_headers=extra_headers)
 
                 if delta and isinstance(delta, list):
                     updated = list(cached)
@@ -573,7 +573,7 @@ def get_watchlist(list_type='movies', force_refresh=False, check_delta=True):
     all_items = []
     page = 1
     while True:
-        items = call_trakt(f'sync/watchlist/{list_type}', params={'page': page, 'limit': 100})
+        items = call_trakt(f'sync/watchlist/{list_type}', params={'page': page, 'limit': 100, 'extended': 'full'})
         if not items:
             break
         all_items.extend(items)

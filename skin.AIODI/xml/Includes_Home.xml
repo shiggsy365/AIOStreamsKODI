@@ -107,6 +107,27 @@
 							<aspectratio align="center" aligny="center">scale</aspectratio>
 							<texture background="true">$INFO[ListItem.Icon]</texture>
 						</control>
+						<!-- Progress Indicator -->
+						<control type="label">
+							<left>10</left>
+							<top>10</top>
+							<width>100</width>
+							<height>30</height>
+							<font>font12</font>
+							<textcolor>FFFFFFFF</textcolor>
+							<shadowcolor>FF000000</shadowcolor>
+							<label>$INFO[ListItem.Property(PercentPlayed),,%]</label>
+							<visible>!String.IsEmpty(ListItem.Property(PercentPlayed))</visible>
+						</control>
+						<!-- Watched Indicator -->
+						<control type="image">
+							<left>195</left>
+							<top>5</top>
+							<width>30</width>
+							<height>30</height>
+							<texture colordiffuse="FF00FF00">overlays/checkbox-on.png</texture>
+							<visible>String.IsEqual(ListItem.Property(watched),true) | [Integer.IsGreater(ListItem.Playcount,0) + String.IsEmpty(ListItem.Property(PercentPlayed))]</visible>
+						</control>
 					</itemlayout>
 					<focusedlayout width="240" height="360">
 						<control type="group">
@@ -119,6 +140,27 @@
 								<bordertexture border="3" colordiffuse="FFFF0000">colors/white.png</bordertexture>
 								<bordersize>3</bordersize>
 								<borderradius>8</borderradius>
+							</control>
+							<!-- Progress Indicator -->
+							<control type="label">
+								<left>10</left>
+								<top>10</top>
+								<width>100</width>
+								<height>30</height>
+								<font>font12</font>
+								<textcolor>FFFFFFFF</textcolor>
+								<shadowcolor>FF000000</shadowcolor>
+								<label>$INFO[ListItem.Property(PercentPlayed),,%]</label>
+								<visible>!String.IsEmpty(ListItem.Property(PercentPlayed))</visible>
+							</control>
+							<!-- Watched Indicator -->
+							<control type="image">
+								<left>195</left>
+								<top>5</top>
+								<width>30</width>
+								<height>30</height>
+								<texture colordiffuse="FF00FF00">overlays/checkbox-on.png</texture>
+								<visible>String.IsEqual(ListItem.Property(watched),true) | [Integer.IsGreater(ListItem.Playcount,0) + String.IsEmpty(ListItem.Property(PercentPlayed))]</visible>
 							</control>
 						</control>
 					</focusedlayout>
@@ -185,6 +227,27 @@
 							<aspectratio align="center" aligny="center">scale</aspectratio>
 							<texture background="true">$INFO[ListItem.Icon]</texture>
 						</control>
+						<!-- Progress Indicator -->
+						<control type="label">
+							<left>10</left>
+							<top>10</top>
+							<width>100</width>
+							<height>30</height>
+							<font>font12</font>
+							<textcolor>FFFFFFFF</textcolor>
+							<shadowcolor>FF000000</shadowcolor>
+							<label>$INFO[ListItem.Property(PercentPlayed),,%]</label>
+							<visible>!String.IsEmpty(ListItem.Property(PercentPlayed))</visible>
+						</control>
+						<!-- Watched Indicator -->
+						<control type="image">
+							<left>355</left>
+							<top>5</top>
+							<width>30</width>
+							<height>30</height>
+							<texture colordiffuse="FF00FF00">overlays/checkbox-on.png</texture>
+							<visible>String.IsEqual(ListItem.Property(watched),true) | [Integer.IsGreater(ListItem.Playcount,0) + String.IsEmpty(ListItem.Property(PercentPlayed))]</visible>
+						</control>
 					</itemlayout>
 					<focusedlayout width="410" height="235">
 						<control type="group">
@@ -197,6 +260,27 @@
 								<bordertexture border="3" colordiffuse="FFFF0000">colors/white.png</bordertexture>
 								<bordersize>3</bordersize>
 								<borderradius>8</borderradius>
+							</control>
+							<!-- Progress Indicator -->
+							<control type="label">
+								<left>10</left>
+								<top>10</top>
+								<width>100</width>
+								<height>30</height>
+								<font>font12</font>
+								<textcolor>FFFFFFFF</textcolor>
+								<shadowcolor>FF000000</shadowcolor>
+								<label>$INFO[ListItem.Property(PercentPlayed),,%]</label>
+								<visible>!String.IsEmpty(ListItem.Property(PercentPlayed))</visible>
+							</control>
+							<!-- Watched Indicator -->
+							<control type="image">
+								<left>355</left>
+								<top>5</top>
+								<width>30</width>
+								<height>30</height>
+								<texture colordiffuse="FF00FF00">overlays/checkbox-on.png</texture>
+								<visible>String.IsEqual(ListItem.Property(watched),true) | [Integer.IsGreater(ListItem.Playcount,0) + String.IsEmpty(ListItem.Property(PercentPlayed))]</visible>
 							</control>
 						</control>
 					</focusedlayout>

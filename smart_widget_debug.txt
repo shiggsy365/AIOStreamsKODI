@@ -5272,3 +5272,5 @@ Mapped Page: tvshows
 Widget retrieved: None
 Mapped Page: home
 Widget retrieved: {'label': 'Trakt Watchlist Series', 'path': 'plugin://plugin.video.aiostreams/?action=trakt_watchlist&media_type=shows', 'type': 'series', 'is_trakt': True}
+Mapped Page: home
+Widget retrieved: {'label': 'Trakt Watchlist Series', 'path': 'plugin://plugin.video.aiostreams/?action=trakt_watchlist&media_type=shows', 'type': 'series', 'is_trakt': True}
