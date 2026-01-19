@@ -167,7 +167,7 @@
 				<top>7</top>
 				<width>71</width>
 				<height>71</height>
-				<texture>https://raw.githubusercontent.com/shiggsy365/AIOStreamsKODI/main/docs/plugin.video.aiostreams/resources/icon(2).png</texture>
+				<texture>logonew.png</texture>
 				<colordiffuse>FFFFFFFF</colordiffuse>
 				<visible>!Control.HasFocus(9001)</visible>
 			</control>
