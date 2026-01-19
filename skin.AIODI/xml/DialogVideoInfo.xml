@@ -70,8 +70,8 @@
                             <textcolor>FFFFFFFF</textcolor>
                             <focusedcolor>FFFFFFFF</focusedcolor>
                             <colordiffuse>FFFFFFFF</colordiffuse>
-                            <texturefocus>$VAR[TrailerButtonFocusVar]</texturefocus>
-                            <texturenofocus>$VAR[TrailerButtonNoFocusVar]</texturenofocus>
+                            <texturefocus>special://skin/media/buttons/tr_trailer_fo.png</texturefocus>
+                            <texturenofocus>special://skin/media/buttons/tr_trailer_nofo.png</texturenofocus>
 							<onclick condition="!String.IsEmpty(Window(Home).Property(InfoWindow.Trailer))">Dialog.Close(movieinformation)</onclick>
 							<onclick condition="!String.IsEmpty(Window(Home).Property(InfoWindow.Trailer))">PlayMedia($INFO[Window(Home).Property(InfoWindow.Trailer)])</onclick>
 							<onclick condition="String.IsEmpty(Window(Home).Property(InfoWindow.Trailer))">Notification(No Trailers Found, No trailer available for this item, 3000)</onclick>
@@ -93,8 +93,8 @@
                             <textcolor>FFFFFFFF</textcolor>
                             <focusedcolor>FFFFFFFF</focusedcolor>
                             <colordiffuse>FFFFFFFF</colordiffuse>
-                            <texturefocus>$VAR[PlayButtonFocusVar]</texturefocus>
-                            <texturenofocus>$VAR[PlayButtonNoFocusVar]</texturenofocus>
+                            <texturefocus>special://skin/media/buttons/tr_play_fo.png</texturefocus>
+                            <texturenofocus>special://skin/media/buttons/tr_play_nofo.png</texturenofocus>
 							<onclick condition="String.IsEqual(ListItem.DBType,tvshow) | String.IsEqual(ListItem.DBType,season) | String.IsEqual(ListItem.DBType,series)">ActivateWindow(Videos,$INFO[ListItem.FileNameAndPath],return)</onclick>
 							<onclick condition="!String.IsEqual(ListItem.DBType,tvshow) + !String.IsEqual(ListItem.DBType,season) + !String.IsEqual(ListItem.DBType,series)">PlayMedia($INFO[ListItem.FileNameAndPath])</onclick>
 							<visible>!String.IsEmpty(ListItem.Title) | !String.IsEmpty(ListItem.Label)</visible>
@@ -116,8 +116,8 @@
                             <textcolor>FFFFFFFF</textcolor>
                             <focusedcolor>FFFFFFFF</focusedcolor>
                             <colordiffuse>FFFFFFFF</colordiffuse>
-                            <texturefocus>$VAR[WatchlistButtonFocusVar]</texturefocus>
-                            <texturenofocus>$VAR[WatchlistButtonNoFocusVar]</texturenofocus>
+                            <texturefocus>special://skin/media/buttons/tr_watchlist_add_fo.png</texturefocus>
+                            <texturenofocus>special://skin/media/buttons/tr_watchlist_add_nofo.png</texturenofocus>
                             <onclick condition="String.IsEqual(Window(Home).Property(InfoWindow.IsWatchlist),true)">RunScript(plugin.video.aiostreams, action=trakt_remove_watchlist, dbid=$INFO[ListItem.DBID], type=$INFO[ListItem.DBType])</onclick>
                             <onclick condition="!String.IsEqual(Window(Home).Property(InfoWindow.IsWatchlist),true)">RunScript(plugin.video.aiostreams, action=trakt_add_watchlist, dbid=$INFO[ListItem.DBID], type=$INFO[ListItem.DBType])</onclick>
                             <onup>2001</onup>
@@ -138,8 +138,8 @@
                             <textcolor>FFFFFFFF</textcolor>
                             <focusedcolor>FFFFFFFF</focusedcolor>
                             <colordiffuse>FFFFFFFF</colordiffuse>
-                            <texturefocus>$VAR[WatchedButtonFocusVar]</texturefocus>
-                            <texturenofocus>$VAR[WatchedButtonNoFocusVar]</texturenofocus>
+                            <texturefocus>special://skin/media/buttons/tr_watched_add_fo.png</texturefocus>
+                            <texturenofocus>special://skin/media/buttons/tr_watched_add_nofo.png</texturenofocus>
                             <onclick condition="String.IsEqual(Window(Home).Property(InfoWindow.IsWatched),true)">RunScript(plugin.video.aiostreams, action=trakt_remove_watched, dbid=$INFO[ListItem.DBID], type=$INFO[ListItem.DBType])</onclick>
                             <onclick condition="!String.IsEqual(Window(Home).Property(InfoWindow.IsWatched),true)">RunScript(plugin.video.aiostreams, action=trakt_mark_watched, dbid=$INFO[ListItem.DBID], type=$INFO[ListItem.DBType])</onclick>
                             <onup>8</onup>
