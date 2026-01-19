@@ -3083,12 +3083,17 @@ def trakt_next_up():
         episode_thumb = ''
         episode_title = f'Episode {episode}'
         episode_overview = ''
+        # Get air date from database query (already included in ep_data)
+        episode_air_date = ep_data.get('air_date', '')
 
         # 1. First, try to get episode-specific metadata from database (instant!)
         episode_meta = ep_data.get('episode_metadata')
         if episode_meta:
             episode_title = episode_meta.get('title', episode_title)
             episode_overview = episode_meta.get('overview', '')
+            # Get air date from episode metadata if not already set
+            if not episode_air_date:
+                episode_air_date = episode_meta.get('first_aired', '') or episode_meta.get('aired', '')
             xbmc.log(f'[AIOStreams] Next Up: Using DATABASE episode metadata: {episode_title}', xbmc.LOGDEBUG)
 
         if show_imdb:
@@ -3099,12 +3104,10 @@ def trakt_next_up():
                 xbmc.log(f'[AIOStreams] Next Up: Using DATABASE show metadata for {show_title}', xbmc.LOGDEBUG)
             else:
                 # 3. Try file-based meta cache (slower than DB, faster than API)
-                cached_ref = None
-                if HAS_MODULES:
-                    cached_ref = cache.get_cached_meta('series', show_imdb)
-                    if cached_ref and 'meta' in cached_ref:
-                        meta_data = cached_ref['meta']
-                        xbmc.log(f'[AIOStreams] Next Up: Using FILE CACHED metadata for {show_title}', xbmc.LOGDEBUG)
+                cached_meta = cache.get_cached_meta('series', show_imdb)
+                if cached_meta and 'meta' in cached_meta:
+                    meta_data = cached_meta['meta']
+                    xbmc.log(f'[AIOStreams] Next Up: Using FILE CACHED metadata for {show_title}', xbmc.LOGDEBUG)
 
                 # 4. If still nothing, fetch from API (slowest)
                 if not meta_data:
@@ -3142,6 +3145,9 @@ def trakt_next_up():
                             if not episode_meta:
                                 episode_title = video.get('title', episode_title)
                                 episode_overview = video.get('description', '')
+                                # Also try to get air date from video metadata
+                                if not episode_air_date:
+                                    episode_air_date = video.get('released', '') or video.get('first_aired', '')
                             break
 
         label = f'{show_title} S{season:02d}E{episode:02d}'
@@ -3154,6 +3160,13 @@ def trakt_next_up():
         info_tag.setEpisode(episode)
         info_tag.setMediaType('episode')
         info_tag.setPlot(episode_overview)
+        
+        # Set air date if available (shows in subtitle)
+        if episode_air_date:
+            # Format: YYYY-MM-DD or YYYY-MM-DDTHH:MM:SS
+            air_date_str = episode_air_date.split('T')[0] if 'T' in episode_air_date else episode_air_date
+            info_tag.setPremiered(air_date_str)
+            info_tag.setFirstAired(air_date_str)
 
         # Set artwork
         art = {}
