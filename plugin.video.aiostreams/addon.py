@@ -710,6 +710,8 @@ def create_listitem_with_context(meta, content_type, action_url):
             # Format and set AiredDate for metadata display (dd mmm yyyy)
             formatted_date = format_date_with_ordinal(premiered_date)
             list_item.setProperty('AiredDate', formatted_date)
+            # Also set as label2 for list views
+            list_item.setLabel2(formatted_date)
             
             # Extract year
             year = premiered_date[:4]
