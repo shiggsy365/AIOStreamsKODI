@@ -49,40 +49,40 @@
                 <ondown>3000</ondown>
                 
                 <control type="button" id="2001">
-                    <width>120</width>
+                    <width>240</width>
                     <height>60</height>
                     <font></font>
                     <label />
                     <align>center</align>
                     <!-- OnClick handled by Python -->
-                    <texturefocus colordiffuse="button_focus">icons/widgetmanager/home.png</texturefocus>
-                    <texturenofocus>icons/widgetmanager/home.png</texturenofocus>
+                    <texturefocus>buttons/home_fo.svg</texturefocus>
+                    <texturenofocus>buttons/home_nofo.svg</texturenofocus>
                     <textcolor>00FFFFFF</textcolor>
                     <focusedcolor>00FFFFFF</focusedcolor>
                 </control>
 
                 <control type="button" id="2002">
-                    <width>120</width>
+                    <width>240</width>
                     <height>60</height>
                     <font></font>
                     <label />
                     <align>center</align>
                     <!-- OnClick handled by Python -->
-                    <texturefocus colordiffuse="button_focus">icons/widgetmanager/tvshows.png</texturefocus>
-                    <texturenofocus>icons/widgetmanager/tvshows.png</texturenofocus>
+                    <texturefocus>buttons/tvshows_fo.svg</texturefocus>
+                    <texturenofocus>buttons/tvshows_nofo.svg</texturenofocus>
                     <textcolor>00FFFFFF</textcolor>
                     <focusedcolor>00FFFFFF</focusedcolor>
                 </control>
 
                 <control type="button" id="2003">
-                    <width>120</width>
+                    <width>240</width>
                     <height>60</height>
                     <font></font>
                     <label />
                     <align>center</align>
                     <!-- OnClick handled by Python -->
-                    <texturefocus colordiffuse="button_focus">icons/widgetmanager/movies.png</texturefocus>
-                    <texturenofocus>icons/widgetmanager/movies.png</texturenofocus>
+                    <texturefocus>buttons/movies_fo.svg</texturefocus>
+                    <texturenofocus>buttons/movies_nofo.svg</texturenofocus>
                     <textcolor>00FFFFFF</textcolor>
                     <focusedcolor>00FFFFFF</focusedcolor>
                     <ondown>3000</ondown>

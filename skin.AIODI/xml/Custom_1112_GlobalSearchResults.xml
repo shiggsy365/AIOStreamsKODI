@@ -101,14 +101,14 @@
                 <control type="button" id="50">
                     <left>0</left>
                     <top>0</top>
-                    <width>120</width>
+                    <width>240</width>
                     <height>60</height>
                     <font></font>
-                    <label>$INFO[Window(10000).Property(GlobalSearch.MoviesTabLabel)]</label>
+                    <label />
                     <textcolor>00FFFFFF</textcolor>
                     <focusedcolor>00FFFFFF</focusedcolor>
-                    <texturefocus colordiffuse="button_focus">icons/search/movies.png</texturefocus>
-                    <texturenofocus>icons/search/movies.png</texturenofocus>
+                    <texturefocus>buttons/movies_fo.svg</texturefocus>
+                    <texturenofocus>buttons/movies_nofo.svg</texturenofocus>
                     <onup>9000</onup>
                     <ondown>100</ondown>
                     <onright>51</onright>
@@ -119,14 +119,14 @@
                 <control type="button" id="51">
                     <left>340</left>
                     <top>0</top>
-                    <width>120</width>
+                    <width>240</width>
                     <height>60</height>
                     <font></font>
-                    <label>$INFO[Window(10000).Property(GlobalSearch.TVShowsTabLabel)]</label>
+                    <label />
                     <textcolor>00FFFFFF</textcolor>
                     <focusedcolor>00FFFFFF</focusedcolor>
-                    <texturefocus colordiffuse="button_focus">icons/search/tvshows.png</texturefocus>
-                    <texturenofocus>icons/search/tvshows.png</texturenofocus>
+                    <texturefocus>buttons/tvshows_fo.svg</texturefocus>
+                    <texturenofocus>buttons/tvshows_nofo.svg</texturenofocus>
                     <onup>9000</onup>
                     <ondown>101</ondown>
                     <onleft>50</onleft>
@@ -139,14 +139,14 @@
                 <control type="button" id="52">
                     <left>680</left>
                     <top>0</top>
-                    <width>120</width>
+                    <width>240</width>
                     <height>60</height>
                     <font></font>
-                    <label>$INFO[Window(10000).Property(GlobalSearch.YouTubeTabLabel)]</label>
+                    <label />
                     <textcolor>00FFFFFF</textcolor>
                     <focusedcolor>00FFFFFF</focusedcolor>
-                    <texturefocus colordiffuse="button_focus">icons/search/youtube.png</texturefocus>
-                    <texturenofocus>icons/search/youtube.png</texturenofocus>
+                    <texturefocus>buttons/youtube_fo.svg</texturefocus>
+                    <texturenofocus>buttons/youtube_nofo.svg</texturenofocus>
                     <onup>9000</onup>
                     <ondown>102</ondown>
                     <onleft>51</onleft>

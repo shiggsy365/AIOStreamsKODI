@@ -230,6 +230,10 @@ def populate_all():
             else:
                  xbmc.log(f'[info_window_helper] No ID found for related items search', xbmc.LOGWARNING)
 
+            # 3. Check Trakt Status
+            if final_id:
+                get_trakt_status(content_type, final_id)
+
         except Exception as e:
             xbmc.log(f'[info_window_helper] Error in async worker: {e}', xbmc.LOGERROR)
         finally:
@@ -243,6 +247,39 @@ def populate_all():
     t = threading.Thread(target=worker, args=(imdb_id, tmdb_id))
     t.daemon = True
     t.start()
+
+def get_trakt_status(content_type, imdb_id):
+    """Check Trakt status (Watchlist/Watched) using plugin modules."""
+    try:
+        # Add plugin path to sys.path to access modules
+        addon = xbmcaddon.Addon('plugin.video.aiostreams')
+        plugin_path = xbmc.translatePath(addon.getAddonInfo('path'))
+        if plugin_path not in sys.path:
+            sys.path.append(plugin_path)
+        
+        from resources.lib import trakt
+        from resources.lib.globals import g
+        g.init_globals(sys.argv) # Initialize globals if needed
+        
+        win = xbmcgui.Window(10000)
+        
+        # Check Watchlist
+        # For cached check, we might need to ensure cache is initialized or use direct check
+        is_watchlist = trakt.is_in_watchlist(content_type, imdb_id)
+        win.setProperty('InfoWindow.IsWatchlist', 'true' if is_watchlist else 'false')
+        log(f'Set InfoWindow.IsWatchlist: {is_watchlist}')
+        
+        # Check Watched
+        # For movies, easy. For shows, check if fully watched? Or just check if watched in general?
+        # User asked for "Watched" button.
+        is_watched = trakt.is_watched(content_type, imdb_id)
+        win.setProperty('InfoWindow.IsWatched', 'true' if is_watched else 'false')
+        log(f'Set InfoWindow.IsWatched: {is_watched}')
+        
+    except Exception as e:
+        log(f'Error checking Trakt status: {e}', xbmc.LOGERROR)
+
+
 
 if __name__ == '__main__':
     populate_all()

@@ -44,51 +44,102 @@
 						<aspectratio>scale</aspectratio>
 						<texture fallback="DefaultVideo.png" background="true">$VAR[InfoDialogPosterVar]</texture>
 					</control>
-					<!-- Action Buttons under Poster - Vertically Stacked -->
-					<control type="grouplist" id="8000">
+					<!-- Action Buttons under Poster - 2x2 Grid -->
+					<control type="group" id="8000">
 						<left>4</left>
 						<top>810</top>
 						<width>526</width>
-						<height>85</height>
-						<itemgap>10</itemgap>
-						<orientation>horizontal</orientation>
-						<onup>SetFocus(1011)</onup>
-						<ondown>50</ondown>
-						<onright>50</onright>
-						
-						<!-- Custom Trailer Button -->
+						<height>160</height>
+                        <onup>SetFocus(1011)</onup>
+                        <ondown>50</ondown>
+                        <onleft>50</onleft>
+                        <onright>50</onright>
+
+                        <!-- Row 1 Left: Trailer -->
 						<control type="button" id="2001">
-							<width>255</width>
-							<height>85</height>
-							<label>$LOCALIZE[20410]</label>
+                            <left>0</left>
+                            <top>0</top>
+							<width>258</width>
+							<height>64</height>
+							<label></label>
 							<font></font>
-							<textoffsetx>60</textoffsetx>
-							<texturefocus colordiffuse="button_focus">icons/infodialog/trailer.png</texturefocus>
-							<texturenofocus>icons/infodialog/trailer.png</texturenofocus>
+                            <texturefocus>$VAR[TrailerButtonFocusVar]</texturefocus>
+                            <texturenofocus>$VAR[TrailerButtonNoFocusVar]</texturenofocus>
 							<align>center</align>
 							<aligny>center</aligny>
-							<!-- Always visible, no visibility condition -->
 							<onclick condition="!String.IsEmpty(Window(Home).Property(InfoWindow.Trailer))">Dialog.Close(movieinformation)</onclick>
 							<onclick condition="!String.IsEmpty(Window(Home).Property(InfoWindow.Trailer))">PlayMedia($INFO[Window(Home).Property(InfoWindow.Trailer)])</onclick>
 							<onclick condition="String.IsEmpty(Window(Home).Property(InfoWindow.Trailer))">Notification(No Trailers Found, No trailer available for this item, 3000)</onclick>
+                            <onright>8</onright>
+                            <ondown>2002</ondown>
 						</control>
 						
+                        <!-- Row 1 Right: Play/Browse -->
 						<control type="button" id="8">
-							<width>255</width>
-							<height>85</height>
+                            <left>268</left>
+                            <top>0</top>
+							<width>258</width>
+							<height>64</height>
 							<label></label>
 							<font></font>
 							<align>center</align>
 							<aligny>center</aligny>
-							<texturefocus colordiffuse="button_focus">icons/infodialog/play.png</texturefocus>
-							<texturenofocus>icons/infodialog/play.png</texturenofocus>
-							<onclick condition="String.IsEqual(ListItem.DBType,tvshow) | String.IsEqual(ListItem.DBType,season) | String.IsEqual(ListItem.DBType,series)">ActivateWindow(Videos,$INFO[ListItem.FileNameAndPath],return)</onclick>
-							<onclick condition="!String.IsEqual(ListItem.DBType,tvshow) + !String.IsEqual(ListItem.DBType,season) + !String.IsEqual(ListItem.DBType,series)">PlayMedia($INFO[ListItem.FileNameAndPath])</onclick>
+                            <texturefocus>$VAR[PlayButtonFocusVar]</texturefocus>
+                            <texturenofocus>$VAR[PlayButtonNoFocusVar]</texturenofocus>
 							<onclick condition="String.IsEqual(ListItem.DBType,tvshow) | String.IsEqual(ListItem.DBType,season) | String.IsEqual(ListItem.DBType,series)">ActivateWindow(Videos,$INFO[ListItem.FileNameAndPath],return)</onclick>
 							<onclick condition="!String.IsEqual(ListItem.DBType,tvshow) + !String.IsEqual(ListItem.DBType,season) + !String.IsEqual(ListItem.DBType,series)">PlayMedia($INFO[ListItem.FileNameAndPath])</onclick>
 							<visible>!String.IsEmpty(ListItem.Title) | !String.IsEmpty(ListItem.Label)</visible>
-							<onright>50</onright>
+							<onleft>2001</onleft>
+                            <ondown>2003</ondown>
 						</control>
+
+                        <!-- Row 2 Left: Watchlist -->
+                        <control type="button" id="2002">
+                            <left>0</left>
+                            <top>74</top>
+                            <width>258</width>
+                            <height>64</height>
+                            <label></label>
+                            <font></font>
+                            <texturefocus>$VAR[WatchlistButtonFocusVar]</texturefocus>
+                            <texturenofocus>$VAR[WatchlistButtonNoFocusVar]</texturenofocus>
+                            <align>center</align>
+                            <aligny>center</aligny>
+                            <!-- Remove if in Watchlist -->
+                            <onclick condition="String.IsEqual(Window(Home).Property(InfoWindow.IsWatchlist),true)">RunPlugin(plugin://plugin.video.aiostreams/?action=trakt_remove_watchlist&amp;media_type=$INFO[ListItem.DBType]&amp;imdb_id=$INFO[ListItem.IMDBNumber])</onclick>
+                            <onclick condition="String.IsEqual(Window(Home).Property(InfoWindow.IsWatchlist),true)">SetProperty(InfoWindow.IsWatchlist,false,home)</onclick>
+                            
+                            <!-- Add if not in Watchlist -->
+                            <onclick condition="!String.IsEqual(Window(Home).Property(InfoWindow.IsWatchlist),true)">RunPlugin(plugin://plugin.video.aiostreams/?action=trakt_add_watchlist&amp;media_type=$INFO[ListItem.DBType]&amp;imdb_id=$INFO[ListItem.IMDBNumber])</onclick>
+                            <onclick condition="!String.IsEqual(Window(Home).Property(InfoWindow.IsWatchlist),true)">SetProperty(InfoWindow.IsWatchlist,true,home)</onclick>
+                            
+                            <onup>2001</onup>
+                            <onright>2003</onright>
+                        </control>
+
+                        <!-- Row 2 Right: Watched -->
+                        <control type="button" id="2003">
+                            <left>268</left>
+                            <top>74</top>
+                            <width>258</width>
+                            <height>64</height>
+                            <label></label>
+                            <font></font>
+                            <texturefocus>$VAR[WatchedButtonFocusVar]</texturefocus>
+                            <texturenofocus>$VAR[WatchedButtonNoFocusVar]</texturenofocus>
+                            <align>center</align>
+                            <aligny>center</aligny>
+                            <!-- Remove (Mark Unwatched) -->
+                            <onclick condition="String.IsEqual(Window(Home).Property(InfoWindow.IsWatched),true)">RunPlugin(plugin://plugin.video.aiostreams/?action=trakt_mark_unwatched&amp;media_type=$INFO[ListItem.DBType]&amp;imdb_id=$INFO[ListItem.IMDBNumber])</onclick>
+                            <onclick condition="String.IsEqual(Window(Home).Property(InfoWindow.IsWatched),true)">SetProperty(InfoWindow.IsWatched,false,home)</onclick>
+
+                            <!-- Add (Mark Watched) -->
+                            <onclick condition="!String.IsEqual(Window(Home).Property(InfoWindow.IsWatched),true)">RunPlugin(plugin://plugin.video.aiostreams/?action=trakt_mark_watched&amp;media_type=$INFO[ListItem.DBType]&amp;imdb_id=$INFO[ListItem.IMDBNumber])</onclick>
+                            <onclick condition="!String.IsEqual(Window(Home).Property(InfoWindow.IsWatched),true)">SetProperty(InfoWindow.IsWatched,true,home)</onclick>
+                            
+                            <onup>8</onup>
+                            <onleft>2002</onleft>
+                        </control>
 					</control>
 				</control>
 				<control type="group">

@@ -1,0 +1,7 @@
+<svg width="512" height="128" viewBox="0 0 512 128" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect x="1.5" y="1.5" width="509" height="125" rx="22.5" fill="black" fill-opacity="0.5" stroke="white" stroke-width="3"/>
+  <g transform="translate(160, 0)">
+    <path d="M0 48H38V54H0V48ZM0 58H38V86H0V58ZM4 50L8 48H12L8 54H4L4 50ZM18 50L22 48H26L22 54H18L18 50ZM32 50L36 48H38V50L34 54H32V50Z" fill="white"/>
+    <text x="55" y="79" fill="white" font-family="Arial, Helvetica, sans-serif" font-size="36" font-weight="bold" letter-spacing="1">Trailer</text>
+  </g>
+</svg>
