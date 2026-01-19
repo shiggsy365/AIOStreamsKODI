@@ -103,12 +103,15 @@
                     <top>0</top>
                     <width>240</width>
                     <height>60</height>
-                    <font></font>
-                    <label />
+                    <font>font24_bold</font>
+                    <label>Movies</label>
+                    <textoffsetx>60</textoffsetx>
+                    <align>left</align>
+                    <aligny>center</aligny>
                     <textcolor>00FFFFFF</textcolor>
-                    <focusedcolor>00FFFFFF</focusedcolor>
-                    <texturefocus>buttons/movies_fo.svg</texturefocus>
-                    <texturenofocus>buttons/movies_nofo.svg</texturenofocus>
+                    <focusedcolor>FFFFFFFF</focusedcolor>
+                    <texturefocus>buttons/movies_fo.png</texturefocus>
+                    <texturenofocus>buttons/movies_nofo.png</texturenofocus>
                     <onup>9000</onup>
                     <ondown>100</ondown>
                     <onright>51</onright>
@@ -121,12 +124,15 @@
                     <top>0</top>
                     <width>240</width>
                     <height>60</height>
-                    <font></font>
-                    <label />
+                    <font>font24_bold</font>
+                    <label>TV Shows</label>
+                    <textoffsetx>60</textoffsetx>
+                    <align>left</align>
+                    <aligny>center</aligny>
                     <textcolor>00FFFFFF</textcolor>
-                    <focusedcolor>00FFFFFF</focusedcolor>
-                    <texturefocus>buttons/tvshows_fo.svg</texturefocus>
-                    <texturenofocus>buttons/tvshows_nofo.svg</texturenofocus>
+                    <focusedcolor>FFFFFFFF</focusedcolor>
+                    <texturefocus>buttons/tvshows_fo.png</texturefocus>
+                    <texturenofocus>buttons/tvshows_nofo.png</texturenofocus>
                     <onup>9000</onup>
                     <ondown>101</ondown>
                     <onleft>50</onleft>
@@ -141,12 +147,15 @@
                     <top>0</top>
                     <width>240</width>
                     <height>60</height>
-                    <font></font>
-                    <label />
+                    <font>font24_bold</font>
+                    <label>YouTube</label>
+                    <textoffsetx>60</textoffsetx>
+                    <align>left</align>
+                    <aligny>center</aligny>
                     <textcolor>00FFFFFF</textcolor>
-                    <focusedcolor>00FFFFFF</focusedcolor>
-                    <texturefocus>buttons/youtube_fo.svg</texturefocus>
-                    <texturenofocus>buttons/youtube_nofo.svg</texturenofocus>
+                    <focusedcolor>FFFFFFFF</focusedcolor>
+                    <texturefocus>buttons/youtube_fo.png</texturefocus>
+                    <texturenofocus>buttons/youtube_nofo.png</texturenofocus>
                     <onup>9000</onup>
                     <ondown>102</ondown>
                     <onleft>51</onleft>
