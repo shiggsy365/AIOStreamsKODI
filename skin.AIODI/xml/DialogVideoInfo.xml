@@ -99,6 +99,7 @@
 							<onclick condition="!String.IsEqual(ListItem.DBType,tvshow) + !String.IsEqual(ListItem.DBType,season) + !String.IsEqual(ListItem.DBType,series)">PlayMedia($INFO[ListItem.FileNameAndPath])</onclick>
 							<visible>!String.IsEmpty(ListItem.Title) | !String.IsEmpty(ListItem.Label)</visible>
 							<onleft>2001</onleft>
+                            <onright>50</onright>
                             <ondown>2003</ondown>
 						</control>
 
@@ -148,6 +149,7 @@
                             <onclick condition="!String.IsEqual(Window(Home).Property(InfoWindow.IsWatched),true)">RunScript(plugin.video.aiostreams, action=trakt_mark_watched, dbid=$INFO[ListItem.DBID], type=$INFO[ListItem.DBType])</onclick>
                             <onup>8</onup>
                             <onleft>2002</onleft>
+                            <onright>50</onright>
                         </control>
 					</control>
 				</control>
