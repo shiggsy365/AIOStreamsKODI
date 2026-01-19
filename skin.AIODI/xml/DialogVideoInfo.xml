@@ -121,10 +121,10 @@
                             <texturefocus condition="!String.IsEqual(Window(Home).Property(InfoWindow.IsWatchlist),true)">special://skin/media/buttons/tr_watchlist_add_fo.png</texturefocus>
                             <texturenofocus condition="String.IsEqual(Window(Home).Property(InfoWindow.IsWatchlist),true)">special://skin/media/buttons/tr_watchlist_remove_nofo.png</texturenofocus>
                             <texturenofocus condition="!String.IsEqual(Window(Home).Property(InfoWindow.IsWatchlist),true)">special://skin/media/buttons/tr_watchlist_add_nofo.png</texturenofocus>
-                            <onclick condition="String.IsEqual(Window(Home).Property(InfoWindow.IsWatchlist),true)">RunPlugin(plugin://plugin.video.aiostreams/?action=trakt_remove_watchlist&imdb_id=$INFO[Window(Home).Property(InfoWindow.IMDBID)]&media_type=$INFO[Window(Home).Property(InfoWindow.DBType)])</onclick>
+                            <onclick condition="String.IsEqual(Window(Home).Property(InfoWindow.IsWatchlist),true)">RunPlugin(plugin://plugin.video.aiostreams/?action=trakt_remove_watchlist&imdb_id=$INFO[Window(Home).Property(InfoWindow.IMDB)]&media_type=$INFO[Window(Home).Property(InfoWindow.DBType)])</onclick>
                             <onclick condition="String.IsEqual(Window(Home).Property(InfoWindow.IsWatchlist),true)">SetProperty(InfoWindow.IsWatchlist,false,home)</onclick>
                             <onclick condition="String.IsEqual(Window(Home).Property(InfoWindow.IsWatchlist),true)">Container.Refresh</onclick>
-                            <onclick condition="!String.IsEqual(Window(Home).Property(InfoWindow.IsWatchlist),true)">RunPlugin(plugin://plugin.video.aiostreams/?action=trakt_add_watchlist&imdb_id=$INFO[Window(Home).Property(InfoWindow.IMDBID)]&media_type=$INFO[Window(Home).Property(InfoWindow.DBType)])</onclick>
+                            <onclick condition="!String.IsEqual(Window(Home).Property(InfoWindow.IsWatchlist),true)">RunPlugin(plugin://plugin.video.aiostreams/?action=trakt_add_watchlist&imdb_id=$INFO[Window(Home).Property(InfoWindow.IMDB)]&media_type=$INFO[Window(Home).Property(InfoWindow.DBType)])</onclick>
                             <onclick condition="!String.IsEqual(Window(Home).Property(InfoWindow.IsWatchlist),true)">SetProperty(InfoWindow.IsWatchlist,true,home)</onclick>
                             <onclick condition="!String.IsEqual(Window(Home).Property(InfoWindow.IsWatchlist),true)">Container.Refresh</onclick>
                             <onup>2001</onup>
@@ -149,10 +149,10 @@
                             <texturefocus condition="!String.IsEqual(Window(Home).Property(InfoWindow.IsWatched),true)">special://skin/media/buttons/tr_watched_add_fo.png</texturefocus>
                             <texturenofocus condition="String.IsEqual(Window(Home).Property(InfoWindow.IsWatched),true)">special://skin/media/buttons/tr_watched_remove_nofo.png</texturenofocus>
                             <texturenofocus condition="!String.IsEqual(Window(Home).Property(InfoWindow.IsWatched),true)">special://skin/media/buttons/tr_watched_add_nofo.png</texturenofocus>
-                            <onclick condition="String.IsEqual(Window(Home).Property(InfoWindow.IsWatched),true)">RunPlugin(plugin://plugin.video.aiostreams/?action=trakt_mark_unwatched&imdb_id=$INFO[Window(Home).Property(InfoWindow.IMDBID)]&media_type=$INFO[Window(Home).Property(InfoWindow.DBType)])</onclick>
+                            <onclick condition="String.IsEqual(Window(Home).Property(InfoWindow.IsWatched),true)">RunPlugin(plugin://plugin.video.aiostreams/?action=trakt_mark_unwatched&imdb_id=$INFO[Window(Home).Property(InfoWindow.IMDB)]&media_type=$INFO[Window(Home).Property(InfoWindow.DBType)])</onclick>
                             <onclick condition="String.IsEqual(Window(Home).Property(InfoWindow.IsWatched),true)">SetProperty(InfoWindow.IsWatched,false,home)</onclick>
                             <onclick condition="String.IsEqual(Window(Home).Property(InfoWindow.IsWatched),true)">Container.Refresh</onclick>
-                            <onclick condition="!String.IsEqual(Window(Home).Property(InfoWindow.IsWatched),true)">RunPlugin(plugin://plugin.video.aiostreams/?action=trakt_mark_watched&imdb_id=$INFO[Window(Home).Property(InfoWindow.IMDBID)]&media_type=$INFO[Window(Home).Property(InfoWindow.DBType)])</onclick>
+                            <onclick condition="!String.IsEqual(Window(Home).Property(InfoWindow.IsWatched),true)">RunPlugin(plugin://plugin.video.aiostreams/?action=trakt_mark_watched&imdb_id=$INFO[Window(Home).Property(InfoWindow.IMDB)]&media_type=$INFO[Window(Home).Property(InfoWindow.DBType)])</onclick>
                             <onclick condition="!String.IsEqual(Window(Home).Property(InfoWindow.IsWatched),true)">SetProperty(InfoWindow.IsWatched,true,home)</onclick>
                             <onclick condition="!String.IsEqual(Window(Home).Property(InfoWindow.IsWatched),true)">Container.Refresh</onclick>
                             <onup>8</onup>
