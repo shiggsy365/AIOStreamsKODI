@@ -2680,7 +2680,10 @@ def trakt_watchlist(params=None):
         xbmcgui.Dialog().ok('AIOStreams', 'Trakt module not available')
         return
 
-    params = dict(parse_qsl(sys.argv[2][1:]))
+    # CRITICAL FIX: Respect params argument if provided (used by smart_widget)
+    if params is None:
+        params = dict(parse_qsl(sys.argv[2][1:]))
+    
     media_type = params.get('media_type', 'movies')
 
     # Auto-sync if enabled (throttled to 5 minutes)
@@ -4044,135 +4047,212 @@ def _clear_trakt_widget_cache():
 
 def smart_widget():
     """
-    Dynamic widget content generator.
+    Dynamic widget content generator using widget_config.json.
 
     URL Parameters:
         index: Widget index (0, 1, 2, ...)
         content_type: 'series', 'movie', or 'home'
 
     Returns:
-        - For series: Navigatable show list from catalog[index]/All
-        - For movies: Playable movie list from catalog[index]/All
-        - For home: Trakt lists (Next Up, Watchlist)
+        Content from configured widget at specified index
     """
     params = dict(parse_qsl(sys.argv[2][1:]))
+    
+    # DEBUG: Write to workspace file
+    # Debug helpers
+    def debug_log(msg):
+        try:
+            timestamp = time.ctime()
+            with open('/home/jon/Downloads/AIOStreamsKODI/AIOStreamsKODI/smart_widget_debug.txt', 'a') as f:
+                f.write(f"[{timestamp}] {str(msg)}\n")
+        except: pass
+
+    xbmc.log(f'[AIOStreams] smart_widget CALLED', xbmc.LOGINFO)
+    debug_log("smart_widget CALLED")
+
     index = int(params.get('index', 0))
     content_type = params.get('content_type', 'movie')
 
     # Optimization: If Search Dialog (1112) or Info Dialog (12003) OR ANY MODAL is open, skip background widget loading
-    if xbmc.getCondVisibility('Window.IsVisible(1112)') or xbmc.getCondVisibility('Window.IsVisible(12003)') or xbmc.getCondVisibility('System.HasModalDialog'):
-        xbmc.log(f'[AIOStreams] smart_widget: Skipping background load (Dialog Open) - index={index}', xbmc.LOGDEBUG)
-        xbmcplugin.endOfDirectory(HANDLE)
-        return
+    # DISABLE OPTIMIZATION TEMPORARILY FOR DEBUGGING
+    # if xbmc.getCondVisibility('Window.IsVisible(1112)') or xbmc.getCondVisibility('Window.IsVisible(12003)') or xbmc.getCondVisibility('System.HasModalDialog'):
+    #     xbmc.log(f'[AIOStreams] smart_widget: Skipping background load (Dialog Open) - index={index}', xbmc.LOGDEBUG)
+    #     xbmcplugin.endOfDirectory(HANDLE)
+    #     return
 
-    xbmc.log(f'[AIOStreams] smart_widget: index={index}, content_type={content_type}', xbmc.LOGDEBUG)
+    xbmc.log(f'[AIOStreams] smart_widget: index={index}, content_type={content_type}', xbmc.LOGINFO)
     
-    # Handle home widgets (Trakt lists)
-    if content_type == 'home':
-        if index == 0:
-            # Next Up - Trakt
+    # Use widget_config_loader to get configured widget
+    try:
+        from resources.lib.widget_config_loader import get_widget_at_index
+        
+        # Map content_type to page name
+        page_map = {'home': 'home', 'series': 'tvshows', 'movie': 'movies'}
+        page = page_map.get(content_type, content_type)
+        
+        # Get widget from config
+        widget = get_widget_at_index(page, index)
+        
+        try:
+            with open('/home/jon/Downloads/AIOStreamsKODI/AIOStreamsKODI/smart_widget_debug.txt', 'a') as f:
+                f.write(f"Mapped Page: {page}\n")
+                f.write(f"Widget retrieved: {widget}\n")
+        except: pass
+
+        if not widget:
+            xbmc.log(f'[AIOStreams] smart_widget: No widget configured at index {index} for {page}', xbmc.LOGDEBUG)
+            xbmcplugin.endOfDirectory(HANDLE)
+            return
+        
+        # Extract widget details
+        path = widget.get('path', '')
+        label = widget.get('label', 'Unknown')
+        
+        xbmc.log(f'[AIOStreams] smart_widget: Loading "{label}"', xbmc.LOGINFO)
+
+        # Set window property for the header (CRITICAL for skin to show title)
+        # Mapping matches Home.xml conventions:
+        # home -> WidgetLabel_Home_X
+        # movies -> movie_catalog_X_name
+        # tvshows -> series_catalog_X_name
+        try:
+            prop_name = ''
+            if page == 'home':
+                prop_name = f'WidgetLabel_Home_{index}'
+            elif page == 'movies':
+                prop_name = f'movie_catalog_{index}_name'
+            elif page == 'tvshows':
+                prop_name = f'series_catalog_{index}_name'
+            
+            if prop_name:
+                xbmcgui.Window(10000).setProperty(prop_name, label)
+                # Also set the "old" style generic property just in case configured_widget logic was used elsewhere
+                xbmcgui.Window(10000).setProperty(f'{page}_widget_{index}_name', label)
+                xbmc.log(f'[AIOStreams] smart_widget: Set property {prop_name} = "{label}"', xbmc.LOGINFO)
+        except Exception as e:
+            xbmc.log(f'[AIOStreams] smart_widget: Failed to set window property: {e}', xbmc.LOGWARNING)
+        
+        # Parse the widget path
+        from urllib.parse import urlparse, parse_qs
+        parsed = urlparse(path)
+        widget_params = parse_qs(parsed.query)
+        
+        # Extract action
+        action = widget_params.get('action', [None])[0]
+        
+        if not action:
+            xbmc.log(f'[AIOStreams] smart_widget: No action in widget path', xbmc.LOGWARNING)
+            xbmcplugin.endOfDirectory(HANDLE)
+            return
+        
+        # Handle different actions
+        # Handle different actions
+        if action == 'trakt_next_up':
+            xbmc.log(f'[AIOStreams] smart_widget: Executing trakt_next_up', xbmc.LOGINFO)
             return trakt_next_up()
-        elif index == 1:
-            # Series Watchlist - Trakt
-            params_watchlist = {'media_type': 'shows'}
-            return trakt_watchlist(params_watchlist)
-        elif index == 2:
-            # Movie Watchlist - Trakt
-            params_watchlist = {'media_type': 'movies'}
-            return trakt_watchlist(params_watchlist)
+        
+        elif action == 'trakt_watchlist':
+            media_type = widget_params.get('media_type', ['movies'])[0]
+            xbmc.log(f'[AIOStreams] smart_widget: Executing trakt_watchlist ({media_type})', xbmc.LOGINFO)
+            return trakt_watchlist({'media_type': media_type})
+        
+        elif action == 'catalog' or action == 'browse_catalog':
+            catalog_id = widget_params.get('catalog_id', [None])[0]
+            
+            try:
+                with open('/home/jon/Downloads/AIOStreamsKODI/AIOStreamsKODI/smart_widget_debug.txt', 'a') as f:
+                    f.write(f"Action: {action}, Catalog ID: {catalog_id}\n")
+            except: pass
+
+            if not catalog_id:
+                xbmc.log(f'[AIOStreams] smart_widget: missing catalog_id for {action}', xbmc.LOGERROR)
+                xbmcplugin.endOfDirectory(HANDLE)
+                return
+            
+            xbmc.log(f'[AIOStreams] smart_widget: Executing catalog/browse_catalog {catalog_id}', xbmc.LOGINFO)
+            xbmcplugin.setPluginCategory(HANDLE, label)
+            xbmcplugin.setContent(HANDLE, 'tvshows' if content_type == 'series' else 'movies')
+            
+            if HAS_MODULES:
+                trakt.prime_database_cache(content_type)
+            
+            cache_key = f'widget_{content_type}_{catalog_id}_all'
+            catalog_data = _get_cached_widget(cache_key)
+            
+            if catalog_data is None:
+                try:
+                    with open('/home/jon/Downloads/AIOStreamsKODI/AIOStreamsKODI/smart_widget_debug.txt', 'a') as f:
+                        f.write(f"Fetching catalog data from source...\n")
+                except: pass
+                
+                import time
+                start_time = time.time()
+                catalog_data = get_catalog(content_type, catalog_id, genre=None, skip=0)
+                duration = time.time() - start_time
+                debug_log(f"get_catalog took {duration:.2f} seconds for {catalog_id}")
+
+                if catalog_data and 'metas' in catalog_data:
+                    _cache_widget(cache_key, catalog_data)
+            
+            try:
+                with open('/home/jon/Downloads/AIOStreamsKODI/AIOStreamsKODI/smart_widget_debug.txt', 'a') as f:
+                    has_data = catalog_data is not None
+                    has_metas = 'metas' in catalog_data if has_data else False
+                    meta_count = len(catalog_data['metas']) if has_metas else 0
+                    f.write(f"Data retrieved: {has_data}, Has Metas: {has_metas}, Count: {meta_count}\n")
+            except: pass
+
+            if not catalog_data or 'metas' not in catalog_data:
+                xbmc.log(f'[AIOStreams] smart_widget: No data found for catalog {catalog_id}', xbmc.LOGWARNING)
+                xbmcplugin.endOfDirectory(HANDLE)
+                return
+            
+            # Debug object structure
+            if catalog_data['metas']:
+                debug_log(f"First Item Structure: {catalog_data['metas'][0]}")
+
+            # Debug object structure
+            if catalog_data['metas']:
+                debug_log(f"First Item Structure: {catalog_data['metas'][0]}")
+
+            for meta in catalog_data['metas']:
+                try:
+                    item_id = meta.get('id')
+                    if not item_id:
+                        debug_log("Skipping item with no ID")
+                        continue
+                    
+                    if content_type == 'series':
+                        url = get_url(action='show_seasons', meta_id=item_id)
+                        is_folder = True
+                    else:
+                        url = get_url(action='show_streams', content_type='movie', media_id=item_id,
+                                    title=meta.get('name', ''), poster=meta.get('poster', ''),
+                                    fanart=meta.get('background', ''), clearlogo=meta.get('logo', ''))
+                        is_folder = False
+                    
+                    list_item = create_listitem_with_context(meta, content_type, url)
+                    success = xbmcplugin.addDirectoryItem(HANDLE, url, list_item, is_folder)
+                    if not success:
+                         debug_log(f"addDirectoryItem failed for {item_id}")
+                except Exception as e:
+                    import traceback
+                    debug_log(f"Failed to add item: {e}\n{traceback.format_exc()}")
+                    continue
+            
+            xbmcplugin.endOfDirectory(HANDLE)
+            return
+        
         else:
+            xbmc.log(f'[AIOStreams] smart_widget: Unknown action "{action}"', xbmc.LOGWARNING)
             xbmcplugin.endOfDirectory(HANDLE)
             return
     
-    # Get manifest catalogs
-    manifest = get_manifest()
-    if not manifest or 'catalogs' not in manifest:
-        xbmc.log('[AIOStreams] smart_widget: No manifest/catalogs', xbmc.LOGWARNING)
+    except Exception as e:
+        xbmc.log(f'[AIOStreams] smart_widget: Error: {e}', xbmc.LOGERROR)
+        import traceback
+        xbmc.log(traceback.format_exc(), xbmc.LOGERROR)
         xbmcplugin.endOfDirectory(HANDLE)
-        return
-    
-    # Filter catalogs by content_type
-    catalogs = [c for c in manifest['catalogs'] 
-                if c.get('type') == content_type 
-                and not c.get('id', '').endswith('.search')]
-    
-    xbmc.log(f'[AIOStreams] DEBUG: smart_widget filtered catalogs for {content_type}: {len(catalogs)} found. Accessing index {index}', xbmc.LOGDEBUG)
-    
-    # Check if index is valid
-    if index >= len(catalogs):
-        xbmc.log(f'[AIOStreams] smart_widget: Index {index} out of range (max: {len(catalogs)-1})', xbmc.LOGDEBUG)
-        xbmcplugin.endOfDirectory(HANDLE)
-        return
-    
-    # Get the catalog at this index
-    catalog = catalogs[index]
-    catalog_id = catalog.get('id')
-    catalog_name = catalog.get('name', 'Unknown')
-    
-    xbmc.log(f'[AIOStreams] smart_widget: Using catalog "{catalog_name}" (id: {catalog_id})', xbmc.LOGINFO)
-
-    # Update the window property to ensure it uses the clean name
-    # This overwrites any previous long path headers
-    try:
-        xbmcgui.Window(10000).setProperty(f'{content_type}_catalog_{index}_name', catalog_name)
-    except:
-        pass
-    
-    # Prime database cache for performance
-    if HAS_MODULES:
-        trakt.prime_database_cache(content_type)
-
-    # Check cache first (15-minute TTL)
-    cache_key = f'widget_{content_type}_{catalog_id}_all'
-    catalog_data = _get_cached_widget(cache_key)
-
-    if catalog_data is None:
-        # Fetch catalog content with "All" genre filter (genre=None means "All")
-        catalog_data = get_catalog(content_type, catalog_id, genre=None, skip=0)
-
-        # Cache it if valid
-        if catalog_data and 'metas' in catalog_data:
-            _cache_widget(cache_key, catalog_data)
-    
-    if not catalog_data or 'metas' not in catalog_data:
-        xbmc.log(f'[AIOStreams] smart_widget: No content in catalog {catalog_id}', xbmc.LOGWARNING)
-        
-        # Fallback item for visual confirmation
-        li = xbmcgui.ListItem(label=f'[No Content in Catalog: {catalog_name}]')
-        li.setInfo('video', {'plot': f'Catalog ID: {catalog_id}\nContent Type: {content_type}\nCheck manifest configuration.'})
-        url = get_url(action='noop')
-        xbmcplugin.addDirectoryItem(HANDLE, url, li, False)
-        
-        xbmcplugin.endOfDirectory(HANDLE)
-        return
-    
-    # Set plugin metadata
-    xbmcplugin.setPluginCategory(HANDLE, catalog_name)
-    xbmcplugin.setContent(HANDLE, 'tvshows' if content_type == 'series' else 'movies')
-    
-    # Add items
-    for meta in catalog_data['metas']:
-        item_id = meta.get('id')
-        if not item_id:
-            continue
-        
-        # For series: navigate to show (will then go to seasons/episodes)
-        # For movies: direct play
-        if content_type == 'series':
-            url = get_url(action='show_seasons', meta_id=item_id)
-            is_folder = True
-        else:
-            url = get_url(action='show_streams', content_type='movie', media_id=item_id,
-                         title=meta.get('name', ''), poster=meta.get('poster', ''),
-                         fanart=meta.get('background', ''), clearlogo=meta.get('logo', ''))
-            is_folder = False
-        
-        list_item = create_listitem_with_context(meta, content_type, url)
-        xbmcplugin.addDirectoryItem(HANDLE, url, list_item, is_folder)
-    
-    xbmcplugin.endOfDirectory(HANDLE)
-
-
 def configured_widget():
     """
     Dynamic widget content from widget_config.json

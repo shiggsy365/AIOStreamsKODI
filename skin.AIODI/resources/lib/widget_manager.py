@@ -10,7 +10,7 @@ from urllib.parse import parse_qs, urlparse
 ADDON_DATA_DIR = xbmcvfs.translatePath('special://profile/addon_data/plugin.video.aiostreams/')
 CONFIG_FILE = os.path.join(ADDON_DATA_DIR, 'widget_config.json')
 
-# Default configuration - matches widget_config_loader.py
+# Default configuration
 DEFAULT_CONFIG = {
     'home': [
         {
@@ -36,463 +36,280 @@ DEFAULT_CONFIG = {
             'is_trakt': True
         }
     ],
-    'version': 2  # Config version for future migrations
+    'version': 2
 }
 
 def log(msg, level=xbmc.LOGINFO):
     xbmc.log(f'[AIOStreams] [WidgetManager] {msg}', level)
 
-def load_config():
-    """
-    Load widget configuration from JSON file.
-    Forces reset to defaults if version is old or missing.
-    """
-    if os.path.exists(CONFIG_FILE):
-        try:
-            with open(CONFIG_FILE, 'r') as f:
-                config = json.load(f)
-            
-            # Check version - if old or missing, force reset to defaults
-            if config.get('version') != 2:
-                log('Old config version detected, resetting to defaults', xbmc.LOGINFO)
-                save_config(DEFAULT_CONFIG.copy())
-                return DEFAULT_CONFIG.copy()
-            
-            return config
-        except Exception as e:
-            log(f'Error loading config: {e}', xbmc.LOGERROR)
-            save_config(DEFAULT_CONFIG.copy())
-            return DEFAULT_CONFIG.copy()
-    
-    log(f'Config file not found, creating with defaults', xbmc.LOGINFO)
-    save_config(DEFAULT_CONFIG.copy())
-    return DEFAULT_CONFIG.copy()
+class WidgetManager(xbmcgui.WindowXMLDialog):
+    def __init__(self, strXMLname, strFallbackPath, strDefaultName, forceFallback=0):
+        super().__init__(strXMLname, strFallbackPath, strDefaultName, forceFallback)
+        self.current_page = 'home'
+        self.config = {}
 
-def save_config(config):
-    """Save widget configuration to JSON file"""
-    try:
-        os.makedirs(os.path.dirname(CONFIG_FILE), exist_ok=True)
-        with open(CONFIG_FILE, 'w') as f:
-            json.dump(config, f, indent=2)
-        log(f'Config saved to {CONFIG_FILE}')
-    except Exception as e:
-        log(f'Error saving config: {e}', xbmc.LOGERROR)
+    def onInit(self):
+        log("WidgetManager onInit")
+        self.load_config()
+        self.load_page(self.current_page)
 
-def get_available_catalogs():
-    """Get all available catalogs from the plugin via JSON-RPC"""
-    catalogs = []
+    def onAction(self, action):
+        # Capture Context Menu (117) and Right Click (101)
+        if action.getId() in [117, 101]:
+            focus_id = self.getFocusId()
+            log(f"Context menu action triggered on control {focus_id}")
+            if focus_id == 3000: # Current Catalogs
+                self.show_current_context_menu()
+            elif focus_id == 5000: # Available Catalogs
+                self.show_available_context_menu()
+        
+        # Capture Back/Previous Menu to close
+        elif action.getId() in [10, 92]:
+            self.save_and_exit()
 
-    # Add hardcoded Trakt widgets first (shown in yellow)
-    trakt_widgets = [
-        {
-            'label': 'Trakt Next Up',
-            'path': 'plugin://plugin.video.aiostreams/?action=trakt_next_up',
-            'type': 'series',
-            'is_trakt': True
-        },
-        {
-            'label': 'Trakt Watchlist Movies',
-            'path': 'plugin://plugin.video.aiostreams/?action=trakt_watchlist&media_type=movies',
-            'type': 'movie',
-            'is_trakt': True
-        },
-        {
-            'label': 'Trakt Watchlist Series',
-            'path': 'plugin://plugin.video.aiostreams/?action=trakt_watchlist&media_type=shows',
-            'type': 'series',
-            'is_trakt': True
-        }
-    ]
-    catalogs.extend(trakt_widgets)
-    log(f'Added {len(trakt_widgets)} hardcoded Trakt widgets')
+    def onClick(self, controlId):
+        log(f"onClick: {controlId}")
+        if controlId == 2001: # Home
+            self.load_page('home')
+        elif controlId == 2002: # TV Shows
+            self.load_page('tvshows')
+        elif controlId == 2003: # Movies
+            self.load_page('movies')
+        elif controlId == 6000: # Close
+            self.save_and_exit()
+        elif controlId == 6001: # Clear All
+            self.clear_all()
+        elif controlId == 6002: # Reset Defaults
+            self.reset_to_defaults()
 
-    # Fetch AIOStreams catalogs from the plugin
-    plugin_url = 'plugin://plugin.video.aiostreams/?action=get_folder_browser_catalogs'
-    log(f'Fetching available catalogs from {plugin_url}...')
-    try:
-        rpc_query = {
-            "jsonrpc": "2.0",
-            "method": "Files.GetDirectory",
-            "params": {"directory": plugin_url, "media": "video"},
-            "id": 1
-        }
-        result = xbmc.executeJSONRPC(json.dumps(rpc_query))
-        result_data = json.loads(result)
-
-        if 'result' in result_data and 'files' in result_data['result']:
-            files = result_data['result']['files']
-            log(f'Received {len(files)} catalogs from plugin')
-            for item in files:
-                # Extract content_type from URL parameters
-                url = item.get('file', '')
-                content_type = 'unknown'
-                try:
-                    parsed = urlparse(url)
-                    params = parse_qs(parsed.query)
-                    content_type = params.get('content_type', ['unknown'])[0]
-                except Exception as e:
-                    log(f'Error parsing URL {url}: {e}', xbmc.LOGDEBUG)
-
-                catalogs.append({
-                    'label': item.get('label', 'Unknown'),
-                    'path': url,
-                    'type': content_type,
-                    'is_trakt': False
-                })
+    def load_config(self):
+        if os.path.exists(CONFIG_FILE):
+            try:
+                with open(CONFIG_FILE, 'r') as f:
+                    self.config = json.load(f)
+                
+                if self.config.get('version') != 2:
+                    log('Old config version, resetting')
+                    self.config = DEFAULT_CONFIG.copy()
+                    self.save_config()
+            except Exception as e:
+                log(f'Error loading config: {e}', xbmc.LOGERROR)
+                self.config = DEFAULT_CONFIG.copy()
         else:
-            log(f'JSON-RPC call failed or returned no files: {result}', xbmc.LOGERROR)
-    except Exception as e:
-        log(f'Exception in get_available_catalogs: {e}', xbmc.LOGERROR)
+            self.config = DEFAULT_CONFIG.copy()
+            self.save_config()
 
-    log(f'Total available catalogs: {len(catalogs)}')
-    return catalogs
-
-def load_page(page_name):
-    """Load catalogs for a specific page"""
-    log(f'Loading page: {page_name}')
-
-    # Give the window a moment to fully initialize
-    xbmc.sleep(100)
-
-    window = None
-    try:
-        # Try finding the window by ID first
-        window = xbmcgui.Window(1111)
-        # Verify it's actually our window (this will fail if not active)
-        test_control = window.getControl(3000)
-        log(f'Found window 1111, control 3000 exists: {test_control is not None}')
-    except Exception as first_error:
-        log(f'Window 1111 not accessible: {first_error}', xbmc.LOGDEBUG)
+    def save_config(self):
         try:
-            # Fallback to current window dialog
-            current_dialog_id = xbmcgui.getCurrentWindowDialogId()
-            log(f'Trying current dialog ID: {current_dialog_id}')
-            if current_dialog_id == 1111:
-                window = xbmcgui.Window(current_dialog_id)
-                window.getControl(3000)  # Verify it works
-                log('Successfully using current dialog window')
-            else:
-                log(f'Current dialog ID {current_dialog_id} is not our widget manager', xbmc.LOGERROR)
-                return
+            os.makedirs(os.path.dirname(CONFIG_FILE), exist_ok=True)
+            with open(CONFIG_FILE, 'w') as f:
+                json.dump(self.config, f, indent=2)
+            log("Config saved")
         except Exception as e:
-            log(f'Critical: Could not access window: {e}', xbmc.LOGERROR)
-            log('Widget manager window is not open', xbmc.LOGERROR)
-            return
+            log(f'Error saving config: {e}', xbmc.LOGERROR)
 
-    try:
-        # Set properties on both the dialog window and home window for accessibility
-        window.setProperty('CurrentPage', page_name)
-        # Set a user-friendly page name for display
-        page_display_names = {
-            'home': 'Home',
-            'tvshows': 'TV Shows',
-            'movies': 'Movies'
-        }
+    def load_page(self, page_name):
+        self.current_page = page_name
+        
+        # Set window properties for UI
+        page_display_names = {'home': 'Home', 'tvshows': 'TV Shows', 'movies': 'Movies'}
         display_name = page_display_names.get(page_name, page_name.capitalize())
-        window.setProperty('CurrentPageName', display_name)
-
-        # Also set on home window so dialog can access it
-        home_window = xbmcgui.Window(10000)
-        home_window.setProperty('WidgetManager.CurrentPage', page_name)
-        home_window.setProperty('WidgetManager.CurrentPageName', display_name)
-
-        log(f'Set window properties: CurrentPage={page_name}, CurrentPageName={display_name}')
-    except Exception as e:
-        log(f'Error setting property on window: {e}', xbmc.LOGERROR)
-        return
-    
-    config = load_config()
-    current_catalogs = config.get(page_name, [])
-    log(f'Current catalogs for page "{page_name}": {len(current_catalogs)} items')
-    log(f'Config content: {config}')
-    
-    # Populate current catalogs list
-    try:
-        current_list = window.getControl(3000)
+        
+        # Set on home window so include conditions might work if they check 10000
+        xbmcgui.Window(10000).setProperty('WidgetManager.CurrentPageName', display_name)
+        
+        # Populate current list (3000)
+        current_list = self.getControl(3000)
         current_list.reset()
-        log(f'Populating current list with {len(current_catalogs)} catalogs')
-
-        if len(current_catalogs) == 0:
-            # Add a placeholder item when the list is empty
+        
+        items = self.config.get(page_name, [])
+        if not items:
             placeholder = xbmcgui.ListItem('[I]No catalogs added[/I]')
             placeholder.setLabel2('[I]Use ← to add[/I]')
-            placeholder.setProperty('is_trakt', 'false')
-            placeholder.setProperty('is_used', 'false')
             placeholder.setProperty('is_placeholder', 'true')
             current_list.addItem(placeholder)
-            log('Added placeholder item to empty current list')
         else:
-            for i, catalog in enumerate(current_catalogs):
-                label = catalog.get('label', 'Unknown')
-                log(f'  [{i}] Adding catalog: {label}')
-                item = xbmcgui.ListItem(label)
-                # Capitalize the type for better display
-                content_type = catalog.get('type', 'unknown')
-                display_type = content_type.capitalize() if content_type != 'unknown' else ''
-                item.setLabel2(display_type)
-                item.setProperty('path', catalog.get('path', ''))
-                item.setProperty('type', content_type)
-                item.setProperty('is_trakt', 'true' if catalog.get('is_trakt', False) else 'false')
-                # Set is_used to false for current items (not used by color variables, but set for consistency)
-                item.setProperty('is_used', 'false')
-                log(f'    Label: {label}, Label2: {display_type}, is_trakt: {item.getProperty("is_trakt")}')
+            for item_data in items:
+                item = xbmcgui.ListItem(item_data.get('label', 'Unknown'))
+                item.setLabel2(item_data.get('type', 'unknown').capitalize())
+                item.setProperty('path', item_data.get('path', ''))
+                item.setProperty('type', item_data.get('type', 'unknown'))
+                item.setProperty('is_trakt', str(item_data.get('is_trakt', False)).lower())
                 current_list.addItem(item)
-        log(f'Current list populated successfully with {current_list.size()} items')
-    except Exception as e:
-        log(f'Error populating current_list (3000): {e}', xbmc.LOGERROR)
-    
-    # Populate available catalogs list
-    try:
-        available_list = window.getControl(5000)
+                
+        # Populate available list (5000)
+        # For efficiency, we might cache this, but for now fetch every page load for simplicity
+        self.populate_available_list()
+
+    def populate_available_list(self):
+        available_list = self.getControl(5000)
         available_list.reset()
-        all_catalogs = get_available_catalogs()
-        log(f'Total available catalogs: {len(all_catalogs)}')
-
-        # Build a set of paths that are currently in use on ANY page
-        used_paths = set()
-        for page in ['home', 'tvshows', 'movies']:
-            page_catalogs = config.get(page, [])
-            for cat in page_catalogs:
-                used_paths.add(cat.get('path', ''))
-
-        log(f'Found {len(used_paths)} catalogs in use across all pages')
-
-        for catalog in all_catalogs:
-            item = xbmcgui.ListItem(catalog.get('label', 'Unknown'))
-            # Capitalize the type for better display (e.g., "movie" -> "Movie", "series" -> "Series")
-            content_type = catalog.get('type', 'unknown')
-            display_type = content_type.capitalize() if content_type != 'unknown' else ''
-            item.setLabel2(display_type)
-            item.setProperty('path', catalog.get('path', ''))
-            item.setProperty('type', content_type)
-            item.setProperty('is_trakt', 'true' if catalog.get('is_trakt', False) else 'false')
-            # Mark if this catalog is currently in use on any page
-            is_used = catalog.get('path', '') in used_paths
-            item.setProperty('is_used', 'true' if is_used else 'false')
-            available_list.addItem(item)
-    except Exception as e:
-        log(f'Error populating available_list (5000): {e}', xbmc.LOGERROR)
-
-def move_up():
-    """Move selected catalog up in the list"""
-    try:
-        window = xbmcgui.Window(1111)
-        current_list = window.getControl(3000)
-        pos = current_list.getSelectedPosition()
-
-        # Check if this is a placeholder item
-        if current_list.size() > 0:
-            item = current_list.getSelectedItem()
-            if item.getProperty('is_placeholder') == 'true':
-                log('Cannot move placeholder item')
-                return
-
-        if pos > 0:
-            page_name = window.getProperty('CurrentPage')
-            config = load_config()
-            catalogs = config.get(page_name, [])
-
-            # Swap positions
-            catalogs[pos], catalogs[pos-1] = catalogs[pos-1], catalogs[pos]
-            config[page_name] = catalogs
-            save_config(config)
-
-            # Reload
-            load_page(page_name)
-            current_list.selectItem(pos-1)
-    except Exception as e:
-        log(f'Error in move_up: {e}', xbmc.LOGERROR)
-
-def move_down():
-    """Move selected catalog down in the list"""
-    try:
-        window = xbmcgui.Window(1111)
-        current_list = window.getControl(3000)
-        pos = current_list.getSelectedPosition()
-
-        # Check if this is a placeholder item
-        if current_list.size() > 0:
-            item = current_list.getSelectedItem()
-            if item.getProperty('is_placeholder') == 'true':
-                log('Cannot move placeholder item')
-                return
-
-        page_name = window.getProperty('CurrentPage')
-        config = load_config()
-        catalogs = config.get(page_name, [])
-
-        if pos < len(catalogs) - 1:
-            # Swap positions
-            catalogs[pos], catalogs[pos+1] = catalogs[pos+1], catalogs[pos]
-            config[page_name] = catalogs
-            save_config(config)
-
-            # Reload
-            load_page(page_name)
-            current_list.selectItem(pos+1)
-    except Exception as e:
-        log(f'Error in move_down: {e}', xbmc.LOGERROR)
-
-def remove_catalog():
-    """Remove selected catalog from current page"""
-    try:
-        window = xbmcgui.Window(1111)
-        current_list = window.getControl(3000)
-        pos = current_list.getSelectedPosition()
-
-        # Check if this is a placeholder item
-        if current_list.size() > 0:
-            item = current_list.getSelectedItem()
-            if item.getProperty('is_placeholder') == 'true':
-                log('Cannot remove placeholder item')
-                return
-
-        page_name = window.getProperty('CurrentPage')
-        config = load_config()
-        catalogs = config.get(page_name, [])
-
-        if pos >= 0 and pos < len(catalogs):
-            removed_label = catalogs[pos].get('label', 'Unknown')
-            log(f'Removing catalog: {removed_label}')
-            catalogs.pop(pos)
-            config[page_name] = catalogs
-            save_config(config)
-
-            # Reload
-            load_page(page_name)
-            if pos > 0:
-                current_list.selectItem(pos-1)
-            elif len(catalogs) > 0:
-                current_list.selectItem(0)
-    except Exception as e:
-        log(f'Error in remove_catalog: {e}', xbmc.LOGERROR)
-
-def add_catalog():
-    """Add selected catalog from available list to current page"""
-    try:
-        window = xbmcgui.Window(1111)
-        available_list = window.getControl(5000)
-        pos = available_list.getSelectedPosition()
-
-        log(f'add_catalog: Selected position: {pos}')
-
-        if pos >= 0:
-            item = available_list.getSelectedItem()
-            catalog = {
-                'label': item.getLabel(),
-                'path': item.getProperty('path'),
-                'type': item.getProperty('type'),
-                'is_trakt': item.getProperty('is_trakt') == 'true'
-            }
-
-            log(f'add_catalog: Adding catalog: {catalog["label"]} (type: {catalog["type"]}, path: {catalog["path"][:50]}...)')
-
-            page_name = window.getProperty('CurrentPage')
-            log(f'add_catalog: Current page: {page_name}')
-
-            config = load_config()
-            catalogs = config.get(page_name, [])
-            log(f'add_catalog: Current page has {len(catalogs)} catalogs before adding')
-
-            # Add to end of list
-            catalogs.append(catalog)
-            config[page_name] = catalogs
-            save_config(config)
-            log(f'add_catalog: Saved config with {len(catalogs)} catalogs for {page_name}')
-
-            # Reload
-            load_page(page_name)
-            log('add_catalog: Reloaded page')
-    except Exception as e:
-        log(f'Error in add_catalog: {e}', xbmc.LOGERROR)
-        import traceback
-        log(traceback.format_exc(), xbmc.LOGERROR)
-
-def clear_all():
-    """Clear all catalogs from all pages"""
-    try:
-        # Show confirmation dialog
-        dialog = xbmcgui.Dialog()
-        if dialog.yesno('Clear All Catalogs',
-                       'This will remove all catalogs from Home, TV Shows, and Movies pages.',
-                       'Are you sure?'):
-            log('Clearing all catalogs from all pages')
-            config = {
-                'home': [],
-                'tvshows': [],
-                'movies': [],
-                'version': 2
-            }
-            save_config(config)
-
-            # Try to reload current page to show empty state
-            try:
-                window = xbmcgui.Window(1111)
-                page_name = window.getProperty('CurrentPage')
-                if page_name:
-                    load_page(page_name)
-                else:
-                    load_page('home')
-            except Exception as e:
-                log(f'Could not reload page after clearing: {e}', xbmc.LOGDEBUG)
-                # Window might not be available, but config is already saved
-                pass
-
-            log('All catalogs cleared')
-    except Exception as e:
-        log(f'Error in clear_all: {e}', xbmc.LOGERROR)
-
-
-def reset_to_defaults():
-    """Reset widget configuration to defaults"""
-    try:
-        dialog = xbmcgui.Dialog()
-        if dialog.yesno('Reset to Defaults',
-                       'This will reset all pages to default widgets:',
-                       'Home: Trakt Next Up | Movies: Trakt Watchlist Movies | TV Shows: Trakt Watchlist Series',
-                       'Are you sure?'):
-            log('Resetting all widgets to defaults')
-            save_config(DEFAULT_CONFIG.copy())
-            
-            # Reload current page
-            try:
-                window = xbmcgui.Window(1111)
-                page_name = window.getProperty('CurrentPage')
-                if page_name:
-                    load_page(page_name)
-                else:
-                    load_page('home')
-            except Exception as e:
-                log(f'Could not reload page after reset: {e}', xbmc.LOGDEBUG)
-            
-            log('Reset to defaults complete')
-    except Exception as e:
-        log(f'Error in reset_to_defaults: {e}', xbmc.LOGERROR)
-
-def save_and_exit():
-    """Save configuration and reload skin"""
-    log('Saving and exiting...')
-    xbmc.executebuiltin('ReloadSkin()')
-
-# Main entry point
-if __name__ == '__main__':
-    if len(sys.argv) > 1:
-        action = sys.argv[1]
-        log(f'Action: {action} with args: {sys.argv[2:]}')
         
-        if action == 'load_page' and len(sys.argv) > 2:
-            load_page(sys.argv[2])
-        elif action == 'move_up':
-            move_up()
-        elif action == 'move_down':
-            move_down()
-        elif action == 'remove_catalog':
-            remove_catalog()
-        elif action == 'add_catalog':
-            add_catalog()
-        elif action == 'clear_all':
-            clear_all()
-        elif action == 'reset_to_defaults':
-            reset_to_defaults()
-        elif action == 'save_and_exit':
-            save_and_exit()
+        # We need to fetch catalogs or use cached ones. 
+        # For simplicity, I'll copy the logic from original script but inside class
+        
+        # Hardcoded Trakt
+        trakt_widgets = [
+            {'label': 'Trakt Next Up', 'path': 'plugin://plugin.video.aiostreams/?action=trakt_next_up', 'type': 'series', 'is_trakt': True},
+            {'label': 'Trakt Watchlist Movies', 'path': 'plugin://plugin.video.aiostreams/?action=trakt_watchlist&media_type=movies', 'type': 'movie', 'is_trakt': True},
+            {'label': 'Trakt Watchlist Series', 'path': 'plugin://plugin.video.aiostreams/?action=trakt_watchlist&media_type=shows', 'type': 'series', 'is_trakt': True}
+        ]
+        
+        for w in trakt_widgets:
+            item = xbmcgui.ListItem(w['label'])
+            item.setLabel2(w['type'].capitalize())
+            item.setProperty('path', w['path'])
+            item.setProperty('type', w['type'])
+            item.setProperty('is_trakt', 'true')
+            available_list.addItem(item)
+            
+        # Fetch from plugin
+        plugin_url = 'plugin://plugin.video.aiostreams/?action=get_folder_browser_catalogs'
+        try:
+             rpc_query = {
+                "jsonrpc": "2.0",
+                "method": "Files.GetDirectory",
+                "params": {"directory": plugin_url, "media": "video"},
+                "id": 1
+            }
+             result = xbmc.executeJSONRPC(json.dumps(rpc_query))
+             result_data = json.loads(result)
+             if 'result' in result_data and 'files' in result_data['result']:
+                 for f in result_data['result']['files']:
+                     item = xbmcgui.ListItem(f.get('label'))
+                     path = f.get('file')
+                     # Try parse type
+                     try:
+                         parsed = urlparse(path)
+                         params = parse_qs(parsed.query)
+                         ctype = params.get('content_type', ['unknown'])[0]
+                     except:
+                         ctype = 'unknown'
+                     
+                     item.setLabel2(ctype.capitalize())
+                     item.setProperty('path', path)
+                     item.setProperty('type', ctype)
+                     item.setProperty('is_trakt', 'false')
+                     available_list.addItem(item)
+        except Exception as e:
+            log(f"Error fetching catalogs: {e}", xbmc.LOGERROR)
+
+    def show_current_context_menu(self):
+        list_ctrl = self.getControl(3000)
+        pos = list_ctrl.getSelectedPosition()
+        if pos < 0: return
+        
+        item = list_ctrl.getSelectedItem()
+        if item.getProperty('is_placeholder') == 'true': return
+        
+        options = ['Move Up', 'Move Down', 'Remove from Page']
+        choice = xbmcgui.Dialog().contextmenu(options)
+        
+        if choice == 0: self.move_item(pos, -1)
+        elif choice == 1: self.move_item(pos, 1)
+        elif choice == 2: self.remove_item(pos)
+
+    def show_available_context_menu(self):
+        list_ctrl = self.getControl(5000)
+        pos = list_ctrl.getSelectedPosition()
+        if pos < 0: return
+        
+        options = [f"Add to {self.current_page.capitalize()}"]
+        choice = xbmcgui.Dialog().contextmenu(options)
+        
+        if choice == 0: self.add_item(list_ctrl.getSelectedItem())
+
+    def move_item(self, pos, direction):
+        items = self.config.get(self.current_page, [])
+        new_pos = pos + direction
+        if 0 <= new_pos < len(items):
+            items[pos], items[new_pos] = items[new_pos], items[pos]
+            self.config[self.current_page] = items
+            self.save_config()
+            self.load_page(self.current_page)
+            self.getControl(3000).selectItem(new_pos)
+
+    def remove_item(self, pos):
+        items = self.config.get(self.current_page, [])
+        if 0 <= pos < len(items):
+            items.pop(pos)
+            self.config[self.current_page] = items
+            self.save_config()
+            self.load_page(self.current_page)
+            
+    def add_item(self, list_item):
+        catalog = {
+            'label': list_item.getLabel(),
+            'path': list_item.getProperty('path'),
+            'type': list_item.getProperty('type'),
+            'is_trakt': list_item.getProperty('is_trakt') == 'true'
+        }
+        
+        items = self.config.get(self.current_page, [])
+        items.append(catalog)
+        self.config[self.current_page] = items
+        self.save_config()
+        self.load_page(self.current_page)
+        xbmcgui.Dialog().notification('Widget Manager', f'Added to {self.current_page}', xbmcgui.NOTIFICATION_INFO, 2000)
+
+    def clear_all(self):
+        if xbmcgui.Dialog().yesno('Clear All', 'Are you sure you want to remove all widgets?'):
+            self.config = {'home': [], 'tvshows': [], 'movies': [], 'version': 2}
+            self.save_config()
+            self.load_page(self.current_page)
+
+    def reset_to_defaults(self):
+        if xbmcgui.Dialog().yesno('Reset Defaults', 'Reset all widgets to default configuration?'):
+            self.config = DEFAULT_CONFIG.copy()
+            self.save_config()
+            self.load_page(self.current_page)
+
+    def save_and_exit(self):
+        # Apply window properties immediately for headers
+        # This prevents race condition where skin loads before widget content
+        log("Applying widget header properties...")
+        
+        # Mapping matches Home.xml conventions
+        page_properties = {
+            'home': 'WidgetLabel_Home_{}',
+            'movies': 'movie_catalog_{}_name',
+            'tvshows': 'series_catalog_{}_name'
+        }
+        
+        for page, fmt in page_properties.items():
+            widgets = self.config.get(page, [])
+            for i, widget in enumerate(widgets):
+                label = widget.get('label', '')
+                prop_name = fmt.format(i)
+                xbmcgui.Window(10000).setProperty(prop_name, label)
+                # Also set "old" style just in case
+                xbmcgui.Window(10000).setProperty(f'{page}_widget_{i}_name', label)
+                log(f"Set property {prop_name} = {label}")
+                
+            # Clear remaining slots (up to 20) to avoid ghost headers
+            for i in range(len(widgets), 20):
+                prop_name = fmt.format(i)
+                xbmcgui.Window(10000).clearProperty(prop_name)
+                xbmcgui.Window(10000).clearProperty(f'{page}_widget_{i}_name')
+
+        # Update reload token to force widget refresh
+        import time
+        token = str(int(time.time()))
+        xbmc.executebuiltin(f'Skin.SetString(WidgetReloadToken, {token})')
+        
+        # DEBUG: Dump config to workspace for verification
+        try:
+            dump_path = '/home/jon/Downloads/AIOStreamsKODI/AIOStreamsKODI/widget_dump.json'
+            with open(dump_path, 'w') as f:
+                json.dump(self.config, f, indent=2)
+            log(f"Debug config dumped to {dump_path}")
+        except Exception as e:
+            log(f"Failed to dump debug config: {e}")
+
+        self.close()
+        xbmc.executebuiltin('ReloadSkin()')
+
+if __name__ == '__main__':
+    ui = WidgetManager('Custom_ModifyLists.xml', 'special://skin/', 'Default')
+    ui.doModal()
+    del ui

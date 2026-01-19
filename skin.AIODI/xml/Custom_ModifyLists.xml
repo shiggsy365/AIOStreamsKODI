@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <window id="1111" type="dialog">
     <defaultcontrol always="true">2000</defaultcontrol>
-    <onload>RunScript(special://skin/resources/lib/widget_manager.py,load_page,home)</onload>
+    <defaultcontrol always="true">2000</defaultcontrol>
     <coordinates>
         <left>0</left>
         <top>0</top>
@@ -46,7 +46,7 @@
                 <orientation>horizontal</orientation>
                 <itemgap>20</itemgap>
                 <align>center</align>
-                <ondown>4001</ondown>
+                <ondown>3000</ondown>
                 
                 <control type="button" id="2001">
                     <width>120</width>
@@ -54,7 +54,7 @@
                     <font></font>
                     <label />
                     <align>center</align>
-                    <onclick>RunScript(special://skin/resources/lib/widget_manager.py,load_page,home)</onclick>
+                    <!-- OnClick handled by Python -->
                     <texturefocus colordiffuse="button_focus">icons/widgetmanager/home.png</texturefocus>
                     <texturenofocus>icons/widgetmanager/home.png</texturenofocus>
                     <textcolor>00FFFFFF</textcolor>
@@ -67,7 +67,7 @@
                     <font></font>
                     <label />
                     <align>center</align>
-                    <onclick>RunScript(special://skin/resources/lib/widget_manager.py,load_page,tvshows)</onclick>
+                    <!-- OnClick handled by Python -->
                     <texturefocus colordiffuse="button_focus">icons/widgetmanager/tvshows.png</texturefocus>
                     <texturenofocus>icons/widgetmanager/tvshows.png</texturenofocus>
                     <textcolor>00FFFFFF</textcolor>
@@ -80,11 +80,12 @@
                     <font></font>
                     <label />
                     <align>center</align>
-                    <onclick>RunScript(special://skin/resources/lib/widget_manager.py,load_page,movies)</onclick>
+                    <!-- OnClick handled by Python -->
                     <texturefocus colordiffuse="button_focus">icons/widgetmanager/movies.png</texturefocus>
                     <texturenofocus>icons/widgetmanager/movies.png</texturenofocus>
                     <textcolor>00FFFFFF</textcolor>
                     <focusedcolor>00FFFFFF</focusedcolor>
+                    <ondown>3000</ondown>
                 </control>
             </control>
             
@@ -107,14 +108,16 @@
                 </control>
                 
                 <control type="list" id="3000">
+                    
                     <left>0</left>
                     <top>50</top>
                     <width>650</width>
                     <height>650</height>
                     <onleft>noop</onleft>
-                    <onright>4001</onright>
+                    <!-- Lists don't support onclick, using context menu key binding instead -->
+                    <onright>5000</onright>
                     <onup>2000</onup>
-                    <ondown>noop</ondown>
+                    <ondown>6000</ondown>
                     <itemlayout height="50">
                         <control type="label">
                             <left>10</left>
@@ -171,58 +174,7 @@
                 </control>
             </control>
             
-            <!-- Control Buttons (Center) -->
-            <control type="grouplist" id="4000">
-                <left>670</left>
-                <top>300</top>
-                <width>100</width>
-                <height>400</height>
-                <orientation>vertical</orientation>
-                <itemgap>20</itemgap>
-                <onleft>3000</onleft>
-                <onright>5000</onright>
-                <onup>2000</onup>
-                
-                <!-- Move Up -->
-                <control type="button" id="4001">
-                    <width>100</width>
-                    <height>80</height>
-                    <label />
-                    <texturenofocus>icons/arrows/arrow_up.png</texturenofocus>
-                    <texturefocus colordiffuse="button_focus">icons/arrows/arrow_up.png</texturefocus>
-                    <onclick>RunScript(special://skin/resources/lib/widget_manager.py,move_up)</onclick>
-                </control>
-                
-                <!-- Move Down -->
-                <control type="button" id="4002">
-                    <width>100</width>
-                    <height>80</height>
-                    <label />
-                    <texturenofocus>icons/arrows/arrow_down.png</texturenofocus>
-                    <texturefocus colordiffuse="button_focus">icons/arrows/arrow_down.png</texturefocus>
-                    <onclick>RunScript(special://skin/resources/lib/widget_manager.py,move_down)</onclick>
-                </control>
-                
-                <!-- Remove (Right Arrow) -->
-                <control type="button" id="4003">
-                    <width>100</width>
-                    <height>80</height>
-                    <label />
-                    <texturenofocus>icons/arrows/arrow_right.png</texturenofocus>
-                    <texturefocus colordiffuse="button_focus">icons/arrows/arrow_right.png</texturefocus>
-                    <onclick>RunScript(special://skin/resources/lib/widget_manager.py,remove_catalog)</onclick>
-                </control>
-                
-                <!-- Add (Left Arrow) -->
-                <control type="button" id="4004">
-                    <width>100</width>
-                    <height>80</height>
-                    <label />
-                    <texturenofocus>icons/arrows/arrow_left.png</texturenofocus>
-                    <texturefocus colordiffuse="button_focus">icons/arrows/arrow_left.png</texturefocus>
-                    <onclick>RunScript(special://skin/resources/lib/widget_manager.py,add_catalog)</onclick>
-                </control>
-            </control>
+            <!-- Navigation buttons removed - using context menus instead -->
             
             <!-- Available Catalogs (Right Panel) -->
             <control type="group">
@@ -243,14 +195,16 @@
                 </control>
                 
                 <control type="list" id="5000">
+                    
                     <left>0</left>
                     <top>50</top>
                     <width>930</width>
                     <height>650</height>
-                    <onleft>4001</onleft>
+                    <onleft>3000</onleft>
+                    <!-- Lists don't support onclick, using context menu key binding instead -->
                     <onright>noop</onright>
                     <onup>2000</onup>
-                    <ondown>noop</ondown>
+                    <ondown>6000</ondown>
                     <itemlayout height="50">
                         <control type="label">
                             <left>10</left>
@@ -316,7 +270,9 @@
                 <height>60</height>
                 <label>Reset to Defaults</label>
                 <font>font13</font>
-                <onclick>RunScript(special://skin/resources/lib/widget_manager.py,reset_to_defaults)</onclick>
+                <onup>3000</onup>
+                <onright>6001</onright>
+                <!-- OnClick handled by Python -->
             </control>
 
             <!-- Clear All Button -->
@@ -327,7 +283,10 @@
                 <height>60</height>
                 <label>Clear All</label>
                 <font>font13</font>
-                <onclick>RunScript(special://skin/resources/lib/widget_manager.py,clear_all)</onclick>
+                <onup>3000</onup>
+                <onleft>6002</onleft>
+                <onright>6000</onright>
+                <!-- OnClick handled by Python -->
             </control>
 
             <!-- Close Button -->
@@ -338,8 +297,9 @@
                 <height>60</height>
                 <label>Close</label>
                 <font>font13</font>
-                <onclick>RunScript(special://skin/resources/lib/widget_manager.py,save_and_exit)</onclick>
-                <onclick>PreviousMenu</onclick>
+                <onup>3000</onup>
+                <onleft>6001</onleft>
+                <!-- OnClick handled by Python -->
             </control>
         </control>
     </controls>

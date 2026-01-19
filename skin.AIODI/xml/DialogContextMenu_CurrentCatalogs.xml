@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Context Menu for Current Catalogs (Remove, Move Up, Move Down) -->
+<window id="1101" type="dialog">
+    <defaultcontrol>1</defaultcontrol>
+    <coordinates>
+        <left>540</left>
+        <top>300</top>
+    </coordinates>
+    
+    <controls>
+        <control type="group">
+            <width>400</width>
+            <height>250</height>
+            
+            <!-- Background -->
+            <control type="image">
+                <width>400</width>
+                <height>250</height>
+                <texture colordiffuse="E6000000">colors/white.png</texture>
+            </control>
+            
+            <!-- Menu Items -->
+            <control type="grouplist" id="1">
+                <left>20</left>
+                <top>20</top>
+                <width>360</width>
+                <height>210</height>
+                <itemgap>10</itemgap>
+                <orientation>vertical</orientation>
+                
+                <!-- Move Up -->
+                <control type="button" id="2">
+                    <width>360</width>
+                    <height>50</height>
+                    <label>Move Up</label>
+                    <font>font13</font>
+                    <textcolor>white</textcolor>
+                    <focusedcolor>button_focus</focusedcolor>
+                    <onclick>RunScript(special://skin/resources/lib/widget_manager.py,move_up)</onclick>
+                    <onclick>Close</onclick>
+                </control>
+                
+                <!-- Move Down -->
+                <control type="button" id="3">
+                    <width>360</width>
+                    <height>50</height>
+                    <label>Move Down</label>
+                    <font>font13</font>
+                    <textcolor>white</textcolor>
+                    <focusedcolor>button_focus</focusedcolor>
+                    <onclick>RunScript(special://skin/resources/lib/widget_manager.py,move_down)</onclick>
+                    <onclick>Close</onclick>
+                </control>
+                
+                <!-- Remove -->
+                <control type="button" id="4">
+                    <width>360</width>
+                    <height>50</height>
+                    <label>Remove from Page</label>
+                    <font>font13</font>
+                    <textcolor>white</textcolor>
+                    <focusedcolor>button_focus</focusedcolor>
+                    <onclick>RunScript(special://skin/resources/lib/widget_manager.py,remove_catalog)</onclick>
+                    <onclick>Close</onclick>
+                </control>
+                
+                <!-- Cancel -->
+                <control type="button" id="5">
+                    <width>360</width>
+                    <height>50</height>
+                    <label>Cancel</label>
+                    <font>font13</font>
+                    <textcolor>white</textcolor>
+                    <focusedcolor>button_focus</focusedcolor>
+                    <onclick>Close</onclick>
+                </control>
+            </control>
+        </control>
+    </controls>
+</window>

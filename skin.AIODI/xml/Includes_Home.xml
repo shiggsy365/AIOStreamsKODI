@@ -261,7 +261,7 @@
 					<param name="list_id">$PARAM[list_id]</param>
 				</include>
 				<!-- CONTENT PANEL -->
-				<control type="panel" id="$PARAM[list_id]">
+				<control type="fixedlist" id="$PARAM[list_id]">
 					<left>0</left>
 					<top>65</top>
 					<width>1750</width>
@@ -273,10 +273,43 @@
 					<onup>$PARAM[onup_action2]</onup>
 					<ondown>$PARAM[ondown_action1]</ondown>
 					<ondown>$PARAM[ondown_action2]</ondown>
-					<onclick condition="String.IsEmpty($PARAM[onclick_action]) | String.IsEqual($PARAM[onclick_action],noop)">PlayMedia($INFO[ListItem.FileNameAndPath])</onclick>
+					<onclick condition="[String.IsEqual(ListItem.DBType,tvshow) | String.IsEqual(ListItem.DBType,season)]">ActivateWindow(Videos,$INFO[ListItem.FolderPath],return)</onclick>
+					<onclick condition="![String.IsEqual(ListItem.DBType,tvshow) | String.IsEqual(ListItem.DBType,season)] + [String.IsEmpty($PARAM[onclick_action]) | String.IsEqual($PARAM[onclick_action],noop)]">PlayMedia($INFO[ListItem.FileNameAndPath])</onclick>
 					<onclick condition="!String.IsEqual($PARAM[onclick_action],noop) + !String.IsEmpty($PARAM[onclick_action])">$PARAM[onclick_action]</onclick>
 					<onfocus>Skin.SetString(ActiveWidgetID,$PARAM[list_id])</onfocus>
-					<itemlayout width="240" height="360">
+					
+					<!-- LANDSCAPE LAYOUT (Episodes) -->
+					<itemlayout width="410" height="360" condition="String.IsEqual(ListItem.DBType,episode)">
+						<control type="group">
+							<top>65</top> <!-- Vertically centered relative to Poster's 360 height -->
+							<control type="image">
+								<width>390</width>
+								<height>220</height>
+								<aspectratio align="center" aligny="center">scale</aspectratio>
+								<texture background="true">$INFO[ListItem.Art(thumb)]</texture>
+								<fallback>DefaultVideo.png</fallback>
+							</control>
+						</control>
+					</itemlayout>
+					<focusedlayout width="410" height="360" condition="String.IsEqual(ListItem.DBType,episode)">
+						<control type="group">
+							<top>65</top>
+							<animation effect="zoom" center="auto" start="100" end="110" time="200" tween="sine" easing="out">Focus</animation>
+							<control type="image">
+								<width>390</width>
+								<height>220</height>
+								<aspectratio align="center" aligny="center">scale</aspectratio>
+								<texture background="true">$INFO[ListItem.Art(thumb)]</texture>
+								<bordertexture border="3" colordiffuse="FFFF0000">colors/white.png</bordertexture>
+								<bordersize>3</bordersize>
+								<borderradius>8</borderradius>
+								<fallback>DefaultVideo.png</fallback>
+							</control>
+						</control>
+					</focusedlayout>
+
+					<!-- PORTRAIT LAYOUT (Movies, Series, Seasons - Default) -->
+					<itemlayout width="240" height="360" condition="!String.IsEqual(ListItem.DBType,episode)">
 						<control type="image">
 							<width>230</width>
 							<height>345</height>
@@ -285,7 +318,7 @@
 							<fallback>DefaultVideo.png</fallback>
 						</control>
 					</itemlayout>
-					<focusedlayout width="240" height="360">
+					<focusedlayout width="240" height="360" condition="!String.IsEqual(ListItem.DBType,episode)">
 						<control type="group">
 							<animation effect="zoom" center="auto" start="100" end="110" time="200" tween="sine" easing="out">Focus</animation>
 							<control type="image">
@@ -300,7 +333,7 @@
 							</control>
 						</control>
 					</focusedlayout>
-					<content limit="20" target="$PARAM[widget_target]" type="$PARAM[widget_type]">$PARAM[content_path]</content>
+					<content limit="20" target="$PARAM[widget_target]" browse="$PARAM[browse_mode]">$PARAM[content_path]&amp;reload=$INFO[Skin.String(WidgetReloadToken)]</content>
 				</control>
 				<!-- LOADING INDICATOR -->
 				<include content="BusyListSpinner">

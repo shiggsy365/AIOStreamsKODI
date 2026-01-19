@@ -23,36 +23,16 @@ def get_config_file_path():
 def get_default_config():
     """
     Get default widget configuration for all users.
+    Starts empty - users must add widgets via Widget Manager.
     
     Returns:
-        dict: Default configuration with sensible widget defaults
+        dict: Empty configuration
     """
     return {
-        'home': [
-            {
-                'label': 'Trakt Next Up',
-                'path': 'plugin://plugin.video.aiostreams/?action=trakt_next_up',
-                'type': 'series',
-                'is_trakt': True
-            }
-        ],
-        'tvshows': [
-            {
-                'label': 'Trakt Watchlist Series',
-                'path': 'plugin://plugin.video.aiostreams/?action=trakt_watchlist&media_type=shows',
-                'type': 'series',
-                'is_trakt': True
-            }
-        ],
-        'movies': [
-            {
-                'label': 'Trakt Watchlist Movies',
-                'path': 'plugin://plugin.video.aiostreams/?action=trakt_watchlist&media_type=movies',
-                'type': 'movie',
-                'is_trakt': True
-            }
-        ],
-        'version': 2  # Config version for future migrations
+        'home': [],
+        'tvshows': [],
+        'movies': [],
+        'version': 2
     }
 
 

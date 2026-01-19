@@ -967,10 +967,18 @@
 </variable>
 
 	<variable name="ActiveWidgetID">
-		<!-- Home Page (3 widgets: 0-2) -->
+		<!-- Home Page (11 widgets: 0-10) -->
 		<value condition="String.IsEqual(Skin.String(SideMenuFocus),home) + String.IsEqual(Skin.String(Home_WidgetIndex),0)">10100</value>
 		<value condition="String.IsEqual(Skin.String(SideMenuFocus),home) + String.IsEqual(Skin.String(Home_WidgetIndex),1)">10200</value>
 		<value condition="String.IsEqual(Skin.String(SideMenuFocus),home) + String.IsEqual(Skin.String(Home_WidgetIndex),2)">10300</value>
+		<value condition="String.IsEqual(Skin.String(SideMenuFocus),home) + String.IsEqual(Skin.String(Home_WidgetIndex),3)">10400</value>
+		<value condition="String.IsEqual(Skin.String(SideMenuFocus),home) + String.IsEqual(Skin.String(Home_WidgetIndex),4)">10500</value>
+		<value condition="String.IsEqual(Skin.String(SideMenuFocus),home) + String.IsEqual(Skin.String(Home_WidgetIndex),5)">10600</value>
+		<value condition="String.IsEqual(Skin.String(SideMenuFocus),home) + String.IsEqual(Skin.String(Home_WidgetIndex),6)">10700</value>
+		<value condition="String.IsEqual(Skin.String(SideMenuFocus),home) + String.IsEqual(Skin.String(Home_WidgetIndex),7)">10800</value>
+		<value condition="String.IsEqual(Skin.String(SideMenuFocus),home) + String.IsEqual(Skin.String(Home_WidgetIndex),8)">10900</value>
+		<value condition="String.IsEqual(Skin.String(SideMenuFocus),home) + String.IsEqual(Skin.String(Home_WidgetIndex),9)">11000</value>
+		<value condition="String.IsEqual(Skin.String(SideMenuFocus),home) + String.IsEqual(Skin.String(Home_WidgetIndex),10)">11100</value>
 		<value condition="String.IsEqual(Skin.String(SideMenuFocus),home) + String.IsEmpty(Skin.String(Home_WidgetIndex))">10100</value>
 		<!-- Movies Page (20 widgets: 0-19) -->
 		<value condition="String.IsEqual(Skin.String(SideMenuFocus),movies) + String.IsEqual(Skin.String(Movies_WidgetIndex),0)">5100</value>
@@ -1184,73 +1192,30 @@
 </variable>
 	<variable name="CurrentWidgetTitle">
 		<value condition="Control.HasFocus(7100)">$INFO[Container(7100).ListItem.Label]</value>
-		<value condition="Control.HasFocus(10100) + !String.IsEmpty(Container(10100).ListItem.Title) + !String.Contains(Container(10100).ListItem.Title,unknown)">$INFO[Container(10100).ListItem.Title]</value>
-		<value condition="Control.HasFocus(10100)">$INFO[Container(10100).ListItem.Label]</value>
-		<value condition="Control.HasFocus(10200) + !String.IsEmpty(Container(10200).ListItem.Title) + !String.Contains(Container(10200).ListItem.Title,unknown)">$INFO[Container(10200).ListItem.Title]</value>
-		<value condition="Control.HasFocus(10200)">$INFO[Container(10200).ListItem.Label]</value>
-		<value condition="Control.HasFocus(10300) + !String.IsEmpty(Container(10300).ListItem.Title) + !String.Contains(Container(10300).ListItem.Title,unknown)">$INFO[Container(10300).ListItem.Title]</value>
-		<value condition="Control.HasFocus(10300)">$INFO[Container(10300).ListItem.Label]</value>
-		<value condition="Control.HasFocus(5100) + !String.IsEmpty(Container(5100).ListItem.Title) + !String.Contains(Container(5100).ListItem.Title,unknown)">$INFO[Container(5100).ListItem.Title]</value>
-		<value condition="Control.HasFocus(5100)">$INFO[Container(5100).ListItem.Label]</value>
-		<value condition="Control.HasFocus(6100) + !String.IsEmpty(Container(6100).ListItem.Title) + !String.Contains(Container(6100).ListItem.Title,unknown)">$INFO[Container(6100).ListItem.Title]</value>
-		<value condition="Control.HasFocus(6100)">$INFO[Container(6100).ListItem.Label]</value>
-		<value condition="!String.IsEmpty(ListItem.Title) + !String.Contains(ListItem.Title,unknown)">$INFO[ListItem.Title]</value>
-		<value>$INFO[ListItem.Label]</value>
+		<value condition="!String.IsEmpty(Container($VAR[ActiveWidgetID]).ListItem.Title) + !String.Contains(Container($VAR[ActiveWidgetID]).ListItem.Title,unknown)">$INFO[Container($VAR[ActiveWidgetID]).ListItem.Title]</value>
+		<value>$INFO[Container($VAR[ActiveWidgetID]).ListItem.Label]</value>
 	</variable>
+
 	<variable name="CurrentWidgetFanart">
 		<value condition="Control.HasFocus(7100)">$INFO[Container(7100).ListItem.Art(fanart)]</value>
-		<value condition="Control.HasFocus(10100)">$INFO[Container(10100).ListItem.Art(fanart)]</value>
-		<value condition="Control.HasFocus(10200)">$INFO[Container(10200).ListItem.Art(fanart)]</value>
-		<value condition="Control.HasFocus(10300)">$INFO[Container(10300).ListItem.Art(fanart)]</value>
-		<value condition="Control.HasFocus(5100)">$INFO[Container(5100).ListItem.Art(fanart)]</value>
-		<value condition="Control.HasFocus(6100)">$INFO[Container(6100).ListItem.Art(fanart)]</value>
-		<value>$INFO[ListItem.Art(fanart)]</value>
+		<value>$INFO[Container($VAR[ActiveWidgetID]).ListItem.Art(fanart)]</value>
 	</variable>
+
 	<variable name="CurrentWidgetClearLogo">
-		<value condition="Control.HasFocus(10100) + !String.IsEmpty(Container(10100).ListItem.Art(clearlogo))">$INFO[Container(10100).ListItem.Art(clearlogo)]</value>
-		<value condition="Control.HasFocus(10100) + !String.IsEmpty(Container(10100).ListItem.Art(tvshow.clearlogo))">$INFO[Container(10100).ListItem.Art(tvshow.clearlogo)]</value>
-		<value condition="Control.HasFocus(10100) + !String.IsEmpty(Container(10100).ListItem.Art(logo))">$INFO[Container(10100).ListItem.Art(logo)]</value>
-		<value condition="Control.HasFocus(10200) + !String.IsEmpty(Container(10200).ListItem.Art(clearlogo))">$INFO[Container(10200).ListItem.Art(clearlogo)]</value>
-		<value condition="Control.HasFocus(10200) + !String.IsEmpty(Container(10200).ListItem.Art(tvshow.clearlogo))">$INFO[Container(10200).ListItem.Art(tvshow.clearlogo)]</value>
-		<value condition="Control.HasFocus(10200) + !String.IsEmpty(Container(10200).ListItem.Art(logo))">$INFO[Container(10200).ListItem.Art(logo)]</value>
-		<value condition="Control.HasFocus(10300) + !String.IsEmpty(Container(10300).ListItem.Art(clearlogo))">$INFO[Container(10300).ListItem.Art(clearlogo)]</value>
-		<value condition="Control.HasFocus(10300) + !String.IsEmpty(Container(10300).ListItem.Art(tvshow.clearlogo))">$INFO[Container(10300).ListItem.Art(tvshow.clearlogo)]</value>
-		<value condition="Control.HasFocus(10300) + !String.IsEmpty(Container(10300).ListItem.Art(logo))">$INFO[Container(10300).ListItem.Art(logo)]</value>
-		<value condition="Control.HasFocus(5100) + !String.IsEmpty(Container(5100).ListItem.Art(clearlogo))">$INFO[Container(5100).ListItem.Art(clearlogo)]</value>
-		<value condition="Control.HasFocus(5100) + !String.IsEmpty(Container(5100).ListItem.Art(tvshow.clearlogo))">$INFO[Container(5100).ListItem.Art(tvshow.clearlogo)]</value>
-		<value condition="Control.HasFocus(5100) + !String.IsEmpty(Container(5100).ListItem.Art(logo))">$INFO[Container(5100).ListItem.Art(logo)]</value>
-		<value condition="Control.HasFocus(5200) + !String.IsEmpty(Container(5200).ListItem.Art(clearlogo))">$INFO[Container(5200).ListItem.Art(clearlogo)]</value>
-		<value condition="Control.HasFocus(5200) + !String.IsEmpty(Container(5200).ListItem.Art(tvshow.clearlogo))">$INFO[Container(5200).ListItem.Art(tvshow.clearlogo)]</value>
-		<value condition="Control.HasFocus(5200) + !String.IsEmpty(Container(5200).ListItem.Art(logo))">$INFO[Container(5200).ListItem.Art(logo)]</value>
-		<value condition="Control.HasFocus(6100) + !String.IsEmpty(Container(6100).ListItem.Art(clearlogo))">$INFO[Container(6100).ListItem.Art(clearlogo)]</value>
-		<value condition="Control.HasFocus(6100) + !String.IsEmpty(Container(6100).ListItem.Art(tvshow.clearlogo))">$INFO[Container(6100).ListItem.Art(tvshow.clearlogo)]</value>
-		<value condition="Control.HasFocus(6100) + !String.IsEmpty(Container(6100).ListItem.Art(logo))">$INFO[Container(6100).ListItem.Art(logo)]</value>
-		<value condition="Control.HasFocus(6200) + !String.IsEmpty(Container(6200).ListItem.Art(clearlogo))">$INFO[Container(6200).ListItem.Art(clearlogo)]</value>
-		<value condition="Control.HasFocus(6200) + !String.IsEmpty(Container(6200).ListItem.Art(tvshow.clearlogo))">$INFO[Container(6200).ListItem.Art(tvshow.clearlogo)]</value>
-		<value condition="Control.HasFocus(6200) + !String.IsEmpty(Container(6200).ListItem.Art(logo))">$INFO[Container(6200).ListItem.Art(logo)]</value>
-		<value></value>
+		<value condition="!String.IsEmpty(Container($VAR[ActiveWidgetID]).ListItem.Art(clearlogo))">$INFO[Container($VAR[ActiveWidgetID]).ListItem.Art(clearlogo)]</value>
+		<value condition="!String.IsEmpty(Container($VAR[ActiveWidgetID]).ListItem.Art(tvshow.clearlogo))">$INFO[Container($VAR[ActiveWidgetID]).ListItem.Art(tvshow.clearlogo)]</value>
+		<value>$INFO[Container($VAR[ActiveWidgetID]).ListItem.Art(logo)]</value>
 	</variable>
 
 	<variable name="CurrentWidgetPlot">
 		<value condition="Control.HasFocus(7100)">$INFO[Container(7100).ListItem.Plot]</value>
-		<value condition="Control.HasFocus(10100)">$INFO[Container(10100).ListItem.Plot]</value>
-		<value condition="Control.HasFocus(10200)">$INFO[Container(10200).ListItem.Plot]</value>
-		<value condition="Control.HasFocus(10300)">$INFO[Container(10300).ListItem.Plot]</value>
-		<value condition="Control.HasFocus(5100)">$INFO[Container(5100).ListItem.Plot]</value>
-		<value condition="Control.HasFocus(6100)">$INFO[Container(6100).ListItem.Plot]</value>
-		<value>$INFO[ListItem.Plot]</value>
+		<value>$INFO[Container($VAR[ActiveWidgetID]).ListItem.Plot]</value>
 	</variable>
 
 	<variable name="CurrentWidgetInfo">
 		<value condition="Control.HasFocus(7100)">$INFO[Container(7100).ListItem.Year]$INFO[Container(7100).ListItem.Genre,  |  ]</value>
-		<value condition="Control.HasFocus(10100) + !String.IsEmpty(Container(10100).ListItem.Season)">$VAR[EpisodeInfoPadded]</value>
-		<value condition="Control.HasFocus(10100)">$INFO[Container(10100).ListItem.Year]$INFO[Container(10100).ListItem.Genre,  |  ]</value>
-		<value condition="Control.HasFocus(10200)">$INFO[Container(10200).ListItem.Year]$INFO[Container(10200).ListItem.Genre,  |  ]</value>
-		<value condition="Control.HasFocus(10300)">$INFO[Container(10300).ListItem.Year]$INFO[Container(10300).ListItem.Genre,  |  ]</value>
-		<value condition="Control.HasFocus(5100)">$INFO[Container(5100).ListItem.Year]$INFO[Container(5100).ListItem.Genre,  |  ]</value>
-		<value condition="Control.HasFocus(6100)">$INFO[Container(6100).ListItem.Year]$INFO[Container(6100).ListItem.Genre,  |  ]</value>
-		<value condition="!String.IsEmpty(ListItem.Season)">$VAR[EpisodeInfoPadded]</value>
-		<value>$INFO[ListItem.Year]$INFO[ListItem.Genre,  |  ]</value>
+		<value condition="!String.IsEmpty(Container($VAR[ActiveWidgetID]).ListItem.Season)">$VAR[EpisodeInfoPadded]</value>
+		<value>$INFO[Container($VAR[ActiveWidgetID]).ListItem.Year]$INFO[Container($VAR[ActiveWidgetID]).ListItem.Genre,  |  ]</value>
 	</variable>
 	<variable name="SeasonNumberPadded">
 		<value condition="Integer.IsLess(ListItem.Season,10)">S0$INFO[ListItem.Season]</value>
