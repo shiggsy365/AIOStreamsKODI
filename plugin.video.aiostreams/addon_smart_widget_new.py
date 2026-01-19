@@ -118,6 +118,15 @@ def smart_widget():
                 li = create_list_item(meta, content_type)
                 xbmcplugin.addDirectoryItem(HANDLE, url, li, is_folder)
             
+            # Add "More Results" if we got a full page (20 items)
+            if len(catalog_data['metas']) >= 20:
+                list_item = xbmcgui.ListItem(label='More Results')
+                list_item.setArt({'thumb': 'special://skin/media/more.png', 'poster': 'special://skin/media/more.png'})
+                # Get catalog info from widget path for next page
+                url = get_url(action='browse_catalog', catalog_id=catalog_id, content_type=content_type,
+                              catalog_name=label, skip=20)
+                xbmcplugin.addDirectoryItem(HANDLE, url, list_item, True)
+            
             xbmcplugin.endOfDirectory(HANDLE)
             return
         
