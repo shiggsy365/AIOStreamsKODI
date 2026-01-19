@@ -92,7 +92,7 @@
     </extension>
 </addon>
 
-<addon id="skin.AIODI" version="6.0.446" name="AIODI" provider-name="Jon">
+<addon id="skin.AIODI" version="6.0.447" name="AIODI" provider-name="Jon">
 	<requires>
 		<import addon="xbmc.gui" version="5.17.0"/>
 		<import addon="pvr.iptvsimple" version="20.0.0"/>
