@@ -1046,6 +1046,8 @@ def search():
     content_type = params.get('content_type', 'both')  # Default to both
     query = params.get('query', '').strip()  # Get query and strip whitespace
     skip = int(params.get('skip', 0))
+    
+    win = xbmcgui.Window(10000)
 
     # Get search query from user if not provided or empty
     if not query:
@@ -1070,9 +1072,16 @@ def search():
     progress.close()
 
     if not results or 'metas' not in results or len(results['metas']) == 0:
-        # No results found - log and exit (silent fail)
+        # No results found - Set count to 0
+        if content_type == 'movie':
+            win.setProperty('GlobalSearch.MoviesCount', '0')
+        elif content_type in ['tvshows', 'series']:
+            win.setProperty('GlobalSearch.SeriesCount', '0')
+        elif content_type in ['video', 'youtube']:
+            win.setProperty('GlobalSearch.YoutubeCount', '0')
+            
         xbmc.log(f'[AIOStreams] Search returned no results for "{query}"', xbmc.LOGINFO)
-        xbmcplugin.endOfDirectory(HANDLE, succeeded=False)
+        xbmcplugin.endOfDirectory(HANDLE, succeeded=True)
         return
     
     # Apply filters

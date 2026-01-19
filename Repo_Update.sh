@@ -14,6 +14,30 @@ NC='\033[0m' # No Color
 # Base Path
 BASE_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
+# Input Automation
+INPUT_QUEUE=()
+if [[ -n "$1" ]]; then
+    # Check if input has slashes
+    if [[ "$1" == *"/"* ]]; then
+        IFS='/' read -ra INPUT_QUEUE <<< "$1"
+    else
+        INPUT_QUEUE=("$@")
+    fi
+fi
+
+ask() {
+    local prompt="$1"
+    local var_name="$2"
+    if [[ ${#INPUT_QUEUE[@]} -gt 0 ]]; then
+        local val="${INPUT_QUEUE[0]}"
+        INPUT_QUEUE=("${INPUT_QUEUE[@]:1}")
+        echo -e "${prompt}${GREEN}${val}${NC}"
+        eval $var_name="'$val'"
+    else
+        read -p "$prompt" $var_name
+    fi
+}
+
 # Helper Functions
 get_source_version() {
     local xml_path="$1"
@@ -279,7 +303,7 @@ update_plugin() {
     local old_zip_path2="$BASE_DIR/docs/plugin.video.aiostreams/plugin.video.aiostreams-$old_version.zip"
 
     if [[ -f "$old_zip_path1" ]] || [[ -f "$old_zip_path2" ]]; then
-        read -p "Found old plugin version $old_version. Delete old ZIP files? (y/n) " cleanup
+        ask "Found old plugin version $old_version. Delete old ZIP files? (y/n) " cleanup
         if [[ "$cleanup" == "y" ]] || [[ "$cleanup" == "Y" ]]; then
             if [[ -f "$old_zip_path1" ]]; then
                 rm -f "$old_zip_path1" "$old_zip_path1.md5"
@@ -350,7 +374,7 @@ update_imvdb() {
     local old_zip_path2="$BASE_DIR/docs/plugin.video.imvdb/plugin.video.imvdb-$old_version.zip"
 
     if [[ -f "$old_zip_path1" ]] || [[ -f "$old_zip_path2" ]]; then
-        read -p "Found old IMVDb plugin version $old_version. Delete old ZIP files? (y/n) " cleanup
+        ask "Found old IMVDb plugin version $old_version. Delete old ZIP files? (y/n) " cleanup
         if [[ "$cleanup" == "y" ]] || [[ "$cleanup" == "Y" ]]; then
             if [[ -f "$old_zip_path1" ]]; then
                 rm -f "$old_zip_path1" "$old_zip_path1.md5"
@@ -421,7 +445,7 @@ update_onboarding() {
     local old_zip_path2="$BASE_DIR/docs/script.aiodi.onboarding/script.aiodi.onboarding-$old_version.zip"
 
     if [[ -f "$old_zip_path1" ]] || [[ -f "$old_zip_path2" ]]; then
-        read -p "Found old Onboarding version $old_version. Delete old ZIP files? (y/n) " cleanup
+        ask "Found old Onboarding version $old_version. Delete old ZIP files? (y/n) " cleanup
         if [[ "$cleanup" == "y" ]] || [[ "$cleanup" == "Y" ]]; then
             if [[ -f "$old_zip_path1" ]]; then
                 rm -f "$old_zip_path1" "$old_zip_path1.md5"
@@ -498,7 +522,7 @@ update_skin() {
     local old_zip_path_docs="$BASE_DIR/docs/skin.AIODI/skin.AIODI-$old_version.zip"
 
     if [[ -f "$old_zip_path_repo" ]] || [[ -f "$old_zip_path_docs" ]]; then
-        read -p "Found old skin version $old_version. Delete old ZIP files? (y/n) " cleanup
+        ask "Found old skin version $old_version. Delete old ZIP files? (y/n) " cleanup
         if [[ "$cleanup" == "y" ]] || [[ "$cleanup" == "Y" ]]; then
             if [[ -f "$old_zip_path_repo" ]]; then
                 rm -f "$old_zip_path_repo" "$old_zip_path_repo.md5"
@@ -576,7 +600,7 @@ echo -e "  ${WHITE}4. Onboarding Wizard only${NC}"
 echo -e "  ${WHITE}5. All Components${NC}"
 echo -e "${CYAN}========================================${NC}"
 
-read -p $'\nEnter your choice (1, 2, 3, 4, or 5): ' choice
+ask $'\nEnter your choice (1, 2, 3, 4, or 5): ' choice
 
 case "$choice" in
     1)
@@ -586,7 +610,7 @@ case "$choice" in
         fi
         new_plugin_version=$(increment_version "$plugin_version")
         echo -e "\n${YELLOW}Plugin will be updated: $plugin_version -> $new_plugin_version${NC}"
-        read -p "Continue? (y/n) " confirm
+        ask "Continue? (y/n) " confirm
         if [[ "$confirm" == "y" ]] || [[ "$confirm" == "Y" ]]; then
             update_plugin "$plugin_version" "$new_plugin_version"
             rebuild_addons_xml
@@ -599,7 +623,7 @@ case "$choice" in
         fi
         new_skin_version=$(increment_version "$skin_version")
         echo -e "\n${YELLOW}Skin will be updated: $skin_version -> $new_skin_version${NC}"
-        read -p "Continue? (y/n) " confirm
+        ask "Continue? (y/n) " confirm
         if [[ "$confirm" == "y" ]] || [[ "$confirm" == "Y" ]]; then
             update_skin "$skin_version" "$new_skin_version"
             rebuild_addons_xml
@@ -612,7 +636,7 @@ case "$choice" in
         fi
         new_imvdb_version=$(increment_version "$imvdb_version")
         echo -e "\n${YELLOW}IMVDb Plugin will be updated: $imvdb_version -> $new_imvdb_version${NC}"
-        read -p "Continue? (y/n) " confirm
+        ask "Continue? (y/n) " confirm
         if [[ "$confirm" == "y" ]] || [[ "$confirm" == "Y" ]]; then
             update_imvdb "$imvdb_version" "$new_imvdb_version"
             rebuild_addons_xml
@@ -625,7 +649,7 @@ case "$choice" in
         fi
         new_script_version=$(increment_version "$script_version")
         echo -e "\n${YELLOW}Onboarding Wizard will be updated: $script_version -> $new_script_version${NC}"
-        read -p "Continue? (y/n) " confirm
+        ask "Continue? (y/n) " confirm
         if [[ "$confirm" == "y" ]] || [[ "$confirm" == "Y" ]]; then
             update_onboarding "$script_version" "$new_script_version"
             rebuild_addons_xml
@@ -647,7 +671,7 @@ case "$choice" in
         echo -e "  ${WHITE}Onboarding Wizard: $script_version -> $new_script_version${NC}"
         echo -e "  ${WHITE}Skin: $skin_version -> $new_skin_version${NC}"
 
-        read -p $'\nContinue? (y/n) ' confirm
+        ask $'\nContinue? (y/n) ' confirm
         if [[ "$confirm" == "y" ]] || [[ "$confirm" == "Y" ]]; then
             update_plugin "$plugin_version" "$new_plugin_version"
             update_imvdb "$imvdb_version" "$new_imvdb_version"
@@ -667,7 +691,7 @@ echo -e "${GREEN}[+] Update process complete!${NC}"
 echo -e "${CYAN}========================================${NC}"
 
 echo -e "\n${YELLOW}Would you like to push these changes to GitHub main branch? (y/n)${NC}"
-read -p "Choice: " push_confirm
+ask "Choice: " push_confirm
 if [[ "$push_confirm" == "y" ]] || [[ "$push_confirm" == "Y" ]]; then
     push_to_git
 fi
