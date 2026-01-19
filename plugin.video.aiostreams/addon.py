@@ -3167,6 +3167,13 @@ def trakt_next_up():
             air_date_str = episode_air_date.split('T')[0] if 'T' in episode_air_date else episode_air_date
             info_tag.setPremiered(air_date_str)
             info_tag.setFirstAired(air_date_str)
+            
+            # Format date for display (e.g., "19 Jan 2024")
+            formatted_date = format_date_with_ordinal(air_date_str)
+            # Set as property so skin can access it
+            list_item.setProperty('AirDate', formatted_date)
+            # Also set as label2 for list views
+            list_item.setLabel2(formatted_date)
 
         # Set artwork
         art = {}

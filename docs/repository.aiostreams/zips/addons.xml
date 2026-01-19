@@ -18,7 +18,7 @@
     </extension>
 </addon>
 
-<addon id="plugin.video.aiostreams" name="AIOStreams" version="1.1.212" provider-name="Jon">
+<addon id="plugin.video.aiostreams" name="AIOStreams" version="1.1.213" provider-name="Jon">
     <requires>
         <import addon="xbmc.python" version="3.0.0"/>
         <import addon="script.module.requests" version="2.25.1"/>
