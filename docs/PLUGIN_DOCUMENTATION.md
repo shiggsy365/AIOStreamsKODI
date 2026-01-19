@@ -158,7 +158,7 @@ While AIOStreams works with any Kodi skin, we offer **AIODI** - a custom skin de
 
 ## Support the Project
 
-If you find AIOStreams useful, consider supporting development:
+If you find this plugin useful, consider supporting development:
 
 [![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/shiggsy365)
 
