@@ -308,6 +308,10 @@ class WidgetManager(xbmcgui.WindowXMLDialog):
         token = str(int(time.time()))
         xbmc.executebuiltin(f'Skin.SetString(WidgetReloadToken, {token})')
         
+        # Clear plugin cache to ensure fresh widget content
+        xbmc.executebuiltin('RunPlugin(plugin://plugin.video.aiostreams/?action=clear_cache)')
+        xbmc.sleep(500) # Wait for cache clear
+        
         # DEBUG: Dump config to workspace for verification
         try:
             dump_path = '/home/jon/Downloads/AIOStreamsKODI/AIOStreamsKODI/widget_dump.json'
