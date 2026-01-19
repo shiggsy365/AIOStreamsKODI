@@ -45,11 +45,12 @@
 						<texture fallback="DefaultVideo.png" background="true">$VAR[InfoDialogPosterVar]</texture>
 					</control>
 					<!-- Action Buttons under Poster - 2x2 Grid -->
-					<control type="group" id="8000">
+						<control type="group" id="8000">
 						<left>4</left>
 						<top>810</top>
 						<width>526</width>
 						<height>160</height>
+                        <visible>true</visible>
                         <onup>SetFocus(1011)</onup>
                         <ondown>50</ondown>
                         <onleft>50</onleft>
