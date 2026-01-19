@@ -91,6 +91,25 @@
                     <texturenofocus>buttons/fixed_movies_nofo.png</texturenofocus>
                     <textcolor>FFFFFFFF</textcolor>
                     <focusedcolor>FFFFFFFF</focusedcolor>
+                    <ondown>2004</ondown>
+                </control>
+
+                <!-- Save and Exit -->
+                <control type="button" id="2004">
+                    <width>240</width>
+                    <height>60</height>
+                    <font>font24_bold</font>
+                    <label>Save</label>
+                    <textoffsetx>60</textoffsetx>
+                    <align>left</align>
+                    <aligny>center</aligny>
+                    <!-- OnClick handled by Python -->
+                    <texturefocus>buttons/fixed_save_fo.png</texturefocus>
+                    <texturenofocus>buttons/fixed_save_nofo.png</texturenofocus>
+                    <textcolor>FFFFFFFF</textcolor>
+                    <focusedcolor>FFFFFFFF</focusedcolor>
+                    <onclick>Dialog.Close(1113)</onclick>
+                    <onup>2003</onup>
                     <ondown>3000</ondown>
                 </control>
             </control>

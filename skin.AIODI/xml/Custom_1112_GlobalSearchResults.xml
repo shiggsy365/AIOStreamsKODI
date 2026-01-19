@@ -104,7 +104,7 @@
                     <width>240</width>
                     <height>60</height>
                     <font>font24_bold</font>
-                    <label>Movies</label>
+                    <label>Movies [$INFO[Window(10000).Property(GlobalSearch.MoviesCount)]]</label>
                     <textoffsetx>60</textoffsetx>
                     <align>left</align>
                     <aligny>center</aligny>
@@ -125,7 +125,7 @@
                     <width>240</width>
                     <height>60</height>
                     <font>font24_bold</font>
-                    <label>TV Shows</label>
+                    <label>TV Shows [$INFO[Window(10000).Property(GlobalSearch.SeriesCount)]]</label>
                     <textoffsetx>60</textoffsetx>
                     <align>left</align>
                     <aligny>center</aligny>
@@ -148,7 +148,7 @@
                     <width>240</width>
                     <height>60</height>
                     <font>font24_bold</font>
-                    <label>YouTube</label>
+                    <label>YouTube [$INFO[Window(10000).Property(GlobalSearch.YoutubeCount)]]</label>
                     <textoffsetx>60</textoffsetx>
                     <align>left</align>
                     <aligny>center</aligny>
@@ -164,45 +164,7 @@
                 </control>
             </control>
 
-            <!-- Results Count Labels -->
-            <!-- Movies Count -->
-            <control type="label">
-                <left>100</left>
-                <top>75</top>
-                <width>120</width>
-                <height>25</height>
-                <font>font12</font>
-                <label>[$INFO[Window(10000).Property(GlobalSearch.MoviesCount)]]</label>
-                <textcolor>FFAAAAAA</textcolor>
-                <align>center</align>
-                <visible>!String.IsEqual(Window(10000).Property(GlobalSearch.MoviesCount),0)</visible>
-            </control>
-
-            <!-- TV Shows Count -->
-            <control type="label">
-                <left>440</left>
-                <top>75</top>
-                <width>120</width>
-                <height>25</height>
-                <font>font12</font>
-                <label>[$INFO[Window(10000).Property(GlobalSearch.SeriesCount)]]</label>
-                <textcolor>FFAAAAAA</textcolor>
-                <align>center</align>
-                <visible>!String.IsEqual(Window(10000).Property(GlobalSearch.SeriesCount),0)</visible>
-            </control>
-
-            <!-- YouTube Count -->
-            <control type="label">
-                <left>780</left>
-                <top>75</top>
-                <width>120</width>
-                <height>25</height>
-                <font>font12</font>
-                <label>[$INFO[Window(10000).Property(GlobalSearch.YoutubeCount)]]</label>
-                <textcolor>FFAAAAAA</textcolor>
-                <align>center</align>
-                <visible>!String.IsEqual(Window(10000).Property(GlobalSearch.YoutubeCount),0)</visible>
-            </control>
+            <!-- Results Count Labels Removed - Merged into Buttons -->
 
             <!-- Movies Results Panel -->
             <control type="group">

@@ -1287,12 +1287,12 @@
     </variable>
 
     <variable name="PlayButtonFocusVar">
-        <value condition="String.IsEqual(ListItem.DBType,tvshow) | String.IsEqual(ListItem.DBType,season)">buttons/fixed_browse_fo.png</value>
-        <value>buttons/fixed_play_fo.png</value>
+        <value condition="String.IsEqual(ListItem.DBType,episode) | String.IsEqual(ListItem.DBType,movie)">buttons/fixed_play_fo.png</value>
+        <value>buttons/fixed_browse_fo.png</value>
     </variable>
     <variable name="PlayButtonNoFocusVar">
-        <value condition="String.IsEqual(ListItem.DBType,tvshow) | String.IsEqual(ListItem.DBType,season)">buttons/fixed_browse_nofo.png</value>
-        <value>buttons/fixed_play_nofo.png</value>
+        <value condition="String.IsEqual(ListItem.DBType,episode) | String.IsEqual(ListItem.DBType,movie)">buttons/fixed_play_nofo.png</value>
+        <value>buttons/fixed_browse_nofo.png</value>
     </variable>
 
     <variable name="WatchlistButtonFocusVar">

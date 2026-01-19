@@ -18,34 +18,24 @@ if not os.path.exists(BUTTONS_DIR):
 
 BUTTONS = [
     ('home', 'widgetmanager/home.png'),
-    ('movies', 'widgetmanager/movies.png'),
-    ('tvshows', 'widgetmanager/tvshows.png'),
+    ('movies', 'sidemenu/movies_white.png'),
+    ('tvshows', 'sidemenu/tv_white.png'),
     ('youtube', 'search/youtube.png'),
     ('play', 'infodialog/play.png'),
     ('browse', 'infodialog/browse.png'),
     ('trailer', 'infodialog/trailer.png'),
-    ('watchlist_add', 'DRAW_PLUS'),
-    ('watchlist_remove', 'DRAW_MINUS'),
-    ('watched_add', 'DRAW_CHECK'),
-    ('watched_remove', 'DRAW_CROSS'),
+    ('watchlist_add', 'DRAW_CROSS'),     # User: Not in list (Add) -> Cross
+    ('watchlist_remove', 'DRAW_CHECK'),  # User: In list (Remove) -> Tick
+    ('watched_add', 'DRAW_CROSS'),       # User: Not watched (Mark Watched) -> Cross
+    ('watched_remove', 'DRAW_CHECK'),    # User: Watched (Mark Unwatched) -> Tick
+    ('save', 'DRAW_CHECK'),              # Save button
 ]
 
 def rounded_rectangle(draw, box, radius, fill, outline, width):
     draw.rounded_rectangle(box, radius=radius, fill=fill, outline=outline, width=width)
 
-def draw_plus(draw, center_x, center_y, size, color):
-    half = size // 2
-    # Horizontal
-    draw.rectangle([center_x - half, center_y - 3, center_x + half, center_y + 3], fill=color)
-    # Vertical
-    draw.rectangle([center_x - 3, center_y - half, center_x + 3, center_y + half], fill=color)
-
-def draw_minus(draw, center_x, center_y, size, color):
-    half = size // 2
-    draw.rectangle([center_x - half, center_y - 3, center_x + half, center_y + 3], fill=color)
-
 def draw_check(draw, center_x, center_y, size, color):
-    # Simple checkmark
+    # Simple Check/Tick
     # Points: left-mid, bottom-mid, top-right
     points = [
         (center_x - size//2, center_y),
