@@ -55,8 +55,9 @@
                     <label />
                     <align>center</align>
                     <!-- OnClick handled by Python -->
-                    <texturefocus>buttons/home_fo.svg</texturefocus>
-                    <texturenofocus>buttons/home_nofo.svg</texturenofocus>
+                    <!-- DEBUG: Testing with standard textures -->
+                    <texturefocus colordiffuse="FFFF0000">colors/white.png</texturefocus>
+                    <texturenofocus colordiffuse="FF808080">colors/white.png</texturenofocus>
                     <textcolor>00FFFFFF</textcolor>
                     <focusedcolor>00FFFFFF</focusedcolor>
                 </control>
