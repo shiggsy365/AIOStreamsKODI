@@ -712,7 +712,7 @@ class TraktSyncDatabase(Database):
                 'imdb_id': row['imdb_id'],
                 'listed_at': row['listed_at'],
                 'last_updated': row['last_updated'],
-                'metadata': pickle.loads(row['metadata']) if row.get('metadata') else None
+                'metadata': pickle.loads(row['metadata']) if ('metadata' in row.keys() and row['metadata']) else None
             }
         except Exception as e:
             xbmc.log(f'[AIOStreams] Error unpacking watchlist row: {e}', xbmc.LOGERROR)

@@ -2922,16 +2922,25 @@ def trakt_collection():
             # Convert database format to Trakt API format for compatibility
             items = []
             for row in items_raw:
-                item_wrapper = {
-                    'collected_at': row.get('collected_at') if media_type == 'movies' else row.get('last_updated'),
-                    media_type[:-1] if media_type.endswith('s') else media_type: {
-                        'ids': {
-                            'trakt': row.get('trakt_id'),
-                            'imdb': row.get('imdb_id')
+                try:
+                    # sqlite3.Row uses dictionary-style access, not .get()
+                    collected_at = row['collected_at'] if 'collected_at' in row.keys() else (row['last_updated'] if 'last_updated' in row.keys() else None)
+                    trakt_id = row['trakt_id'] if 'trakt_id' in row.keys() else None
+                    imdb_id = row['imdb_id'] if 'imdb_id' in row.keys() else None
+                    
+                    item_wrapper = {
+                        'collected_at': collected_at if media_type == 'movies' else collected_at,
+                        media_type[:-1] if media_type.endswith('s') else media_type: {
+                            'ids': {
+                                'trakt': trakt_id,
+                                'imdb': imdb_id
+                            }
                         }
                     }
-                }
-                items.append(item_wrapper)
+                    items.append(item_wrapper)
+                except Exception as e:
+                    xbmc.log(f'[AIOStreams] Error unpacking collection row: {e}', xbmc.LOGWARNING)
+                    continue
     except Exception as e:
         xbmc.log(f'[AIOStreams] Error accessing collection database: {e}', xbmc.LOGWARNING)
         # Fallback to old method
