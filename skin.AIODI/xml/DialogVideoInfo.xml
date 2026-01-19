@@ -116,8 +116,10 @@
                             <textcolor>FFFFFFFF</textcolor>
                             <focusedcolor>FFFFFFFF</focusedcolor>
                             <colordiffuse>FFFFFFFF</colordiffuse>
-                            <texturefocus>special://skin/media/buttons/tr_watchlist_add_fo.png</texturefocus>
-                            <texturenofocus>special://skin/media/buttons/tr_watchlist_add_nofo.png</texturenofocus>
+                            <texturefocus condition="String.IsEqual(Window(Home).Property(InfoWindow.IsWatchlist),true)">special://skin/media/buttons/tr_watchlist_remove_fo.png</texturefocus>
+                            <texturefocus condition="!String.IsEqual(Window(Home).Property(InfoWindow.IsWatchlist),true)">special://skin/media/buttons/tr_watchlist_add_fo.png</texturefocus>
+                            <texturenofocus condition="String.IsEqual(Window(Home).Property(InfoWindow.IsWatchlist),true)">special://skin/media/buttons/tr_watchlist_remove_nofo.png</texturenofocus>
+                            <texturenofocus condition="!String.IsEqual(Window(Home).Property(InfoWindow.IsWatchlist),true)">special://skin/media/buttons/tr_watchlist_add_nofo.png</texturenofocus>
                             <onclick condition="String.IsEqual(Window(Home).Property(InfoWindow.IsWatchlist),true)">RunScript(plugin.video.aiostreams, action=trakt_remove_watchlist, dbid=$INFO[ListItem.DBID], type=$INFO[ListItem.DBType])</onclick>
                             <onclick condition="!String.IsEqual(Window(Home).Property(InfoWindow.IsWatchlist),true)">RunScript(plugin.video.aiostreams, action=trakt_add_watchlist, dbid=$INFO[ListItem.DBID], type=$INFO[ListItem.DBType])</onclick>
                             <onup>2001</onup>
@@ -138,8 +140,10 @@
                             <textcolor>FFFFFFFF</textcolor>
                             <focusedcolor>FFFFFFFF</focusedcolor>
                             <colordiffuse>FFFFFFFF</colordiffuse>
-                            <texturefocus>special://skin/media/buttons/tr_watched_add_fo.png</texturefocus>
-                            <texturenofocus>special://skin/media/buttons/tr_watched_add_nofo.png</texturenofocus>
+                            <texturefocus condition="String.IsEqual(Window(Home).Property(InfoWindow.IsWatched),true)">special://skin/media/buttons/tr_watched_remove_fo.png</texturefocus>
+                            <texturefocus condition="!String.IsEqual(Window(Home).Property(InfoWindow.IsWatched),true)">special://skin/media/buttons/tr_watched_add_fo.png</texturefocus>
+                            <texturenofocus condition="String.IsEqual(Window(Home).Property(InfoWindow.IsWatched),true)">special://skin/media/buttons/tr_watched_remove_nofo.png</texturenofocus>
+                            <texturenofocus condition="!String.IsEqual(Window(Home).Property(InfoWindow.IsWatched),true)">special://skin/media/buttons/tr_watched_add_nofo.png</texturenofocus>
                             <onclick condition="String.IsEqual(Window(Home).Property(InfoWindow.IsWatched),true)">RunScript(plugin.video.aiostreams, action=trakt_remove_watched, dbid=$INFO[ListItem.DBID], type=$INFO[ListItem.DBType])</onclick>
                             <onclick condition="!String.IsEqual(Window(Home).Property(InfoWindow.IsWatched),true)">RunScript(plugin.video.aiostreams, action=trakt_mark_watched, dbid=$INFO[ListItem.DBID], type=$INFO[ListItem.DBType])</onclick>
                             <onup>8</onup>
