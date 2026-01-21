@@ -283,6 +283,12 @@ def get_manifest():
 
 def search_catalog(query, content_type='movie', skip=0):
     """Search the AIOStreams catalog with pagination."""
+    if content_type in ['video', 'youtube'] or 'youtube' in str(content_type):
+        youtube_available = xbmc.getCondVisibility('System.HasAddon(plugin.video.youtube)')
+        if not youtube_available:
+            xbmc.log(f'[AIOStreams] Blocking YouTube search request for "{query}"', xbmc.LOGINFO)
+            return {'metas': []}
+
     base_url = get_base_url()
     catalog_id = '39fe3b0.search'
     url = f"{base_url}/catalog/{content_type}/{catalog_id}/search={query}"
@@ -970,9 +976,9 @@ def create_listitem_with_context(meta, content_type, action_url):
         trailers = meta.get('trailers', [])
         # xbmc.log(f'[AIOStreams] Movie Trailers found: {trailers}', xbmc.LOGDEBUG)
         if trailers and isinstance(trailers, list) and len(trailers) > 0:
+            youtube_available = xbmc.getCondVisibility('System.HasAddon(plugin.video.youtube)')
             youtube_id = trailers[0].get('ytId', '') or trailers[0].get('source', '')
-            # xbmc.log(f'[AIOStreams] Movie Trailer YouTube ID: {youtube_id}', xbmc.LOGDEBUG)
-            if youtube_id:
+            if youtube_id and youtube_available:
                 trailer_url = f'https://www.youtube.com/watch?v={youtube_id}'
                 info_tag.setTrailer(trailer_url)
                 play_url = f'plugin://plugin.video.youtube/play/?video_id={youtube_id}'
@@ -1012,9 +1018,9 @@ def create_listitem_with_context(meta, content_type, action_url):
         trailers = meta.get('trailerStreams', [])
         # xbmc.log(f'[AIOStreams] Series Trailers found: {trailers}', xbmc.LOGDEBUG)
         if trailers and isinstance(trailers, list) and len(trailers) > 0:
+            youtube_available = xbmc.getCondVisibility('System.HasAddon(plugin.video.youtube)')
             youtube_id = trailers[0].get('ytId', '') or trailers[0].get('source', '')
-            # xbmc.log(f'[AIOStreams] Series Trailer YouTube ID: {youtube_id}', xbmc.LOGDEBUG)
-            if youtube_id:
+            if youtube_id and youtube_available:
                 trailer_url = f'https://www.youtube.com/watch?v={youtube_id}'
                 info_tag.setTrailer(trailer_url)
                 play_url = f'plugin://plugin.video.youtube/play/?video_id={youtube_id}'
@@ -1236,6 +1242,9 @@ def search():
             )
             
             if is_youtube_folder:
+                youtube_available = xbmc.getCondVisibility('System.HasAddon(plugin.video.youtube)')
+                if not youtube_available:
+                    continue
                 # Use a custom action to close the dialog before opening the folder
                 # This fixes the "Activate of window refused because there are active modal dialogs" error
                 item_url = item_url if item_url else meta.get('id', '')
@@ -2821,7 +2830,17 @@ def show_seasons():
 
 def youtube_menu():
     """Show static YouTube menu items."""
-    # This function is now LIGHTWEIGHT - no heavy imports needed!
+    youtube_available = xbmc.getCondVisibility('System.HasAddon(plugin.video.youtube)')
+    imvdb_available = xbmc.getCondVisibility('System.HasAddon(plugin.video.imvdb)')
+    
+    if not youtube_available and not imvdb_available:
+        xbmcgui.Dialog().notification('AIOStreams', 'Music Video addons not installed', xbmcgui.NOTIFICATION_WARNING)
+        xbmcplugin.endOfDirectory(HANDLE, succeeded=False)
+        return
+    
+    if youtube_available:
+        # Existing YouTube menu items...
+
     xbmcplugin.setPluginCategory(HANDLE, 'YouTube')
     xbmcplugin.setContent(HANDLE, 'files')
 
@@ -4949,7 +4968,10 @@ def play_next(params):
     
     # Call play() directly with the extracted params
     xbmc.log(f'[AIOStreams] play_next: Calling play() with params', xbmc.LOGINFO)
-    play(params)
+    try:
+        play(params)
+    except Exception as e:
+        xbmc.log(f'[AIOStreams] play_next error: {e}', xbmc.LOGERROR)
     xbmc.log(f'[AIOStreams] play_next: play() completed', xbmc.LOGINFO)
 
 

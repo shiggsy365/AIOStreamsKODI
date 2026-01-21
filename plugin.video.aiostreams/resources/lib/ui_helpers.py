@@ -221,3 +221,15 @@ def format_load_more(count=None):
         return f'[COLOR yellow]» Load More... ({count} more)[/COLOR]'
     else:
         return '[COLOR yellow]» Load More...[/COLOR]'
+
+
+def is_addon_installed(addon_id):
+    """Check if a specific addon is installed and enabled in Kodi."""
+    try:
+        # Check if the addon exists in Kodi's addon registry
+        from xbmcaddon import Addon
+        Addon(addon_id)
+        return True
+    except:
+        # Addon not found or disabled
+        return False

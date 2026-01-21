@@ -371,7 +371,7 @@ class AIOStreamsService:
         self.run_migrations()
         self.run_cache_cleanup()
         self.run_clearlogo_check()
-
+        
         # Wait for UI to fully load before starting sync (10 seconds delay)
         xbmc.log('[AIOStreams Service] Waiting 10 seconds for UI to fully load...', xbmc.LOGINFO)
         if self.monitor.waitForAbort(10):

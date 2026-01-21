@@ -28,6 +28,7 @@ def search(query):
     Args:
         query: Search query string from global search
     """
+    youtube_available = xbmc.getCondVisibility('System.HasAddon(plugin.video.youtube)')
     xbmc.log(f'[AIOStreams GlobalSearch] Search query: {query}', xbmc.LOGINFO)
     
     # Import the main addon module
@@ -46,6 +47,12 @@ def search(query):
         # Search TV shows
         xbmc.log(f'[AIOStreams GlobalSearch] Searching TV shows for: {query}', xbmc.LOGDEBUG)
         series_results = addon.search_catalog(query, 'series', skip=0)
+        
+        # Search YouTube (only if available)
+        youtube_results = {'metas': []}
+        if youtube_available:
+            xbmc.log(f'[AIOStreams GlobalSearch] Searching YouTube for: {query}', xbmc.LOGDEBUG)
+            youtube_results = addon.search_catalog(query, 'video', skip=0)
         
         # Add movie results
         if movie_results and 'metas' in movie_results:
@@ -69,13 +76,24 @@ def search(query):
                 url = addon.get_url(action='show_seasons', meta_id=item_id)
                 list_item = addon.create_listitem_with_context(meta, 'series', url)
                 xbmcplugin.addDirectoryItem(HANDLE, url, list_item, True)
+
+        # Add YouTube results
+        if youtube_available and youtube_results and 'metas' in youtube_results:
+            for meta in youtube_results['metas'][:5]:  # Limit to 5 results
+                item_id = meta.get('id')
+                title = meta.get('name', 'Unknown')
+                url = addon.get_url(action='play', content_type='video', imdb_id=item_id, title=title)
+                list_item = addon.create_listitem_with_context(meta, 'video', url)
+                list_item.setProperty('IsPlayable', 'true')
+                xbmcplugin.addDirectoryItem(HANDLE, url, list_item, False)
         
         # End the directory listing
         xbmcplugin.endOfDirectory(HANDLE, succeeded=True)
         
         movie_count = len(movie_results.get('metas', [])) if movie_results else 0
         series_count = len(series_results.get('metas', [])) if series_results else 0
-        xbmc.log(f'[AIOStreams GlobalSearch] Found {movie_count} movies, {series_count} TV shows for: {query}', xbmc.LOGINFO)
+        youtube_count = len(youtube_results.get('metas', [])) if youtube_results else 0
+        xbmc.log(f'[AIOStreams GlobalSearch] Found {movie_count} movies, {series_count} TV shows, {youtube_count} YouTube for: {query}', xbmc.LOGINFO)
         
     except Exception as e:
         xbmc.log(f'[AIOStreams GlobalSearch] Error: {e}', xbmc.LOGERROR)

@@ -114,7 +114,8 @@
                     <texturenofocus>buttons/tr_movies_nofo.png</texturenofocus>
                     <onup>9000</onup>
                     <ondown>100</ondown>
-                    <onright>51</onright>
+                    <onright condition="System.HasAddon(plugin.video.youtube)">51</onright>
+                    <onright condition="!System.HasAddon(plugin.video.youtube)">noop</onright>
                     <onclick>SetProperty(GlobalSearch.ActiveTab,movies,10000)</onclick>
                     <onclick>SetFocus(100)</onclick>
                 </control>
@@ -136,7 +137,8 @@
                     <onup>9000</onup>
                     <ondown>101</ondown>
                     <onleft>50</onleft>
-                    <onright>52</onright>
+                    <onright condition="System.HasAddon(plugin.video.youtube)">52</onright>
+                    <onright condition="!System.HasAddon(plugin.video.youtube)">noop</onright>
                     <onclick>SetProperty(GlobalSearch.ActiveTab,series,10000)</onclick>
                     <onclick>SetFocus(101)</onclick>
                 </control>
@@ -161,6 +163,7 @@
                     <onleft>51</onleft>
                     <onclick>SetProperty(GlobalSearch.ActiveTab,youtube,10000)</onclick>
                     <onclick>SetFocus(102)</onclick>
+                    <visible>System.HasAddon(plugin.video.youtube)</visible>
                 </control>
             </control>
 
@@ -470,7 +473,7 @@
                 <top>180</top>
                 <width>1600</width>
                 <height>700</height>
-                <visible>String.IsEqual(Window(10000).Property(GlobalSearch.ActiveTab),youtube)</visible>
+                <visible>String.IsEqual(Window(10000).Property(GlobalSearch.ActiveTab),youtube) + System.HasAddon(plugin.video.youtube)</visible>
                 
                 <!-- YouTube List -->
                 <control type="list" id="102">
