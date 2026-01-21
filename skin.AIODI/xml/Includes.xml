@@ -15,10 +15,12 @@
 	<include file="View_53_Shift.xml" />
 	<include file="View_54_InfoWall.xml" />
 	<include file="View_55_WideList.xml" />
+	<include file="View_56_SeasonBrowse.xml" />
 	<include file="View_503_NowPlaying.xml" />
 	<include file="View_500_Wall.xml" />
 	<include file="View_501_Banner.xml" />
 	<include file="View_502_FanArt.xml" />
+	<include file="View_57_AIODInfo.xml" />
 	<include file="Variables.xml" />
 	<constant name="DepthDialog">0.50</constant>
 	<constant name="DepthDialog+">0.52</constant>
@@ -99,10 +101,35 @@
 		<top>-3000</top>
 		<width>1</width>
 		<height>1</height>
-		<texturefocus />
-		<texturenofocus />
-		<label></label>
-		<font></font>
+		<label>-</label>
+	</include>
+
+	<include name="RightSideMenuBackground">
+		<param name="width">500</param>
+		<param name="color">glass_bg</param>
+		<definition>
+			<control type="group">
+				<right>0</right>
+				<top>0</top>
+				<width>$PARAM[width]</width>
+				<bottom>0</bottom>
+				<control type="image">
+					<left>0</left>
+					<top>0</top>
+					<right>0</right>
+					<bottom>0</bottom>
+					<texture colordiffuse="$PARAM[color]">colors/white.png</texture>
+				</control>
+				<!-- Side Border -->
+				<control type="image">
+					<left>0</left>
+					<top>0</top>
+					<width>1</width>
+					<bottom>0</bottom>
+					<texture colordiffuse="glass_border">colors/white.png</texture>
+				</control>
+			</control>
+		</definition>
 	</include>
 	<include name="RatingCircle">
 		<param name="animation">False</param>
@@ -137,6 +164,22 @@
 			<height>44</height>
 			<font>font20_title</font>
 			<label>$INFO[$PARAM[infolabel]]</label>
+		</control>
+	</include>
+	<include name="GlassPanel">
+		<control type="image">
+			<left>0</left>
+			<top>0</top>
+			<right>0</right>
+			<bottom>0</bottom>
+			<texture colordiffuse="glass_bg">colors/white.png</texture>
+		</control>
+		<control type="image">
+			<left>0</left>
+			<top>0</top>
+			<right>0</right>
+			<bottom>0</bottom>
+			<texture border="1" colordiffuse="glass_border">colors/white.png</texture>
 		</control>
 	</include>
 	<include name="InfoList">
@@ -1250,14 +1293,14 @@
 			<include>FullScreenDimensions</include>
 			<aspectratio>scale</aspectratio>
 			<texture>special://skin/extras/background.png</texture>
-			<visible>!Window.IsActive(settings) + !Window.IsActive(skinsettings) + !Window.IsActive(systeminfo) + !Window.IsActive(filemanager) + !Window.IsActive(addonbrowser)</visible>
+			<visible>false</visible>
 		</control>
 		<control type="image">
 			<depth>DepthBackground</depth>
 			<include>FullScreenDimensions</include>
 			<aspectratio>scale</aspectratio>
 			<texture colordiffuse="secondary_background" fallback="special://skin/extras/backgrounds/pattern1.jpg">$INFO[Skin.String(background_overlay),special://skin/extras/backgrounds/pattern,.jpg]</texture>
-			<visible>!Window.IsActive(settings) + !Window.IsActive(settingscategory) + !Window.IsActive(skinsettings) + !Window.IsActive(systeminfo) + !Window.IsActive(filemanager) + !Window.IsActive(addonbrowser)</visible>
+			<visible>!Window.IsActive(settings) + !Window.IsActive(skinsettings) + !Window.IsActive(systeminfo) + !Window.IsActive(filemanager) + !Window.IsActive(addonbrowser)</visible>
 		</control>
 	</include>
 	<include name="DefaultBackground">
@@ -1815,19 +1858,19 @@
 	</include>
 	<!-- Global Search Content Includes -->
 	<include name="GlobalSearchMoviesContent">
-		<content target="video">
+		<content target="videos">
 			plugin://plugin.video.aiostreams/?action=search&amp;content_type=movie&amp;query=$ESCINFO[Window(10000).Property(GlobalSearch.Query)]
 		</content>
 	</include>
 	
 	<include name="GlobalSearchSeriesContent">
-		<content target="video">
+		<content target="videos">
 			plugin://plugin.video.aiostreams/?action=search&amp;content_type=series&amp;query=$ESCINFO[Window(10000).Property(GlobalSearch.Query)]
 		</content>
 	</include>
 	
 	<include name="GlobalSearchYouTubeContent">
-		<content target="video">
+		<content target="videos">
 			plugin://plugin.video.youtube/kodion/search/query/?q=$ESCINFO[Window(10000).Property(GlobalSearch.Query)]
 		</content>
 	</include>

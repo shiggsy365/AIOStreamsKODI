@@ -8,6 +8,7 @@ import requests
 import time
 import json
 import random
+import threading
 
 # Import cache module
 try:
@@ -23,29 +24,31 @@ ADDON = xbmcaddon.Addon()
 API_ENDPOINT = 'https://api.trakt.tv'
 API_VERSION = '2'
 
-# Database instance (lazy loaded)
-_trakt_db = None
+# Database instance (thread-local to avoid SQLite concurrency issues)
+_trakt_db = threading.local()
 
 
 def get_trakt_db():
-    """Get or create Trakt sync database instance.
+    """Get or create Trakt sync database instance (thread-safe).
     
     Returns:
         TraktSyncDatabase instance or None if database module unavailable
     """
     global _trakt_db
     
-    if _trakt_db is None:
+    # Check if this thread has a DB connection
+    if not getattr(_trakt_db, 'connection', None):
         try:
             from resources.lib.database.trakt_sync.activities import TraktSyncDatabase
-            _trakt_db = TraktSyncDatabase()
-            _trakt_db.connect()
-            xbmc.log('[AIOStreams] Trakt database initialized and connected', xbmc.LOGDEBUG)
+            db = TraktSyncDatabase()
+            db.connect()
+            _trakt_db.connection = db
+            xbmc.log(f'[AIOStreams] Trakt database initialized for thread {threading.get_ident()}', xbmc.LOGDEBUG)
         except Exception as e:
             xbmc.log(f'[AIOStreams] Failed to initialize Trakt database: {e}', xbmc.LOGERROR)
             return None
     
-    return _trakt_db
+    return _trakt_db.connection
 
 # In-memory cache for batch show progress (invalidated on watched status changes)
 _show_progress_batch_cache = {}
@@ -1229,21 +1232,22 @@ def scrobble(action, media_type, imdb_id, progress=0, season=None, episode=None)
     if media_type == 'movie':
         data['movie'] = {'ids': {'imdb': imdb_id}}
     else:
-        data['episode'] = {'ids': {'imdb': imdb_id}}
+        # For episodes, include the episode IMDB ID directly
+        data['episode'] = {
+            'ids': {'imdb': imdb_id}
+        }
+        # If season/episode numbers are provided, add them
         if season is not None and episode is not None:
-            data['show'] = {'ids': {'imdb': imdb_id.split(':')[0]}}
-            data['episode'] = {
-                'season': int(season),
-                'number': int(episode)
-            }
+            data['episode']['season'] = int(season)
+            data['episode']['number'] = int(episode)
     
     result = call_trakt(f'scrobble/{action}', method='POST', data=data)
     
     if result:
         xbmc.log(f'[AIOStreams] Scrobble {action}: {media_type} {imdb_id} at {progress}%', xbmc.LOGINFO)
-        return True
+        return result
     
-    return False
+    return None
 
 
 def add_to_watchlist(media_type, imdb_id, season=None, episode=None):

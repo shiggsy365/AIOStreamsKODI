@@ -411,12 +411,12 @@
 		</include>
 		<include>BottomBar</include>
 
-        <!-- Right Side Panel (Context Menu Style) -->
+        <!-- Right Side Panel -->
         <control type="group">
-            <left>1420</left>
+            <right>0</right>
             <top>0</top>
             <width>500</width>
-            <height>1080</height>
+            <bottom>0</bottom>
             <visible>ControlGroup(9001).HasFocus()</visible>
             <animation type="Visible">
                 <effect type="slide" start="500" end="0" time="300" tween="cubic" easing="out" />
@@ -425,23 +425,8 @@
                 <effect type="slide" start="0" end="500" time="300" tween="cubic" easing="in" />
             </animation>
 
-            <!-- Panel Background -->
-            <control type="image">
-                <left>0</left>
-                <top>0</top>
-                <width>500</width>
-                <height>1080</height>
-                <texture colordiffuse="FF1A1A1A">colors/white.png</texture>
-            </control>
+            <include>RightSideMenuBackground</include>
             
-            <!-- Side Shadow/Border -->
-            <control type="image">
-                <left>-5</left>
-                <top>0</top>
-                <width>5</width>
-                <height>1080</height>
-                <texture colordiffuse="FF000000">colors/white.png</texture>
-            </control>
 
             <!-- List Content -->
             <control type="grouplist" id="9001">

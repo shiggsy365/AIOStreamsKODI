@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Context Menu for Available Catalogs (Add to Page) -->
+<window id="1102" type="dialog">
+    <defaultcontrol>1</defaultcontrol>
+    <coordinates>
+        <left>760</left>
+        <top>300</top>
+    </coordinates>
+    
+    <controls>
+        <control type="group">
+            <width>400</width>
+            <height>150</height>
+            
+            <!-- Background -->
+            <control type="image">
+                <width>400</width>
+                <height>150</height>
+                <texture colordiffuse="E6000000">colors/white.png</texture>
+            </control>
+            
+            <!-- Menu Items -->
+            <control type="grouplist" id="1">
+                <left>20</left>
+                <top>20</top>
+                <width>360</width>
+                <height>110</height>
+                <itemgap>10</itemgap>
+                <orientation>vertical</orientation>
+                
+                <!-- Add to Page -->
+                <control type="button" id="2">
+                    <width>360</width>
+                    <height>50</height>
+                    <label>Add to $INFO[Window(1111).Property(CurrentPageName)] Page</label>
+                    <font>font13</font>
+                    <textcolor>white</textcolor>
+                    <focusedcolor>button_focus</focusedcolor>
+                    <onclick>RunScript(special://skin/resources/lib/widget_manager.py,add_catalog)</onclick>
+                    <onclick>Close</onclick>
+                </control>
+                
+                <!-- Cancel -->
+                <control type="button" id="3">
+                    <width>360</width>
+                    <height>50</height>
+                    <label>Cancel</label>
+                    <font>font13</font>
+                    <textcolor>white</textcolor>
+                    <focusedcolor>button_focus</focusedcolor>
+                    <onclick>Close</onclick>
+                </control>
+            </control>
+        </control>
+    </controls>
+</window>

@@ -277,19 +277,30 @@
 			<effect type="slide" start="0" end="520" time="400" tween="cubic" easing="out" />
 		</animation>
 		<control type="image">
-			<width>4000</width>
-			<height>100%</height>
-			<aspectratio>scale</aspectratio>
+			<include>FullScreenDimensions</include>
 			<texture colordiffuse="80FFFFFF">colors/black.png</texture>
 			<visible>$EXP[sidebar_visible] + !System.HasActiveModalDialog</visible>
 			<animation effect="fade" time="200">VisibleChange</animation>
 		</control>
-		<control type="image">
-			<left>0</left>
-			<top>0</top>
-			<width>520</width>
-			<height>100%</height>
-			<texture border="0,0,52,0">lists/panel-mediamenu.png</texture>
+		<control type="group">
+			<visible>$EXP[sidebar_visible] + !System.HasActiveModalDialog</visible>
+			<!-- Panel Background -->
+			<control type="image">
+				<left>0</left>
+				<top>0</top>
+				<width>500</width>
+				<height>100%</height>
+				<texture colordiffuse="B3000000">colors/white.png</texture>
+			</control>
+			
+			<!-- Side Border -->
+			<control type="image">
+				<left>499</left>
+				<top>0</top>
+				<width>1</width>
+				<height>100%</height>
+				<texture colordiffuse="glass_border">colors/white.png</texture>
+			</control>
 		</control>
 		<control type="button" id="6131">
 			<left>0</left>
@@ -299,6 +310,7 @@
 			<label></label>
 			<texturefocus />
 			<texturenofocus />
+            <onright>50</onright>
 		</control>
 		<control type="button" id="3">
 			<description>Viewtype Toggle</description>

@@ -10,6 +10,7 @@
     <onunload>ClearProperty(GlobalSearch.SeriesCount,10000)</onunload>
     <onunload>ClearProperty(GlobalSearch.YoutubeCount,10000)</onunload>
     <onunload>ClearProperty(GlobalSearch.ActiveTab,10000)</onunload>
+    <onunload>ClearProperty(AIOStreams.SearchActive,10000)</onunload>
     <coordinates>
         <left>0</left>
         <top>0</top>
@@ -22,8 +23,7 @@
             <top>0</top>
             <width>1920</width>
             <height>1080</height>
-            <texture>colors/white.png</texture>
-            <colordiffuse>FF121212</colordiffuse>
+            <texture colordiffuse="CC000000">colors/white.png</texture>
         </control>
         
         <!-- Debug URL Label (Hidden) -->
@@ -48,12 +48,12 @@
             <animation effect="slide" start="0,0" end="0,-50" time="200">WindowClose</animation>
             
             <!-- Background Panel -->
-            <control type="image">
+            <control type="group">
                 <left>0</left>
                 <top>0</top>
                 <width>1680</width>
                 <height>920</height>
-                <texture border="40">dialogs/dialog-panel.png</texture>
+                <include>GlassPanel</include>
             </control>
             
             <!-- Header -->
@@ -198,6 +198,46 @@
                             <texture>$INFO[ListItem.Art(poster)]</texture>
                             <aspectratio>scale</aspectratio>
                         </control>
+                        <!-- Progress Indicator -->
+                        <control type="progress">
+                            <left>10</left>
+                            <top>405</top>
+                            <width>280</width>
+                            <height>5</height>
+                            <info>ListItem.PercentPlayed</info>
+                            <visible>!Integer.IsEqual(ListItem.PercentPlayed,0)</visible>
+                        </control>
+                        <!-- Watched Indicator -->
+                        <control type="image">
+                            <right>15</right>
+                            <top>15</top>
+                            <width>40</width>
+                            <height>40</height>
+                            <texture>indicator_watched.png</texture>
+                            <visible>String.IsEqual(ListItem.Property(watched),true) | [!String.IsEqual(ListItem.DBType,tvshow) + !String.IsEqual(ListItem.DBType,season) + [String.IsEqual(ListItem.Overlay,OverlayWatched.png) | Integer.IsGreater(ListItem.Playcount,0)]]</visible>
+                        </control>
+                        <!-- Percentage Indicator -->
+                        <control type="group">
+                            <right>10</right>
+                            <top>10</top>
+                            <width>50</width>
+                            <height>50</height>
+                        <visible>[Integer.IsGreater(ListItem.PercentPlayed,4) | Integer.IsGreater(ListItem.Property(PercentPlayed),4)] + [Integer.IsLess(ListItem.PercentPlayed,96) | Integer.IsLess(ListItem.Property(PercentPlayed),96)]</visible>
+                        <control type="image">
+                            <width>50</width>
+                            <height>50</height>
+                            <texture>PercentageCircle.png</texture>
+                        </control>
+                        <control type="label">
+                            <width>50</width>
+                            <height>50</height>
+                            <align>center</align>
+                            <aligny>center</aligny>
+                            <font>font_flag</font>
+                            <label>$VAR[PercentPlayedVar]%</label>
+                            <textcolor>red</textcolor>
+                        </control>
+                        </control>
                     </itemlayout>
                     
                     <focusedlayout height="450" width="300">
@@ -211,14 +251,54 @@
                                 <width>280</width>
                                 <height>400</height>
                                 <texture>$INFO[ListItem.Art(poster)]</texture>
-                                <bordertexture border="3" colordiffuse="FFFF0000">colors/white.png</bordertexture>
+                                <bordertexture border="3" colordiffuse="button_focus">colors/white.png</bordertexture>
                                 <bordersize>3</bordersize>
                                 <aspectratio>scale</aspectratio>
+                            </control>
+                            <!-- Progress Indicator -->
+                            <control type="progress">
+                                <left>10</left>
+                                <top>405</top>
+                                <width>280</width>
+                                <height>5</height>
+                                <info>ListItem.PercentPlayed</info>
+                                <visible>!Integer.IsEqual(ListItem.PercentPlayed,0)</visible>
+                            </control>
+                            <!-- Watched Indicator -->
+                            <control type="image">
+                                <right>15</right>
+                                <top>15</top>
+                                <width>40</width>
+                                <height>40</height>
+                                <texture>indicator_watched.png</texture>
+                                <visible>String.IsEqual(ListItem.Property(watched),true) | [!String.IsEqual(ListItem.DBType,tvshow) + !String.IsEqual(ListItem.DBType,season) + [String.IsEqual(ListItem.Overlay,OverlayWatched.png) | Integer.IsGreater(ListItem.Playcount,0)]]</visible>
+                            </control>
+                            <!-- Percentage Indicator -->
+                            <control type="group">
+                                <right>10</right>
+                                <top>10</top>
+                                <width>50</width>
+                                <height>50</height>
+                                <visible>Integer.IsGreater(ListItem.PercentPlayed,4) + Integer.IsLess(ListItem.PercentPlayed,96)</visible>
+                                <control type="image">
+                                    <width>50</width>
+                                    <height>50</height>
+                                    <texture>PercentageCircle.png</texture>
+                                </control>
+                                <control type="label">
+                                    <width>50</width>
+                                    <height>50</height>
+                                    <align>center</align>
+                                    <aligny>center</aligny>
+                                    <font>font_flag</font>
+                                    <label>$INFO[ListItem.PercentPlayed]%</label>
+                                    <textcolor>red</textcolor>
+                                </control>
                             </control>
                         </control>
                     </focusedlayout>
                     
-                    <content target="video">$INFO[Window(10000).Property(GlobalSearch.MoviesURL)]</content>
+                    <content target="videos">$INFO[Window(10000).Property(GlobalSearch.MoviesURL)]</content>
                 </control>
                 
                 <!-- Loading Indicator -->
@@ -267,6 +347,46 @@
                             <texture>$INFO[ListItem.Art(poster)]</texture>
                             <aspectratio>scale</aspectratio>
                         </control>
+                        <!-- Progress Indicator -->
+                        <control type="progress">
+                            <left>10</left>
+                            <top>405</top>
+                            <width>280</width>
+                            <height>5</height>
+                            <info>ListItem.PercentPlayed</info>
+                            <visible>!Integer.IsEqual(ListItem.PercentPlayed,0)</visible>
+                        </control>
+                        <!-- Watched Indicator -->
+                        <control type="image">
+                            <right>15</right>
+                            <top>15</top>
+                            <width>40</width>
+                            <height>40</height>
+                            <texture>indicator_watched.png</texture>
+                            <visible>String.IsEqual(ListItem.Overlay,OverlayWatched.png)</visible>
+                        </control>
+                        <!-- Percentage Indicator -->
+                        <control type="group">
+                            <right>10</right>
+                            <top>10</top>
+                            <width>50</width>
+                            <height>50</height>
+                        <visible>[Integer.IsGreater(ListItem.PercentPlayed,4) | Integer.IsGreater(ListItem.Property(PercentPlayed),4)] + [Integer.IsLess(ListItem.PercentPlayed,96) | Integer.IsLess(ListItem.Property(PercentPlayed),96)]</visible>
+                        <control type="image">
+                            <width>50</width>
+                            <height>50</height>
+                            <texture>PercentageCircle.png</texture>
+                        </control>
+                        <control type="label">
+                            <width>50</width>
+                            <height>50</height>
+                            <align>center</align>
+                            <aligny>center</aligny>
+                            <font>font_flag</font>
+                            <label>$VAR[PercentPlayedVar]%</label>
+                            <textcolor>red</textcolor>
+                        </control>
+                        </control>
                     </itemlayout>
                     
                     <focusedlayout height="450" width="300">
@@ -280,14 +400,54 @@
                                 <width>280</width>
                                 <height>400</height>
                                 <texture>$INFO[ListItem.Art(poster)]</texture>
-                                <bordertexture border="3" colordiffuse="FFFF0000">colors/white.png</bordertexture>
+                                <bordertexture border="3" colordiffuse="button_focus">colors/white.png</bordertexture>
                                 <bordersize>3</bordersize>
                                 <aspectratio>scale</aspectratio>
+                            </control>
+                            <!-- Progress Indicator -->
+                            <control type="progress">
+                                <left>10</left>
+                                <top>405</top>
+                                <width>280</width>
+                                <height>5</height>
+                                <info>ListItem.PercentPlayed</info>
+                                <visible>!Integer.IsEqual(ListItem.PercentPlayed,0)</visible>
+                            </control>
+                            <!-- Watched Indicator -->
+                            <control type="image">
+                                <right>15</right>
+                                <top>15</top>
+                                <width>40</width>
+                                <height>40</height>
+                                <texture>indicator_watched.png</texture>
+                                <visible>String.IsEqual(ListItem.Overlay,OverlayWatched.png)</visible>
+                            </control>
+                            <!-- Percentage Indicator -->
+                            <control type="group">
+                                <right>10</right>
+                                <top>10</top>
+                                <width>50</width>
+                                <height>50</height>
+                                <visible>Integer.IsGreater(ListItem.PercentPlayed,4) + Integer.IsLess(ListItem.PercentPlayed,96)</visible>
+                                <control type="image">
+                                    <width>50</width>
+                                    <height>50</height>
+                                    <texture>PercentageCircle.png</texture>
+                                </control>
+                                <control type="label">
+                                    <width>50</width>
+                                    <height>50</height>
+                                    <align>center</align>
+                                    <aligny>center</aligny>
+                                    <font>font_flag</font>
+                                    <label>$INFO[ListItem.PercentPlayed]%</label>
+                                    <textcolor>red</textcolor>
+                                </control>
                             </control>
                         </control>
                     </focusedlayout>
                     
-                    <content target="video">$INFO[Window(10000).Property(GlobalSearch.SeriesURL)]</content>
+                    <content target="videos">$INFO[Window(10000).Property(GlobalSearch.SeriesURL)]</content>
                 </control>
                 
                 <!-- Loading Indicator -->
@@ -319,6 +479,8 @@
                     <width>1600</width>
                     <height>740</height>
                     <onup>52</onup>
+                    <onclick>Dialog.Close(1112)</onclick>
+                    <onclick>ActivateWindow(Videos,$INFO[ListItem.FolderPath],return)</onclick>
                     <pagecontrol>-</pagecontrol>
                     <scrolltime>200</scrolltime>
                     
@@ -374,7 +536,7 @@
                             <width>240</width>
                             <height>120</height>
                             <texture>$INFO[ListItem.Art(thumb)]</texture>
-                            <bordertexture border="3" colordiffuse="FFFF0000">colors/white.png</bordertexture>
+                            <bordertexture border="3" colordiffuse="button_focus">colors/white.png</bordertexture>
                             <bordersize>3</bordersize>
                             <aspectratio>scale</aspectratio>
                         </control>
@@ -407,7 +569,7 @@
                         </control>
                     </focusedlayout>
                     
-                    <content target="video">$INFO[Window(10000).Property(GlobalSearch.YouTubeURL)]</content>
+                    <content target="videos">$INFO[Window(10000).Property(GlobalSearch.YouTubeURL)]</content>
                 </control>
                 
                 <!-- Loading Indicator -->

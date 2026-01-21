@@ -1,0 +1,7 @@
+<svg width="512" height="128" viewBox="0 0 512 128" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect x="1.5" y="1.5" width="509" height="125" rx="22.5" fill="red" fill-opacity="1.0" stroke="white" stroke-width="3"/>
+  <g transform="translate(100, 0)">
+    <path d="M0 45H35V50H0V45ZM0 60H25V65H0V60ZM0 75H25V80H0V75ZM25 72.5H40V77.5H25V72.5Z" fill="white"/>
+    <text x="55" y="79" fill="white" font-family="Arial, sans-serif" font-size="36" font-weight="bold">Watchlist [-]</text>
+  </g>
+</svg>

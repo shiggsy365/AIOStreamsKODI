@@ -14,7 +14,7 @@
 		</control>
 		<control type="image">
 			<include>FullScreenDimensions</include>
-			<texture>colors/black_50.png</texture>
+			<texture colordiffuse="80000000">colors/white.png</texture>
 		</control>
 		<control type="group">
 			<top>50</top>
@@ -26,14 +26,12 @@
 					<top>0</top>
 					<left>66</left>
 					<include>OpenClose_Left</include>
-					<control type="image">
+					<control type="group">
 						<top>-16</top>
 						<left>-16</left>
 						<width>566</width>
 						<height>841</height>
-						<texture>colors/black.png</texture>
-						<bordertexture border="21" infill="false">overlays/shadow.png</bordertexture>
-						<bordersize>20</bordersize>
+						<include>GlassPanel</include>
 					</control>
 					<control type="image">
 						<depth>DepthContentPopout</depth>
@@ -47,7 +45,7 @@
 					<!-- Action Buttons under Poster - 2x2 Grid -->
 						<control type="group" id="8000">
 						<left>4</left>
-						<top>810</top>
+						<top>850</top>
 						<width>526</width>
 						<height>160</height>
                         <visible>true</visible>
@@ -189,20 +187,33 @@
 			<control type="group" id="140">
 				<description>Plot description</description>
 				<left>-3</left>
-				<top>0</top>
-				<width>1147</width>
-				<height>300</height>
-				<control type="image" id="137_bg">
+				<top>-20</top>
+				<width>1207</width>
+				<height>320</height>
+				<control type="group" id="137_bg">
 					<left>0</left>
 					<top>0</top>
-					<width>1147</width>
-					<height>300</height>
-					<texture>colors/black_50.png</texture>
+					<width>1207</width>
+					<height>320</height>
+					<control type="image">
+						<left>0</left>
+						<top>0</top>
+						<right>0</right>
+						<bottom>0</bottom>
+						<texture colordiffuse="burgundy_bg">colors/white.png</texture>
+					</control>
+					<control type="image">
+						<left>0</left>
+						<top>0</top>
+						<right>0</right>
+						<bottom>0</bottom>
+						<texture border="1" colordiffuse="glass_border">colors/white.png</texture>
+					</control>
 					<visible>true</visible>
 				</control>
 				<control type="button" id="138">
-					<width>1147</width>
-					<height>300</height>
+					<width>1207</width>
+					<height>320</height>
 					<font></font>
 					<label></label>
 					<onclick condition="!String.IsEmpty(ListItem.Plot)">SetProperty(TextViewer_Header,$LOCALIZE[207],home)</onclick>
@@ -213,20 +224,20 @@
 					<onright>4000</onright>
 					<ondown>50</ondown>
 					<texturenofocus />
-					<texturefocus border="5" colordiffuse="FFFF0000">borders/border-focus.png</texturefocus>
+					<texturefocus border="5" colordiffuse="button_focus">borders/border-focus.png</texturefocus>
 					<visible>true</visible>
 				</control>
 				<control type="image" id="138_bg_full">
 					<left>0</left>
 					<top>0</top>
-					<width>1147</width>
-					<height>300</height>
+					<width>1207</width>
+					<height>320</height>
 					<texture>colors/black_50.png</texture>
 					<visible>false</visible>
 				</control>
 				<control type="button" id="139">
-					<width>1147</width>
-					<height>300</height>
+					<width>1207</width>
+					<height>320</height>
 					<font></font>
 					<label></label>
 					<onclick condition="!String.IsEmpty(ListItem.Plot)">SetProperty(TextViewer_Header,$LOCALIZE[207],home)</onclick>
@@ -243,8 +254,8 @@
 				<control type="textbox">
 					<left>40</left>
 					<top>25</top>
-					<width>1067</width>
-					<height>250</height>
+					<width>1127</width>
+					<height>270</height>
 					<label fallback="19055">$VAR[InfoPlotVar]</label>
 					<autoscroll delay="10000" time="5000" repeat="10000">Skin.HasSetting(AutoScroll)</autoscroll>
 					<visible>true</visible>
@@ -252,8 +263,8 @@
 				<control type="textbox">
 					<left>40</left>
 					<top>25</top>
-					<width>1067</width>
-					<height>250</height>
+					<width>1127</width>
+					<height>270</height>
 					<label fallback="19055">$VAR[InfoPlotVar]</label>
 					<autoscroll delay="10000" time="5000" repeat="10000">Skin.HasSetting(AutoScroll)</autoscroll>
 					<visible>false</visible>

@@ -41,7 +41,7 @@ class TraktSyncDatabase(BaseTraktDB):
             # Throttle to 5 minutes
             if time.time() < (last_call + (5 * 60)):
                 if not silent:
-                    xbmc.log('[AIOStreams] Activities called too recently, skipping sync', xbmc.LOGINFO)
+                    xbmc.log('[AIOStreams] Activities called too recently, skipping sync', xbmc.LOGDEBUG)
                 return None
         
         # Fetch from Trakt
@@ -129,11 +129,13 @@ class TraktSyncDatabase(BaseTraktDB):
                     percent = int((index / total_tasks) * 100)
                     self.progress_dialog.update(percent, message)
                     
-                    # Check if user cancelled
-                    if self.progress_dialog.iscanceled():
-                        xbmc.log('[AIOStreams] Sync cancelled by user', xbmc.LOGINFO)
-                        return False
-                
+                # Check if search is active (Global or Internal)
+                win_home = xbmcgui.Window(10000)
+                if win_home.getProperty('AIOStreams.SearchActive') == 'true' or \
+                   win_home.getProperty('AIOStreams.InternalSearchActive') == 'true':
+                    xbmc.log('[AIOStreams] Sync interrupted by active search', xbmc.LOGDEBUG)
+                    return False
+
                 try:
                     task_func()
                 except Exception as e:
@@ -378,6 +380,11 @@ class TraktSyncDatabase(BaseTraktDB):
                     'air_date': episode.get('first_aired'),
                     'metadata': episode_meta,
                 })
+        
+        # Debug: log first episode to verify ID structure
+        if all_episodes:
+            sample = all_episodes[0]
+            xbmc.log(f'[AIOStreams] Sample episode from API for show {show_trakt_id}: S{sample["season"]:02d}E{sample["number"]:02d}, trakt_id={sample["trakt_id"]}, ALL ids={sample["metadata"]["ids"]}', xbmc.LOGDEBUG)
 
         return all_episodes
 
@@ -407,19 +414,28 @@ class TraktSyncDatabase(BaseTraktDB):
                 show_trakt_id,
                 show.get('ids', {}).get('imdb'),
                 show.get('ids', {}).get('tmdb'),
-                show.get('ids', {}).get('tvdb')
+                show.get('ids', {}).get('tvdb'),
+                show.get('ids', {}).get('slug'),
+                show.get('title', 'Unknown')
             ))
         
         if batch_shows:
             self.execute_sql_batch("""
-                INSERT OR IGNORE INTO shows (trakt_id, imdb_id, tmdb_id, tvdb_id, last_updated)
-                VALUES (?, ?, ?, ?, datetime('now'))
+                INSERT OR IGNORE INTO shows (trakt_id, imdb_id, tmdb_id, tvdb_id, slug, title, last_updated)
+                VALUES (?, ?, ?, ?, ?, ?, datetime('now'))
             """, batch_shows)
             
         import pickle
 
         # 2. Process episodes for each show
         for item in watched_shows:
+            # Deep interruption check (Global or Internal)
+            win_home = xbmcgui.Window(10000)
+            if win_home.getProperty('AIOStreams.SearchActive') == 'true' or \
+               win_home.getProperty('AIOStreams.InternalSearchActive') == 'true':
+                xbmc.log('[AIOStreams] Sync (_sync_watched_episodes) interrupted by active search', xbmc.LOGDEBUG)
+                return
+
             show = item.get('show', {})
             show_trakt_id = show.get('ids', {}).get('trakt')
 
@@ -483,7 +499,7 @@ class TraktSyncDatabase(BaseTraktDB):
         # Update show statistics (watched/unwatched episode counts)
         self._update_all_show_statistics()
 
-        xbmc.log(f'[AIOStreams] Synced {episode_count} watched episodes across {show_count} shows', xbmc.LOGINFO)
+        xbmc.log(f'[AIOStreams] Synced {episode_count} watched episodes across {show_count} shows', xbmc.LOGDEBUG)
     
     def _sync_collected_episodes(self):
         """Sync collected episodes from Trakt."""
@@ -569,31 +585,60 @@ class TraktSyncDatabase(BaseTraktDB):
         playback_progress = trakt.call_trakt('sync/playback', with_auth=True)
         
         if not playback_progress:
+            xbmc.log('[AIOStreams] No playback progress found on Trakt', xbmc.LOGDEBUG)
             return
         
+
         batch_data = []
         for item in playback_progress:
             item_type = item.get('type')  # 'movie' or 'episode'
             trakt_id = item.get(item_type, {}).get('ids', {}).get('trakt')
+            progress = item.get('progress', 0)
             
-            if not trakt_id:
+            # Debug: log all items to verify correct ID extraction
+            if item_type == 'episode':
+                episode_ids = item.get('episode', {}).get('ids', {})
+                xbmc.log(f'[AIOStreams] Bookmark episode #{len(batch_data)+1}: ALL IDs={episode_ids}, using trakt_id={trakt_id}, progress={progress}%', xbmc.LOGDEBUG)
+            else:
+                xbmc.log(f'[AIOStreams] Bookmark item #{len(batch_data)+1}: type={item_type}, trakt_id={trakt_id}, progress={progress}%', xbmc.LOGDEBUG)
+            
+            if not trakt_id or progress <= 0:
                 continue
+            
+            # Calculate resume time: progress is percentage, duration is runtime in minutes
+            # We need resume_time in seconds
+            duration_minutes = item.get(item_type, {}).get('runtime', item.get('duration', 0))
+            resume_time = (progress / 100.0) * (duration_minutes * 60) if duration_minutes > 0 else 0
             
             batch_data.append((
                 trakt_id,
-                item.get('progress', 0) * item.get('duration', 0) / 100,
-                item.get('progress', 0),
+                item.get(item_type, {}).get('ids', {}).get('tvdb'),
+                item.get(item_type, {}).get('ids', {}).get('tmdb'),
+                item.get(item_type, {}).get('ids', {}).get('imdb'),
+                resume_time,
+                progress,
                 item_type,
                 item.get('paused_at')
             ))
             
         if batch_data:
             self.execute_sql_batch("""
-                INSERT OR REPLACE INTO bookmarks (trakt_id, resume_time, percent_played, type, paused_at)
-                VALUES (?, ?, ?, ?, ?)
+                INSERT OR REPLACE INTO bookmarks (trakt_id, tvdb_id, tmdb_id, imdb_id, resume_time, percent_played, type, paused_at)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?)
             """, batch_data)
         
-        xbmc.log(f'[AIOStreams] Synced {len(playback_progress)} bookmarks', xbmc.LOGDEBUG)
+        
+        xbmc.log(f'[AIOStreams] Synced {len(batch_data)} bookmarks from {len(playback_progress)} items', xbmc.LOGDEBUG)
+        
+        # Verify bookmarks were actually written
+        verify_count = self.fetchone("SELECT COUNT(*) as count FROM bookmarks")
+        xbmc.log(f'[AIOStreams] Verification: bookmarks table now has {verify_count["count"] if verify_count else 0} rows', xbmc.LOGDEBUG)
+        
+        # Show sample bookmark IDs for debugging
+        sample_bookmarks = self.fetch_all("SELECT trakt_id, percent_played, type FROM bookmarks LIMIT 5")
+        if sample_bookmarks:
+            bookmark_ids = [row['trakt_id'] for row in sample_bookmarks]
+            xbmc.log(f'[AIOStreams] Sample bookmark trakt_ids: {bookmark_ids}', xbmc.LOGDEBUG)
     
     def _sync_hidden_items(self):
         """Sync hidden items from Trakt."""
@@ -647,26 +692,44 @@ class TraktSyncDatabase(BaseTraktDB):
         for show in shows:
             show_id = show['show_trakt_id']
 
-            # Count watched episodes
+            # Fetch watched and total episode counts for this show (excluding specials)
             watched_count = self.fetchone(
-                "SELECT COUNT(*) as count FROM episodes WHERE show_trakt_id=? AND watched=1",
+                "SELECT COUNT(*) as count FROM episodes WHERE show_trakt_id=? AND season > 0 AND watched=1",
                 (show_id,)
             )['count']
-
-            # Count total episodes
             total_count = self.fetchone(
-                "SELECT COUNT(*) as count FROM episodes WHERE show_trakt_id=?",
+                "SELECT COUNT(*) as count FROM episodes WHERE show_trakt_id=? AND season > 0",
                 (show_id,)
             )['count']
             
-            unwatched_count = total_count - watched_count
+            # Get show metadata to determine official episode count
+            # This is critical because our episodes table might only contain watched episodes
+            official_count = total_count
+            try:
+                sql_meta = "SELECT metadata FROM shows WHERE trakt_id=?"
+                row_meta = self.fetchone(sql_meta, (show_id,))
+                if row_meta and row_meta['metadata']:
+                    import pickle
+                    meta = pickle.loads(row_meta['metadata'])
+                    # Try multiple fields that might contain total episode count
+                    # aired_episodes is the canonical count from Trakt
+                    if 'aired_episodes' in meta and meta['aired_episodes'] > 0:
+                        official_count = meta['aired_episodes']
+                    elif 'episode_count' in meta and meta['episode_count'] > 0:
+                        official_count = meta['episode_count']
+                    # If we have more episodes in DB than metadata says, trust the DB
+                    if total_count > official_count:
+                        official_count = total_count
+            except Exception as e:
+                xbmc.log(f'[AIOStreams] Could not get official count for show {show_id}: {e}', xbmc.LOGDEBUG)
+
+            unwatched_count = max(0, official_count - watched_count)
             
-            # Update show table
             self.execute_sql("""
                 UPDATE shows 
                 SET watched_episodes=?, unwatched_episodes=?, episode_count=?
                 WHERE trakt_id=?
-            """, (watched_count, unwatched_count, total_count, show_id))
+            """, (watched_count, unwatched_count, official_count, show_id))
     
     def _finalize_sync(self, silent):
         """Finalize sync and trigger widget refresh."""

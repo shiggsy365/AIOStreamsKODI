@@ -25,6 +25,7 @@ class SharedCacheManager:
     
     # Shared cache base directory (outside any specific profile)
     _SHARED_BASE = 'special://masterprofile/addon_data/plugin.video.aiostreams/'
+    _directories_ensured = False
     
     @staticmethod
     def get_shared_cache_dir():
@@ -63,6 +64,15 @@ class SharedCacheManager:
         Returns:
             bool: True if directories exist or were created successfully
         """
+        # Use Window property as a session-level guard (persists across processes)
+        import xbmcgui
+        win = xbmcgui.Window(10000)
+        if win.getProperty('AIOStreams.SharedDirsEnsured') == 'true':
+            return True
+
+        if SharedCacheManager._directories_ensured:
+            return True
+
         try:
             shared_cache = SharedCacheManager.get_shared_cache_dir()
             shared_clearlogos = SharedCacheManager.get_shared_clearlogo_dir()
@@ -72,9 +82,13 @@ class SharedCacheManager:
                     xbmcvfs.mkdirs(dir_path)
                     xbmc.log(
                         f'[AIOStreams] Created shared directory: {dir_path}',
-                        xbmc.LOGINFO
+                        xbmc.LOGDEBUG
                     )
+                else:
+                    xbmc.log(f'[AIOStreams] Shared directory exists: {dir_path}', xbmc.LOGDEBUG)
             
+            SharedCacheManager._directories_ensured = True
+            win.setProperty('AIOStreams.SharedDirsEnsured', 'true')
             return True
             
         except Exception as e:

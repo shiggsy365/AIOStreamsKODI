@@ -13,11 +13,8 @@
     <controls>
         <!-- 1. BACKGROUNDS -->
         <control type="image">
-            <left>0</left>
-            <top>0</top>
-            <width>1920</width>
-            <height>1080</height>
-            <texture>black-back.png</texture>
+            <include>FullScreenDimensions</include>
+            <texture colordiffuse="CC000000">colors/white.png</texture>
         </control>
 
         <control type="image">
@@ -31,12 +28,12 @@
         </control>
 
         <control type="image">
-            <left>0</left>
-            <top>0</top>
-            <width>1920</width>
-            <height>1080</height>
-            <texture>black-back.png</texture>
-            <colordiffuse>CCFFFFFF</colordiffuse>
+            <include>FullScreenDimensions</include>
+            <texture colordiffuse="80000000">colors/white.png</texture>
+        </control>
+        <control type="image">
+            <include>FullScreenDimensions</include>
+            <texture colordiffuse="80000000">colors/white.png</texture>
         </control>
 
         <!-- 2. THE STREAM LIST -->
@@ -57,26 +54,38 @@
             <itemlayout height="130" width="1250">
                 <control type="image">
                     <left>220</left>
-                    <top>5</top>
-                    <width>1100</width>
-                    <height>120</height>
-                    <texture>white.png</texture>
-                    <colordiffuse>ff1a1a1a</colordiffuse>
+                    <top>2</top>
+                    <width>1028</width>
+                    <height>126</height>
+                    <texture colordiffuse="glass_bg">colors/white.png</texture>
                 </control>
                 <control type="image">
-                    <left>0</left>
-                    <top>5</top>
-                    <width>220</width>
-                    <height>120</height>
-                    <texture>white.png</texture>
-                    <colordiffuse>ff4d0000</colordiffuse>
+                    <left>220</left>
+                    <top>2</top>
+                    <width>1028</width>
+                    <height>126</height>
+                    <texture border="1" colordiffuse="glass_border">colors/white.png</texture>
+                </control>
+                <control type="image">
+                    <left>2</left>
+                    <top>2</top>
+                    <width>216</width>
+                    <height>126</height>
+                    <texture colordiffuse="burgundy_bg">colors/white.png</texture>
+                </control>
+                <control type="image">
+                    <left>2</left>
+                    <top>2</top>
+                    <width>216</width>
+                    <height>126</height>
+                    <texture border="1" colordiffuse="glass_border">colors/white.png</texture>
                 </control>
                 <control type="group">
-                    <left>10</left>
-                    <top>5</top>
+                    <left>12</left>
+                    <top>2</top>
                     <control type="label">
                         <top>5</top>
-                        <width>220</width>
+                        <width>200</width>
                         <height>50</height>
                         <font>font13</font>
                         <align>left</align>
@@ -84,7 +93,7 @@
                     </control>
                     <control type="label">
                         <top>50</top>
-                        <width>220</width>
+                        <width>200</width>
                         <height>30</height>
                         <font>font10</font>
                         <align>left</align>
@@ -92,7 +101,7 @@
                     </control>
                     <control type="label">
                         <top>80</top>
-                        <width>220</width>
+                        <width>200</width>
                         <height>30</height>
                         <font>font10</font>
                         <align>left</align>
@@ -101,10 +110,10 @@
                 </control>
                 <control type="group">
                     <left>240</left>
-                    <top>15</top>
+                    <top>12</top>
                     <control type="label">
                         <top>0</top>
-                        <width>1010</width>
+                        <width>990</width>
                         <height>35</height>
                         <font>font10</font>
                         <textcolor>grey</textcolor>
@@ -112,7 +121,7 @@
                     </control>
                     <control type="label">
                         <top>35</top>
-                        <width>1010</width>
+                        <width>990</width>
                         <height>35</height>
                         <font>font10</font>
                         <textcolor>grey</textcolor>
@@ -120,7 +129,7 @@
                     </control>
                     <control type="label">
                         <top>70</top>
-                        <width>1010</width>
+                        <width>990</width>
                         <height>35</height>
                         <font>font10</font>
                         <textcolor>grey</textcolor>
@@ -132,26 +141,38 @@
             <focusedlayout height="130" width="1250">
                 <control type="image">
                     <left>220</left>
-                    <top>5</top>
-                    <width>1050</width>
-                    <height>120</height>
-                    <texture>white.png</texture>
-                    <colordiffuse>ff333333</colordiffuse>
+                    <top>2</top>
+                    <width>1028</width>
+                    <height>126</height>
+                    <texture colordiffuse="burgundy">colors/white.png</texture>
                 </control>
                 <control type="image">
-                    <left>0</left>
-                    <top>5</top>
-                    <width>220</width>
-                    <height>120</height>
-                    <texture>white.png</texture>
-                    <colordiffuse>ff800000</colordiffuse>
+                    <left>2</left>
+                    <top>2</top>
+                    <width>216</width>
+                    <height>126</height>
+                    <texture colordiffuse="burgundy">colors/white.png</texture>
+                </control>
+                <control type="image">
+                    <left>2</left>
+                    <top>2</top>
+                    <width>216</width>
+                    <height>126</height>
+                    <texture border="1" colordiffuse="glass_border">colors/white.png</texture>
+                </control>
+                <control type="image">
+                    <left>2</left>
+                    <top>2</top>
+                    <width>216</width>
+                    <height>126</height>
+                    <texture colordiffuse="ff800000">colors/white.png</texture>
                 </control>
                 <control type="group">
-                    <left>10</left>
-                    <top>5</top>
+                    <left>12</left>
+                    <top>2</top>
                     <control type="label">
                         <top>5</top>
-                        <width>220</width>
+                        <width>200</width>
                         <height>50</height>
                         <font>font18</font>
                         <align>left</align>
@@ -160,7 +181,7 @@
                     </control>
                     <control type="label">
                         <top>50</top>
-                        <width>220</width>
+                        <width>200</width>
                         <height>30</height>
                         <font>font10</font>
                         <align>left</align>
@@ -169,7 +190,7 @@
                     </control>
                     <control type="label">
                         <top>80</top>
-                        <width>220</width>
+                        <width>200</width>
                         <height>30</height>
                         <font>font10</font>
                         <align>left</align>
@@ -179,10 +200,10 @@
                 </control>
                 <control type="group">
                     <left>240</left>
-                    <top>15</top>
+                    <top>12</top>
                     <control type="label">
                         <top>0</top>
-                        <width>1010</width>
+                        <width>990</width>
                         <height>35</height>
                         <font>font10</font>
                         <textcolor>white</textcolor>
@@ -190,7 +211,7 @@
                     </control>
                     <control type="label">
                         <top>35</top>
-                        <width>1010</width>
+                        <width>990</width>
                         <height>35</height>
                         <font>font10</font>
                         <textcolor>white</textcolor>
@@ -198,7 +219,7 @@
                     </control>
                     <control type="label">
                         <top>70</top>
-                        <width>1010</width>
+                        <width>990</width>
                         <height>35</height>
                         <font>font10</font>
                         <textcolor>white</textcolor>
@@ -212,17 +233,21 @@
         <!-- 3. POSTER GROUP -->
         <control type="group">
             <left>1340</left>
-            <top>185</top>
+            <top>245</top>
+            <control type="group">
+                <width>500</width>
+                <height>690</height>
+                <include>GlassPanel</include>
+            </control>
             <control type="image" id="1001">
                 <width>500</width>
-                <height>750</height>
+                <height>690</height>
                 <aspectratio>keep</aspectratio>
                 <texture background="true">$INFO[Window.Property(poster)]</texture>
-                <bordertexture border="20">Thumbnail_Shadow.png</bordertexture>
             </control>
             <!-- STREAM COUNT HEADING -->
             <control type="label">
-                <top>770</top>
+                <top>710</top>
                 <width>500</width>
                 <height>60</height>
                 <font>font30_title</font> <!-- Using a standard large/bold font -->
@@ -232,7 +257,7 @@
             </control>
         </control>
 
-        <!-- 4. TOP LOGO -->
+        <!-- 4. TOP LOGO AND DESCRIPTION -->
         <control type="image">
             <left>60</left>
             <top>30</top>
@@ -240,6 +265,20 @@
             <height>160</height>
             <aspectratio align="left">keep</aspectratio>
             <texture>$INFO[Window.Property(clearlogo)]</texture>
+        </control>
+
+        <control type="textbox">
+            <left>580</left>
+            <top>30</top>
+            <width>1280</width>
+            <height>160</height>
+            <font>font12</font>
+            <align>left</align>
+            <textcolor>white</textcolor>
+            <label>$INFO[Window.Property(plot)]</label>
+            <textcolor>FFFFFFFF</textcolor>
+            <shadowcolor>80000000</shadowcolor>
+            <autoscroll delay="5000" repeat="5000" time="3000">true</autoscroll>
         </control>
 
         <!-- 5. SCROLLBAR -->

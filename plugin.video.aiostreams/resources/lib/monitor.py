@@ -51,6 +51,19 @@ class AIOStreamsPlayer(xbmc.Player):
         except ValueError:
             self.episode = episode
         self.started = False
+        
+        # Sync state to Window properties for cross-process support (Service vs Plugin)
+        try:
+            win = xbmcgui.Window(10000)
+            win.setProperty('AIOStreams.Player.IsActive', 'true')
+            win.setProperty('AIOStreams.Player.MediaType', str(media_type))
+            win.setProperty('AIOStreams.Player.IMDbId', str(imdb_id))
+            win.setProperty('AIOStreams.Player.Season', str(self.season) if self.season is not None else '')
+            win.setProperty('AIOStreams.Player.Episode', str(self.episode) if self.episode is not None else '')
+            xbmc.log(f'[AIOStreams] Synced player state to Window properties', xbmc.LOGDEBUG)
+        except Exception as e:
+            xbmc.log(f'[AIOStreams] Error syncing player state to Window: {e}', xbmc.LOGERROR)
+
         xbmc.log(f'[AIOStreams] Player set for {media_type}: {imdb_id}', xbmc.LOGINFO)
     
     def clear_media_info(self):
@@ -67,7 +80,18 @@ class AIOStreamsPlayer(xbmc.Player):
         self.total_time = 0
         self.current_time = 0
         self.marked_watched = False
-    
+        
+        # Clear Window properties
+        try:
+            win = xbmcgui.Window(10000)
+            win.clearProperty('AIOStreams.Player.IsActive')
+            win.clearProperty('AIOStreams.Player.MediaType')
+            win.clearProperty('AIOStreams.Player.IMDbId')
+            win.clearProperty('AIOStreams.Player.Season')
+            win.clearProperty('AIOStreams.Player.Episode')
+        except:
+            pass
+
     def should_scrobble(self):
         """Check if scrobbling is enabled and we have auth."""
         return (ADDON.getSetting('trakt_scrobble') == 'true' and
@@ -193,6 +217,26 @@ class AIOStreamsPlayer(xbmc.Player):
 
     def onPlayBackStarted(self):
         """Called when playback starts."""
+        
+        # Check if we need to sync state from Window properties (Service instance)
+        if not self.is_aiostreams:
+            try:
+                win = xbmcgui.Window(10000)
+                if win.getProperty('AIOStreams.Player.IsActive') == 'true':
+                    self.is_aiostreams = True
+                    self.media_type = win.getProperty('AIOStreams.Player.MediaType')
+                    self.imdb_id = win.getProperty('AIOStreams.Player.IMDbId')
+                    
+                    season_str = win.getProperty('AIOStreams.Player.Season')
+                    self.season = int(season_str) if season_str else None
+                    
+                    episode_str = win.getProperty('AIOStreams.Player.Episode')
+                    self.episode = int(episode_str) if episode_str else None
+                    
+                    xbmc.log(f'[AIOStreams] Synced player state from Window properties: {self.media_type} {self.imdb_id}', xbmc.LOGINFO)
+            except Exception as e:
+                xbmc.log(f'[AIOStreams] Error syncing state from Window: {e}', xbmc.LOGERROR)
+        
         # Start progress monitoring for auto-mark watched (regardless of scrobbling)
         if self.is_aiostreams and self.should_auto_mark_watched():
             self._start_progress_monitoring()
@@ -436,6 +480,40 @@ class AIOStreamsPlayer(xbmc.Player):
     def onPlayBackStopped(self):
         """Called when playback stops."""
         
+        
+        # CRITICAL: Store media info FIRST before anything can clear it
+        stored_is_aiostreams = self.is_aiostreams
+        stored_started = self.started
+        stored_media_type = self.media_type
+        stored_imdb_id = self.imdb_id
+        stored_season = self.season
+        stored_episode = self.episode
+        stored_should_scrobble = self.should_scrobble()
+        
+        # CRITICAL: Capture current time FIRST before player state changes
+        try:
+            if self.isPlaying():
+                self.current_time = self.getTime()
+        except:
+            pass  # Use last known time if getTime() fails
+        
+        # Calculate progress for scrobbling
+        progress = int((self.current_time / self.total_time) * 100) if self.total_time > 0 else 0
+        
+        # Scrobble FIRST before any other logic (even at 0% progress) - use stored values
+        if stored_should_scrobble and stored_started:
+            try:
+                # xbmc.log(f'[AIOStreams] Scrobbling stop: {stored_media_type} {stored_imdb_id} at {progress}%', xbmc.LOGDEBUG)
+                response = trakt.scrobble('stop', stored_media_type, stored_imdb_id, progress,
+                              stored_season, stored_episode)
+                
+                if response:
+                    xbmc.log(f'[AIOStreams] Scrobble stop successful (response: {json.dumps(response)})', xbmc.LOGINFO)
+                else:
+                    xbmc.log(f'[AIOStreams] Scrobble stop failed (no response)', xbmc.LOGWARNING)
+            except Exception as e:
+                xbmc.log(f'[AIOStreams] Scrobble stop error: {e}', xbmc.LOGERROR)
+        
         # Check if we have Up Next params stored (meaning service.upnext popup was shown)
         try:
             window = xbmcgui.Window(10000)
@@ -444,70 +522,55 @@ class AIOStreamsPlayer(xbmc.Player):
             episode = window.getProperty('AIOStreams.UpNext.Episode')
             
             if imdb_id and season and episode:
-                xbmc.log(f'[AIOStreams] Playback stopped - triggering Up Next: {imdb_id} S{season}E{episode}', xbmc.LOGINFO)
-                
-                # Clear the properties
-                window.clearProperty('AIOStreams.UpNext.IMDbID')
-                window.clearProperty('AIOStreams.UpNext.Season')
-                window.clearProperty('AIOStreams.UpNext.Episode')
-                
-                # Trigger playback of next episode via RunPlugin
-                from urllib.parse import urlencode
-                play_params = {
-                    'action': 'play',
-                    'content_type': 'series',
-                    'imdb_id': imdb_id,
-                    'season': season,
-                    'episode': episode,
-                    'force_autoplay': 'true'
-                }
-                play_url = f'plugin://plugin.video.aiostreams/?{urlencode(play_params)}'
-                
-                # Use a small delay to ensure the player is fully stopped
-                xbmc.sleep(500)
-                xbmc.executebuiltin(f'RunPlugin({play_url})')
-                xbmc.log(f'[AIOStreams] Executed RunPlugin for next episode', xbmc.LOGINFO)
+                # Only auto-play if the episode was actually completed (>=90%)
+                # Don't auto-play if user manually stopped at 50%
+                if progress >= 90:
+                    xbmc.log(f'[AIOStreams] Episode completed ({progress}%) - triggering Up Next: {imdb_id} S{season}E{episode}', xbmc.LOGINFO)
+                    
+                    # Clear the properties
+                    window.clearProperty('AIOStreams.UpNext.IMDbID')
+                    window.clearProperty('AIOStreams.UpNext.Season')
+                    window.clearProperty('AIOStreams.UpNext.Episode')
+                    
+                    # Trigger playback of next episode via RunPlugin
+                    from urllib.parse import urlencode
+                    play_params = {
+                        'action': 'play',
+                        'content_type': 'series',
+                        'imdb_id': imdb_id,
+                        'season': season,
+                        'episode': episode,
+                        'force_autoplay': 'true'
+                    }
+                    play_url = f'plugin://plugin.video.aiostreams/?{urlencode(play_params)}'
+                    
+                    # Use a small delay to ensure the player is fully stopped
+                    xbmc.sleep(500)
+                    xbmc.executebuiltin(f'RunPlugin({play_url})')
+                    xbmc.log(f'[AIOStreams] Executed RunPlugin for next episode', xbmc.LOGINFO)
+                else:
+                    # Clear properties but don't auto-play
+                    xbmc.log(f'[AIOStreams] Episode stopped at {progress}% - NOT auto-playing next episode', xbmc.LOGINFO)
+                    window.clearProperty('AIOStreams.UpNext.IMDbID')
+                    window.clearProperty('AIOStreams.UpNext.Season')
+                    window.clearProperty('AIOStreams.UpNext.Episode')
         except Exception as e:
             xbmc.log(f'[AIOStreams] Error in Up Next handler: {e}', xbmc.LOGERROR)
 
-        # Check if we should auto-mark as watched before cleanup
+        # Check if we should auto-mark as watched
         try:
-            if self.is_aiostreams and self.total_time > 0:
-                # Update current time before checking progress
-                try:
-                    self.current_time = self.getTime()
-                except:
-                    pass  # Use last known time if getTime() fails
-
-                progress = int((self.current_time / self.total_time) * 100)
-                if progress >= 90 and self.should_auto_mark_watched():
-                    xbmc.log(f'[AIOStreams] Stopped at {progress}% - Auto-marking as watched', xbmc.LOGINFO)
-                    self._auto_mark_watched()
+            if self.is_aiostreams and progress >= 90 and self.should_auto_mark_watched():
+                xbmc.log(f'[AIOStreams] Stopped at {progress}% - Auto-marking as watched', xbmc.LOGINFO)
+                self._auto_mark_watched()
         except Exception as e:
             xbmc.log(f'[AIOStreams] Error checking auto-mark on stop: {e}', xbmc.LOGERROR)
 
-        if not self.should_scrobble() or not self.started:
-            self.clear_media_info()
-            # Refresh widget after playback ends
-            if self.marked_watched:
-                self._refresh_widget()
-            return
-
-        try:
-            progress = int((self.current_time / self.total_time) * 100) if self.total_time > 0 else 0
-
-            # Scrobble stop
-            trakt.scrobble('stop', self.media_type, self.imdb_id, progress,
-                          self.season, self.episode)
-
-            xbmc.log(f'[AIOStreams] Scrobble stopped at {progress}%', xbmc.LOGINFO)
-        except Exception as e:
-            xbmc.log(f'[AIOStreams] Scrobble stop error: {e}', xbmc.LOGERROR)
-        finally:
-            # Refresh widget after playback ends if marked watched
-            if self.marked_watched:
-                self._refresh_widget()
-            self.clear_media_info()
+        # Refresh widget after playback ends if marked watched
+        if self.marked_watched:
+            self._refresh_widget()
+        
+        # Clean up
+        self.clear_media_info()
     
     def onPlayBackEnded(self):
         """Called when playback ends."""

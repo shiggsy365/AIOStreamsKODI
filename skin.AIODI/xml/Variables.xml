@@ -48,6 +48,26 @@
 		<value condition="ListItem.HasArchive">windows/pvr/archive.png</value>
 		<value condition="ListItem.HasReminder">icons/pvr/timers/bell.png</value>
 	</variable>
+    <variable name="SeasonBrowsePlot">
+        <value condition="!String.IsEmpty(ListItem.Plot)">$INFO[ListItem.Plot]</value>
+        <value>$INFO[ListItem.TVShowPlot]</value>
+    </variable>
+    <variable name="SeasonBrowseClearlogo">
+        <value condition="!String.IsEmpty(Window(Home).Property(AIOStreams_ShowLogo))">$INFO[Window(Home).Property(AIOStreams_ShowLogo)]</value>
+        <value condition="!String.IsEmpty(Container.Art(tvshow.clearlogo))">$INFO[Container.Art(tvshow.clearlogo)]</value>
+        <value condition="!String.IsEmpty(Container.Art(clearlogo))">$INFO[Container.Art(clearlogo)]</value>
+        <value condition="!String.IsEmpty(ListItem.Art(tvshow.clearlogo))">$INFO[ListItem.Art(tvshow.clearlogo)]</value>
+        <value condition="!String.IsEmpty(ListItem.Art(clearlogo))">$INFO[ListItem.Art(clearlogo)]</value>
+        <value condition="!String.IsEmpty(Container.Art(logo))">$INFO[Container.Art(logo)]</value>
+        <value condition="!String.IsEmpty(ListItem.Art(logo))">$INFO[ListItem.Art(logo)]</value>
+    </variable>
+    <variable name="SeasonBrowseLabel">
+        <value condition="Container.Content(seasons)">$INFO[ListItem.Season,Season ]</value>
+        <value>$INFO[ListItem.Label]</value>
+    </variable>
+    <variable name="AIOStreams_EpisodeUpdateURL">
+        <value>plugin://plugin.video.aiostreams/show_episodes/$INFO[Window(home).Property(AIOStreams_meta_id)]/$INFO[Window(home).Property(AIOStreams_season)]</value>
+    </variable>
 	<variable name="PVRMySearchLabel1Var">
 		<value condition="!String.IsEmpty(ListItem.ChannelName)">$INFO[ListItem.ChannelName]</value>
 		<value>$INFO[ListItem.Label]</value>
@@ -157,6 +177,10 @@
 		<value condition="Control.HasFocus(5200) + !String.IsEmpty(Container(5200).ListItem.Art(clearlogo))">$INFO[Container(5200).ListItem.Art(clearlogo)]</value>
 		<value condition="Control.HasFocus(5200) + !String.IsEmpty(Container(5200).ListItem.Art(logo))">$INFO[Container(5200).ListItem.Art(logo)]</value>
 		<value>None</value>
+	</variable>
+	<variable name="WidgetKillSwitchPrefixVar">
+		<value condition="String.IsEqual(Window(10000).Property(AIOStreams.SearchActive),true)">noop://</value>
+		<value></value>
 	</variable>
 
 	<variable name="ListLabel2Var">
@@ -553,7 +577,9 @@
 		<value condition="!ListItem.IsParentFolder">OverlayUnwatched.png</value>
 	</variable>
 	<variable name="ItemStatusIconVar">
-		<value condition="[String.IsEqual(Listitem.DBType,tvshow) | String.IsEqual(Listitem.DBType,season)] + String.IsEqual(ListItem.Property(WatchedEpisodes),ListItem.Property(TotalEpisodes)) | String.IsEqual(ListItem.DBtype,set) + String.IsEqual(ListItem.Property(Watched),ListItem.Property(Total))">OverlayWatched.png</value>
+		<value condition="String.IsEqual(ListItem.Property(watched),true)">indicator_watched.png</value>
+		<value condition="[String.IsEqual(Listitem.DBType,tvshow) | String.IsEqual(Listitem.DBType,season)] + String.IsEqual(ListItem.Property(WatchedEpisodes),ListItem.Property(TotalEpisodes)) + !String.IsEmpty(ListItem.Property(TotalEpisodes))">indicator_watched.png</value>
+		<value condition="String.IsEqual(ListItem.DBtype,set) + String.IsEqual(ListItem.Property(Watched),ListItem.Property(Total))">indicator_watched.png</value>
 		<value condition="String.IsEqual(ListItem.DBtype,tvshow) | String.IsEqual(ListItem.DBtype,set) | String.IsEqual(ListItem.DBType,season)">lists/played-total.png</value>
 		<value condition="ListItem.IsRecording">windows/pvr/record.png</value>
 		<value condition="ListItem.HasReminder">icons/pvr/timers/bell.png</value>
@@ -561,7 +587,7 @@
 		<value condition="ListItem.IsPlaying">overlays/watched/OverlayPlaying-List.png</value>
 		<value condition="ListItem.IsResumable">overlays/watched/resume.png</value>
 		<value condition="ListItem.HasArchive">windows/pvr/archive.png</value>
-		<value condition="Integer.IsGreater(ListItem.Playcount,0)">$INFO[ListItem.Overlay]</value>
+		<value condition="[!String.IsEqual(Listitem.DBType,tvshow) + !String.IsEqual(Listitem.DBType,season)] + Integer.IsGreater(ListItem.Playcount,0)">indicator_watched.png</value>
 	</variable>
 	<variable name="ItemTypeIconVar">
 		<value condition="ListItem.IsCollection">overlays/set.png</value>
@@ -574,11 +600,16 @@
 		<value condition="!String.IsEmpty(ListItem.Overlay)">$INFO[ListItem.Overlay]</value>
 		<value condition="!ListItem.IsParentFolder">OverlayUnwatched.png</value>
 	</variable>
+	<variable name="PercentPlayedVar">
+		<value condition="Integer.IsGreater(ListItem.PercentPlayed,0)">$INFO[ListItem.PercentPlayed]</value>
+		<value condition="Integer.IsGreater(ListItem.Property(PercentPlayed),0)">$INFO[ListItem.Property(PercentPlayed)]</value>
+		<value>0</value>
+	</variable>
 	<variable name="ListPVRTimersIconVar">
 		<value condition="ListItem.IsRecording">windows/pvr/record.png</value>
 		<value condition="ListItem.HasReminder">icons/pvr/timers/bell.png</value>
 		<value>icons/pvr/timers/recording.png</value>
-  </variable>
+	</variable>
 	<!-- Breadcrumbs -->
 	<variable name="BreadcrumbsVideoVar">
 		<value condition="Container.Content(movies) | String.StartsWith(container.folderpath,library://video/movies/) | String.StartsWith(container.folderpath,videodb://movies)">$LOCALIZE[20342]</value>
@@ -980,6 +1011,9 @@
 		<value condition="String.IsEqual(Skin.String(SideMenuFocus),home) + String.IsEqual(Skin.String(Home_WidgetIndex),9)">11000</value>
 		<value condition="String.IsEqual(Skin.String(SideMenuFocus),home) + String.IsEqual(Skin.String(Home_WidgetIndex),10)">11100</value>
 		<value condition="String.IsEqual(Skin.String(SideMenuFocus),home) + String.IsEmpty(Skin.String(Home_WidgetIndex))">10100</value>
+		<!-- Music Page (Static widgets: IMVDb, YouTube) -->
+		<value condition="String.IsEqual(Skin.String(SideMenuFocus),music) + [String.IsEqual(Skin.String(Music_WidgetIndex),0) | String.IsEmpty(Skin.String(Music_WidgetIndex))]">7100</value>
+		<value condition="String.IsEqual(Skin.String(SideMenuFocus),music) + String.IsEqual(Skin.String(Music_WidgetIndex),1)">7200</value>
 		<!-- Movies Page (20 widgets: 0-19) -->
 		<value condition="String.IsEqual(Skin.String(SideMenuFocus),movies) + String.IsEqual(Skin.String(Movies_WidgetIndex),0)">5100</value>
 		<value condition="String.IsEqual(Skin.String(SideMenuFocus),movies) + String.IsEqual(Skin.String(Movies_WidgetIndex),1)">5110</value>
@@ -1192,45 +1226,80 @@
 </variable>
 	<variable name="CurrentWidgetTitle">
 		<value condition="Control.HasFocus(7100)">$INFO[Container(7100).ListItem.Label]</value>
-		<value condition="!String.IsEmpty(Container($VAR[ActiveWidgetID]).ListItem.Title) + !String.Contains(Container($VAR[ActiveWidgetID]).ListItem.Title,unknown)">$INFO[Container($VAR[ActiveWidgetID]).ListItem.Title]</value>
+		<value condition="Control.HasFocus(10100) + !String.IsEmpty(Container(10100).ListItem.Title)">$INFO[Container(10100).ListItem.Title]</value>
+		<value condition="Control.HasFocus(20100) + !String.IsEmpty(Container(20100).ListItem.Title)">$INFO[Container(20100).ListItem.Title]</value>
+		<value condition="Control.HasFocus(30100) + !String.IsEmpty(Container(30100).ListItem.Title)">$INFO[Container(30100).ListItem.Title]</value>
+		<value condition="Control.HasFocus(40100) + !String.IsEmpty(Container(40100).ListItem.Title)">$INFO[Container(40100).ListItem.Title]</value>
+		<value condition="Control.HasFocus(50100) + !String.IsEmpty(Container(50100).ListItem.Title)">$INFO[Container(50100).ListItem.Title]</value>
 		<value>$INFO[Container($VAR[ActiveWidgetID]).ListItem.Label]</value>
 	</variable>
 
 	<variable name="CurrentWidgetFanart">
 		<value condition="Control.HasFocus(7100)">$INFO[Container(7100).ListItem.Art(fanart)]</value>
+		<value condition="Control.HasFocus(7200)">$INFO[Container(7200).ListItem.Art(fanart)]</value>
+		<value condition="Control.HasFocus(10100)">$INFO[Container(10100).ListItem.Art(fanart)]</value>
+		<value condition="Control.HasFocus(20100)">$INFO[Container(20100).ListItem.Art(fanart)]</value>
+		<value condition="Control.HasFocus(30100)">$INFO[Container(30100).ListItem.Art(fanart)]</value>
+		<value condition="Control.HasFocus(40100)">$INFO[Container(40100).ListItem.Art(fanart)]</value>
+		<value condition="Control.HasFocus(50100)">$INFO[Container(50100).ListItem.Art(fanart)]</value>
 		<value>$INFO[Container($VAR[ActiveWidgetID]).ListItem.Art(fanart)]</value>
 	</variable>
 
 	<variable name="CurrentWidgetClearLogo">
-		<value condition="!String.IsEmpty(Container($VAR[ActiveWidgetID]).ListItem.Art(clearlogo))">$INFO[Container($VAR[ActiveWidgetID]).ListItem.Art(clearlogo)]</value>
-		<value condition="!String.IsEmpty(Container($VAR[ActiveWidgetID]).ListItem.Art(tvshow.clearlogo))">$INFO[Container($VAR[ActiveWidgetID]).ListItem.Art(tvshow.clearlogo)]</value>
+		<value condition="Control.HasFocus(7100) + !String.IsEmpty(Container(7100).ListItem.Art(clearlogo))">$INFO[Container(7100).ListItem.Art(clearlogo)]</value>
+		<value condition="Control.HasFocus(7100) + !String.IsEmpty(Container(7100).ListItem.Art(tvshow.clearlogo))">$INFO[Container(7100).ListItem.Art(tvshow.clearlogo)]</value>
+		<value condition="Control.HasFocus(7200) + !String.IsEmpty(Container(7200).ListItem.Art(clearlogo))">$INFO[Container(7200).ListItem.Art(clearlogo)]</value>
+		<value condition="Control.HasFocus(7200) + !String.IsEmpty(Container(7200).ListItem.Art(tvshow.clearlogo))">$INFO[Container(7200).ListItem.Art(tvshow.clearlogo)]</value>
+		<value condition="Control.HasFocus(10100) + !String.IsEmpty(Container(10100).ListItem.Art(clearlogo))">$INFO[Container(10100).ListItem.Art(clearlogo)]</value>
+		<value condition="Control.HasFocus(10100) + !String.IsEmpty(Container(10100).ListItem.Art(tvshow.clearlogo))">$INFO[Container(10100).ListItem.Art(tvshow.clearlogo)]</value>
+		<value condition="Control.HasFocus(20100) + !String.IsEmpty(Container(20100).ListItem.Art(clearlogo))">$INFO[Container(20100).ListItem.Art(clearlogo)]</value>
+		<value condition="Control.HasFocus(20100) + !String.IsEmpty(Container(20100).ListItem.Art(tvshow.clearlogo))">$INFO[Container(20100).ListItem.Art(tvshow.clearlogo)]</value>
+		<value condition="Control.HasFocus(30100) + !String.IsEmpty(Container(30100).ListItem.Art(clearlogo))">$INFO[Container(30100).ListItem.Art(clearlogo)]</value>
+		<value condition="Control.HasFocus(30100) + !String.IsEmpty(Container(30100).ListItem.Art(tvshow.clearlogo))">$INFO[Container(30100).ListItem.Art(tvshow.clearlogo)]</value>
+		<value condition="Control.HasFocus(40100) + !String.IsEmpty(Container(40100).ListItem.Art(clearlogo))">$INFO[Container(40100).ListItem.Art(clearlogo)]</value>
+		<value condition="Control.HasFocus(40100) + !String.IsEmpty(Container(40100).ListItem.Art(tvshow.clearlogo))">$INFO[Container(40100).ListItem.Art(tvshow.clearlogo)]</value>
+		<value condition="Control.HasFocus(50100) + !String.IsEmpty(Container(50100).ListItem.Art(clearlogo))">$INFO[Container(50100).ListItem.Art(clearlogo)]</value>
+		<value condition="Control.HasFocus(50100) + !String.IsEmpty(Container(50100).ListItem.Art(tvshow.clearlogo))">$INFO[Container(50100).ListItem.Art(tvshow.clearlogo)]</value>
 		<value>$INFO[Container($VAR[ActiveWidgetID]).ListItem.Art(logo)]</value>
 	</variable>
 
 	<variable name="CurrentWidgetPlot">
 		<value condition="Control.HasFocus(7100)">$INFO[Container(7100).ListItem.Plot]</value>
+		<value condition="Control.HasFocus(7200)">$INFO[Container(7200).ListItem.Plot]</value>
+		<value condition="Control.HasFocus(10100)">$INFO[Container(10100).ListItem.Plot]</value>
+		<value condition="Control.HasFocus(20100)">$INFO[Container(20100).ListItem.Plot]</value>
+		<value condition="Control.HasFocus(30100)">$INFO[Container(30100).ListItem.Plot]</value>
+		<value condition="Control.HasFocus(40100)">$INFO[Container(40100).ListItem.Plot]</value>
+		<value condition="Control.HasFocus(50100)">$INFO[Container(50100).ListItem.Plot]</value>
 		<value>$INFO[Container($VAR[ActiveWidgetID]).ListItem.Plot]</value>
 	</variable>
 
 	<variable name="CurrentWidgetInfo">
 		<!-- Focused Widget Manager item -->
-		<value condition="Control.HasFocus(7100)">$INFO[Container(7100).ListItem.Year]$INFO[Container(7100).ListItem.Genre,  |  ]</value>
+		<value condition="Control.HasFocus(7100)">$INFO[Container(7100).ListItem.Premiered]$INFO[Container(7100).ListItem.Genre,  |  ]</value>
 		
 		<!-- Trakt Next Up (10100) -->
 		<value condition="String.IsEqual($VAR[ActiveWidgetID],10100) + !String.IsEmpty(Container(10100).ListItem.Property(AiredDate))">
 			$INFO[Container(10100).ListItem.Property(AiredDate)]$INFO[Container(10100).ListItem.Duration,  |  , min]$INFO[Container(10100).ListItem.Director,  |  ]
 		</value>
+		<value condition="String.IsEqual($VAR[ActiveWidgetID],10100) + !String.IsEmpty(Container(10100).ListItem.Season)">$VAR[EpisodeInfoPadded]$INFO[Container(10100).ListItem.Duration,  |  , min]</value>
 		
 		<!-- Episodes (Show/Season info + Title) -->
 		<value condition="!String.IsEmpty(Container($VAR[ActiveWidgetID]).ListItem.Season)">$VAR[EpisodeInfoPadded]$INFO[Container($VAR[ActiveWidgetID]).ListItem.Duration,  |  , min]</value>
 		
 		<!-- Default Trakt/Watchlist/Movies (Year | Genre | Released | Duration | Director) -->
+		<value condition="String.IsEqual($VAR[ActiveWidgetID],20100) + !String.IsEmpty(Container(20100).ListItem.Property(AiredDate))">
+			$INFO[Container(20100).ListItem.Property(AiredDate)]$INFO[Container(20100).ListItem.Genre,  |  ]$INFO[Container(20100).ListItem.Duration,  |  , min]
+		</value>
+		<value condition="String.IsEqual($VAR[ActiveWidgetID],30100) + !String.IsEmpty(Container(30100).ListItem.Property(AiredDate))">
+			$INFO[Container(30100).ListItem.Property(AiredDate)]$INFO[Container(30100).ListItem.Genre,  |  ]$INFO[Container(30100).ListItem.Duration,  |  , min]
+		</value>
 		<value condition="!String.IsEmpty(Container($VAR[ActiveWidgetID]).ListItem.Property(AiredDate))">
 			$INFO[Container($VAR[ActiveWidgetID]).ListItem.Property(AiredDate)]$INFO[Container($VAR[ActiveWidgetID]).ListItem.Genre,  |  ]$INFO[Container($VAR[ActiveWidgetID]).ListItem.Duration,  |  , min]$INFO[Container($VAR[ActiveWidgetID]).ListItem.Director,  |  ]
 		</value>
 		
 		<!-- Generic Fallback -->
-		<value>$INFO[Container($VAR[ActiveWidgetID]).ListItem.Year]$INFO[Container($VAR[ActiveWidgetID]).ListItem.Genre,  |  ]$INFO[Container($VAR[ActiveWidgetID]).ListItem.Duration,  |  , min]</value>
+		<value>$INFO[Container($VAR[ActiveWidgetID]).ListItem.Premiered]$INFO[Container($VAR[ActiveWidgetID]).ListItem.Genre,  |  ]$INFO[Container($VAR[ActiveWidgetID]).ListItem.Duration,  |  , min]</value>
 	</variable>
 	<variable name="SeasonNumberPadded">
 		<value condition="Integer.IsLess(ListItem.Season,10)">S0$INFO[ListItem.Season]</value>
@@ -1322,4 +1391,249 @@
         <value condition="String.IsEqual(Window(Home).Property(InfoWindow.IsWatched),true)">special://skin/media/buttons/tr_watched_remove_nofo.png</value>
         <value>special://skin/media/buttons/tr_watched_add_nofo.png</value>
     </variable>
+	<variable name="Widget_Row_Visible_Movie">
+		<value condition="Control.HasFocus($PARAM[list_id])">true</value>
+		<value condition="Container($PARAM[list_id]).IsUpdating">true</value>
+		<value condition="Integer.IsGreater(Container($PARAM[list_id]).NumItems,0)">true</value>
+		<value condition="String.IsEmpty(Window(Home).Property(AIOStreams.movies.$PARAM[index].NumItems))">true</value>
+		<value>false</value>
+	</variable>
+
+	<variable name="NextMovieWidgetID">
+		<!-- From 0 -->
+		<value condition="String.IsEqual(Skin.String(Movies_WidgetIndex),0) + Integer.IsGreater(Skin.String(AIOStreams.Movies_Widget_Count),1) + Integer.IsGreater(Window(Home).Property(AIOStreams.movies.1.NumItems),0)">SetFocus(5110)</value>
+		<value condition="String.IsEqual(Skin.String(Movies_WidgetIndex),0) + Integer.IsGreater(Skin.String(AIOStreams.Movies_Widget_Count),2) + Integer.IsGreater(Window(Home).Property(AIOStreams.movies.2.NumItems),0)">SetFocus(5120)</value>
+		<value condition="String.IsEqual(Skin.String(Movies_WidgetIndex),0) + Integer.IsGreater(Skin.String(AIOStreams.Movies_Widget_Count),3)">SetFocus(5130)</value>
+		<!-- From 1 -->
+		<value condition="String.IsEqual(Skin.String(Movies_WidgetIndex),1) + Integer.IsGreater(Skin.String(AIOStreams.Movies_Widget_Count),2) + Integer.IsGreater(Window(Home).Property(AIOStreams.movies.2.NumItems),0)">SetFocus(5120)</value>
+		<value condition="String.IsEqual(Skin.String(Movies_WidgetIndex),1) + Integer.IsGreater(Skin.String(AIOStreams.Movies_Widget_Count),3) + Integer.IsGreater(Window(Home).Property(AIOStreams.movies.3.NumItems),0)">SetFocus(5130)</value>
+		<value condition="String.IsEqual(Skin.String(Movies_WidgetIndex),1) + Integer.IsGreater(Skin.String(AIOStreams.Movies_Widget_Count),4)">SetFocus(5140)</value>
+		<!-- From 2 -->
+		<value condition="String.IsEqual(Skin.String(Movies_WidgetIndex),2) + Integer.IsGreater(Skin.String(AIOStreams.Movies_Widget_Count),3) + Integer.IsGreater(Window(Home).Property(AIOStreams.movies.3.NumItems),0)">SetFocus(5130)</value>
+		<value condition="String.IsEqual(Skin.String(Movies_WidgetIndex),2) + Integer.IsGreater(Skin.String(AIOStreams.Movies_Widget_Count),4) + Integer.IsGreater(Window(Home).Property(AIOStreams.movies.4.NumItems),0)">SetFocus(5140)</value>
+		<value condition="String.IsEqual(Skin.String(Movies_WidgetIndex),2) + Integer.IsGreater(Skin.String(AIOStreams.Movies_Widget_Count),5)">SetFocus(5150)</value>
+		<!-- Generic fallback for others -->
+		<value condition="String.IsEqual(Skin.String(Movies_WidgetIndex),3) + Integer.IsGreater(Skin.String(AIOStreams.Movies_Widget_Count),4)">SetFocus(5140)</value>
+		<value condition="String.IsEqual(Skin.String(Movies_WidgetIndex),4) + Integer.IsGreater(Skin.String(AIOStreams.Movies_Widget_Count),5)">SetFocus(5150)</value>
+		<value condition="String.IsEqual(Skin.String(Movies_WidgetIndex),5) + Integer.IsGreater(Skin.String(AIOStreams.Movies_Widget_Count),6)">SetFocus(5160)</value>
+		<value condition="String.IsEqual(Skin.String(Movies_WidgetIndex),6) + Integer.IsGreater(Skin.String(AIOStreams.Movies_Widget_Count),7)">SetFocus(5170)</value>
+		<value condition="String.IsEqual(Skin.String(Movies_WidgetIndex),7) + Integer.IsGreater(Skin.String(AIOStreams.Movies_Widget_Count),8)">SetFocus(5180)</value>
+		<value condition="String.IsEqual(Skin.String(Movies_WidgetIndex),8) + Integer.IsGreater(Skin.String(AIOStreams.Movies_Widget_Count),9)">SetFocus(5190)</value>
+		<value condition="String.IsEqual(Skin.String(Movies_WidgetIndex),9) + Integer.IsGreater(Skin.String(AIOStreams.Movies_Widget_Count),10)">SetFocus(5200)</value>
+		<value>noop</value>
+	</variable>
+
+	<variable name="NextMovieWidgetIndex">
+		<!-- From 0 -->
+		<value condition="String.IsEqual(Skin.String(Movies_WidgetIndex),0) + Integer.IsGreater(Skin.String(AIOStreams.Movies_Widget_Count),1) + Integer.IsGreater(Window(Home).Property(AIOStreams.movies.1.NumItems),0)">Skin.SetString(Movies_WidgetIndex,1)</value>
+		<value condition="String.IsEqual(Skin.String(Movies_WidgetIndex),0) + Integer.IsGreater(Skin.String(AIOStreams.Movies_Widget_Count),2) + Integer.IsGreater(Window(Home).Property(AIOStreams.movies.2.NumItems),0)">Skin.SetString(Movies_WidgetIndex,2)</value>
+		<value condition="String.IsEqual(Skin.String(Movies_WidgetIndex),0) + Integer.IsGreater(Skin.String(AIOStreams.Movies_Widget_Count),3)">Skin.SetString(Movies_WidgetIndex,3)</value>
+		<!-- From 1 -->
+		<value condition="String.IsEqual(Skin.String(Movies_WidgetIndex),1) + Integer.IsGreater(Skin.String(AIOStreams.Movies_Widget_Count),2) + Integer.IsGreater(Window(Home).Property(AIOStreams.movies.2.NumItems),0)">Skin.SetString(Movies_WidgetIndex,2)</value>
+		<value condition="String.IsEqual(Skin.String(Movies_WidgetIndex),1) + Integer.IsGreater(Skin.String(AIOStreams.Movies_Widget_Count),3) + Integer.IsGreater(Window(Home).Property(AIOStreams.movies.3.NumItems),0)">Skin.SetString(Movies_WidgetIndex,3)</value>
+		<value condition="String.IsEqual(Skin.String(Movies_WidgetIndex),1) + Integer.IsGreater(Skin.String(AIOStreams.Movies_Widget_Count),4)">Skin.SetString(Movies_WidgetIndex,4)</value>
+		<!-- From 2 -->
+		<value condition="String.IsEqual(Skin.String(Movies_WidgetIndex),2) + Integer.IsGreater(Skin.String(AIOStreams.Movies_Widget_Count),3) + Integer.IsGreater(Window(Home).Property(AIOStreams.movies.3.NumItems),0)">Skin.SetString(Movies_WidgetIndex,3)</value>
+		<value condition="String.IsEqual(Skin.String(Movies_WidgetIndex),2) + Integer.IsGreater(Skin.String(AIOStreams.Movies_Widget_Count),4) + Integer.IsGreater(Window(Home).Property(AIOStreams.movies.4.NumItems),0)">Skin.SetString(Movies_WidgetIndex,4)</value>
+		<value condition="String.IsEqual(Skin.String(Movies_WidgetIndex),2) + Integer.IsGreater(Skin.String(AIOStreams.Movies_Widget_Count),5)">Skin.SetString(Movies_WidgetIndex,5)</value>
+		<!-- Generic fallback for others -->
+		<value condition="String.IsEqual(Skin.String(Movies_WidgetIndex),3) + Integer.IsGreater(Skin.String(AIOStreams.Movies_Widget_Count),4)">Skin.SetString(Movies_WidgetIndex,4)</value>
+		<value condition="String.IsEqual(Skin.String(Movies_WidgetIndex),4) + Integer.IsGreater(Skin.String(AIOStreams.Movies_Widget_Count),5)">Skin.SetString(Movies_WidgetIndex,5)</value>
+		<value condition="String.IsEqual(Skin.String(Movies_WidgetIndex),5) + Integer.IsGreater(Skin.String(AIOStreams.Movies_Widget_Count),6)">Skin.SetString(Movies_WidgetIndex,6)</value>
+		<value condition="String.IsEqual(Skin.String(Movies_WidgetIndex),6) + Integer.IsGreater(Skin.String(AIOStreams.Movies_Widget_Count),7)">Skin.SetString(Movies_WidgetIndex,7)</value>
+		<value condition="String.IsEqual(Skin.String(Movies_WidgetIndex),7) + Integer.IsGreater(Skin.String(AIOStreams.Movies_Widget_Count),8)">Skin.SetString(Movies_WidgetIndex,8)</value>
+		<value condition="String.IsEqual(Skin.String(Movies_WidgetIndex),8) + Integer.IsGreater(Skin.String(AIOStreams.Movies_Widget_Count),9)">Skin.SetString(Movies_WidgetIndex,9)</value>
+		<value condition="String.IsEqual(Skin.String(Movies_WidgetIndex),9) + Integer.IsGreater(Skin.String(AIOStreams.Movies_Widget_Count),10)">Skin.SetString(Movies_WidgetIndex,10)</value>
+		<value>noop</value>
+	</variable>
+	<variable name="PrevMovieWidgetID">
+		<value condition="String.IsEqual(Skin.String(Movies_WidgetIndex),1)">5100</value>
+		<value condition="String.IsEqual(Skin.String(Movies_WidgetIndex),2)">5110</value>
+		<value condition="String.IsEqual(Skin.String(Movies_WidgetIndex),3)">5120</value>
+		<value condition="String.IsEqual(Skin.String(Movies_WidgetIndex),4)">5130</value>
+		<value condition="String.IsEqual(Skin.String(Movies_WidgetIndex),5)">5140</value>
+		<value condition="String.IsEqual(Skin.String(Movies_WidgetIndex),6)">5150</value>
+		<value condition="String.IsEqual(Skin.String(Movies_WidgetIndex),7)">5160</value>
+		<value condition="String.IsEqual(Skin.String(Movies_WidgetIndex),8)">5170</value>
+		<value condition="String.IsEqual(Skin.String(Movies_WidgetIndex),9)">5180</value>
+		<value condition="String.IsEqual(Skin.String(Movies_WidgetIndex),10)">5190</value>
+		<value condition="String.IsEqual(Skin.String(Movies_WidgetIndex),11)">5200</value>
+		<value condition="String.IsEqual(Skin.String(Movies_WidgetIndex),12)">5210</value>
+		<value condition="String.IsEqual(Skin.String(Movies_WidgetIndex),13)">5220</value>
+		<value condition="String.IsEqual(Skin.String(Movies_WidgetIndex),14)">5230</value>
+		<value condition="String.IsEqual(Skin.String(Movies_WidgetIndex),15)">5240</value>
+		<value>noop</value>
+	</variable>
+
+	<variable name="PrevMovieWidgetIndex">
+		<value condition="String.IsEqual(Skin.String(Movies_WidgetIndex),1)">0</value>
+		<value condition="String.IsEqual(Skin.String(Movies_WidgetIndex),2)">1</value>
+		<value condition="String.IsEqual(Skin.String(Movies_WidgetIndex),3)">2</value>
+		<value condition="String.IsEqual(Skin.String(Movies_WidgetIndex),4)">3</value>
+		<value condition="String.IsEqual(Skin.String(Movies_WidgetIndex),5)">4</value>
+		<value condition="String.IsEqual(Skin.String(Movies_WidgetIndex),6)">5</value>
+		<value condition="String.IsEqual(Skin.String(Movies_WidgetIndex),7)">6</value>
+		<value condition="String.IsEqual(Skin.String(Movies_WidgetIndex),8)">7</value>
+		<value condition="String.IsEqual(Skin.String(Movies_WidgetIndex),9)">8</value>
+		<value condition="String.IsEqual(Skin.String(Movies_WidgetIndex),10)">9</value>
+		<value condition="String.IsEqual(Skin.String(Movies_WidgetIndex),11)">10</value>
+		<value condition="String.IsEqual(Skin.String(Movies_WidgetIndex),12)">11</value>
+		<value condition="String.IsEqual(Skin.String(Movies_WidgetIndex),13)">12</value>
+		<value condition="String.IsEqual(Skin.String(Movies_WidgetIndex),14)">13</value>
+		<value condition="String.IsEqual(Skin.String(Movies_WidgetIndex),15)">14</value>
+		<value>noop</value>
+	</variable>
+
+	<!-- TV NAVIGATION -->
+	<variable name="NextTVWidgetID">
+		<value condition="String.IsEqual(Skin.String(TV_WidgetIndex),0) + Integer.IsGreater(Skin.String(AIOStreams.TV_Widget_Count),1)">6110</value>
+		<value condition="String.IsEqual(Skin.String(TV_WidgetIndex),1) + Integer.IsGreater(Skin.String(AIOStreams.TV_Widget_Count),2)">6120</value>
+		<value condition="String.IsEqual(Skin.String(TV_WidgetIndex),2) + Integer.IsGreater(Skin.String(AIOStreams.TV_Widget_Count),3)">6130</value>
+		<value condition="String.IsEqual(Skin.String(TV_WidgetIndex),3) + Integer.IsGreater(Skin.String(AIOStreams.TV_Widget_Count),4)">6140</value>
+		<value condition="String.IsEqual(Skin.String(TV_WidgetIndex),4) + Integer.IsGreater(Skin.String(AIOStreams.TV_Widget_Count),5)">6150</value>
+		<value condition="String.IsEqual(Skin.String(TV_WidgetIndex),5) + Integer.IsGreater(Skin.String(AIOStreams.TV_Widget_Count),6)">6160</value>
+		<value condition="String.IsEqual(Skin.String(TV_WidgetIndex),6) + Integer.IsGreater(Skin.String(AIOStreams.TV_Widget_Count),7)">6170</value>
+		<value condition="String.IsEqual(Skin.String(TV_WidgetIndex),7) + Integer.IsGreater(Skin.String(AIOStreams.TV_Widget_Count),8)">6180</value>
+		<value condition="String.IsEqual(Skin.String(TV_WidgetIndex),8) + Integer.IsGreater(Skin.String(AIOStreams.TV_Widget_Count),9)">6190</value>
+		<value condition="String.IsEqual(Skin.String(TV_WidgetIndex),9) + Integer.IsGreater(Skin.String(AIOStreams.TV_Widget_Count),10)">6200</value>
+		<value condition="String.IsEqual(Skin.String(TV_WidgetIndex),10) + Integer.IsGreater(Skin.String(AIOStreams.TV_Widget_Count),11)">6210</value>
+		<value condition="String.IsEqual(Skin.String(TV_WidgetIndex),11) + Integer.IsGreater(Skin.String(AIOStreams.TV_Widget_Count),12)">6220</value>
+		<value condition="String.IsEqual(Skin.String(TV_WidgetIndex),12) + Integer.IsGreater(Skin.String(AIOStreams.TV_Widget_Count),13)">6230</value>
+		<value condition="String.IsEqual(Skin.String(TV_WidgetIndex),13) + Integer.IsGreater(Skin.String(AIOStreams.TV_Widget_Count),14)">6240</value>
+		<value condition="String.IsEqual(Skin.String(TV_WidgetIndex),14) + Integer.IsGreater(Skin.String(AIOStreams.TV_Widget_Count),15)">6250</value>
+		<value condition="String.IsEqual(Skin.String(TV_WidgetIndex),15) + Integer.IsGreater(Skin.String(AIOStreams.TV_Widget_Count),16)">6260</value>
+		<value condition="String.IsEqual(Skin.String(TV_WidgetIndex),16) + Integer.IsGreater(Skin.String(AIOStreams.TV_Widget_Count),17)">6270</value>
+		<value condition="String.IsEqual(Skin.String(TV_WidgetIndex),17) + Integer.IsGreater(Skin.String(AIOStreams.TV_Widget_Count),18)">6280</value>
+		<value condition="String.IsEqual(Skin.String(TV_WidgetIndex),18) + Integer.IsGreater(Skin.String(AIOStreams.TV_Widget_Count),19)">6290</value>
+		<value>noop</value>
+	</variable>
+
+	<variable name="NextTVWidgetIndex">
+		<value condition="String.IsEqual(Skin.String(TV_WidgetIndex),0) + Integer.IsGreater(Skin.String(AIOStreams.TV_Widget_Count),1)">1</value>
+		<value condition="String.IsEqual(Skin.String(TV_WidgetIndex),1) + Integer.IsGreater(Skin.String(AIOStreams.TV_Widget_Count),2)">2</value>
+		<value condition="String.IsEqual(Skin.String(TV_WidgetIndex),2) + Integer.IsGreater(Skin.String(AIOStreams.TV_Widget_Count),3)">3</value>
+		<value condition="String.IsEqual(Skin.String(TV_WidgetIndex),3) + Integer.IsGreater(Skin.String(AIOStreams.TV_Widget_Count),4)">4</value>
+		<value condition="String.IsEqual(Skin.String(TV_WidgetIndex),4) + Integer.IsGreater(Skin.String(AIOStreams.TV_Widget_Count),5)">5</value>
+		<value condition="String.IsEqual(Skin.String(TV_WidgetIndex),5) + Integer.IsGreater(Skin.String(AIOStreams.TV_Widget_Count),6)">6</value>
+		<value condition="String.IsEqual(Skin.String(TV_WidgetIndex),6) + Integer.IsGreater(Skin.String(AIOStreams.TV_Widget_Count),7)">7</value>
+		<value condition="String.IsEqual(Skin.String(TV_WidgetIndex),7) + Integer.IsGreater(Skin.String(AIOStreams.TV_Widget_Count),8)">8</value>
+		<value condition="String.IsEqual(Skin.String(TV_WidgetIndex),8) + Integer.IsGreater(Skin.String(AIOStreams.TV_Widget_Count),9)">9</value>
+		<value condition="String.IsEqual(Skin.String(TV_WidgetIndex),9) + Integer.IsGreater(Skin.String(AIOStreams.TV_Widget_Count),10)">10</value>
+		<value condition="String.IsEqual(Skin.String(TV_WidgetIndex),10) + Integer.IsGreater(Skin.String(AIOStreams.TV_Widget_Count),11)">11</value>
+		<value condition="String.IsEqual(Skin.String(TV_WidgetIndex),11) + Integer.IsGreater(Skin.String(AIOStreams.TV_Widget_Count),12)">12</value>
+		<value condition="String.IsEqual(Skin.String(TV_WidgetIndex),12) + Integer.IsGreater(Skin.String(AIOStreams.TV_Widget_Count),13)">13</value>
+		<value condition="String.IsEqual(Skin.String(TV_WidgetIndex),13) + Integer.IsGreater(Skin.String(AIOStreams.TV_Widget_Count),14)">14</value>
+		<value condition="String.IsEqual(Skin.String(TV_WidgetIndex),14) + Integer.IsGreater(Skin.String(AIOStreams.TV_Widget_Count),15)">15</value>
+		<value condition="String.IsEqual(Skin.String(TV_WidgetIndex),15) + Integer.IsGreater(Skin.String(AIOStreams.TV_Widget_Count),16)">16</value>
+		<value condition="String.IsEqual(Skin.String(TV_WidgetIndex),16) + Integer.IsGreater(Skin.String(AIOStreams.TV_Widget_Count),17)">17</value>
+		<value condition="String.IsEqual(Skin.String(TV_WidgetIndex),17) + Integer.IsGreater(Skin.String(AIOStreams.TV_Widget_Count),18)">18</value>
+		<value condition="String.IsEqual(Skin.String(TV_WidgetIndex),18) + Integer.IsGreater(Skin.String(AIOStreams.TV_Widget_Count),19)">19</value>
+		<value>noop</value>
+	</variable>
+
+	<variable name="PrevTVWidgetID">
+		<value condition="String.IsEqual(Skin.String(TV_WidgetIndex),1)">6100</value>
+		<value condition="String.IsEqual(Skin.String(TV_WidgetIndex),2)">6110</value>
+		<value condition="String.IsEqual(Skin.String(TV_WidgetIndex),3)">6120</value>
+		<value condition="String.IsEqual(Skin.String(TV_WidgetIndex),4)">6130</value>
+		<value condition="String.IsEqual(Skin.String(TV_WidgetIndex),5)">6140</value>
+		<value condition="String.IsEqual(Skin.String(TV_WidgetIndex),6)">6150</value>
+		<value condition="String.IsEqual(Skin.String(TV_WidgetIndex),7)">6160</value>
+		<value condition="String.IsEqual(Skin.String(TV_WidgetIndex),8)">6170</value>
+		<value condition="String.IsEqual(Skin.String(TV_WidgetIndex),9)">6180</value>
+		<value condition="String.IsEqual(Skin.String(TV_WidgetIndex),10)">6190</value>
+		<value condition="String.IsEqual(Skin.String(TV_WidgetIndex),11)">6200</value>
+		<value condition="String.IsEqual(Skin.String(TV_WidgetIndex),12)">6210</value>
+		<value condition="String.IsEqual(Skin.String(TV_WidgetIndex),13)">6220</value>
+		<value condition="String.IsEqual(Skin.String(TV_WidgetIndex),14)">6230</value>
+		<value condition="String.IsEqual(Skin.String(TV_WidgetIndex),15)">6240</value>
+		<value condition="String.IsEqual(Skin.String(TV_WidgetIndex),16)">6250</value>
+		<value condition="String.IsEqual(Skin.String(TV_WidgetIndex),17)">6260</value>
+		<value condition="String.IsEqual(Skin.String(TV_WidgetIndex),18)">6270</value>
+		<value condition="String.IsEqual(Skin.String(TV_WidgetIndex),19)">6280</value>
+		<value>noop</value>
+	</variable>
+
+	<variable name="PrevTVWidgetIndex">
+		<value condition="String.IsEqual(Skin.String(TV_WidgetIndex),1)">0</value>
+		<value condition="String.IsEqual(Skin.String(TV_WidgetIndex),2)">1</value>
+		<value condition="String.IsEqual(Skin.String(TV_WidgetIndex),3)">2</value>
+		<value condition="String.IsEqual(Skin.String(TV_WidgetIndex),4)">3</value>
+		<value condition="String.IsEqual(Skin.String(TV_WidgetIndex),5)">4</value>
+		<value condition="String.IsEqual(Skin.String(TV_WidgetIndex),6)">5</value>
+		<value condition="String.IsEqual(Skin.String(TV_WidgetIndex),7)">6</value>
+		<value condition="String.IsEqual(Skin.String(TV_WidgetIndex),8)">7</value>
+		<value condition="String.IsEqual(Skin.String(TV_WidgetIndex),9)">8</value>
+		<value condition="String.IsEqual(Skin.String(TV_WidgetIndex),10)">9</value>
+		<value condition="String.IsEqual(Skin.String(TV_WidgetIndex),11)">10</value>
+		<value condition="String.IsEqual(Skin.String(TV_WidgetIndex),12)">11</value>
+		<value condition="String.IsEqual(Skin.String(TV_WidgetIndex),13)">12</value>
+		<value condition="String.IsEqual(Skin.String(TV_WidgetIndex),14)">13</value>
+		<value condition="String.IsEqual(Skin.String(TV_WidgetIndex),15)">14</value>
+		<value condition="String.IsEqual(Skin.String(TV_WidgetIndex),16)">15</value>
+		<value condition="String.IsEqual(Skin.String(TV_WidgetIndex),17)">16</value>
+		<value condition="String.IsEqual(Skin.String(TV_WidgetIndex),18)">17</value>
+		<value condition="String.IsEqual(Skin.String(TV_WidgetIndex),19)">18</value>
+		<value>noop</value>
+	</variable>
+	<!-- HOME NAVIGATION -->
+	<variable name="NextHomeWidgetID">
+		<value condition="String.IsEqual(Skin.String(Home_WidgetIndex),0) + Integer.IsGreater(Skin.String(AIOStreams.Home_Widget_Count),1)">10100</value>
+		<value condition="String.IsEqual(Skin.String(Home_WidgetIndex),1) + Integer.IsGreater(Skin.String(AIOStreams.Home_Widget_Count),2)">10200</value>
+		<value condition="String.IsEqual(Skin.String(Home_WidgetIndex),2) + Integer.IsGreater(Skin.String(AIOStreams.Home_Widget_Count),3)">10300</value>
+		<value condition="String.IsEqual(Skin.String(Home_WidgetIndex),3) + Integer.IsGreater(Skin.String(AIOStreams.Home_Widget_Count),4)">10400</value>
+		<value condition="String.IsEqual(Skin.String(Home_WidgetIndex),4) + Integer.IsGreater(Skin.String(AIOStreams.Home_Widget_Count),5)">10500</value>
+		<value condition="String.IsEqual(Skin.String(Home_WidgetIndex),5) + Integer.IsGreater(Skin.String(AIOStreams.Home_Widget_Count),6)">10600</value>
+		<value condition="String.IsEqual(Skin.String(Home_WidgetIndex),6) + Integer.IsGreater(Skin.String(AIOStreams.Home_Widget_Count),7)">10700</value>
+		<value condition="String.IsEqual(Skin.String(Home_WidgetIndex),7) + Integer.IsGreater(Skin.String(AIOStreams.Home_Widget_Count),8)">10800</value>
+		<value condition="String.IsEqual(Skin.String(Home_WidgetIndex),8) + Integer.IsGreater(Skin.String(AIOStreams.Home_Widget_Count),9)">10900</value>
+		<value condition="String.IsEqual(Skin.String(Home_WidgetIndex),9) + Integer.IsGreater(Skin.String(AIOStreams.Home_Widget_Count),10)">11000</value>
+		<value condition="String.IsEqual(Skin.String(Home_WidgetIndex),10) + Integer.IsGreater(Skin.String(AIOStreams.Home_Widget_Count),11)">11100</value>
+		<value>noop</value>
+	</variable>
+
+	<variable name="NextHomeWidgetIndex">
+		<value condition="String.IsEqual(Skin.String(Home_WidgetIndex),0) + Integer.IsGreater(Skin.String(AIOStreams.Home_Widget_Count),1)">1</value>
+		<value condition="String.IsEqual(Skin.String(Home_WidgetIndex),1) + Integer.IsGreater(Skin.String(AIOStreams.Home_Widget_Count),2)">2</value>
+		<value condition="String.IsEqual(Skin.String(Home_WidgetIndex),2) + Integer.IsGreater(Skin.String(AIOStreams.Home_Widget_Count),3)">3</value>
+		<value condition="String.IsEqual(Skin.String(Home_WidgetIndex),3) + Integer.IsGreater(Skin.String(AIOStreams.Home_Widget_Count),4)">4</value>
+		<value condition="String.IsEqual(Skin.String(Home_WidgetIndex),4) + Integer.IsGreater(Skin.String(AIOStreams.Home_Widget_Count),5)">5</value>
+		<value condition="String.IsEqual(Skin.String(Home_WidgetIndex),5) + Integer.IsGreater(Skin.String(AIOStreams.Home_Widget_Count),6)">6</value>
+		<value condition="String.IsEqual(Skin.String(Home_WidgetIndex),6) + Integer.IsGreater(Skin.String(AIOStreams.Home_Widget_Count),7)">7</value>
+		<value condition="String.IsEqual(Skin.String(Home_WidgetIndex),7) + Integer.IsGreater(Skin.String(AIOStreams.Home_Widget_Count),8)">8</value>
+		<value condition="String.IsEqual(Skin.String(Home_WidgetIndex),8) + Integer.IsGreater(Skin.String(AIOStreams.Home_Widget_Count),9)">9</value>
+		<value condition="String.IsEqual(Skin.String(Home_WidgetIndex),9) + Integer.IsGreater(Skin.String(AIOStreams.Home_Widget_Count),10)">10</value>
+		<value condition="String.IsEqual(Skin.String(Home_WidgetIndex),10) + Integer.IsGreater(Skin.String(AIOStreams.Home_Widget_Count),11)">11</value>
+		<value>noop</value>
+	</variable>
+
+	<variable name="PrevHomeWidgetID">
+		<value condition="String.IsEqual(Skin.String(Home_WidgetIndex),1)">9500</value>
+		<value condition="String.IsEqual(Skin.String(Home_WidgetIndex),2)">10100</value>
+		<value condition="String.IsEqual(Skin.String(Home_WidgetIndex),3)">10200</value>
+		<value condition="String.IsEqual(Skin.String(Home_WidgetIndex),4)">10300</value>
+		<value condition="String.IsEqual(Skin.String(Home_WidgetIndex),5)">10400</value>
+		<value condition="String.IsEqual(Skin.String(Home_WidgetIndex),6)">10500</value>
+		<value condition="String.IsEqual(Skin.String(Home_WidgetIndex),7)">10600</value>
+		<value condition="String.IsEqual(Skin.String(Home_WidgetIndex),8)">10700</value>
+		<value condition="String.IsEqual(Skin.String(Home_WidgetIndex),9)">10800</value>
+		<value condition="String.IsEqual(Skin.String(Home_WidgetIndex),10)">10900</value>
+		<value condition="String.IsEqual(Skin.String(Home_WidgetIndex),11)">11000</value>
+		<value>noop</value>
+	</variable>
+
+	<variable name="PrevHomeWidgetIndex">
+		<value condition="String.IsEqual(Skin.String(Home_WidgetIndex),1)">0</value>
+		<value condition="String.IsEqual(Skin.String(Home_WidgetIndex),2)">1</value>
+		<value condition="String.IsEqual(Skin.String(Home_WidgetIndex),3)">2</value>
+		<value condition="String.IsEqual(Skin.String(Home_WidgetIndex),4)">3</value>
+		<value condition="String.IsEqual(Skin.String(Home_WidgetIndex),5)">4</value>
+		<value condition="String.IsEqual(Skin.String(Home_WidgetIndex),6)">5</value>
+		<value condition="String.IsEqual(Skin.String(Home_WidgetIndex),7)">6</value>
+		<value condition="String.IsEqual(Skin.String(Home_WidgetIndex),8)">7</value>
+		<value condition="String.IsEqual(Skin.String(Home_WidgetIndex),9)">8</value>
+		<value condition="String.IsEqual(Skin.String(Home_WidgetIndex),10)">9</value>
+		<value condition="String.IsEqual(Skin.String(Home_WidgetIndex),11)">10</value>
+		<value>noop</value>
+	</variable>
 </includes>

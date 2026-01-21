@@ -2,7 +2,10 @@
 <window>
 	<defaultcontrol always="true">52</defaultcontrol>
 	<controls>
-		<include>DefaultBackground</include>
+		<control type="image">
+			<include>FullScreenDimensions</include>
+			<texture>colors/black.png</texture>
+		</control>
 		<control type="group">
 			<include>Animation_TopSlide</include>
 			<control type="group">
@@ -16,7 +19,7 @@
 					<width>250</width>
 					<height>112</height>
 					<aspectratio aligny="center" align="center">keep</aspectratio>
-					<texture>special://xbmc/media/vendor_logo.png</texture>
+					<texture>logo_unfocused.png</texture>
 				</control>
 			</control>
 			<control type="textbox">

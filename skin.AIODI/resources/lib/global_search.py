@@ -9,7 +9,7 @@ except ImportError:
 try:
     # Get the current active window dialog ID
     current_dialog_id = xbmcgui.getCurrentWindowDialogId()
-    xbmc.log('[Global Search] Current dialog ID: %s' % current_dialog_id, xbmc.LOGINFO)
+    xbmc.log('[Global Search] Current dialog ID: %s' % current_dialog_id, xbmc.LOGDEBUG)
     
     # Try to get the window
     dialog = None
@@ -22,7 +22,7 @@ try:
     search_query = None
     if len(sys.argv) > 1:
         search_query = sys.argv[1]
-        xbmc.log('[Global Search] Query provided via argument: %s' % search_query, xbmc.LOGINFO)
+        xbmc.log('[Global Search] Query provided via argument: %s' % search_query, xbmc.LOGDEBUG)
         # Populate the edit control so the user sees it if the dialog is open
         if current_dialog_id == 1106:
             try:
@@ -64,18 +64,21 @@ try:
         home_window.setProperty('GlobalSearch.YouTubeURL', youtube_url)
         
         # Log the properties
-        xbmc.log('[Global Search] Construction Complete:', xbmc.LOGINFO)
-        xbmc.log('[Global Search] Movies URL: %s' % movie_url, xbmc.LOGINFO)
-        xbmc.log('[Global Search] Series URL: %s' % series_url, xbmc.LOGINFO)
+        xbmc.log('[Global Search] Construction Complete:', xbmc.LOGDEBUG)
+        xbmc.log('[Global Search] Movies URL: %s' % movie_url, xbmc.LOGDEBUG)
+        xbmc.log('[Global Search] Series URL: %s' % series_url, xbmc.LOGDEBUG)
         
-        # Close search dialog if open and open results
         if current_dialog_id == 1106:
             xbmc.executebuiltin('Dialog.Close(1106)')
+
+        # Set suppression flag IMMEDIATELY to stop background widgets/sync
+        home_window.setProperty('AIOStreams.SearchActive', 'true')
+        xbmc.log('[Global Search] Suppression flag set', xbmc.LOGDEBUG)
 
         xbmc.executebuiltin('ActivateWindow(1112)')
 
         # Give window time to open, then refresh containers to load content
-        xbmc.sleep(1000)
+        xbmc.sleep(100)
         xbmc.executebuiltin('Container(100).Refresh')
         xbmc.executebuiltin('Container(101).Refresh')
         xbmc.executebuiltin('Container(102).Refresh')

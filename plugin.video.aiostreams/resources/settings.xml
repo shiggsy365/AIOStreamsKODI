@@ -40,6 +40,7 @@
 
         <setting id="trakt_sync" type="lsep" label="Sync Settings"/>
         <setting id="trakt_sync_auto" type="bool" label="Enable Auto-Sync (Background Service)" default="true"/>
+        <setting id="clear_trakt_cache" type="action" label="Clear Trakt Sync Database" action="RunPlugin(plugin://plugin.video.aiostreams/?action=clear_trakt_cache)"/>
 
         <setting id="trakt_features" type="lsep" label="Trakt Features"/>
         <setting id="trakt_scrobble" type="bool" label="Enable Scrobbling" default="true"/>

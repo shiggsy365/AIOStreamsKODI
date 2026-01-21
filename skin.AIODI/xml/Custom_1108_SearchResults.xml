@@ -41,7 +41,7 @@
                 <label>$VAR[SearchResultsTitle]</label>
                 <shadowcolor>text_shadow</shadowcolor>
                 <aligny>bottom</aligny>
-                <visible>String.IsEqual($VAR[SearchResultsClearLogo],None) | String.IsEmpty($VAR[SearchResultsClearLogo]) | true</visible> <!-- TEMPORARILY ENABLED TO TEST TEXT -->
+                <visible>String.IsEqual($VAR[SearchResultsClearLogo],None) | String.IsEmpty($VAR[SearchResultsClearLogo])</visible>
             </control>
             
             <!-- Metadata Line -->

@@ -61,12 +61,6 @@
       "path": "plugin://plugin.video.aiostreams/?action=browse_catalog&catalog_id=39fe3b0.mdblist.3091&content_type=series&catalog_name=UK+Shows",
       "type": "series",
       "is_trakt": false
-    },
-    {
-      "label": "Trakt Recommendations",
-      "path": "plugin://plugin.video.aiostreams/?action=browse_catalog&catalog_id=39fe3b0.trakt.recommendations.shows&content_type=series&catalog_name=Trakt+Recommendations",
-      "type": "series",
-      "is_trakt": false
     }
   ],
   "movies": [
@@ -97,12 +91,6 @@
     {
       "label": "Netflix Movies",
       "path": "plugin://plugin.video.aiostreams/?action=browse_catalog&catalog_id=39fe3b0.mdblist.3093&content_type=movie&catalog_name=Netflix+Movies",
-      "type": "movie",
-      "is_trakt": false
-    },
-    {
-      "label": "Trakt Recommendations",
-      "path": "plugin://plugin.video.aiostreams/?action=browse_catalog&catalog_id=39fe3b0.trakt.recommendations.movies&content_type=movie&catalog_name=Trakt+Recommendations",
       "type": "movie",
       "is_trakt": false
     }

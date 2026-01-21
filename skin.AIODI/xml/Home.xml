@@ -3,6 +3,7 @@
 	<onload condition="String.IsEmpty(Skin.String(Home_WidgetIndex))">Skin.SetString(Home_WidgetIndex,0)</onload>
 	<onload condition="String.IsEmpty(Skin.String(Movies_WidgetIndex))">Skin.SetString(Movies_WidgetIndex,0)</onload>
 	<onload condition="String.IsEmpty(Skin.String(TV_WidgetIndex))">Skin.SetString(TV_WidgetIndex,0)</onload>
+	<onload condition="String.IsEmpty(Skin.String(Music_WidgetIndex))">Skin.SetString(Music_WidgetIndex,0)</onload>
 <onload>Skin.SetString(SideMenuFocus,home)</onload>
 	<onload condition="String.IsEmpty(Skin.String(first_run))">RunScript(script.aiodi.onboarding)</onload>
 
@@ -37,6 +38,14 @@
 			<texture>colors/black.png</texture>
 			<aspectratio>scale</aspectratio>
 		</control>
+		<!-- Background Fanart -->
+		<control type="image">
+			<depth>DepthBackground</depth>
+			<include>FullScreenDimensions</include>
+			<texture background="true">$VAR[CurrentWidgetFanart]</texture>
+			<aspectratio>scale</aspectratio>
+		</control>
+
 
 		<!-- 50% Black Overlay -->
 		<control type="image">
@@ -82,8 +91,7 @@
 				<width>500</width>
 				<height>180</height>
 				<aspectratio align="left" aligny="bottom">keep</aspectratio>
-				<texture background="false">$INFO[Control.GetLabel(8888)]</texture>
-				<visible>!String.IsEmpty(Control.GetLabel(8888))</visible>
+				<texture background="true">$VAR[CurrentWidgetClearLogo]</texture>
 			</control>
 			
 			<!-- Fallback Title (when no clearlogo) -->
@@ -381,8 +389,10 @@
 				<onup>9006</onup>
 				<ondown>9008</ondown>
 				<onfocus>Skin.SetString(SideMenuFocus,music)</onfocus>
+				<onfocus>Skin.SetString(Music_WidgetIndex,0)</onfocus>
 				<onright>SetFocus(7100)</onright>
-				<onclick>SetFocus(7100)</onclick>
+				<onclick>ActivateWindow(Videos,plugin://plugin.video.youtube/,return)</onclick>
+				<onclick>SetFocus($VAR[ActiveWidgetID])</onclick>
 			</control>
 			<control type="image">
 				<left>24</left>
@@ -1476,6 +1486,7 @@
 
 		<!-- Widget 0: IMVDb Hits by Year -->
 		<control type="group">
+			<visible>String.IsEqual(Skin.String(Music_WidgetIndex),0) | String.IsEmpty(Skin.String(Music_WidgetIndex))</visible>
 			<include content="WidgetListSquare">
 				<param name="content_path">plugin://plugin.video.imvdb/</param>
 				<param name="widget_header">IMVDb Music Videos</param>
@@ -1483,6 +1494,22 @@
 				<param name="onclick_condition">true</param>
 				<param name="onclick_action">RunPlugin($INFO[ListItem.FolderPath])</param>
 				<param name="onup_action1">noop</param>
+				<param name="ondown_action1">Skin.SetString(Music_WidgetIndex,1)</param>
+				<param name="ondown_action2">SetFocus(7200)</param>
+			</include>
+		</control>
+
+		<!-- Widget 1: YouTube -->
+		<control type="group">
+			<visible>String.IsEqual(Skin.String(Music_WidgetIndex),1)</visible>
+			<include content="WidgetListSquare">
+				<param name="content_path">plugin://plugin.video.aiostreams/?action=youtube_menu</param>
+				<param name="widget_header">YouTube</param>
+				<param name="list_id">7200</param>
+				<param name="onclick_condition">true</param>
+				<param name="onclick_action">ActivateWindow(Videos,$INFO[ListItem.FolderPath])</param>
+				<param name="onup_action1">Skin.SetString(Music_WidgetIndex,0)</param>
+				<param name="onup_action2">SetFocus(7100)</param>
 				<param name="ondown_action1">noop</param>
 			</include>
 		</control>

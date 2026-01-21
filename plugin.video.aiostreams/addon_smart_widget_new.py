@@ -19,7 +19,7 @@ def smart_widget():
         xbmcplugin.endOfDirectory(HANDLE)
         return
 
-    xbmc.log(f'[AIOStreams] smart_widget: index={index}, content_type={content_type}', xbmc.LOGINFO)
+    xbmc.log(f'[AIOStreams] smart_widget: index={index}, content_type={content_type}', xbmc.LOGDEBUG)
     
     # Use widget_config_loader to get configured widget
     try:
@@ -42,7 +42,7 @@ def smart_widget():
         label = widget.get('label', 'Unknown')
         widget_type = widget.get('type', 'unknown')
         
-        xbmc.log(f'[AIOStreams] smart_widget: Loading "{label}" (type: {widget_type})', xbmc.LOGINFO)
+        xbmc.log(f'[AIOStreams] smart_widget: Loading "{label}" (type: {widget_type})', xbmc.LOGDEBUG)
         
         # Parse the widget path
         from urllib.parse import urlparse, parse_qs

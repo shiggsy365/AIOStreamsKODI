@@ -18,12 +18,12 @@
 			<animation effect="fade" start="100" end="0" time="200">WindowClose</animation>
 		</control>
 
-		<!-- Right Side Panel (Width 500, Left 1420) -->
+		<!-- Right Side Panel -->
 		<control type="group">
-			<left>1420</left>
+			<right>0</right>
 			<top>0</top>
 			<width>500</width>
-			<height>1080</height>
+			<bottom>0</bottom>
 			<animation type="WindowOpen">
 				<effect type="slide" start="500" end="0" time="300" tween="cubic" easing="out" />
 			</animation>
@@ -31,23 +31,7 @@
 				<effect type="slide" start="0" end="500" time="300" tween="cubic" easing="in" />
 			</animation>
 
-			<!-- Panel Background -->
-			<control type="image">
-				<left>0</left>
-				<top>0</top>
-				<width>500</width>
-				<height>1080</height>
-				<texture colordiffuse="FF1A1A1A">colors/white.png</texture>
-			</control>
-            
-            <!-- Side Shadow/Border -->
-            <control type="image">
-                <left>-5</left>
-                <top>0</top>
-                <width>5</width>
-                <height>1080</height>
-                <texture colordiffuse="FF000000">colors/white.png</texture>
-            </control>
+			<include>RightSideMenuBackground</include>
 
             <!-- List Content -->
 			<control type="grouplist" id="996">

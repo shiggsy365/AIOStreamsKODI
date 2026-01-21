@@ -1,0 +1,96 @@
+[B]6.0.163[/B]
+• FIXED: Widget alignment (left shifted to 300) to prevent overlap with the sidebar menu.
+• IMPROVED: Dynamic metadata (Plot, Fanart, Logo) now updates instantly when focusing different widget rows.
+
+[B]4.0.25[/B]
+• NEW: Single-widget display with up/down cycling
+• NEW: White sidebar icons for better visibility
+• IMPROVED: Widget positioning at bottom of screen (600px from top)
+• IMPROVED: Cleaner navigation - up/down cycles through widgets
+• IMPROVED: Each page (Home/Movies/Series) shows one widget at a time
+
+[B]5.0.0[/B]
+• MAJOR: Complete Netflix-style UI refactor
+• NEW: Horizontal top menu bar replacing sidebar
+• NEW: Full-width widget rows for maximum content visibility
+• NEW: Simplified tabbed customization dialog
+• NEW: Clean page-based navigation (Home, Movies, Series, TV, Music)
+• NEW: Smooth page transitions and focus animations
+• IMPROVED: Widget management - toggle visibility per page
+• IMPROVED: Netflix-inspired color scheme and typography
+• REMOVED: Complex widget reordering (simplified approach)
+
+[B]4.0.22[/B]
+• FIXED: Widget positioning on Movies and Series pages.
+• NEW: Integrated page-specific widget reordering in Customization dialog.
+• REMOVED: Page-level "Customise" buttons for a cleaner UI.
+• IMPROVED: Reordering logic for Home, Movies, and Series categories.
+
+[B]4.0.20[/B]
+• NEW: Custom minimalist SVG icons for all menu items.
+• IMPROVED: Widget positioning (Lower 40% of screen).
+• NEW: "Customise this page" button in widget sections (Submenu fallback).
+• FIXED: Sidebar icon resolution.
+
+[B]4.0.18[/B]
+• CRITICAL: Fixed Home.xml structural error (Black Screen fix).
+• RESTORED: Sidebar menu items and layout.
+• FIXED: Icon resolution for sidebar items.
+
+[B]4.0.16[/B]
+• FIXED: Overlapping widgets on Home page.
+• FIXED: Missing icons for Home and Settings.
+• FIXED: AIOStreams script error in smart_widget.
+• REMOVED: Weather and Add-ons from sidebar.
+• IMPROVED: Customization access.
+
+[B]4.0.14[/B]
+• FIXED: Widget loading error (Indentation fixed).
+• FIXED: Sidebar navigation restored.
+• FIXED: Menu icons visibility fix.
+• NEW: "Customise AIODI" menu item for easy access.
+
+[B]4.0.12[/B]
+• FIXED: AIOStreams loading error.
+• NEW: Customization Dialog (Long-press any menu item).
+• NEW: Show/Hide menu items and individual widget rows.
+• NEW: Rearrange widget order directly from the UI.
+• NEW: AIOStreams logo at the top of the side menu.
+
+[B]4.0.10[/B]
+• FIXED: Sidebar now correctly expands and collapses based on focus.
+• NEW: Smart Multi-Row Widgets for Movies and Series (Posters instead of Buttons).
+• REMOVED: Weather and Favourites from side menu.
+• IMPROVED: Widgets now adapt to available user catalogs dynamically.
+
+[B]4.0.8[/B]
+• NEW: Minimalist icon-only side menu with collapse animation.
+• FIXED: AIOStreams widgets now skip genre selection and default to "All".
+• CLEANUP: Removed menu text labels and redundant branding.
+
+[B]4.0.7[/B]
+• RESTRUCTURED: Home screen now has fixed sidebar (non-collapsing).
+• ADDED: Home section with Trakt Next Up and Watchlist widgets.
+• ADDED: Movie and Series sections with AIOStreams Catalog widgets.
+• REMOVED: Unnecessary widgets from TV, Music, and other sections.
+
+[B]4.0.5[/B]
+• RESTORED: Sidebar visibility using stable width logic.
+• IMPROVED: Surgical label hiding for a cleaner icon-only collapse.
+• FIXED: Universal navigation (Left) from all widgets to sidebar.
+
+[B]4.0.3[/B]
+• FIXED: Restored menu accessibility and label visibility.
+• FIXED: Robust sidebar width transition logic.
+• FIXED: Corrected navigation from widgets to sidebar.
+
+[B]4.0.2[/B]
+• MODIFIED: Sidebar now collapses to icon-only view when not focused.
+• ADDED: Search and Settings as main menu items.
+• REMOVED: Power button, Weather item, and Kodi logo.
+• UPDATED: Branding set to AIOStreams logo.
+
+[B]4.0.1[/B]
+• REMOVED: Home menu items for Music Videos, Radio, Games, Pictures, and Videos.
+
+"[B]4.0.0[/B]n• Complete Reset: Replaced Arctic Fuse base with Estuary base for maximum stability.n• Standardized resource paths and XML structure.n"

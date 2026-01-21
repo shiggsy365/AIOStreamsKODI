@@ -3,51 +3,66 @@
 <window id="1102" type="dialog">
     <defaultcontrol>1</defaultcontrol>
     <coordinates>
-        <left>760</left>
-        <top>300</top>
+        <left>0</left>
+        <top>0</top>
     </coordinates>
     
     <controls>
+        <!-- Background Dimmer -->
+        <control type="image">
+            <include>FullScreenDimensions</include>
+            <texture colordiffuse="C0000000">colors/black.png</texture>
+        </control>
+
         <control type="group">
-            <width>400</width>
-            <height>150</height>
+            <right>0</right>
+            <top>0</top>
+            <width>500</width>
+            <bottom>0</bottom>
+            <animation type="WindowOpen">
+                <effect type="slide" start="500" end="0" time="300" tween="cubic" easing="out" />
+            </animation>
+            <animation type="WindowClose">
+                <effect type="slide" start="0" end="500" time="300" tween="cubic" easing="in" />
+            </animation>
             
-            <!-- Background -->
-            <control type="image">
-                <width>400</width>
-                <height>150</height>
-                <texture colordiffuse="E6000000">colors/white.png</texture>
-            </control>
+            <include>RightSideMenuBackground</include>
             
             <!-- Menu Items -->
             <control type="grouplist" id="1">
-                <left>20</left>
-                <top>20</top>
-                <width>360</width>
-                <height>110</height>
+                <left>25</left>
+                <top>150</top>
+                <width>450</width>
+                <height>900</height>
                 <itemgap>10</itemgap>
                 <orientation>vertical</orientation>
                 
                 <!-- Add to Page -->
                 <control type="button" id="2">
-                    <width>360</width>
-                    <height>50</height>
+                    <width>450</width>
+                    <height>65</height>
                     <label>Add to $INFO[Window(1111).Property(CurrentPageName)] Page</label>
                     <font>font13</font>
                     <textcolor>white</textcolor>
-                    <focusedcolor>button_focus</focusedcolor>
+                    <align>left</align>
+                    <textoffsetx>20</textoffsetx>
+                    <texturefocus colordiffuse="button_focus">lists/focus.png</texturefocus>
+                    <texturenofocus colordiffuse="00FFFFFF">colors/white.png</texturenofocus>
                     <onclick>RunScript(special://skin/resources/lib/widget_manager.py,add_catalog)</onclick>
                     <onclick>Close</onclick>
                 </control>
                 
                 <!-- Cancel -->
                 <control type="button" id="3">
-                    <width>360</width>
-                    <height>50</height>
+                    <width>450</width>
+                    <height>65</height>
                     <label>Cancel</label>
                     <font>font13</font>
                     <textcolor>white</textcolor>
-                    <focusedcolor>button_focus</focusedcolor>
+                    <align>left</align>
+                    <textoffsetx>20</textoffsetx>
+                    <texturefocus colordiffuse="button_focus">lists/focus.png</texturefocus>
+                    <texturenofocus colordiffuse="00FFFFFF">colors/white.png</texturenofocus>
                     <onclick>Close</onclick>
                 </control>
             </control>

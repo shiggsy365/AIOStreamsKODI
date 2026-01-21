@@ -1,0 +1,428 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<window type="dialog" id="1112">
+    <defaultcontrol always="true">50</defaultcontrol>
+    <!-- <onload>RunScript(special://skin/resources/lib/debug_search_results.py)</onload> -->
+    <onload condition="String.IsEmpty(Window(10000).Property(GlobalSearch.ActiveTab))">SetFocus(50)</onload>
+    <onload condition="String.IsEqual(Window(10000).Property(GlobalSearch.ActiveTab),movies)">SetFocus(50)</onload>
+    <onload condition="String.IsEqual(Window(10000).Property(GlobalSearch.ActiveTab),series)">SetFocus(51)</onload>
+    <onload condition="String.IsEqual(Window(10000).Property(GlobalSearch.ActiveTab),youtube)">SetFocus(52)</onload>
+    <onunload>ClearProperty(GlobalSearch.MoviesCount,10000)</onunload>
+    <onunload>ClearProperty(GlobalSearch.SeriesCount,10000)</onunload>
+    <onunload>ClearProperty(GlobalSearch.YoutubeCount,10000)</onunload>
+    <onunload>ClearProperty(GlobalSearch.ActiveTab,10000)</onunload>
+    <coordinates>
+        <left>0</left>
+        <top>0</top>
+    </coordinates>
+    
+    <!-- Background -->
+    <controls>
+        <control type="image">
+            <left>0</left>
+            <top>0</top>
+            <width>1920</width>
+            <height>1080</height>
+            <texture>colors/white.png</texture>
+            <colordiffuse>FF121212</colordiffuse>
+        </control>
+        
+        <!-- Debug URL Label (Hidden) -->
+        <control type="label">
+            <left>40</left>
+            <top>1000</top>
+            <width>1840</width>
+            <height>40</height>
+            <font>font12</font>
+            <label>URL: $INFO[Window(10000).Property(GlobalSearch.MoviesURL)]</label>
+            <textcolor>FF444444</textcolor>
+            <visible>false</visible>
+        </control>
+        
+        <!-- Main Container -->
+        <control type="group">
+            <left>120</left>
+            <top>80</top>
+            <width>1680</width>
+            <height>920</height>
+            <animation effect="slide" start="0,-50" end="0,0" time="200">WindowOpen</animation>
+            <animation effect="slide" start="0,0" end="0,-50" time="200">WindowClose</animation>
+            
+            <!-- Background Panel -->
+            <control type="image">
+                <left>0</left>
+                <top>0</top>
+                <width>1680</width>
+                <height>920</height>
+                <texture border="40">dialogs/dialog-panel.png</texture>
+            </control>
+            
+            <!-- Header -->
+            <control type="group">
+                <left>0</left>
+                <top>0</top>
+                <width>1680</width>
+                <height>100</height>
+                <!-- Search Title -->
+            <control type="label">
+                <left>40</left>
+                <top>20</top>
+                <width>1600</width>
+                <height>60</height>
+                <font>font25_title</font>
+                <label>$VAR[SearchResultsHeader]</label>
+                <textcolor>FFFFFFFF</textcolor>
+            </control>
+                
+                <!-- Close Button -->
+                <control type="button" id="9999">
+                    <left>1600</left>
+                    <top>30</top>
+                    <width>60</width>
+                    <height>60</height>
+                    <label></label>
+                    <font>-</font>
+                    <texturefocus>buttons/close-focus.png</texturefocus>
+                    <texturenofocus>buttons/close-nofocus.png</texturenofocus>
+                    <onclick>Dialog.Close(1112)</onclick>
+                </control>
+            </control>
+            
+            <!-- Tab Buttons -->
+            <control type="grouplist" id="9000">
+                <left>40</left>
+                <top>100</top>
+                <width>1600</width>
+                <height>60</height>
+                <orientation>horizontal</orientation>
+                <itemgap>10</itemgap>
+                <ondown>100</ondown>
+                <onup>9999</onup>
+                
+                <control type="button" id="50">
+                    <left>0</left>
+                    <top>0</top>
+                    <width>240</width>
+                    <height>60</height>
+                    <font>font24_bold</font>
+                    <label>Movies [$INFO[Window(10000).Property(GlobalSearch.MoviesCount)]]</label>
+                    <textoffsetx>60</textoffsetx>
+                    <align>left</align>
+                    <aligny>center</aligny>
+                    <textcolor>FFFFFFFF</textcolor>
+                    <focusedcolor>FFFFFFFF</focusedcolor>
+                    <texturefocus>buttons/tr_movies_fo.png</texturefocus>
+                    <texturenofocus>buttons/tr_movies_nofo.png</texturenofocus>
+                    <onup>9000</onup>
+                    <ondown>100</ondown>
+                    <onright>51</onright>
+                    <onclick>SetProperty(GlobalSearch.ActiveTab,movies,10000)</onclick>
+                    <onclick>SetFocus(100)</onclick>
+                </control>
+                
+                <control type="button" id="51">
+                    <left>340</left>
+                    <top>0</top>
+                    <width>240</width>
+                    <height>60</height>
+                    <font>font24_bold</font>
+                    <label>TV Shows [$INFO[Window(10000).Property(GlobalSearch.SeriesCount)]]</label>
+                    <textoffsetx>60</textoffsetx>
+                    <align>left</align>
+                    <aligny>center</aligny>
+                    <textcolor>FFFFFFFF</textcolor>
+                    <focusedcolor>FFFFFFFF</focusedcolor>
+                    <texturefocus>buttons/tr_tvshows_fo.png</texturefocus>
+                    <texturenofocus>buttons/tr_tvshows_nofo.png</texturenofocus>
+                    <onup>9000</onup>
+                    <ondown>101</ondown>
+                    <onleft>50</onleft>
+                    <onright>52</onright>
+                    <onclick>SetProperty(GlobalSearch.ActiveTab,series,10000)</onclick>
+                    <onclick>SetFocus(101)</onclick>
+                </control>
+                
+                <!-- YouTube Tab -->
+                <control type="button" id="52">
+                    <left>680</left>
+                    <top>0</top>
+                    <width>240</width>
+                    <height>60</height>
+                    <font>font24_bold</font>
+                    <label>YouTube [$INFO[Window(10000).Property(GlobalSearch.YoutubeCount)]]</label>
+                    <textoffsetx>60</textoffsetx>
+                    <align>left</align>
+                    <aligny>center</aligny>
+                    <textcolor>FFFFFFFF</textcolor>
+                    <focusedcolor>FFFFFFFF</focusedcolor>
+                    <texturefocus>buttons/tr_youtube_fo.png</texturefocus>
+                    <texturenofocus>buttons/tr_youtube_nofo.png</texturenofocus>
+                    <onup>9000</onup>
+                    <ondown>102</ondown>
+                    <onleft>51</onleft>
+                    <onclick>SetProperty(GlobalSearch.ActiveTab,youtube,10000)</onclick>
+                    <onclick>SetFocus(102)</onclick>
+                </control>
+            </control>
+
+            <!-- Results Count Labels Removed - Merged into Buttons -->
+
+            <!-- Movies Results Panel -->
+            <control type="group">
+                <left>40</left>
+                <top>180</top>
+                <width>1600</width>
+                <height>700</height>
+                <visible>String.IsEqual(Window(10000).Property(GlobalSearch.ActiveTab),movies) | String.IsEmpty(Window(10000).Property(GlobalSearch.ActiveTab))</visible>
+                
+                <!-- Movies Grid -->
+                <control type="panel" id="100">
+                    <left>0</left>
+                    <top>0</top>
+                    <width>1600</width>
+                    <height>740</height>
+                    <onup>50</onup>
+                    <onleft>100</onleft>
+                    <onright>100</onright>
+                    <oninfo>RunPlugin(plugin://plugin.video.aiostreams/?action=info&amp;id=$INFO[ListItem.Property(id)]&amp;content_type=$INFO[ListItem.Property(content_type)])</oninfo>
+                    <pagecontrol>-</pagecontrol>
+                    <scrolltime>200</scrolltime>
+                    <orientation>vertical</orientation>
+                    <preloaditems>2</preloaditems>
+                    
+                    <itemlayout height="450" width="300">
+                        <control type="image">
+                            <left>10</left>
+                            <top>10</top>
+                            <width>280</width>
+                            <height>400</height>
+                            <texture>$INFO[ListItem.Art(poster)]</texture>
+                            <aspectratio>scale</aspectratio>
+                        </control>
+                    </itemlayout>
+                    
+                    <focusedlayout height="450" width="300">
+                        <control type="group">
+                            <animation effect="zoom" start="100" end="108" time="200" center="150,225">Focus</animation>
+                            <animation effect="zoom" start="108" end="100" time="200" center="150,225">UnFocus</animation>
+                            
+                            <control type="image">
+                                <left>10</left>
+                                <top>10</top>
+                                <width>280</width>
+                                <height>400</height>
+                                <texture>$INFO[ListItem.Art(poster)]</texture>
+                                <bordertexture border="3" colordiffuse="FFFF0000">colors/white.png</bordertexture>
+                                <bordersize>3</bordersize>
+                                <aspectratio>scale</aspectratio>
+                            </control>
+                        </control>
+                    </focusedlayout>
+                    
+                    <content target="video">$INFO[Window(10000).Property(GlobalSearch.MoviesURL)]</content>
+                </control>
+                
+                <!-- Loading Indicator -->
+                <control type="label">
+                    <left>0</left>
+                    <top>300</top>
+                    <width>1600</width>
+                    <height>100</height>
+                    <font>font25</font>
+                    <label>Searching movies...</label>
+                    <textcolor>FFAAAAAA</textcolor>
+                    <align>center</align>
+                    <visible>Integer.IsEqual(Container(100).NumItems,0)</visible>
+                </control>
+            </control>
+            
+            <!-- TV Shows Results Panel -->
+            <control type="group">
+                <left>40</left>
+                <top>180</top>
+                <width>1600</width>
+                <height>700</height>
+                <visible>String.IsEqual(Window(10000).Property(GlobalSearch.ActiveTab),series)</visible>
+                
+                <!-- TV Shows Grid -->
+                <control type="panel" id="101">
+                    <left>0</left>
+                    <top>0</top>
+                    <width>1600</width>
+                    <height>740</height>
+                    <onup>51</onup>
+                    <onleft>101</onleft>
+                    <onright>101</onright>
+                    <oninfo>RunPlugin(plugin://plugin.video.aiostreams/?action=info&amp;id=$INFO[ListItem.Property(id)]&amp;content_type=$INFO[ListItem.Property(content_type)])</oninfo>
+                    <pagecontrol>-</pagecontrol>
+                    <scrolltime>200</scrolltime>
+                    <orientation>vertical</orientation>
+                    <preloaditems>2</preloaditems>
+                    
+                    <itemlayout height="450" width="300">
+                        <control type="image">
+                            <left>10</left>
+                            <top>10</top>
+                            <width>280</width>
+                            <height>400</height>
+                            <texture>$INFO[ListItem.Art(poster)]</texture>
+                            <aspectratio>scale</aspectratio>
+                        </control>
+                    </itemlayout>
+                    
+                    <focusedlayout height="450" width="300">
+                        <control type="group">
+                            <animation effect="zoom" start="100" end="108" time="200" center="150,225">Focus</animation>
+                            <animation effect="zoom" start="108" end="100" time="200" center="150,225">UnFocus</animation>
+                            
+                            <control type="image">
+                                <left>10</left>
+                                <top>10</top>
+                                <width>280</width>
+                                <height>400</height>
+                                <texture>$INFO[ListItem.Art(poster)]</texture>
+                                <bordertexture border="3" colordiffuse="FFFF0000">colors/white.png</bordertexture>
+                                <bordersize>3</bordersize>
+                                <aspectratio>scale</aspectratio>
+                            </control>
+                        </control>
+                    </focusedlayout>
+                    
+                    <content target="video">$INFO[Window(10000).Property(GlobalSearch.SeriesURL)]</content>
+                </control>
+                
+                <!-- Loading Indicator -->
+                <control type="label">
+                    <left>0</left>
+                    <top>300</top>
+                    <width>1600</width>
+                    <height>100</height>
+                    <font>font25</font>
+                    <label>Searching TV shows...</label>
+                    <textcolor>FFAAAAAA</textcolor>
+                    <align>center</align>
+                    <visible>Integer.IsEqual(Container(101).NumItems,0)</visible>
+                </control>
+            </control>
+            
+            <!-- YouTube Results Panel -->
+            <control type="group">
+                <left>40</left>
+                <top>180</top>
+                <width>1600</width>
+                <height>700</height>
+                <visible>String.IsEqual(Window(10000).Property(GlobalSearch.ActiveTab),youtube)</visible>
+                
+                <!-- YouTube List -->
+                <control type="list" id="102">
+                    <left>0</left>
+                    <top>0</top>
+                    <width>1600</width>
+                    <height>740</height>
+                    <onup>52</onup>
+                    <pagecontrol>-</pagecontrol>
+                    <scrolltime>200</scrolltime>
+                    
+                    <itemlayout height="140">
+                        <control type="image">
+                            <left>10</left>
+                            <top>10</top>
+                            <width>240</width>
+                            <height>120</height>
+                            <texture>$INFO[ListItem.Art(thumb)]</texture>
+                            <aspectratio>scale</aspectratio>
+                        </control>
+                        <control type="label">
+                            <left>270</left>
+                            <top>20</top>
+                            <width>1310</width>
+                            <height>40</height>
+                            <font>font18</font>
+                            <label>$INFO[ListItem.Label]</label>
+                            <textcolor>FFFFFFFF</textcolor>
+                        </control>
+                        <control type="label">
+                            <left>270</left>
+                            <top>65</top>
+                            <width>1310</width>
+                            <height>30</height>
+                            <font>font14</font>
+                            <label>$INFO[ListItem.Property(channel)]</label>
+                            <textcolor>FFAAAAAA</textcolor>
+                        </control>
+                        <control type="label">
+                            <left>270</left>
+                            <top>95</top>
+                            <width>1310</width>
+                            <height>25</height>
+                            <font>font12</font>
+                            <label>$INFO[ListItem.Property(duration)] • $INFO[ListItem.Property(views)] views</label>
+                            <textcolor>FF888888</textcolor>
+                        </control>
+                    </itemlayout>
+                    
+                    <focusedlayout height="140">
+                        <control type="image">
+                            <left>0</left>
+                            <top>0</top>
+                            <width>1600</width>
+                            <height>140</height>
+                            <texture>lists/list-focus.png</texture>
+                        </control>
+                        <control type="image">
+                            <left>10</left>
+                            <top>10</top>
+                            <width>240</width>
+                            <height>120</height>
+                            <texture>$INFO[ListItem.Art(thumb)]</texture>
+                            <bordertexture border="3" colordiffuse="FFFF0000">colors/white.png</bordertexture>
+                            <bordersize>3</bordersize>
+                            <aspectratio>scale</aspectratio>
+                        </control>
+                        <control type="label">
+                            <left>270</left>
+                            <top>20</top>
+                            <width>1310</width>
+                            <height>40</height>
+                            <font>font18</font>
+                            <label>$INFO[ListItem.Label]</label>
+                            <textcolor>FF00B4FF</textcolor>
+                        </control>
+                        <control type="label">
+                            <left>270</left>
+                            <top>65</top>
+                            <width>1310</width>
+                            <height>30</height>
+                            <font>font14</font>
+                            <label>$INFO[ListItem.Property(channel)]</label>
+                            <textcolor>FFCCCCCC</textcolor>
+                        </control>
+                        <control type="label">
+                            <left>270</left>
+                            <top>95</top>
+                            <width>1310</width>
+                            <height>25</height>
+                            <font>font12</font>
+                            <label>$INFO[ListItem.Property(duration)] • $INFO[ListItem.Property(views)] views</label>
+                            <textcolor>FFAAAAAA</textcolor>
+                        </control>
+                    </focusedlayout>
+                    
+                    <content target="video">$INFO[Window(10000).Property(GlobalSearch.YouTubeURL)]</content>
+                </control>
+                
+                <!-- Loading Indicator -->
+                <control type="label">
+                    <left>0</left>
+                    <top>300</top>
+                    <width>1600</width>
+                    <height>100</height>
+                    <font>font25</font>
+                    <label>Searching YouTube...</label>
+                    <textcolor>FFAAAAAA</textcolor>
+                    <align>center</align>
+                    <visible>Integer.IsEqual(Container(102).NumItems,0)</visible>
+                </control>
+            </control>
+        </control>
+    </controls>
+</window>

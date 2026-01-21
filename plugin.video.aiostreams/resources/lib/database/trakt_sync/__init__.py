@@ -92,6 +92,9 @@ class TraktSyncDatabase(Database):
     BOOKMARKS_SCHEMA = """
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         trakt_id INTEGER,
+        tvdb_id INTEGER,
+        tmdb_id INTEGER,
+        imdb_id TEXT,
         type TEXT,
         resume_time REAL,
         percent_played REAL,
@@ -125,6 +128,22 @@ class TraktSyncDatabase(Database):
         data BLOB,
         expires INTEGER
     """
+
+    def clear_all_trakt_data(self):
+        """Truncate all Trakt-related tables for a fresh sync."""
+        if not self.connection and not self.connect():
+            return False
+            
+        tables = ['shows', 'episodes', 'movies', 'bookmarks', 'activities', 'watchlist']
+        try:
+            for table in tables:
+                self.execute(f"DELETE FROM {table}")
+            self.connection.commit()
+            xbmc.log('[AIOStreams] All Trakt sync tables cleared successfully', xbmc.LOGDEBUG)
+            return True
+        except Exception as e:
+            xbmc.log(f'[AIOStreams] Error clearing Trakt tables: {e}', xbmc.LOGERROR)
+            return False
 
     def __init__(self):
         """Initialize Trakt sync database."""
@@ -162,6 +181,26 @@ class TraktSyncDatabase(Database):
             return
 
         try:
+            # Migration: Add tvdb_id, tmdb_id, imdb_id to bookmarks table
+            # Check if columns exist
+            cursor = self.execute("PRAGMA table_info(bookmarks)")
+            if cursor:
+                columns = [row[1] for row in cursor.fetchall()]
+                
+                if 'tvdb_id' not in columns:
+                    xbmc.log('[AIOStreams] Migrating bookmarks table: adding tvdb_id column', xbmc.LOGDEBUG)
+                    self.execute("ALTER TABLE bookmarks ADD COLUMN tvdb_id INTEGER")
+                
+                if 'tmdb_id' not in columns:
+                    xbmc.log('[AIOStreams] Migrating bookmarks table: adding tmdb_id column', xbmc.LOGDEBUG)
+                    self.execute("ALTER TABLE bookmarks ADD COLUMN tmdb_id INTEGER")
+                
+                if 'imdb_id' not in columns:
+                    xbmc.log('[AIOStreams] Migrating bookmarks table: adding imdb_id column', xbmc.LOGDEBUG)
+                    self.execute("ALTER TABLE bookmarks ADD COLUMN imdb_id TEXT")
+                
+                self.commit()
+
             # Migration: Add air_date column to episodes table (v3.1.0)
             # Check if column exists first to avoid error logging
             cursor = self.execute("PRAGMA table_info(episodes)")
@@ -171,7 +210,7 @@ class TraktSyncDatabase(Database):
                 if 'air_date' not in columns:
                     self.execute("ALTER TABLE episodes ADD COLUMN air_date TEXT")
                     self.commit()
-                    xbmc.log('[AIOStreams] Added air_date column to episodes table', xbmc.LOGINFO)
+                    xbmc.log('[AIOStreams] Added air_date column to episodes table', xbmc.LOGDEBUG)
                 else:
                     xbmc.log('[AIOStreams] air_date column already exists, skipping migration', xbmc.LOGDEBUG)
 
@@ -182,7 +221,7 @@ class TraktSyncDatabase(Database):
                     if 'metadata' not in columns:
                         self.execute("ALTER TABLE watchlist ADD COLUMN metadata BLOB")
                         self.commit()
-                        xbmc.log('[AIOStreams] Added metadata column to watchlist table', xbmc.LOGINFO)
+                        xbmc.log('[AIOStreams] Added metadata column to watchlist table', xbmc.LOGDEBUG)
 
                 # Migration: Add metas and catalogs tables if they don't exist (v3.2.0)
                 self.create_table('metas', self.METAS_SCHEMA)
@@ -259,7 +298,9 @@ class TraktSyncDatabase(Database):
                 e.imdb_id as episode_imdb_id,
                 e.metadata as episode_metadata,
                 mw.last_watched_at,
-                s.metadata as show_metadata
+                s.metadata as show_metadata,
+                b.percent_played,
+                b.resume_time
             FROM next_episode_candidate nec
             INNER JOIN episodes e
                 ON e.show_trakt_id = nec.show_trakt_id
@@ -267,6 +308,13 @@ class TraktSyncDatabase(Database):
                 AND e.episode = nec.next_episode
             INNER JOIN shows s ON s.trakt_id = e.show_trakt_id
             INNER JOIN max_watched mw ON mw.show_trakt_id = e.show_trakt_id
+            LEFT JOIN bookmarks b ON (
+                (b.trakt_id = e.trakt_id OR 
+                 (b.tvdb_id IS NOT NULL AND b.tvdb_id = e.tvdb_id) OR 
+                 (b.tmdb_id IS NOT NULL AND b.tmdb_id = e.tmdb_id) OR 
+                 (b.imdb_id IS NOT NULL AND b.imdb_id = e.imdb_id))
+                AND b.type = 'episode'
+            )
             WHERE e.show_trakt_id NOT IN (
                 SELECT trakt_id FROM hidden WHERE section = 'progress_watched'
             )
@@ -660,7 +708,7 @@ class TraktSyncDatabase(Database):
                 'tmdb_id': row['tmdb_id'],
                 'slug': row['slug'],
                 'title': row['title'],
-                'metadata': pickle.loads(row['metadata']),
+                'metadata': pickle.loads(row['metadata']) if row['metadata'] else {},
                 'last_updated': row['last_updated']
             }
         except Exception as e:
@@ -679,7 +727,7 @@ class TraktSyncDatabase(Database):
                 'imdb_id': row['imdb_id'],
                 'tmdb_id': row['tmdb_id'],
                 'tvdb_id': row['tvdb_id'],
-                'metadata': pickle.loads(row['metadata']),
+                'metadata': pickle.loads(row['metadata']) if row['metadata'] else {},
                 'last_updated': row['last_updated']
             }
         except Exception as e:
@@ -822,6 +870,28 @@ class TraktSyncDatabase(Database):
         
         try:
             rows = self.fetch_all(sql, params)
+            
+            # Debug: Check if JOIN is working and if percent_played is populated
+            if rows:
+                xbmc.log(f'[AIOStreams] fetchall: Retrieved {len(rows)} results for query: {sql}', xbmc.LOGDEBUG)
+                # Check first result for bookmark data if relevant columns exist
+                first = rows[0]
+                if 'show_trakt_id' in first and 'episode_trakt_id' in first and 'percent_played' in first:
+                    xbmc.log(f'[AIOStreams] First result: show_trakt_id={first.get("show_trakt_id")}, episode_trakt_id={first.get("episode_trakt_id")}, percent_played={first.get("percent_played")}, resume_time={first.get("resume_time")}', xbmc.LOGDEBUG)
+                    
+                    # Check if ANY results have bookmark data
+                    with_progress = [r for r in rows if r.get('percent_played') is not None]
+                    xbmc.log(f'[AIOStreams] Results with progress: {len(with_progress)} out of {len(rows)}', xbmc.LOGDEBUG)
+                    
+                    # Query bookmarks table directly to verify data exists
+                    # This assumes 'fetchall' is being called in a context where episode bookmarks are relevant.
+                    # If this is a generic fetchall, this specific check might be too narrow.
+                    # For now, keeping it as per instruction, assuming it's for a specific use case.
+                    all_bookmarks = self.fetch_all("SELECT trakt_id, tvdb_id, tmdb_id, imdb_id, percent_played FROM bookmarks WHERE type='episode'")
+                    xbmc.log(f'[AIOStreams] Total episode bookmarks in DB: {len(all_bookmarks) if all_bookmarks else 0}', xbmc.LOGDEBUG)
+                    if all_bookmarks and len(all_bookmarks) > 0:
+                        xbmc.log(f'[AIOStreams] Sample bookmark: {all_bookmarks[0]}', xbmc.LOGDEBUG)
+            
             # Convert sqlite3.Row objects to dicts
             return [dict(row) for row in rows]
         finally:
@@ -906,7 +976,7 @@ class TraktSyncDatabase(Database):
             self.commit()
             
             if meta_count > 0 or catalog_count > 0:
-                xbmc.log(f'[AIOStreams] SQL Cache cleanup: removed {meta_count} metas and {catalog_count} catalogs', xbmc.LOGINFO)
+                xbmc.log(f'[AIOStreams] SQL Cache cleanup: removed {meta_count} metas and {catalog_count} catalogs', xbmc.LOGDEBUG)
             return True
         except Exception as e:
             xbmc.log(f'[AIOStreams] DB error during cache cleanup: {e}', xbmc.LOGWARNING)
@@ -924,13 +994,33 @@ class TraktSyncDatabase(Database):
             xbmc.log(f'[AIOStreams] DB error getting trakt_id: {e}', xbmc.LOGWARNING)
             return None
 
-    def get_bookmark(self, trakt_id):
-        """Retrieve playback bookmark for an item."""
+    def get_bookmark(self, trakt_id=None, tvdb_id=None, tmdb_id=None, imdb_id=None):
+        """Retrieve playback bookmark for an item using any available ID."""
         if not self.connection and not self.connect():
             return None
         try:
-            sql = "SELECT resume_time, percent_played FROM bookmarks WHERE trakt_id = ?"
-            return self.fetch_one(sql, (trakt_id,))
+            # Try matching on any available ID
+            sql_parts = []
+            params = []
+            
+            if trakt_id:
+                sql_parts.append("trakt_id = ?")
+                params.append(trakt_id)
+            if tvdb_id:
+                sql_parts.append("tvdb_id = ?")
+                params.append(tvdb_id)
+            if tmdb_id:
+                sql_parts.append("tmdb_id = ?")
+                params.append(tmdb_id)
+            if imdb_id:
+                sql_parts.append("imdb_id = ?")
+                params.append(imdb_id)
+            
+            if not sql_parts:
+                return None
+            
+            sql = f"SELECT resume_time, percent_played FROM bookmarks WHERE ({' OR '.join(sql_parts)})"
+            return self.fetch_one(sql, tuple(params))
         except Exception as e:
             xbmc.log(f'[AIOStreams] DB error getting bookmark: {e}', xbmc.LOGWARNING)
             return None
@@ -948,12 +1038,149 @@ class TraktSyncDatabase(Database):
                 sql = "SELECT watched FROM episodes WHERE show_trakt_id = ? AND season = ? AND episode = ?"
                 row = self.fetch_one(sql, (trakt_id, season, episode))
                 return bool(row and row['watched'])
-            elif mediatype == 'series':
-                # Check show statistics
-                sql = "SELECT unwatched_episodes FROM shows WHERE trakt_id = ?"
+            elif mediatype in ['series', 'tvshow']:
+                # Use refined show statistics from the shows table
+                # These are updated in activities.py and account for all aired episodes via metadata
+                sql = "SELECT watched_episodes, unwatched_episodes FROM shows WHERE trakt_id = ?"
                 row = self.fetch_one(sql, (trakt_id,))
-                return bool(row and row['unwatched_episodes'] == 0)
+                # Considered watched if we have at least one watched episode and NO unwatched ones
+                return bool(row and row['watched_episodes'] > 0 and row['unwatched_episodes'] == 0)
+            elif mediatype == 'season':
+                if season == 0: return False # Specials are optional
+                # Check episodes for this specific season
+                sql = "SELECT COUNT(*) as unwatched FROM episodes WHERE show_trakt_id = ? AND season = ? AND watched = 0"
+                row = self.fetch_one(sql, (trakt_id, season))
+                if not row or row['unwatched'] > 0:
+                    return False
+                # Ensure there's actually at least one watched episode (to avoid empty seasons)
+                sql = "SELECT COUNT(*) as watched FROM episodes WHERE show_trakt_id = ? AND season = ? AND watched = 1"
+                row = self.fetch_one(sql, (trakt_id, season))
+                return bool(row and row['watched'] > 0)
             return False
         except Exception as e:
-            xbmc.log(f'[AIOStreams] DB error checking watched status: {e}', xbmc.LOGWARNING)
+            xbmc.log(f'[AIOStreams] Error checking IMDb watched status: {e}', xbmc.LOGERROR)
+            return False
+
+    def is_imdb_watched(self, imdb_id, mediatype):
+        """Check if item is watched by IMDB ID directly from local DB."""
+        if not imdb_id:
+            return False
+            
+        try:
+            # Ensure connection
+            if not self.connection:
+                if not self.connect():
+                    return False
+
+            if mediatype == 'movie':
+                # Check movies table
+                row = self.fetch_one("SELECT watched FROM movies WHERE imdb_id = ?", (imdb_id,))
+                is_watched = bool(row and row['watched'])
+                # xbmc.log(f'[AIOStreams] DB Check Movie {imdb_id}: {is_watched}', xbmc.LOGDEBUG)
+                return is_watched
+                
+            elif mediatype in ['show', 'series', 'tvshow']:
+                # For shows, we need to check if all aired episodes are watched
+                # First get the show's Trakt ID
+                row = self.fetch_one("SELECT trakt_id FROM shows WHERE imdb_id = ?", (imdb_id,))
+                if not row:
+                    # xbmc.log(f'[AIOStreams] DB Check Show {imdb_id}: Show not found in DB', xbmc.LOGDEBUG)
+                    return False
+                
+                trakt_id = row['trakt_id']
+                
+                # Count total and watched episodes
+                stats = self.fetch_one("""
+                    SELECT 
+                        COUNT(*) as total,
+                        SUM(CASE WHEN watched = 1 THEN 1 ELSE 0 END) as watched_count
+                    FROM episodes 
+                    WHERE show_trakt_id = ? AND air_date <= datetime('now')
+                """, (trakt_id,))
+                
+                if not stats or stats['total'] == 0:
+                    # xbmc.log(f'[AIOStreams] DB Check Show {imdb_id}: No episodes found', xbmc.LOGDEBUG)
+                    return False
+                    
+                is_watched = stats['watched_count'] >= stats['total']
+                # xbmc.log(f'[AIOStreams] DB Check Show {imdb_id}: {stats["watched_count"]}/{stats["total"]} episodes watched -> {is_watched}', xbmc.LOGDEBUG)
+                return is_watched
+                
+            elif mediatype == 'episode':
+                # Check specific episode
+                row = self.fetch_one("SELECT watched FROM episodes WHERE imdb_id = ?", (imdb_id,))
+                is_watched = bool(row and row['watched'])
+                # xbmc.log(f'[AIOStreams] DB Check Episode {imdb_id}: {is_watched}', xbmc.LOGDEBUG)
+                return is_watched
+                
+            return False
+        except Exception as e:
+            xbmc.log(f'[AIOStreams] Error checking IMDb watched status: {e}', xbmc.LOGERROR)
+            return False
+
+    def get_imdb_show_progress(self, imdb_id):
+        """Get show progress (aired, completed) by IMDB ID directly from local DB."""
+        if not imdb_id:
+            return None
+            
+        try:
+            # Ensure connection
+            if not self.connection:
+                if not self.connect():
+                    return None
+
+            # First get the show's Trakt ID
+            row = self.fetch_one("SELECT trakt_id FROM shows WHERE imdb_id = ?", (imdb_id,))
+            if not row:
+                return None
+            
+            trakt_id = row['trakt_id']
+            
+            # Count total and watched episodes (only aired ones)
+            stats = self.fetch_one("""
+                SELECT 
+                    COUNT(*) as total,
+                    SUM(CASE WHEN watched = 1 THEN 1 ELSE 0 END) as watched_count
+                FROM episodes 
+                WHERE show_trakt_id = ? AND air_date <= datetime('now')
+            """, (trakt_id,))
+            
+            if not stats:
+                return {'aired': 0, 'completed': 0}
+                
+            return {
+                'aired': stats['total'],
+                'completed': stats['watched_count'] or 0
+            }
+        except Exception as e:
+            xbmc.log(f'[AIOStreams] Error getting IMDb show progress: {e}', xbmc.LOGERROR)
+            return None
+
+    def is_imdb_in_watchlist(self, imdb_id, mediatype):
+        """Check if item is in watchlist by IMDB ID directly from local DB."""
+        if not imdb_id:
+            return False
+            
+        try:
+            # Ensure connection
+            if not self.connection:
+                if not self.connect():
+                    return False
+
+            # 1. Get Trakt ID from local movies/shows table
+            trakt_id = self.get_trakt_id_for_item(imdb_id, mediatype)
+            if not trakt_id:
+                return False
+
+            # 2. Check watchlist table
+            # mediatype in watchlist is usually 'movie' or 'show' (singular)
+            # Normalize mediatype
+            formatted_type = 'movie' if mediatype == 'movie' else 'show'
+            
+            sql = "SELECT 1 FROM watchlist WHERE trakt_id = ? AND mediatype = ?"
+            row = self.fetch_one(sql, (trakt_id, formatted_type))
+            return bool(row)
+            
+        except Exception as e:
+            xbmc.log(f'[AIOStreams] Error checking IMDb watchlist status: {e}', xbmc.LOGERROR)
             return False

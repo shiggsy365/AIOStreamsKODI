@@ -12,7 +12,7 @@ import os
 import time
 
 
-def log(msg, level=xbmc.LOGINFO):
+def log(msg, level=xbmc.LOGDEBUG):
     """Log message with prefix"""
     xbmc.log(f'[AIODI] [WidgetService] {msg}', level)
 
@@ -40,9 +40,10 @@ def load_and_set_widget_properties():
             log(f'Error loading config: {e}', xbmc.LOGERROR)
             config = {'home': [], 'tvshows': [], 'movies': []}
 
-    # Set properties for each page
+    # Set properties for each page in specific order: home, tvshows, movies
     window = xbmcgui.Window(10000)  # Home window
 
+    # Load in specific order to ensure home loads first
     for page in ['home', 'tvshows', 'movies']:
         widgets = config.get(page, [])
         log(f'Setting {len(widgets)} widget properties for {page}')
@@ -72,8 +73,8 @@ def monitor_config_changes(monitor):
         except Exception as e:
             log(f'Error checking config file: {e}', xbmc.LOGERROR)
 
-        # Wait for 2 seconds or until abort
-        if monitor.waitForAbort(2):
+        # Wait for 5 seconds or until abort
+        if monitor.waitForAbort(5):
             break
 
 

@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<includes>
+	<include name="View_57_AIODInfo">
+		<control type="group">
+			<visible>Control.IsVisible(57)</visible>
+			<include>Visible_Fade</include>
+			
+			<!-- TOP HALF: METADATA -->
+			<control type="group">
+				<left>120</left>
+				<top>60</top>
+				<width>1680</width>
+				<height>450</height>
+				
+				<!-- Clearlogo / Fallback Title -->
+				<control type="image">
+					<left>0</left>
+					<top>0</top>
+					<width>500</width>
+					<height>180</height>
+					<aspectratio align="left" aligny="bottom">keep</aspectratio>
+					<texture background="true">$INFO[Container(57).ListItem.Art(clearlogo)]</texture>
+					<visible>!String.IsEmpty(Container(57).ListItem.Art(clearlogo))</visible>
+				</control>
+				
+				<control type="label">
+					<left>0</left>
+					<top>0</top>
+					<width>1000</width>
+					<height>180</height>
+					<font>font45_title</font>
+					<textcolor>white</textcolor>
+					<label>$INFO[Container(57).ListItem.Title]</label>
+					<shadowcolor>text_shadow</shadowcolor>
+					<aligny>bottom</aligny>
+					<visible>String.IsEmpty(Container(57).ListItem.Art(clearlogo))</visible>
+				</control>
+
+				<!-- Metadata Info (Genre, Year, Rating) -->
+				<control type="label">
+					<left>0</left>
+					<top>200</top>
+					<width>1000</width>
+					<height>40</height>
+					<font>font24_bold</font>
+					<textcolor>button_focus</textcolor>
+					<label>$INFO[Container(57).ListItem.Year]$INFO[Container(57).ListItem.Genre, • ]$INFO[Container(57).ListItem.Rating, • ★ ]</label>
+					<shadowcolor>text_shadow</shadowcolor>
+				</control>
+
+				<!-- Plot -->
+				<control type="textbox">
+					<left>0</left>
+					<top>250</top>
+					<width>1200</width>
+					<height>200</height>
+					<font>font15</font>
+					<textcolor>FFFFFFFF</textcolor>
+					<label>$INFO[Container(57).ListItem.Plot]</label>
+					<shadowcolor>text_shadow</shadowcolor>
+					<autoscroll time="3000" delay="4000" repeat="5000">true</autoscroll>
+				</control>
+			</control>
+
+			<!-- BOTTOM HALF: Content List (Poster Style) -->
+			<control type="panel" id="57">
+				<left>120</left>
+				<top>550</top>
+				<width>1680</width>
+				<height>450</height>
+				<onleft>9000</onleft>
+				<onright>noop</onright>
+				<onup>57</onup>
+				<ondown>57</ondown>
+				<pagecontrol>61</pagecontrol>
+				<scrolltime>200</scrolltime>
+				<orientation>horizontal</orientation>
+				
+				<itemlayout width="185" height="278">
+					<control type="group">
+						<control type="image">
+							<width>175</width>
+							<height>263</height>
+							<aspectratio align="center" aligny="center">scale</aspectratio>
+							<texture background="true">$VAR[PosterThumbVar]</texture>
+							<bordertexture border="8">colors/white.png</bordertexture>
+							<bordersize>2</bordersize>
+						</control>
+					</control>
+				</itemlayout>
+				
+				<focusedlayout width="185" height="278">
+					<control type="group">
+						<animation effect="zoom" center="auto" start="100" end="110" time="200" tween="sine" easing="out">Focus</animation>
+						<control type="image">
+							<width>175</width>
+							<height>263</height>
+							<aspectratio align="center" aligny="center">scale</aspectratio>
+							<texture background="true">$VAR[PosterThumbVar]</texture>
+							<bordertexture border="8" colordiffuse="button_focus">colors/white.png</bordertexture>
+							<bordersize>3</bordersize>
+						</control>
+					</control>
+				</focusedlayout>
+			</control>
+			
+			<!-- Scrollbar -->
+			<control type="scrollbar" id="61">
+				<left>1810</left>
+				<top>550</top>
+				<width>10</width>
+				<height>450</height>
+				<onleft>57</onleft>
+				<onright>57</onright>
+				<orientation>vertical</orientation>
+			</control>
+		</control>
+	</include>
+</includes>

@@ -1,0 +1,294 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<window id="1111" type="dialog">
+    <defaultcontrol always="true">2000</defaultcontrol>
+    <defaultcontrol always="true">2000</defaultcontrol>
+    <coordinates>
+        <left>0</left>
+        <top>0</top>
+    </coordinates>
+    <include>DefaultBackground</include>
+    
+    <controls>
+        <!-- Background -->
+        <control type="image">
+            <left>0</left>
+            <top>0</top>
+            <width>1920</width>
+            <height>1080</height>
+            <texture>colors/black.png</texture>
+        </control>
+        
+        <!-- Main Container -->
+        <control type="group">
+            <left>100</left>
+            <top>80</top>
+            <width>1720</width>
+            <height>920</height>
+            
+            <!-- Header -->
+            <control type="label">
+                <left>0</left>
+                <top>0</top>
+                <width>1720</width>
+                <height>60</height>
+                <font>font45_title</font>
+                <textcolor>FFFFFFFF</textcolor>
+                <label>Modify Lists - $INFO[Window(Home).Property(WidgetManager.CurrentPageName)]</label>
+                <align>center</align>
+            </control>
+            
+            <!-- Page Selection Tabs -->
+            <control type="grouplist" id="2000">
+                <left>0</left>
+                <top>80</top>
+                <width>1720</width>
+                <height>60</height>
+                <orientation>horizontal</orientation>
+                <itemgap>20</itemgap>
+                <align>center</align>
+                <ondown>3000</ondown>
+                
+                <control type="button" id="2001">
+                    <width>240</width>
+                    <height>60</height>
+                    <font>font24_bold</font>
+                    <label>Home</label>
+                    <textoffsetx>60</textoffsetx>
+                    <align>left</align>
+                    <aligny>center</aligny>
+                    <!-- OnClick handled by Python -->
+                    <texturefocus>buttons/tr_home_fo.png</texturefocus>
+                    <texturenofocus>buttons/tr_home_nofo.png</texturenofocus>
+                    <textcolor>FFFFFFFF</textcolor>
+                    <focusedcolor>FFFFFFFF</focusedcolor>
+                </control>
+
+                <control type="button" id="2002">
+                    <width>240</width>
+                    <height>60</height>
+                    <font>font24_bold</font>
+                    <label>TV Shows</label>
+                    <textoffsetx>60</textoffsetx>
+                    <align>left</align>
+                    <aligny>center</aligny>
+                    <!-- OnClick handled by Python -->
+                    <texturefocus>buttons/tr_tvshows_fo.png</texturefocus>
+                    <texturenofocus>buttons/tr_tvshows_nofo.png</texturenofocus>
+                    <textcolor>FFFFFFFF</textcolor>
+                    <focusedcolor>FFFFFFFF</focusedcolor>
+                </control>
+
+                <control type="button" id="2003">
+                    <width>240</width>
+                    <height>60</height>
+                    <font>font24_bold</font>
+                    <label>Movies</label>
+                    <textoffsetx>60</textoffsetx>
+                    <align>left</align>
+                    <aligny>center</aligny>
+                    <!-- OnClick handled by Python -->
+                    <texturefocus>buttons/tr_movies_fo.png</texturefocus>
+                    <texturenofocus>buttons/tr_movies_nofo.png</texturenofocus>
+                    <textcolor>FFFFFFFF</textcolor>
+                    <focusedcolor>FFFFFFFF</focusedcolor>
+                    <ondown>2004</ondown>
+                </control>
+
+                <!-- Save and Exit -->
+                <control type="button" id="2004">
+                    <width>240</width>
+                    <height>60</height>
+                    <font>font24_bold</font>
+                    <label>Save</label>
+                    <textoffsetx>60</textoffsetx>
+                    <align>left</align>
+                    <aligny>center</aligny>
+                    <!-- OnClick handled by Python -->
+                    <texturefocus>buttons/tr_save_fo.png</texturefocus>
+                    <texturenofocus>buttons/tr_save_nofo.png</texturenofocus>
+                    <focusedcolor>FFFFFFFF</focusedcolor>
+                    <onup>2003</onup>
+                    <ondown>3000</ondown>
+                </control>
+            </control>
+            
+            <!-- Current Page Catalogs (Left Panel) -->
+            <control type="group">
+                <left>0</left>
+                <top>160</top>
+                <width>650</width>
+                <height>700</height>
+                
+                <control type="label">
+                    <left>0</left>
+                    <top>0</top>
+                    <width>650</width>
+                    <height>40</height>
+                    <font>font13</font>
+                    <textcolor>button_focus</textcolor>
+                    <label>Current Catalogs</label>
+                    <align>center</align>
+                </control>
+                
+                <control type="list" id="3000">
+                    
+                    <left>0</left>
+                    <top>50</top>
+                    <width>650</width>
+                    <height>650</height>
+                    <onleft>noop</onleft>
+                    <!-- Lists don't support onclick, using context menu key binding instead -->
+                    <onright>5000</onright>
+                    <onup>2000</onup>
+                    <ondown>6000</ondown>
+                    <itemlayout height="50">
+                        <control type="label">
+                            <left>10</left>
+                            <top>0</top>
+                            <width>470</width>
+                            <height>50</height>
+                            <font>font13</font>
+                            <textcolor>$VAR[TraktWidgetColor]</textcolor>
+                            <label>$INFO[ListItem.Label]</label>
+                            <aligny>center</aligny>
+                        </control>
+                        <control type="label">
+                            <left>490</left>
+                            <top>0</top>
+                            <width>150</width>
+                            <height>50</height>
+                            <font>font12</font>
+                            <textcolor>$VAR[TraktWidgetTypeColor]</textcolor>
+                            <label>$INFO[ListItem.Label2]</label>
+                            <aligny>center</aligny>
+                            <align>right</align>
+                        </control>
+                    </itemlayout>
+                    <focusedlayout height="50">
+                        <control type="image">
+                            <left>0</left>
+                            <top>0</top>
+                            <width>650</width>
+                            <height>50</height>
+                            <texture colordiffuse="$VAR[TraktWidgetFocusColor]">colors/white.png</texture>
+                        </control>
+                        <control type="label">
+                            <left>10</left>
+                            <top>0</top>
+                            <width>470</width>
+                            <height>50</height>
+                            <font>font13</font>
+                            <textcolor>FF000000</textcolor>
+                            <label>$INFO[ListItem.Label]</label>
+                            <aligny>center</aligny>
+                        </control>
+                        <control type="label">
+                            <left>490</left>
+                            <top>0</top>
+                            <width>150</width>
+                            <height>50</height>
+                            <font>font12</font>
+                            <textcolor>FF000000</textcolor>
+                            <label>$INFO[ListItem.Label2]</label>
+                            <aligny>center</aligny>
+                            <align>right</align>
+                        </control>
+                    </focusedlayout>
+                </control>
+            </control>
+            
+            <!-- Navigation buttons removed - using context menus instead -->
+            
+            <!-- Available Catalogs (Right Panel) -->
+            <control type="group">
+                <left>790</left>
+                <top>160</top>
+                <width>930</width>
+                <height>700</height>
+                
+                <control type="label">
+                    <left>0</left>
+                    <top>0</top>
+                    <width>930</width>
+                    <height>40</height>
+                    <font>font13</font>
+                    <textcolor>button_focus</textcolor>
+                    <label>Available Catalogs</label>
+                    <align>center</align>
+                </control>
+                
+                <control type="list" id="5000">
+                    
+                    <left>0</left>
+                    <top>50</top>
+                    <width>930</width>
+                    <height>650</height>
+                    <onleft>3000</onleft>
+                    <!-- Lists don't support onclick, using context menu key binding instead -->
+                    <onright>noop</onright>
+                    <onup>2000</onup>
+                    <ondown>6000</ondown>
+                    <itemlayout height="50">
+                        <control type="label">
+                            <left>10</left>
+                            <top>0</top>
+                            <width>700</width>
+                            <height>50</height>
+                            <font>font13</font>
+                            <textcolor>$VAR[AvailableCatalogColor]</textcolor>
+                            <label>$INFO[ListItem.Label]</label>
+                            <aligny>center</aligny>
+                        </control>
+                        <control type="label">
+                            <left>720</left>
+                            <top>0</top>
+                            <width>200</width>
+                            <height>50</height>
+                            <font>font12</font>
+                            <textcolor>$VAR[AvailableCatalogTypeColor]</textcolor>
+                            <label>$INFO[ListItem.Label2]</label>
+                            <aligny>center</aligny>
+                            <align>right</align>
+                        </control>
+                    </itemlayout>
+                    <focusedlayout height="50">
+                        <control type="image">
+                            <left>0</left>
+                            <top>0</top>
+                            <width>930</width>
+                            <height>50</height>
+                            <texture colordiffuse="$VAR[AvailableCatalogFocusColor]">colors/white.png</texture>
+                        </control>
+                        <control type="label">
+                            <left>10</left>
+                            <top>0</top>
+                            <width>700</width>
+                            <height>50</height>
+                            <font>font13</font>
+                            <textcolor>FF000000</textcolor>
+                            <label>$INFO[ListItem.Label]</label>
+                            <aligny>center</aligny>
+                        </control>
+                        <control type="label">
+                            <left>720</left>
+                            <top>0</top>
+                            <width>200</width>
+                            <height>50</height>
+                            <font>font12</font>
+                            <textcolor>FF000000</textcolor>
+                            <label>$INFO[ListItem.Label2]</label>
+                            <aligny>center</aligny>
+                            <align>right</align>
+                        </control>
+                    </focusedlayout>
+                </control>
+            </control>
+            
+            
+
+
+            <!-- Save and Close Button -->
+            <!-- Save and Close Button Removed (Relocated to Top) -->
+        </control>
+    </controls>
+</window>

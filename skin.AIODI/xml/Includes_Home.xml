@@ -107,26 +107,37 @@
 							<aspectratio align="center" aligny="center">scale</aspectratio>
 							<texture background="true">$INFO[ListItem.Icon]</texture>
 						</control>
-						<!-- Progress Indicator -->
-						<control type="label">
-							<left>10</left>
-							<top>10</top>
-							<width>100</width>
-							<height>30</height>
-							<font>font12</font>
-							<textcolor>FFFFFFFF</textcolor>
-							<shadowcolor>FF000000</shadowcolor>
-							<label>$INFO[ListItem.Property(PercentPlayed),,%]</label>
-							<visible>!String.IsEmpty(ListItem.Property(PercentPlayed))</visible>
-						</control>
 						<!-- Watched Indicator -->
 						<control type="image">
-							<left>195</left>
+							<right>10</right>
 							<top>5</top>
 							<width>30</width>
 							<height>30</height>
-							<texture colordiffuse="FF00FF00">OverlayWatched.png</texture>
-							<visible>String.IsEqual(ListItem.Property(watched),true) | String.IsEqual(ListItem.Overlay,OverlayWatched.png) | Integer.IsGreater(ListItem.Playcount,0)</visible>
+							<texture>indicator_watched.png</texture>
+							<visible>String.IsEqual(ListItem.Property(watched),true) | String.IsEqual(ListItem.Overlay,OverlayWatched.png) | Integer.IsGreater(ListItem.Playcount,0) | Integer.IsGreater(ListItem.PercentPlayed,95) | [[String.IsEqual(ListItem.DBType,tvshow) | String.IsEqual(ListItem.DBType,season)] + String.IsEqual(ListItem.Property(WatchedEpisodes),ListItem.Property(TotalEpisodes)) + !String.IsEmpty(ListItem.Property(TotalEpisodes))]</visible>
+						</control>
+						<!-- Percentage Indicator -->
+						<control type="group">
+							<right>5</right>
+							<top>5</top>
+							<width>40</width>
+							<height>40</height>
+							<visible>[Integer.IsGreater(ListItem.PercentPlayed,4) | Integer.IsGreater(ListItem.Property(PercentPlayed),4)] + [Integer.IsLess(ListItem.PercentPlayed,96) | Integer.IsLess(ListItem.Property(PercentPlayed),96)]</visible>
+							<control type="image">
+								<width>40</width>
+								<height>40</height>
+								<texture>PercentageCircle.png</texture>
+							</control>
+							<control type="label">
+								<width>40</width>
+								<height>40</height>
+								<align>center</align>
+								<aligny>center</aligny>
+								<font>font_tiny</font>
+								<label>$VAR[PercentPlayedVar]%</label>
+								<textcolor>red</textcolor>
+								<shadowcolor>FF000000</shadowcolor>
+							</control>
 						</control>
 					</itemlayout>
 					<focusedlayout width="240" height="360">
@@ -141,26 +152,37 @@
 								<bordersize>3</bordersize>
 								<borderradius>8</borderradius>
 							</control>
-							<!-- Progress Indicator -->
-							<control type="label">
-								<left>10</left>
-								<top>10</top>
-								<width>100</width>
-								<height>30</height>
-								<font>font12</font>
-								<textcolor>FFFFFFFF</textcolor>
-								<shadowcolor>FF000000</shadowcolor>
-								<label>$INFO[ListItem.Property(PercentPlayed),,%]</label>
-								<visible>!String.IsEmpty(ListItem.Property(PercentPlayed))</visible>
-							</control>
 							<!-- Watched Indicator -->
 							<control type="image">
-								<left>195</left>
+								<right>10</right>
 								<top>5</top>
 								<width>30</width>
 								<height>30</height>
-								<texture colordiffuse="FF00FF00">OverlayWatched.png</texture>
-								<visible>String.IsEqual(ListItem.Property(watched),true) | [Integer.IsGreater(ListItem.Playcount,0) + String.IsEmpty(ListItem.Property(PercentPlayed))]</visible>
+								<texture>indicator_watched.png</texture>
+								<visible>String.IsEqual(ListItem.Property(watched),true) | String.IsEqual(ListItem.Overlay,OverlayWatched.png) | Integer.IsGreater(ListItem.Playcount,0) | Integer.IsGreater(ListItem.PercentPlayed,95) | [[String.IsEqual(ListItem.DBType,tvshow) | String.IsEqual(ListItem.DBType,season)] + String.IsEqual(ListItem.Property(WatchedEpisodes),ListItem.Property(TotalEpisodes)) + !String.IsEmpty(ListItem.Property(TotalEpisodes))]</visible>
+							</control>
+							<!-- Percentage Indicator -->
+							<control type="group">
+								<right>5</right>
+								<top>5</top>
+								<width>40</width>
+								<height>40</height>
+								<visible>[Integer.IsGreater(ListItem.PercentPlayed,4) | Integer.IsGreater(ListItem.Property(PercentPlayed),4)] + [Integer.IsLess(ListItem.PercentPlayed,96) | Integer.IsLess(ListItem.Property(PercentPlayed),96)]</visible>
+								<control type="image">
+									<width>40</width>
+									<height>40</height>
+									<texture>PercentageCircle.png</texture>
+								</control>
+								<control type="label">
+									<width>40</width>
+									<height>40</height>
+									<align>center</align>
+									<aligny>center</aligny>
+									<font>font_tiny</font>
+									<label>$VAR[PercentPlayedVar]%</label>
+									<textcolor>red</textcolor>
+									<shadowcolor>FF000000</shadowcolor>
+								</control>
 							</control>
 						</control>
 					</focusedlayout>
@@ -227,26 +249,37 @@
 							<aspectratio align="center" aligny="center">scale</aspectratio>
 							<texture background="true">$INFO[ListItem.Icon]</texture>
 						</control>
-						<!-- Progress Indicator -->
-						<control type="label">
-							<left>10</left>
-							<top>10</top>
-							<width>100</width>
-							<height>30</height>
-							<font>font12</font>
-							<textcolor>FFFFFFFF</textcolor>
-							<shadowcolor>FF000000</shadowcolor>
-							<label>$INFO[ListItem.Property(PercentPlayed),,%]</label>
-							<visible>!String.IsEmpty(ListItem.Property(PercentPlayed))</visible>
-						</control>
 						<!-- Watched Indicator -->
 						<control type="image">
-							<left>355</left>
+							<right>10</right>
 							<top>5</top>
 							<width>30</width>
 							<height>30</height>
-							<texture colordiffuse="FF00FF00">OverlayWatched.png</texture>
-							<visible>String.IsEqual(ListItem.Property(watched),true) | String.IsEqual(ListItem.Overlay,OverlayWatched.png) | Integer.IsGreater(ListItem.Playcount,0)</visible>
+							<texture>indicator_watched.png</texture>
+							<visible>String.IsEqual(ListItem.Property(watched),true) | String.IsEqual(ListItem.Overlay,OverlayWatched.png) | Integer.IsGreater(ListItem.Playcount,0) | Integer.IsGreater(ListItem.PercentPlayed,95) | [[String.IsEqual(ListItem.DBType,tvshow) | String.IsEqual(ListItem.DBType,season)] + String.IsEqual(ListItem.Property(WatchedEpisodes),ListItem.Property(TotalEpisodes)) + !String.IsEmpty(ListItem.Property(TotalEpisodes))]</visible>
+						</control>
+						<!-- Percentage Indicator -->
+						<control type="group">
+							<right>5</right>
+							<top>5</top>
+							<width>40</width>
+							<height>40</height>
+							<visible>[Integer.IsGreater(ListItem.PercentPlayed,4) | Integer.IsGreater(ListItem.Property(PercentPlayed),4)] + [Integer.IsLess(ListItem.PercentPlayed,96) | Integer.IsLess(ListItem.Property(PercentPlayed),96)]</visible>
+							<control type="image">
+								<width>40</width>
+								<height>40</height>
+								<texture>PercentageCircle.png</texture>
+							</control>
+							<control type="label">
+								<width>40</width>
+								<height>40</height>
+								<align>center</align>
+								<aligny>center</aligny>
+								<font>font_tiny</font>
+								<label>$VAR[PercentPlayedVar]%</label>
+								<textcolor>red</textcolor>
+								<shadowcolor>FF000000</shadowcolor>
+							</control>
 						</control>
 					</itemlayout>
 					<focusedlayout width="410" height="235">
@@ -261,26 +294,37 @@
 								<bordersize>3</bordersize>
 								<borderradius>8</borderradius>
 							</control>
-							<!-- Progress Indicator -->
-							<control type="label">
-								<left>10</left>
-								<top>10</top>
-								<width>100</width>
-								<height>30</height>
-								<font>font12</font>
-								<textcolor>FFFFFFFF</textcolor>
-								<shadowcolor>FF000000</shadowcolor>
-								<label>$INFO[ListItem.Property(PercentPlayed),,%]</label>
-								<visible>!String.IsEmpty(ListItem.Property(PercentPlayed))</visible>
-							</control>
 							<!-- Watched Indicator -->
 							<control type="image">
-								<left>355</left>
+								<right>10</right>
 								<top>5</top>
 								<width>30</width>
 								<height>30</height>
-								<texture colordiffuse="FF00FF00">OverlayWatched.png</texture>
-								<visible>String.IsEqual(ListItem.Property(watched),true) | [Integer.IsGreater(ListItem.Playcount,0) + String.IsEmpty(ListItem.Property(PercentPlayed))]</visible>
+								<texture>indicator_watched.png</texture>
+								<visible>String.IsEqual(ListItem.Property(watched),true) | String.IsEqual(ListItem.Overlay,OverlayWatched.png) | Integer.IsGreater(ListItem.Playcount,0) | Integer.IsGreater(ListItem.PercentPlayed,95) | [[String.IsEqual(ListItem.DBType,tvshow) | String.IsEqual(ListItem.DBType,season)] + String.IsEqual(ListItem.Property(WatchedEpisodes),ListItem.Property(TotalEpisodes)) + !String.IsEmpty(ListItem.Property(TotalEpisodes))]</visible>
+							</control>
+							<!-- Percentage Indicator -->
+							<control type="group">
+								<right>5</right>
+								<top>5</top>
+								<width>40</width>
+								<height>40</height>
+								<visible>[Integer.IsGreater(ListItem.PercentPlayed,4) | Integer.IsGreater(ListItem.Property(PercentPlayed),4)] + [Integer.IsLess(ListItem.PercentPlayed,96) | Integer.IsLess(ListItem.Property(PercentPlayed),96)]</visible>
+								<control type="image">
+									<width>40</width>
+									<height>40</height>
+									<texture>PercentageCircle.png</texture>
+								</control>
+								<control type="label">
+									<width>40</width>
+									<height>40</height>
+									<align>center</align>
+									<aligny>center</aligny>
+									<font>font_tiny</font>
+									<label>$VAR[PercentPlayedVar]%</label>
+									<textcolor>red</textcolor>
+									<shadowcolor>FF000000</shadowcolor>
+								</control>
 							</control>
 						</control>
 					</focusedlayout>
@@ -373,6 +417,38 @@
 								<texture background="true">$INFO[ListItem.Art(thumb)]</texture>
 								<fallback>DefaultVideo.png</fallback>
 							</control>
+							<!-- Watched Indicator -->
+							<control type="image">
+								<right>30</right>
+								<top>5</top>
+								<width>30</width>
+								<height>30</height>
+								<texture>indicator_watched.png</texture>
+								<visible>String.IsEqual(ListItem.Property(watched),true) | String.IsEqual(ListItem.Overlay,OverlayWatched.png) | Integer.IsGreater(ListItem.Playcount,0) | Integer.IsGreater(ListItem.PercentPlayed,95) | [[String.IsEqual(ListItem.DBType,tvshow) | String.IsEqual(ListItem.DBType,season)] + String.IsEqual(ListItem.Property(WatchedEpisodes),ListItem.Property(TotalEpisodes)) + !String.IsEmpty(ListItem.Property(TotalEpisodes))]</visible>
+							</control>
+							<!-- Percentage Indicator -->
+							<control type="group">
+								<right>25</right>
+								<top>5</top>
+								<width>40</width>
+								<height>40</height>
+								<visible>[Integer.IsGreater(ListItem.PercentPlayed,4) | Integer.IsGreater(ListItem.Property(PercentPlayed),4)] + [Integer.IsLess(ListItem.PercentPlayed,96) | Integer.IsLess(ListItem.Property(PercentPlayed),96)]</visible>
+								<control type="image">
+									<width>40</width>
+									<height>40</height>
+									<texture>PercentageCircle.png</texture>
+								</control>
+								<control type="label">
+									<width>40</width>
+									<height>40</height>
+									<align>center</align>
+									<aligny>center</aligny>
+									<font>font_tiny</font>
+									<label>$VAR[PercentPlayedVar]%</label>
+									<textcolor>red</textcolor>
+									<shadowcolor>FF000000</shadowcolor>
+								</control>
+							</control>
 						</control>
 					</itemlayout>
 					<focusedlayout width="410" height="360" condition="String.IsEqual(ListItem.DBType,episode)">
@@ -389,6 +465,38 @@
 								<borderradius>8</borderradius>
 								<fallback>DefaultVideo.png</fallback>
 							</control>
+							<!-- Watched Indicator -->
+							<control type="image">
+								<right>30</right>
+								<top>5</top>
+								<width>30</width>
+								<height>30</height>
+								<texture>indicator_watched.png</texture>
+								<visible>String.IsEqual(ListItem.Property(watched),true) | String.IsEqual(ListItem.Overlay,OverlayWatched.png) | Integer.IsGreater(ListItem.Playcount,0) | Integer.IsGreater(ListItem.PercentPlayed,95) | [[String.IsEqual(ListItem.DBType,tvshow) | String.IsEqual(ListItem.DBType,season)] + String.IsEqual(ListItem.Property(WatchedEpisodes),ListItem.Property(TotalEpisodes)) + !String.IsEmpty(ListItem.Property(TotalEpisodes))]</visible>
+							</control>
+							<!-- Percentage Indicator -->
+							<control type="group">
+								<right>25</right>
+								<top>5</top>
+								<width>40</width>
+								<height>40</height>
+								<visible>[Integer.IsGreater(ListItem.PercentPlayed,4) | Integer.IsGreater(ListItem.Property(PercentPlayed),4)] + [Integer.IsLess(ListItem.PercentPlayed,96) | Integer.IsLess(ListItem.Property(PercentPlayed),96)]</visible>
+								<control type="image">
+									<width>40</width>
+									<height>40</height>
+									<texture>PercentageCircle.png</texture>
+								</control>
+								<control type="label">
+									<width>40</width>
+									<height>40</height>
+									<align>center</align>
+									<aligny>center</aligny>
+									<font>font_tiny</font>
+									<label>$VAR[PercentPlayedVar]%</label>
+									<textcolor>red</textcolor>
+									<shadowcolor>FF000000</shadowcolor>
+								</control>
+							</control>
 						</control>
 					</focusedlayout>
 
@@ -400,6 +508,38 @@
 							<aspectratio align="center" aligny="center">scale</aspectratio>
 							<texture background="true">$INFO[ListItem.Art(poster)]</texture>
 							<fallback>DefaultVideo.png</fallback>
+						</control>
+						<!-- Watched Indicator -->
+						<control type="image">
+							<right>10</right>
+							<top>5</top>
+							<width>30</width>
+							<height>30</height>
+							<texture>indicator_watched.png</texture>
+							<visible>String.IsEqual(ListItem.Property(watched),true) | String.IsEqual(ListItem.Overlay,OverlayWatched.png) | Integer.IsGreater(ListItem.Playcount,0) | Integer.IsGreater(ListItem.PercentPlayed,95) | [[String.IsEqual(ListItem.DBType,tvshow) | String.IsEqual(ListItem.DBType,season)] + String.IsEqual(ListItem.Property(WatchedEpisodes),ListItem.Property(TotalEpisodes)) + !String.IsEmpty(ListItem.Property(TotalEpisodes))]</visible>
+						</control>
+						<!-- Percentage Indicator -->
+						<control type="group">
+							<right>5</right>
+							<top>5</top>
+							<width>40</width>
+							<height>40</height>
+							<visible>[Integer.IsGreater(ListItem.PercentPlayed,4) | Integer.IsGreater(ListItem.Property(PercentPlayed),4)] + [Integer.IsLess(ListItem.PercentPlayed,96) | Integer.IsLess(ListItem.Property(PercentPlayed),96)]</visible>
+							<control type="image">
+								<width>40</width>
+								<height>40</height>
+								<texture>PercentageCircle.png</texture>
+							</control>
+							<control type="label">
+								<width>40</width>
+								<height>40</height>
+								<align>center</align>
+								<aligny>center</aligny>
+								<font>font_tiny</font>
+								<label>$VAR[PercentPlayedVar]%</label>
+								<textcolor>red</textcolor>
+								<shadowcolor>FF000000</shadowcolor>
+							</control>
 						</control>
 					</itemlayout>
 					<focusedlayout width="240" height="360" condition="!String.IsEqual(ListItem.DBType,episode)">
@@ -414,6 +554,38 @@
 								<bordersize>3</bordersize>
 								<borderradius>8</borderradius>
 								<fallback>DefaultVideo.png</fallback>
+							</control>
+							<!-- Watched Indicator -->
+							<control type="image">
+								<right>10</right>
+								<top>5</top>
+								<width>30</width>
+								<height>30</height>
+								<texture>indicator_watched.png</texture>
+								<visible>String.IsEqual(ListItem.Property(watched),true) | String.IsEqual(ListItem.Overlay,OverlayWatched.png) | Integer.IsGreater(ListItem.Playcount,0) | Integer.IsGreater(ListItem.PercentPlayed,95) | [[String.IsEqual(ListItem.DBType,tvshow) | String.IsEqual(ListItem.DBType,season)] + String.IsEqual(ListItem.Property(WatchedEpisodes),ListItem.Property(TotalEpisodes)) + !String.IsEmpty(ListItem.Property(TotalEpisodes))]</visible>
+							</control>
+							<!-- Percentage Indicator -->
+							<control type="group">
+								<right>5</right>
+								<top>5</top>
+								<width>40</width>
+								<height>40</height>
+								<visible>[Integer.IsGreater(ListItem.PercentPlayed,4) | Integer.IsGreater(ListItem.Property(PercentPlayed),4)] + [Integer.IsLess(ListItem.PercentPlayed,96) | Integer.IsLess(ListItem.Property(PercentPlayed),96)]</visible>
+								<control type="image">
+									<width>40</width>
+									<height>40</height>
+									<texture>PercentageCircle.png</texture>
+								</control>
+								<control type="label">
+									<width>40</width>
+									<height>40</height>
+									<align>center</align>
+									<aligny>center</aligny>
+									<font>font_tiny</font>
+									<label>$VAR[PercentPlayedVar]%</label>
+									<textcolor>red</textcolor>
+									<shadowcolor>FF000000</shadowcolor>
+								</control>
 							</control>
 						</control>
 					</focusedlayout>
@@ -548,7 +720,38 @@
 								<texture background="true">$INFO[ListItem.Art(thumb)]</texture>
 								<fallback>DefaultVideo.png</fallback>
 							</control>
-
+							<!-- Watched Indicator -->
+							<control type="image">
+								<right>30</right>
+								<top>5</top>
+								<width>30</width>
+								<height>30</height>
+								<texture>indicator_watched.png</texture>
+								<visible>String.IsEqual(ListItem.Property(watched),true) | String.IsEqual(ListItem.Overlay,OverlayWatched.png) | Integer.IsGreater(ListItem.Playcount,0) | Integer.IsGreater(ListItem.PercentPlayed,95) | [[String.IsEqual(ListItem.DBType,tvshow) | String.IsEqual(ListItem.DBType,season)] + String.IsEqual(ListItem.Property(WatchedEpisodes),ListItem.Property(TotalEpisodes)) + !String.IsEmpty(ListItem.Property(TotalEpisodes))]</visible>
+							</control>
+							<!-- Percentage Indicator -->
+							<control type="group">
+								<right>25</right>
+								<top>5</top>
+								<width>40</width>
+								<height>40</height>
+								<visible>[Integer.IsGreater(ListItem.PercentPlayed,4) | Integer.IsGreater(ListItem.Property(PercentPlayed),4)] + [Integer.IsLess(ListItem.PercentPlayed,96) | Integer.IsLess(ListItem.Property(PercentPlayed),96)]</visible>
+								<control type="image">
+									<width>40</width>
+									<height>40</height>
+									<texture>PercentageCircle.png</texture>
+								</control>
+								<control type="label">
+									<width>40</width>
+									<height>40</height>
+									<align>center</align>
+									<aligny>center</aligny>
+									<font>font_tiny</font>
+									<label>$VAR[PercentPlayedVar]%</label>
+									<textcolor>red</textcolor>
+									<shadowcolor>FF000000</shadowcolor>
+								</control>
+							</control>
 						</control>
 					</itemlayout>
 					<focusedlayout width="410" height="235">
@@ -563,6 +766,38 @@
 								<bordersize>3</bordersize>
 								<borderradius>8</borderradius>
 								<fallback>DefaultVideo.png</fallback>
+							</control>
+							<!-- Watched Indicator -->
+							<control type="image">
+								<right>30</right>
+								<top>5</top>
+								<width>30</width>
+								<height>30</height>
+								<texture>indicator_watched.png</texture>
+								<visible>String.IsEqual(ListItem.Property(watched),true) | String.IsEqual(ListItem.Overlay,OverlayWatched.png) | Integer.IsGreater(ListItem.Playcount,0) | Integer.IsGreater(ListItem.PercentPlayed,95) | [[String.IsEqual(ListItem.DBType,tvshow) | String.IsEqual(ListItem.DBType,season)] + String.IsEqual(ListItem.Property(WatchedEpisodes),ListItem.Property(TotalEpisodes)) + !String.IsEmpty(ListItem.Property(TotalEpisodes))]</visible>
+							</control>
+							<!-- Percentage Indicator -->
+							<control type="group">
+								<right>25</right>
+								<top>5</top>
+								<width>40</width>
+								<height>40</height>
+								<visible>[Integer.IsGreater(ListItem.PercentPlayed,4) | Integer.IsGreater(ListItem.Property(PercentPlayed),4)] + [Integer.IsLess(ListItem.PercentPlayed,96) | Integer.IsLess(ListItem.Property(PercentPlayed),96)]</visible>
+								<control type="image">
+									<width>40</width>
+									<height>40</height>
+									<texture>PercentageCircle.png</texture>
+								</control>
+								<control type="label">
+									<width>40</width>
+									<height>40</height>
+									<align>center</align>
+									<aligny>center</aligny>
+									<font>font_tiny</font>
+									<label>$VAR[PercentPlayedVar]%</label>
+									<textcolor>red</textcolor>
+									<shadowcolor>FF000000</shadowcolor>
+								</control>
 							</control>
 
 						</control>
@@ -587,6 +822,10 @@
 		<param name="fallback_icon">DefaultAudio.png</param>
 		<param name="onclick_condition">false</param>
 		<param name="browse_mode">auto</param>
+		<param name="onup_action1">noop</param>
+		<param name="onup_action2">noop</param>
+		<param name="ondown_action1">noop</param>
+		<param name="ondown_action2">noop</param>
 		<definition>
 			<include content="CategoryLabel">
 				<param name="label">$PARAM[widget_header]</param>
@@ -606,8 +845,10 @@
 				<onclick condition="$PARAM[onclick_condition]">$PARAM[onclick_action]</onclick>
 				<include content="WidgetListCommon">
 					<param name="list_id" value="$PARAM[list_id]"/>
-					<param name="onup_action" value="$PARAM[onup_action]"/>
-					<param name="ondown_action" value="$PARAM[ondown_action]"/>
+					<param name="onup_action1" value="$PARAM[onup_action1]"/>
+					<param name="onup_action2" value="$PARAM[onup_action2]"/>
+					<param name="ondown_action1" value="$PARAM[ondown_action1]"/>
+					<param name="ondown_action2" value="$PARAM[ondown_action2]"/>
 				</include>
 				<visible>$PARAM[visible]</visible>
 				<visible>True</visible>
@@ -1394,10 +1635,10 @@
 		<orientation>horizontal</orientation>
 		<onleft>9000</onleft>
 		<onright>noop</onright>
-		<onup>$PARAM[onup_action]</onup>
-		<onup>SetFocus($VAR[ActiveWidgetID])</onup>
-		<ondown>$PARAM[ondown_action]</ondown>
-		<ondown>SetFocus($VAR[ActiveWidgetID])</ondown>
+		<onup>$PARAM[onup_action1]</onup>
+		<onup>$PARAM[onup_action2]</onup>
+		<ondown>$PARAM[ondown_action1]</ondown>
+		<ondown>$PARAM[ondown_action2]</ondown>
 		<onunfocus>SetProperty(listposition,$INFO[Container($PARAM[list_id]).Position],home)</onunfocus>
 		<onfocus>Control.Move($PARAM[list_id],-$INFO[Container($PARAM[list_id]).Position])</onfocus>
 		<onfocus>Control.Move($PARAM[list_id],$INFO[Window(home).Property(listposition)])</onfocus>

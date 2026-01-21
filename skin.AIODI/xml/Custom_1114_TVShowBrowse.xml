@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<window id="1114" type="dialog">
+    <defaultcontrol always="true">2000</defaultcontrol>
+    <coordinates>
+        <left>0</left>
+        <top>0</top>
+    </coordinates>
+    
+    <controls>
+        <!-- Background -->
+        <control type="image">
+            <include>FullScreenDimensions</include>
+            <texture>colors/black.png</texture>
+        </control>
+        
+        <!-- TOP HALF: METADATA -->
+        <control type="group">
+            <left>120</left>
+            <top>60</top>
+            <width>1680</width>
+            <height>450</height>
+            
+            <!-- Clearlogo / Fallback Title -->
+            <control type="image" id="100">
+                <left>0</left>
+                <top>0</top>
+                <width>500</width>
+                <height>180</height>
+                <aspectratio align="left" aligny="bottom">keep</aspectratio>
+                <texture background="true">$VAR[CurrentWidgetTitleLogo]</texture>
+                <visible>!String.IsEmpty($VAR[CurrentWidgetTitleLogo])</visible>
+            </control>
+            
+            <control type="label">
+                <left>0</left>
+                <top>0</top>
+                <width>1000</width>
+                <height>180</height>
+                <font>font45_title</font>
+                <textcolor>white</textcolor>
+                <label>$INFO[Container(3000).ListItem.Title]</label>
+                <shadowcolor>text_shadow</shadowcolor>
+                <aligny>bottom</aligny>
+                <visible>String.IsEmpty($VAR[CurrentWidgetTitleLogo])</visible>
+            </control>
+
+            <!-- Metadata Info (Genre, Year, Rating) -->
+            <control type="label">
+                <left>0</left>
+                <top>200</top>
+                <width>1000</width>
+                <height>40</height>
+                <font>font24_bold</font>
+                <textcolor>button_focus</textcolor>
+                <label>$INFO[Container(3000).ListItem.Property(SeriesTitle)] • $INFO[Container(3000).ListItem.Property(SeasonNum),Season ,] • $INFO[Container(3000).ListItem.Property(EpisodeNum),Episode ,]</label>
+                <shadowcolor>text_shadow</shadowcolor>
+            </control>
+
+            <!-- Plot -->
+            <control type="textbox">
+                <left>0</left>
+                <top>250</top>
+                <width>1200</width>
+                <height>200</height>
+                <font>font15</font>
+                <textcolor>FFFFFFFF</textcolor>
+                <label>$INFO[Container(3000).ListItem.Plot]</label>
+                <shadowcolor>text_shadow</shadowcolor>
+                <autoscroll time="3000" delay="4000" repeat="5000">true</autoscroll>
+            </control>
+        </control>
+
+        <!-- MIDDLE: SEASON BUTTONS -->
+        <control type="list" id="2000">
+            <left>120</left>
+            <top>550</top>
+            <width>1680</width>
+            <height>100</height>
+            <onup>noop</onup>
+            <ondown>3000</ondown>
+            <onleft>noop</onleft>
+            <onright>noop</onright>
+            <orientation>horizontal</orientation>
+            <scrolltime tween="cubic" easing="out">500</scrolltime>
+            
+            <itemlayout width="250" height="80">
+                <control type="image">
+                    <width>240</width>
+                    <height>70</height>
+                    <texture border="40">buttons/tr_home_nofo.png</texture>
+                </control>
+                <control type="label">
+                    <left>0</left>
+                    <width>240</width>
+                    <height>70</height>
+                    <align>center</align>
+                    <aligny>center</aligny>
+                    <font>font24_bold</font>
+                    <label>$INFO[ListItem.Label]</label>
+                </control>
+            </itemlayout>
+            
+            <focusedlayout width="250" height="80">
+                <control type="image">
+                    <width>240</width>
+                    <height>70</height>
+                    <texture border="40" colordiffuse="button_focus">buttons/tr_home_fo.png</texture>
+                </control>
+                <control type="label">
+                    <left>0</left>
+                    <width>240</width>
+                    <height>70</height>
+                    <align>center</align>
+                    <aligny>center</aligny>
+                    <font>font24_bold</font>
+                    <label>$INFO[ListItem.Label]</label>
+                </control>
+            </focusedlayout>
+        </control>
+
+        <!-- BOTTOM: EPISODE WIDGET -->
+        <control type="group">
+            <left>120</left>
+            <top>680</top>
+            <width>1680</width>
+            <height>400</height>
+            <include content="WidgetListEpisodes">
+                <param name="list_id" value="3000" />
+                <param name="widget_header" value="Episodes" />
+                <param name="onup_action1" value="SetFocus(2000)" />
+                <param name="content_path" value="$INFO[Container(2000).ListItem.Property(ContentPath)]" />
+            </include>
+        </control>
+
+    </controls>
+</window>

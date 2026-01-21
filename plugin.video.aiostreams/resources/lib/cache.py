@@ -280,36 +280,57 @@ class TieredCache:
         # Store on disk
         self._save_to_disk(cache_type, identifier, data, timestamp, checksum)
 
+    def _get_file_lock(self, filepath):
+        """Get a lock for a specific file path."""
+        with self._write_lock:
+            if filepath not in self._pending_writes:
+                self._pending_writes[filepath] = threading.Lock()
+            return self._pending_writes[filepath]
+
     def _save_to_disk(self, cache_type, identifier, data, timestamp, checksum=None):
         """Save data to disk cache."""
         cache_dir = self._get_cache_dir(cache_type)
         cache_file = os.path.join(cache_dir, self._get_cache_key(cache_type, identifier))
 
-        try:
-            cache_data = {
-                'timestamp': timestamp,
-                'cache_type': cache_type,
-                'identifier': identifier,
-                'data': data
-            }
+        lock = self._get_file_lock(cache_file)
+        with lock:
+            try:
+                cache_data = {
+                    'timestamp': timestamp,
+                    'cache_type': cache_type,
+                    'identifier': identifier,
+                    'data': data
+                }
 
-            # Add checksum if provided or generate one
-            if checksum:
-                cache_data['checksum'] = checksum
-            else:
-                try:
-                    cache_data['checksum'] = hashlib.md5(
-                        json.dumps(data, sort_keys=True).encode()
-                    ).hexdigest()
-                except:
-                    pass  # Skip checksum on serialization error
+                # Add checksum if provided or generate one
+                if checksum:
+                    cache_data['checksum'] = checksum
+                else:
+                    try:
+                        cache_data['checksum'] = hashlib.md5(
+                            json.dumps(data, sort_keys=True).encode()
+                        ).hexdigest()
+                    except:
+                        pass  # Skip checksum on serialization error
 
-            with open(cache_file, 'w') as f:
-                json.dump(cache_data, f)
+                # Write atomically using a temporary file
+                temp_file = cache_file + '.tmp'
+                with open(temp_file, 'w') as f:
+                    json.dump(cache_data, f)
+                
+                # Retrieve permissions from original file if it exists, or use default (typically 0644/0666)
+                # But xbmcvfs doesn't give easy chmod access. Standard OS rename is usually atomic enough.
+                import shutil
+                shutil.move(temp_file, cache_file)
 
-            xbmc.log(f'[AIOStreams] Cache SET: {cache_type}:{identifier}', xbmc.LOGDEBUG)
-        except Exception as e:
-            xbmc.log(f'[AIOStreams] Cache write error: {e}', xbmc.LOGERROR)
+                xbmc.log(f'[AIOStreams] Cache SET: {cache_type}:{identifier}', xbmc.LOGDEBUG)
+            except Exception as e:
+                xbmc.log(f'[AIOStreams] Cache write error: {e}', xbmc.LOGERROR)
+                if os.path.exists(cache_file + '.tmp'):
+                    try:
+                        os.remove(cache_file + '.tmp')
+                    except:
+                        pass
 
     def get_age(self, cache_type, identifier):
         """

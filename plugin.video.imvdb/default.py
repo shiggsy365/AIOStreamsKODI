@@ -1,8 +1,5 @@
 import sys
 import os
-import json
-import random
-import requests
 import xbmc
 import xbmcgui
 import xbmcplugin
@@ -79,20 +76,26 @@ def set_listitem_info(list_item, info):
         list_item.setInfo('video', info)
 
 def list_menu():
+    """Simple, fast root menu that avoids heavy imports."""
     xbmcplugin.setContent(HANDLE, 'files')
     items = [
         ('Artist Search', 'search_artist', 'DefaultArtist.png'),
         ('Year Search', 'search_year', 'DefaultYear.png')
     ]
     for label, action, icon in items:
+        # Avoid creating xbmcgui.ListItem unless necessary (though here it is)
+        # But ensure no complex logic runs.
         list_item = xbmcgui.ListItem(label=label)
         list_item.setArt({'icon': icon, 'thumb': icon})
         list_item.setProperty('IsPlayable', 'false')
+        
+        # Simplified info setting to avoid helper overhead if possible, but helper is fast.
         set_listitem_info(list_item, {'title': label, 'mediatype': 'video'})
+        
         url = build_url({'action': action})
-        # Use isFolder=True for root items to ensure widget visibility
+        # Use isFolder=True for root items
         xbmcplugin.addDirectoryItem(HANDLE, url, list_item, isFolder=True)
-    xbmcplugin.addSortMethod(HANDLE, xbmcplugin.SORT_METHOD_UNSORTED)
+        
     xbmcplugin.endOfDirectory(HANDLE, succeeded=True)
 
 def search_year():
@@ -109,6 +112,7 @@ def search_artist():
         return
     
     show_busy()
+    import requests
     api_key = ADDON.getSetting('api_key')
     headers = {'IMVDB-APP-KEY': api_key, 'Accept': 'application/json'}
     url = f"https://imvdb.com/api/v1/search/videos?q={query}&per_page=50"
@@ -140,6 +144,7 @@ def search_artist():
         xbmcgui.Dialog().ok("IMVDb", f"Error: {str(e)}")
 
 def fetch_videos_for_year(year):
+    import requests
     api_key = ADDON.getSetting('api_key')
     headers = {'IMVDB-APP-KEY': api_key, 'Accept': 'application/json'}
     url = f"https://imvdb.com/api/v1/search/videos?q={year}&per_page=250"
@@ -155,6 +160,7 @@ def fetch_videos_for_year(year):
         return []
 
 def get_youtube_id(video_id):
+    import requests
     api_key = ADDON.getSetting('api_key')
     headers = {'IMVDB-APP-KEY': api_key, 'Accept': 'application/json'}
     url = f"https://imvdb.com/api/v1/video/{video_id}?include=sources"
@@ -181,6 +187,8 @@ def select_year(year):
 
 def play_videos(videos, session_name):
     # Already shuffle the full list
+    import random
+    import json
     random.shuffle(videos)
     
     profile_path = translatePath(ADDON.getAddonInfo('profile'))

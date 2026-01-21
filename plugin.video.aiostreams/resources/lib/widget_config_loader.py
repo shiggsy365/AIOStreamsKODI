@@ -4,12 +4,13 @@ Widget Configuration Loader for AIOStreams
 Handles loading and managing widget configurations from widget_config.json
 """
 import xbmc
+import xbmcgui
 import xbmcvfs
 import json
 import os
 
 
-def log(msg, level=xbmc.LOGINFO):
+def log(msg, level=xbmc.LOGDEBUG):
     """Log message with AIOStreams prefix"""
     xbmc.log(f'[AIOStreams] [WidgetConfigLoader] {msg}', level)
 
@@ -48,6 +49,8 @@ def save_widget_config(config):
         os.makedirs(os.path.dirname(config_file), exist_ok=True)
         with open(config_file, 'w') as f:
             json.dump(config, f, indent=2)
+        # Clear Hot Cache to force reload on next access
+        xbmcgui.Window(10000).clearProperty('AIOStreams.WidgetConfig')
         log('Widget config saved successfully')
     except Exception as e:
         log(f'Error saving config: {e}', xbmc.LOGERROR)
@@ -55,7 +58,7 @@ def save_widget_config(config):
 
 def load_widget_config():
     """
-    Load widget configuration from JSON file.
+    Load widget configuration from JSON file or Window Property cache.
     
     All users are forced to use default configuration on first load.
     Old configs (version < 2) are replaced with defaults.
@@ -63,6 +66,17 @@ def load_widget_config():
     Returns:
         dict: Widget configuration
     """
+    # Check "Hot Cache" (Window Property) first to avoid disk I/O
+    win_home = xbmcgui.Window(10000)
+    cached_config = win_home.getProperty('AIOStreams.WidgetConfig')
+    if cached_config:
+        try:
+            config = json.loads(cached_config)
+            # log('Loaded widget config from Hot Cache', xbmc.LOGDEBUG)
+            return config
+        except:
+            pass
+
     config_file = get_config_file_path()
     default_config = get_default_config()
     
@@ -70,7 +84,8 @@ def load_widget_config():
     if os.path.exists(config_file):
         try:
             with open(config_file, 'r') as f:
-                config = json.load(f)
+                content = f.read()
+                config = json.loads(content)
             
             # Check version - if old or missing, force reset to defaults
             if config.get('version') != 2:
@@ -78,7 +93,9 @@ def load_widget_config():
                 save_widget_config(default_config)
                 return default_config
             
-            log(f'Loaded widget config: {len(config.get("home", []))} home, {len(config.get("tvshows", []))} tvshows, {len(config.get("movies", []))} movies widgets')
+            # Store in Window Property cache
+            win_home.setProperty('AIOStreams.WidgetConfig', content)
+            log(f'Loaded widget config: {len(config.get("home", []))} home, {len(config.get("tvshows", []))} tvshows, {len(config.get("movies", []))} movies widgets', xbmc.LOGDEBUG)
             return config
         except Exception as e:
             log(f'Error loading config: {e}, resetting to defaults', xbmc.LOGERROR)

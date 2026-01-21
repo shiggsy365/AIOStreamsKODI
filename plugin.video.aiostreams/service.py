@@ -4,6 +4,7 @@ AIOStreams background service for automatic Trakt sync and task processing.
 Based on Seren's service patterns with background task queue support.
 """
 import xbmc
+import xbmcgui
 import xbmcaddon
 import time
 import threading
@@ -361,6 +362,10 @@ class AIOStreamsService:
         xbmc.log('[AIOStreams Service] Service started', xbmc.LOGINFO)
 
         # Run startup tasks
+        from resources.lib.shared_cache import SharedCacheManager
+        SharedCacheManager.ensure_shared_dirs()
+        from resources.lib.widget_config_loader import load_widget_config
+        load_widget_config() # Pre-loads and caches the config
         self.run_migrations()
         self.run_cache_cleanup()
         self.run_clearlogo_check()
@@ -375,18 +380,31 @@ class AIOStreamsService:
         if self.should_sync():
             xbmc.log('[AIOStreams Service] UI loaded, performing initial sync', xbmc.LOGINFO)
             self.perform_sync()
+            
+        # Force widget refresh on startup to ensure persistence (Always run this)
+        xbmc.sleep(2000) # Wait a bit for skin to settle
+        xbmc.executebuiltin('Container.Refresh')
+        xbmc.log('[AIOStreams Service] Forced container refresh for widgets', xbmc.LOGINFO)
 
         # Main loop - check for sync every 30 seconds
         loop_count = 0
         while not self.monitor.abortRequested():
-            # Check for sync
-            if self.should_sync():
-                self.perform_sync()
+            # Check if search is active (Global or Internal) - if so, skip background noise
+            win_home = xbmcgui.Window(10000)
+            search_active = win_home.getProperty('AIOStreams.SearchActive') == 'true' or \
+                           win_home.getProperty('AIOStreams.InternalSearchActive') == 'true'
+            
+            if not search_active:
+                # Check for sync
+                if self.should_sync():
+                    self.perform_sync()
 
-            # Process background tasks (up to 2 seconds per loop)
-            processed = self.task_queue.process_all(max_time=2.0)
-            if processed > 0:
-                xbmc.log(f'[AIOStreams Service] Processed {processed} background tasks', xbmc.LOGDEBUG)
+                # Process background tasks (up to 2 seconds per loop)
+                processed = self.task_queue.process_all(max_time=2.0)
+                if processed > 0:
+                    xbmc.log(f'[AIOStreams Service] Processed {processed} background tasks', xbmc.LOGDEBUG)
+            else:
+                xbmc.log('[AIOStreams Service] Search active, suppressing background tasks', xbmc.LOGDEBUG)
 
             # Periodic cache cleanup (every ~30 minutes)
             loop_count += 1

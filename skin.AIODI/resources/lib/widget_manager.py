@@ -39,7 +39,7 @@ DEFAULT_CONFIG = {
     'version': 2
 }
 
-def log(msg, level=xbmc.LOGINFO):
+def log(msg, level=xbmc.LOGDEBUG):
     xbmc.log(f'[AIOStreams] [WidgetManager] {msg}', level)
 
 class WidgetManager(xbmcgui.WindowXMLDialog):
@@ -104,7 +104,7 @@ class WidgetManager(xbmcgui.WindowXMLDialog):
             os.makedirs(os.path.dirname(CONFIG_FILE), exist_ok=True)
             with open(CONFIG_FILE, 'w') as f:
                 json.dump(self.config, f, indent=2)
-            log("Config saved")
+            log("Config saved", xbmc.LOGDEBUG)
         except Exception as e:
             log(f'Error saving config: {e}', xbmc.LOGERROR)
 
@@ -256,7 +256,7 @@ class WidgetManager(xbmcgui.WindowXMLDialog):
         self.config[self.current_page] = items
         self.save_config()
         self.load_page(self.current_page)
-        xbmcgui.Dialog().notification('Widget Manager', f'Added to {self.current_page}', xbmcgui.NOTIFICATION_INFO, 2000)
+        xbmcgui.Dialog().notification('Widget Manager', f'Added to {self.current_page}', xbmcgui.NOTIFICATION_INFO, 2000, False)
 
     def clear_all(self):
         if xbmcgui.Dialog().yesno('Clear All', 'Are you sure you want to remove all widgets?'):
@@ -297,15 +297,24 @@ class WidgetManager(xbmcgui.WindowXMLDialog):
                 prop_name = fmt.format(i)
                 xbmcgui.Window(10000).clearProperty(prop_name)
                 xbmcgui.Window(10000).clearProperty(f'{page}_widget_{i}_name')
+            
+            # Set count properties for skin optimization using persistent Skin strings and Window Properties
+            count_prop = f'AIOStreams.{page.capitalize()}_Widget_Count'
+            if page == 'tvshows':
+                count_prop = 'AIOStreams.TV_Widget_Count'
+            xbmc.executebuiltin(f'Skin.SetString({count_prop},{len(widgets)})')
+            xbmcgui.Window(10000).setProperty(count_prop, str(len(widgets)))
+            log(f"{len(widgets)} catalogs recognised for {page}", xbmc.LOGINFO)
+            log(f"Set Skin.String({count_prop}) and Window.Property({count_prop}) = {len(widgets)}", xbmc.LOGDEBUG)
 
         # Update reload token to force widget refresh
         import time
         token = str(int(time.time()))
         xbmc.executebuiltin(f'Skin.SetString(WidgetReloadToken, {token})')
         
-        # Clear plugin cache to ensure fresh widget content
-        xbmc.executebuiltin('RunPlugin(plugin://plugin.video.aiostreams/?action=clear_cache)')
-        xbmc.sleep(500) # Wait for cache clear
+        # Plugin cache clear removed to preserve metadata
+        # xbmc.executebuiltin('RunPlugin(plugin://plugin.video.aiostreams/?action=clear_cache)')
+        xbmc.sleep(100) # Short wait for reload token
         
         # DEBUG: Dump config to workspace for verification
         try:

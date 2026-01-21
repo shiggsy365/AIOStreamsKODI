@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<window>
+	<include>Animation_DialogPopupOpenClose</include>
+    <!-- Force Coordinate System to Top-Left 0,0 -->
+    <coordinates>
+        <left>0</left>
+        <top>0</top>
+    </coordinates>
+	<controls>
+		<!-- Background Dimmer -->
+		<control type="image">
+			<left>0</left>
+			<top>0</top>
+			<width>1920</width>
+			<height>1080</height>
+			<texture colordiffuse="C0000000">colors/black.png</texture>
+		</control>
+
+		<!-- Right Side Panel -->
+		<control type="group">
+			<left>1420</left>
+			<top>0</top>
+			<width>500</width>
+			<height>1080</height>
+			<animation type="WindowOpen">
+				<effect type="slide" start="500" end="0" time="300" tween="cubic" easing="out" />
+			</animation>
+			<animation type="WindowClose">
+				<effect type="slide" start="0" end="500" time="300" tween="cubic" easing="in" />
+			</animation>
+
+			<!-- Panel Background -->
+			<control type="image">
+				<left>0</left>
+				<top>0</top>
+				<width>500</width>
+				<height>1080</height>
+				<texture colordiffuse="FF1A1A1A">colors/white.png</texture>
+			</control>
+            
+            <!-- Side Shadow -->
+            <control type="image">
+                <left>-5</left>
+                <top>0</top>
+                <width>5</width>
+                <height>1080</height>
+                <texture colordiffuse="FF000000">colors/white.png</texture>
+            </control>
+
+			<!-- Header -->
+			<control type="label" id="1">
+				<left>25</left>
+				<top>40</top>
+				<width>450</width>
+				<height>40</height>
+				<font>font13_title</font>
+				<textcolor>button_focus</textcolor>
+				<align>left</align>
+			</control>
+
+			<control type="textbox" id="9">
+				<left>25</left>
+				<top>100</top>
+				<width>450</width>
+				<height>300</height>
+				<label></label>
+				<font>font13</font>
+				<autoscroll time="3000" delay="4000" repeat="5000">true</autoscroll>
+			</control>
+
+			<control type="progress" id="20">
+				<left>25</left>
+				<top>420</top>
+				<width>450</width>
+				<height>12</height>
+				<info>System.Progressbar</info>
+			</control>
+
+			<control type="grouplist" id="9000">
+				<orientation>vertical</orientation>
+				<left>25</left>
+				<top>450</top>
+				<width>450</width>
+				<itemgap>10</itemgap>
+				<include content="DefaultDialogButton">
+					<param name="id" value="11" />
+					<param name="label" value="" />
+					<param name="width" value="450" />
+				</include>
+				<include content="DefaultDialogButton">
+					<param name="id" value="10" />
+					<param name="label" value="" />
+					<param name="width" value="450" />
+				</include>
+				<include content="DefaultDialogButton">
+					<param name="id" value="12" />
+					<param name="label" value="" />
+					<param name="width" value="450" />
+				</include>
+			</control>
+		</control>
+	</controls>
+</window>
+

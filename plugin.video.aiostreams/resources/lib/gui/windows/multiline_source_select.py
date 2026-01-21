@@ -160,12 +160,14 @@ class MultiLineSourceSelect(xbmcgui.WindowXML):
             fanart: Optional fanart image path
             clearlogo: Optional clearlogo image path
             poster: Optional poster image path
+            plot: Optional media description
         """
         self.streams = kwargs.pop('streams', [])
         self.title = kwargs.pop('title', 'Select Stream')
         self.fanart = kwargs.pop('fanart', '')
         self.clearlogo = kwargs.pop('clearlogo', '')
         self.poster = kwargs.pop('poster', '')
+        self.plot = kwargs.pop('plot', '')
 
         self.selected_index = -1
         self._list_control = None
@@ -192,6 +194,9 @@ class MultiLineSourceSelect(xbmcgui.WindowXML):
                 self.setProperty('poster', self.poster)
             else:
                 xbmc.log('[AIOStreams] No poster provided to dialog', xbmc.LOGINFO)
+
+            if self.plot:
+                self.setProperty('plot', self.plot)
 
             # Get list control
             self._list_control = self.getControl(CONTROL_STREAM_LIST)
@@ -389,7 +394,7 @@ class MultiLineSourceSelect(xbmcgui.WindowXML):
         return None
 
 
-def show_source_select_dialog(streams, title='Select Stream', fanart='', clearlogo='', poster=''):
+def show_source_select_dialog(streams, title='Select Stream', fanart='', clearlogo='', poster='', plot=''):
     """
     Convenience function to show the multi-line source select dialog.
 
@@ -399,6 +404,7 @@ def show_source_select_dialog(streams, title='Select Stream', fanart='', clearlo
         fanart: Optional fanart image path
         clearlogo: Optional clearlogo image path
         poster: Optional poster image path
+        plot: Optional media description
 
     Returns:
         tuple: (selected_index, selected_stream) or (-1, None) if cancelled
@@ -415,7 +421,8 @@ def show_source_select_dialog(streams, title='Select Stream', fanart='', clearlo
         title=title,
         fanart=fanart,
         clearlogo=clearlogo,
-        poster=poster
+        poster=poster,
+        plot=plot
     )
 
     dialog.doModal()
