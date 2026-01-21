@@ -113,7 +113,7 @@
                         </control>
                         <control type="group">
                             <top>120</top>
-                            <control type="label"><width>400</height><height>60</height><label>Client Secret</label></control>
+                            <control type="label"><width>400</width><height>60</height><label>Client Secret</label></control>
                             <control type="edit" id="11002"><left>420</left><width>800</width><height>60</height><font>font12</font><label>-</label><texturefocus border="5">buttons/focus.png</texturefocus></control>
                         </control>
                     </control>
