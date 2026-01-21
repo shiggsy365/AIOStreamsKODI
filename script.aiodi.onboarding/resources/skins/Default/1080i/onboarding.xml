@@ -32,7 +32,7 @@
                     <top>0</top>
                     <width>360</width>
                     <height>500</height>
-                    <itemgap>10</itemgap>
+                    <itemgap>12</itemgap>
                     <onright>2000</onright>
                     <ondown>9000</ondown>
                     <orientation>vertical</orientation>
@@ -69,7 +69,7 @@
                     <top>0</top>
                     <width>360</width>
                     <height>500</height>
-                    <itemgap>10</itemgap>
+                    <itemgap>12</itemgap>
                     <onleft>1000</onleft>
                     <onright>3000</onright>
                     <ondown>9000</ondown>
@@ -119,7 +119,7 @@
                     <top>0</top>
                     <width>360</width>
                     <height>500</height>
-                    <itemgap>10</itemgap>
+                    <itemgap>12</itemgap>
                     <onleft>2000</onleft>
                     <ondown>9000</ondown>
                     <orientation>vertical</orientation>
@@ -176,8 +176,8 @@
                 <onup>2000</onup>
                 <textcolor>white</textcolor>
                 <focusedcolor>white</focusedcolor>
-                <texturefocus border="10">buttons/tr_home_fo.png</texturefocus>
-                <texturenofocus border="10">buttons/tr_home_nofo.png</texturenofocus>
+                <texturefocus border="5">buttons/focus.png</texturefocus>
+                <texturenofocus>-</texturenofocus>
             </control>
 
         </control>

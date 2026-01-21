@@ -11,7 +11,7 @@
 	<color name="grey">FFA0A0A0</color>
 	<color name="burgundy">FF400008</color>
 	<color name="burgundy_50">80400008</color>
-	<color name="burgundy_bg">80400008</color>
+	<color name="burgundy_bg">FF000000</color>
 	<color name="blue">FF7ACAFE</color>
 	<color name="red">FFFF1111</color>
 	<color name="button_focus">FFFF1111</color>
