@@ -2839,23 +2839,18 @@ def youtube_menu():
         return
     
     if youtube_available:
-        # Existing YouTube menu items...
+        items = [
+            ('Search', 'plugin://plugin.video.youtube/search/?path=/root/search', 'DefaultAddonsSearch.png'),
+            ('Playlists', 'plugin://plugin.video.youtube/playlists/', 'DefaultPlaylist.png'),
+            ('Bookmarks', 'plugin://plugin.video.youtube/special/watch_later/', 'DefaultFolder.png')
+        ]
 
-    xbmcplugin.setPluginCategory(HANDLE, 'YouTube')
-    xbmcplugin.setContent(HANDLE, 'files')
-
-    items = [
-        ('Search', 'plugin://plugin.video.youtube/search/?path=/root/search', 'DefaultAddonsSearch.png'),
-        ('Playlists', 'plugin://plugin.video.youtube/playlists/', 'DefaultPlaylist.png'),
-        ('Bookmarks', 'plugin://plugin.video.youtube/special/watch_later/', 'DefaultFolder.png')
-    ]
-
-    for label, url, icon in items:
-        list_item = xbmcgui.ListItem(label=label)
-        list_item.setArt({'icon': icon, 'thumb': icon})
-        list_item.setInfo('video', {'title': label})
-        # YouTube plugin items are folders
-        xbmcplugin.addDirectoryItem(HANDLE, url, list_item, True)
+        for label, url, icon in items:
+            list_item = xbmcgui.ListItem(label=label)
+            list_item.setArt({'icon': icon, 'thumb': icon})
+            list_item.setInfo('video', {'title': label})
+            # YouTube plugin items are folders
+            xbmcplugin.addDirectoryItem(HANDLE, url, list_item, True)
 
     xbmcplugin.endOfDirectory(HANDLE)
 

@@ -232,8 +232,6 @@
 		<bottom>180</bottom>
 		<align>center</align>
 		<itemgap>35</itemgap>
-		<onup>9002</onup>
-		<ondown>9008</ondown>
 		<onright>SetFocus($VAR[ActiveWidgetID])</onright>
 
 
@@ -247,6 +245,8 @@
 				<height>85</height>
 				<texturefocus />
 				<texturenofocus />
+				<onup>9002</onup>
+				<ondown>9004</ondown>
 				<onfocus>Skin.SetString(SideMenuFocus,home)</onfocus>
 				<onfocus>Skin.SetString(Home_WidgetIndex,0)</onfocus>
 				<onright>SetFocus($VAR[ActiveWidgetID])</onright>
@@ -281,6 +281,8 @@
 				<height>85</height>
 				<texturefocus />
 				<texturenofocus />
+				<onup>9003</onup>
+				<ondown>9005</ondown>
 				<onfocus>Skin.SetString(SideMenuFocus,tvshows)</onfocus>
 				<onfocus>Skin.SetString(TV_WidgetIndex,0)</onfocus>
 				<onright>SetFocus($VAR[ActiveWidgetID])</onright>
@@ -315,6 +317,10 @@
 				<height>85</height>
 				<texturefocus />
 				<texturenofocus />
+				<onup>9004</onup>
+				<ondown condition="System.HasAddon(pvr.iptvsimple)">9006</ondown>
+				<ondown condition="!System.HasAddon(pvr.iptvsimple) + [System.HasAddon(plugin.video.youtube) | System.HasAddon(plugin.video.imvdb)]">9007</ondown>
+				<ondown condition="!System.HasAddon(pvr.iptvsimple) + !System.HasAddon(plugin.video.youtube) + !System.HasAddon(plugin.video.imvdb)">9008</ondown>
 				<onfocus>Skin.SetString(SideMenuFocus,movies)</onfocus>
 				<onfocus>Skin.SetString(Movies_WidgetIndex,0)</onfocus>
 				<onright>SetFocus($VAR[ActiveWidgetID])</onright>
@@ -349,6 +355,9 @@
 				<height>85</height>
 				<texturefocus />
 				<texturenofocus />
+				<onup>9005</onup>
+				<ondown condition="System.HasAddon(plugin.video.youtube) | System.HasAddon(plugin.video.imvdb)">9007</ondown>
+				<ondown condition="!System.HasAddon(plugin.video.youtube) + !System.HasAddon(plugin.video.imvdb)">9008</ondown>
 				<onfocus>Skin.SetString(SideMenuFocus,livetv)</onfocus>
 				<onclick>ActivateWindow(TVGuide)</onclick>
 				<onclick>SetFocus($VAR[ActiveWidgetID])</onclick>
@@ -379,6 +388,11 @@
 			<control type="button" id="9007">
 				<width>120</width>
 				<height>85</height>
+				<texturefocus />
+				<texturenofocus />
+				<onup condition="System.HasAddon(pvr.iptvsimple)">9006</onup>
+				<onup condition="!System.HasAddon(pvr.iptvsimple)">9005</onup>
+				<ondown>9008</ondown>
 				<onfocus>Skin.SetString(SideMenuFocus,music)</onfocus>
 				<onfocus>Skin.SetString(Music_WidgetIndex,0)</onfocus>
 				<onright>SetFocus(7100)</onright>
@@ -420,6 +434,10 @@
 				<height>85</height>
 				<texturefocus />
 				<texturenofocus />
+				<onup condition="System.HasAddon(plugin.video.youtube) | System.HasAddon(plugin.video.imvdb)">9007</onup>
+				<onup condition="!System.HasAddon(plugin.video.youtube) + !System.HasAddon(plugin.video.imvdb) + System.HasAddon(pvr.iptvsimple)">9006</onup>
+				<onup condition="!System.HasAddon(plugin.video.youtube) + !System.HasAddon(plugin.video.imvdb) + !System.HasAddon(pvr.iptvsimple)">9005</onup>
+				<ondown>noop</ondown>
 				<onfocus>Skin.SetString(SideMenuFocus,settings)</onfocus>
 				<onleft>SetFocus(9010)</onleft>
 				<onright>SetFocus($VAR[ActiveWidgetID])</onright>
