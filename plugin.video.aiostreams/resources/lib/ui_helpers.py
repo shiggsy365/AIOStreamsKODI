@@ -2,6 +2,38 @@
 """UI helper functions for AIOStreams addon"""
 from . import constants
 from . import settings_helpers
+import xbmc
+import xbmcgui
+
+
+def clear_window_properties(properties):
+    """Clear a list of window properties."""
+    win = xbmcgui.Window(10000)
+    for prop in properties:
+        win.clearProperty(prop)
+
+
+def clear_all_window_properties():
+    """Clear all persistent AIOStreams window properties on startup/profile switch."""
+    properties = [
+        'AIOStreams.WidgetConfig',
+        'AIOStreams.SearchActive',
+        'AIOStreams.InternalSearchActive',
+        'GlobalSearch.MoviesCount',
+        'GlobalSearch.SeriesCount',
+        'GlobalSearch.YoutubeCount',
+        'AIOStreams.StreamList',
+        'AIOStreams.StreamIndex',
+        'AIOStreams.StreamMetadata',
+        'AIOStreams_ShowLogo',
+        'AIOStreams_HasLogo',
+        'BrowseShow.Title',
+        'BrowseShow.MetaID',
+        'BrowseShow.Poster',
+        'AIOStreams.SharedDirsEnsured'
+    ]
+    clear_window_properties(properties)
+    xbmc.log('[AIOStreams] Cleared persistent window properties for fresh profile load', xbmc.LOGINFO)
 
 
 def format_progress_bar(percentage, width=10):

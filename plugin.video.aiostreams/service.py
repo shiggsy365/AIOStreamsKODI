@@ -364,6 +364,8 @@ class AIOStreamsService:
         # Run startup tasks
         from resources.lib.shared_cache import SharedCacheManager
         SharedCacheManager.ensure_shared_dirs()
+        from resources.lib.ui_helpers import clear_all_window_properties
+        clear_all_window_properties()
         from resources.lib.widget_config_loader import load_widget_config
         load_widget_config() # Pre-loads and caches the config
         self.run_migrations()

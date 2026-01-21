@@ -48,6 +48,7 @@ if HAS_NEW_MODULES:
         # Initialize shared cache directories for multi-profile support
         # Call moved to service.py for efficiency, but kept import for other uses
         from resources.lib.shared_cache import SharedCacheManager
+        from resources.lib.ui_helpers import clear_all_window_properties
     except Exception as e:
         xbmc.log(f'[AIOStreams] Failed to initialize globals: {e}', xbmc.LOGERROR)
 
@@ -71,12 +72,6 @@ if HAS_NEW_MODULES:
 #     pass
 
 
-
-def clear_window_properties(properties):
-    """Clear a list of window properties."""
-    win = xbmcgui.Window(10000)
-    for prop in properties:
-        win.clearProperty(prop)
 
 def get_player():
     """Get the current PLAYER instance dynamically to avoid stale references."""
