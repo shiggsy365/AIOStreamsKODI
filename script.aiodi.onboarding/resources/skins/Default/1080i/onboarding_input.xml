@@ -1,0 +1,215 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<window>
+    <defaultcontrol always="true">5000</defaultcontrol>
+    <controls>
+        <!-- Main Container -->
+        <control type="group">
+            <left>240</left>
+            <top>0</top>
+            <width>1440</width>
+            <height>1080</height>
+
+            <!-- Background Image -->
+            <control type="image">
+                <left>0</left>
+                <top>0</top>
+                <width>1440</width>
+                <height>1080</height>
+                <texture>onboarding_bg.jpg</texture>
+                <aspectratio>stretch</aspectratio>
+            </control>
+
+            <!-- Content Area -->
+            <control type="group">
+                <left>100</left>
+                <top>100</top>
+                <width>1240</width>
+                <height>880</height>
+
+                <!-- Help Header -->
+                <control type="label">
+                    <left>0</left>
+                    <top>0</top>
+                    <width>1240</width>
+                    <height>40</height>
+                    <font>font14</font>
+                    <label>Visit https://github.com/shiggsy365/AIOStreamsKODI if you need help obtaining keys</label>
+                    <textcolor>yellow</textcolor>
+                    <align>center</align>
+                </control>
+
+                <!-- Form Scrollable Area -->
+                <control type="grouplist" id="5000">
+                    <left>0</left>
+                    <top>60</top>
+                    <width>1240</width>
+                    <height>740</height>
+                    <itemgap>10</itemgap>
+                    <scrolltime>200</scrolltime>
+                    <orientation>vertical</orientation>
+                    <usecontrolcoords>true</usecontrolcoords>
+
+                    <!-- AIOStreams Section -->
+                    <control type="group" id="10000">
+                        <width>1240</width>
+                        <height>480</height>
+                        <control type="label">
+                            <top>0</top>
+                            <width>1240</width>
+                            <height>40</height>
+                            <font>font13_title</font>
+                            <label>AIOStreams Plugin Configuration</label>
+                            <textcolor>grey</textcolor>
+                        </control>
+                        <!-- Fields -->
+                        <control type="group">
+                            <top>50</top>
+                            <control type="label"><width>400</width><height>60</height><label>Host Base URL</label></control>
+                            <control type="edit" id="10001"><left>420</left><width>800</width><height>60</height><font>font12</font><label>-</label><texturefocus border="5">buttons/focus.png</texturefocus></control>
+                        </control>
+                        <control type="group">
+                            <top>120</top>
+                            <control type="label"><width>400</width><height>60</height><label>Instance UUID</label></control>
+                            <control type="edit" id="10002"><left>420</left><width>800</width><height>60</height><font>font12</font><label>-</label><texturefocus border="5">buttons/focus.png</texturefocus></control>
+                        </control>
+                        <control type="group">
+                            <top>190</top>
+                            <control type="label"><width>400</width><height>60</height><label>Instance Password</label></control>
+                            <control type="edit" id="10003"><left>420</left><width>800</width><height>60</height><font>font12</font><label>-</label><texturefocus border="5">buttons/focus.png</texturefocus></control>
+                        </control>
+                        <control type="group">
+                            <top>260</top>
+                            <control type="label"><width>400</width><height>60</height><label>Default Episode Action</label></control>
+                            <control type="button" id="10004"><left>420</left><width>400</width><height>60</height><font>font12</font><label>show_streams</label><texturefocus border="20">buttons/focus.png</texturefocus></control>
+                        </control>
+                        <control type="group">
+                            <top>330</top>
+                            <control type="label"><width>400</width><height>60</height><label>Subtitle Languages (eng,spa)</label></control>
+                            <control type="edit" id="10005"><left>420</left><width>800</width><height>60</height><font>font12</font><label>-</label><texturefocus border="5">buttons/focus.png</texturefocus></control>
+                        </control>
+                        <control type="group" id="10007">
+                            <top>400</top>
+                            <control type="label"><width>400</width><height>60</height><label>Enable UpNext Integration</label></control>
+                            <control type="radiobutton" id="10006"><left>420</left><width>200</width><height>60</height><font>font12</font><label>-</label><texturefocus border="20">buttons/focus.png</texturefocus></control>
+                        </control>
+                    </control>
+
+                    <!-- Trakt Section -->
+                    <control type="group" id="11000">
+                        <width>1240</width>
+                        <height>200</height>
+                        <control type="label">
+                            <top>0</top>
+                            <width>1240</width>
+                            <height>40</height>
+                            <font>font13_title</font>
+                            <label>Trakt Integration Configuration</label>
+                            <textcolor>grey</textcolor>
+                        </control>
+                        <control type="group">
+                            <top>50</top>
+                            <control type="label"><width>400</width><height>60</height><label>Client ID</label></control>
+                            <control type="edit" id="11001"><left>420</left><width>800</width><height>60</height><font>font12</font><label>-</label><texturefocus border="5">buttons/focus.png</texturefocus></control>
+                        </control>
+                        <control type="group">
+                            <top>120</top>
+                            <control type="label"><width>400</height><height>60</height><label>Client Secret</label></control>
+                            <control type="edit" id="11002"><left>420</left><width>800</width><height>60</height><font>font12</font><label>-</label><texturefocus border="5">buttons/focus.png</texturefocus></control>
+                        </control>
+                    </control>
+
+                    <!-- YouTube Section -->
+                    <control type="group" id="12000">
+                        <width>1240</width>
+                        <height>270</height>
+                        <control type="label">
+                            <top>0</top>
+                            <width>1240</width>
+                            <height>40</height>
+                            <font>font13_title</font>
+                            <label>YouTube Integration Configuration</label>
+                            <textcolor>grey</textcolor>
+                        </control>
+                        <control type="group">
+                            <top>50</top>
+                            <control type="label"><width>400</width><height>60</height><label>API Key</label></control>
+                            <control type="edit" id="12001"><left>420</left><width>800</width><height>60</height><font>font12</font><label>-</label><texturefocus border="5">buttons/focus.png</texturefocus></control>
+                        </control>
+                        <control type="group">
+                            <top>120</top>
+                            <control type="label"><width>400</width><height>60</height><label>API ID</label></control>
+                            <control type="edit" id="12002"><left>420</left><width>800</width><height>60</height><font>font12</font><label>-</label><texturefocus border="5">buttons/focus.png</texturefocus></control>
+                        </control>
+                        <control type="group">
+                            <top>190</top>
+                            <control type="label"><width>400</width><height>60</height><label>API Secret</label></control>
+                            <control type="edit" id="12003"><left>420</left><width>800</width><height>60</height><font>font12</font><label>-</label><texturefocus border="5">buttons/focus.png</texturefocus></control>
+                        </control>
+                    </control>
+
+                    <!-- IPTV Section -->
+                    <control type="group" id="13000">
+                        <width>1240</width>
+                        <height>200</height>
+                        <control type="label">
+                            <top>0</top>
+                            <width>1240</width>
+                            <height>40</height>
+                            <font>font13_title</font>
+                            <label>IPTV Simple Configuration</label>
+                            <textcolor>grey</textcolor>
+                        </control>
+                        <control type="group">
+                            <top>50</top>
+                            <control type="label"><width>400</width><height>60</height><label>M3U URL</label></control>
+                            <control type="edit" id="13001"><left>420</left><width>800</width><height>60</height><font>font12</font><label>-</label><texturefocus border="5">buttons/focus.png</texturefocus></control>
+                        </control>
+                        <control type="group">
+                            <top>120</top>
+                            <control type="label"><width>400</width><height>60</height><label>EPG URL</label></control>
+                            <control type="edit" id="13002"><left>420</left><width>800</width><height>60</height><font>font12</font><label>-</label><texturefocus border="5">buttons/focus.png</texturefocus></control>
+                        </control>
+                    </control>
+
+                    <!-- IMVDb Section -->
+                    <control type="group" id="14000">
+                        <width>1240</width>
+                        <height>130</height>
+                        <control type="label">
+                            <top>0</top>
+                            <width>1240</width>
+                            <height>40</height>
+                            <font>font13_title</font>
+                            <label>IMVDb Configuration</label>
+                            <textcolor>grey</textcolor>
+                        </control>
+                        <control type="group">
+                            <top>50</top>
+                            <control type="label"><width>400</width><height>60</height><label>API Key</label></control>
+                            <control type="edit" id="14001"><left>420</left><width>800</width><height>60</height><font>font12</font><label>-</label><texturefocus border="5">buttons/focus.png</texturefocus></control>
+                        </control>
+                    </control>
+
+                    <!-- Bottom Spacer -->
+                    <control type="group">
+                        <width>1240</width>
+                        <height>100</height>
+                    </control>
+                </control>
+
+                <!-- Footer Buttons -->
+                <control type="button" id="9000">
+                    <left>420</left>
+                    <top>810</top>
+                    <width>400</width>
+                    <height>60</height>
+                    <label>Start Installation</label>
+                    <align>center</align>
+                    <onup>5000</onup>
+                    <texturefocus border="20">buttons/tr_home_fo.png</texturefocus>
+                    <texturenofocus border="20">buttons/tr_home_nofo.png</texturenofocus>
+                </control>
+            </control>
+        </control>
+    </controls>
+</window>
