@@ -7,54 +7,90 @@
       "is_trakt": true
     },
     {
-      "label": "Trakt Watchlist Movies",
-      "path": "plugin://plugin.video.aiostreams/?action=trakt_watchlist&media_type=movies",
-      "type": "movie",
-      "is_trakt": true
-    },
-    {
       "label": "Trakt Watchlist Series",
       "path": "plugin://plugin.video.aiostreams/?action=trakt_watchlist&media_type=shows",
       "type": "series",
+      "is_trakt": true
+    },
+    {
+      "label": "Trakt Watchlist Movies",
+      "path": "plugin://plugin.video.aiostreams/?action=trakt_watchlist&media_type=movies",
+      "type": "movie",
       "is_trakt": true
     }
   ],
   "tvshows": [
     {
-      "label": "Trending Kids Shows",
-      "path": "plugin://plugin.video.aiostreams/?action=browse_catalog&catalog_id=39fe3b0.mdblist.88309&content_type=series&catalog_name=Trending+Kids+Shows",
+      "label": "Trakt Trending Shows",
+      "path": "plugin://plugin.video.aiostreams/?action=browse_catalog&catalog_id=39fe3b0.trakt.trending.shows&content_type=series&catalog_name=Trakt+Trending+Shows",
       "type": "series",
       "is_trakt": false
     },
     {
-      "label": "Latest Animated Shows",
-      "path": "plugin://plugin.video.aiostreams/?action=browse_catalog&catalog_id=39fe3b0.mdblist.128034&content_type=series&catalog_name=Latest+Animated+Shows",
+      "label": "Trakt Popular Shows",
+      "path": "plugin://plugin.video.aiostreams/?action=browse_catalog&catalog_id=39fe3b0.trakt.popular.shows&content_type=series&catalog_name=Trakt+Popular+Shows",
       "type": "series",
       "is_trakt": false
     },
     {
-      "label": "Trakt Recommendations",
-      "path": "plugin://plugin.video.aiostreams/?action=browse_catalog&catalog_id=39fe3b0.trakt.recommendations.shows&content_type=series&catalog_name=Trakt+Recommendations",
+      "label": "Amazon Prime Shows",
+      "path": "plugin://plugin.video.aiostreams/?action=browse_catalog&catalog_id=39fe3b0.mdblist.3088&content_type=series&catalog_name=Amazon+Prime+Shows",
+      "type": "series",
+      "is_trakt": false
+    },
+    {
+      "label": "Disney+ Shows",
+      "path": "plugin://plugin.video.aiostreams/?action=browse_catalog&catalog_id=39fe3b0.mdblist.3090&content_type=series&catalog_name=Disney%2B+Shows",
+      "type": "series",
+      "is_trakt": false
+    },
+    {
+      "label": "HBO Shows",
+      "path": "plugin://plugin.video.aiostreams/?action=browse_catalog&catalog_id=39fe3b0.mdblist.3086&content_type=series&catalog_name=HBO+Shows",
+      "type": "series",
+      "is_trakt": false
+    },
+    {
+      "label": "Netflix Shows",
+      "path": "plugin://plugin.video.aiostreams/?action=browse_catalog&catalog_id=39fe3b0.mdblist.3082&content_type=series&catalog_name=Netflix+Shows",
+      "type": "series",
+      "is_trakt": false
+    },
+    {
+      "label": "UK Shows",
+      "path": "plugin://plugin.video.aiostreams/?action=browse_catalog&catalog_id=39fe3b0.mdblist.3091&content_type=series&catalog_name=UK+Shows",
       "type": "series",
       "is_trakt": false
     }
   ],
   "movies": [
     {
-      "label": "Trending Kids Movies",
-      "path": "plugin://plugin.video.aiostreams/?action=browse_catalog&catalog_id=39fe3b0.mdblist.88307&content_type=movie&catalog_name=Trending+Kids+Movies",
+      "label": "Trakt Trending Movies",
+      "path": "plugin://plugin.video.aiostreams/?action=browse_catalog&catalog_id=39fe3b0.trakt.trending.movies&content_type=movie&catalog_name=Trakt+Trending+Movies",
       "type": "movie",
       "is_trakt": false
     },
     {
-      "label": "Latest Animated Movies",
-      "path": "plugin://plugin.video.aiostreams/?action=browse_catalog&catalog_id=39fe3b0.mdblist.128035&content_type=movie&catalog_name=Latest+Animated+Movies",
+      "label": "Trakt Popular Movies",
+      "path": "plugin://plugin.video.aiostreams/?action=browse_catalog&catalog_id=39fe3b0.trakt.popular.movies&content_type=movie&catalog_name=Trakt+Popular+Movies",
       "type": "movie",
       "is_trakt": false
     },
     {
-      "label": "Trakt Recommendations",
-      "path": "plugin://plugin.video.aiostreams/?action=browse_catalog&catalog_id=39fe3b0.trakt.recommendations.movies&content_type=movie&catalog_name=Trakt+Recommendations",
+      "label": "Amazon Prime Movies",
+      "path": "plugin://plugin.video.aiostreams/?action=browse_catalog&catalog_id=39fe3b0.mdblist.3094&content_type=movie&catalog_name=Amazon+Prime+Movies",
+      "type": "movie",
+      "is_trakt": false
+    },
+    {
+      "label": "Disney+ Movies",
+      "path": "plugin://plugin.video.aiostreams/?action=browse_catalog&catalog_id=39fe3b0.mdblist.3095&content_type=movie&catalog_name=Disney%2B+Movies",
+      "type": "movie",
+      "is_trakt": false
+    },
+    {
+      "label": "Netflix Movies",
+      "path": "plugin://plugin.video.aiostreams/?action=browse_catalog&catalog_id=39fe3b0.mdblist.3093&content_type=movie&catalog_name=Netflix+Movies",
       "type": "movie",
       "is_trakt": false
     }
