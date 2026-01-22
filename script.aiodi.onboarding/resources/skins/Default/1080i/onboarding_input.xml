@@ -68,7 +68,7 @@
                 </focusedlayout>
             </control>
 
-            <!-- Settings Content Panel -->
+            <!-- Settings Content Panel Background -->
             <control type="image">
                 <left>410</left>
                 <top>80</top>
@@ -77,150 +77,143 @@
                 <texture border="40" colordiffuse="40FFFFFF">buttons/dialogbutton-nofo.png</texture>
             </control>
 
-            <!-- Settings Grouplist (ID 5) -->
+            <!-- Main Settings Grouplist (ID 5) -->
             <control type="grouplist" id="5">
                 <description>control area</description>
                 <left>420</left>
                 <top>100</top>
                 <width>1080</width>
                 <height>700</height>
-                <pagecontrol>60</pagecontrol>
                 <onleft>3</onleft>
-                <onright>60</onright>
+                <onright>9000</onright>
                 <onup>5</onup>
                 <ondown>5</ondown>
                 <itemgap>0</itemgap>
+                <scrolltime>200</scrolltime>
 
-                <!-- AIOStreams Pane -->
-                <control type="group">
-                    <width>1080</width><height>460</height>
-                    <visible>String.IsEqual(Window.Property(current_cat),aiostreams)</visible>
-                    <control type="label"><include>DefaultSettingLabel</include><width>1080</width><label>AIOStreams Configuration</label></control>
-                    <control type="grouplist">
-                        <left>0</left><top>50</top><width>1080</width><height>410</height>
-                        <control type="edit" id="10001">
-                            <width>1080</width><height>70</height>
-                            <include>DefaultSettingButton</include>
-                            <label>Host Base URL</label>
-                        </control>
-                        <control type="edit" id="10002">
-                            <width>1080</width><height>70</height>
-                            <include>DefaultSettingButton</include>
-                            <label>Instance UUID</label>
-                        </control>
-                        <control type="edit" id="10003">
-                            <width>1080</width><height>70</height>
-                            <include>DefaultSettingButton</include>
-                            <label>Password</label>
-                        </control>
-                        <control type="button" id="10004">
-                            <width>1080</width><height>70</height>
-                            <include>DefaultSettingButton</include>
-                            <label>Default Behavior: show_streams</label>
-                        </control>
-                        <control type="edit" id="10005">
-                            <width>1080</width><height>70</height>
-                            <include>DefaultSettingButton</include>
-                            <label>Subtitles (eng,spa)</label>
-                        </control>
-                        <control type="radiobutton" id="10006">
-                            <width>1080</width><height>70</height>
-                            <include>DefaultSettingButton</include>
-                            <label>Enable UpNext Integration</label>
-                        </control>
-                    </control>
+                <!-- AIOStreams Configuration -->
+                <control type="label" id="10000">
+                    <include>DefaultSettingLabel</include>
+                    <width>1080</width>
+                    <label>AIOStreams Configuration</label>
+                    <visible>String.IsEqual(Container(3).ListItem.Property(type),aiostreams)</visible>
+                </control>
+                <control type="edit" id="10001">
+                    <width>1080</width><height>70</height>
+                    <include>DefaultSettingButton</include>
+                    <label>Host Base URL</label>
+                    <visible>String.IsEqual(Container(3).ListItem.Property(type),aiostreams)</visible>
+                </control>
+                <control type="edit" id="10002">
+                    <width>1080</width><height>70</height>
+                    <include>DefaultSettingButton</include>
+                    <label>Instance UUID</label>
+                    <visible>String.IsEqual(Container(3).ListItem.Property(type),aiostreams)</visible>
+                </control>
+                <control type="edit" id="10003">
+                    <width>1080</width><height>70</height>
+                    <include>DefaultSettingButton</include>
+                    <label>Password</label>
+                    <visible>String.IsEqual(Container(3).ListItem.Property(type),aiostreams)</visible>
+                </control>
+                <control type="button" id="10004">
+                    <width>1080</width><height>70</height>
+                    <include>DefaultSettingButton</include>
+                    <label>Default Behavior: show_streams</label>
+                    <visible>String.IsEqual(Container(3).ListItem.Property(type),aiostreams)</visible>
+                </control>
+                <control type="edit" id="10005">
+                    <width>1080</width><height>70</height>
+                    <include>DefaultSettingButton</include>
+                    <label>Subtitles (eng,spa)</label>
+                    <visible>String.IsEqual(Container(3).ListItem.Property(type),aiostreams)</visible>
+                </control>
+                <control type="radiobutton" id="10006">
+                    <width>1080</width><height>70</height>
+                    <include>DefaultSettingButton</include>
+                    <label>Enable UpNext Integration</label>
+                    <visible>String.IsEqual(Container(3).ListItem.Property(type),aiostreams)</visible>
                 </control>
 
-                <!-- Trakt Pane -->
-                <control type="group">
-                    <width>1080</width><height>190</height>
-                    <visible>String.IsEqual(Window.Property(current_cat),trakt)</visible>
-                    <control type="label"><include>DefaultSettingLabel</include><width>1080</width><label>Trakt Configuration</label></control>
-                    <control type="grouplist">
-                        <left>0</left><top>50</top><width>1080</width><height>140</height>
-                        <control type="edit" id="11001">
-                            <width>1080</width><height>70</height>
-                            <include>DefaultSettingButton</include>
-                            <label>Client ID</label>
-                        </control>
-                        <control type="edit" id="11002">
-                            <width>1080</width><height>70</height>
-                            <include>DefaultSettingButton</include>
-                            <label>Client Secret</label>
-                        </control>
-                    </control>
+                <!-- Trakt Configuration -->
+                <control type="label" id="11000">
+                    <include>DefaultSettingLabel</include>
+                    <width>1080</width>
+                    <label>Trakt Configuration</label>
+                    <visible>String.IsEqual(Container(3).ListItem.Property(type),trakt)</visible>
+                </control>
+                <control type="edit" id="11001">
+                    <width>1080</width><height>70</height>
+                    <include>DefaultSettingButton</include>
+                    <label>Client ID</label>
+                    <visible>String.IsEqual(Container(3).ListItem.Property(type),trakt)</visible>
+                </control>
+                <control type="edit" id="11002">
+                    <width>1080</width><height>70</height>
+                    <include>DefaultSettingButton</include>
+                    <label>Client Secret</label>
+                    <visible>String.IsEqual(Container(3).ListItem.Property(type),trakt)</visible>
                 </control>
 
-                <!-- YouTube Pane -->
-                <control type="group">
-                    <width>1080</width><height>260</height>
-                    <visible>String.IsEqual(Window.Property(current_cat),youtube)</visible>
-                    <control type="label"><include>DefaultSettingLabel</include><width>1080</width><label>YouTube Configuration</label></control>
-                    <control type="grouplist">
-                        <left>0</left><top>50</top><width>1080</width><height>210</height>
-                        <control type="edit" id="12001">
-                            <width>1080</width><height>70</height>
-                            <include>DefaultSettingButton</include>
-                            <label>API Key</label>
-                        </control>
-                        <control type="edit" id="12002">
-                            <width>1080</width><height>70</height>
-                            <include>DefaultSettingButton</include>
-                            <label>API ID</label>
-                        </control>
-                        <control type="edit" id="12003">
-                            <width>1080</width><height>70</height>
-                            <include>DefaultSettingButton</include>
-                            <label>API Secret</label>
-                        </control>
-                    </control>
+                <!-- YouTube Configuration -->
+                <control type="label" id="12000">
+                    <include>DefaultSettingLabel</include>
+                    <width>1080</width>
+                    <label>YouTube Configuration</label>
+                    <visible>String.IsEqual(Container(3).ListItem.Property(type),youtube)</visible>
+                </control>
+                <control type="edit" id="12001">
+                    <width>1080</width><height>70</height>
+                    <include>DefaultSettingButton</include>
+                    <label>API Key</label>
+                    <visible>String.IsEqual(Container(3).ListItem.Property(type),youtube)</visible>
+                </control>
+                <control type="edit" id="12002">
+                    <width>1080</width><height>70</height>
+                    <include>DefaultSettingButton</include>
+                    <label>API ID</label>
+                    <visible>String.IsEqual(Container(3).ListItem.Property(type),youtube)</visible>
+                </control>
+                <control type="edit" id="12003">
+                    <width>1080</width><height>70</height>
+                    <include>DefaultSettingButton</include>
+                    <label>API Secret</label>
+                    <visible>String.IsEqual(Container(3).ListItem.Property(type),youtube)</visible>
                 </control>
 
-                <!-- IPTV Pane -->
-                <control type="group">
-                    <width>1080</width><height>190</height>
-                    <visible>String.IsEqual(Window.Property(current_cat),iptv)</visible>
-                    <control type="label"><include>DefaultSettingLabel</include><width>1080</width><label>IPTV Simple Configuration</label></control>
-                    <control type="grouplist">
-                        <left>0</left><top>50</top><width>1080</width><height>140</height>
-                        <control type="edit" id="13001">
-                            <width>1080</width><height>70</height>
-                            <include>DefaultSettingButton</include>
-                            <label>M3U URL</label>
-                        </control>
-                        <control type="edit" id="13002">
-                            <width>1080</width><height>70</height>
-                            <include>DefaultSettingButton</include>
-                            <label>EPG URL</label>
-                        </control>
-                    </control>
+                <!-- IPTV Configuration -->
+                <control type="label" id="13000">
+                    <include>DefaultSettingLabel</include>
+                    <width>1080</width>
+                    <label>IPTV Simple Configuration</label>
+                    <visible>String.IsEqual(Container(3).ListItem.Property(type),iptv)</visible>
+                </control>
+                <control type="edit" id="13001">
+                    <width>1080</width><height>70</height>
+                    <include>DefaultSettingButton</include>
+                    <label>M3U URL</label>
+                    <visible>String.IsEqual(Container(3).ListItem.Property(type),iptv)</visible>
+                </control>
+                <control type="edit" id="13002">
+                    <width>1080</width><height>70</height>
+                    <include>DefaultSettingButton</include>
+                    <label>EPG URL</label>
+                    <visible>String.IsEqual(Container(3).ListItem.Property(type),iptv)</visible>
                 </control>
 
-                <!-- IMVDb Pane -->
-                <control type="group">
-                    <width>1080</width><height>120</height>
-                    <visible>String.IsEqual(Window.Property(current_cat),imvdb)</visible>
-                    <control type="label"><include>DefaultSettingLabel</include><width>1080</width><label>IMVDb Configuration</label></control>
-                    <control type="grouplist">
-                        <left>0</left><top>50</top><width>1080</width><height>70</height>
-                        <control type="edit" id="14001">
-                            <width>1080</width><height>70</height>
-                            <include>DefaultSettingButton</include>
-                            <label>API Key</label>
-                        </control>
-                    </control>
+                <!-- IMVDb Configuration -->
+                <control type="label" id="14000">
+                    <include>DefaultSettingLabel</include>
+                    <width>1080</width>
+                    <label>IMVDb Configuration</label>
+                    <visible>String.IsEqual(Container(3).ListItem.Property(type),imvdb)</visible>
                 </control>
-            </control>
-
-            <!-- Scrollbar (ID 60) -->
-            <control type="scrollbar" id="60">
-                <left>1490</left>
-                <top>100</top>
-                <width>12</width>
-                <height>700</height>
-                <orientation>vertical</orientation>
-                <onleft>5</onleft>
-                <onright>9000</onright>
+                <control type="edit" id="14001">
+                    <width>1080</width><height>70</height>
+                    <include>DefaultSettingButton</include>
+                    <label>API Key</label>
+                    <visible>String.IsEqual(Container(3).ListItem.Property(type),imvdb)</visible>
+                </control>
             </control>
 
             <!-- Action Buttons (ID 9000) -->
@@ -244,6 +237,4 @@
             </control>
         </control>
     </controls>
-
-
 </window>

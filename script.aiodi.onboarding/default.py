@@ -60,9 +60,6 @@ class InputWindow(xbmcgui.WindowXMLDialog):
         list_ctrl = self.getControl(3)
         list_ctrl.reset()
         
-        # Init window property for pane visibility
-        xbmcgui.Window(xbmcgui.getCurrentWindowId()).setProperty('current_cat', 'aiostreams')
-        
         cats = [
             ('AIOStreams', 'aiostreams'),
             ('Trakt', 'trakt')
@@ -77,8 +74,7 @@ class InputWindow(xbmcgui.WindowXMLDialog):
             list_ctrl.addItem(item)
 
         # Focus management
-        if list_ctrl.size() > 0:
-            self.setFocusId(3)
+        self.setFocusId(3)
 
     def onAction(self, action):
         # Handle Back button
@@ -86,12 +82,6 @@ class InputWindow(xbmcgui.WindowXMLDialog):
             self.close()
 
     def onClick(self, controlId):
-        if controlId == 3: # Category selected
-            item = self.getControl(3).getSelectedItem()
-            if item:
-                type_name = item.getProperty('type')
-                xbmcgui.Window(xbmcgui.getCurrentWindowId()).setProperty('current_cat', type_name)
-            
         if controlId == 10004: # Default Behavior
             current = self.getControl(10004).getLabel().split(": ")[-1]
             new_val = "play_first" if current == "show_streams" else "show_streams"
