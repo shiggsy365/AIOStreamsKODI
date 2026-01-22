@@ -40,14 +40,15 @@
 
                 <!-- Form Scrollable Area -->
                 <control type="grouplist" id="5000">
+                    <description>control area</description>
                     <left>0</left>
                     <top>60</top>
                     <width>1200</width>
                     <height>740</height>
                     <itemgap>12</itemgap>
+                    <pagecontrol>60</pagecontrol>
                     <scrolltime>200</scrolltime>
                     <orientation>vertical</orientation>
-                    <pagecontrol>60</pagecontrol>
                     <onright>60</onright>
                     <onup>5000</onup>
                     <ondown>9000</ondown>
@@ -215,6 +216,7 @@
                     <width>12</width>
                     <height>740</height>
                     <onleft>5000</onleft>
+                    <onright>9000</onright>
                     <orientation>vertical</orientation>
                 </control>
 
