@@ -417,28 +417,45 @@ def run_installer(selections, data):
 
     # 7. YouTube interactive setup (if YouTube was installed)
     if selections.get('youtube') and xbmc.getCondVisibility('System.HasAddon(plugin.video.youtube)'):
-        progress.close()
-        # Prompt user to complete YouTube setup
-        xbmcgui.Dialog().ok(
-            "YouTube Setup Required",
-            "Please complete the YouTube setup wizard that will now open.\n"
-            "After completing the wizard, select the first option and choose 'Sign In'.\n"
-            "Once all dialogs have closed, the setup will continue."
-        )
+        # Check if user is already signed in by checking for access token
+        try:
+            yt_check = ensure_addon('plugin.video.youtube')
+            is_signed_in = False
+            if yt_check:
+                # Check if access token exists (indicates user is signed in)
+                access_token = yt_check.getSetting('youtube.access.token')
+                if access_token and access_token.strip():
+                    is_signed_in = True
+                    xbmc.log('[Onboarding] YouTube already signed in, skipping interactive setup', xbmc.LOGINFO)
+                del yt_check
+        except Exception as e:
+            xbmc.log(f'[Onboarding] Error checking YouTube sign-in status: {e}', xbmc.LOGERROR)
+            is_signed_in = False
 
-        # Open YouTube addon settings
-        xbmc.executebuiltin('Addon.OpenSettings(plugin.video.youtube)')
+        # Only show interactive setup if not already signed in
+        if not is_signed_in:
+            progress.close()
+            # Prompt user to complete YouTube setup
+            xbmcgui.Dialog().ok(
+                "YouTube Setup Required",
+                "Please complete the YouTube setup wizard that will now open.\n"
+                "After completing the wizard, select the first option and choose 'Sign In'.\n"
+                "Once all dialogs have closed, the setup will continue."
+            )
 
-        # Wait for user to complete setup
-        xbmcgui.Dialog().ok(
-            "YouTube Setup",
-            "When you have finished signing in to YouTube and all dialogs have closed,\n"
-            "click OK to continue with the AIODI skin installation."
-        )
+            # Open YouTube addon settings
+            xbmc.executebuiltin('Addon.OpenSettings(plugin.video.youtube)')
 
-        # Recreate progress dialog for remaining steps
-        progress = xbmcgui.DialogProgress()
-        progress.create("AIODI Setup", "Continuing installation...")
+            # Wait for user to complete setup
+            xbmcgui.Dialog().ok(
+                "YouTube Setup",
+                "When you have finished signing in to YouTube and all dialogs have closed,\n"
+                "click OK to continue with the AIODI skin installation."
+            )
+
+            # Recreate progress dialog for remaining steps
+            progress = xbmcgui.DialogProgress()
+            progress.create("AIODI Setup", "Continuing installation...")
 
     # 8. If requested install AIODI skin, and switch to it
     if selections.get('skin'):
