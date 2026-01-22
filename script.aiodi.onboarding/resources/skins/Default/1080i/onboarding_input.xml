@@ -42,19 +42,20 @@
                 <control type="grouplist" id="5000">
                     <left>0</left>
                     <top>60</top>
-                    <width>1240</width>
+                    <width>1200</width>
                     <height>740</height>
                     <itemgap>12</itemgap>
                     <scrolltime>200</scrolltime>
                     <orientation>vertical</orientation>
-                    <usecontrolcoords>true</usecontrolcoords>
+                    <onright>60</onright>
+                    <ondown>9000</ondown>
 
                     <!-- AIOStreams Section -->
                     <control type="group" id="10000">
-                        <width>1240</width>
+                        <width>1200</width>
                         <height>40</height>
                         <control type="label">
-                            <width>1240</width>
+                            <width>1200</width>
                             <height>40</height>
                             <font>font13_title</font>
                             <label>AIOStreams Plugin Configuration</label>
@@ -62,37 +63,37 @@
                         </control>
                     </control>
                     <control type="group">
-                        <width>1240</width>
+                        <width>1200</width>
                         <height>60</height>
                         <control type="label"><left>20</left><width>400</width><height>60</height><label>Host Base URL</label></control>
-                        <control type="edit" id="10001"><left>420</left><width>800</width><height>60</height><font>font12</font><label>-</label><texturefocus border="5">buttons/focus.png</texturefocus></control>
+                        <control type="edit" id="10001"><left>420</left><width>760</width><height>60</height><font>font12</font><label>-</label><texturefocus border="5">buttons/focus.png</texturefocus></control>
                     </control>
                     <control type="group">
-                        <width>1240</width>
+                        <width>1200</width>
                         <height>60</height>
                         <control type="label"><left>20</left><width>400</width><height>60</height><label>Instance UUID</label></control>
-                        <control type="edit" id="10002"><left>420</left><width>800</width><height>60</height><font>font12</font><label>-</label><texturefocus border="5">buttons/focus.png</texturefocus></control>
+                        <control type="edit" id="10002"><left>420</left><width>760</width><height>60</height><font>font12</font><label>-</label><texturefocus border="5">buttons/focus.png</texturefocus></control>
                     </control>
                     <control type="group">
-                        <width>1240</width>
+                        <width>1200</width>
                         <height>60</height>
                         <control type="label"><left>20</left><width>400</width><height>60</height><label>Instance Password</label></control>
-                        <control type="edit" id="10003"><left>420</left><width>800</width><height>60</height><font>font12</font><label>-</label><texturefocus border="5">buttons/focus.png</texturefocus></control>
+                        <control type="edit" id="10003"><left>420</left><width>760</width><height>60</height><font>font12</font><label>-</label><texturefocus border="5">buttons/focus.png</texturefocus></control>
                     </control>
                     <control type="group">
-                        <width>1240</width>
+                        <width>1200</width>
                         <height>60</height>
                         <control type="label"><left>20</left><width>400</width><height>60</height><label>Default Episode Action</label></control>
                         <control type="button" id="10004"><left>420</left><width>400</width><height>60</height><font>font12</font><label>show_streams</label><texturefocus border="20">buttons/focus.png</texturefocus></control>
                     </control>
                     <control type="group">
-                        <width>1240</width>
+                        <width>1200</width>
                         <height>60</height>
                         <control type="label"><left>20</left><width>400</width><height>60</height><label>Subtitle Languages (eng,spa)</label></control>
-                        <control type="edit" id="10005"><left>420</left><width>800</width><height>60</height><font>font12</font><label>-</label><texturefocus border="5">buttons/focus.png</texturefocus></control>
+                        <control type="edit" id="10005"><left>420</left><width>760</width><height>60</height><font>font12</font><label>-</label><texturefocus border="5">buttons/focus.png</texturefocus></control>
                     </control>
                     <control type="group" id="10007">
-                        <width>1240</width>
+                        <width>1200</width>
                         <height>60</height>
                         <control type="label"><left>20</left><width>400</width><height>60</height><label>Enable UpNext Integration</label></control>
                         <control type="radiobutton" id="10006"><left>420</left><width>200</width><height>60</height><font>font12</font><label>-</label><texturefocus border="20">buttons/focus.png</texturefocus></control>
@@ -100,10 +101,10 @@
 
                     <!-- Trakt Section -->
                     <control type="group" id="11000">
-                        <width>1240</width>
+                        <width>1200</width>
                         <height>40</height>
                         <control type="label">
-                            <width>1240</width>
+                            <width>1200</width>
                             <height>40</height>
                             <font>font13_title</font>
                             <label>Trakt Integration Configuration</label>
@@ -111,24 +112,24 @@
                         </control>
                     </control>
                     <control type="group">
-                        <width>1240</width>
+                        <width>1200</width>
                         <height>60</height>
                         <control type="label"><left>20</left><width>400</width><height>60</height><label>Client ID</label></control>
-                        <control type="edit" id="11001"><left>420</left><width>800</width><height>60</height><font>font12</font><label>-</label><texturefocus border="5">buttons/focus.png</texturefocus></control>
+                        <control type="edit" id="11001"><left>420</left><width>760</width><height>60</height><font>font12</font><label>-</label><texturefocus border="5">buttons/focus.png</texturefocus></control>
                     </control>
                     <control type="group">
-                        <width>1240</width>
+                        <width>1200</width>
                         <height>60</height>
                         <control type="label"><left>20</left><width>400</width><height>60</height><label>Client Secret</label></control>
-                        <control type="edit" id="11002"><left>420</left><width>800</width><height>60</height><font>font12</font><label>-</label><texturefocus border="5">buttons/focus.png</texturefocus></control>
+                        <control type="edit" id="11002"><left>420</left><width>760</width><height>60</height><font>font12</font><label>-</label><texturefocus border="5">buttons/focus.png</texturefocus></control>
                     </control>
 
                     <!-- YouTube Section -->
                     <control type="group" id="12000">
-                        <width>1240</width>
+                        <width>1200</width>
                         <height>40</height>
                         <control type="label">
-                            <width>1240</width>
+                            <width>1200</width>
                             <height>40</height>
                             <font>font13_title</font>
                             <label>YouTube Integration Configuration</label>
@@ -136,30 +137,30 @@
                         </control>
                     </control>
                     <control type="group">
-                        <width>1240</width>
+                        <width>1200</width>
                         <height>60</height>
                         <control type="label"><left>20</left><width>400</width><height>60</height><label>API Key</label></control>
-                        <control type="edit" id="12001"><left>420</left><width>800</width><height>60</height><font>font12</font><label>-</label><texturefocus border="5">buttons/focus.png</texturefocus></control>
+                        <control type="edit" id="12001"><left>420</left><width>760</width><height>60</height><font>font12</font><label>-</label><texturefocus border="5">buttons/focus.png</texturefocus></control>
                     </control>
                     <control type="group">
-                        <width>1240</width>
+                        <width>1200</width>
                         <height>60</height>
                         <control type="label"><left>20</left><width>400</width><height>60</height><label>API ID</label></control>
-                        <control type="edit" id="12002"><left>420</left><width>800</width><height>60</height><font>font12</font><label>-</label><texturefocus border="5">buttons/focus.png</texturefocus></control>
+                        <control type="edit" id="12002"><left>420</left><width>760</width><height>60</height><font>font12</font><label>-</label><texturefocus border="5">buttons/focus.png</texturefocus></control>
                     </control>
                     <control type="group">
-                        <width>1240</width>
+                        <width>1200</width>
                         <height>60</height>
                         <control type="label"><left>20</left><width>400</width><height>60</height><label>API Secret</label></control>
-                        <control type="edit" id="12003"><left>420</left><width>800</width><height>60</height><font>font12</font><label>-</label><texturefocus border="5">buttons/focus.png</texturefocus></control>
+                        <control type="edit" id="12003"><left>420</left><width>760</width><height>60</height><font>font12</font><label>-</label><texturefocus border="5">buttons/focus.png</texturefocus></control>
                     </control>
 
                     <!-- IPTV Section -->
                     <control type="group" id="13000">
-                        <width>1240</width>
+                        <width>1200</width>
                         <height>40</height>
                         <control type="label">
-                            <width>1240</width>
+                            <width>1200</width>
                             <height>40</height>
                             <font>font13_title</font>
                             <label>IPTV Simple Configuration</label>
@@ -167,24 +168,24 @@
                         </control>
                     </control>
                     <control type="group">
-                        <width>1240</width>
+                        <width>1200</width>
                         <height>60</height>
                         <control type="label"><left>20</left><width>400</width><height>60</height><label>M3U URL</label></control>
-                        <control type="edit" id="13001"><left>420</left><width>800</width><height>60</height><font>font12</font><label>-</label><texturefocus border="5">buttons/focus.png</texturefocus></control>
+                        <control type="edit" id="13001"><left>420</left><width>760</width><height>60</height><font>font12</font><label>-</label><texturefocus border="5">buttons/focus.png</texturefocus></control>
                     </control>
                     <control type="group">
-                        <width>1240</width>
+                        <width>1200</width>
                         <height>60</height>
                         <control type="label"><left>20</left><width>400</width><height>60</height><label>EPG URL</label></control>
-                        <control type="edit" id="13002"><left>420</left><width>800</width><height>60</height><font>font12</font><label>-</label><texturefocus border="5">buttons/focus.png</texturefocus></control>
+                        <control type="edit" id="13002"><left>420</left><width>760</width><height>60</height><font>font12</font><label>-</label><texturefocus border="5">buttons/focus.png</texturefocus></control>
                     </control>
 
                     <!-- IMVDb Section -->
                     <control type="group" id="14000">
-                        <width>1240</width>
+                        <width>1200</width>
                         <height>40</height>
                         <control type="label">
-                            <width>1240</width>
+                            <width>1200</width>
                             <height>40</height>
                             <font>font13_title</font>
                             <label>IMVDb Configuration</label>
@@ -192,17 +193,27 @@
                         </control>
                     </control>
                     <control type="group">
-                        <width>1240</width>
+                        <width>1200</width>
                         <height>60</height>
                         <control type="label"><left>20</left><width>400</width><height>60</height><label>API Key</label></control>
-                        <control type="edit" id="14001"><left>420</left><width>800</width><height>60</height><font>font12</font><label>-</label><texturefocus border="5">buttons/focus.png</texturefocus></control>
+                        <control type="edit" id="14001"><left>420</left><width>760</width><height>60</height><font>font12</font><label>-</label><texturefocus border="5">buttons/focus.png</texturefocus></control>
                     </control>
 
                     <!-- Bottom Spacer -->
                     <control type="group">
-                        <width>1240</width>
+                        <width>1200</width>
                         <height>100</height>
                     </control>
+                </control>
+
+                <!-- Scrollbar -->
+                <control type="scrollbar" id="60">
+                    <left>1210</left>
+                    <top>60</top>
+                    <width>12</width>
+                    <height>740</height>
+                    <onleft>5000</onleft>
+                    <orientation>vertical</orientation>
                 </control>
 
                 <!-- Footer Button -->
