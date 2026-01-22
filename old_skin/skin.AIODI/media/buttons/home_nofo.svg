@@ -1,4 +1,0 @@
-<svg width="512" height="128" xmlns="http://www.w3.org/2000/svg">
-  <rect x="2" y="2" width="508" height="124" rx="20" ry="20" fill="black" fill-opacity="0.5" stroke="white" stroke-width="3" />
-  <path d="M185 64L205 44L225 64V84H210V69H200V84H185V64Z" fill="white"/>
-</svg>

@@ -1,7 +1,0 @@
-<svg width="512" height="128" viewBox="0 0 512 128" fill="none" xmlns="http://www.w3.org/2000/svg">
-  <rect x="1.5" y="1.5" width="509" height="125" rx="22.5" fill="red" fill-opacity="1.0" stroke="white" stroke-width="3"/>
-  <g transform="translate(115, 0)">
-    <path d="M20 45C10 45 2 54 2 64C2 74 10 83 20 83C30 83 38 74 38 64C38 54 30 45 20 45ZM20 75C13.9 75 9 70.1 9 64C9 57.9 13.9 53 20 53C26.1 53 31 57.9 31 64C31 70.1 26.1 75 20 75ZM20 59C17.2 59 15 61.2 15 64C15 66.8 17.2 69 20 69C22.8 69 25 66.8 25 64C25 61.2 22.8 59 20 59ZM42 58V78H47V58H42ZM37 65.5H52V70.5H37V65.5Z" fill="white"/>
-    <text x="70" y="79" fill="white" font-family="Arial, sans-serif" font-size="36" font-weight="bold">Watched [+]</text>
-  </g>
-</svg>
