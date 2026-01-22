@@ -10,7 +10,45 @@ ADDON = xbmcaddon.Addon()
 ADDON_PATH = ADDON.getAddonInfo('path')
 WINDOW = xbmcgui.Window(10000) # Home window for property storage
 
-# Selection IDs from onboarding.xml
+# Persistence helpers
+def get_cache_path():
+    path = xbmc.translatePath(ADDON.getAddonInfo('profile'))
+    if not os.path.exists(path):
+        os.makedirs(path)
+    return os.path.join(path, 'settings_cache.json')
+
+def load_cache():
+    path = get_cache_path()
+    if os.path.exists(path):
+        try:
+            with open(path, 'r') as f:
+                return json.load(f)
+        except: pass
+    return {}
+
+def save_cache(data):
+    try:
+        with open(get_cache_path(), 'w') as f:
+            json.dump(data, f)
+    except: pass
+
+def install_with_wait(addon_id, progress, start_pct, end_pct):
+    if xbmc.getCondVisibility(f'System.HasAddon({addon_id})'):
+        return True
+
+    progress.update(int(start_pct), f"Installing {addon_id}...")
+    xbmc.executebuiltin(f'InstallAddon({addon_id})')
+    
+    # Wait loop (max 60s)
+    for i in range(120):
+        if progress.iscanceled(): return False
+        if xbmc.getCondVisibility(f'System.HasAddon({addon_id})'):
+            progress.update(int(end_pct))
+            return True
+        time.sleep(0.5)
+    return False
+
+# Selection IDs from onboarding.xml (legacy support)
 ID_AIOSTREAMS = 1101
 ID_TRAKT = 1102
 ID_SKIN = 2101
@@ -20,47 +58,21 @@ ID_IPTV = 3101
 ID_IMVDB = 3102
 ID_TMDBH = 3103
 
-class OnboardingWindow(xbmcgui.WindowXMLDialog):
-    def __init__(self, *args, **kwargs):
-        super(OnboardingWindow, self).__init__(*args, **kwargs)
-        self.selections = {}
-
-    def onInit(self):
-        # Mandatory selections
-        self.getControl(ID_AIOSTREAMS).setSelected(True)
-        self.getControl(ID_TRAKT).setSelected(True)
-
-    def onClick(self, controlId):
-        if controlId in [ID_AIOSTREAMS, ID_TRAKT]:
-            # Don't let user toggle them off
-            self.getControl(controlId).setSelected(True)
-        
-        if controlId == 9000: # Install Selected
-            self.selections = {
-                'aiostreams': True,
-                'trakt': True,
-                'skin': self.getControl(ID_SKIN).isSelected(),
-                'youtube': self.getControl(ID_YOUTUBE).isSelected(),
-                'upnext': self.getControl(ID_UPNEXT).isSelected(),
-                'iptv': self.getControl(ID_IPTV).isSelected(),
-                'imvdb': self.getControl(ID_IMVDB).isSelected(),
-                'tmdbh': self.getControl(ID_TMDBH).isSelected()
-            }
-            self.close()
-
 class InputWindow(xbmcgui.WindowXMLDialog):
     def __init__(self, *args, **kwargs):
         super(InputWindow, self).__init__(*args, **kwargs)
-        # Initialize selections with defaults
+        self.cache = load_cache()
+        
+        # Initialize selections with defaults/cache
         self.selections = {
             'aiostreams': True,
             'trakt': True,
-            'skin': True,
-            'youtube': False,
-            'upnext': True,
-            'iptv': False,
-            'imvdb': False,
-            'tmdbh': True
+            'skin': self.cache.get('skin', True),
+            'youtube': self.cache.get('youtube', False),
+            'upnext': self.cache.get('upnext', True),
+            'iptv': self.cache.get('iptv', False),
+            'imvdb': self.cache.get('imvdb', False),
+            'tmdbh': self.cache.get('tmdbh', True)
         }
         self.data = {}
         self.cancelled = True
@@ -76,6 +88,26 @@ class InputWindow(xbmcgui.WindowXMLDialog):
         self.getControl(10107).setSelected(self.selections['imvdb'])
         self.getControl(10108).setSelected(self.selections['tmdbh'])
         
+        # Pre-fill settings from cache
+        if 'aiostreams_host' in self.cache: self.getControl(10001).setLabel(self.cache['aiostreams_host'])
+        if 'aiostreams_uuid' in self.cache: self.getControl(10002).setLabel(self.cache['aiostreams_uuid'])
+        if 'aiostreams_password' in self.cache: self.getControl(10003).setLabel(self.cache['aiostreams_password'])
+        if 'aiostreams_behavior' in self.cache: self.getControl(10004).setLabel(self.cache['aiostreams_behavior'])
+        if 'aiostreams_subtitles' in self.cache: self.getControl(10005).setLabel(self.cache['aiostreams_subtitles'])
+        if 'aiostreams_upnext' in self.cache: self.getControl(10006).setSelected(self.cache['aiostreams_upnext'])
+        
+        if 'trakt_id' in self.cache: self.getControl(11001).setLabel(self.cache['trakt_id'])
+        if 'trakt_secret' in self.cache: self.getControl(11002).setLabel(self.cache['trakt_secret'])
+        
+        if 'yt_key' in self.cache: self.getControl(12001).setLabel(self.cache['yt_key'])
+        if 'yt_id' in self.cache: self.getControl(12002).setLabel(self.cache['yt_id'])
+        if 'yt_secret' in self.cache: self.getControl(12003).setLabel(self.cache['yt_secret'])
+        
+        if 'iptv_m3u' in self.cache: self.getControl(13001).setLabel(self.cache['iptv_m3u'])
+        if 'iptv_epg' in self.cache: self.getControl(13002).setLabel(self.cache['iptv_epg'])
+        
+        if 'imvdb_key' in self.cache: self.getControl(14001).setLabel(self.cache['imvdb_key'])
+
         self.refresh_tabs()
         self.setFocusId(3)
 
@@ -126,6 +158,11 @@ class InputWindow(xbmcgui.WindowXMLDialog):
             
         if controlId == 9010: # Install Selected
             self.collect_data()
+            # Also save to cache
+            cache_data = self.data.copy()
+            cache_data.update(self.selections)
+            save_cache(cache_data)
+            
             self.cancelled = False
             self.close()
             
@@ -169,67 +206,58 @@ def run_installer(selections, data):
     progress.create("AIODI Setup", "Initializing installation...")
     
     # 1. AIOStreams
-    progress.update(10, "Configuring AIOStreams...")
-    aio = xbmcaddon.Addon('plugin.video.aiostreams')
-    aio.setSetting('aiostreams_host', data.get('aiostreams_host', ''))
-    aio.setSetting('aiostreams_uuid', data.get('aiostreams_uuid', ''))
-    aio.setSetting('aiostreams_password', data.get('aiostreams_password', ''))
-    aio.setSetting('trakt_client_id', data.get('trakt_id', ''))
-    aio.setSetting('trakt_client_secret', data.get('trakt_secret', ''))
-    aio.setSetting('default_behavior', data.get('aiostreams_behavior', 'show_streams'))
-    aio.setSetting('subtitle_languages', data.get('aiostreams_subtitles', ''))
-    aio.setSetting('autoplay_next_episode', 'true' if data.get('aiostreams_upnext') else 'false')
-    
-    # Trigger manifest & trakt auth
-    progress.update(30, "Retrieving manifest and authenticating Trakt...")
-    xbmc.executebuiltin('RunPlugin(plugin://plugin.video.aiostreams/?action=retrieve_manifest)')
-    # Wait a bit for manifest
-    time.sleep(2)
-    xbmc.executebuiltin('RunPlugin(plugin://plugin.video.aiostreams/?action=trakt_auth)')
+    if install_with_wait('plugin.video.aiostreams', progress, 5, 20):
+        try:
+            aio = xbmcaddon.Addon('plugin.video.aiostreams')
+            aio.setSetting('aiostreams_host', data.get('aiostreams_host', ''))
+            aio.setSetting('aiostreams_uuid', data.get('aiostreams_uuid', ''))
+            aio.setSetting('aiostreams_password', data.get('aiostreams_password', ''))
+            aio.setSetting('trakt_client_id', data.get('trakt_id', ''))
+            aio.setSetting('trakt_client_secret', data.get('trakt_secret', ''))
+            aio.setSetting('default_behavior', data.get('aiostreams_behavior', '').split(": ")[-1])
+            aio.setSetting('subtitle_languages', data.get('aiostreams_subtitles', ''))
+            aio.setSetting('autoplay_next_episode', 'true' if data.get('aiostreams_upnext') else 'false')
+            
+            # Trigger manifest & trakt auth
+            progress.update(25, "Retrieving manifest and authenticating Trakt...")
+            xbmc.executebuiltin('RunPlugin(plugin://plugin.video.aiostreams/?action=retrieve_manifest)')
+            time.sleep(2)
+            xbmc.executebuiltin('RunPlugin(plugin://plugin.video.aiostreams/?action=trakt_auth)')
+        except: pass
 
     # 2. Addon Installs
-    def install_builtin(addon_id):
-        xbmc.executebuiltin(f'InstallAddon({addon_id})')
-
     if selections.get('youtube'):
-        progress.update(50, "Installing YouTube...")
-        install_builtin('plugin.video.youtube')
-        time.sleep(2)
-        try:
-            yt = xbmcaddon.Addon('plugin.video.youtube')
-            yt.setSetting('general.setupwizard', 'false')
-            yt.setSetting('api.key', data.get('yt_key', ''))
-            yt.setSetting('api.id', data.get('yt_id', ''))
-            yt.setSetting('api.secret', data.get('yt_secret', ''))
-            yt.setSetting('api.devkeys', 'true')
-        except: pass
+        if install_with_wait('plugin.video.youtube', progress, 40, 50):
+            try:
+                yt = xbmcaddon.Addon('plugin.video.youtube')
+                yt.setSetting('general.setupwizard', 'false')
+                yt.setSetting('api.key', data.get('yt_key', ''))
+                yt.setSetting('api.id', data.get('yt_id', ''))
+                yt.setSetting('api.secret', data.get('yt_secret', ''))
+                yt.setSetting('api.devkeys', 'true')
+            except: pass
 
     if selections.get('upnext'):
-        progress.update(60, "Installing UpNext...")
-        install_builtin('service.upnext')
-        time.sleep(2)
-        try:
-            un = xbmcaddon.Addon('service.upnext')
-            un.setSetting('interface.notification_mode', '1') # Simple
-            un.setSetting('interface.stop_button', 'true')
-            un.setSetting('behaviour.default_action', '1') # Play Next
-        except: pass
+        if install_with_wait('service.upnext', progress, 55, 65):
+            try:
+                un = xbmcaddon.Addon('service.upnext')
+                un.setSetting('interface.notification_mode', '1') # Simple
+                un.setSetting('interface.stop_button', 'true')
+                un.setSetting('behaviour.default_action', '1') # Play Next
+            except: pass
 
     if selections.get('iptv'):
-        progress.update(70, "Installing IPTV Simple...")
-        install_builtin('pvr.iptvsimple')
+        install_with_wait('pvr.iptvsimple', progress, 70, 80)
 
     if selections.get('imvdb'):
-        progress.update(80, "Installing IMVDb...")
-        install_builtin('plugin.video.imvdb')
-        time.sleep(1)
-        try:
-            im = xbmcaddon.Addon('plugin.video.imvdb')
-            im.setSetting('api_key', data.get('imvdb_key', ''))
-        except: pass
+        if install_with_wait('plugin.video.imvdb', progress, 85, 90):
+            try:
+                im = xbmcaddon.Addon('plugin.video.imvdb')
+                im.setSetting('api_key', data.get('imvdb_key', ''))
+            except: pass
 
     if selections.get('tmdbh'):
-        progress.update(90, "Setting up TMDB Helper Players...")
+        progress.update(92, "Setting up TMDB Helper Players...")
         try:
             import xbmcvfs
             src = os.path.join(os.path.dirname(ADDON_PATH), "TMDB Helper Players", "tmdbhelper-players.zip")
@@ -263,10 +291,6 @@ def run():
 
     # Installation
     run_installer(selections, data)
-
-if __name__ == '__main__':
-    run()
-
 
 if __name__ == '__main__':
     run()
