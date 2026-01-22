@@ -5,7 +5,6 @@
 	<onload condition="String.IsEmpty(Skin.String(TV_WidgetIndex))">Skin.SetString(TV_WidgetIndex,0)</onload>
 	<onload condition="String.IsEmpty(Skin.String(Music_WidgetIndex))">Skin.SetString(Music_WidgetIndex,0)</onload>
 <onload>Skin.SetString(SideMenuFocus,home)</onload>
-	<onload condition="String.IsEmpty(Skin.String(first_run))">RunScript(script.aiodi.onboarding)</onload>
 
 
 
