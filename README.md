@@ -23,13 +23,15 @@ This Kodi addon acts as a frontend client to your AIOStreams backend, bringing a
 
 ## 📖 Documentation & Setup
 
-For detailed installation guides, configuration options, and advanced tips, please visit our official Wiki:
+For detailed installation guides, configuration options, and advanced tips, please refer to our guides:
 
-### [👉 AIOStreams Kodi Wiki](https://github.com/shiggsy365/AIOStreamsKODI/wiki)
+### [👉 AIOStreams Guides](guides/WIKI_HOME.md)
 
-Key Wiki Pages:
-- **[Installing AIOStreams for KODI](https://github.com/shiggsy365/AIOStreamsKODI/wiki/Installing-AIOStreams-for-KODI)**
-- **[AIOStreams Configuration](https://github.com/shiggsy365/AIOStreamsKODI/wiki/AIOStreams-Configuration)**
+Key Guides:
+- **[Installation & Setup](guides/INSTALLATION_WIZARD.md)**
+- **[Configuration Guide](guides/CONFIGURATION.md)**
+- **[Full Technical Installation](INSTALLATION.md)**
+- **[Architecture Overview](ARCHITECTURE.md)**
 
 ---
 
