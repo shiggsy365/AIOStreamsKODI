@@ -30,7 +30,6 @@ For detailed installation guides, configuration options, and advanced tips, plea
 Key Guides:
 - **[Installation & Setup](guides/INSTALLATION_WIZARD.md)**
 - **[Configuration Guide](guides/CONFIGURATION.md)**
-- **[Full Technical Installation](INSTALLATION.md)**
 - **[Architecture Overview](ARCHITECTURE.md)**
 
 ---
