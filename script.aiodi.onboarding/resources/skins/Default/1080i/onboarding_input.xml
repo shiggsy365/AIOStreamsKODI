@@ -1,238 +1,257 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <window>
-    <defaultcontrol always="true">5000</defaultcontrol>
+    <defaultcontrol always="true">10</defaultcontrol>
     <controls>
         <!-- Main Container -->
         <control type="group">
-            <left>240</left>
+            <left>0</left>
             <top>0</top>
-            <width>1440</width>
+            <width>1920</width>
             <height>1080</height>
 
             <!-- Background -->
             <control type="image">
-                <left>0</left>
-                <top>0</top>
-                <width>1440</width>
-                <height>1080</height>
+                <include>FullScreenDimensions</include>
                 <texture colordiffuse="FF000000">onboarding_bg.jpg</texture>
                 <aspectratio>stretch</aspectratio>
             </control>
 
-            <!-- Content Area -->
+            <!-- Dialog Glass Frame -->
             <control type="group">
-                <left>100</left>
-                <top>100</top>
-                <width>1240</width>
-                <height>880</height>
+                <top>140</top>
+                <centerleft>50%</centerleft>
+                <width>1600</width>
+                <height>800</height>
 
-                <!-- Help Header -->
+                <control type="image">
+                    <width>1600</width>
+                    <height>800</height>
+                    <texture border="40" colordiffuse="DD000000">buttons/dialogbutton-nofo.png</texture>
+                </control>
+
+                <!-- Header -->
                 <control type="label">
-                    <left>0</left>
-                    <top>0</top>
-                    <width>1240</width>
-                    <height>40</height>
-                    <font>font14</font>
-                    <label>Visit https://github.com/shiggsy365/AIOStreamsKODI if you need help</label>
-                    <textcolor>yellow</textcolor>
-                    <align>center</align>
+                    <left>40</left>
+                    <top>20</top>
+                    <width>1520</width>
+                    <height>50</height>
+                    <font>font30_title</font>
+                    <label>Integration Setup</label>
+                    <align>left</align>
                 </control>
 
-                <!-- Form Scrollable Area -->
-                <control type="grouplist" id="5000">
-                    <description>control area</description>
-                    <left>0</left>
-                    <top>60</top>
-                    <width>1200</width>
-                    <height>740</height>
-                    <itemgap>12</itemgap>
-                    <pagecontrol>60</pagecontrol>
+                <!-- Sidebar: Categories (ID 10) -->
+                <control type="list" id="10">
+                    <left>30</left>
+                    <top>100</top>
+                    <width>380</width>
+                    <height>600</height>
+                    <onright>20</onright>
+                    <onleft>9000</onleft>
+                    <onup>10</onup>
+                    <ondown>10</ondown>
+                    <pagecontrol>-</pagecontrol>
                     <scrolltime>200</scrolltime>
+                    <itemlayout height="80" width="380">
+                        <control type="label">
+                            <left>20</left>
+                            <top>0</top>
+                            <width>340</width>
+                            <height>80</height>
+                            <font>font13</font>
+                            <label>$INFO[ListItem.Label]</label>
+                            <textcolor>white</textcolor>
+                            <aligny>center</aligny>
+                        </control>
+                    </itemlayout>
+                    <focusedlayout height="80" width="380">
+                        <control type="image">
+                            <width>380</width>
+                            <height>80</height>
+                            <texture border="20">buttons/focus.png</texture>
+                        </control>
+                        <control type="label">
+                            <left>20</left>
+                            <top>0</top>
+                            <width>340</width>
+                            <height>80</height>
+                            <font>font13_title</font>
+                            <label>$INFO[ListItem.Label]</label>
+                            <textcolor>white</textcolor>
+                            <aligny>center</aligny>
+                        </control>
+                    </focusedlayout>
+                </control>
+
+                <!-- Center: Unified Settings Pane (ID 20) -->
+                <control type="group">
+                    <left>430</left>
+                    <top>100</top>
+                    <width>900</width>
+                    <height>660</height>
+
+                    <control type="image">
+                        <width>900</width>
+                        <height>660</height>
+                        <texture border="40" colordiffuse="40FFFFFF">buttons/dialogbutton-nofo.png</texture>
+                    </control>
+
+                    <control type="grouplist" id="20">
+                        <left>20</left><top>20</top><width>860</width><height>620</height><itemgap>10</itemgap><orientation>vertical</orientation>
+                        <onleft>10</onleft><onright>60</onright><onup>20</onup><ondown>20</ondown>
+                        <pagecontrol>60</pagecontrol>
+                        <scrolltime>200</scrolltime>
+
+                        <!-- AIOStreams Pane -->
+                        <control type="group">
+                            <width>860</width><height>460</height>
+                            <visible>String.IsEqual(Container(10).ListItem.Property(type),aiostreams)</visible>
+                            <control type="label"><width>860</width><height>40</height><font>font13_title</font><label>AIOStreams Configuration</label><textcolor>yellow</textcolor></control>
+                            <control type="grouplist">
+                                <left>0</left><top>40</top><width>860</width><height>420</height><itemgap>10</itemgap>
+                                <include content="OnboardingEditRow"><param name="id" value="10001"/><param name="label" value="Host Base URL"/></include>
+                                <include content="OnboardingEditRow"><param name="id" value="10002"/><param name="label" value="Instance UUID"/></include>
+                                <include content="OnboardingEditRow"><param name="id" value="10003"/><param name="label" value="Password"/></include>
+                                <control type="group"><width>860</width><height>70</height>
+                                    <control type="label"><left>0</left><width>300</width><height>70</height><label>Behavior</label></control>
+                                    <control type="button" id="10004"><left>310</left><width>500</width><height>60</height><label>show_streams</label><texturefocus border="20">buttons/focus.png</texturefocus></control>
+                                </control>
+                                <include content="OnboardingEditRow"><param name="id" value="10005"/><param name="label" value="Subtitles"/></include>
+                                <control type="group" id="10007"><width>860</width><height>70</height>
+                                    <control type="label"><left>0</left><width>300</width><height>70</height><label>UpNext</label></control>
+                                    <control type="radiobutton" id="10006"><left>310</left><width>500</width><height>60</height><label>-</label><texturefocus border="20">buttons/focus.png</texturefocus></control>
+                                </control>
+                            </control>
+                        </control>
+
+                        <!-- Trakt Pane -->
+                        <control type="group">
+                            <width>860</width><height>180</height>
+                            <visible>String.IsEqual(Container(10).ListItem.Property(type),trakt)</visible>
+                            <control type="label"><width>860</width><height>40</height><font>font13_title</font><label>Trakt Configuration</label><textcolor>yellow</textcolor></control>
+                            <control type="grouplist">
+                                <left>0</left><top>40</top><width>860</width><height>140</height><itemgap>10</itemgap>
+                                <include content="OnboardingEditRow"><param name="id" value="11001"/><param name="label" value="Client ID"/></include>
+                                <include content="OnboardingEditRow"><param name="id" value="11002"/><param name="label" value="Client Secret"/></include>
+                            </control>
+                        </control>
+
+                        <!-- YouTube Pane -->
+                        <control type="group">
+                            <width>860</width><height>250</height>
+                            <visible>String.IsEqual(Container(10).ListItem.Property(type),youtube)</visible>
+                            <control type="label"><width>860</width><height>40</height><font>font13_title</font><label>YouTube Configuration</label><textcolor>yellow</textcolor></control>
+                            <control type="grouplist">
+                                <left>0</left><top>40</top><width>860</width><height>210</height><itemgap>10</itemgap>
+                                <include content="OnboardingEditRow"><param name="id" value="12001"/><param name="label" value="API Key"/></include>
+                                <include content="OnboardingEditRow"><param name="id" value="12002"/><param name="label" value="API ID"/></include>
+                                <include content="OnboardingEditRow"><param name="id" value="12003"/><param name="label" value="API Secret"/></include>
+                            </control>
+                        </control>
+
+                        <!-- IPTV Pane -->
+                        <control type="group">
+                            <width>860</width><height>180</height>
+                            <visible>String.IsEqual(Container(10).ListItem.Property(type),iptv)</visible>
+                            <control type="label"><width>860</width><height>40</height><font>font13_title</font><label>IPTV Simple Configuration</label><textcolor>yellow</textcolor></control>
+                            <control type="grouplist">
+                                <left>0</left><top>40</top><width>860</width><height>140</height><itemgap>10</itemgap>
+                                <include content="OnboardingEditRow"><param name="id" value="13001"/><param name="label" value="M3U URL"/></include>
+                                <include content="OnboardingEditRow"><param name="id" value="13002"/><param name="label" value="EPG URL"/></include>
+                            </control>
+                        </control>
+
+                        <!-- IMVDb Pane -->
+                        <control type="group">
+                            <width>860</width><height>110</height>
+                            <visible>String.IsEqual(Container(10).ListItem.Property(type),imvdb)</visible>
+                            <control type="label"><width>860</width><height>40</height><font>font13_title</font><label>IMVDb Configuration</label><textcolor>yellow</textcolor></control>
+                            <control type="grouplist">
+                                <left>0</left><top>40</top><width>860</width><height>70</height><itemgap>10</itemgap>
+                                <include content="OnboardingEditRow"><param name="id" value="14001"/><param name="label" value="API Key"/></include>
+                            </control>
+                        </control>
+                    </control>
+
+                    <!-- Scrollbar (ID 60) -->
+                    <control type="scrollbar" id="60">
+                        <left>885</left><top>20</top><width>12</width><height>620</height>
+                        <onleft>20</onleft><onright>9000</onright>
+                        <orientation>vertical</orientation>
+                    </control>
+                </control>
+
+                <!-- Right Side: Action Buttons (ID 9000) -->
+                <control type="grouplist" id="9000">
+                    <right>30</right>
+                    <top>100</top>
+                    <width>220</width>
+                    <height>600</height>
+                    <itemgap>20</itemgap>
                     <orientation>vertical</orientation>
-                    <onright>60</onright>
-                    <onup>5000</onup>
-                    <ondown>9000</ondown>
-
-                    <!-- AIOStreams Section -->
-                    <control type="group" id="10000">
-                        <width>1200</width>
-                        <height>40</height>
-                        <control type="label">
-                            <width>1200</width>
-                            <height>40</height>
-                            <font>font13_title</font>
-                            <label>AIOStreams Plugin Configuration</label>
-                            <textcolor>grey</textcolor>
-                        </control>
-                    </control>
-                    <control type="group">
-                        <width>1200</width>
-                        <height>60</height>
-                        <control type="label"><left>20</left><width>400</width><height>60</height><label>Host Base URL</label></control>
-                        <control type="edit" id="10001"><left>420</left><width>760</width><height>60</height><font>font12</font><label>-</label><texturefocus border="5">buttons/focus.png</texturefocus></control>
-                    </control>
-                    <control type="group">
-                        <width>1200</width>
-                        <height>60</height>
-                        <control type="label"><left>20</left><width>400</width><height>60</height><label>Instance UUID</label></control>
-                        <control type="edit" id="10002"><left>420</left><width>760</width><height>60</height><font>font12</font><label>-</label><texturefocus border="5">buttons/focus.png</texturefocus></control>
-                    </control>
-                    <control type="group">
-                        <width>1200</width>
-                        <height>60</height>
-                        <control type="label"><left>20</left><width>400</width><height>60</height><label>Instance Password</label></control>
-                        <control type="edit" id="10003"><left>420</left><width>760</width><height>60</height><font>font12</font><label>-</label><texturefocus border="5">buttons/focus.png</texturefocus></control>
-                    </control>
-                    <control type="group">
-                        <width>1200</width>
-                        <height>60</height>
-                        <control type="label"><left>20</left><width>400</width><height>60</height><label>Default Episode Action</label></control>
-                        <control type="button" id="10004"><left>420</left><width>400</width><height>60</height><font>font12</font><label>show_streams</label><texturefocus border="20">buttons/focus.png</texturefocus></control>
-                    </control>
-                    <control type="group">
-                        <width>1200</width>
-                        <height>60</height>
-                        <control type="label"><left>20</left><width>400</width><height>60</height><label>Subtitle Languages (eng,spa)</label></control>
-                        <control type="edit" id="10005"><left>420</left><width>760</width><height>60</height><font>font12</font><label>-</label><texturefocus border="5">buttons/focus.png</texturefocus></control>
-                    </control>
-                    <control type="group" id="10007">
-                        <width>1200</width>
-                        <height>60</height>
-                        <control type="label"><left>20</left><width>400</width><height>60</height><label>Enable UpNext Integration</label></control>
-                        <control type="radiobutton" id="10006"><left>420</left><width>200</width><height>60</height><font>font12</font><label>-</label><texturefocus border="20">buttons/focus.png</texturefocus></control>
-                    </control>
-
-                    <!-- Trakt Section -->
-                    <control type="group" id="11000">
-                        <width>1200</width>
-                        <height>40</height>
-                        <control type="label">
-                            <width>1200</width>
-                            <height>40</height>
-                            <font>font13_title</font>
-                            <label>Trakt Integration Configuration</label>
-                            <textcolor>grey</textcolor>
-                        </control>
-                    </control>
-                    <control type="group">
-                        <width>1200</width>
-                        <height>60</height>
-                        <control type="label"><left>20</left><width>400</width><height>60</height><label>Client ID</label></control>
-                        <control type="edit" id="11001"><left>420</left><width>760</width><height>60</height><font>font12</font><label>-</label><texturefocus border="5">buttons/focus.png</texturefocus></control>
-                    </control>
-                    <control type="group">
-                        <width>1200</width>
-                        <height>60</height>
-                        <control type="label"><left>20</left><width>400</width><height>60</height><label>Client Secret</label></control>
-                        <control type="edit" id="11002"><left>420</left><width>760</width><height>60</height><font>font12</font><label>-</label><texturefocus border="5">buttons/focus.png</texturefocus></control>
-                    </control>
-
-                    <!-- YouTube Section -->
-                    <control type="group" id="12000">
-                        <width>1200</width>
-                        <height>40</height>
-                        <control type="label">
-                            <width>1200</width>
-                            <height>40</height>
-                            <font>font13_title</font>
-                            <label>YouTube Integration Configuration</label>
-                            <textcolor>grey</textcolor>
-                        </control>
-                    </control>
-                    <control type="group">
-                        <width>1200</width>
-                        <height>60</height>
-                        <control type="label"><left>20</left><width>400</width><height>60</height><label>API Key</label></control>
-                        <control type="edit" id="12001"><left>420</left><width>760</width><height>60</height><font>font12</font><label>-</label><texturefocus border="5">buttons/focus.png</texturefocus></control>
-                    </control>
-                    <control type="group">
-                        <width>1200</width>
-                        <height>60</height>
-                        <control type="label"><left>20</left><width>400</width><height>60</height><label>API ID</label></control>
-                        <control type="edit" id="12002"><left>420</left><width>760</width><height>60</height><font>font12</font><label>-</label><texturefocus border="5">buttons/focus.png</texturefocus></control>
-                    </control>
-                    <control type="group">
-                        <width>1200</width>
-                        <height>60</height>
-                        <control type="label"><left>20</left><width>400</width><height>60</height><label>API Secret</label></control>
-                        <control type="edit" id="12003"><left>420</left><width>760</width><height>60</height><font>font12</font><label>-</label><texturefocus border="5">buttons/focus.png</texturefocus></control>
-                    </control>
-
-                    <!-- IPTV Section -->
-                    <control type="group" id="13000">
-                        <width>1200</width>
-                        <height>40</height>
-                        <control type="label">
-                            <width>1200</width>
-                            <height>40</height>
-                            <font>font13_title</font>
-                            <label>IPTV Simple Configuration</label>
-                            <textcolor>grey</textcolor>
-                        </control>
-                    </control>
-                    <control type="group">
-                        <width>1200</width>
-                        <height>60</height>
-                        <control type="label"><left>20</left><width>400</width><height>60</height><label>M3U URL</label></control>
-                        <control type="edit" id="13001"><left>420</left><width>760</width><height>60</height><font>font12</font><label>-</label><texturefocus border="5">buttons/focus.png</texturefocus></control>
-                    </control>
-                    <control type="group">
-                        <width>1200</width>
-                        <height>60</height>
-                        <control type="label"><left>20</left><width>400</width><height>60</height><label>EPG URL</label></control>
-                        <control type="edit" id="13002"><left>420</left><width>760</width><height>60</height><font>font12</font><label>-</label><texturefocus border="5">buttons/focus.png</texturefocus></control>
-                    </control>
-
-                    <!-- IMVDb Section -->
-                    <control type="group" id="14000">
-                        <width>1200</width>
-                        <height>40</height>
-                        <control type="label">
-                            <width>1200</width>
-                            <height>40</height>
-                            <font>font13_title</font>
-                            <label>IMVDb Configuration</label>
-                            <textcolor>grey</textcolor>
-                        </control>
-                    </control>
-                    <control type="group">
-                        <width>1200</width>
-                        <height>60</height>
-                        <control type="label"><left>20</left><width>400</width><height>60</height><label>API Key</label></control>
-                        <control type="edit" id="14001"><left>420</left><width>760</width><height>60</height><font>font12</font><label>-</label><texturefocus border="5">buttons/focus.png</texturefocus></control>
-                    </control>
-
-                    <!-- Bottom Spacer -->
-                    <control type="group">
-                        <width>1200</width>
+                    <onleft>20</onleft>
+                    <onright>10</onright>
+                    <control type="button" id="9000">
+                        <width>220</width>
                         <height>100</height>
+                        <font>font13_title</font>
+                        <label>INSTALL</label>
+                        <align>center</align>
+                        <texturefocus border="20">buttons/focus.png</texturefocus>
+                    </control>
+                    <control type="button" id="9001">
+                        <width>220</width>
+                        <height>100</height>
+                        <font>font13_title</font>
+                        <label>CANCEL</label>
+                        <align>center</align>
+                        <texturefocus border="20">buttons/focus.png</texturefocus>
                     </control>
                 </control>
 
-                <!-- Scrollbar -->
-                <control type="scrollbar" id="60">
-                    <left>1210</left>
-                    <top>60</top>
-                    <width>12</width>
-                    <height>740</height>
-                    <onleft>5000</onleft>
-                    <onright>9000</onright>
-                    <orientation>vertical</orientation>
-                </control>
-
-                <!-- Footer Button -->
-                <control type="button" id="9000">
-                    <left>420</left>
-                    <top>810</top>
-                    <width>400</width>
+                <!-- Help Footer -->
+                <control type="textbox">
+                    <left>40</left>
+                    <bottom>20</bottom>
+                    <width>1520</width>
                     <height>60</height>
-                    <label>Start Installation</label>
+                    <font>font12</font>
+                    <label>Select a category on the left to configure. When ready, click INSTALL on the right.</label>
+                    <textcolor>grey</textcolor>
                     <align>center</align>
-                    <onup>5000</onup>
-                    <texturefocus border="5">buttons/focus.png</texturefocus>
-                    <texturenofocus>-</texturenofocus>
                 </control>
             </control>
         </control>
     </controls>
+
+    <include name="OnboardingEditRow">
+        <param name="id" value="0"/>
+        <param name="label" value="Setting"/>
+        <definition>
+            <control type="group">
+                <width>860</width>
+                <height>70</height>
+                <control type="label">
+                    <left>0</left>
+                    <top>0</top>
+                    <width>300</width>
+                    <height>70</height>
+                    <font>font12</font>
+                    <label>$PARAM[label]</label>
+                    <textcolor>white</textcolor>
+                    <aligny>center</aligny>
+                </control>
+                <control type="edit" id="$PARAM[id]">
+                    <left>310</left>
+                    <top>5</top>
+                    <width>540</width>
+                    <height>60</height>
+                    <font>font12</font>
+                    <label>-</label>
+                    <texturefocus border="5">buttons/focus.png</texturefocus>
+                    <texturenofocus border="5" colordiffuse="40FFFFFF">colors/white.png</texturenofocus>
+                </control>
+            </control>
+        </definition>
+    </include>
 </window>

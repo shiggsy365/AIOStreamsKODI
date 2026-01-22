@@ -56,27 +56,46 @@ class InputWindow(xbmcgui.WindowXMLDialog):
         self.cancelled = True
 
     def onInit(self):
-        # Hide sections not selected
-        if not self.selections.get('youtube'): self.getControl(12000).setVisible(False)
-        if not self.selections.get('iptv'): self.getControl(13000).setVisible(False)
-        if not self.selections.get('imvdb'): self.getControl(14000).setVisible(False)
+        # Populate Category List (ID 10)
+        list_ctrl = self.getControl(10)
+        list_ctrl.reset()
         
-        # UpNext field in AIOStreams section
-        if not self.selections.get('upnext'):
-            self.getControl(10007).setVisible(False)
-            self.getControl(10006).setSelected(False)
-        else:
-            self.getControl(10006).setSelected(True)
+        cats = [
+            ('AIOStreams', 'aiostreams'),
+            ('Trakt', 'trakt')
+        ]
+        if self.selections.get('youtube'): cats.append(('YouTube', 'youtube'))
+        if self.selections.get('iptv'): cats.append(('IPTV Simple', 'iptv'))
+        if self.selections.get('imvdb'): cats.append(('IMVDb', 'imvdb'))
+        
+        for label, type_name in cats:
+            item = xbmcgui.ListItem(label)
+            item.setProperty('type', type_name)
+            list_ctrl.addItem(item)
+
+        # Focus management
+        self.setFocusId(10)
+
+    def onAction(self, action):
+        # Handle Back button
+        if action.getId() in [92, 10, 13]: # Back, PreviousMenu, Stop
+            self.close()
 
     def onClick(self, controlId):
+        if controlId == 10: # Category focused - handled by XML <visible> conditions
+            pass
+            
         if controlId == 10004: # Default Behavior
             current = self.getControl(10004).getLabel()
             new_val = "play_first" if current == "show_streams" else "show_streams"
             self.getControl(10004).setLabel(new_val)
             
-        if controlId == 9000: # Start Installation
+        if controlId == 9000: # Install Selected
             self.collect_data()
             self.cancelled = False
+            self.close()
+            
+        if controlId == 9001: # Cancel
             self.close()
 
     def collect_data(self):
