@@ -131,7 +131,6 @@ class InputWindow(xbmcgui.WindowXMLDialog):
                 self.getControl(14001).setText(self.cache['imvdb_key'])
 
             self.refresh_tabs()
-            self.setFocusId(3)
         except Exception as e:
             xbmc.log(f'[Onboarding] Error in onInit: {e}', xbmc.LOGERROR)
 
@@ -438,6 +437,7 @@ def run_installer(selections, data):
             progress.create("AIODI Setup", "Continuing installation...")
 
     # 8. If requested install AIODI skin, and switch to it
+    xbmc.log(f'[Onboarding] Checking skin installation - selections.get("skin"): {selections.get("skin")}', xbmc.LOGINFO)
     if selections.get('skin'):
         xbmc.log('[Onboarding] Skin installation requested', xbmc.LOGINFO)
         # First install the skin if not already installed
@@ -445,13 +445,14 @@ def run_installer(selections, data):
             xbmc.log('[Onboarding] Skin installed successfully, switching...', xbmc.LOGINFO)
             progress.update(99, "Switching to AIODI Skin...")
             xbmc.executebuiltin('Skin.SetString(first_run,done)')  # Mark first run as complete
-            time.sleep(1)
+            time.sleep(2)
             xbmc.executebuiltin('SetSkin(skin.AIODI)')
+            xbmc.log('[Onboarding] SetSkin command issued', xbmc.LOGINFO)
         else:
             xbmc.log('[Onboarding] Skin installation failed or timed out', xbmc.LOGERROR)
             xbmcgui.Dialog().notification("Setup Warning", "AIODI skin installation failed", xbmcgui.NOTIFICATION_WARNING)
     else:
-        xbmc.log('[Onboarding] Skin installation not requested', xbmc.LOGINFO)
+        xbmc.log('[Onboarding] Skin installation not requested (selections.get("skin") returned False/None)', xbmc.LOGINFO)
 
     progress.update(100, "Setup complete!")
     time.sleep(2)
