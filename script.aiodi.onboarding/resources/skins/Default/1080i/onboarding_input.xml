@@ -47,7 +47,9 @@
                     <itemgap>12</itemgap>
                     <scrolltime>200</scrolltime>
                     <orientation>vertical</orientation>
+                    <pagecontrol>60</pagecontrol>
                     <onright>60</onright>
+                    <onup>5000</onup>
                     <ondown>9000</ondown>
 
                     <!-- AIOStreams Section -->
