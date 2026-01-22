@@ -86,8 +86,8 @@
                 <height>700</height>
                 <onleft>3</onleft>
                 <onright>9500</onright>
-                <onup>noop</onup>
-                <ondown>noop</ondown>
+                <onup>5</onup>
+                <ondown>5</ondown>
                 <pagecontrol>60</pagecontrol>
                 <itemgap>0</itemgap>
                 <scrolltime>200</scrolltime>
