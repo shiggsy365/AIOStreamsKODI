@@ -31,7 +31,7 @@
                 <top>80</top>
                 <width>400</width>
                 <height>740</height>
-                <onleft>9000</onleft>
+                <onleft>9500</onleft>
                 <onright>5</onright>
                 <onup>3</onup>
                 <ondown>3</ondown>
@@ -85,11 +85,81 @@
                 <width>1080</width>
                 <height>700</height>
                 <onleft>3</onleft>
-                <onright>9000</onright>
+                <onright>9500</onright>
                 <onup>5</onup>
                 <ondown>5</ondown>
                 <itemgap>0</itemgap>
                 <scrolltime>200</scrolltime>
+
+                <!-- Modules (Selection) Tab -->
+                <control type="label" id="10050">
+                    <include>DefaultSettingLabel</include>
+                    <width>1080</width>
+                    <label>REQUIRED COMPONENTS</label>
+                    <visible>String.IsEqual(Container(3).ListItem.Property(type),modules)</visible>
+                </control>
+                <control type="radiobutton" id="10101">
+                    <width>1080</width><height>70</height>
+                    <include>DefaultSettingButton</include>
+                    <label>AIOStreams (Required)</label>
+                    <visible>String.IsEqual(Container(3).ListItem.Property(type),modules)</visible>
+                </control>
+                <control type="radiobutton" id="10102">
+                    <width>1080</width><height>70</height>
+                    <include>DefaultSettingButton</include>
+                    <label>Trakt integration (Required)</label>
+                    <visible>String.IsEqual(Container(3).ListItem.Property(type),modules)</visible>
+                </control>
+                
+                <control type="label" id="10051">
+                    <include>DefaultSettingLabel</include>
+                    <width>1080</width>
+                    <label>SUGGESTED COMPONENTS</label>
+                    <visible>String.IsEqual(Container(3).ListItem.Property(type),modules)</visible>
+                </control>
+                <control type="radiobutton" id="10103">
+                    <width>1080</width><height>70</height>
+                    <include>DefaultSettingButton</include>
+                    <label>AIODI skin</label>
+                    <visible>String.IsEqual(Container(3).ListItem.Property(type),modules)</visible>
+                </control>
+                <control type="radiobutton" id="10104">
+                    <width>1080</width><height>70</height>
+                    <include>DefaultSettingButton</include>
+                    <label>YouTube plugin</label>
+                    <visible>String.IsEqual(Container(3).ListItem.Property(type),modules)</visible>
+                </control>
+                <control type="radiobutton" id="10105">
+                    <width>1080</width><height>70</height>
+                    <include>DefaultSettingButton</include>
+                    <label>NextUp Episodes</label>
+                    <visible>String.IsEqual(Container(3).ListItem.Property(type),modules)</visible>
+                </control>
+
+                <control type="label" id="10052">
+                    <include>DefaultSettingLabel</include>
+                    <width>1080</width>
+                    <label>OPTIONAL COMPONENTS</label>
+                    <visible>String.IsEqual(Container(3).ListItem.Property(type),modules)</visible>
+                </control>
+                <control type="radiobutton" id="10106">
+                    <width>1080</width><height>70</height>
+                    <include>DefaultSettingButton</include>
+                    <label>IPTV Simple Player</label>
+                    <visible>String.IsEqual(Container(3).ListItem.Property(type),modules)</visible>
+                </control>
+                <control type="radiobutton" id="10107">
+                    <width>1080</width><height>70</height>
+                    <include>DefaultSettingButton</include>
+                    <label>IMVDb Music Videos</label>
+                    <visible>String.IsEqual(Container(3).ListItem.Property(type),modules)</visible>
+                </control>
+                <control type="radiobutton" id="10108">
+                    <width>1080</width><height>70</height>
+                    <include>DefaultSettingButton</include>
+                    <label>TMDb Helper Players</label>
+                    <visible>String.IsEqual(Container(3).ListItem.Property(type),modules)</visible>
+                </control>
 
                 <!-- AIOStreams Configuration -->
                 <control type="label" id="10000">
@@ -216,8 +286,8 @@
                 </control>
             </control>
 
-            <!-- Action Buttons (ID 9000) -->
-            <control type="grouplist" id="9000">
+            <!-- Action Buttons (ID 9500) -->
+            <control type="grouplist" id="9500">
                 <left>1510</left>
                 <top>92</top>
                 <orientation>vertical</orientation>
@@ -227,11 +297,11 @@
                 <onleft>5</onleft>
                 <onright>3</onright>
                 <include content="DefaultDialogButton">
-                    <param name="id" value="9000" />
+                    <param name="id" value="9010" />
                     <param name="label" value="INSTALL" />
                 </include>
                 <include content="DefaultDialogButton">
-                    <param name="id" value="9001" />
+                    <param name="id" value="9011" />
                     <param name="label" value="CANCEL" />
                 </include>
             </control>

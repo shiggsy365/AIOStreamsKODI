@@ -51,19 +51,40 @@ class OnboardingWindow(xbmcgui.WindowXMLDialog):
 class InputWindow(xbmcgui.WindowXMLDialog):
     def __init__(self, *args, **kwargs):
         super(InputWindow, self).__init__(*args, **kwargs)
-        self.selections = kwargs.get('selections', {})
+        # Initialize selections with defaults
+        self.selections = {
+            'aiostreams': True,
+            'trakt': True,
+            'skin': True,
+            'youtube': False,
+            'upnext': True,
+            'iptv': False,
+            'imvdb': False,
+            'tmdbh': True
+        }
         self.data = {}
         self.cancelled = True
 
     def onInit(self):
-        # Populate Category List (ID 3)
+        # Initial radio button states for Modules tab
+        self.getControl(10101).setSelected(True) # AIOStreams
+        self.getControl(10102).setSelected(True) # Trakt
+        self.getControl(10103).setSelected(self.selections['skin'])
+        self.getControl(10104).setSelected(self.selections['youtube'])
+        self.getControl(10105).setSelected(self.selections['upnext'])
+        self.getControl(10106).setSelected(self.selections['iptv'])
+        self.getControl(10107).setSelected(self.selections['imvdb'])
+        self.getControl(10108).setSelected(self.selections['tmdbh'])
+        
+        self.refresh_tabs()
+        self.setFocusId(3)
+
+    def refresh_tabs(self):
         list_ctrl = self.getControl(3)
+        current_sel = list_ctrl.getSelectedPosition()
         list_ctrl.reset()
         
-        cats = [
-            ('AIOStreams', 'aiostreams'),
-            ('Trakt', 'trakt')
-        ]
+        cats = [('Modules', 'modules'), ('AIOStreams', 'aiostreams'), ('Trakt', 'trakt')]
         if self.selections.get('youtube'): cats.append(('YouTube', 'youtube'))
         if self.selections.get('iptv'): cats.append(('IPTV Simple', 'iptv'))
         if self.selections.get('imvdb'): cats.append(('IMVDb', 'imvdb'))
@@ -72,27 +93,43 @@ class InputWindow(xbmcgui.WindowXMLDialog):
             item = xbmcgui.ListItem(label)
             item.setProperty('type', type_name)
             list_ctrl.addItem(item)
-
-        # Focus management
-        self.setFocusId(3)
+            
+        if current_sel >= 0:
+            list_ctrl.selectItem(current_sel)
 
     def onAction(self, action):
-        # Handle Back button
         if action.getId() in [92, 10, 13]: # Back, PreviousMenu, Stop
             self.close()
 
     def onClick(self, controlId):
+        # Module Toggles
+        if controlId == 10101 or controlId == 10102:
+            self.getControl(controlId).setSelected(True) # Required
+        
+        elif controlId == 10103: self.selections['skin'] = self.getControl(10103).isSelected()
+        elif controlId == 10104: 
+            self.selections['youtube'] = self.getControl(10104).isSelected()
+            self.refresh_tabs()
+        elif controlId == 10105: self.selections['upnext'] = self.getControl(10105).isSelected()
+        elif controlId == 10106: 
+            self.selections['iptv'] = self.getControl(10106).isSelected()
+            self.refresh_tabs()
+        elif controlId == 10107: 
+            self.selections['imvdb'] = self.getControl(10107).isSelected()
+            self.refresh_tabs()
+        elif controlId == 10108: self.selections['tmdbh'] = self.getControl(10108).isSelected()
+
         if controlId == 10004: # Default Behavior
             current = self.getControl(10004).getLabel().split(": ")[-1]
             new_val = "play_first" if current == "show_streams" else "show_streams"
             self.getControl(10004).setLabel(f"Default Behavior: {new_val}")
             
-        if controlId == 9000: # Install Selected
+        if controlId == 9010: # Install Selected
             self.collect_data()
             self.cancelled = False
             self.close()
             
-        if controlId == 9001: # Cancel
+        if controlId == 9011: # Cancel
             self.close()
 
     def collect_data(self):
@@ -148,22 +185,16 @@ def run_installer(selections, data):
     xbmc.executebuiltin('RunPlugin(plugin://plugin.video.aiostreams/?action=retrieve_manifest)')
     # Wait a bit for manifest
     time.sleep(2)
-    # Start Trakt Auth - this will show a window property when done or wait for user?
-    # User needs to interact. We should show a notification.
     xbmc.executebuiltin('RunPlugin(plugin://plugin.video.aiostreams/?action=trakt_auth)')
 
-    # 2. Addon Installs (Simulated or via Builtins)
+    # 2. Addon Installs
     def install_builtin(addon_id):
         xbmc.executebuiltin(f'InstallAddon({addon_id})')
-        # We can't easily wait for completion without polling.
-        # For onboarding, we'll assume it starts.
 
     if selections.get('youtube'):
         progress.update(50, "Installing YouTube...")
         install_builtin('plugin.video.youtube')
         time.sleep(2)
-        # Note: Setting configuration for 3rd party addons might require 
-        # the addon to be finished installing. We might need a monitor.
         try:
             yt = xbmcaddon.Addon('plugin.video.youtube')
             yt.setSetting('general.setupwizard', 'false')
@@ -202,9 +233,7 @@ def run_installer(selections, data):
         try:
             import xbmcvfs
             src = os.path.join(os.path.dirname(ADDON_PATH), "TMDB Helper Players", "tmdbhelper-players.zip")
-            # If not in parallel directory, try root of repo (development case)
             if not xbmcvfs.exists(src):
-                # Fallback to current workspace path if known or just relative
                 src = "/home/jon/Downloads/AIOStreamsKODI/AIOStreamsKODI/TMDB Helper Players/tmdbhelper-players.zip"
             
             dst = "special://home/tmdbhelper-players.zip"
@@ -215,9 +244,6 @@ def run_installer(selections, data):
     if selections.get('skin'):
         progress.update(95, "Switching to AIODI Skin...")
         xbmc.executebuiltin('SetProperty(SkinSwitched,True,Home)')
-        xbmc.executebuiltin('ReplaceWindow(settings)') # Workaround to trigger skin change?
-        xbmc.executebuiltin('SendClick(11)') # Switch skin? 
-        # Better: xbmc.executebuiltin('SetSkin(skin.AIODI)')
         xbmc.executebuiltin('SetSkin(skin.AIODI)')
 
     progress.update(100, "Setup complete!")
@@ -225,25 +251,22 @@ def run_installer(selections, data):
     progress.close()
 
 def run():
-    # 1. Selection Window
-    ui = OnboardingWindow('onboarding.xml', ADDON_PATH, 'Default', '1080i')
-    ui.doModal()
-    selections = ui.selections
-    del ui
-    
-    if not selections: return
-
-    # 2. Input Window
-    form = InputWindow('onboarding_input.xml', ADDON_PATH, 'Default', '1080i', selections=selections)
+    # Launch consolidated Input Window directly
+    form = InputWindow('onboarding_input.xml', ADDON_PATH, 'Default', '1080i')
     form.doModal()
     data = form.data
+    selections = form.selections
     cancelled = form.cancelled
     del form
     
     if cancelled: return
 
-    # 3. Installation
+    # Installation
     run_installer(selections, data)
+
+if __name__ == '__main__':
+    run()
+
 
 if __name__ == '__main__':
     run()
