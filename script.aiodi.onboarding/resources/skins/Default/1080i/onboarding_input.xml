@@ -98,15 +98,31 @@
                     <control type="label"><include>DefaultSettingLabel</include><width>1080</width><label>AIOStreams Configuration</label></control>
                     <control type="grouplist">
                         <left>0</left><top>50</top><width>1080</width><height>410</height>
-                        <include content="NativeSettingRow"><param name="id" value="10001"/><param name="label" value="Host Base URL"/></include>
-                        <include content="NativeSettingRow"><param name="id" value="10002"/><param name="label" value="Instance UUID"/></include>
-                        <include content="NativeSettingRow"><param name="id" value="10003"/><param name="label" value="Password"/></include>
+                        <control type="edit" id="10001">
+                            <width>1080</width><height>70</height>
+                            <include>DefaultSettingButton</include>
+                            <label>Host Base URL</label>
+                        </control>
+                        <control type="edit" id="10002">
+                            <width>1080</width><height>70</height>
+                            <include>DefaultSettingButton</include>
+                            <label>Instance UUID</label>
+                        </control>
+                        <control type="edit" id="10003">
+                            <width>1080</width><height>70</height>
+                            <include>DefaultSettingButton</include>
+                            <label>Password</label>
+                        </control>
                         <control type="button" id="10004">
                             <width>1080</width><height>70</height>
                             <include>DefaultSettingButton</include>
                             <label>Default Behavior: show_streams</label>
                         </control>
-                        <include content="NativeSettingRow"><param name="id" value="10005"/><param name="label" value="Subtitles (eng,spa)"/></include>
+                        <control type="edit" id="10005">
+                            <width>1080</width><height>70</height>
+                            <include>DefaultSettingButton</include>
+                            <label>Subtitles (eng,spa)</label>
+                        </control>
                         <control type="radiobutton" id="10006">
                             <width>1080</width><height>70</height>
                             <include>DefaultSettingButton</include>
@@ -122,8 +138,16 @@
                     <control type="label"><include>DefaultSettingLabel</include><width>1080</width><label>Trakt Configuration</label></control>
                     <control type="grouplist">
                         <left>0</left><top>50</top><width>1080</width><height>140</height>
-                        <include content="NativeSettingRow"><param name="id" value="11001"/><param name="label" value="Client ID"/></include>
-                        <include content="NativeSettingRow"><param name="id" value="11002"/><param name="label" value="Client Secret"/></include>
+                        <control type="edit" id="11001">
+                            <width>1080</width><height>70</height>
+                            <include>DefaultSettingButton</include>
+                            <label>Client ID</label>
+                        </control>
+                        <control type="edit" id="11002">
+                            <width>1080</width><height>70</height>
+                            <include>DefaultSettingButton</include>
+                            <label>Client Secret</label>
+                        </control>
                     </control>
                 </control>
 
@@ -134,9 +158,21 @@
                     <control type="label"><include>DefaultSettingLabel</include><width>1080</width><label>YouTube Configuration</label></control>
                     <control type="grouplist">
                         <left>0</left><top>50</top><width>1080</width><height>210</height>
-                        <include content="NativeSettingRow"><param name="id" value="12001"/><param name="label" value="API Key"/></include>
-                        <include content="NativeSettingRow"><param name="id" value="12002"/><param name="label" value="API ID"/></include>
-                        <include content="NativeSettingRow"><param name="id" value="12003"/><param name="label" value="API Secret"/></include>
+                        <control type="edit" id="12001">
+                            <width>1080</width><height>70</height>
+                            <include>DefaultSettingButton</include>
+                            <label>API Key</label>
+                        </control>
+                        <control type="edit" id="12002">
+                            <width>1080</width><height>70</height>
+                            <include>DefaultSettingButton</include>
+                            <label>API ID</label>
+                        </control>
+                        <control type="edit" id="12003">
+                            <width>1080</width><height>70</height>
+                            <include>DefaultSettingButton</include>
+                            <label>API Secret</label>
+                        </control>
                     </control>
                 </control>
 
@@ -147,8 +183,16 @@
                     <control type="label"><include>DefaultSettingLabel</include><width>1080</width><label>IPTV Simple Configuration</label></control>
                     <control type="grouplist">
                         <left>0</left><top>50</top><width>1080</width><height>140</height>
-                        <include content="NativeSettingRow"><param name="id" value="13001"/><param name="label" value="M3U URL"/></include>
-                        <include content="NativeSettingRow"><param name="id" value="13002"/><param name="label" value="EPG URL"/></include>
+                        <control type="edit" id="13001">
+                            <width>1080</width><height>70</height>
+                            <include>DefaultSettingButton</include>
+                            <label>M3U URL</label>
+                        </control>
+                        <control type="edit" id="13002">
+                            <width>1080</width><height>70</height>
+                            <include>DefaultSettingButton</include>
+                            <label>EPG URL</label>
+                        </control>
                     </control>
                 </control>
 
@@ -159,7 +203,11 @@
                     <control type="label"><include>DefaultSettingLabel</include><width>1080</width><label>IMVDb Configuration</label></control>
                     <control type="grouplist">
                         <left>0</left><top>50</top><width>1080</width><height>70</height>
-                        <include content="NativeSettingRow"><param name="id" value="14001"/><param name="label" value="API Key"/></include>
+                        <control type="edit" id="14001">
+                            <width>1080</width><height>70</height>
+                            <include>DefaultSettingButton</include>
+                            <label>API Key</label>
+                        </control>
                     </control>
                 </control>
             </control>
@@ -197,17 +245,5 @@
         </control>
     </controls>
 
-    <!-- Native-looking row include -->
-    <include name="NativeSettingRow">
-        <param name="id" value="0"/>
-        <param name="label" value="Setting"/>
-        <definition>
-            <control type="edit" id="$PARAM[id]">
-                <width>1080</width>
-                <height>70</height>
-                <include>DefaultSettingButton</include>
-                <label>$PARAM[label]</label>
-            </control>
-        </definition>
-    </include>
+
 </window>

@@ -77,7 +77,8 @@ class InputWindow(xbmcgui.WindowXMLDialog):
             list_ctrl.addItem(item)
 
         # Focus management
-        self.setFocusId(3)
+        if list_ctrl.size() > 0:
+            self.setFocusId(3)
 
     def onAction(self, action):
         # Handle Back button
