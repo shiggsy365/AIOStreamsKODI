@@ -48,16 +48,17 @@ To receive automatic updates, add the official repository to your Kodi:
 ### 2. Install Plugin and Skin
 1.  Go to **Settings > Add-ons > Install from repository**.
 2.  Select **AIOStreams Repository**.
-3.  Go to **Video add-ons** and install **AIOStreams**.
-4.  (Optional but recommended) Go to **Look and feel > Skin** and install **AIODI**.
+3.  Go to **Program add-ons** and install **Onboarding Wizard**.
 
 ### 3. Running the Onboarding Wizard
-Upon the first launch of the plugin or skin, the **Onboarding Wizard** will run automatically. This wizard will guide you through:
+The Onboarding Wizard, when run, will guide you through all of the setup steps for whichever experiance you decided on.
 - Entering your AIOStreams Backend URL credentials.
 - Authorizing your Trakt account.
 - Initializing basic settings for playback quality and language.
+- Downloading TMDBHelper Players
+- Installing all plugins and skins
 
 ### 4. Customizing Your Home Screen
 If you are using the AIODI skin, you can manage your home screen layout using the built-in **Widget Manager**:
-- Access the Widget Manager via **Skin Settings > Home > Manage Widgets**.
+- Access the Widget Manager via **Home Screen > Press left from settings icon > Widget Manager**.
 - Arrange your Trakt lists, AIOStreams catalogs, and more to create a personalized dashboard.
