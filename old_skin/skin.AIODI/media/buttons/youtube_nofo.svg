@@ -1,7 +1,0 @@
-<svg width="512" height="128" viewBox="0 0 512 128" fill="none" xmlns="http://www.w3.org/2000/svg">
-  <rect x="1.5" y="1.5" width="509" height="125" rx="22.5" fill="black" fill-opacity="0.5" stroke="white" stroke-width="3"/>
-  <g transform="translate(155, 0)">
-    <path d="M38.5 49.3C38 47.5 36.6 46 34.8 45.6C31.7 44.7 19.5 44.7 19.5 44.7C19.5 44.7 7.3 44.7 4.2 45.6C2.4 46 1 47.5 0.5 49.3C-0.4 52.4 -0.4 58.8 -0.4 58.8C-0.4 58.8 -0.4 65.3 0.5 68.4C1 70.2 2.4 71.6 4.2 72.1C7.3 73 19.5 73 19.5 73C19.5 73 31.7 73 34.8 72.1C36.6 71.6 38 70.2 38.5 68.4C39.4 65.3 39.4 58.8 39.4 58.8C39.4 58.8 39.4 52.4 38.5 49.3ZM15.6 65.1V52.5L26 58.8L15.6 65.1Z" fill="white"/>
-    <text x="55" y="79" fill="white" font-family="Arial, sans-serif" font-size="36" font-weight="bold">YouTube</text>
-  </g>
-</svg>
