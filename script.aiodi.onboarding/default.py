@@ -5,6 +5,7 @@ import os
 import json
 import threading
 import time
+import xbmcvfs
 
 ADDON = xbmcaddon.Addon()
 ADDON_PATH = ADDON.getAddonInfo('path')
@@ -12,7 +13,7 @@ WINDOW = xbmcgui.Window(10000) # Home window for property storage
 
 # Persistence helpers
 def get_cache_path():
-    path = xbmc.translatePath(ADDON.getAddonInfo('profile'))
+    path = xbmcvfs.translatePath(ADDON.getAddonInfo('profile'))
     if not os.path.exists(path):
         os.makedirs(path)
     return os.path.join(path, 'settings_cache.json')
