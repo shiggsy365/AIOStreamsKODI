@@ -160,8 +160,34 @@ class InputWindow(xbmcgui.WindowXMLDialog):
             xbmc.log(f'[Onboarding] Error refreshing tabs: {e}', xbmc.LOGERROR)
 
     def onAction(self, action):
-        if action.getId() in [92, 10, 13]: # Back, PreviousMenu, Stop
+        action_id = action.getId()
+
+        # Handle back/cancel actions
+        if action_id in [92, 10, 13]: # Back, PreviousMenu, Stop
             self.close()
+            return
+
+        # Prevent navigation crashes by catching invalid navigation attempts
+        try:
+            focused_control = self.getFocusId()
+
+            # If trying to navigate in grouplist (ID 5), ensure safe navigation
+            if focused_control in range(10000, 15000):
+                # Up/Down in grouplist - let Kodi handle it normally
+                if action_id in [3, 4]: # Up, Down
+                    pass  # Let default behavior handle scrolling
+                # Left/Right - navigate to category list or buttons
+                elif action_id == 1: # Left
+                    self.setFocusId(3)
+                elif action_id == 2: # Right
+                    self.setFocusId(9500)
+        except Exception as e:
+            xbmc.log(f'[Onboarding] Navigation error: {e}', xbmc.LOGERROR)
+            # On error, return focus to a safe control
+            try:
+                self.setFocusId(3)
+            except:
+                pass
 
     def onClick(self, controlId):
         try:
@@ -343,11 +369,11 @@ def run_installer(selections, data):
                 un = ensure_addon('service.upnext')
                 if un:
                     # Change interface/set display mode for notifications to Simple
-                    un.setSetting('simpleMode', 'true')
+                    un.setSetting('simpleMode', '0')  # 0 = Simple, 1 = Fancy
                     # Enable interface/show a stop button instead of a close button
-                    un.setSetting('stopButton', 'true')
+                    un.setSetting('stopAfterClose', 'true')
                     # Change behaviour/default action when nothing selected to 'Play Next'
-                    un.setSetting('defaultAutoSelect', 'true')
+                    un.setSetting('autoPlayMode', '0')  # 0 = Auto play next episode
                     del un
             except Exception as e:
                 xbmc.log(f"[Onboarding] UpNext config error: {e}", xbmc.LOGERROR)
@@ -389,7 +415,49 @@ def run_installer(selections, data):
         except Exception as e:
             xbmc.log(f"[Onboarding] Failed to copy players ZIP: {e}", xbmc.LOGERROR)
 
-    # 7. If requested install AIODI skin, and switch to it
+    # 7. YouTube interactive setup (if YouTube was installed)
+    if selections.get('youtube') and xbmc.getCondVisibility('System.HasAddon(plugin.video.youtube)'):
+        # Check if user is already signed in by checking for access token
+        try:
+            yt_check = ensure_addon('plugin.video.youtube')
+            is_signed_in = False
+            if yt_check:
+                # Check if access token exists (indicates user is signed in)
+                access_token = yt_check.getSetting('youtube.access.token')
+                if access_token and access_token.strip():
+                    is_signed_in = True
+                    xbmc.log('[Onboarding] YouTube already signed in, skipping interactive setup', xbmc.LOGINFO)
+                del yt_check
+        except Exception as e:
+            xbmc.log(f'[Onboarding] Error checking YouTube sign-in status: {e}', xbmc.LOGERROR)
+            is_signed_in = False
+
+        # Only show interactive setup if not already signed in
+        if not is_signed_in:
+            progress.close()
+            # Prompt user to complete YouTube setup
+            xbmcgui.Dialog().ok(
+                "YouTube Setup Required",
+                "Please complete the YouTube setup wizard that will now open.\n"
+                "After completing the wizard, select the first option and choose 'Sign In'.\n"
+                "Once all dialogs have closed, the setup will continue."
+            )
+
+            # Open YouTube addon settings
+            xbmc.executebuiltin('Addon.OpenSettings(plugin.video.youtube)')
+
+            # Wait for user to complete setup
+            xbmcgui.Dialog().ok(
+                "YouTube Setup",
+                "When you have finished signing in to YouTube and all dialogs have closed,\n"
+                "click OK to continue with the AIODI skin installation."
+            )
+
+            # Recreate progress dialog for remaining steps
+            progress = xbmcgui.DialogProgress()
+            progress.create("AIODI Setup", "Continuing installation...")
+
+    # 8. If requested install AIODI skin, and switch to it
     if selections.get('skin'):
         progress.update(98, "Switching to AIODI Skin...")
         xbmc.executebuiltin('SetProperty(SkinSwitched,True,Home)')
