@@ -2346,7 +2346,7 @@ def browse_catalog():
     
     # Set NumItems property if called from smart_widget
     if params.get("page") and params.get("index"):
-        count_prop = f"AIOStreams.{params["page"]}.{params["index"]}.NumItems"
+        count_prop = f"AIOStreams.{params['page']}.{params['index']}.NumItems"
         item_count = len(catalog_data["metas"])
         xbmcgui.Window(10000).setProperty(count_prop, str(item_count))
         xbmc.log(f"[AIOStreams] Set {count_prop} = {item_count}", xbmc.LOGDEBUG)
