@@ -439,12 +439,19 @@ def run_installer(selections, data):
 
     # 8. If requested install AIODI skin, and switch to it
     if selections.get('skin'):
+        xbmc.log('[Onboarding] Skin installation requested', xbmc.LOGINFO)
         # First install the skin if not already installed
         if install_with_wait('skin.AIODI', progress, 96, 98):
+            xbmc.log('[Onboarding] Skin installed successfully, switching...', xbmc.LOGINFO)
             progress.update(99, "Switching to AIODI Skin...")
             xbmc.executebuiltin('Skin.SetString(first_run,done)')  # Mark first run as complete
             time.sleep(1)
             xbmc.executebuiltin('SetSkin(skin.AIODI)')
+        else:
+            xbmc.log('[Onboarding] Skin installation failed or timed out', xbmc.LOGERROR)
+            xbmcgui.Dialog().notification("Setup Warning", "AIODI skin installation failed", xbmcgui.NOTIFICATION_WARNING)
+    else:
+        xbmc.log('[Onboarding] Skin installation not requested', xbmc.LOGINFO)
 
     progress.update(100, "Setup complete!")
     time.sleep(2)
