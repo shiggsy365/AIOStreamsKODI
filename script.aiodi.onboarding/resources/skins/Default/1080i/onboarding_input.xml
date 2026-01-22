@@ -86,8 +86,7 @@
                 <height>700</height>
                 <onleft>3</onleft>
                 <onright>9500</onright>
-                <onup>5</onup>
-                <ondown>5</ondown>
+                <pagecontrol>60</pagecontrol>
                 <itemgap>0</itemgap>
                 <scrolltime>200</scrolltime>
 
@@ -286,6 +285,20 @@
                 </control>
             </control>
 
+            <!-- Settings Scrollbar -->
+            <control type="scrollbar" id="60">
+                <left>1502</left>
+                <top>100</top>
+                <width>8</width>
+                <height>700</height>
+                <onleft>5</onleft>
+                <onright>9500</onright>
+                <texturesliderbackground colordiffuse="20FFFFFF">colors/white.png</texturesliderbackground>
+                <texturesliderbar colordiffuse="60FFFFFF">colors/white.png</texturesliderbar>
+                <texturesliderbarfocus colordiffuse="button_focus">colors/white.png</texturesliderbarfocus>
+                <visible>Control.IsVisible(5)</visible>
+            </control>
+
             <!-- Action Buttons (ID 9500) -->
             <control type="grouplist" id="9500">
                 <left>1510</left>
@@ -296,6 +309,8 @@
                 <itemgap>-10</itemgap>
                 <onleft>5</onleft>
                 <onright>3</onright>
+                <onup>9500</onup>
+                <ondown>9500</ondown>
                 <include content="DefaultDialogButton">
                     <param name="id" value="9010" />
                     <param name="label" value="INSTALL" />
