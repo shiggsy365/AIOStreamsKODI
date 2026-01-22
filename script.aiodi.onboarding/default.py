@@ -129,6 +129,8 @@ class InputWindow(xbmcgui.WindowXMLDialog):
             
         if current_sel >= 0:
             list_ctrl.selectItem(current_sel)
+        else:
+            list_ctrl.selectItem(0)
 
     def onAction(self, action):
         if action.getId() in [92, 10, 13]: # Back, PreviousMenu, Stop
