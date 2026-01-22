@@ -4,7 +4,7 @@ import xbmcgui
 import xbmcplugin
 import xbmcaddon
 import xbmcvfs
-from urllib.parse import urlencode, parse_qsl
+from urllib.parse import urlencode, parse_qsl, quote_plus
 import requests
 import json
 import threading
@@ -225,15 +225,17 @@ def make_request(url, error_message='Request failed', cache_key=None):
         return None
 
 
-def get_manifest():
+def get_manifest(force=False):
     """Fetch the manifest from AIOStreams with stale-while-revalidate caching.
 
     Uses HTTP conditional requests (ETag/If-None-Match) to minimize bandwidth:
-    - Serves cached data immediately if < 24 hours old
+    - Serves cached data immediately if < 5 minutes old (unless force=True)
     - For older cache, checks server with If-None-Match (gets 304 if unchanged)
     - Only downloads full manifest if actually changed on server
     """
     base_url = get_base_url()
+    if not base_url:
+        return None
 
     # Use base_url as cache key to support multiple user profiles with different manifests
     import hashlib
@@ -246,8 +248,8 @@ def get_manifest():
         cache_age = cache.get_cache_age('manifest', cache_key)
 
         if cached:
-            # Fresh cache (< 24 hours) - serve immediately
-            if cache_age is not None and cache_age < 86400:
+            # Fresh cache (< 5 minutes) - serve immediately
+            if not force and cache_age is not None and cache_age < 300:  # Fresh cache (< 5 minutes) - serve immediately
                 xbmc.log(f'[AIOStreams] Serving fresh manifest from cache (age: {int(cache_age)}s)', xbmc.LOGDEBUG)
                 return cached
 
@@ -281,6 +283,42 @@ def get_manifest():
     return manifest
 
 
+def get_search_catalog_id(content_type):
+    """Dynamically find the search catalog ID for a given content type."""
+    manifest = get_manifest()
+    if not manifest:
+        return '39fe3b0.search'  # Fallback
+        
+    # Mapping for content types
+    m_type_map = {
+        'movies': 'movie',
+        'tvshows': 'series',
+        'tvshow': 'series',
+        'series': 'series'
+    }
+    m_type = m_type_map.get(content_type, content_type)
+    
+    # Try to find a catalog of the requested type with "search" in its extras
+    for catalog in manifest.get('catalogs', []):
+        if catalog.get('type') == m_type:
+            extras = catalog.get('extra', [])
+            for extra in extras:
+                if isinstance(extra, dict) and extra.get('name') == 'search':
+                    xbmc.log(f'[AIOStreams] Found search catalog for {content_type} ({m_type}): {catalog.get("id")} ({catalog.get("name")})', xbmc.LOGDEBUG)
+                    return catalog.get('id')
+                    
+    # Secondary attempt: Look for ANY catalog with "search" in name or ID if type matches
+    for catalog in manifest.get('catalogs', []):
+        if catalog.get('type') == m_type:
+            cat_id = catalog.get('id', '').lower()
+            cat_name = catalog.get('name', '').lower()
+            if 'search' in cat_id or 'search' in cat_name:
+                return catalog.get('id')
+
+    # Fallback to the common ID
+    return '39fe3b0.search'
+
+
 def search_catalog(query, content_type='movie', skip=0):
     """Search the AIOStreams catalog with pagination."""
     if content_type in ['video', 'youtube'] or 'youtube' in str(content_type):
@@ -290,8 +328,24 @@ def search_catalog(query, content_type='movie', skip=0):
             return {'metas': []}
 
     base_url = get_base_url()
-    catalog_id = '39fe3b0.search'
-    url = f"{base_url}/catalog/{content_type}/{catalog_id}/search={query}"
+    
+    # Mapping for content types to match manifest expectations
+    m_type_map = {
+        'movies': 'movie',
+        'tvshows': 'series',
+        'tvshow': 'series',
+        'series': 'series'
+    }
+    m_type = m_type_map.get(content_type, content_type)
+    
+    catalog_id = get_search_catalog_id(m_type)
+    
+    # URL encode the query
+    encoded_query = quote_plus(query)
+    
+    # Construction of the search URL
+    # We use m_type for the URL type parameter to ensure API compatibility
+    url = f"{base_url}/catalog/{m_type}/{catalog_id}/search={encoded_query}"
     
     # Add skip parameter for pagination
     if skip > 0:
@@ -299,6 +353,7 @@ def search_catalog(query, content_type='movie', skip=0):
     
     url += ".json"
     
+    xbmc.log(f'[AIOStreams] Performing search for "{query}" (type: {m_type}, catalog: {catalog_id})', xbmc.LOGINFO)
     return make_request(url, 'Search error')
 
 
@@ -4098,33 +4153,27 @@ def refresh_manifest_cache():
         return
 
     try:
-        import hashlib
-
         base_url = get_base_url()
         if not base_url:
             xbmcgui.Dialog().notification('AIOStreams', 'No manifest URL configured', xbmcgui.NOTIFICATION_ERROR)
             return
 
+        import hashlib
         # Generate cache key matching the one used in get_manifest()
         cache_key = hashlib.md5(base_url.encode()).hexdigest()[:16]
 
-        xbmc.log(f'[AIOStreams] Clearing manifest cache for key: {cache_key}', xbmc.LOGINFO)
+        xbmc.log(f'[AIOStreams] Invalidating manifest cache for key: {cache_key}', xbmc.LOGINFO)
 
-        # Delete the manifest cache file
-        cache_dir = cache.get_cache_dir()
-        import os
-        manifest_path = os.path.join(cache_dir, f'manifest_{cache_key}.json')
-
-        if os.path.exists(manifest_path):
-            os.remove(manifest_path)
-            xbmc.log(f'[AIOStreams] Deleted manifest cache: {manifest_path}', xbmc.LOGINFO)
-
+        # Use the cache module's invalidate method instead of manual file deletion
+        # This handles the internal naming conventions correctly
+        cache.get_cache().invalidate('manifest', cache_key)
+        
         # Also clear from cache module's internal tracking
         cache.cleanup_expired_cache(force_all=False)
 
         # Now fetch fresh manifest
         xbmc.log('[AIOStreams] Fetching fresh manifest from server', xbmc.LOGINFO)
-        manifest = get_manifest()
+        manifest = get_manifest(force=True)
 
         if manifest:
             xbmcgui.Dialog().notification(
