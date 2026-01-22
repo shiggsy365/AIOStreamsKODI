@@ -34,17 +34,22 @@ def save_cache(data):
     except: pass
 
 def install_with_wait(addon_id, progress, start_pct, end_pct):
+    # Check if already installed - if so, skip installation
     if xbmc.getCondVisibility(f'System.HasAddon({addon_id})'):
+        xbmc.log(f'[Onboarding] {addon_id} already installed, skipping...', xbmc.LOGINFO)
+        progress.update(int(end_pct), f"{addon_id} already installed")
+        time.sleep(0.5)
         return True
 
     progress.update(int(start_pct), f"Installing {addon_id}...")
     xbmc.executebuiltin(f'InstallAddon({addon_id})')
-    
+
     # Wait loop (max 60s)
     for i in range(120):
         if progress.iscanceled(): return False
         if xbmc.getCondVisibility(f'System.HasAddon({addon_id})'):
-            progress.update(int(end_pct))
+            progress.update(int(end_pct), f"{addon_id} installed successfully")
+            time.sleep(0.5)
             return True
         time.sleep(0.5)
     return False
@@ -79,256 +84,318 @@ class InputWindow(xbmcgui.WindowXMLDialog):
         self.cancelled = True
 
     def onInit(self):
-        # Initial radio button states for Modules tab
-        self.getControl(10101).setSelected(True) # AIOStreams
-        self.getControl(10102).setSelected(True) # Trakt
-        self.getControl(10103).setSelected(self.selections['skin'])
-        self.getControl(10104).setSelected(self.selections['youtube'])
-        self.getControl(10105).setSelected(self.selections['upnext'])
-        self.getControl(10106).setSelected(self.selections['iptv'])
-        self.getControl(10107).setSelected(self.selections['imvdb'])
-        self.getControl(10108).setSelected(self.selections['tmdbh'])
-        
-        # Pre-fill settings from cache
-        if 'aiostreams_host' in self.cache: self.getControl(10001).setLabel(self.cache['aiostreams_host'])
-        if 'aiostreams_uuid' in self.cache: self.getControl(10002).setLabel(self.cache['aiostreams_uuid'])
-        if 'aiostreams_password' in self.cache: self.getControl(10003).setLabel(self.cache['aiostreams_password'])
-        if 'aiostreams_behavior' in self.cache: self.getControl(10004).setLabel(self.cache['aiostreams_behavior'])
-        if 'aiostreams_subtitles' in self.cache: self.getControl(10005).setLabel(self.cache['aiostreams_subtitles'])
-        if 'aiostreams_upnext' in self.cache: self.getControl(10006).setSelected(self.cache['aiostreams_upnext'])
-        
-        if 'trakt_id' in self.cache: self.getControl(11001).setLabel(self.cache['trakt_id'])
-        if 'trakt_secret' in self.cache: self.getControl(11002).setLabel(self.cache['trakt_secret'])
-        
-        if 'yt_key' in self.cache: self.getControl(12001).setLabel(self.cache['yt_key'])
-        if 'yt_id' in self.cache: self.getControl(12002).setLabel(self.cache['yt_id'])
-        if 'yt_secret' in self.cache: self.getControl(12003).setLabel(self.cache['yt_secret'])
-        
-        if 'iptv_m3u' in self.cache: self.getControl(13001).setLabel(self.cache['iptv_m3u'])
-        if 'iptv_epg' in self.cache: self.getControl(13002).setLabel(self.cache['iptv_epg'])
-        
-        if 'imvdb_key' in self.cache: self.getControl(14001).setLabel(self.cache['imvdb_key'])
+        try:
+            # Initial radio button states for Modules tab
+            self.getControl(10101).setSelected(True) # AIOStreams
+            self.getControl(10102).setSelected(True) # Trakt
+            self.getControl(10103).setSelected(self.selections['skin'])
+            self.getControl(10104).setSelected(self.selections['youtube'])
+            self.getControl(10105).setSelected(self.selections['upnext'])
+            self.getControl(10106).setSelected(self.selections['iptv'])
+            self.getControl(10107).setSelected(self.selections['imvdb'])
+            self.getControl(10108).setSelected(self.selections['tmdbh'])
 
-        self.refresh_tabs()
-        self.setFocusId(3)
+            # Pre-fill settings from cache - use setText() for edit controls
+            if 'aiostreams_host' in self.cache:
+                self.getControl(10001).setText(self.cache['aiostreams_host'])
+            if 'aiostreams_uuid' in self.cache:
+                self.getControl(10002).setText(self.cache['aiostreams_uuid'])
+            if 'aiostreams_password' in self.cache:
+                self.getControl(10003).setText(self.cache['aiostreams_password'])
+            if 'aiostreams_behavior' in self.cache:
+                # Restore button label with proper format
+                self.getControl(10004).setLabel(f"Default Behavior: {self.cache['aiostreams_behavior']}")
+            if 'aiostreams_subtitles' in self.cache:
+                self.getControl(10005).setText(self.cache['aiostreams_subtitles'])
+            if 'aiostreams_upnext' in self.cache:
+                self.getControl(10006).setSelected(self.cache['aiostreams_upnext'])
+
+            if 'trakt_id' in self.cache:
+                self.getControl(11001).setText(self.cache['trakt_id'])
+            if 'trakt_secret' in self.cache:
+                self.getControl(11002).setText(self.cache['trakt_secret'])
+
+            if 'yt_key' in self.cache:
+                self.getControl(12001).setText(self.cache['yt_key'])
+            if 'yt_id' in self.cache:
+                self.getControl(12002).setText(self.cache['yt_id'])
+            if 'yt_secret' in self.cache:
+                self.getControl(12003).setText(self.cache['yt_secret'])
+
+            if 'iptv_m3u' in self.cache:
+                self.getControl(13001).setText(self.cache['iptv_m3u'])
+            if 'iptv_epg' in self.cache:
+                self.getControl(13002).setText(self.cache['iptv_epg'])
+
+            if 'imvdb_key' in self.cache:
+                self.getControl(14001).setText(self.cache['imvdb_key'])
+
+            self.refresh_tabs()
+            self.setFocusId(3)
+        except Exception as e:
+            xbmc.log(f'[Onboarding] Error in onInit: {e}', xbmc.LOGERROR)
 
     def refresh_tabs(self):
-        list_ctrl = self.getControl(3)
-        current_sel = list_ctrl.getSelectedPosition()
-        list_ctrl.reset()
-        
-        cats = [('Modules', 'modules'), ('AIOStreams', 'aiostreams'), ('Trakt', 'trakt')]
-        if self.selections.get('youtube'): cats.append(('YouTube', 'youtube'))
-        if self.selections.get('iptv'): cats.append(('IPTV Simple', 'iptv'))
-        if self.selections.get('imvdb'): cats.append(('IMVDb', 'imvdb'))
-        
-        for label, type_name in cats:
-            item = xbmcgui.ListItem(label)
-            item.setProperty('type', type_name)
-            list_ctrl.addItem(item)
-            
-        if current_sel >= 0:
-            list_ctrl.selectItem(current_sel)
-        else:
-            list_ctrl.selectItem(0)
+        try:
+            list_ctrl = self.getControl(3)
+            current_sel = list_ctrl.getSelectedPosition()
+            list_ctrl.reset()
+
+            cats = [('Modules', 'modules'), ('AIOStreams', 'aiostreams'), ('Trakt', 'trakt')]
+            if self.selections.get('youtube'): cats.append(('YouTube', 'youtube'))
+            if self.selections.get('iptv'): cats.append(('IPTV Simple', 'iptv'))
+            if self.selections.get('imvdb'): cats.append(('IMVDb', 'imvdb'))
+
+            for label, type_name in cats:
+                item = xbmcgui.ListItem(label)
+                item.setProperty('type', type_name)
+                list_ctrl.addItem(item)
+
+            # Ensure we select a valid item
+            if current_sel >= 0 and current_sel < len(cats):
+                list_ctrl.selectItem(current_sel)
+            else:
+                list_ctrl.selectItem(0)
+        except Exception as e:
+            xbmc.log(f'[Onboarding] Error refreshing tabs: {e}', xbmc.LOGERROR)
 
     def onAction(self, action):
         if action.getId() in [92, 10, 13]: # Back, PreviousMenu, Stop
             self.close()
 
     def onClick(self, controlId):
-        # Module Toggles
-        if controlId == 10101 or controlId == 10102:
-            self.getControl(controlId).setSelected(True) # Required
-        
-        elif controlId == 10103: self.selections['skin'] = self.getControl(10103).isSelected()
-        elif controlId == 10104: 
-            self.selections['youtube'] = self.getControl(10104).isSelected()
-            self.refresh_tabs()
-        elif controlId == 10105: self.selections['upnext'] = self.getControl(10105).isSelected()
-        elif controlId == 10106: 
-            self.selections['iptv'] = self.getControl(10106).isSelected()
-            self.refresh_tabs()
-        elif controlId == 10107: 
-            self.selections['imvdb'] = self.getControl(10107).isSelected()
-            self.refresh_tabs()
-        elif controlId == 10108: self.selections['tmdbh'] = self.getControl(10108).isSelected()
+        try:
+            # Module Toggles
+            if controlId == 10101 or controlId == 10102:
+                self.getControl(controlId).setSelected(True) # Required
 
-        if controlId == 10004: # Default Behavior
-            current = self.getControl(10004).getLabel().split(": ")[-1]
-            new_val = "play_first" if current == "show_streams" else "show_streams"
-            self.getControl(10004).setLabel(f"Default Behavior: {new_val}")
-            
-        if controlId == 9010: # Install Selected
-            self.collect_data()
-            # Also save to cache
-            cache_data = self.data.copy()
-            cache_data.update(self.selections)
-            save_cache(cache_data)
-            
-            self.cancelled = False
-            self.close()
-            
-        if controlId == 9011: # Cancel
-            self.close()
+            elif controlId == 10103:
+                self.selections['skin'] = self.getControl(10103).isSelected()
+            elif controlId == 10104:
+                self.selections['youtube'] = self.getControl(10104).isSelected()
+                self.refresh_tabs()
+            elif controlId == 10105:
+                self.selections['upnext'] = self.getControl(10105).isSelected()
+            elif controlId == 10106:
+                self.selections['iptv'] = self.getControl(10106).isSelected()
+                self.refresh_tabs()
+            elif controlId == 10107:
+                self.selections['imvdb'] = self.getControl(10107).isSelected()
+                self.refresh_tabs()
+            elif controlId == 10108:
+                self.selections['tmdbh'] = self.getControl(10108).isSelected()
+
+            if controlId == 10004: # Default Behavior toggle
+                current = self.getControl(10004).getLabel().split(": ")[-1]
+                new_val = "play_first" if current == "show_streams" else "show_streams"
+                self.getControl(10004).setLabel(f"Default Behavior: {new_val}")
+
+            if controlId == 9010: # Install Selected
+                self.collect_data()
+                # Also save to cache
+                cache_data = self.data.copy()
+                cache_data.update(self.selections)
+                save_cache(cache_data)
+
+                self.cancelled = False
+                self.close()
+
+            if controlId == 9011: # Cancel
+                self.close()
+        except Exception as e:
+            xbmc.log(f'[Onboarding] Error in onClick for control {controlId}: {e}', xbmc.LOGERROR)
 
     def collect_data(self):
-        # AIOStreams
-        self.data['aiostreams_host'] = self.getControl(10001).getLabel()
-        self.data['aiostreams_uuid'] = self.getControl(10002).getLabel()
-        self.data['aiostreams_password'] = self.getControl(10003).getLabel()
-        self.data['aiostreams_behavior'] = self.getControl(10004).getLabel()
-        self.data['aiostreams_subtitles'] = self.getControl(10005).getLabel()
-        self.data['aiostreams_upnext'] = self.getControl(10006).isSelected()
-        
-        # Trakt
-        self.data['trakt_id'] = self.getControl(11001).getLabel()
-        self.data['trakt_secret'] = self.getControl(11002).getLabel()
-        
-        # Youtube
-        if self.selections.get('youtube'):
-            self.data['yt_key'] = self.getControl(12001).getLabel()
-            self.data['yt_id'] = self.getControl(12002).getLabel()
-            self.data['yt_secret'] = self.getControl(12003).getLabel()
-            
-        # IPTV
-        if self.selections.get('iptv'):
-            self.data['iptv_m3u'] = self.getControl(13001).getLabel()
-            self.data['iptv_epg'] = self.getControl(13002).getLabel()
-            
-        # IMVDb
-        if self.selections.get('imvdb'):
-            self.data['imvdb_key'] = self.getControl(14001).getLabel()
+        try:
+            # AIOStreams - use getText() for edit controls
+            self.data['aiostreams_host'] = self.getControl(10001).getText()
+            self.data['aiostreams_uuid'] = self.getControl(10002).getText()
+            self.data['aiostreams_password'] = self.getControl(10003).getText()
+            # Extract just the behavior value (remove "Default Behavior: " prefix)
+            behavior_label = self.getControl(10004).getLabel()
+            self.data['aiostreams_behavior'] = behavior_label.split(": ")[-1] if ": " in behavior_label else behavior_label
+            self.data['aiostreams_subtitles'] = self.getControl(10005).getText()
+            self.data['aiostreams_upnext'] = self.getControl(10006).isSelected()
 
-        # Store in hidden window properties
-        for k, v in self.data.items():
-            WINDOW.setProperty(f"AIODI.Onboarding.{k}", str(v))
+            # Trakt
+            self.data['trakt_id'] = self.getControl(11001).getText()
+            self.data['trakt_secret'] = self.getControl(11002).getText()
+
+            # Youtube
+            if self.selections.get('youtube'):
+                self.data['yt_key'] = self.getControl(12001).getText()
+                self.data['yt_id'] = self.getControl(12002).getText()
+                self.data['yt_secret'] = self.getControl(12003).getText()
+
+            # IPTV
+            if self.selections.get('iptv'):
+                self.data['iptv_m3u'] = self.getControl(13001).getText()
+                self.data['iptv_epg'] = self.getControl(13002).getText()
+
+            # IMVDb
+            if self.selections.get('imvdb'):
+                self.data['imvdb_key'] = self.getControl(14001).getText()
+
+            # Store in hidden window properties
+            for k, v in self.data.items():
+                WINDOW.setProperty(f"AIODI.Onboarding.{k}", str(v))
+        except Exception as e:
+            xbmc.log(f'[Onboarding] Error collecting data: {e}', xbmc.LOGERROR)
 
 def run_installer(selections, data):
     progress = xbmcgui.DialogProgress()
     progress.create("AIODI Setup", "Initializing installation...")
-    
+
     # helper to ensure addon is loaded before setting settings
     def ensure_addon(addon_id):
         xbmc.executebuiltin(f'EnableAddon({addon_id})')
-        xbmc.executebuiltin('RunScript(script.module.inputstreamhelper)') # unlikely needed but good practice
-        time.sleep(1)
-        return xbmcaddon.Addon(addon_id)
+        time.sleep(2)  # Give addon time to load
+        try:
+            return xbmcaddon.Addon(addon_id)
+        except Exception as e:
+            xbmc.log(f"[Onboarding] Failed to load addon {addon_id}: {e}", xbmc.LOGERROR)
+            return None
 
-    # 1. AIOStreams
+    # 1. Install AIOStreams Plugin
     if install_with_wait('plugin.video.aiostreams', progress, 5, 20):
         try:
             progress.update(25, "Configuring AIOStreams...")
             aio = ensure_addon('plugin.video.aiostreams')
-            
-            # Integrations
+            if not aio:
+                raise Exception("Failed to load AIOStreams addon")
+
+            # Add integrations/host base url to settings
             aio.setSetting('aiostreams_host', data.get('aiostreams_host', ''))
+            # Add integrations/uuid to settings
             aio.setSetting('aiostreams_uuid', data.get('aiostreams_uuid', ''))
+            # Add integrations/password to settings
             aio.setSetting('aiostreams_password', data.get('aiostreams_password', ''))
+            # Add integrations/trakt client id to settings
             aio.setSetting('trakt_client_id', data.get('trakt_id', ''))
+            # Add integrations/trakt client secret to settings
             aio.setSetting('trakt_client_secret', data.get('trakt_secret', ''))
-            
-            # General
-            # extract value from "Default Behavior: show_streams"
-            beh_val = data.get('aiostreams_behavior', 'show_streams').split(": ")[-1]
-            aio.setSetting('default_behavior', beh_val)
+
+            # Set general/default behaviour to either play_first or show_streams
+            behavior_val = data.get('aiostreams_behavior', 'show_streams')
+            aio.setSetting('default_behavior', behavior_val)
+
+            # Add filter subtitles to general/filter subtitles
             aio.setSetting('subtitle_languages', data.get('aiostreams_subtitles', ''))
-            
-            # Signal UpNext
+
+            # If UpNext is toggled to be installed, turn on general/Signal UpNext
             upnext_val = 'true' if selections.get('upnext') else 'false'
             aio.setSetting('autoplay_next_episode', upnext_val)
-            
-            # "Save and exit" - simulated by re-instantiating or ensuring write
+
+            # Save and exit aiostreams settings
             del aio
-            time.sleep(1)
-            
-            # Retrieve Manifest
+            time.sleep(2)
+
+            # Return to aiostreams settings and call integrations/retrieve manifest
             progress.update(30, "Retrieving Manifest...")
             xbmc.executebuiltin('RunPlugin(plugin://plugin.video.aiostreams/?action=retrieve_manifest)')
-            
-            # "Wait for response" - using a dialog to force user wait/confirmation
+            # Wait for a response
+            time.sleep(3)
             xbmcgui.Dialog().ok("AIOStreams Setup", "Retrieving Manifest.\nPlease wait for the notification, then click OK.")
-            
-            # Authorize Trakt
+
+            # Call integrations/authorize trakt, wait for window to close
             progress.update(35, "Authenticating Trakt...")
             xbmc.executebuiltin('RunPlugin(plugin://plugin.video.aiostreams/?action=trakt_auth)')
-            
-            # "Wait for window to close"
+            # Wait for window to close
             xbmcgui.Dialog().ok("AIOStreams Setup", "Please complete the Trakt Authorization in the popup window.\nWhen finished, click OK to continue.")
-            
+
+            # Save and exit aiostreams settings again
+            aio = ensure_addon('plugin.video.aiostreams')
+            if aio:
+                del aio
+                time.sleep(1)
+
         except Exception as e:
             xbmc.log(f"[Onboarding] AIOStreams config error: {e}", xbmc.LOGERROR)
+            xbmcgui.Dialog().notification("Setup Error", f"AIOStreams configuration failed: {str(e)}", xbmcgui.NOTIFICATION_ERROR)
 
-    # 2. Addon Installs & Config
-    
-    # YouTube
+    # 2. If requested, Install YouTube plugin from kodi repository
     if selections.get('youtube'):
         if install_with_wait('plugin.video.youtube', progress, 40, 50):
             try:
                 progress.update(52, "Configuring YouTube...")
                 yt = ensure_addon('plugin.video.youtube')
-                yt.setSetting('general.setupwizard', 'false')
-                yt.setSetting('api.key', data.get('yt_key', ''))
-                yt.setSetting('api.id', data.get('yt_id', ''))
-                yt.setSetting('api.secret', data.get('yt_secret', ''))
-                yt.setSetting('api.devkeys', 'true')
+                if yt:
+                    # Turn off general/enable setup wizard
+                    yt.setSetting('youtube.folder.my_subscriptions.show', 'false')
+                    # Enter API Key in API/API Key
+                    yt.setSetting('youtube.api.key', data.get('yt_key', ''))
+                    # Enter API ID in API/API ID
+                    yt.setSetting('youtube.api.id', data.get('yt_id', ''))
+                    # Enter API Secret in API/API Secret
+                    yt.setSetting('youtube.api.secret', data.get('yt_secret', ''))
+                    # Turn on API/allow developer keys
+                    yt.setSetting('youtube.api.enable', 'true')
+                    del yt
             except Exception as e:
                 xbmc.log(f"[Onboarding] YouTube config error: {e}", xbmc.LOGERROR)
+                xbmcgui.Dialog().notification("Setup Error", f"YouTube configuration failed: {str(e)}", xbmcgui.NOTIFICATION_ERROR)
 
-    # UpNext
+    # 3. If requested, Install Up Next plugin from kodi repository
     if selections.get('upnext'):
         if install_with_wait('service.upnext', progress, 55, 65):
             try:
                 progress.update(67, "Configuring UpNext...")
                 un = ensure_addon('service.upnext')
-                # 1 = Simple
-                un.setSetting('interface.notification_mode', '1') 
-                # true = stop button
-                un.setSetting('interface.stop_button', 'true')
-                # 1 = Play Next
-                un.setSetting('behaviour.default_action', '1') 
+                if un:
+                    # Change interface/set display mode for notifications to Simple
+                    un.setSetting('simpleMode', 'true')
+                    # Enable interface/show a stop button instead of a close button
+                    un.setSetting('stopButton', 'true')
+                    # Change behaviour/default action when nothing selected to 'Play Next'
+                    un.setSetting('defaultAutoSelect', 'true')
+                    del un
             except Exception as e:
                 xbmc.log(f"[Onboarding] UpNext config error: {e}", xbmc.LOGERROR)
+                xbmcgui.Dialog().notification("Setup Error", f"UpNext configuration failed: {str(e)}", xbmcgui.NOTIFICATION_ERROR)
 
-    # IPTV Simple
+    # 4. If requested install IPTV Simple Player from kodi repository
     if selections.get('iptv'):
         install_with_wait('pvr.iptvsimple', progress, 70, 80)
-        # Note: PVR addons often require a restart or explicit configuration via their specific calls, 
-        # but standardized setting IDs are less common or require PVR manager restart. 
-        # For now, we assume implicit defaults or manual setups for PVR URL if not exposed via python API consistently.
-        # If user had 'iptv_m3u', we might try to set it if we knew the ID, typically 'm3uId' or similar but it varies.
-        # User prompt didn't strictly specify applying the M3U url setting here, just "install".
 
-    # IMVDb
+    # 5. If requested install IMVDb plugin from my repository
     if selections.get('imvdb'):
         if install_with_wait('plugin.video.imvdb', progress, 85, 90):
             try:
                 progress.update(91, "Configuring IMVDb...")
                 im = ensure_addon('plugin.video.imvdb')
-                im.setSetting('api_key', data.get('imvdb_key', ''))
+                if im:
+                    # In settings, set IMVDb API Key
+                    im.setSetting('api_key', data.get('imvdb_key', ''))
+                    del im
             except Exception as e:
                 xbmc.log(f"[Onboarding] IMVDb config error: {e}", xbmc.LOGERROR)
+                xbmcgui.Dialog().notification("Setup Error", f"IMVDb configuration failed: {str(e)}", xbmcgui.NOTIFICATION_ERROR)
 
-    # TMDB Helper Players
+    # 6. If TMDB helper players are selected, save a copy of the zip file to the special://home directory
     if selections.get('tmdbh'):
         progress.update(95, "Setting up TMDB Helper Players...")
         try:
-            import xbmcvfs
             src = os.path.join(os.path.dirname(ADDON_PATH), "TMDB Helper Players", "tmdbhelper-players.zip")
             # Fallback path for development environment
             if not xbmcvfs.exists(src):
                 src = "/home/jon/Downloads/AIOStreamsKODI/AIOStreamsKODI/TMDB Helper Players/tmdbhelper-players.zip"
-            
-            dst = "special://home/tmdbhelper-players.zip"
+
+            dst = xbmcvfs.translatePath("special://home/tmdbhelper-players.zip")
             if xbmcvfs.exists(src):
                 xbmcvfs.copy(src, dst)
+                xbmc.log(f"[Onboarding] TMDB Helper Players copied to {dst}", xbmc.LOGINFO)
+            else:
+                xbmc.log(f"[Onboarding] TMDB Helper Players source not found at {src}", xbmc.LOGWARNING)
         except Exception as e:
-            xbmc.log(f"[AIODI Onboarding] Failed to copy players ZIP: {e}", xbmc.LOGERROR)
+            xbmc.log(f"[Onboarding] Failed to copy players ZIP: {e}", xbmc.LOGERROR)
 
-    # Skin Switch
+    # 7. If requested install AIODI skin, and switch to it
     if selections.get('skin'):
         progress.update(98, "Switching to AIODI Skin...")
         xbmc.executebuiltin('SetProperty(SkinSwitched,True,Home)')
+        xbmc.executebuiltin('Skin.SetString(first_run,done)')  # Mark first run as complete
+        time.sleep(1)
+        xbmc.executebuiltin('ActivateWindow(yesnodialog)')
         xbmc.executebuiltin('SetSkin(skin.AIODI)')
 
     progress.update(100, "Setup complete!")
