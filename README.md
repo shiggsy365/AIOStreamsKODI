@@ -21,18 +21,26 @@ This Kodi addon acts as a frontend client to your AIOStreams backend, bringing a
 
 ---
 
-## Key Features
+## 📖 Documentation & Setup
 
-### 🎬 Standalone Plugin
-https://github.com/shiggsy365/AIOStreamsKODI/blob/main/docs/PLUGIN_DOCUMENTATION.md
+For detailed installation guides, configuration options, and advanced tips, please visit our official Wiki:
 
+### [👉 AIOStreams Kodi Wiki](https://github.com/shiggsy365/AIOStreamsKODI/wiki)
 
-### 📺 Full Kodi Skin
-https://github.com/shiggsy365/AIOStreamsKODI/blob/main/docs/SKIN_DOCUMENTATION.md
+Key Wiki Pages:
+- **[Installing AIOStreams for KODI](https://github.com/shiggsy365/AIOStreamsKODI/wiki/Installing-AIOStreams-for-KODI)**
+- **[AIOStreams Configuration](https://github.com/shiggsy365/AIOStreamsKODI/wiki/AIOStreams-Configuration)**
 
 ---
 
-### Acknowledgments
+## Key Components
+
+- **🎬 Standalone Plugin**: Use AIOStreams with any Kodi skin.
+- **📺 AIODI Skin**: A custom-designed Kodi skin optimized for AIOStreams and AIOMetadata integration.
+
+---
+
+## Acknowledgments
 
 This addon is powered by the incredible work of:
 
