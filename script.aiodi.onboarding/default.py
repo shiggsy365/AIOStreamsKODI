@@ -33,13 +33,27 @@ def save_cache(data):
             json.dump(data, f)
     except: pass
 
-def install_with_wait(addon_id, progress, start_pct, end_pct):
-    # Check if already installed - if so, skip installation
+def install_with_wait(addon_id, progress, start_pct, end_pct, update_if_exists=False):
+    # Check if already installed
     if xbmc.getCondVisibility(f'System.HasAddon({addon_id})'):
-        xbmc.log(f'[Onboarding] {addon_id} already installed, skipping...', xbmc.LOGINFO)
-        progress.update(int(end_pct), f"{addon_id} already installed")
+        # Ensure addon is enabled (auto-approve if disabled)
+        xbmc.log(f'[Onboarding] Ensuring {addon_id} is enabled...', xbmc.LOGINFO)
+        xbmc.executebuiltin(f'EnableAddon({addon_id})')
         time.sleep(0.5)
-        return True
+
+        if update_if_exists:
+            xbmc.log(f'[Onboarding] {addon_id} already installed, checking for updates...', xbmc.LOGINFO)
+            progress.update(int(start_pct), f"Checking {addon_id} for updates...")
+            xbmc.executebuiltin(f'UpdateAddon({addon_id})')
+            # Wait a bit for update check to complete
+            time.sleep(2)
+            progress.update(int(end_pct), f"{addon_id} up to date")
+            return True
+        else:
+            xbmc.log(f'[Onboarding] {addon_id} already installed, skipping...', xbmc.LOGINFO)
+            progress.update(int(end_pct), f"{addon_id} already installed")
+            time.sleep(0.5)
+            return True
 
     progress.update(int(start_pct), f"Installing {addon_id}...")
     xbmc.executebuiltin(f'InstallAddon({addon_id})')
@@ -48,6 +62,9 @@ def install_with_wait(addon_id, progress, start_pct, end_pct):
     for i in range(120):
         if progress.iscanceled(): return False
         if xbmc.getCondVisibility(f'System.HasAddon({addon_id})'):
+            # Auto-enable after installation to approve any dependency prompts
+            xbmc.log(f'[Onboarding] {addon_id} installed, ensuring it is enabled...', xbmc.LOGINFO)
+            xbmc.executebuiltin(f'EnableAddon({addon_id})')
             progress.update(int(end_pct), f"{addon_id} installed successfully")
             time.sleep(0.5)
             return True
@@ -440,9 +457,9 @@ def run_installer(selections, data):
     xbmc.log(f'[Onboarding] Checking skin installation - selections.get("skin"): {selections.get("skin")}', xbmc.LOGINFO)
     if selections.get('skin'):
         xbmc.log('[Onboarding] Skin installation requested', xbmc.LOGINFO)
-        # First install the skin if not already installed
-        if install_with_wait('skin.AIODI', progress, 96, 98):
-            xbmc.log('[Onboarding] Skin installed successfully, switching...', xbmc.LOGINFO)
+        # Install or update the skin (don't reinstall if already present)
+        if install_with_wait('skin.AIODI', progress, 96, 98, update_if_exists=True):
+            xbmc.log('[Onboarding] Skin ready, switching...', xbmc.LOGINFO)
             progress.update(99, "Switching to AIODI Skin...")
             xbmc.executebuiltin('Skin.SetString(first_run,done)')  # Mark first run as complete
             time.sleep(2)
