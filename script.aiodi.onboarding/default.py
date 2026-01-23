@@ -618,27 +618,105 @@ def run_installer(selections, data):
         if install_with_wait('pvr.iptvsimple', progress, 67, 75, update_if_exists=True):
             try:
                 notify(f"Step {current_step}/{total_steps}: Configuring IPTV Simple...")
-                iptv = ensure_addon('pvr.iptvsimple')
-                if iptv:
-                    xbmc.log("[Onboarding] Applying IPTV Simple settings...", xbmc.LOGINFO)
-                    # Configure M3U URL if provided
+
+                # PVR addons use instance settings that can't be set via Python API
+                # We need to write directly to the instance settings XML file
+                xbmc.log("[Onboarding] Configuring IPTV Simple instance settings...", xbmc.LOGINFO)
+
+                # Get the addon data directory
+                pvr_data_path = xbmcvfs.translatePath('special://userdata/addon_data/pvr.iptvsimple/')
+
+                # Ensure directory exists
+                if not xbmcvfs.exists(pvr_data_path):
+                    xbmcvfs.mkdirs(pvr_data_path)
+                    xbmc.log(f"[Onboarding] Created PVR data directory: {pvr_data_path}", xbmc.LOGINFO)
+
+                # Look for existing instance settings file (usually instance-settings-1.xml)
+                instance_file = None
+                for i in range(1, 10):  # Check up to 10 instances
+                    test_file = os.path.join(pvr_data_path, f'instance-settings-{i}.xml')
+                    if xbmcvfs.exists(test_file):
+                        instance_file = test_file
+                        xbmc.log(f"[Onboarding] Found existing instance file: {instance_file}", xbmc.LOGINFO)
+                        break
+
+                # If no instance file exists, create instance-settings-1.xml
+                if not instance_file:
+                    instance_file = os.path.join(pvr_data_path, 'instance-settings-1.xml')
+                    xbmc.log(f"[Onboarding] Creating new instance file: {instance_file}", xbmc.LOGINFO)
+
+                # Read existing XML or create new one
+                try:
+                    if xbmcvfs.exists(instance_file):
+                        with open(instance_file, 'r') as f:
+                            xml_content = f.read()
+                        # Parse existing XML
+                        import xml.etree.ElementTree as ET
+                        root = ET.fromstring(xml_content)
+                    else:
+                        # Create new XML structure
+                        import xml.etree.ElementTree as ET
+                        root = ET.Element('settings', version='2')
+                        # Add instance name
+                        name_elem = ET.SubElement(root, 'setting', id='kodi_addon_instance_name')
+                        name_elem.text = 'Migrated Add-on Config'
+
+                    # Update or add M3U URL settings
                     m3u_url = data.get('iptv_m3u', '')
                     if m3u_url:
-                        apply_setting(iptv, 'm3uPathType', '1', 'M3U Path Type')  # 1 = Remote path (URL)
-                        apply_setting(iptv, 'm3uUrl', m3u_url, 'M3U URL')
+                        # Set M3U path type to Remote (1)
+                        m3u_type_elem = root.find(".//setting[@id='m3uPathType']")
+                        if m3u_type_elem is None:
+                            m3u_type_elem = ET.SubElement(root, 'setting', id='m3uPathType')
+                        m3u_type_elem.text = '1'
+                        m3u_type_elem.set('default', 'false')
 
-                    # Configure EPG URL if provided
+                        # Set M3U URL
+                        m3u_url_elem = root.find(".//setting[@id='m3uUrl']")
+                        if m3u_url_elem is None:
+                            m3u_url_elem = ET.SubElement(root, 'setting', id='m3uUrl')
+                        m3u_url_elem.text = m3u_url
+                        m3u_url_elem.set('default', 'false')
+                        xbmc.log(f"[Onboarding] Set M3U URL in instance settings", xbmc.LOGINFO)
+
+                    # Update or add EPG URL settings
                     epg_url = data.get('iptv_epg', '')
                     if epg_url:
-                        apply_setting(iptv, 'epgPathType', '1', 'EPG Path Type')  # 1 = Remote path (URL)
-                        apply_setting(iptv, 'epgUrl', epg_url, 'EPG URL')
+                        # Set EPG path type to Remote (1)
+                        epg_type_elem = root.find(".//setting[@id='epgPathType']")
+                        if epg_type_elem is None:
+                            epg_type_elem = ET.SubElement(root, 'setting', id='epgPathType')
+                        epg_type_elem.text = '1'
+                        epg_type_elem.set('default', 'false')
 
-                    del iptv
+                        # Set EPG URL
+                        epg_url_elem = root.find(".//setting[@id='epgUrl']")
+                        if epg_url_elem is None:
+                            epg_url_elem = ET.SubElement(root, 'setting', id='epgUrl')
+                        epg_url_elem.text = epg_url
+                        epg_url_elem.set('default', 'false')
+                        xbmc.log(f"[Onboarding] Set EPG URL in instance settings", xbmc.LOGINFO)
+
+                    # Write XML back to file
+                    tree = ET.ElementTree(root)
+                    ET.indent(tree, space='  ')  # Pretty print
+                    with open(instance_file, 'wb') as f:
+                        tree.write(f, encoding='utf-8', xml_declaration=True)
+
+                    xbmc.log(f"[Onboarding] Successfully wrote instance settings to {instance_file}", xbmc.LOGINFO)
+
+                    # Trigger PVR reload to apply settings
+                    xbmc.executebuiltin('UpdateLocalAddons')
+                    time.sleep(2)
+
                     notify(f"Step {current_step}/{total_steps}: IPTV Simple ready ✓")
                     xbmc.log('[Onboarding] IPTV Simple Player configuration complete', xbmc.LOGINFO)
                     time.sleep(0.5)
-                else:
-                    xbmc.log(f"[Onboarding] Failed to configure IPTV Simple - addon not loadable", xbmc.LOGERROR)
+
+                except Exception as xml_e:
+                    xbmc.log(f"[Onboarding] Error writing instance settings XML: {xml_e}", xbmc.LOGERROR)
+                    notify("IPTV Simple config warning - check logs")
+
             except Exception as e:
                 xbmc.log(f"[Onboarding] IPTV config error: {e}", xbmc.LOGERROR)
                 xbmcgui.Dialog().notification("Setup Error", f"IPTV configuration failed: {str(e)}", xbmcgui.NOTIFICATION_ERROR)
@@ -739,39 +817,10 @@ def run_installer(selections, data):
             if not install_result and skin_installed:
                 xbmc.log('[Onboarding] Skin installation timed out but skin is actually installed', xbmc.LOGINFO)
             else:
-                xbmc.log('[Onboarding] Skin installed, preparing to switch...', xbmc.LOGINFO)
+                xbmc.log('[Onboarding] Skin installed successfully', xbmc.LOGINFO)
 
-            notify(f"Step {current_step}/{total_steps}: Activating AIODI Skin...")
-
-            # Ensure skin is fully loaded and ready
-            skin = ensure_addon('skin.AIODI')
-            if skin:
-                del skin
-                xbmc.log('[Onboarding] Skin addon loaded successfully', xbmc.LOGINFO)
-
-                # Mark first run as complete
-                xbmc.executebuiltin('Skin.SetString(first_run,done)')
-                time.sleep(1)
-
-                # Switch to the skin
-                xbmc.executebuiltin('SetSkin(skin.AIODI)')
-                xbmc.log('[Onboarding] SetSkin command issued', xbmc.LOGINFO)
-
-                # Wait longer to allow skin to activate
-                time.sleep(3)
-
-                # Verify skin switch (best effort)
-                current_skin = xbmc.getSkinDir()
-                if current_skin == 'skin.AIODI':
-                    xbmc.log('[Onboarding] Skin switch verified successfully', xbmc.LOGINFO)
-                    notify(f"Step {current_step}/{total_steps}: AIODI Skin activated ✓")
-                else:
-                    xbmc.log(f'[Onboarding] Skin switch may not have completed. Current skin: {current_skin}', xbmc.LOGWARNING)
-                    notify(f"Step {current_step}/{total_steps}: Skin queued for activation")
-            else:
-                xbmc.log('[Onboarding] Failed to load skin addon, attempting switch anyway', xbmc.LOGWARNING)
-                xbmc.executebuiltin('SetSkin(skin.AIODI)')
-                time.sleep(2)
+            notify(f"Step {current_step}/{total_steps}: AIODI Skin ready ✓")
+            xbmc.log('[Onboarding] Skin installation complete, will restart Kodi for user to activate', xbmc.LOGINFO)
         else:
             xbmc.log('[Onboarding] Skin installation failed - not found after timeout', xbmc.LOGERROR)
             xbmcgui.Dialog().notification("Setup Warning", "AIODI skin installation failed", xbmcgui.NOTIFICATION_WARNING)
@@ -784,12 +833,18 @@ def run_installer(selections, data):
 
     # Show final completion message with next steps
     final_msg = (
-        "[B]Completed - Final Steps[/B]\n\n"
-        "1. Open the YouTube addon and Sign In (if YouTube was installed)\n\n"
-        "2. From the home menu of the AIODI skin, press left from Settings and configure your displayed widgets\n\n"
-        "3. Restart Kodi to ensure all changes take effect"
+        "[B]Setup Complete - Next Steps[/B]\n\n"
+        "1. Switch to AIODI skin:\n   Settings > Interface > Skin > AIODI\n\n"
+        "2. Configure widgets:\n   Use widget manager (left from Settings icon)\n\n"
+        "3. Log into YouTube:\n   Settings > Add-ons > Video add-ons > YouTube > Configure\n\n"
+        "4. Restart Kodi one more time to finalize\n\n"
+        "Restarting Kodi now..."
     )
     xbmcgui.Dialog().ok("AIODI Setup Complete", final_msg)
+
+    # Restart Kodi to ensure all changes take effect
+    xbmc.log('[Onboarding] Restarting Kodi to apply changes...', xbmc.LOGINFO)
+    xbmc.executebuiltin('RestartApp')
 
 def run():
     # Launch consolidated Input Window directly

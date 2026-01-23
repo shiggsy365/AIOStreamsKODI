@@ -93,7 +93,7 @@
                             <colordiffuse>FFFFFFFF</colordiffuse>
                             <texturefocus>special://skin/media/buttons/tr_play_fo.png</texturefocus>
                             <texturenofocus>special://skin/media/buttons/tr_play_nofo.png</texturenofocus>
-							<onclick condition="String.IsEqual(ListItem.DBType,tvshow) | String.IsEqual(ListItem.DBType,season) | String.IsEqual(ListItem.DBType,series)">ActivateWindow(Videos,$INFO[ListItem.FileNameAndPath],return)</onclick>
+							<onclick condition="String.IsEqual(ListItem.DBType,tvshow) | String.IsEqual(ListItem.DBType,season) | String.IsEqual(ListItem.DBType,series)">ActivateWindow(Videos,$INFO[ListItem.FileNameAndPath])</onclick>
 							<onclick condition="!String.IsEqual(ListItem.DBType,tvshow) + !String.IsEqual(ListItem.DBType,season) + !String.IsEqual(ListItem.DBType,series)">PlayMedia($INFO[ListItem.FileNameAndPath])</onclick>
 							<visible>!String.IsEmpty(ListItem.Title) | !String.IsEmpty(ListItem.Label)</visible>
 							<onleft>2001</onleft>
