@@ -33,7 +33,7 @@ def save_cache(data):
             json.dump(data, f)
     except: pass
 
-def install_with_wait(addon_id, progress, start_pct, end_pct, update_if_exists=False, silent=False):
+def install_with_wait(addon_id, progress, start_pct, end_pct, update_if_exists=False, silent=False, max_wait_time=60):
     # Check if already installed
     if xbmc.getCondVisibility(f'System.HasAddon({addon_id})'):
         # Ensure addon is enabled (auto-approve if disabled)
@@ -53,9 +53,21 @@ def install_with_wait(addon_id, progress, start_pct, end_pct, update_if_exists=F
                 # Trigger update check
                 xbmc.executebuiltin(f'UpdateAddon({addon_id})')
 
-                # Wait for potential update (max 30s)
+                # Auto-approve update dialog and clear notification quickly
+                time.sleep(0.3)  # Brief wait for dialog to appear
+                xbmc.executebuiltin('SendClick(12)')  # Click Yes on dialog
+                time.sleep(0.1)  # Minimal wait to clear notification
+
+                # Wait for potential update (max 30s) with progress updates
                 for i in range(60):
                     if progress.iscanceled(): return False
+
+                    # Update progress every 5 iterations to keep dialog visible
+                    if i % 5 == 0:
+                        elapsed = i * 0.5
+                        pct = int(start_pct + ((i / 60) * (end_pct - start_pct)))
+                        progress.update(pct, f"Updating {addon_id}... ({int(elapsed)}s)")
+
                     time.sleep(0.5)
                     try:
                         updated_addon = xbmcaddon.Addon(addon_id)
@@ -86,9 +98,22 @@ def install_with_wait(addon_id, progress, start_pct, end_pct, update_if_exists=F
     progress.update(int(start_pct), f"Installing {addon_id}...")
     xbmc.executebuiltin(f'InstallAddon({addon_id})')
 
-    # Wait loop (max 60s)
-    for i in range(120):
+    # Auto-approve installation dialog and clear notification quickly
+    time.sleep(0.3)  # Brief wait for dialog to appear
+    xbmc.executebuiltin('SendClick(12)')  # Click Yes on dialog
+    time.sleep(0.1)  # Minimal wait to clear notification
+
+    # Wait loop with progress updates (max_wait_time seconds)
+    max_iterations = int(max_wait_time / 0.5)  # 0.5s per iteration
+    for i in range(max_iterations):
         if progress.iscanceled(): return False
+
+        # Update progress every 10 iterations to keep dialog visible
+        if i % 10 == 0:
+            elapsed = i * 0.5
+            pct = int(start_pct + ((i / max_iterations) * (end_pct - start_pct)))
+            progress.update(pct, f"Installing {addon_id}... ({int(elapsed)}s)")
+
         if xbmc.getCondVisibility(f'System.HasAddon({addon_id})'):
             # Auto-enable after installation to approve any dependency prompts
             xbmc.log(f'[Onboarding] {addon_id} installed, ensuring it is enabled...', xbmc.LOGINFO)
@@ -328,20 +353,34 @@ def pre_install_dependencies(progress, selections):
     for idx, dep in enumerate(all_deps, 1):
         if not xbmc.getCondVisibility(f'System.HasAddon({dep})'):
             xbmc.log(f'[Onboarding] Installing dependency {idx}/{total_deps}: {dep}', xbmc.LOGINFO)
-            progress.update(1 + int((idx / total_deps) * 4), f"Installing dependencies ({idx}/{total_deps})...")
+            base_pct = 1 + int((idx / total_deps) * 4)
+            progress.update(base_pct, f"Installing dependencies ({idx}/{total_deps}): {dep.split('.')[-1]}...")
             xbmc.executebuiltin(f'InstallAddon({dep})')
 
-            # Wait for installation with timeout
-            for _ in range(20):  # Max 10 seconds per dependency
+            # Auto-approve installation dialog and clear notification quickly
+            time.sleep(0.3)  # Brief wait for dialog to appear
+            xbmc.executebuiltin('SendClick(12)')  # Click Yes on dialog
+            time.sleep(0.1)  # Minimal wait to clear notification
+
+            # Wait for installation with timeout and progress updates
+            for wait_iter in range(20):  # Max 10 seconds per dependency
+                # Update progress every 4 iterations
+                if wait_iter % 4 == 0:
+                    elapsed = wait_iter * 0.5
+                    progress.update(base_pct, f"Installing {dep.split('.')[-1]}... ({int(elapsed)}s)")
+
                 if xbmc.getCondVisibility(f'System.HasAddon({dep})'):
                     xbmc.executebuiltin(f'EnableAddon({dep})')
-                    time.sleep(0.2)
+                    time.sleep(0.1)  # Quick clear of enable notification
+                    progress.update(base_pct, f"Dependency {idx}/{total_deps} ready: {dep.split('.')[-1]}")
                     break
                 time.sleep(0.5)
         else:
             # Ensure it's enabled even if already installed
             xbmc.executebuiltin(f'EnableAddon({dep})')
+            time.sleep(0.1)  # Quick clear
             xbmc.log(f'[Onboarding] Dependency {idx}/{total_deps} already installed: {dep}', xbmc.LOGINFO)
+            progress.update(1 + int((idx / total_deps) * 4), f"Dependencies ({idx}/{total_deps}): {dep.split('.')[-1]} ready")
 
     progress.update(5, f"Dependencies ready ({total_deps}/{total_deps})")
     time.sleep(0.5)
@@ -417,50 +456,81 @@ def run_installer(selections, data):
             if not aio:
                 raise Exception("Failed to load AIOStreams addon")
 
+            # Check if addon profile directory exists (where settings are stored)
+            addon_profile = xbmcvfs.translatePath(aio.getAddonInfo('profile'))
+            if not xbmcvfs.exists(addon_profile):
+                xbmc.log(f"[Onboarding] Creating addon profile directory: {addon_profile}", xbmc.LOGINFO)
+                xbmcvfs.mkdirs(addon_profile)
+
             xbmc.log("[Onboarding] Applying AIOStreams settings...", xbmc.LOGINFO)
-            # Add integrations/host base url to settings
-            apply_setting(aio, 'aiostreams_host', data.get('aiostreams_host', ''), 'AIOStreams Host')
-            # Add integrations/uuid to settings
-            apply_setting(aio, 'aiostreams_uuid', data.get('aiostreams_uuid', ''), 'AIOStreams UUID')
-            # Add integrations/password to settings
-            apply_setting(aio, 'aiostreams_password', data.get('aiostreams_password', ''), 'AIOStreams Password')
-            # Add integrations/trakt client id to settings
-            apply_setting(aio, 'trakt_client_id', data.get('trakt_id', ''), 'Trakt Client ID')
-            # Add integrations/trakt client secret to settings
-            apply_setting(aio, 'trakt_client_secret', data.get('trakt_secret', ''), 'Trakt Client Secret')
 
-            # Set general/default behaviour to either play_first or show_streams
-            behavior_val = data.get('aiostreams_behavior', 'show_streams')
-            apply_setting(aio, 'default_behavior', behavior_val, 'Default Behavior')
+            # Apply and verify each setting
+            settings_to_apply = [
+                ('aiostreams_host', data.get('aiostreams_host', ''), 'AIOStreams Host'),
+                ('aiostreams_uuid', data.get('aiostreams_uuid', ''), 'AIOStreams UUID'),
+                ('aiostreams_password', data.get('aiostreams_password', ''), 'AIOStreams Password'),
+                ('trakt_client_id', data.get('trakt_id', ''), 'Trakt Client ID'),
+                ('trakt_client_secret', data.get('trakt_secret', ''), 'Trakt Client Secret'),
+                ('default_behavior', data.get('aiostreams_behavior', 'show_streams'), 'Default Behavior'),
+                ('subtitle_languages', data.get('aiostreams_subtitles', ''), 'Subtitle Languages'),
+                ('autoplay_next_episode', selections.get('upnext'), 'Autoplay Next Episode'),
+            ]
 
-            # Add filter subtitles to general/filter subtitles
-            apply_setting(aio, 'subtitle_languages', data.get('aiostreams_subtitles', ''), 'Subtitle Languages')
+            failed_settings = []
+            for setting_key, setting_value, description in settings_to_apply:
+                if not apply_setting(aio, setting_key, setting_value, description):
+                    failed_settings.append(setting_key)
 
-            # If UpNext is toggled to be installed, turn on general/Signal UpNext
-            upnext_val = selections.get('upnext')
-            apply_setting(aio, 'autoplay_next_episode', upnext_val, 'Autoplay Next Episode')
+            if failed_settings:
+                xbmc.log(f"[Onboarding] WARNING: Failed to apply {len(failed_settings)} settings: {', '.join(failed_settings)}", xbmc.LOGWARNING)
 
-            # Save and exit aiostreams settings
+            # Close settings to ensure they are saved
+            xbmc.log("[Onboarding] Closing AIOStreams addon to persist settings...", xbmc.LOGINFO)
             del aio
-            time.sleep(2)
+            time.sleep(3)  # Wait for settings to be written to disk
 
-            # Return to aiostreams settings and call integrations/retrieve manifest
+            # Verify settings were saved by reloading addon
+            progress.update(24, f"Step {current_step}/{total_steps}: Verifying settings...")
+            aio_verify = ensure_addon('plugin.video.aiostreams')
+            if aio_verify:
+                # Verify multiple settings were saved
+                saved_host = aio_verify.getSetting('aiostreams_host')
+                saved_uuid = aio_verify.getSetting('aiostreams_uuid')
+                saved_trakt_id = aio_verify.getSetting('trakt_client_id')
+                saved_behavior = aio_verify.getSetting('default_behavior')
+
+                verification_results = []
+                if saved_host:
+                    verification_results.append(f"Host: {saved_host[:30]}...")
+                if saved_uuid:
+                    verification_results.append(f"UUID: {saved_uuid[:20]}...")
+                if saved_trakt_id:
+                    verification_results.append("Trakt ID: [SET]")
+                if saved_behavior:
+                    verification_results.append(f"Behavior: {saved_behavior}")
+
+                if verification_results:
+                    xbmc.log(f"[Onboarding] Settings verified saved: {'; '.join(verification_results)}", xbmc.LOGINFO)
+                else:
+                    xbmc.log("[Onboarding] WARNING: No settings were verified as saved! They may not have persisted.", xbmc.LOGWARNING)
+                    xbmcgui.Dialog().notification("Settings Warning", "Settings may not have saved. Check logs.", xbmcgui.NOTIFICATION_WARNING, 3000)
+
+                del aio_verify
+                time.sleep(1)
+
+            # Call integrations/retrieve manifest
             progress.update(25, f"Step {current_step}/{total_steps}: Retrieving Manifest...")
+            xbmc.log("[Onboarding] Calling retrieve_manifest...", xbmc.LOGINFO)
             xbmc.executebuiltin('RunPlugin(plugin://plugin.video.aiostreams/?action=retrieve_manifest)')
             # Wait for manifest retrieval to complete (silent)
             time.sleep(8)
 
             # Call integrations/authorize trakt (silent, user can do this later if needed)
             progress.update(28, f"Step {current_step}/{total_steps}: Configuring Trakt integration...")
+            xbmc.log("[Onboarding] Calling trakt_auth...", xbmc.LOGINFO)
             xbmc.executebuiltin('RunPlugin(plugin://plugin.video.aiostreams/?action=trakt_auth)')
             # Give it time to process in background
-            time.sleep(3)
-
-            # Save and exit aiostreams settings again
-            aio = ensure_addon('plugin.video.aiostreams')
-            if aio:
-                del aio
-                time.sleep(1)
+            time.sleep(5)  # Increased wait time for Trakt auth
 
             progress.update(30, f"Step {current_step}/{total_steps}: AIOStreams ready")
             xbmc.log("[Onboarding] AIOStreams configuration complete", xbmc.LOGINFO)
@@ -613,8 +683,18 @@ def run_installer(selections, data):
         current_step += 1
         xbmc.log(f'[Onboarding] Step {current_step}/{total_steps}: Installing AIODI Skin', xbmc.LOGINFO)
         # Install or update the skin (don't reinstall if already present)
-        if install_with_wait('skin.AIODI', progress, 95, 97, update_if_exists=True):
-            xbmc.log('[Onboarding] Skin installed, preparing to switch...', xbmc.LOGINFO)
+        # Use longer timeout for skins (120s) as they tend to be larger
+        install_result = install_with_wait('skin.AIODI', progress, 95, 97, update_if_exists=True, max_wait_time=120)
+
+        # Even if install_with_wait timed out, check if skin is actually installed
+        skin_installed = xbmc.getCondVisibility('System.HasAddon(skin.AIODI)')
+
+        if install_result or skin_installed:
+            if not install_result and skin_installed:
+                xbmc.log('[Onboarding] Skin installation timed out but skin is actually installed', xbmc.LOGINFO)
+            else:
+                xbmc.log('[Onboarding] Skin installed, preparing to switch...', xbmc.LOGINFO)
+
             progress.update(98, f"Step {current_step}/{total_steps}: Activating AIODI Skin...")
 
             # Ensure skin is fully loaded and ready
@@ -647,7 +727,7 @@ def run_installer(selections, data):
                 xbmc.executebuiltin('SetSkin(skin.AIODI)')
                 time.sleep(2)
         else:
-            xbmc.log('[Onboarding] Skin installation failed or timed out', xbmc.LOGERROR)
+            xbmc.log('[Onboarding] Skin installation failed - not found after timeout', xbmc.LOGERROR)
             xbmcgui.Dialog().notification("Setup Warning", "AIODI skin installation failed", xbmcgui.NOTIFICATION_WARNING)
     else:
         xbmc.log('[Onboarding] Skin installation not requested (selections.get("skin") returned False/None)', xbmc.LOGINFO)
