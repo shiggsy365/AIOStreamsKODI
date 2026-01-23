@@ -5,13 +5,18 @@
 	<onload condition="String.IsEmpty(Skin.String(TV_WidgetIndex))">Skin.SetString(TV_WidgetIndex,0)</onload>
 	<onload condition="String.IsEmpty(Skin.String(Music_WidgetIndex))">Skin.SetString(Music_WidgetIndex,0)</onload>
 <onload>Skin.SetString(SideMenuFocus,home)</onload>
+<onload>Skin.SetString(Home_WidgetIndex,0)</onload>
+<onload>Skin.SetString(Movies_WidgetIndex,0)</onload>
+<onload>Skin.SetString(TV_WidgetIndex,0)</onload>
+<onload>Skin.SetString(Music_WidgetIndex,0)</onload>
+<onload>SetFocus(9003)</onload>
 
 
 
 
 
 
-<defaultcontrol>9000</defaultcontrol>
+<defaultcontrol always="true">9003</defaultcontrol>
 <backgroundcolor>background</backgroundcolor>
 <controls>
 <!-- Top Layer Debug Labels moved to bottom -->
@@ -1519,6 +1524,7 @@
 				<param name="item_limit">8</param>
 				<param name="widget_target">videos</param>
 				<param name="browse_mode">false</param>
+				<param name="filter_youtube">true</param>
 				<param name="onup_action1">Skin.SetString(Music_WidgetIndex,0)</param>
 				<param name="onup_action2">SetFocus(7100)</param>
 				<param name="ondown_action1">noop</param>

@@ -901,6 +901,7 @@
 		<param name="onup_action2">noop</param>
 		<param name="ondown_action1">noop</param>
 		<param name="ondown_action2">noop</param>
+		<param name="filter_youtube">false</param>
 		<definition>
 			<include content="CategoryLabel">
 				<param name="label">$PARAM[widget_header]</param>
@@ -927,6 +928,7 @@
 				<visible>Integer.IsGreater(Container($PARAM[list_id]).NumItems,0) | Container($PARAM[list_id]).IsUpdating</visible>
 				<itemlayout width="310" height="340">
 					<control type="group">
+						<visible>!$PARAM[filter_youtube] | ![String.IsEqual(ListItem.Label,Recommendations) | String.IsEqual(ListItem.Label,Related Videos) | String.IsEqual(ListItem.Label,My Channel) | String.IsEqual(ListItem.Label,Watch Later) | String.IsEqual(ListItem.Label,Liked Videos) | String.IsEqual(ListItem.Label,Disliked Videos) | String.IsEqual(ListItem.Label,Browse Channels) | String.IsEqual(ListItem.Label,Completed Live) | String.IsEqual(ListItem.Label,Upcoming Live) | String.IsEqual(ListItem.Label,Switch user) | String.IsEqual(ListItem.Label,Sign Out) | String.IsEqual(ListItem.Label,Setup Wizard)]</visible>
 						<left>70</left>
 						<control type="image">
 							<width>316</width>
@@ -958,6 +960,7 @@
 				</itemlayout>
 				<focusedlayout width="310" height="340">
 					<control type="group">
+						<visible>!$PARAM[filter_youtube] | ![String.IsEqual(ListItem.Label,Recommendations) | String.IsEqual(ListItem.Label,Related Videos) | String.IsEqual(ListItem.Label,My Channel) | String.IsEqual(ListItem.Label,Watch Later) | String.IsEqual(ListItem.Label,Liked Videos) | String.IsEqual(ListItem.Label,Disliked Videos) | String.IsEqual(ListItem.Label,Browse Channels) | String.IsEqual(ListItem.Label,Completed Live) | String.IsEqual(ListItem.Label,Upcoming Live) | String.IsEqual(ListItem.Label,Switch user) | String.IsEqual(ListItem.Label,Sign Out) | String.IsEqual(ListItem.Label,Setup Wizard)]</visible>
 						<depth>DepthContentPopout</depth>
 						<left>70</left>
 						<animation type="Focus">

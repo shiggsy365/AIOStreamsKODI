@@ -4,7 +4,7 @@
     <onload condition="Container.Content(seasons) | Container.Content(episodes)">Container.SetViewMode(56)</onload>
     <onload condition="Container.Content(seasons) | Container.Content(episodes)">SetFocus(56)</onload>
 	<backgroundcolor>background</backgroundcolor>
-	<views>50,51,52,53,54,55,56,57,500,501,502</views>
+	<views>56,50,51,52,53,54,55,57,500,501,502</views>
 	<menucontrol>9000</menucontrol>
 	<controls>
 		<include>DefaultBackground</include>
