@@ -57,6 +57,7 @@ The Onboarding Wizard, when run, will guide you through all of the setup steps f
 - Initializing basic settings for playback quality and language.
 - Downloading TMDBHelper Players
 - Installing all plugins and skins
+  
 When running the wizard, the only on screen prompt you need to interact with is the Trakt Authorisation prompt. Ignore all other pop-ups
 Once complete, restart Kodi, open the YouTube addon to sign in (if installed), customise your home screen widgets (left arrow from the settings icon) and restart kodi one last time
 
