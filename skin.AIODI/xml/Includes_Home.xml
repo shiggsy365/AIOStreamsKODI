@@ -240,7 +240,7 @@
 					<onleft>9003</onleft>
 					<onright>noop</onright>
 					<onup>$PARAM[onup_action]</onup>
-					<ondown>$PARAM[ondown_action]
+					<ondown>$PARAM[ondown_action]</ondown>
 					<onfocus>Skin.SetString(ActiveWidgetID,$PARAM[list_id])</onfocus>
 					<itemlayout width="410" height="235">
 						<control type="image">
@@ -897,6 +897,10 @@
 		<param name="additional_tvshow_items">false</param>
 		<param name="visible">true</param>
 		<param name="browse">auto</param>
+		<param name="onup_action1">noop</param>
+		<param name="onup_action2">noop</param>
+		<param name="ondown_action1">noop</param>
+		<param name="ondown_action2">noop</param>
 		<definition>
 			<include content="CategoryLabel">
 				<param name="label">$PARAM[widget_header]</param>
@@ -914,8 +918,10 @@
 				<height>290</height>
 				<include content="WidgetListCommon">
 					<param name="list_id" value="$PARAM[list_id]"/>
-					<param name="onup_action" value="$PARAM[onup_action]"/>
-					<param name="ondown_action" value="$PARAM[ondown_action]"/>
+					<param name="onup_action1" value="$PARAM[onup_action1]"/>
+					<param name="onup_action2" value="$PARAM[onup_action2]"/>
+					<param name="ondown_action1" value="$PARAM[ondown_action1]"/>
+					<param name="ondown_action2" value="$PARAM[ondown_action2]"/>
 				</include>
 				<visible>$PARAM[visible]</visible>
 				<visible>Integer.IsGreater(Container($PARAM[list_id]).NumItems,0) | Container($PARAM[list_id]).IsUpdating</visible>
@@ -1700,4 +1706,3 @@
 		</control>
 	</include>
 </includes>
-```
