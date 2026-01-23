@@ -739,39 +739,10 @@ def run_installer(selections, data):
             if not install_result and skin_installed:
                 xbmc.log('[Onboarding] Skin installation timed out but skin is actually installed', xbmc.LOGINFO)
             else:
-                xbmc.log('[Onboarding] Skin installed, preparing to switch...', xbmc.LOGINFO)
+                xbmc.log('[Onboarding] Skin installed successfully', xbmc.LOGINFO)
 
-            notify(f"Step {current_step}/{total_steps}: Activating AIODI Skin...")
-
-            # Ensure skin is fully loaded and ready
-            skin = ensure_addon('skin.AIODI')
-            if skin:
-                del skin
-                xbmc.log('[Onboarding] Skin addon loaded successfully', xbmc.LOGINFO)
-
-                # Mark first run as complete
-                xbmc.executebuiltin('Skin.SetString(first_run,done)')
-                time.sleep(1)
-
-                # Switch to the skin
-                xbmc.executebuiltin('SetSkin(skin.AIODI)')
-                xbmc.log('[Onboarding] SetSkin command issued', xbmc.LOGINFO)
-
-                # Wait longer to allow skin to activate
-                time.sleep(3)
-
-                # Verify skin switch (best effort)
-                current_skin = xbmc.getSkinDir()
-                if current_skin == 'skin.AIODI':
-                    xbmc.log('[Onboarding] Skin switch verified successfully', xbmc.LOGINFO)
-                    notify(f"Step {current_step}/{total_steps}: AIODI Skin activated ✓")
-                else:
-                    xbmc.log(f'[Onboarding] Skin switch may not have completed. Current skin: {current_skin}', xbmc.LOGWARNING)
-                    notify(f"Step {current_step}/{total_steps}: Skin queued for activation")
-            else:
-                xbmc.log('[Onboarding] Failed to load skin addon, attempting switch anyway', xbmc.LOGWARNING)
-                xbmc.executebuiltin('SetSkin(skin.AIODI)')
-                time.sleep(2)
+            notify(f"Step {current_step}/{total_steps}: AIODI Skin ready ✓")
+            xbmc.log('[Onboarding] Skin installation complete, will restart Kodi for user to activate', xbmc.LOGINFO)
         else:
             xbmc.log('[Onboarding] Skin installation failed - not found after timeout', xbmc.LOGERROR)
             xbmcgui.Dialog().notification("Setup Warning", "AIODI skin installation failed", xbmcgui.NOTIFICATION_WARNING)
@@ -784,12 +755,18 @@ def run_installer(selections, data):
 
     # Show final completion message with next steps
     final_msg = (
-        "[B]Completed - Final Steps[/B]\n\n"
-        "1. Open the YouTube addon and Sign In (if YouTube was installed)\n\n"
-        "2. From the home menu of the AIODI skin, press left from Settings and configure your displayed widgets\n\n"
-        "3. Restart Kodi to ensure all changes take effect"
+        "[B]Setup Complete - Next Steps[/B]\n\n"
+        "1. Switch to AIODI skin:\n   Settings > Interface > Skin > AIODI\n\n"
+        "2. Configure widgets:\n   Use widget manager (left from Settings icon)\n\n"
+        "3. Log into YouTube:\n   Settings > Add-ons > Video add-ons > YouTube > Configure\n\n"
+        "4. Restart Kodi one more time to finalize\n\n"
+        "Restarting Kodi now..."
     )
     xbmcgui.Dialog().ok("AIODI Setup Complete", final_msg)
+
+    # Restart Kodi to ensure all changes take effect
+    xbmc.log('[Onboarding] Restarting Kodi to apply changes...', xbmc.LOGINFO)
+    xbmc.executebuiltin('RestartApp')
 
 def run():
     # Launch consolidated Input Window directly
