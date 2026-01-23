@@ -386,8 +386,19 @@ def pre_install_dependencies(progress, selections):
     time.sleep(0.5)
 
 def run_installer(selections, data):
-    progress = xbmcgui.DialogProgress()
-    progress.create("AIODI Setup", "Initializing installation...")
+    # Use notifications instead of progress dialog
+    def notify(message):
+        xbmcgui.Dialog().notification("AIODI Setup", message, xbmcgui.NOTIFICATION_INFO, 3000)
+
+    notify("Starting installation...")
+
+    # Create a dummy progress object for compatibility
+    class DummyProgress:
+        def update(self, pct, msg=""): notify(msg) if msg else None
+        def iscanceled(self): return False
+        def close(self): pass
+
+    progress = DummyProgress()
 
     # Log received data for debugging
     xbmc.log(f"[Onboarding] Installer started with selections: {selections}", xbmc.LOGINFO)
@@ -632,23 +643,31 @@ def run_installer(selections, data):
     if selections.get('imvdb'):
         current_step += 1
         xbmc.log(f'[Onboarding] Step {current_step}/{total_steps}: Installing IMVDb', xbmc.LOGINFO)
-        if install_with_wait('plugin.video.imvdb', progress, 82, 87, update_if_exists=True):
-            try:
-                progress.update(89, f"Step {current_step}/{total_steps}: Configuring IMVDb...")
-                im = ensure_addon('plugin.video.imvdb')
-                if im:
-                    xbmc.log("[Onboarding] Applying IMVDb settings...", xbmc.LOGINFO)
-                    # In settings, set IMVDb API Key
-                    apply_setting(im, 'api_key', data.get('imvdb_key', ''), 'IMVDb API Key')
-                    del im
-                    progress.update(90, f"Step {current_step}/{total_steps}: IMVDb ready")
-                    xbmc.log("[Onboarding] IMVDb configuration complete", xbmc.LOGINFO)
-                    time.sleep(0.5)
-                else:
-                    xbmc.log(f"[Onboarding] Failed to configure IMVDb - addon not loadable", xbmc.LOGERROR)
-            except Exception as e:
-                xbmc.log(f"[Onboarding] IMVDb config error: {e}", xbmc.LOGERROR)
-                xbmcgui.Dialog().notification("Setup Error", f"IMVDb configuration failed: {str(e)}", xbmcgui.NOTIFICATION_ERROR)
+        try:
+            # IMVDb may not be in official Kodi repository - try to install but don't fail if not found
+            if install_with_wait('plugin.video.imvdb', progress, 82, 87, update_if_exists=True):
+                try:
+                    progress.update(89, f"Step {current_step}/{total_steps}: Configuring IMVDb...")
+                    im = ensure_addon('plugin.video.imvdb')
+                    if im:
+                        xbmc.log("[Onboarding] Applying IMVDb settings...", xbmc.LOGINFO)
+                        # In settings, set IMVDb API Key
+                        apply_setting(im, 'api_key', data.get('imvdb_key', ''), 'IMVDb API Key')
+                        del im
+                        progress.update(90, f"Step {current_step}/{total_steps}: IMVDb ready")
+                        xbmc.log("[Onboarding] IMVDb configuration complete", xbmc.LOGINFO)
+                        time.sleep(0.5)
+                    else:
+                        xbmc.log(f"[Onboarding] Failed to configure IMVDb - addon not loadable", xbmc.LOGERROR)
+                except Exception as e:
+                    xbmc.log(f"[Onboarding] IMVDb config error: {e}", xbmc.LOGERROR)
+                    xbmcgui.Dialog().notification("Setup Warning", f"IMVDb configuration failed: {str(e)}", xbmcgui.NOTIFICATION_WARNING)
+            else:
+                xbmc.log(f"[Onboarding] IMVDb installation failed - may not be available in repository", xbmc.LOGWARNING)
+                xbmcgui.Dialog().notification("Setup Info", "IMVDb not available in repository", xbmcgui.NOTIFICATION_INFO, 3000)
+        except Exception as e:
+            xbmc.log(f"[Onboarding] IMVDb installation error: {e}", xbmc.LOGERROR)
+            xbmcgui.Dialog().notification("Setup Warning", "Skipping IMVDb - not available", xbmcgui.NOTIFICATION_WARNING, 3000)
 
     # 6. If TMDB helper players are selected, save a copy of the zip file to the special://home directory
     if selections.get('tmdbh'):
@@ -682,9 +701,27 @@ def run_installer(selections, data):
     if selections.get('skin'):
         current_step += 1
         xbmc.log(f'[Onboarding] Step {current_step}/{total_steps}: Installing AIODI Skin', xbmc.LOGINFO)
-        # Install or update the skin (don't reinstall if already present)
-        # Use longer timeout for skins (120s) as they tend to be larger
-        install_result = install_with_wait('skin.AIODI', progress, 95, 97, update_if_exists=True, max_wait_time=120)
+
+        # For skin installation, don't use SendClick - let user approve manually or Kodi handles it differently
+        # Skins have special install dialogs that SendClick interferes with
+        xbmc.log('[Onboarding] Installing skin WITHOUT auto-click (manual approval or Kodi auto-handles)', xbmc.LOGINFO)
+        notify("Installing AIODI Skin - please approve if prompted...")
+
+        # Check if already installed first
+        if not xbmc.getCondVisibility('System.HasAddon(skin.AIODI)'):
+            xbmc.executebuiltin('InstallAddon(skin.AIODI)')
+
+            # Wait up to 180 seconds for skin to install (no SendClick)
+            install_result = False
+            for i in range(360):  # 180 seconds
+                if xbmc.getCondVisibility('System.HasAddon(skin.AIODI)'):
+                    install_result = True
+                    xbmc.log('[Onboarding] Skin installation detected', xbmc.LOGINFO)
+                    break
+                time.sleep(0.5)
+        else:
+            install_result = True
+            xbmc.log('[Onboarding] Skin already installed', xbmc.LOGINFO)
 
         # Even if install_with_wait timed out, check if skin is actually installed
         skin_installed = xbmc.getCondVisibility('System.HasAddon(skin.AIODI)')
@@ -732,10 +769,9 @@ def run_installer(selections, data):
     else:
         xbmc.log('[Onboarding] Skin installation not requested (selections.get("skin") returned False/None)', xbmc.LOGINFO)
 
-    progress.update(100, f"Setup complete! All {total_steps} steps finished.")
+    notify(f"Setup complete! All {total_steps} steps finished.")
     xbmc.log(f'[Onboarding] Installation complete. Processed {current_step}/{total_steps} steps.', xbmc.LOGINFO)
-    time.sleep(2)
-    progress.close()
+    time.sleep(1)
 
     # Show final completion message with next steps
     final_msg = (
