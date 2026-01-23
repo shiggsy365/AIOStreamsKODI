@@ -5225,6 +5225,7 @@ ACTION_REGISTRY = {
     'index': lambda p: index(),
     'search': lambda p: search(),
     'search_tab': lambda p: handle_search_tab(p),
+    'info': lambda p: action_info(p),
     'clear_cache': lambda p: clear_cache(),
     
     # Browse actions

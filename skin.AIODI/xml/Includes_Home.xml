@@ -1112,9 +1112,53 @@
 						</control>
 					</control>
 				</focusedlayout>
-				$PARAM[content]
+				<include content="$PARAM[content_include]" />
 			</control>
 		</definition>
+	</include>
+	<include name="WidgetListYouTubeContent">
+		<content>
+			<item>
+				<label>Trending</label>
+				<onclick>ActivateWindow(Videos,plugin://plugin.video.youtube/kodion/trending/,return)</onclick>
+				<icon>special://home/addons/plugin.video.youtube/resources/media/trending.png</icon>
+			</item>
+			<item>
+				<label>Search</label>
+				<onclick>RunScript(special://skin/resources/lib/global_search.py,youtube)</onclick>
+				<icon>special://home/addons/plugin.video.youtube/resources/media/search.png</icon>
+			</item>
+			<item>
+				<label>History</label>
+				<onclick>ActivateWindow(Videos,plugin://plugin.video.youtube/kodion/history/,return)</onclick>
+				<icon>special://home/addons/plugin.video.youtube/resources/media/history.png</icon>
+			</item>
+			<item>
+				<label>Watch Later</label>
+				<onclick>ActivateWindow(Videos,plugin://plugin.video.youtube/kodion/library/watch_later/,return)</onclick>
+				<icon>special://home/addons/plugin.video.youtube/resources/media/watch_later.png</icon>
+			</item>
+			<item>
+				<label>Playlists</label>
+				<onclick>ActivateWindow(Videos,plugin://plugin.video.youtube/kodion/library/playlists/,return)</onclick>
+				<icon>special://home/addons/plugin.video.youtube/resources/media/playlists.png</icon>
+			</item>
+			<item>
+				<label>Subscriptions</label>
+				<onclick>ActivateWindow(Videos,plugin://plugin.video.youtube/kodion/subscriptions/,return)</onclick>
+				<icon>special://home/addons/plugin.video.youtube/resources/media/subscriptions.png</icon>
+			</item>
+			<item>
+				<label>Bookmarks</label>
+				<onclick>ActivateWindow(Videos,plugin://plugin.video.youtube/kodion/bookmarks/,return)</onclick>
+				<icon>special://home/addons/plugin.video.youtube/resources/media/bookmarks.png</icon>
+			</item>
+			<item>
+				<label>Live broadcast</label>
+				<onclick>ActivateWindow(Videos,plugin://plugin.video.youtube/kodion/live/,return)</onclick>
+				<icon>special://home/addons/plugin.video.youtube/resources/media/live.png</icon>
+			</item>
+		</content>
 	</include>
 	<include name="MovieSubmenuItems">
 		<content>
