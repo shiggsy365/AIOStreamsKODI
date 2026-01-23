@@ -55,7 +55,7 @@ def install_with_wait(addon_id, progress, start_pct, end_pct, update_if_exists=F
 
                 # Auto-approve update dialog and clear notification quickly
                 time.sleep(0.3)  # Brief wait for dialog to appear
-                xbmc.executebuiltin('SendClick(11)')  # Click OK/Yes on dialog
+                xbmc.executebuiltin('SendClick(12)')  # Click Yes on dialog
                 time.sleep(0.1)  # Minimal wait to clear notification
 
                 # Wait for potential update (max 30s)
@@ -343,7 +343,7 @@ def pre_install_dependencies(progress, selections):
 
             # Auto-approve installation dialog and clear notification quickly
             time.sleep(0.3)  # Brief wait for dialog to appear
-            xbmc.executebuiltin('SendClick(11)')  # Click OK/Yes on dialog
+            xbmc.executebuiltin('SendClick(12)')  # Click Yes on dialog
             time.sleep(0.1)  # Minimal wait to clear notification
 
             # Wait for installation with timeout
