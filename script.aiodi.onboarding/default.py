@@ -33,13 +33,14 @@ def save_cache(data):
             json.dump(data, f)
     except: pass
 
-def install_with_wait(addon_id, progress, start_pct, end_pct, update_if_exists=False):
+def install_with_wait(addon_id, progress, start_pct, end_pct, update_if_exists=False, silent=False):
     # Check if already installed
     if xbmc.getCondVisibility(f'System.HasAddon({addon_id})'):
         # Ensure addon is enabled (auto-approve if disabled)
-        xbmc.log(f'[Onboarding] Ensuring {addon_id} is enabled...', xbmc.LOGINFO)
+        if not silent:
+            xbmc.log(f'[Onboarding] Ensuring {addon_id} is enabled...', xbmc.LOGINFO)
         xbmc.executebuiltin(f'EnableAddon({addon_id})')
-        time.sleep(0.5)
+        time.sleep(0.1)  # Reduced for faster notification clearing
 
         if update_if_exists:
             try:
@@ -62,7 +63,7 @@ def install_with_wait(addon_id, progress, start_pct, end_pct, update_if_exists=F
                         if new_version != current_version:
                             xbmc.log(f'[Onboarding] {addon_id} updated from v{current_version} to v{new_version}', xbmc.LOGINFO)
                             progress.update(int(end_pct), f"{addon_id} updated to v{new_version}")
-                            time.sleep(0.5)
+                            time.sleep(0.1)  # Reduced for faster notification clearing
                             return True
                     except:
                         pass
@@ -70,7 +71,7 @@ def install_with_wait(addon_id, progress, start_pct, end_pct, update_if_exists=F
                 # No update found or same version
                 xbmc.log(f'[Onboarding] {addon_id} already at latest version (v{current_version})', xbmc.LOGINFO)
                 progress.update(int(end_pct), f"{addon_id} already up to date")
-                time.sleep(0.5)
+                time.sleep(0.1)  # Reduced for faster notification clearing
                 return True
             except Exception as e:
                 xbmc.log(f'[Onboarding] Error checking version for {addon_id}: {e}', xbmc.LOGERROR)
@@ -79,7 +80,7 @@ def install_with_wait(addon_id, progress, start_pct, end_pct, update_if_exists=F
         else:
             xbmc.log(f'[Onboarding] {addon_id} already installed, skipping...', xbmc.LOGINFO)
             progress.update(int(end_pct), f"{addon_id} already installed")
-            time.sleep(0.5)
+            time.sleep(0.1)  # Reduced for faster notification clearing
             return True
 
     progress.update(int(start_pct), f"Installing {addon_id}...")
@@ -93,7 +94,7 @@ def install_with_wait(addon_id, progress, start_pct, end_pct, update_if_exists=F
             xbmc.log(f'[Onboarding] {addon_id} installed, ensuring it is enabled...', xbmc.LOGINFO)
             xbmc.executebuiltin(f'EnableAddon({addon_id})')
             progress.update(int(end_pct), f"{addon_id} installed successfully")
-            time.sleep(0.5)
+            time.sleep(0.1)  # Reduced for faster notification clearing
             return True
         time.sleep(0.5)
     return False
@@ -291,14 +292,38 @@ class InputWindow(xbmcgui.WindowXMLDialog):
         except Exception as e:
             xbmc.log(f'[Onboarding] Error collecting data: {e}', xbmc.LOGERROR)
 
+def pre_install_dependencies(progress):
+    """Pre-install common dependencies to suppress popup dialogs during main installation"""
+    common_deps = [
+        'inputstream.adaptive',     # Common streaming dependency
+        'script.module.requests',    # HTTP library
+        'script.module.routing',     # Routing library
+        'script.module.kodi-six',    # Python 2/3 compatibility
+    ]
+
+    progress.update(1, "Pre-installing dependencies...")
+    for dep in common_deps:
+        if not xbmc.getCondVisibility(f'System.HasAddon({dep})'):
+            xbmc.log(f'[Onboarding] Pre-installing dependency: {dep}', xbmc.LOGINFO)
+            xbmc.executebuiltin(f'InstallAddon({dep})')
+            # Quick wait without blocking
+            for _ in range(10):  # Max 5 seconds
+                if xbmc.getCondVisibility(f'System.HasAddon({dep})'):
+                    xbmc.executebuiltin(f'EnableAddon({dep})')
+                    break
+                time.sleep(0.5)
+
 def run_installer(selections, data):
     progress = xbmcgui.DialogProgress()
     progress.create("AIODI Setup", "Initializing installation...")
 
+    # Pre-install common dependencies to reduce popup dialogs
+    pre_install_dependencies(progress)
+
     # helper to ensure addon is loaded before setting settings
     def ensure_addon(addon_id):
         xbmc.executebuiltin(f'EnableAddon({addon_id})')
-        time.sleep(2)  # Give addon time to load
+        time.sleep(0.3)  # Reduced wait time for faster notification clearing
         try:
             return xbmcaddon.Addon(addon_id)
         except Exception as e:
@@ -482,8 +507,17 @@ def run_installer(selections, data):
         xbmc.log('[Onboarding] Skin installation not requested (selections.get("skin") returned False/None)', xbmc.LOGINFO)
 
     progress.update(100, "Setup complete!")
-    time.sleep(2)
+    time.sleep(1)
     progress.close()
+
+    # Show final completion message with next steps
+    final_msg = (
+        "[B]Completed - Final Steps[/B]\n\n"
+        "1. Open the YouTube addon and Sign In (if YouTube was installed)\n\n"
+        "2. From the home menu of the AIODI skin, press left from Settings and configure your displayed widgets\n\n"
+        "3. Restart Kodi to ensure all changes take effect"
+    )
+    xbmcgui.Dialog().ok("AIODI Setup Complete", final_msg)
 
 def run():
     # Launch consolidated Input Window directly
