@@ -58,9 +58,16 @@ def install_with_wait(addon_id, progress, start_pct, end_pct, update_if_exists=F
                 xbmc.executebuiltin('SendClick(12)')  # Click Yes on dialog
                 time.sleep(0.1)  # Minimal wait to clear notification
 
-                # Wait for potential update (max 30s)
+                # Wait for potential update (max 30s) with progress updates
                 for i in range(60):
                     if progress.iscanceled(): return False
+
+                    # Update progress every 5 iterations to keep dialog visible
+                    if i % 5 == 0:
+                        elapsed = i * 0.5
+                        pct = int(start_pct + ((i / 60) * (end_pct - start_pct)))
+                        progress.update(pct, f"Updating {addon_id}... ({int(elapsed)}s)")
+
                     time.sleep(0.5)
                     try:
                         updated_addon = xbmcaddon.Addon(addon_id)
@@ -93,12 +100,19 @@ def install_with_wait(addon_id, progress, start_pct, end_pct, update_if_exists=F
 
     # Auto-approve installation dialog and clear notification quickly
     time.sleep(0.3)  # Brief wait for dialog to appear
-    xbmc.executebuiltin('SendClick(11)')  # Click OK/Yes on dialog
+    xbmc.executebuiltin('SendClick(12)')  # Click Yes on dialog
     time.sleep(0.1)  # Minimal wait to clear notification
 
-    # Wait loop (max 60s)
+    # Wait loop (max 60s) with progress updates
     for i in range(120):
         if progress.iscanceled(): return False
+
+        # Update progress every 10 iterations to keep dialog visible
+        if i % 10 == 0:
+            elapsed = i * 0.5
+            pct = int(start_pct + ((i / 120) * (end_pct - start_pct)))
+            progress.update(pct, f"Installing {addon_id}... ({int(elapsed)}s)")
+
         if xbmc.getCondVisibility(f'System.HasAddon({addon_id})'):
             # Auto-enable after installation to approve any dependency prompts
             xbmc.log(f'[Onboarding] {addon_id} installed, ensuring it is enabled...', xbmc.LOGINFO)
@@ -338,7 +352,8 @@ def pre_install_dependencies(progress, selections):
     for idx, dep in enumerate(all_deps, 1):
         if not xbmc.getCondVisibility(f'System.HasAddon({dep})'):
             xbmc.log(f'[Onboarding] Installing dependency {idx}/{total_deps}: {dep}', xbmc.LOGINFO)
-            progress.update(1 + int((idx / total_deps) * 4), f"Installing dependencies ({idx}/{total_deps})...")
+            base_pct = 1 + int((idx / total_deps) * 4)
+            progress.update(base_pct, f"Installing dependencies ({idx}/{total_deps}): {dep.split('.')[-1]}...")
             xbmc.executebuiltin(f'InstallAddon({dep})')
 
             # Auto-approve installation dialog and clear notification quickly
@@ -346,11 +361,17 @@ def pre_install_dependencies(progress, selections):
             xbmc.executebuiltin('SendClick(12)')  # Click Yes on dialog
             time.sleep(0.1)  # Minimal wait to clear notification
 
-            # Wait for installation with timeout
-            for _ in range(20):  # Max 10 seconds per dependency
+            # Wait for installation with timeout and progress updates
+            for wait_iter in range(20):  # Max 10 seconds per dependency
+                # Update progress every 4 iterations
+                if wait_iter % 4 == 0:
+                    elapsed = wait_iter * 0.5
+                    progress.update(base_pct, f"Installing {dep.split('.')[-1]}... ({int(elapsed)}s)")
+
                 if xbmc.getCondVisibility(f'System.HasAddon({dep})'):
                     xbmc.executebuiltin(f'EnableAddon({dep})')
                     time.sleep(0.1)  # Quick clear of enable notification
+                    progress.update(base_pct, f"Dependency {idx}/{total_deps} ready: {dep.split('.')[-1]}")
                     break
                 time.sleep(0.5)
         else:
@@ -358,6 +379,7 @@ def pre_install_dependencies(progress, selections):
             xbmc.executebuiltin(f'EnableAddon({dep})')
             time.sleep(0.1)  # Quick clear
             xbmc.log(f'[Onboarding] Dependency {idx}/{total_deps} already installed: {dep}', xbmc.LOGINFO)
+            progress.update(1 + int((idx / total_deps) * 4), f"Dependencies ({idx}/{total_deps}): {dep.split('.')[-1]} ready")
 
     progress.update(5, f"Dependencies ready ({total_deps}/{total_deps})")
     time.sleep(0.5)
