@@ -95,7 +95,7 @@
 					<width>1750</width>
 					<height>500</height>
 					<orientation>horizontal</orientation>
-					<onleft>9000</onleft>
+					<onleft>9003</onleft>
 					<onright>noop</onright>
 					<onup>$PARAM[onup_action]</onup>
 					<ondown>$PARAM[ondown_action]</ondown>
@@ -237,10 +237,10 @@
 					<width>1750</width>
 					<height>400</height>
 					<orientation>horizontal</orientation>
-					<onleft>9000</onleft>
+					<onleft>9003</onleft>
 					<onright>noop</onright>
 					<onup>$PARAM[onup_action]</onup>
-					<ondown>$PARAM[ondown_action]</ondown>
+					<ondown>$PARAM[ondown_action]
 					<onfocus>Skin.SetString(ActiveWidgetID,$PARAM[list_id])</onfocus>
 					<itemlayout width="410" height="235">
 						<control type="image">
@@ -395,7 +395,7 @@
 					<width>1750</width>
 					<height>405</height>
 					<orientation>horizontal</orientation>
-					<onleft>9000</onleft>
+					<onleft>9003</onleft>
 					<onright>noop</onright>
 					<onup>$PARAM[onup_action1]</onup>
 					<onup>$PARAM[onup_action2]</onup>
@@ -629,7 +629,7 @@
 						<ondown>9000</ondown>
 						<orientation>horizontal</orientation>
 						<align>center</align>
-						<onleft>9000</onleft>
+						<onleft>9003</onleft>
 						<control type="button" id="$PARAM[button_id]">
 							<width>auto</width>
 							<height>110</height>
@@ -701,7 +701,7 @@
 					<width>1750</width>
 					<height>280</height>
 					<orientation>horizontal</orientation>
-					<onleft>9000</onleft>
+					<onleft>9003</onleft>
 					<onright>noop</onright>
 					<onup>$PARAM[onup_action1]</onup>
 					<onup>$PARAM[onup_action2]</onup>
@@ -1633,7 +1633,7 @@
 	<include name="WidgetListCommon">
 		<scrolltime tween="cubic" easing="out">500</scrolltime>
 		<orientation>horizontal</orientation>
-		<onleft>9000</onleft>
+		<onleft>9003</onleft>
 		<onright>noop</onright>
 		<onup>$PARAM[onup_action1]</onup>
 		<onup>$PARAM[onup_action2]</onup>

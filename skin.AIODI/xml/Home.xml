@@ -1499,6 +1499,8 @@
 				<param name="content_path">plugin://plugin.video.imvdb/</param>
 				<param name="widget_header">IMVDb Music Videos</param>
 				<param name="list_id">7100</param>
+				<param name="widget_limit">8</param>
+				<param name="browse_mode">false</param>
 				<param name="onclick_condition">true</param>
 				<param name="onclick_action">RunPlugin($INFO[ListItem.FolderPath])</param>
 				<param name="onup_action1">noop</param>
@@ -1510,15 +1512,17 @@
 		<control type="group">
 			<visible>String.IsEqual(Skin.String(Music_WidgetIndex),1)</visible>
 			<visible>System.HasAddon(plugin.video.youtube)</visible>
-			<include content="WidgetListSquare">
-				<param name="content_path">plugin://plugin.video.aiostreams/?action=youtube_menu</param>
+			<include content="WidgetListCategories">
+				<param name="content_path">plugin://plugin.video.youtube/</param>
 				<param name="widget_header">YouTube</param>
 				<param name="list_id">7200</param>
-				<param name="onclick_condition">true</param>
-				<param name="onclick_action">ActivateWindow(Videos,$INFO[ListItem.FolderPath])</param>
+				<param name="item_limit">8</param>
+				<param name="widget_target">videos</param>
+				<param name="browse_mode">false</param>
 				<param name="onup_action1">Skin.SetString(Music_WidgetIndex,0)</param>
 				<param name="onup_action2">SetFocus(7100)</param>
 				<param name="ondown_action1">noop</param>
+				<param name="ondown_action2">noop</param>
 			</include>
 		</control>
 	</control>
