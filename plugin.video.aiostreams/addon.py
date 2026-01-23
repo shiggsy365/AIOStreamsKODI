@@ -4405,6 +4405,61 @@ def show_database_info():
         xbmcgui.Dialog().notification('AIOStreams', 'Failed to get database info', xbmcgui.NOTIFICATION_ERROR)
 
 
+def optimize_database():
+    """
+    Optimize database by running VACUUM and ANALYZE.
+    Reclaims unused space and updates query optimizer statistics.
+    Should be run periodically for better performance.
+    """
+    if not HAS_MODULES:
+        return
+
+    try:
+        from resources.lib.database.trakt_sync import TraktSyncDatabase
+
+        # Show progress dialog
+        progress = xbmcgui.DialogProgress()
+        progress.create('Database Optimization', 'Optimizing database...')
+
+        db = TraktSyncDatabase()
+        if not db.connect():
+            progress.close()
+            xbmcgui.Dialog().notification('AIOStreams', 'Failed to connect to database', xbmcgui.NOTIFICATION_ERROR)
+            return
+
+        try:
+            progress.update(30, 'Running VACUUM (reclaiming space)...')
+            success = db.vacuum()
+
+            progress.update(100, 'Optimization complete!')
+            xbmc.sleep(500)
+            progress.close()
+
+            if success:
+                xbmcgui.Dialog().notification(
+                    'Database Optimized',
+                    'Database has been optimized for better performance',
+                    xbmcgui.NOTIFICATION_INFO,
+                    3000
+                )
+            else:
+                xbmcgui.Dialog().notification(
+                    'Optimization Warning',
+                    'Optimization completed with warnings (check log)',
+                    xbmcgui.NOTIFICATION_WARNING,
+                    3000
+                )
+
+        finally:
+            db.disconnect()
+
+    except Exception as e:
+        if 'progress' in locals():
+            progress.close()
+        xbmc.log(f'[AIOStreams] Failed to optimize database: {e}', xbmc.LOGERROR)
+        xbmcgui.Dialog().notification('AIOStreams', 'Failed to optimize database', xbmcgui.NOTIFICATION_ERROR)
+
+
 def database_reset():
     """Complete database reset: clear all tables, caches, and resync Trakt."""
     from resources.lib import trakt
@@ -5215,6 +5270,7 @@ ACTION_REGISTRY = {
     'database_reset': lambda p: database_reset(),
     'clear_trakt_cache': lambda p: clear_trakt_cache(),
     'show_database_info': lambda p: show_database_info(),
+    'optimize_database': lambda p: optimize_database(),
     'test_connection': lambda p: test_connection(),
     'quick_actions': lambda p: quick_actions(),
     'configure_aiostreams': lambda p: configure_aiostreams_action(),
