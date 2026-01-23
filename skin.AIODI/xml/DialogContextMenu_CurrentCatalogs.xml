@@ -11,7 +11,7 @@
         <!-- Background Dimmer -->
         <control type="image">
             <include>FullScreenDimensions</include>
-            <texture colordiffuse="C0000000">colors/black.png</texture>
+            <texture colordiffuse="FF000000">colors/black.png</texture>
         </control>
 
         <control type="group">
