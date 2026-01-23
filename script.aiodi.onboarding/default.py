@@ -456,28 +456,33 @@ def run_installer(selections, data):
             if not aio:
                 raise Exception("Failed to load AIOStreams addon")
 
+            # Check if addon profile directory exists (where settings are stored)
+            addon_profile = xbmcvfs.translatePath(aio.getAddonInfo('profile'))
+            if not xbmcvfs.exists(addon_profile):
+                xbmc.log(f"[Onboarding] Creating addon profile directory: {addon_profile}", xbmc.LOGINFO)
+                xbmcvfs.mkdirs(addon_profile)
+
             xbmc.log("[Onboarding] Applying AIOStreams settings...", xbmc.LOGINFO)
-            # Add integrations/host base url to settings
-            apply_setting(aio, 'aiostreams_host', data.get('aiostreams_host', ''), 'AIOStreams Host')
-            # Add integrations/uuid to settings
-            apply_setting(aio, 'aiostreams_uuid', data.get('aiostreams_uuid', ''), 'AIOStreams UUID')
-            # Add integrations/password to settings
-            apply_setting(aio, 'aiostreams_password', data.get('aiostreams_password', ''), 'AIOStreams Password')
-            # Add integrations/trakt client id to settings
-            apply_setting(aio, 'trakt_client_id', data.get('trakt_id', ''), 'Trakt Client ID')
-            # Add integrations/trakt client secret to settings
-            apply_setting(aio, 'trakt_client_secret', data.get('trakt_secret', ''), 'Trakt Client Secret')
 
-            # Set general/default behaviour to either play_first or show_streams
-            behavior_val = data.get('aiostreams_behavior', 'show_streams')
-            apply_setting(aio, 'default_behavior', behavior_val, 'Default Behavior')
+            # Apply and verify each setting
+            settings_to_apply = [
+                ('aiostreams_host', data.get('aiostreams_host', ''), 'AIOStreams Host'),
+                ('aiostreams_uuid', data.get('aiostreams_uuid', ''), 'AIOStreams UUID'),
+                ('aiostreams_password', data.get('aiostreams_password', ''), 'AIOStreams Password'),
+                ('trakt_client_id', data.get('trakt_id', ''), 'Trakt Client ID'),
+                ('trakt_client_secret', data.get('trakt_secret', ''), 'Trakt Client Secret'),
+                ('default_behavior', data.get('aiostreams_behavior', 'show_streams'), 'Default Behavior'),
+                ('subtitle_languages', data.get('aiostreams_subtitles', ''), 'Subtitle Languages'),
+                ('autoplay_next_episode', selections.get('upnext'), 'Autoplay Next Episode'),
+            ]
 
-            # Add filter subtitles to general/filter subtitles
-            apply_setting(aio, 'subtitle_languages', data.get('aiostreams_subtitles', ''), 'Subtitle Languages')
+            failed_settings = []
+            for setting_key, setting_value, description in settings_to_apply:
+                if not apply_setting(aio, setting_key, setting_value, description):
+                    failed_settings.append(setting_key)
 
-            # If UpNext is toggled to be installed, turn on general/Signal UpNext
-            upnext_val = selections.get('upnext')
-            apply_setting(aio, 'autoplay_next_episode', upnext_val, 'Autoplay Next Episode')
+            if failed_settings:
+                xbmc.log(f"[Onboarding] WARNING: Failed to apply {len(failed_settings)} settings: {', '.join(failed_settings)}", xbmc.LOGWARNING)
 
             # Close settings to ensure they are saved
             xbmc.log("[Onboarding] Closing AIOStreams addon to persist settings...", xbmc.LOGINFO)
@@ -488,9 +493,28 @@ def run_installer(selections, data):
             progress.update(24, f"Step {current_step}/{total_steps}: Verifying settings...")
             aio_verify = ensure_addon('plugin.video.aiostreams')
             if aio_verify:
-                # Log a sample setting to verify it was saved
+                # Verify multiple settings were saved
                 saved_host = aio_verify.getSetting('aiostreams_host')
-                xbmc.log(f"[Onboarding] Verified AIOStreams settings saved. Host: {saved_host[:20] if saved_host else 'empty'}...", xbmc.LOGINFO)
+                saved_uuid = aio_verify.getSetting('aiostreams_uuid')
+                saved_trakt_id = aio_verify.getSetting('trakt_client_id')
+                saved_behavior = aio_verify.getSetting('default_behavior')
+
+                verification_results = []
+                if saved_host:
+                    verification_results.append(f"Host: {saved_host[:30]}...")
+                if saved_uuid:
+                    verification_results.append(f"UUID: {saved_uuid[:20]}...")
+                if saved_trakt_id:
+                    verification_results.append("Trakt ID: [SET]")
+                if saved_behavior:
+                    verification_results.append(f"Behavior: {saved_behavior}")
+
+                if verification_results:
+                    xbmc.log(f"[Onboarding] Settings verified saved: {'; '.join(verification_results)}", xbmc.LOGINFO)
+                else:
+                    xbmc.log("[Onboarding] WARNING: No settings were verified as saved! They may not have persisted.", xbmc.LOGWARNING)
+                    xbmcgui.Dialog().notification("Settings Warning", "Settings may not have saved. Check logs.", xbmcgui.NOTIFICATION_WARNING, 3000)
+
                 del aio_verify
                 time.sleep(1)
 
