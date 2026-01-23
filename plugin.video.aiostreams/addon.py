@@ -23,7 +23,7 @@ from concurrent.futures import ThreadPoolExecutor, as_completed
 # Import new modules with enhanced architecture
 try:
     # Essential imports only
-    from resources.lib import ui_helpers, settings_helpers, constants, filters, cache
+    from resources.lib import ui_helpers, settings_helpers, constants, filters, cache, streams
     from resources.lib.globals import g
     from resources.lib.router import get_router, action, dispatch, set_default
     
