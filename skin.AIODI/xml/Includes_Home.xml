@@ -898,10 +898,7 @@
 		<param name="visible">true</param>
 		<param name="browse">auto</param>
 		<param name="onup_action1">noop</param>
-		<param name="onup_action2">noop</param>
-		<param name="ondown_action1">noop</param>
 		<param name="ondown_action2">noop</param>
-		<param name="filter_youtube">false</param>
 		<definition>
 			<include content="CategoryLabel">
 				<param name="label">$PARAM[widget_header]</param>
@@ -928,7 +925,6 @@
 				<visible>Integer.IsGreater(Container($PARAM[list_id]).NumItems,0) | Container($PARAM[list_id]).IsUpdating</visible>
 				<itemlayout width="310" height="340">
 					<control type="group">
-						<visible>!$PARAM[filter_youtube] | ![String.IsEqual(ListItem.Label,Recommendations) | String.IsEqual(ListItem.Label,Related Videos) | String.IsEqual(ListItem.Label,My Channel) | String.IsEqual(ListItem.Label,Watch Later) | String.IsEqual(ListItem.Label,Liked Videos) | String.IsEqual(ListItem.Label,Disliked Videos) | String.IsEqual(ListItem.Label,Browse Channels) | String.IsEqual(ListItem.Label,Completed Live) | String.IsEqual(ListItem.Label,Upcoming Live) | String.IsEqual(ListItem.Label,Switch user) | String.IsEqual(ListItem.Label,Sign Out) | String.IsEqual(ListItem.Label,Setup Wizard)]</visible>
 						<left>70</left>
 						<control type="image">
 							<width>316</width>
@@ -960,7 +956,6 @@
 				</itemlayout>
 				<focusedlayout width="310" height="340">
 					<control type="group">
-						<visible>!$PARAM[filter_youtube] | ![String.IsEqual(ListItem.Label,Recommendations) | String.IsEqual(ListItem.Label,Related Videos) | String.IsEqual(ListItem.Label,My Channel) | String.IsEqual(ListItem.Label,Watch Later) | String.IsEqual(ListItem.Label,Liked Videos) | String.IsEqual(ListItem.Label,Disliked Videos) | String.IsEqual(ListItem.Label,Browse Channels) | String.IsEqual(ListItem.Label,Completed Live) | String.IsEqual(ListItem.Label,Upcoming Live) | String.IsEqual(ListItem.Label,Switch user) | String.IsEqual(ListItem.Label,Sign Out) | String.IsEqual(ListItem.Label,Setup Wizard)]</visible>
 						<depth>DepthContentPopout</depth>
 						<left>70</left>
 						<animation type="Focus">
@@ -1007,6 +1002,117 @@
 				<include condition="$PARAM[additional_movie_items]" content="MovieSubmenuItems" />
 				<include condition="$PARAM[additional_tvshow_items]" content="TVShowSubmenuItems" />
 				<content target="$PARAM[widget_target]" limit="$PARAM[item_limit]" browse="$PARAM[browse_mode]">$PARAM[content_path]</content>
+			</control>
+		</definition>
+	</include>
+	<include name="WidgetListCategoriesStatic">
+		<param name="icon">$INFO[ListItem.Icon]</param>
+		<param name="icon_height">120</param>
+		<param name="visible">true</param>
+		<param name="onup_action1">noop</param>
+		<param name="onup_action2">noop</param>
+		<param name="ondown_action1">noop</param>
+		<param name="ondown_action2">noop</param>
+		<definition>
+			<include content="CategoryLabel">
+				<param name="label">$PARAM[widget_header]</param>
+				<param name="list_id" value="$PARAM[list_id]"/>
+				<param name="visible" value="$PARAM[visible]"/>
+			</include>
+			<include content="BusyListSpinner">
+				<param name="list_id" value="$PARAM[list_id]"/>
+				<param name="visible" value="$PARAM[visible]"/>
+			</include>
+			<control type="panel" id="$PARAM[list_id]">
+				<left>0</left>
+				<top>110</top>
+				<right>0</right>
+				<height>290</height>
+				<include content="WidgetListCommon">
+					<param name="list_id" value="$PARAM[list_id]"/>
+					<param name="onup_action1" value="$PARAM[onup_action1]"/>
+					<param name="onup_action2" value="$PARAM[onup_action2]"/>
+					<param name="ondown_action1" value="$PARAM[ondown_action1]"/>
+					<param name="ondown_action2" value="$PARAM[ondown_action2]"/>
+				</include>
+				<visible>$PARAM[visible]</visible>
+				<itemlayout width="310" height="340">
+					<control type="group">
+						<left>70</left>
+						<control type="image">
+							<width>316</width>
+							<height>200</height>
+							<texture>dialogs/dialog-bg-nobo.png</texture>
+							<bordertexture border="21" infill="false">overlays/shadow.png</bordertexture>
+							<bordersize>20</bordersize>
+						</control>
+						<control type="image">
+							<centertop>74</centertop>
+							<left>58</left>
+							<width>200</width>
+							<height>$PARAM[icon_height]</height>
+							<texture fallback="DefaultFolder.png">$PARAM[icon]</texture>
+							<aspectratio>keep</aspectratio>
+						</control>
+						<control type="textbox">
+							<left>38</left>
+							<top>106</top>
+							<width>240</width>
+							<height>70</height>
+							<label>$INFO[ListItem.Label]</label>
+							<font>font25_narrow</font>
+							<shadowcolor>text_shadow</shadowcolor>
+							<align>center</align>
+							<aligny>center</aligny>
+						</control>
+					</control>
+				</itemlayout>
+				<focusedlayout width="310" height="340">
+					<control type="group">
+						<depth>DepthContentPopout</depth>
+						<left>70</left>
+						<animation type="Focus">
+							<effect type="zoom" start="100" end="115" time="200" tween="sine" easing="inout" center="228,70" />
+						</animation>
+						<animation type="Unfocus">
+							<effect type="zoom" start="115" end="100" time="200" tween="sine" easing="inout" center="228,70" />
+						</animation>
+						<control type="image">
+							<width>316</width>
+							<height>200</height>
+							<texture>dialogs/dialog-bg-nobo.png</texture>
+							<bordertexture border="21" infill="false">overlays/shadow.png</bordertexture>
+							<bordersize>20</bordersize>
+						</control>
+						<control type="image">
+							<width>316</width>
+							<height>200</height>
+							<texture colordiffuse="button_focus">colors/grey.png</texture>
+							<bordersize>20</bordersize>
+							<include>Animation_FocusTextureFade</include>
+						</control>
+						<control type="image">
+							<centertop>74</centertop>
+							<left>58</left>
+							<width>200</width>
+							<height>$PARAM[icon_height]</height>
+							<texture fallback="DefaultFolder.png">$PARAM[icon]</texture>
+							<aspectratio>keep</aspectratio>
+						</control>
+						<control type="textbox">
+							<left>38</left>
+							<top>106</top>
+							<width>240</width>
+							<height>70</height>
+							<label>$INFO[ListItem.Label]</label>
+							<font>font25_narrow</font>
+							<shadowcolor>text_shadow</shadowcolor>
+							<align>center</align>
+							<aligny>center</aligny>
+						</control>
+					</control>
+				</focusedlayout>
+				$PARAM[content]
 			</control>
 		</definition>
 	</include>
