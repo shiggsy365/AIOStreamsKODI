@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <colors>
 	<color name="primary_background">FFFFFFFF</color>
-	<color name="secondary_background">00FFFFFF</color>
-	<color name="dialog_tint">burgundy_bg</color>
+	<color name="secondary_background">FF000000</color>
+	<color name="dialog_tint">black</color>
 	<color name="background">FF000000</color>
 	<color name="bg_image">FF909090</color>
-	<color name="bg_overlay">30FFFFFF</color>
+	<color name="bg_overlay">FF000000</color>
 	<color name="black">FF000000</color>
 	<color name="white">FFF0F0F0</color>
 	<color name="grey">FFA0A0A0</color>
@@ -17,9 +17,9 @@
 	<color name="button_focus">FFFF1111</color>
 	<color name="button_alt_focus">80FF1111</color>
 	<color name="text_shadow">22000000</color>
-	<color name="border_alpha">60FFFFFF</color>
-	<color name="glass_bg">burgundy_bg</color>
-	<color name="glass_border">4DFFFFFF</color>
+	<color name="border_alpha">FF000000</color>
+	<color name="glass_bg">black</color>
+	<color name="glass_border">FF000000</color>
 	<color name="disabled">40FFFFFF</color>
 	<color name="selected">FFFFB70F</color>
 	<color name="invalid">FFFF0000</color>

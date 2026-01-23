@@ -42,13 +42,40 @@ def install_with_wait(addon_id, progress, start_pct, end_pct, update_if_exists=F
         time.sleep(0.5)
 
         if update_if_exists:
-            xbmc.log(f'[Onboarding] {addon_id} already installed, checking for updates...', xbmc.LOGINFO)
-            progress.update(int(start_pct), f"Checking {addon_id} for updates...")
-            xbmc.executebuiltin(f'UpdateAddon({addon_id})')
-            # Wait a bit for update check to complete
-            time.sleep(2)
-            progress.update(int(end_pct), f"{addon_id} up to date")
-            return True
+            try:
+                # Get current version
+                current_addon = xbmcaddon.Addon(addon_id)
+                current_version = current_addon.getAddonInfo('version')
+                xbmc.log(f'[Onboarding] {addon_id} already installed (v{current_version}), checking for updates...', xbmc.LOGINFO)
+                progress.update(int(start_pct), f"Updating {addon_id}...")
+
+                # Trigger update check
+                xbmc.executebuiltin(f'UpdateAddon({addon_id})')
+
+                # Wait for potential update (max 30s)
+                for i in range(60):
+                    if progress.iscanceled(): return False
+                    time.sleep(0.5)
+                    try:
+                        updated_addon = xbmcaddon.Addon(addon_id)
+                        new_version = updated_addon.getAddonInfo('version')
+                        if new_version != current_version:
+                            xbmc.log(f'[Onboarding] {addon_id} updated from v{current_version} to v{new_version}', xbmc.LOGINFO)
+                            progress.update(int(end_pct), f"{addon_id} updated to v{new_version}")
+                            time.sleep(0.5)
+                            return True
+                    except:
+                        pass
+
+                # No update found or same version
+                xbmc.log(f'[Onboarding] {addon_id} already at latest version (v{current_version})', xbmc.LOGINFO)
+                progress.update(int(end_pct), f"{addon_id} already up to date")
+                time.sleep(0.5)
+                return True
+            except Exception as e:
+                xbmc.log(f'[Onboarding] Error checking version for {addon_id}: {e}', xbmc.LOGERROR)
+                progress.update(int(end_pct), f"{addon_id} already installed")
+                return True
         else:
             xbmc.log(f'[Onboarding] {addon_id} already installed, skipping...', xbmc.LOGINFO)
             progress.update(int(end_pct), f"{addon_id} already installed")
@@ -278,8 +305,8 @@ def run_installer(selections, data):
             xbmc.log(f"[Onboarding] Failed to load addon {addon_id}: {e}", xbmc.LOGERROR)
             return None
 
-    # 1. Install AIOStreams Plugin
-    if install_with_wait('plugin.video.aiostreams', progress, 5, 20):
+    # 1. Install AIOStreams Plugin (or update if already installed)
+    if install_with_wait('plugin.video.aiostreams', progress, 5, 20, update_if_exists=True):
         try:
             progress.update(25, "Configuring AIOStreams...")
             aio = ensure_addon('plugin.video.aiostreams')
@@ -315,15 +342,14 @@ def run_installer(selections, data):
             # Return to aiostreams settings and call integrations/retrieve manifest
             progress.update(30, "Retrieving Manifest...")
             xbmc.executebuiltin('RunPlugin(plugin://plugin.video.aiostreams/?action=retrieve_manifest)')
-            # Wait for a response
-            time.sleep(3)
-            xbmcgui.Dialog().ok("AIOStreams Setup", "Retrieving Manifest.\nPlease wait for the notification, then click OK.")
+            # Wait for manifest retrieval to complete (silent)
+            time.sleep(8)
 
-            # Call integrations/authorize trakt, wait for window to close
-            progress.update(35, "Authenticating Trakt...")
+            # Call integrations/authorize trakt (silent, user can do this later if needed)
+            progress.update(35, "Configuring Trakt...")
             xbmc.executebuiltin('RunPlugin(plugin://plugin.video.aiostreams/?action=trakt_auth)')
-            # Wait for window to close
-            xbmcgui.Dialog().ok("AIOStreams Setup", "Please complete the Trakt Authorization in the popup window.\nWhen finished, click OK to continue.")
+            # Give it time to process in background
+            time.sleep(3)
 
             # Save and exit aiostreams settings again
             aio = ensure_addon('plugin.video.aiostreams')
@@ -335,9 +361,9 @@ def run_installer(selections, data):
             xbmc.log(f"[Onboarding] AIOStreams config error: {e}", xbmc.LOGERROR)
             xbmcgui.Dialog().notification("Setup Error", f"AIOStreams configuration failed: {str(e)}", xbmcgui.NOTIFICATION_ERROR)
 
-    # 2. If requested, Install YouTube plugin from kodi repository
+    # 2. If requested, Install YouTube plugin from kodi repository (or update if already installed)
     if selections.get('youtube'):
-        if install_with_wait('plugin.video.youtube', progress, 40, 50):
+        if install_with_wait('plugin.video.youtube', progress, 40, 50, update_if_exists=True):
             try:
                 progress.update(52, "Configuring YouTube...")
                 yt = ensure_addon('plugin.video.youtube')
@@ -357,9 +383,9 @@ def run_installer(selections, data):
                 xbmc.log(f"[Onboarding] YouTube config error: {e}", xbmc.LOGERROR)
                 xbmcgui.Dialog().notification("Setup Error", f"YouTube configuration failed: {str(e)}", xbmcgui.NOTIFICATION_ERROR)
 
-    # 3. If requested, Install Up Next plugin from kodi repository
+    # 3. If requested, Install Up Next plugin from kodi repository (or update if already installed)
     if selections.get('upnext'):
-        if install_with_wait('service.upnext', progress, 55, 65):
+        if install_with_wait('service.upnext', progress, 55, 65, update_if_exists=True):
             try:
                 progress.update(67, "Configuring UpNext...")
                 un = ensure_addon('service.upnext')
@@ -375,13 +401,34 @@ def run_installer(selections, data):
                 xbmc.log(f"[Onboarding] UpNext config error: {e}", xbmc.LOGERROR)
                 xbmcgui.Dialog().notification("Setup Error", f"UpNext configuration failed: {str(e)}", xbmcgui.NOTIFICATION_ERROR)
 
-    # 4. If requested install IPTV Simple Player from kodi repository
+    # 4. If requested install IPTV Simple Player from kodi repository (or update if already installed)
     if selections.get('iptv'):
-        install_with_wait('pvr.iptvsimple', progress, 70, 80)
+        if install_with_wait('pvr.iptvsimple', progress, 70, 78, update_if_exists=True):
+            try:
+                progress.update(79, "Configuring IPTV Simple Player...")
+                iptv = ensure_addon('pvr.iptvsimple')
+                if iptv:
+                    # Configure M3U URL if provided
+                    m3u_url = data.get('iptv_m3u', '')
+                    if m3u_url:
+                        iptv.setSetting('m3uPathType', '1')  # 1 = Remote path (URL)
+                        iptv.setSetting('m3uUrl', m3u_url)
 
-    # 5. If requested install IMVDb plugin from my repository
+                    # Configure EPG URL if provided
+                    epg_url = data.get('iptv_epg', '')
+                    if epg_url:
+                        iptv.setSetting('epgPathType', '1')  # 1 = Remote path (URL)
+                        iptv.setSetting('epgUrl', epg_url)
+
+                    del iptv
+                    xbmc.log('[Onboarding] IPTV Simple Player configured successfully', xbmc.LOGINFO)
+            except Exception as e:
+                xbmc.log(f"[Onboarding] IPTV config error: {e}", xbmc.LOGERROR)
+                xbmcgui.Dialog().notification("Setup Error", f"IPTV configuration failed: {str(e)}", xbmcgui.NOTIFICATION_ERROR)
+
+    # 5. If requested install IMVDb plugin from my repository (or update if already installed)
     if selections.get('imvdb'):
-        if install_with_wait('plugin.video.imvdb', progress, 85, 90):
+        if install_with_wait('plugin.video.imvdb', progress, 85, 90, update_if_exists=True):
             try:
                 progress.update(91, "Configuring IMVDb...")
                 im = ensure_addon('plugin.video.imvdb')
@@ -412,46 +459,9 @@ def run_installer(selections, data):
             xbmc.log(f"[Onboarding] Failed to copy players ZIP: {e}", xbmc.LOGERROR)
 
     # 7. YouTube interactive setup (if YouTube was installed)
+    # Configuration is already done, user can sign in later through the YouTube addon if needed
     if selections.get('youtube') and xbmc.getCondVisibility('System.HasAddon(plugin.video.youtube)'):
-        # Check if user is already signed in by checking for access token
-        try:
-            yt_check = ensure_addon('plugin.video.youtube')
-            is_signed_in = False
-            if yt_check:
-                # Check if access token exists (indicates user is signed in)
-                access_token = yt_check.getSetting('youtube.access.token')
-                if access_token and access_token.strip():
-                    is_signed_in = True
-                    xbmc.log('[Onboarding] YouTube already signed in, skipping interactive setup', xbmc.LOGINFO)
-                del yt_check
-        except Exception as e:
-            xbmc.log(f'[Onboarding] Error checking YouTube sign-in status: {e}', xbmc.LOGERROR)
-            is_signed_in = False
-
-        # Only show interactive setup if not already signed in
-        if not is_signed_in:
-            progress.close()
-            # Prompt user to complete YouTube setup
-            xbmcgui.Dialog().ok(
-                "YouTube Setup Required",
-                "The YouTube plugin will now open.\n"
-                "Please complete the settings wizard that appears.\n"
-                "After completing the wizard, select the first option in the plugin and choose 'Sign In'."
-            )
-
-            # Navigate to YouTube plugin (not settings)
-            xbmc.executebuiltin('ActivateWindow(Videos,plugin://plugin.video.youtube/)')
-
-            # Wait for user to complete setup
-            xbmcgui.Dialog().ok(
-                "YouTube Setup",
-                "After all dialogs have closed and you have signed in,\n"
-                "click OK to continue with the AIODI skin installation."
-            )
-
-            # Recreate progress dialog for remaining steps
-            progress = xbmcgui.DialogProgress()
-            progress.create("AIODI Setup", "Continuing installation...")
+        xbmc.log('[Onboarding] YouTube configured, user can sign in later through addon', xbmc.LOGINFO)
 
     # 8. If requested install AIODI skin, and switch to it
     xbmc.log(f'[Onboarding] Checking skin installation - selections.get("skin"): {selections.get("skin")}', xbmc.LOGINFO)

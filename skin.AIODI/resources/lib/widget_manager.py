@@ -47,10 +47,13 @@ class WidgetManager(xbmcgui.WindowXMLDialog):
         super().__init__(strXMLname, strFallbackPath, strDefaultName, forceFallback)
         self.current_page = 'home'
         self.config = {}
+        self.cached_available_widgets = None  # Cache for available widgets
 
     def onInit(self):
         log("WidgetManager onInit")
         self.load_config()
+        # Populate cache once on initialization
+        self.refresh_available_widgets_cache()
         self.load_page(self.current_page)
 
     def onAction(self, action):
@@ -137,62 +140,72 @@ class WidgetManager(xbmcgui.WindowXMLDialog):
                 item.setProperty('is_trakt', str(item_data.get('is_trakt', False)).lower())
                 current_list.addItem(item)
                 
-        # Populate available list (5000)
-        # For efficiency, we might cache this, but for now fetch every page load for simplicity
+        # Populate available list (5000) from cache
         self.populate_available_list()
 
-    def populate_available_list(self):
-        available_list = self.getControl(5000)
-        available_list.reset()
-        
-        # We need to fetch catalogs or use cached ones. 
-        # For simplicity, I'll copy the logic from original script but inside class
-        
+    def refresh_available_widgets_cache(self):
+        """Fetch and cache available widgets from plugin (called once on init or manual refresh)"""
+        log("Refreshing available widgets cache...")
+        widgets = []
+
         # Hardcoded Trakt
         trakt_widgets = [
             {'label': 'Trakt Next Up', 'path': 'plugin://plugin.video.aiostreams/?action=trakt_next_up', 'type': 'series', 'is_trakt': True},
             {'label': 'Trakt Watchlist Movies', 'path': 'plugin://plugin.video.aiostreams/?action=trakt_watchlist&media_type=movies', 'type': 'movie', 'is_trakt': True},
             {'label': 'Trakt Watchlist Series', 'path': 'plugin://plugin.video.aiostreams/?action=trakt_watchlist&media_type=shows', 'type': 'series', 'is_trakt': True}
         ]
-        
-        for w in trakt_widgets:
-            item = xbmcgui.ListItem(w['label'])
-            item.setLabel2(w['type'].capitalize())
-            item.setProperty('path', w['path'])
-            item.setProperty('type', w['type'])
-            item.setProperty('is_trakt', 'true')
-            available_list.addItem(item)
-            
+        widgets.extend(trakt_widgets)
+
         # Fetch from plugin
         plugin_url = 'plugin://plugin.video.aiostreams/?action=get_folder_browser_catalogs'
         try:
-             rpc_query = {
+            rpc_query = {
                 "jsonrpc": "2.0",
                 "method": "Files.GetDirectory",
                 "params": {"directory": plugin_url, "media": "video"},
                 "id": 1
             }
-             result = xbmc.executeJSONRPC(json.dumps(rpc_query))
-             result_data = json.loads(result)
-             if 'result' in result_data and 'files' in result_data['result']:
-                 for f in result_data['result']['files']:
-                     item = xbmcgui.ListItem(f.get('label'))
-                     path = f.get('file')
-                     # Try parse type
-                     try:
-                         parsed = urlparse(path)
-                         params = parse_qs(parsed.query)
-                         ctype = params.get('content_type', ['unknown'])[0]
-                     except:
-                         ctype = 'unknown'
-                     
-                     item.setLabel2(ctype.capitalize())
-                     item.setProperty('path', path)
-                     item.setProperty('type', ctype)
-                     item.setProperty('is_trakt', 'false')
-                     available_list.addItem(item)
+            result = xbmc.executeJSONRPC(json.dumps(rpc_query))
+            result_data = json.loads(result)
+            if 'result' in result_data and 'files' in result_data['result']:
+                for f in result_data['result']['files']:
+                    path = f.get('file')
+                    # Try parse type
+                    try:
+                        parsed = urlparse(path)
+                        params = parse_qs(parsed.query)
+                        ctype = params.get('content_type', ['unknown'])[0]
+                    except:
+                        ctype = 'unknown'
+
+                    widgets.append({
+                        'label': f.get('label'),
+                        'path': path,
+                        'type': ctype,
+                        'is_trakt': False
+                    })
         except Exception as e:
             log(f"Error fetching catalogs: {e}", xbmc.LOGERROR)
+
+        self.cached_available_widgets = widgets
+        log(f"Cached {len(widgets)} available widgets")
+
+    def populate_available_list(self):
+        """Populate available list from cached widgets (fast, no network call)"""
+        available_list = self.getControl(5000)
+        available_list.reset()
+
+        if not self.cached_available_widgets:
+            log("Cache empty, refreshing...")
+            self.refresh_available_widgets_cache()
+
+        for w in self.cached_available_widgets:
+            item = xbmcgui.ListItem(w['label'])
+            item.setLabel2(w['type'].capitalize())
+            item.setProperty('path', w['path'])
+            item.setProperty('type', w['type'])
+            item.setProperty('is_trakt', str(w['is_trakt']).lower())
+            available_list.addItem(item)
 
     def show_current_context_menu(self):
         list_ctrl = self.getControl(3000)

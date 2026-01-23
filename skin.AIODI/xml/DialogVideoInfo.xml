@@ -14,7 +14,7 @@
 		</control>
 		<control type="image">
 			<include>FullScreenDimensions</include>
-			<texture colordiffuse="80000000">colors/white.png</texture>
+			<texture colordiffuse="FF000000">colors/white.png</texture>
 		</control>
 		<control type="group">
 			<top>50</top>

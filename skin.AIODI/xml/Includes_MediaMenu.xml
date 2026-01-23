@@ -278,7 +278,7 @@
 		</animation>
 		<control type="image">
 			<include>FullScreenDimensions</include>
-			<texture colordiffuse="80FFFFFF">colors/black.png</texture>
+			<texture colordiffuse="FF000000">colors/black.png</texture>
 			<visible>$EXP[sidebar_visible] + !System.HasActiveModalDialog</visible>
 			<animation effect="fade" time="200">VisibleChange</animation>
 		</control>
