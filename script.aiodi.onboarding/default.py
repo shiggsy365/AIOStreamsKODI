@@ -33,7 +33,7 @@ def save_cache(data):
             json.dump(data, f)
     except: pass
 
-def install_with_wait(addon_id, progress, start_pct, end_pct, update_if_exists=False, silent=False):
+def install_with_wait(addon_id, progress, start_pct, end_pct, update_if_exists=False, silent=False, max_wait_time=60):
     # Check if already installed
     if xbmc.getCondVisibility(f'System.HasAddon({addon_id})'):
         # Ensure addon is enabled (auto-approve if disabled)
@@ -103,14 +103,15 @@ def install_with_wait(addon_id, progress, start_pct, end_pct, update_if_exists=F
     xbmc.executebuiltin('SendClick(12)')  # Click Yes on dialog
     time.sleep(0.1)  # Minimal wait to clear notification
 
-    # Wait loop (max 60s) with progress updates
-    for i in range(120):
+    # Wait loop with progress updates (max_wait_time seconds)
+    max_iterations = int(max_wait_time / 0.5)  # 0.5s per iteration
+    for i in range(max_iterations):
         if progress.iscanceled(): return False
 
         # Update progress every 10 iterations to keep dialog visible
         if i % 10 == 0:
             elapsed = i * 0.5
-            pct = int(start_pct + ((i / 120) * (end_pct - start_pct)))
+            pct = int(start_pct + ((i / max_iterations) * (end_pct - start_pct)))
             progress.update(pct, f"Installing {addon_id}... ({int(elapsed)}s)")
 
         if xbmc.getCondVisibility(f'System.HasAddon({addon_id})'):
@@ -651,8 +652,18 @@ def run_installer(selections, data):
         current_step += 1
         xbmc.log(f'[Onboarding] Step {current_step}/{total_steps}: Installing AIODI Skin', xbmc.LOGINFO)
         # Install or update the skin (don't reinstall if already present)
-        if install_with_wait('skin.AIODI', progress, 95, 97, update_if_exists=True):
-            xbmc.log('[Onboarding] Skin installed, preparing to switch...', xbmc.LOGINFO)
+        # Use longer timeout for skins (120s) as they tend to be larger
+        install_result = install_with_wait('skin.AIODI', progress, 95, 97, update_if_exists=True, max_wait_time=120)
+
+        # Even if install_with_wait timed out, check if skin is actually installed
+        skin_installed = xbmc.getCondVisibility('System.HasAddon(skin.AIODI)')
+
+        if install_result or skin_installed:
+            if not install_result and skin_installed:
+                xbmc.log('[Onboarding] Skin installation timed out but skin is actually installed', xbmc.LOGINFO)
+            else:
+                xbmc.log('[Onboarding] Skin installed, preparing to switch...', xbmc.LOGINFO)
+
             progress.update(98, f"Step {current_step}/{total_steps}: Activating AIODI Skin...")
 
             # Ensure skin is fully loaded and ready
@@ -685,7 +696,7 @@ def run_installer(selections, data):
                 xbmc.executebuiltin('SetSkin(skin.AIODI)')
                 time.sleep(2)
         else:
-            xbmc.log('[Onboarding] Skin installation failed or timed out', xbmc.LOGERROR)
+            xbmc.log('[Onboarding] Skin installation failed - not found after timeout', xbmc.LOGERROR)
             xbmcgui.Dialog().notification("Setup Warning", "AIODI skin installation failed", xbmcgui.NOTIFICATION_WARNING)
     else:
         xbmc.log('[Onboarding] Skin installation not requested (selections.get("skin") returned False/None)', xbmc.LOGINFO)
