@@ -221,6 +221,51 @@ class Database:
             xbmc.log(f'[AIOStreams] Rollback error: {e}', xbmc.LOGERROR)
             return False
 
+    def vacuum(self):
+        """
+        Optimize database by running VACUUM and ANALYZE commands.
+        Reclaims unused space and updates query planner statistics.
+        Should be run periodically (monthly) or after large data deletions.
+
+        Returns:
+            bool: True if successful, False otherwise
+        """
+        if not self.connection:
+            xbmc.log('[AIOStreams] No database connection', xbmc.LOGERROR)
+            return False
+
+        try:
+            # Get database size before optimization
+            db_size_before = os.path.getsize(self.db_path) if os.path.exists(self.db_path) else 0
+
+            # VACUUM reclaims unused space and defragments the database
+            xbmc.log(f'[AIOStreams] Running VACUUM on {self.db_name}...', xbmc.LOGINFO)
+            self.connection.execute("VACUUM")
+
+            # ANALYZE updates statistics for query optimization
+            xbmc.log(f'[AIOStreams] Running ANALYZE on {self.db_name}...', xbmc.LOGINFO)
+            self.connection.execute("ANALYZE")
+
+            self.connection.commit()
+
+            # Calculate space savings
+            db_size_after = os.path.getsize(self.db_path) if os.path.exists(self.db_path) else 0
+            space_saved = db_size_before - db_size_after
+
+            if space_saved > 0:
+                xbmc.log(
+                    f'[AIOStreams] Database optimized: {self.db_name}, '
+                    f'saved {space_saved / 1024:.1f} KB',
+                    xbmc.LOGINFO
+                )
+            else:
+                xbmc.log(f'[AIOStreams] Database optimized: {self.db_name}', xbmc.LOGINFO)
+
+            return True
+        except sqlite3.Error as e:
+            xbmc.log(f'[AIOStreams] Database optimization error: {e}', xbmc.LOGERROR)
+            return False
+
     def __enter__(self):
         """Context manager entry - establish connection."""
         self.connect()

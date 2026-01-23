@@ -137,12 +137,12 @@ class TieredCache:
         'streams': 300,         # 5 minutes
     }
 
-    def __init__(self, memory_size=100):
+    def __init__(self, memory_size=200):
         """
         Initialize tiered cache.
 
         Args:
-            memory_size: Max entries for memory cache
+            memory_size: Max entries for memory cache (default 200 for modern systems)
         """
         self._memory = MemoryCache(max_size=memory_size)
         self._cache_dir = None

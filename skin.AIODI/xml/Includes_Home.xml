@@ -507,6 +507,7 @@
 							<height>345</height>
 							<aspectratio align="center" aligny="center">scale</aspectratio>
 							<texture background="true">$INFO[ListItem.Art(poster)]</texture>
+							<fadetime>200</fadetime>
 							<fallback>DefaultVideo.png</fallback>
 						</control>
 						<!-- Watched Indicator -->
@@ -550,6 +551,7 @@
 								<height>345</height>
 								<aspectratio align="center" aligny="center">scale</aspectratio>
 								<texture background="true">$INFO[ListItem.Art(poster)]</texture>
+								<fadetime>200</fadetime>
 								<bordertexture border="3" colordiffuse="FFFF0000">colors/white.png</bordertexture>
 								<bordersize>3</bordersize>
 								<borderradius>8</borderradius>
@@ -718,6 +720,7 @@
 								<height>220</height>
 								<aspectratio align="center" aligny="center">scale</aspectratio>
 								<texture background="true">$INFO[ListItem.Art(thumb)]</texture>
+								<fadetime>200</fadetime>
 								<fallback>DefaultVideo.png</fallback>
 							</control>
 							<!-- Watched Indicator -->
@@ -762,6 +765,7 @@
 								<height>220</height>
 								<aspectratio align="center" aligny="center">scale</aspectratio>
 								<texture background="true">$INFO[ListItem.Art(thumb)]</texture>
+								<fadetime>200</fadetime>
 								<bordertexture border="3" colordiffuse="FFFF0000">colors/white.png</bordertexture>
 								<bordersize>3</bordersize>
 								<borderradius>8</borderradius>
