@@ -53,6 +53,11 @@ def install_with_wait(addon_id, progress, start_pct, end_pct, update_if_exists=F
                 # Trigger update check
                 xbmc.executebuiltin(f'UpdateAddon({addon_id})')
 
+                # Auto-approve update dialog and clear notification quickly
+                time.sleep(0.3)  # Brief wait for dialog to appear
+                xbmc.executebuiltin('SendClick(11)')  # Click OK/Yes on dialog
+                time.sleep(0.1)  # Minimal wait to clear notification
+
                 # Wait for potential update (max 30s)
                 for i in range(60):
                     if progress.iscanceled(): return False
@@ -85,6 +90,11 @@ def install_with_wait(addon_id, progress, start_pct, end_pct, update_if_exists=F
 
     progress.update(int(start_pct), f"Installing {addon_id}...")
     xbmc.executebuiltin(f'InstallAddon({addon_id})')
+
+    # Auto-approve installation dialog and clear notification quickly
+    time.sleep(0.3)  # Brief wait for dialog to appear
+    xbmc.executebuiltin('SendClick(11)')  # Click OK/Yes on dialog
+    time.sleep(0.1)  # Minimal wait to clear notification
 
     # Wait loop (max 60s)
     for i in range(120):
@@ -331,16 +341,22 @@ def pre_install_dependencies(progress, selections):
             progress.update(1 + int((idx / total_deps) * 4), f"Installing dependencies ({idx}/{total_deps})...")
             xbmc.executebuiltin(f'InstallAddon({dep})')
 
+            # Auto-approve installation dialog and clear notification quickly
+            time.sleep(0.3)  # Brief wait for dialog to appear
+            xbmc.executebuiltin('SendClick(11)')  # Click OK/Yes on dialog
+            time.sleep(0.1)  # Minimal wait to clear notification
+
             # Wait for installation with timeout
             for _ in range(20):  # Max 10 seconds per dependency
                 if xbmc.getCondVisibility(f'System.HasAddon({dep})'):
                     xbmc.executebuiltin(f'EnableAddon({dep})')
-                    time.sleep(0.2)
+                    time.sleep(0.1)  # Quick clear of enable notification
                     break
                 time.sleep(0.5)
         else:
             # Ensure it's enabled even if already installed
             xbmc.executebuiltin(f'EnableAddon({dep})')
+            time.sleep(0.1)  # Quick clear
             xbmc.log(f'[Onboarding] Dependency {idx}/{total_deps} already installed: {dep}', xbmc.LOGINFO)
 
     progress.update(5, f"Dependencies ready ({total_deps}/{total_deps})")
