@@ -479,27 +479,34 @@ def run_installer(selections, data):
             upnext_val = selections.get('upnext')
             apply_setting(aio, 'autoplay_next_episode', upnext_val, 'Autoplay Next Episode')
 
-            # Save and exit aiostreams settings
+            # Close settings to ensure they are saved
+            xbmc.log("[Onboarding] Closing AIOStreams addon to persist settings...", xbmc.LOGINFO)
             del aio
-            time.sleep(2)
+            time.sleep(3)  # Wait for settings to be written to disk
 
-            # Return to aiostreams settings and call integrations/retrieve manifest
+            # Verify settings were saved by reloading addon
+            progress.update(24, f"Step {current_step}/{total_steps}: Verifying settings...")
+            aio_verify = ensure_addon('plugin.video.aiostreams')
+            if aio_verify:
+                # Log a sample setting to verify it was saved
+                saved_host = aio_verify.getSetting('aiostreams_host')
+                xbmc.log(f"[Onboarding] Verified AIOStreams settings saved. Host: {saved_host[:20] if saved_host else 'empty'}...", xbmc.LOGINFO)
+                del aio_verify
+                time.sleep(1)
+
+            # Call integrations/retrieve manifest
             progress.update(25, f"Step {current_step}/{total_steps}: Retrieving Manifest...")
+            xbmc.log("[Onboarding] Calling retrieve_manifest...", xbmc.LOGINFO)
             xbmc.executebuiltin('RunPlugin(plugin://plugin.video.aiostreams/?action=retrieve_manifest)')
             # Wait for manifest retrieval to complete (silent)
             time.sleep(8)
 
             # Call integrations/authorize trakt (silent, user can do this later if needed)
             progress.update(28, f"Step {current_step}/{total_steps}: Configuring Trakt integration...")
+            xbmc.log("[Onboarding] Calling trakt_auth...", xbmc.LOGINFO)
             xbmc.executebuiltin('RunPlugin(plugin://plugin.video.aiostreams/?action=trakt_auth)')
             # Give it time to process in background
-            time.sleep(3)
-
-            # Save and exit aiostreams settings again
-            aio = ensure_addon('plugin.video.aiostreams')
-            if aio:
-                del aio
-                time.sleep(1)
+            time.sleep(5)  # Increased wait time for Trakt auth
 
             progress.update(30, f"Step {current_step}/{total_steps}: AIOStreams ready")
             xbmc.log("[Onboarding] AIOStreams configuration complete", xbmc.LOGINFO)
