@@ -402,7 +402,7 @@
 					<ondown>$PARAM[ondown_action1]</ondown>
 					<ondown>$PARAM[ondown_action2]</ondown>
 					<onclick condition="[String.IsEqual(ListItem.DBType,tvshow) | String.IsEqual(ListItem.DBType,season)]">ActivateWindow(Videos,$INFO[ListItem.FolderPath],return)</onclick>
-					<onclick condition="![String.IsEqual(ListItem.DBType,tvshow) | String.IsEqual(ListItem.DBType,season)] + [String.IsEmpty($PARAM[onclick_action]) | String.IsEqual($PARAM[onclick_action],noop)]">PlayMedia($INFO[ListItem.FileNameAndPath])</onclick>
+					<onclick condition="![String.IsEqual(ListItem.DBType,tvshow) | String.IsEqual(ListItem.DBType,season)] + [String.IsEmpty($PARAM[onclick_action]) | String.IsEqual($PARAM[onclick_action],noop)]">RunScript(special://skin/resources/lib/resume_helper.py)</onclick>
 					<onclick condition="!String.IsEqual($PARAM[onclick_action],noop) + !String.IsEmpty($PARAM[onclick_action])">$PARAM[onclick_action]</onclick>
 					<onfocus>Skin.SetString(ActiveWidgetID,$PARAM[list_id])</onfocus>
 					
@@ -543,7 +543,7 @@
 							</control>
 						</control>
 					</itemlayout>
-					<focusedlayout width="240" height="360" condition="!String.IsEqual(ListItem.DBType,episode)">
+					<focusedlayout width="240" height="360" condition="!String.IsEqual(ListItem.DBType,episode) + !Control.HasFocus(10100)">
 						<control type="group">
 							<animation effect="zoom" center="auto" start="100" end="110" time="200" tween="sine" easing="out">Focus</animation>
 							<control type="image">
@@ -591,6 +591,57 @@
 							</control>
 						</control>
 					</focusedlayout>
+
+					<!-- LANDSCAPE FOCUSED LAYOUT (for Next Up widget when focused) -->
+					<focusedlayout width="410" height="360" condition="!String.IsEqual(ListItem.DBType,episode) + Control.HasFocus(10100)">
+						<control type="group">
+							<top>65</top>
+							<animation effect="zoom" center="auto" start="100" end="110" time="200" tween="sine" easing="out">Focus</animation>
+							<control type="image">
+								<width>390</width>
+								<height>220</height>
+								<aspectratio align="center" aligny="center">scale</aspectratio>
+								<texture background="true">$INFO[ListItem.Art(thumb)]</texture>
+								<fallback>$INFO[ListItem.Art(poster)]</fallback>
+								<bordertexture border="3" colordiffuse="FFFF0000">colors/white.png</bordertexture>
+								<bordersize>3</bordersize>
+								<borderradius>8</borderradius>
+							</control>
+							<!-- Watched Indicator -->
+							<control type="image">
+								<right>30</right>
+								<top>5</top>
+								<width>30</width>
+								<height>30</height>
+								<texture>indicator_watched.png</texture>
+								<visible>String.IsEqual(ListItem.Property(watched),true) | String.IsEqual(ListItem.Overlay,OverlayWatched.png) | Integer.IsGreater(ListItem.Playcount,0) | Integer.IsGreater(ListItem.PercentPlayed,95)</visible>
+							</control>
+							<!-- Percentage Indicator -->
+							<control type="group">
+								<right>25</right>
+								<top>5</top>
+								<width>40</width>
+								<height>40</height>
+								<visible>[Integer.IsGreater(ListItem.PercentPlayed,4) | Integer.IsGreater(ListItem.Property(PercentPlayed),4)] + [Integer.IsLess(ListItem.PercentPlayed,96) | Integer.IsLess(ListItem.Property(PercentPlayed),96)]</visible>
+								<control type="image">
+									<width>40</width>
+									<height>40</height>
+									<texture>PercentageCircle.png</texture>
+								</control>
+								<control type="label">
+									<width>40</width>
+									<height>40</height>
+									<align>center</align>
+									<aligny>center</aligny>
+									<font>font_tiny</font>
+									<label>$VAR[PercentPlayedVar]%</label>
+									<textcolor>red</textcolor>
+									<shadowcolor>FF000000</shadowcolor>
+								</control>
+							</control>
+						</control>
+					</focusedlayout>
+
 					<content limit="20" target="$PARAM[widget_target]" browse="$PARAM[browse_mode]">$PARAM[content_path]&amp;reload=$INFO[Skin.String(WidgetReloadToken)]</content>
 				</control>
 				<!-- LOADING INDICATOR -->

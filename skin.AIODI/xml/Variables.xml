@@ -1225,6 +1225,10 @@
 <value>overlays/checkbox-off.png</value>
 </variable>
 	<variable name="CurrentWidgetTitle">
+		<!-- Menu buttons focused - show first item of first widget -->
+		<value condition="Control.HasFocus(9003) + !String.IsEmpty(Container(10100).ListItem(0).Title)">$INFO[Container(10100).ListItem(0).Title]</value>
+		<value condition="Control.HasFocus(9005) + !String.IsEmpty(Container(5100).ListItem(0).Title)">$INFO[Container(5100).ListItem(0).Title]</value>
+		<value condition="Control.HasFocus(9004) + !String.IsEmpty(Container(6100).ListItem(0).Title)">$INFO[Container(6100).ListItem(0).Title]</value>
 		<value condition="Control.HasFocus(7100)">$INFO[Container(7100).ListItem.Label]</value>
 		<value condition="Control.HasFocus(10100) + !String.IsEmpty(Container(10100).ListItem.Title)">$INFO[Container(10100).ListItem.Title]</value>
 		<value condition="Control.HasFocus(20100) + !String.IsEmpty(Container(20100).ListItem.Title)">$INFO[Container(20100).ListItem.Title]</value>
@@ -1235,6 +1239,10 @@
 	</variable>
 
 	<variable name="CurrentWidgetFanart">
+		<!-- Menu buttons focused - show first item of first widget -->
+		<value condition="Control.HasFocus(9003)">$INFO[Container(10100).ListItem(0).Art(fanart)]</value>
+		<value condition="Control.HasFocus(9005)">$INFO[Container(5100).ListItem(0).Art(fanart)]</value>
+		<value condition="Control.HasFocus(9004)">$INFO[Container(6100).ListItem(0).Art(fanart)]</value>
 		<value condition="Control.HasFocus(7100)">$INFO[Container(7100).ListItem.Art(fanart)]</value>
 		<value condition="Control.HasFocus(7200)">$INFO[Container(7200).ListItem.Art(fanart)]</value>
 		<value condition="Control.HasFocus(10100)">$INFO[Container(10100).ListItem.Art(fanart)]</value>
@@ -1246,6 +1254,12 @@
 	</variable>
 
 	<variable name="CurrentWidgetClearLogo">
+		<!-- Menu buttons focused - show first item of first widget -->
+		<value condition="Control.HasFocus(9003) + !String.IsEmpty(Container(10100).ListItem(0).Art(clearlogo))">$INFO[Container(10100).ListItem(0).Art(clearlogo)]</value>
+		<value condition="Control.HasFocus(9003) + !String.IsEmpty(Container(10100).ListItem(0).Art(tvshow.clearlogo))">$INFO[Container(10100).ListItem(0).Art(tvshow.clearlogo)]</value>
+		<value condition="Control.HasFocus(9005) + !String.IsEmpty(Container(5100).ListItem(0).Art(clearlogo))">$INFO[Container(5100).ListItem(0).Art(clearlogo)]</value>
+		<value condition="Control.HasFocus(9004) + !String.IsEmpty(Container(6100).ListItem(0).Art(clearlogo))">$INFO[Container(6100).ListItem(0).Art(clearlogo)]</value>
+		<value condition="Control.HasFocus(9004) + !String.IsEmpty(Container(6100).ListItem(0).Art(tvshow.clearlogo))">$INFO[Container(6100).ListItem(0).Art(tvshow.clearlogo)]</value>
 		<value condition="Control.HasFocus(7100) + !String.IsEmpty(Container(7100).ListItem.Art(clearlogo))">$INFO[Container(7100).ListItem.Art(clearlogo)]</value>
 		<value condition="Control.HasFocus(7100) + !String.IsEmpty(Container(7100).ListItem.Art(tvshow.clearlogo))">$INFO[Container(7100).ListItem.Art(tvshow.clearlogo)]</value>
 		<value condition="Control.HasFocus(7200) + !String.IsEmpty(Container(7200).ListItem.Art(clearlogo))">$INFO[Container(7200).ListItem.Art(clearlogo)]</value>
@@ -1264,6 +1278,10 @@
 	</variable>
 
 	<variable name="CurrentWidgetPlot">
+		<!-- Menu buttons focused - show first item of first widget -->
+		<value condition="Control.HasFocus(9003)">$INFO[Container(10100).ListItem(0).Plot]</value>
+		<value condition="Control.HasFocus(9005)">$INFO[Container(5100).ListItem(0).Plot]</value>
+		<value condition="Control.HasFocus(9004)">$INFO[Container(6100).ListItem(0).Plot]</value>
 		<value condition="Control.HasFocus(7100)">$INFO[Container(7100).ListItem.Plot]</value>
 		<value condition="Control.HasFocus(7200)">$INFO[Container(7200).ListItem.Plot]</value>
 		<value condition="Control.HasFocus(10100)">$INFO[Container(10100).ListItem.Plot]</value>
@@ -1275,9 +1293,15 @@
 	</variable>
 
 	<variable name="CurrentWidgetInfo">
+		<!-- Menu buttons focused - show first item of first widget -->
+		<value condition="Control.HasFocus(9003) + !String.IsEmpty(Container(10100).ListItem(0).Property(AiredDate))">$INFO[Container(10100).ListItem(0).Property(AiredDate)]$INFO[Container(10100).ListItem(0).Duration,  |  , min]</value>
+		<value condition="Control.HasFocus(9003) + !String.IsEmpty(Container(10100).ListItem(0).Season)">S$INFO[Container(10100).ListItem(0).Season]E$INFO[Container(10100).ListItem(0).Episode]$INFO[Container(10100).ListItem(0).Duration,  |  , min]</value>
+		<value condition="Control.HasFocus(9003)">$INFO[Container(10100).ListItem(0).Year]$INFO[Container(10100).ListItem(0).Genre,  |  ]$INFO[Container(10100).ListItem(0).Duration,  |  , min]</value>
+		<value condition="Control.HasFocus(9005)">$INFO[Container(5100).ListItem(0).Year]$INFO[Container(5100).ListItem(0).Genre,  |  ]$INFO[Container(5100).ListItem(0).Duration,  |  , min]</value>
+		<value condition="Control.HasFocus(9004)">$INFO[Container(6100).ListItem(0).Year]$INFO[Container(6100).ListItem(0).Genre,  |  ]</value>
 		<!-- Focused Widget Manager item -->
 		<value condition="Control.HasFocus(7100)">$INFO[Container(7100).ListItem.Premiered]$INFO[Container(7100).ListItem.Genre,  |  ]</value>
-		
+
 		<!-- Trakt Next Up (10100) -->
 		<value condition="String.IsEqual($VAR[ActiveWidgetID],10100) + !String.IsEmpty(Container(10100).ListItem.Property(AiredDate))">
 			$INFO[Container(10100).ListItem.Property(AiredDate)]$INFO[Container(10100).ListItem.Duration,  |  , min]$INFO[Container(10100).ListItem.Director,  |  ]
