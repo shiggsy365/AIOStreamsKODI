@@ -93,6 +93,7 @@
                             <colordiffuse>FFFFFFFF</colordiffuse>
                             <texturefocus>special://skin/media/buttons/tr_play_fo.png</texturefocus>
                             <texturenofocus>special://skin/media/buttons/tr_play_nofo.png</texturenofocus>
+							<onclick condition="String.IsEqual(ListItem.Property(content_type),series) | String.IsEqual(ListItem.DBType,tvshow) | String.IsEqual(ListItem.DBType,series)">Dialog.Close(movieinformation)</onclick>
 							<onclick condition="String.IsEqual(ListItem.Property(content_type),series) | String.IsEqual(ListItem.DBType,tvshow) | String.IsEqual(ListItem.DBType,series)">ActivateWindow(Videos,plugin://plugin.video.aiostreams/?action=show_seasons&amp;meta_id=$INFO[ListItem.Property(id)],return)</onclick>
 							<onclick condition="String.IsEqual(ListItem.Property(content_type),movie)">ActivateWindow(Videos,plugin://plugin.video.aiostreams/?action=play&amp;content_type=movie&amp;imdb_id=$INFO[ListItem.Property(id)],return)</onclick>
 							<onclick condition="String.StartsWith(ListItem.FileNameAndPath,plugin://plugin.video.youtube)">ActivateWindow(Videos,$INFO[ListItem.FileNameAndPath],return)</onclick>
@@ -104,56 +105,108 @@
 						</control>
 
                         <!-- Row 2 Left: Watchlist -->
-                        <control type="button" id="2002">
+                        <control type="group">
                             <left>0</left>
                             <top>74</top>
                             <width>258</width>
                             <height>64</height>
-                            <label>Watchlist</label>
-                            <font>font24_bold</font>
-                            <textoffsetx>60</textoffsetx>
-                            <align>left</align>
-                            <aligny>center</aligny>
-                            <textcolor>FFFFFFFF</textcolor>
-                            <focusedcolor>FFFFFFFF</focusedcolor>
-                            <colordiffuse>FFFFFFFF</colordiffuse>
-                            <texturefocus condition="String.IsEqual(Window(Home).Property(InfoWindow.IsWatchlist),true)">special://skin/media/buttons/tr_watchlist_remove_fo.png</texturefocus>
-                            <texturefocus condition="!String.IsEqual(Window(Home).Property(InfoWindow.IsWatchlist),true)">special://skin/media/buttons/tr_watchlist_add_fo.png</texturefocus>
-                            <texturenofocus condition="String.IsEqual(Window(Home).Property(InfoWindow.IsWatchlist),true)">special://skin/media/buttons/tr_watchlist_remove_nofo.png</texturenofocus>
-                            <texturenofocus condition="!String.IsEqual(Window(Home).Property(InfoWindow.IsWatchlist),true)">special://skin/media/buttons/tr_watchlist_add_nofo.png</texturenofocus>
-                            <onclick condition="String.IsEqual(Window(Home).Property(InfoWindow.IsWatchlist),true)">RunScript(special://skin/resources/lib/trakt_action.py,action=remove_watchlist)</onclick>
-                            <onclick condition="String.IsEqual(Window(Home).Property(InfoWindow.IsWatchlist),true)">SetProperty(InfoWindow.IsWatchlist,false,home)</onclick>
-                            <onclick condition="!String.IsEqual(Window(Home).Property(InfoWindow.IsWatchlist),true)">RunScript(special://skin/resources/lib/trakt_action.py,action=add_watchlist)</onclick>
-                            <onclick condition="!String.IsEqual(Window(Home).Property(InfoWindow.IsWatchlist),true)">SetProperty(InfoWindow.IsWatchlist,true,home)</onclick>
-                            <onup>2001</onup>
-                            <onright>2003</onright>
+                            <control type="button" id="2002">
+                                <width>258</width>
+                                <height>64</height>
+                                <label>Watchlist</label>
+                                <font>font24_bold</font>
+                                <textoffsetx>60</textoffsetx>
+                                <align>left</align>
+                                <aligny>center</aligny>
+                                <textcolor>FFFFFFFF</textcolor>
+                                <focusedcolor>FFFFFFFF</focusedcolor>
+                                <texturefocus>-</texturefocus>
+                                <texturenofocus>-</texturenofocus>
+                                <onclick condition="String.IsEqual(Window(Home).Property(InfoWindow.IsWatchlist),true)">RunScript(special://skin/resources/lib/trakt_action.py,action=remove_watchlist)</onclick>
+                                <onclick condition="String.IsEqual(Window(Home).Property(InfoWindow.IsWatchlist),true)">SetProperty(InfoWindow.IsWatchlist,false,home)</onclick>
+                                <onclick condition="!String.IsEqual(Window(Home).Property(InfoWindow.IsWatchlist),true)">RunScript(special://skin/resources/lib/trakt_action.py,action=add_watchlist)</onclick>
+                                <onclick condition="!String.IsEqual(Window(Home).Property(InfoWindow.IsWatchlist),true)">SetProperty(InfoWindow.IsWatchlist,true,home)</onclick>
+                                <onup>2001</onup>
+                                <onright>2003</onright>
+                            </control>
+                            <!-- Dynamic background images -->
+                            <control type="image">
+                                <width>258</width>
+                                <height>64</height>
+                                <texture>special://skin/media/buttons/tr_watchlist_remove_fo.png</texture>
+                                <visible>Control.HasFocus(2002) + String.IsEqual(Window(Home).Property(InfoWindow.IsWatchlist),true)</visible>
+                            </control>
+                            <control type="image">
+                                <width>258</width>
+                                <height>64</height>
+                                <texture>special://skin/media/buttons/tr_watchlist_add_fo.png</texture>
+                                <visible>Control.HasFocus(2002) + !String.IsEqual(Window(Home).Property(InfoWindow.IsWatchlist),true)</visible>
+                            </control>
+                            <control type="image">
+                                <width>258</width>
+                                <height>64</height>
+                                <texture>special://skin/media/buttons/tr_watchlist_remove_nofo.png</texture>
+                                <visible>!Control.HasFocus(2002) + String.IsEqual(Window(Home).Property(InfoWindow.IsWatchlist),true)</visible>
+                            </control>
+                            <control type="image">
+                                <width>258</width>
+                                <height>64</height>
+                                <texture>special://skin/media/buttons/tr_watchlist_add_nofo.png</texture>
+                                <visible>!Control.HasFocus(2002) + !String.IsEqual(Window(Home).Property(InfoWindow.IsWatchlist),true)</visible>
+                            </control>
                         </control>
 
                         <!-- Row 2 Right: Watched -->
-                        <control type="button" id="2003">
+                        <control type="group">
                             <left>268</left>
                             <top>74</top>
                             <width>258</width>
                             <height>64</height>
-                            <label>Watched</label>
-                            <font>font24_bold</font>
-                            <textoffsetx>60</textoffsetx>
-                            <align>left</align>
-                            <aligny>center</aligny>
-                            <textcolor>FFFFFFFF</textcolor>
-                            <focusedcolor>FFFFFFFF</focusedcolor>
-                            <colordiffuse>FFFFFFFF</colordiffuse>
-                            <texturefocus condition="String.IsEqual(Window(Home).Property(InfoWindow.IsWatched),true)">special://skin/media/buttons/tr_watched_remove_fo.png</texturefocus>
-                            <texturefocus condition="!String.IsEqual(Window(Home).Property(InfoWindow.IsWatched),true)">special://skin/media/buttons/tr_watched_add_fo.png</texturefocus>
-                            <texturenofocus condition="String.IsEqual(Window(Home).Property(InfoWindow.IsWatched),true)">special://skin/media/buttons/tr_watched_remove_nofo.png</texturenofocus>
-                            <texturenofocus condition="!String.IsEqual(Window(Home).Property(InfoWindow.IsWatched),true)">special://skin/media/buttons/tr_watched_add_nofo.png</texturenofocus>
-                            <onclick condition="String.IsEqual(Window(Home).Property(InfoWindow.IsWatched),true)">RunScript(special://skin/resources/lib/trakt_action.py,action=mark_unwatched)</onclick>
-                            <onclick condition="String.IsEqual(Window(Home).Property(InfoWindow.IsWatched),true)">SetProperty(InfoWindow.IsWatched,false,home)</onclick>
-                            <onclick condition="!String.IsEqual(Window(Home).Property(InfoWindow.IsWatched),true)">RunScript(special://skin/resources/lib/trakt_action.py,action=mark_watched)</onclick>
-                            <onclick condition="!String.IsEqual(Window(Home).Property(InfoWindow.IsWatched),true)">SetProperty(InfoWindow.IsWatched,true,home)</onclick>
-                            <onup>8</onup>
-                            <onleft>2002</onleft>
-                            <onright>50</onright>
+                            <control type="button" id="2003">
+                                <width>258</width>
+                                <height>64</height>
+                                <label>Watched</label>
+                                <font>font24_bold</font>
+                                <textoffsetx>60</textoffsetx>
+                                <align>left</align>
+                                <aligny>center</aligny>
+                                <textcolor>FFFFFFFF</textcolor>
+                                <focusedcolor>FFFFFFFF</focusedcolor>
+                                <texturefocus>-</texturefocus>
+                                <texturenofocus>-</texturenofocus>
+                                <onclick condition="String.IsEqual(Window(Home).Property(InfoWindow.IsWatched),true)">RunScript(special://skin/resources/lib/trakt_action.py,action=mark_unwatched)</onclick>
+                                <onclick condition="String.IsEqual(Window(Home).Property(InfoWindow.IsWatched),true)">SetProperty(InfoWindow.IsWatched,false,home)</onclick>
+                                <onclick condition="!String.IsEqual(Window(Home).Property(InfoWindow.IsWatched),true)">RunScript(special://skin/resources/lib/trakt_action.py,action=mark_watched)</onclick>
+                                <onclick condition="!String.IsEqual(Window(Home).Property(InfoWindow.IsWatched),true)">SetProperty(InfoWindow.IsWatched,true,home)</onclick>
+                                <onup>8</onup>
+                                <onleft>2002</onleft>
+                                <onright>50</onright>
+                            </control>
+                            <!-- Dynamic background images -->
+                            <control type="image">
+                                <width>258</width>
+                                <height>64</height>
+                                <texture>special://skin/media/buttons/tr_watched_remove_fo.png</texture>
+                                <visible>Control.HasFocus(2003) + String.IsEqual(Window(Home).Property(InfoWindow.IsWatched),true)</visible>
+                            </control>
+                            <control type="image">
+                                <width>258</width>
+                                <height>64</height>
+                                <texture>special://skin/media/buttons/tr_watched_add_fo.png</texture>
+                                <visible>Control.HasFocus(2003) + !String.IsEqual(Window(Home).Property(InfoWindow.IsWatched),true)</visible>
+                            </control>
+                            <control type="image">
+                                <width>258</width>
+                                <height>64</height>
+                                <texture>special://skin/media/buttons/tr_watched_remove_nofo.png</texture>
+                                <visible>!Control.HasFocus(2003) + String.IsEqual(Window(Home).Property(InfoWindow.IsWatched),true)</visible>
+                            </control>
+                            <control type="image">
+                                <width>258</width>
+                                <height>64</height>
+                                <texture>special://skin/media/buttons/tr_watched_add_nofo.png</texture>
+                                <visible>!Control.HasFocus(2003) + !String.IsEqual(Window(Home).Property(InfoWindow.IsWatched),true)</visible>
+                            </control>
                         </control>
 					</control>
 				</control>
@@ -268,19 +321,10 @@
 					<visible>false</visible>
 				</control>
 			</control>
-				<control type="image">
-					<left>77</left>
-					<top>185</top>
-					<width>1090</width>
-					<height>283</height>
-					<fadetime>150</fadetime>
-					<aspectratio>keep</aspectratio>
-					<texture>$VAR[BannerVar]</texture>
-				</control>
-				<!-- Relocated Cast Area -->
+				<!-- Cast Area -->
 				<control type="group">
 					<left>0</left>
-					<top>400</top>
+					<top>340</top>
 					<width>1245</width>
 					<height>800</height>
 
@@ -288,7 +332,7 @@
 					<control type="group">
 						<visible>!String.IsEmpty(Window(Home).Property(AsyncLoading))</visible>
 						<control type="image">
-							<left>572</left> <!-- Centered in 1245 width (1245/2 - 50) -->
+							<left>572</left>
 							<top>300</top>
 							<width>100</width>
 							<height>100</height>
@@ -297,86 +341,11 @@
 						</control>
 					</control>
 
-					<!-- Metadata Column (Right of Cast) -->
-					<control type="grouplist">
-						<left>1000</left>
-						<top>0</top>
-						<width>245</width>
-						<height>280</height>
-						<itemgap>15</itemgap>
-						<orientation>vertical</orientation>
-						<usecontrolcoords>true</usecontrolcoords>
-
-						<control type="group">
-							<width>245</width>
-							<height>50</height>
-							<control type="label">
-								<top>0</top>
-								<width>245</width>
-								<height>20</height>
-								<label>Director</label>
-								<font>font10</font>
-								<textcolor>grey</textcolor>
-							</control>
-							<control type="label">
-								<top>20</top>
-								<width>245</width>
-								<height>25</height>
-								<label>$VAR[InfoDirectorVar]</label>
-								<font>font12</font>
-								<textcolor>white</textcolor>
-								<scroll>true</scroll>
-							</control>
-						</control>
-
-						<control type="group">
-							<width>245</width>
-							<height>50</height>
-							<control type="label">
-								<top>0</top>
-								<width>245</width>
-								<height>20</height>
-								<label>Released</label>
-								<font>font10</font>
-								<textcolor>grey</textcolor>
-							</control>
-							<control type="label">
-								<top>20</top>
-								<width>245</width>
-								<height>25</height>
-								<label>$VAR[InfoPremieredVar]</label>
-								<font>font12</font>
-								<textcolor>white</textcolor>
-							</control>
-						</control>
-
-						<control type="group">
-							<width>245</width>
-							<height>50</height>
-							<control type="label">
-								<top>0</top>
-								<width>245</width>
-								<height>20</height>
-								<label>Duration</label>
-								<font>font10</font>
-								<textcolor>grey</textcolor>
-							</control>
-							<control type="label">
-								<top>20</top>
-								<width>245</width>
-								<height>25</height>
-								<label>$VAR[InfoDurationVar]</label>
-								<font>font12</font>
-								<textcolor>white</textcolor>
-							</control>
-						</control>
-					</control>
-
-					<!-- Cast List (Refactored) -->
+					<!-- Cast List -->
 					<control type="fixedlist" id="50">
 						<left>0</left>
 						<top>0</top>
-						<width>980</width>
+						<width>1245</width>
 						<height>280</height>
 						<onup>8000</onup>
 						<onleft>8</onleft>
