@@ -151,7 +151,7 @@
 		<top>0</top>
 		<width>120</width>
 		<bottom>0</bottom>
-		<texture colordiffuse="FF000000">colors/white.png</texture>
+		<texture colordiffuse="4D000000">colors/white.png</texture>
 	</control>
 
 	<!-- Top Group (Logo & Search) -->
@@ -179,7 +179,7 @@
 				<top>7</top>
 				<width>71</width>
 				<height>71</height>
-				<texture>logonew.png</texture>
+				<texture>logo_unfocused.png</texture>
 				<colordiffuse>FFFFFFFF</colordiffuse>
 				<visible>!Control.HasFocus(9001)</visible>
 			</control>
@@ -188,8 +188,8 @@
 				<top>7</top>
 				<width>71</width>
 				<height>71</height>
-				<texture>https://raw.githubusercontent.com/shiggsy365/AIOStreamsKODI/main/docs/plugin.video.aiostreams/resources/icon(1).png</texture>
-				<colordiffuse>FFFFFFFF</colordiffuse>
+				<texture>logo_unfocused.png</texture>
+				<colordiffuse>FFFF0000</colordiffuse>
 				<visible>Control.HasFocus(9001)</visible>
 			</control>
 		</control>
@@ -483,7 +483,7 @@
 <!-- Home Widgets -->
 <control type="group" id="11000">
 	<zorder>10</zorder>
-	<bottom>20</bottom>
+	<bottom>50</bottom>
 	<left>150</left>
 	<width>1750</width>
 	<height>550</height>
@@ -659,7 +659,7 @@
 <!-- Movie Widgets -->
 	<control type="group" id="5000">
 	<zorder>10</zorder>
-	<bottom>20</bottom>
+	<bottom>50</bottom>
 	<left>150</left>
 	<width>1750</width>
 	<height>550</height>
@@ -1104,7 +1104,7 @@
 <!-- ========== TV SHOWS WIDGETS (20 ROWS) ========== -->
 <control type="group" id="6000">
 	<zorder>10</zorder>
-	<bottom>20</bottom>
+	<bottom>50</bottom>
 	<left>150</left>
 	<width>1750</width>
 	<height>550</height>
@@ -1490,7 +1490,7 @@
 	<!-- Music Widgets -->
 	<control type="group" id="7000">
 		<zorder>10</zorder>
-		<bottom>20</bottom>
+		<bottom>50</bottom>
 		<left>150</left>
 		<width>1750</width>
 		<height>550</height>
