@@ -54,8 +54,17 @@ def perform_action(action):
             log(f'Unknown action: {action}')
             return
 
-        # Execute the plugin action
+        # Build the plugin URL
         plugin_url = f'plugin://plugin.video.aiostreams/?action={plugin_action}&imdb_id={imdb_id}&media_type={media_type}'
+
+        # For episodes, add season and episode parameters for mark watched/unwatched actions
+        if db_type == 'episode' and action in ['mark_watched', 'mark_unwatched']:
+            season = xbmc.getInfoLabel('ListItem.Season')
+            episode = xbmc.getInfoLabel('ListItem.Episode')
+            if season and episode:
+                plugin_url += f'&season={season}&episode={episode}'
+                log(f'Episode action: Season {season}, Episode {episode}')
+
         log(f'Executing: RunPlugin({plugin_url})')
         xbmc.executebuiltin(f'RunPlugin({plugin_url})')
 
