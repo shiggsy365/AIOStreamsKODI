@@ -88,6 +88,12 @@
 				<label>$VAR[CurrentWidgetClearLogo]</label>
 			</control>
 
+			<!-- HIDDEN VALUE HOLDER for Season -->
+			<control type="label" id="8889">
+				<include>HiddenObject</include>
+				<label>$INFO[Container($VAR[ActiveWidgetID]).ListItem.Season]</label>
+			</control>
+
 			<!-- ClearLogo -->
 			<control type="image">
 				<left>0</left>
@@ -112,262 +118,369 @@
 				<visible>String.IsEmpty(Control.GetLabel(8888))</visible>
 			</control>
 
-			<!-- Genre Chips (Vertical stack to right of clearlogo, max 3) -->
-			<control type="grouplist">
+			<!-- Genre Chips (to the right of clearlogo, vertically centered) -->
+			<!-- Genre 1 -->
+			<control type="group">
 				<left>520</left>
-				<top>0</top>
-				<width>300</width>
-				<height>180</height>
-				<orientation>vertical</orientation>
-				<itemgap>8</itemgap>
-				<usecontrolcoords>true</usecontrolcoords>
+				<top>30</top>
+				<width>180</width>
+				<height>40</height>
+				<visible>!String.IsEmpty(Window(Home).Property(Widget.Genre.1))</visible>
+				<control type="image">
+					<width>180</width>
+					<height>40</height>
+					<texture colordiffuse="80000000">colors/white.png</texture>
+					<bordersize>2</bordersize>
+					<bordertexture colordiffuse="FFFFFFFF">colors/white.png</bordertexture>
+					<borderradius>4</borderradius>
+				</control>
+				<control type="label">
+					<width>180</width>
+					<height>40</height>
+					<align>center</align>
+					<aligny>center</aligny>
+					<font>font10</font>
+					<textcolor>FFFFFFFF</textcolor>
+					<label>$INFO[Window(Home).Property(Widget.Genre.1)]</label>
+				</control>
+			</control>
 
-				<!-- Genre 1 -->
+			<!-- Genre 2 -->
+			<control type="group">
+				<left>520</left>
+				<top>75</top>
+				<width>180</width>
+				<height>40</height>
+				<visible>!String.IsEmpty(Window(Home).Property(Widget.Genre.2))</visible>
+				<control type="image">
+					<width>180</width>
+					<height>40</height>
+					<texture colordiffuse="80000000">colors/white.png</texture>
+					<bordersize>2</bordersize>
+					<bordertexture colordiffuse="FFFFFFFF">colors/white.png</bordertexture>
+					<borderradius>4</borderradius>
+				</control>
+				<control type="label">
+					<width>180</width>
+					<height>40</height>
+					<align>center</align>
+					<aligny>center</aligny>
+					<font>font10</font>
+					<textcolor>FFFFFFFF</textcolor>
+					<label>$INFO[Window(Home).Property(Widget.Genre.2)]</label>
+				</control>
+			</control>
+
+			<!-- Genre 3 -->
+			<control type="group">
+				<left>520</left>
+				<top>120</top>
+				<width>180</width>
+				<height>40</height>
+				<visible>!String.IsEmpty(Window(Home).Property(Widget.Genre.3))</visible>
+				<control type="image">
+					<width>180</width>
+					<height>40</height>
+					<texture colordiffuse="80000000">colors/white.png</texture>
+					<bordersize>2</bordersize>
+					<bordertexture colordiffuse="FFFFFFFF">colors/white.png</bordertexture>
+					<borderradius>4</borderradius>
+				</control>
+				<control type="label">
+					<width>180</width>
+					<height>40</height>
+					<align>center</align>
+					<aligny>center</aligny>
+					<font>font10</font>
+					<textcolor>FFFFFFFF</textcolor>
+					<label>$INFO[Window(Home).Property(Widget.Genre.3)]</label>
+				</control>
+			</control>
+
+			<!-- Plot Description (aligned with clearlogo) -->
+			<control type="textbox">
+				<left>0</left>
+				<top>200</top>
+				<width>1500</width>
+				<height>220</height>
+				<font>font15</font>
+				<textcolor>FFFFFFFF</textcolor>
+				<label>$VAR[CurrentWidgetPlot]</label>
+				<shadowcolor>text_shadow</shadowcolor>
+				<autoscroll time="3000" delay="4000" repeat="5000">true</autoscroll>
+			</control>
+
+			<!-- Metadata Chips for Episodes: [S01E01] [premiered] [duration] [mpaa] [rating] -->
+			<control type="group">
+				<left>0</left>
+				<top>450</top>
+				<width>1550</width>
+				<height>50</height>
+				<visible>!String.IsEmpty(Control.GetLabel(8889))</visible>
+
+				<!-- Episode Number -->
 				<control type="group">
-					<width>200</width>
-					<height>35</height>
-					<visible>!String.IsEmpty(Window(Home).Property(Widget.Genre.1))</visible>
+					<left>0</left>
+					<top>0</top>
+					<width>120</width>
+					<height>40</height>
 					<control type="image">
-						<width>200</width>
-						<height>35</height>
+						<width>120</width>
+						<height>40</height>
 						<texture colordiffuse="80000000">colors/white.png</texture>
 						<bordersize>2</bordersize>
 						<bordertexture colordiffuse="FFFFFFFF">colors/white.png</bordertexture>
 						<borderradius>4</borderradius>
 					</control>
 					<control type="label">
-						<width>200</width>
-						<height>35</height>
+						<width>120</width>
+						<height>40</height>
 						<align>center</align>
 						<aligny>center</aligny>
-						<font>font13</font>
+						<font>font10</font>
 						<textcolor>FFFFFFFF</textcolor>
-						<label>$INFO[Window(Home).Property(Widget.Genre.1)]</label>
+						<label>$INFO[Container($VAR[ActiveWidgetID]).ListItem.Season,S,]$INFO[Container($VAR[ActiveWidgetID]).ListItem.Episode,E,]</label>
 					</control>
 				</control>
 
-				<!-- Genre 2 -->
+				<!-- Premiered -->
 				<control type="group">
-					<width>200</width>
-					<height>35</height>
-					<visible>!String.IsEmpty(Window(Home).Property(Widget.Genre.2))</visible>
+					<left>130</left>
+					<top>0</top>
+					<width>140</width>
+					<height>40</height>
 					<control type="image">
-						<width>200</width>
-						<height>35</height>
+						<width>140</width>
+						<height>40</height>
 						<texture colordiffuse="80000000">colors/white.png</texture>
 						<bordersize>2</bordersize>
 						<bordertexture colordiffuse="FFFFFFFF">colors/white.png</bordertexture>
 						<borderradius>4</borderradius>
 					</control>
 					<control type="label">
-						<width>200</width>
-						<height>35</height>
+						<width>140</width>
+						<height>40</height>
 						<align>center</align>
 						<aligny>center</aligny>
-						<font>font13</font>
+						<font>font10</font>
 						<textcolor>FFFFFFFF</textcolor>
-						<label>$INFO[Window(Home).Property(Widget.Genre.2)]</label>
+						<label>$INFO[Container($VAR[ActiveWidgetID]).ListItem.Premiered]</label>
 					</control>
 				</control>
 
-				<!-- Genre 3 -->
+				<!-- Duration -->
 				<control type="group">
-					<width>200</width>
-					<height>35</height>
-					<visible>!String.IsEmpty(Window(Home).Property(Widget.Genre.3))</visible>
+					<left>280</left>
+					<top>0</top>
+					<width>120</width>
+					<height>40</height>
 					<control type="image">
-						<width>200</width>
-						<height>35</height>
+						<width>120</width>
+						<height>40</height>
 						<texture colordiffuse="80000000">colors/white.png</texture>
 						<bordersize>2</bordersize>
 						<bordertexture colordiffuse="FFFFFFFF">colors/white.png</bordertexture>
 						<borderradius>4</borderradius>
 					</control>
 					<control type="label">
-						<width>200</width>
-						<height>35</height>
+						<width>120</width>
+						<height>40</height>
 						<align>center</align>
 						<aligny>center</aligny>
-						<font>font13</font>
+						<font>font10</font>
 						<textcolor>FFFFFFFF</textcolor>
-						<label>$INFO[Window(Home).Property(Widget.Genre.3)]</label>
+						<label>$INFO[Container($VAR[ActiveWidgetID]).ListItem.Duration, min]</label>
+					</control>
+				</control>
+
+				<!-- MPAA/Certification -->
+				<control type="group">
+					<left>410</left>
+					<top>0</top>
+					<width>100</width>
+					<height>40</height>
+					<control type="image">
+						<width>100</width>
+						<height>40</height>
+						<texture colordiffuse="80000000">colors/white.png</texture>
+						<bordersize>2</bordersize>
+						<bordertexture colordiffuse="FFDC143C">colors/white.png</bordertexture>
+						<borderradius>4</borderradius>
+					</control>
+					<control type="label">
+						<width>100</width>
+						<height>40</height>
+						<align>center</align>
+						<aligny>center</aligny>
+						<font>font10</font>
+						<textcolor>FFFFFFFF</textcolor>
+						<label>$INFO[Container($VAR[ActiveWidgetID]).ListItem.Mpaa]</label>
+					</control>
+				</control>
+
+				<!-- IMDb Rating with Logo -->
+				<control type="group">
+					<left>520</left>
+					<top>0</top>
+					<width>150</width>
+					<height>40</height>
+
+					<!-- IMDb Logo -->
+					<control type="image">
+						<left>0</left>
+						<top>0</top>
+						<width>60</width>
+						<height>40</height>
+						<texture>imdb_logo.png</texture>
+						<aspectratio>keep</aspectratio>
+					</control>
+
+					<!-- Rating Chip -->
+					<control type="image">
+						<left>70</left>
+						<top>0</top>
+						<width>80</width>
+						<height>40</height>
+						<texture colordiffuse="80000000">colors/white.png</texture>
+						<bordersize>2</bordersize>
+						<bordertexture colordiffuse="FFF5C518">colors/white.png</bordertexture>
+						<borderradius>4</borderradius>
+					</control>
+					<control type="label">
+						<left>70</left>
+						<top>0</top>
+						<width>80</width>
+						<height>40</height>
+						<align>center</align>
+						<aligny>center</aligny>
+						<font>font10</font>
+						<textcolor>FFFFFFFF</textcolor>
+						<label>$INFO[Container($VAR[ActiveWidgetID]).ListItem.Rating]</label>
 					</control>
 				</control>
 			</control>
 
-			<!-- Metadata and Description Area -->
+			<!-- Metadata Chips for Shows/Movies: [premiered] [duration] [mpaa] [rating] -->
 			<control type="group">
 				<left>0</left>
-				<top>200</top>
+				<top>450</top>
 				<width>1550</width>
-				<height>350</height>
+				<height>50</height>
+				<visible>String.IsEmpty(Control.GetLabel(8889))</visible>
 
-				<!-- Left Column: Metadata Stack -->
-				<control type="grouplist">
+				<!-- Premiered -->
+				<control type="group">
 					<left>0</left>
 					<top>0</top>
-					<width>250</width>
-					<height>350</height>
-					<orientation>vertical</orientation>
-					<itemgap>12</itemgap>
-					<usecontrolcoords>true</usecontrolcoords>
-
-					<!-- Episode Number (for episodes only) -->
-					<control type="group">
-						<width>200</width>
+					<width>140</width>
+					<height>40</height>
+					<control type="image">
+						<width>140</width>
 						<height>40</height>
-						<visible>!String.IsEmpty(Container($VAR[ActiveWidgetID]).ListItem.Season)</visible>
-						<control type="image">
-							<width>200</width>
-							<height>40</height>
-							<texture colordiffuse="80000000">colors/white.png</texture>
-							<bordersize>2</bordersize>
-							<bordertexture colordiffuse="FFFFFFFF">colors/white.png</bordertexture>
-							<borderradius>4</borderradius>
-						</control>
-						<control type="label">
-							<width>200</width>
-							<height>40</height>
-							<align>center</align>
-							<aligny>center</aligny>
-							<font>font18_title</font>
-							<textcolor>FFFFFFFF</textcolor>
-							<label>$INFO[Container($VAR[ActiveWidgetID]).ListItem.Season,S,]$INFO[Container($VAR[ActiveWidgetID]).ListItem.Episode,E,]</label>
-							<shadowcolor>text_shadow</shadowcolor>
-						</control>
+						<texture colordiffuse="80000000">colors/white.png</texture>
+						<bordersize>2</bordersize>
+						<bordertexture colordiffuse="FFFFFFFF">colors/white.png</bordertexture>
+						<borderradius>4</borderradius>
 					</control>
-
-					<!-- Release Date -->
-					<control type="group">
-						<width>200</width>
+					<control type="label">
+						<width>140</width>
 						<height>40</height>
-						<visible>!String.IsEmpty(Container($VAR[ActiveWidgetID]).ListItem.Premiered)</visible>
-						<control type="image">
-							<width>200</width>
-							<height>40</height>
-							<texture colordiffuse="80000000">colors/white.png</texture>
-							<bordersize>2</bordersize>
-							<bordertexture colordiffuse="FFFFFFFF">colors/white.png</bordertexture>
-							<borderradius>4</borderradius>
-						</control>
-						<control type="label">
-							<width>200</width>
-							<height>40</height>
-							<align>center</align>
-							<aligny>center</aligny>
-							<font>font14</font>
-							<textcolor>FFFFFFFF</textcolor>
-							<label>$INFO[Container($VAR[ActiveWidgetID]).ListItem.Premiered]</label>
-							<shadowcolor>text_shadow</shadowcolor>
-						</control>
-					</control>
-
-					<!-- Runtime -->
-					<control type="group">
-						<width>200</width>
-						<height>40</height>
-						<visible>!String.IsEmpty(Container($VAR[ActiveWidgetID]).ListItem.Duration)</visible>
-						<control type="image">
-							<width>200</width>
-							<height>40</height>
-							<texture colordiffuse="80000000">colors/white.png</texture>
-							<bordersize>2</bordersize>
-							<bordertexture colordiffuse="FFFFFFFF">colors/white.png</bordertexture>
-							<borderradius>4</borderradius>
-						</control>
-						<control type="label">
-							<width>200</width>
-							<height>40</height>
-							<align>center</align>
-							<aligny>center</aligny>
-							<font>font14</font>
-							<textcolor>FFFFFFFF</textcolor>
-							<label>$INFO[Container($VAR[ActiveWidgetID]).ListItem.Duration, min]</label>
-							<shadowcolor>text_shadow</shadowcolor>
-						</control>
-					</control>
-
-					<!-- IMDb Rating Chip -->
-					<control type="group">
-						<width>200</width>
-						<height>40</height>
-						<visible>!String.IsEmpty(Container($VAR[ActiveWidgetID]).ListItem.Rating)</visible>
-
-						<!-- IMDb Logo -->
-						<control type="image">
-							<left>0</left>
-							<top>0</top>
-							<width>60</width>
-							<height>40</height>
-							<texture>imdb_logo.png</texture>
-							<aspectratio>keep</aspectratio>
-						</control>
-
-						<!-- Rating Chip -->
-						<control type="group">
-							<left>70</left>
-							<top>0</top>
-							<width>80</width>
-							<height>40</height>
-							<control type="image">
-								<width>80</width>
-								<height>40</height>
-								<texture colordiffuse="FFF5C518">colors/white.png</texture>
-								<borderradius>20</borderradius>
-							</control>
-							<control type="label">
-								<width>80</width>
-								<height>40</height>
-								<align>center</align>
-								<aligny>center</aligny>
-								<font>font14_title</font>
-								<textcolor>FF000000</textcolor>
-								<label>$INFO[Container($VAR[ActiveWidgetID]).ListItem.Rating]</label>
-							</control>
-						</control>
-					</control>
-
-					<!-- Certification Chip -->
-					<control type="group">
-						<width>200</width>
-						<height>40</height>
-						<visible>!String.IsEmpty(Container($VAR[ActiveWidgetID]).ListItem.Mpaa)</visible>
-						<control type="image">
-							<width>120</width>
-							<height>40</height>
-							<texture colordiffuse="FFDC143C">colors/white.png</texture>
-							<borderradius>20</borderradius>
-						</control>
-						<control type="label">
-							<width>120</width>
-							<height>40</height>
-							<align>center</align>
-							<aligny>center</aligny>
-							<font>font13_title</font>
-							<textcolor>FFFFFFFF</textcolor>
-							<label>$INFO[Container($VAR[ActiveWidgetID]).ListItem.Mpaa]</label>
-						</control>
+						<align>center</align>
+						<aligny>center</aligny>
+						<font>font10</font>
+						<textcolor>FFFFFFFF</textcolor>
+						<label>$INFO[Container($VAR[ActiveWidgetID]).ListItem.Premiered]</label>
 					</control>
 				</control>
 
-				<!-- Right Column: Plot -->
+				<!-- Duration -->
 				<control type="group">
-					<left>270</left>
+					<left>150</left>
 					<top>0</top>
-					<width>1280</width>
-					<height>350</height>
+					<width>120</width>
+					<height>40</height>
+					<control type="image">
+						<width>120</width>
+						<height>40</height>
+						<texture colordiffuse="80000000">colors/white.png</texture>
+						<bordersize>2</bordersize>
+						<bordertexture colordiffuse="FFFFFFFF">colors/white.png</bordertexture>
+						<borderradius>4</borderradius>
+					</control>
+					<control type="label">
+						<width>120</width>
+						<height>40</height>
+						<align>center</align>
+						<aligny>center</aligny>
+						<font>font10</font>
+						<textcolor>FFFFFFFF</textcolor>
+						<label>$INFO[Container($VAR[ActiveWidgetID]).ListItem.Duration, min]</label>
+					</control>
+				</control>
 
-					<!-- Plot -->
-					<control type="textbox">
+				<!-- MPAA/Certification -->
+				<control type="group">
+					<left>280</left>
+					<top>0</top>
+					<width>100</width>
+					<height>40</height>
+					<control type="image">
+						<width>100</width>
+						<height>40</height>
+						<texture colordiffuse="80000000">colors/white.png</texture>
+						<bordersize>2</bordersize>
+						<bordertexture colordiffuse="FFDC143C">colors/white.png</bordertexture>
+						<borderradius>4</borderradius>
+					</control>
+					<control type="label">
+						<width>100</width>
+						<height>40</height>
+						<align>center</align>
+						<aligny>center</aligny>
+						<font>font10</font>
+						<textcolor>FFFFFFFF</textcolor>
+						<label>$INFO[Container($VAR[ActiveWidgetID]).ListItem.Mpaa]</label>
+					</control>
+				</control>
+
+				<!-- IMDb Rating with Logo -->
+				<control type="group">
+					<left>390</left>
+					<top>0</top>
+					<width>150</width>
+					<height>40</height>
+
+					<!-- IMDb Logo -->
+					<control type="image">
 						<left>0</left>
 						<top>0</top>
-						<width>1280</width>
-						<height>350</height>
-						<font>font15</font>
+						<width>60</width>
+						<height>40</height>
+						<texture>imdb_logo.png</texture>
+						<aspectratio>keep</aspectratio>
+					</control>
+
+					<!-- Rating Chip -->
+					<control type="image">
+						<left>70</left>
+						<top>0</top>
+						<width>80</width>
+						<height>40</height>
+						<texture colordiffuse="80000000">colors/white.png</texture>
+						<bordersize>2</bordersize>
+						<bordertexture colordiffuse="FFF5C518">colors/white.png</bordertexture>
+						<borderradius>4</borderradius>
+					</control>
+					<control type="label">
+						<left>70</left>
+						<top>0</top>
+						<width>80</width>
+						<height>40</height>
+						<align>center</align>
+						<aligny>center</aligny>
+						<font>font10</font>
 						<textcolor>FFFFFFFF</textcolor>
-						<label>$VAR[CurrentWidgetPlot]</label>
-						<shadowcolor>text_shadow</shadowcolor>
-						<autoscroll time="3000" delay="4000" repeat="5000">true</autoscroll>
+						<label>$INFO[Container($VAR[ActiveWidgetID]).ListItem.Rating]</label>
 					</control>
 				</control>
 			</control>
