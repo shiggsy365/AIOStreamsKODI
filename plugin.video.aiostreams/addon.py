@@ -793,16 +793,23 @@ def create_listitem_with_context(meta, content_type, action_url):
     list_item.setProperty('id', str(meta.get('id', '')))
     list_item.setProperty('content_type', str(content_type))
     
-    # Set genres
-    genres = meta.get('genres', [])
-    if genres:
-        info_tag.setGenres(genres)
-        # Also set individual genre properties for skin chips (max 3)
-        for i in range(1, 4):
-            if i <= len(genres):
-                list_item.setProperty(f'Genre{i}', genres[i-1])
-            else:
-                list_item.setProperty(f'Genre{i}', '')
+    # Set genres (handle both list and comma-separated string)
+    genres_data = meta.get('genres', [])
+    if isinstance(genres_data, str):
+        genres_list = [g.strip() for g in genres_data.split(',')]
+    elif isinstance(genres_data, list):
+        genres_list = genres_data
+    else:
+        genres_list = []
+
+    if genres_list:
+        info_tag.setGenres(genres_list)
+    
+    # Always set Genre1-3 properties for skin chips (max 3)
+    # This ensures old values are cleared when list items are recycled
+    for i in range(1, 4):
+        genre_val = genres_list[i-1] if i <= len(genres_list) else ""
+        list_item.setProperty(f'Genre{i}', str(genre_val))
     
     # Add runtime (handle "2h16min", "48min", "120" formats)
     runtime = meta.get('runtime', '')
@@ -867,17 +874,19 @@ def create_listitem_with_context(meta, content_type, action_url):
         except:
             pass
 
-    # Add rating - AIOStreams provides imdbRating as string
-    imdb_rating = meta.get('imdbRating', '')
+    # Add rating - check multiple possible fields from different sources
+    imdb_rating = meta.get('imdbRating') or meta.get('rating') or meta.get('Rating') or ''
     if imdb_rating:
         try:
             rating_value = float(imdb_rating)
             info_tag.setRating(rating_value, votes=0, rating_type='imdb', default=True)
             info_tag.setIMDBNumber(meta.get('imdb_id', meta.get('id', '')))
-            # Also set as property for direct skin access
-            list_item.setProperty('IMDbRating', str(rating_value))
+            # Also set as property for direct skin access (formatted to 1 decimal)
+            list_item.setProperty('IMDbRating', f"{rating_value:.1f}")
         except:
-            pass
+            list_item.setProperty('IMDbRating', '')
+    else:
+        list_item.setProperty('IMDbRating', '')
 
     # Get app_extras once for multiple uses
     app_extras = meta.get('app_extras', {})
