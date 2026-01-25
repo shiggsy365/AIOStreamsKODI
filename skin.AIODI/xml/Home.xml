@@ -118,67 +118,6 @@
 				<visible>String.IsEmpty(Control.GetLabel(8888))</visible>
 			</control>
 
-			<!-- Genre Chips (to the right of clearlogo, vertically centered) -->
-			<!-- Genre 1 -->
-			<control type="button" id="9920">
-				<left>520</left>
-				<top>30</top>
-				<width>180</width>
-				<height>40</height>
-				<font>font10</font>
-				<textcolor>FFFFFFFF</textcolor>
-				<focusedcolor>FFFFFFFF</focusedcolor>
-				<label>$INFO[Window(Home).Property(Widget.Genre.1)]</label>
-				<align>center</align>
-				<aligny>center</aligny>
-				<texturefocus colordiffuse="80000000" border="2,2,2,2">colors/white.png</texturefocus>
-				<texturenofocus colordiffuse="80000000" border="2,2,2,2">colors/white.png</texturenofocus>
-				<bordertexture colordiffuse="FFFFFFFF" border="2">colors/white.png</bordertexture>
-				<bordersize>2</bordersize>
-				<onclick>noop</onclick>
-				<enable>false</enable>
-			</control>
-
-			<!-- Genre 2 -->
-			<control type="button" id="9921">
-				<left>520</left>
-				<top>75</top>
-				<width>180</width>
-				<height>40</height>
-				<font>font10</font>
-				<textcolor>FFFFFFFF</textcolor>
-				<focusedcolor>FFFFFFFF</focusedcolor>
-				<label>$INFO[Window(Home).Property(Widget.Genre.2)]</label>
-				<align>center</align>
-				<aligny>center</aligny>
-				<texturefocus colordiffuse="80000000" border="2,2,2,2">colors/white.png</texturefocus>
-				<texturenofocus colordiffuse="80000000" border="2,2,2,2">colors/white.png</texturenofocus>
-				<bordertexture colordiffuse="FFFFFFFF" border="2">colors/white.png</bordertexture>
-				<bordersize>2</bordersize>
-				<onclick>noop</onclick>
-				<enable>false</enable>
-			</control>
-
-			<!-- Genre 3 -->
-			<control type="button" id="9922">
-				<left>520</left>
-				<top>120</top>
-				<width>180</width>
-				<height>40</height>
-				<font>font10</font>
-				<textcolor>FFFFFFFF</textcolor>
-				<focusedcolor>FFFFFFFF</focusedcolor>
-				<label>$INFO[Window(Home).Property(Widget.Genre.3)]</label>
-				<align>center</align>
-				<aligny>center</aligny>
-				<texturefocus colordiffuse="80000000" border="2,2,2,2">colors/white.png</texturefocus>
-				<texturenofocus colordiffuse="80000000" border="2,2,2,2">colors/white.png</texturenofocus>
-				<bordertexture colordiffuse="FFFFFFFF" border="2">colors/white.png</bordertexture>
-				<bordersize>2</bordersize>
-				<onclick>noop</onclick>
-				<enable>false</enable>
-			</control>
-
 			<!-- Plot Description (aligned with clearlogo) -->
 			<control type="textbox">
 				<left>0</left>
@@ -220,11 +159,11 @@
 					<enable>false</enable>
 				</control>
 
-				<!-- Premiered -->
+				<!-- Premiered (20% wider) -->
 				<control type="button" id="9902">
 					<left>130</left>
 					<top>0</top>
-					<width>140</width>
+					<width>168</width>
 					<height>40</height>
 					<font>font10</font>
 					<textcolor>FFFFFFFF</textcolor>
@@ -240,11 +179,11 @@
 					<enable>false</enable>
 				</control>
 
-				<!-- Duration -->
+				<!-- Duration (20% wider) -->
 				<control type="button" id="9903">
-					<left>280</left>
+					<left>308</left>
 					<top>0</top>
-					<width>100</width>
+					<width>120</width>
 					<height>40</height>
 					<font>font10</font>
 					<textcolor>FFFFFFFF</textcolor>
@@ -262,7 +201,7 @@
 
 				<!-- MPAA/Certification -->
 				<control type="button" id="9904">
-					<left>390</left>
+					<left>438</left>
 					<top>0</top>
 					<width>100</width>
 					<height>40</height>
@@ -282,7 +221,7 @@
 
 				<!-- IMDb Rating with Logo -->
 				<control type="button" id="9905">
-					<left>500</left>
+					<left>548</left>
 					<top>0</top>
 					<width>150</width>
 					<height>40</height>
@@ -303,7 +242,7 @@
 
 				<!-- IMDb Logo (overlaid on rating chip) -->
 				<control type="image">
-					<left>510</left>
+					<left>558</left>
 					<top>5</top>
 					<width>60</width>
 					<height>30</height>
@@ -320,11 +259,11 @@
 				<height>50</height>
 				<visible>String.IsEmpty(Control.GetLabel(8889))</visible>
 
-				<!-- Premiered -->
+				<!-- Premiered (20% wider) -->
 				<control type="button" id="9911">
 					<left>0</left>
 					<top>0</top>
-					<width>140</width>
+					<width>168</width>
 					<height>40</height>
 					<font>font10</font>
 					<textcolor>FFFFFFFF</textcolor>
@@ -340,11 +279,11 @@
 					<enable>false</enable>
 				</control>
 
-				<!-- Duration -->
+				<!-- Duration (20% wider) -->
 				<control type="button" id="9912">
-					<left>150</left>
+					<left>178</left>
 					<top>0</top>
-					<width>100</width>
+					<width>120</width>
 					<height>40</height>
 					<font>font10</font>
 					<textcolor>FFFFFFFF</textcolor>
@@ -362,7 +301,7 @@
 
 				<!-- MPAA/Certification -->
 				<control type="button" id="9913">
-					<left>260</left>
+					<left>308</left>
 					<top>0</top>
 					<width>100</width>
 					<height>40</height>
@@ -382,7 +321,7 @@
 
 				<!-- IMDb Rating with Logo -->
 				<control type="button" id="9914">
-					<left>370</left>
+					<left>418</left>
 					<top>0</top>
 					<width>150</width>
 					<height>40</height>
@@ -403,13 +342,33 @@
 
 				<!-- IMDb Logo (overlaid on rating chip) -->
 				<control type="image">
-					<left>380</left>
+					<left>428</left>
 					<top>5</top>
 					<width>60</width>
 					<height>30</height>
 					<texture>imdb_logo.png</texture>
 					<aspectratio>keep</aspectratio>
 				</control>
+			</control>
+
+			<!-- Genre Chip (single wide chip below metadata) -->
+			<control type="button" id="9930">
+				<left>0</left>
+				<top>500</top>
+				<width>700</width>
+				<height>40</height>
+				<font>font10</font>
+				<textcolor>FFFFFFFF</textcolor>
+				<focusedcolor>FFFFFFFF</focusedcolor>
+				<label>$INFO[Container($VAR[ActiveWidgetID]).ListItem.Genre]</label>
+				<align>center</align>
+				<aligny>center</aligny>
+				<texturefocus colordiffuse="80000000" border="2,2,2,2">colors/white.png</texturefocus>
+				<texturenofocus colordiffuse="80000000" border="2,2,2,2">colors/white.png</texturenofocus>
+				<bordertexture colordiffuse="FFFFFFFF" border="2">colors/white.png</bordertexture>
+				<bordersize>2</bordersize>
+				<onclick>noop</onclick>
+				<enable>false</enable>
 			</control>
 		</control>
 	</control>

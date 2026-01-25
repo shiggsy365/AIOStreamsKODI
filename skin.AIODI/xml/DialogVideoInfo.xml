@@ -582,7 +582,7 @@
 
 					<!-- Metadata Section (to right of cast) -->
 					<control type="group">
-						<left>1260</left>
+						<left>1060</left>
 						<top>0</top>
 						<width>400</width>
 						<height>280</height>
