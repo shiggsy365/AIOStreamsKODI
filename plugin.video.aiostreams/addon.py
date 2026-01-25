@@ -865,7 +865,7 @@ def create_listitem_with_context(meta, content_type, action_url):
     imdb_rating = meta.get('imdbRating', '')
     if imdb_rating:
         try:
-            info_tag.setRating(float(imdb_rating), votes=0, defaultt=True)
+            info_tag.setRating(float(imdb_rating), votes=0, default=True)
             info_tag.setIMDBNumber(meta.get('imdb_id', meta.get('id', '')))
         except:
             pass
