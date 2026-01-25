@@ -1,10 +1,11 @@
 """
 Helper script to split genre strings into individual genres (max 3).
 Sets window properties for display in skin.
+Works with AIOStreams plugin which provides genres as comma/slash/ampersand separated string.
 """
 import xbmc
 import xbmcgui
-import sys
+import re
 
 
 def split_genres():
@@ -26,10 +27,11 @@ def split_genres():
             win.clearProperty(f'Widget.Genre.{i}')
 
         if not genre_string:
+            xbmc.log('[GenreSplitter] No genre string found', xbmc.LOGDEBUG)
             return
 
         # Split by common delimiters (/, &, comma)
-        import re
+        # Kodi's setGenres() concatenates genres with " / " by default
         genres = re.split(r'\s*/\s*|\s*&\s*|\s*,\s*', genre_string)
 
         # Remove empty strings and strip whitespace
@@ -39,6 +41,8 @@ def split_genres():
         for i, genre in enumerate(genres[:3], 1):
             win.setProperty(f'Widget.Genre.{i}', genre)
             xbmc.log(f'[GenreSplitter] Set Genre.{i}: {genre}', xbmc.LOGDEBUG)
+
+        xbmc.log(f'[GenreSplitter] Split genre string "{genre_string}" into {len(genres[:3])} genres', xbmc.LOGDEBUG)
 
     except Exception as e:
         xbmc.log(f'[GenreSplitter] Error: {e}', xbmc.LOGERROR)

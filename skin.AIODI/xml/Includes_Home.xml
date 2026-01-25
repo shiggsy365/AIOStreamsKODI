@@ -100,6 +100,9 @@
 					<onup>$PARAM[onup_action]</onup>
 					<ondown>$PARAM[ondown_action]</ondown>
 					<onfocus>Skin.SetString(ActiveWidgetID,$PARAM[list_id])</onfocus>
+					<onfocus>RunScript(special://skin/resources/lib/genre_splitter.py)</onfocus>
+					<onscrollnext>RunScript(special://skin/resources/lib/genre_splitter.py)</onscrollnext>
+					<onscrollprevious>RunScript(special://skin/resources/lib/genre_splitter.py)</onscrollprevious>
 					<itemlayout width="240" height="360">
 						<control type="image">
 							<width>230</width>
@@ -242,6 +245,9 @@
 					<onup>$PARAM[onup_action]</onup>
 					<ondown>$PARAM[ondown_action]</ondown>
 					<onfocus>Skin.SetString(ActiveWidgetID,$PARAM[list_id])</onfocus>
+					<onfocus>RunScript(special://skin/resources/lib/genre_splitter.py)</onfocus>
+					<onscrollnext>RunScript(special://skin/resources/lib/genre_splitter.py)</onscrollnext>
+					<onscrollprevious>RunScript(special://skin/resources/lib/genre_splitter.py)</onscrollprevious>
 					<itemlayout width="410" height="235">
 						<control type="image">
 							<width>390</width>
@@ -405,6 +411,9 @@
 					<onclick condition="![String.IsEqual(ListItem.DBType,tvshow) | String.IsEqual(ListItem.DBType,season)] + [String.IsEmpty($PARAM[onclick_action]) | String.IsEqual($PARAM[onclick_action],noop)]">RunScript(special://skin/resources/lib/resume_helper.py)</onclick>
 					<onclick condition="!String.IsEqual($PARAM[onclick_action],noop) + !String.IsEmpty($PARAM[onclick_action])">$PARAM[onclick_action]</onclick>
 					<onfocus>Skin.SetString(ActiveWidgetID,$PARAM[list_id])</onfocus>
+					<onfocus>RunScript(special://skin/resources/lib/genre_splitter.py)</onfocus>
+					<onscrollnext>RunScript(special://skin/resources/lib/genre_splitter.py)</onscrollnext>
+					<onscrollprevious>RunScript(special://skin/resources/lib/genre_splitter.py)</onscrollprevious>
 
 					<!-- LANDSCAPE LAYOUT (Episodes) -->
 					<itemlayout width="410" height="360" condition="String.IsEqual(ListItem.DBType,episode)">
@@ -809,6 +818,9 @@
 					<onclick condition="String.IsEmpty($PARAM[onclick_action]) | String.IsEqual($PARAM[onclick_action],noop)">PlayMedia($INFO[ListItem.FileNameAndPath])</onclick>
 					<onclick condition="!String.IsEmpty($PARAM[onclick_action]) + !String.IsEqual($PARAM[onclick_action],noop)">$PARAM[onclick_action]</onclick>
 					<onfocus>Skin.SetString(ActiveWidgetID,$PARAM[list_id])</onfocus>
+					<onfocus>RunScript(special://skin/resources/lib/genre_splitter.py)</onfocus>
+					<onscrollnext>RunScript(special://skin/resources/lib/genre_splitter.py)</onscrollnext>
+					<onscrollprevious>RunScript(special://skin/resources/lib/genre_splitter.py)</onscrollprevious>
 					<itemlayout width="410" height="235">
 						<control type="group">
 							<animation effect="zoom" center="auto" start="100" end="110" time="200" tween="sine" easing="out">Focus</animation>
