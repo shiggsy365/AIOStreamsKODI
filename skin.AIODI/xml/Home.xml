@@ -219,137 +219,122 @@
 				<visible>!String.IsEmpty(Control.GetLabel(8889))</visible>
 
 				<!-- Episode Number -->
-				<control type="group">
+				<control type="button" id="9901">
 					<left>0</left>
 					<top>0</top>
 					<width>120</width>
 					<height>40</height>
-					<control type="image">
-						<width>120</width>
-						<height>40</height>
-						<texture colordiffuse="80000000">colors/white.png</texture>
-						<bordersize>2</bordersize>
-						<bordertexture colordiffuse="FFFFFFFF">colors/white.png</bordertexture>
-						<borderradius>4</borderradius>
-					</control>
-					<control type="label">
-						<width>120</width>
-						<height>40</height>
-						<align>center</align>
-						<aligny>center</aligny>
-						<font>font10</font>
-						<textcolor>FFFFFFFF</textcolor>
-						<label>$INFO[Container($VAR[ActiveWidgetID]).ListItem.Season,S,]$INFO[Container($VAR[ActiveWidgetID]).ListItem.Episode,E,]</label>
-					</control>
+					<font>font10</font>
+					<textcolor>FFFFFFFF</textcolor>
+					<focusedcolor>FFFFFFFF</focusedcolor>
+					<label>$INFO[Container($VAR[ActiveWidgetID]).ListItem.Season,S,]$INFO[Container($VAR[ActiveWidgetID]).ListItem.Episode,E,]</label>
+					<align>center</align>
+					<aligny>center</aligny>
+					<texturefocus colordiffuse="80000000" border="2,2,2,2">colors/white.png</texturefocus>
+					<texturenofocus colordiffuse="80000000" border="2,2,2,2">colors/white.png</texturenofocus>
+					<bordertexture colordiffuse="FFFFFFFF" border="2">colors/white.png</bordertexture>
+					<bordersize>2</bordersize>
+					<onclick>noop</onclick>
+					<enable>false</enable>
 				</control>
 
 				<!-- Premiered -->
-				<control type="group">
+				<control type="button" id="9902">
 					<left>130</left>
 					<top>0</top>
 					<width>140</width>
 					<height>40</height>
-					<control type="image">
-						<width>140</width>
-						<height>40</height>
-						<texture colordiffuse="80000000">colors/white.png</texture>
-						<bordersize>2</bordersize>
-						<bordertexture colordiffuse="FFFFFFFF">colors/white.png</bordertexture>
-						<borderradius>4</borderradius>
-					</control>
-					<control type="label">
-						<width>140</width>
-						<height>40</height>
-						<align>center</align>
-						<aligny>center</aligny>
-						<font>font10</font>
-						<textcolor>FFFFFFFF</textcolor>
-						<label>$INFO[Container($VAR[ActiveWidgetID]).ListItem.Premiered]</label>
-					</control>
+					<font>font10</font>
+					<textcolor>FFFFFFFF</textcolor>
+					<focusedcolor>FFFFFFFF</focusedcolor>
+					<label>$INFO[Container($VAR[ActiveWidgetID]).ListItem.Premiered]</label>
+					<align>center</align>
+					<aligny>center</aligny>
+					<texturefocus colordiffuse="80000000" border="2,2,2,2">colors/white.png</texturefocus>
+					<texturenofocus colordiffuse="80000000" border="2,2,2,2">colors/white.png</texturenofocus>
+					<bordertexture colordiffuse="FFFFFFFF" border="2">colors/white.png</bordertexture>
+					<bordersize>2</bordersize>
+					<onclick>noop</onclick>
+					<enable>false</enable>
+					<visible>!String.IsEmpty(Container($VAR[ActiveWidgetID]).ListItem.Premiered)</visible>
 				</control>
 
 				<!-- Duration -->
-				<control type="group">
+				<control type="button" id="9903">
 					<left>280</left>
-					<top>0</top>
-					<width>120</width>
-					<height>40</height>
-					<control type="image">
-						<width>120</width>
-						<height>40</height>
-						<texture colordiffuse="80000000">colors/white.png</texture>
-						<bordersize>2</bordersize>
-						<bordertexture colordiffuse="FFFFFFFF">colors/white.png</bordertexture>
-						<borderradius>4</borderradius>
-					</control>
-					<control type="label">
-						<width>120</width>
-						<height>40</height>
-						<align>center</align>
-						<aligny>center</aligny>
-						<font>font10</font>
-						<textcolor>FFFFFFFF</textcolor>
-						<label>$INFO[Container($VAR[ActiveWidgetID]).ListItem.Duration, min]</label>
-					</control>
-				</control>
-
-				<!-- MPAA/Certification -->
-				<control type="group">
-					<left>410</left>
 					<top>0</top>
 					<width>100</width>
 					<height>40</height>
-					<control type="image">
-						<width>100</width>
-						<height>40</height>
-						<texture colordiffuse="80000000">colors/white.png</texture>
-						<bordersize>2</bordersize>
-						<bordertexture colordiffuse="FFDC143C">colors/white.png</bordertexture>
-						<borderradius>4</borderradius>
-					</control>
-					<control type="label">
-						<width>100</width>
-						<height>40</height>
-						<align>center</align>
-						<aligny>center</aligny>
-						<font>font10</font>
-						<textcolor>FFFFFFFF</textcolor>
-						<label>$INFO[Container($VAR[ActiveWidgetID]).ListItem.Mpaa]</label>
-					</control>
+					<font>font10</font>
+					<textcolor>FFFFFFFF</textcolor>
+					<focusedcolor>FFFFFFFF</focusedcolor>
+					<label>$INFO[Container($VAR[ActiveWidgetID]).ListItem.Duration]</label>
+					<align>center</align>
+					<aligny>center</aligny>
+					<texturefocus colordiffuse="80000000" border="2,2,2,2">colors/white.png</texturefocus>
+					<texturenofocus colordiffuse="80000000" border="2,2,2,2">colors/white.png</texturenofocus>
+					<bordertexture colordiffuse="FFFFFFFF" border="2">colors/white.png</bordertexture>
+					<bordersize>2</bordersize>
+					<onclick>noop</onclick>
+					<enable>false</enable>
+					<visible>!String.IsEmpty(Container($VAR[ActiveWidgetID]).ListItem.Duration)</visible>
+				</control>
+
+				<!-- MPAA/Certification -->
+				<control type="button" id="9904">
+					<left>390</left>
+					<top>0</top>
+					<width>100</width>
+					<height>40</height>
+					<font>font10</font>
+					<textcolor>FFFFFFFF</textcolor>
+					<focusedcolor>FFFFFFFF</focusedcolor>
+					<label>$INFO[Container($VAR[ActiveWidgetID]).ListItem.Mpaa]</label>
+					<align>center</align>
+					<aligny>center</aligny>
+					<texturefocus colordiffuse="80000000" border="2,2,2,2">colors/white.png</texturefocus>
+					<texturenofocus colordiffuse="80000000" border="2,2,2,2">colors/white.png</texturenofocus>
+					<bordertexture colordiffuse="FFDC143C" border="2">colors/white.png</bordertexture>
+					<bordersize>2</bordersize>
+					<onclick>noop</onclick>
+					<enable>false</enable>
+					<visible>!String.IsEmpty(Container($VAR[ActiveWidgetID]).ListItem.Mpaa)</visible>
 				</control>
 
 				<!-- IMDb Rating with Logo -->
 				<control type="group">
-					<left>520</left>
+					<left>500</left>
 					<top>0</top>
 					<width>150</width>
 					<height>40</height>
+					<visible>!String.IsEmpty(Container($VAR[ActiveWidgetID]).ListItem.Rating)</visible>
 
-					<!-- IMDb Logo -->
+					<!-- Rating Chip Background -->
 					<control type="image">
 						<left>0</left>
 						<top>0</top>
-						<width>60</width>
+						<width>150</width>
 						<height>40</height>
+						<texture colordiffuse="80000000" border="2,2,2,2">colors/white.png</texture>
+						<bordertexture colordiffuse="FFF5C518" border="2">colors/white.png</bordertexture>
+						<bordersize>2</bordersize>
+					</control>
+
+					<!-- IMDb Logo (inside chip) -->
+					<control type="image">
+						<left>10</left>
+						<top>5</top>
+						<width>60</width>
+						<height>30</height>
 						<texture>imdb_logo.png</texture>
 						<aspectratio>keep</aspectratio>
 					</control>
 
-					<!-- Rating Chip -->
-					<control type="image">
-						<left>70</left>
-						<top>0</top>
-						<width>80</width>
-						<height>40</height>
-						<texture colordiffuse="80000000">colors/white.png</texture>
-						<bordersize>2</bordersize>
-						<bordertexture colordiffuse="FFF5C518">colors/white.png</bordertexture>
-						<borderradius>4</borderradius>
-					</control>
+					<!-- Rating Text -->
 					<control type="label">
-						<left>70</left>
+						<left>75</left>
 						<top>0</top>
-						<width>80</width>
+						<width>75</width>
 						<height>40</height>
 						<align>center</align>
 						<aligny>center</aligny>
@@ -369,112 +354,102 @@
 				<visible>String.IsEmpty(Control.GetLabel(8889))</visible>
 
 				<!-- Premiered -->
-				<control type="group">
+				<control type="button" id="9911">
 					<left>0</left>
 					<top>0</top>
 					<width>140</width>
 					<height>40</height>
-					<control type="image">
-						<width>140</width>
-						<height>40</height>
-						<texture colordiffuse="80000000">colors/white.png</texture>
-						<bordersize>2</bordersize>
-						<bordertexture colordiffuse="FFFFFFFF">colors/white.png</bordertexture>
-						<borderradius>4</borderradius>
-					</control>
-					<control type="label">
-						<width>140</width>
-						<height>40</height>
-						<align>center</align>
-						<aligny>center</aligny>
-						<font>font10</font>
-						<textcolor>FFFFFFFF</textcolor>
-						<label>$INFO[Container($VAR[ActiveWidgetID]).ListItem.Premiered]</label>
-					</control>
+					<font>font10</font>
+					<textcolor>FFFFFFFF</textcolor>
+					<focusedcolor>FFFFFFFF</focusedcolor>
+					<label>$INFO[Container($VAR[ActiveWidgetID]).ListItem.Premiered]</label>
+					<align>center</align>
+					<aligny>center</aligny>
+					<texturefocus colordiffuse="80000000" border="2,2,2,2">colors/white.png</texturefocus>
+					<texturenofocus colordiffuse="80000000" border="2,2,2,2">colors/white.png</texturenofocus>
+					<bordertexture colordiffuse="FFFFFFFF" border="2">colors/white.png</bordertexture>
+					<bordersize>2</bordersize>
+					<onclick>noop</onclick>
+					<enable>false</enable>
+					<visible>!String.IsEmpty(Container($VAR[ActiveWidgetID]).ListItem.Premiered)</visible>
 				</control>
 
 				<!-- Duration -->
-				<control type="group">
+				<control type="button" id="9912">
 					<left>150</left>
-					<top>0</top>
-					<width>120</width>
-					<height>40</height>
-					<control type="image">
-						<width>120</width>
-						<height>40</height>
-						<texture colordiffuse="80000000">colors/white.png</texture>
-						<bordersize>2</bordersize>
-						<bordertexture colordiffuse="FFFFFFFF">colors/white.png</bordertexture>
-						<borderradius>4</borderradius>
-					</control>
-					<control type="label">
-						<width>120</width>
-						<height>40</height>
-						<align>center</align>
-						<aligny>center</aligny>
-						<font>font10</font>
-						<textcolor>FFFFFFFF</textcolor>
-						<label>$INFO[Container($VAR[ActiveWidgetID]).ListItem.Duration, min]</label>
-					</control>
-				</control>
-
-				<!-- MPAA/Certification -->
-				<control type="group">
-					<left>280</left>
 					<top>0</top>
 					<width>100</width>
 					<height>40</height>
-					<control type="image">
-						<width>100</width>
-						<height>40</height>
-						<texture colordiffuse="80000000">colors/white.png</texture>
-						<bordersize>2</bordersize>
-						<bordertexture colordiffuse="FFDC143C">colors/white.png</bordertexture>
-						<borderradius>4</borderradius>
-					</control>
-					<control type="label">
-						<width>100</width>
-						<height>40</height>
-						<align>center</align>
-						<aligny>center</aligny>
-						<font>font10</font>
-						<textcolor>FFFFFFFF</textcolor>
-						<label>$INFO[Container($VAR[ActiveWidgetID]).ListItem.Mpaa]</label>
-					</control>
+					<font>font10</font>
+					<textcolor>FFFFFFFF</textcolor>
+					<focusedcolor>FFFFFFFF</focusedcolor>
+					<label>$INFO[Container($VAR[ActiveWidgetID]).ListItem.Duration]</label>
+					<align>center</align>
+					<aligny>center</aligny>
+					<texturefocus colordiffuse="80000000" border="2,2,2,2">colors/white.png</texturefocus>
+					<texturenofocus colordiffuse="80000000" border="2,2,2,2">colors/white.png</texturenofocus>
+					<bordertexture colordiffuse="FFFFFFFF" border="2">colors/white.png</bordertexture>
+					<bordersize>2</bordersize>
+					<onclick>noop</onclick>
+					<enable>false</enable>
+					<visible>!String.IsEmpty(Container($VAR[ActiveWidgetID]).ListItem.Duration)</visible>
+				</control>
+
+				<!-- MPAA/Certification -->
+				<control type="button" id="9913">
+					<left>260</left>
+					<top>0</top>
+					<width>100</width>
+					<height>40</height>
+					<font>font10</font>
+					<textcolor>FFFFFFFF</textcolor>
+					<focusedcolor>FFFFFFFF</focusedcolor>
+					<label>$INFO[Container($VAR[ActiveWidgetID]).ListItem.Mpaa]</label>
+					<align>center</align>
+					<aligny>center</aligny>
+					<texturefocus colordiffuse="80000000" border="2,2,2,2">colors/white.png</texturefocus>
+					<texturenofocus colordiffuse="80000000" border="2,2,2,2">colors/white.png</texturenofocus>
+					<bordertexture colordiffuse="FFDC143C" border="2">colors/white.png</bordertexture>
+					<bordersize>2</bordersize>
+					<onclick>noop</onclick>
+					<enable>false</enable>
+					<visible>!String.IsEmpty(Container($VAR[ActiveWidgetID]).ListItem.Mpaa)</visible>
 				</control>
 
 				<!-- IMDb Rating with Logo -->
 				<control type="group">
-					<left>390</left>
+					<left>370</left>
 					<top>0</top>
 					<width>150</width>
 					<height>40</height>
+					<visible>!String.IsEmpty(Container($VAR[ActiveWidgetID]).ListItem.Rating)</visible>
 
-					<!-- IMDb Logo -->
+					<!-- Rating Chip Background -->
 					<control type="image">
 						<left>0</left>
 						<top>0</top>
-						<width>60</width>
+						<width>150</width>
 						<height>40</height>
+						<texture colordiffuse="80000000" border="2,2,2,2">colors/white.png</texture>
+						<bordertexture colordiffuse="FFF5C518" border="2">colors/white.png</bordertexture>
+						<bordersize>2</bordersize>
+					</control>
+
+					<!-- IMDb Logo (inside chip) -->
+					<control type="image">
+						<left>10</left>
+						<top>5</top>
+						<width>60</width>
+						<height>30</height>
 						<texture>imdb_logo.png</texture>
 						<aspectratio>keep</aspectratio>
 					</control>
 
-					<!-- Rating Chip -->
-					<control type="image">
-						<left>70</left>
-						<top>0</top>
-						<width>80</width>
-						<height>40</height>
-						<texture colordiffuse="80000000">colors/white.png</texture>
-						<bordersize>2</bordersize>
-						<bordertexture colordiffuse="FFF5C518">colors/white.png</bordertexture>
-						<borderradius>4</borderradius>
-					</control>
+					<!-- Rating Text -->
 					<control type="label">
-						<left>70</left>
+						<left>75</left>
 						<top>0</top>
-						<width>80</width>
+						<width>75</width>
 						<height>40</height>
 						<align>center</align>
 						<aligny>center</aligny>

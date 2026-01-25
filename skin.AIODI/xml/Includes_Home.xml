@@ -406,6 +406,8 @@
 					<onclick condition="!String.IsEqual($PARAM[onclick_action],noop) + !String.IsEmpty($PARAM[onclick_action])">$PARAM[onclick_action]</onclick>
 					<onfocus>Skin.SetString(ActiveWidgetID,$PARAM[list_id])</onfocus>
 					<onfocus>RunScript(special://skin/resources/lib/genre_splitter.py)</onfocus>
+					<onscrollnext>RunScript(special://skin/resources/lib/genre_splitter.py)</onscrollnext>
+					<onscrollprevious>RunScript(special://skin/resources/lib/genre_splitter.py)</onscrollprevious>
 
 					<!-- LANDSCAPE LAYOUT (Episodes) -->
 					<itemlayout width="410" height="360" condition="String.IsEqual(ListItem.DBType,episode)">

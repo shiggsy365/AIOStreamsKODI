@@ -580,6 +580,141 @@
 
 
 
+					<!-- Metadata Section (to right of cast) -->
+					<control type="group">
+						<left>1260</left>
+						<top>0</top>
+						<width>400</width>
+						<height>280</height>
+
+						<!-- Episode Number (for episodes only) -->
+						<control type="button" id="8001">
+							<left>0</left>
+							<top>10</top>
+							<width>120</width>
+							<height>40</height>
+							<font>font10</font>
+							<textcolor>FFFFFFFF</textcolor>
+							<focusedcolor>FFFFFFFF</focusedcolor>
+							<label>$INFO[Window(Home).Property(InfoWindow.Season),S,]$INFO[Window(Home).Property(InfoWindow.Episode),E,]</label>
+							<align>center</align>
+							<aligny>center</aligny>
+							<texturefocus colordiffuse="80000000" border="2,2,2,2">colors/white.png</texturefocus>
+							<texturenofocus colordiffuse="80000000" border="2,2,2,2">colors/white.png</texturenofocus>
+							<bordertexture colordiffuse="FFFFFFFF" border="2">colors/white.png</bordertexture>
+							<bordersize>2</bordersize>
+							<onclick>noop</onclick>
+							<enable>false</enable>
+							<visible>!String.IsEmpty(Window(Home).Property(InfoWindow.Season))</visible>
+						</control>
+
+						<!-- Premiered -->
+						<control type="button" id="8002">
+							<left>0</left>
+							<top>60</top>
+							<width>140</width>
+							<height>40</height>
+							<font>font10</font>
+							<textcolor>FFFFFFFF</textcolor>
+							<focusedcolor>FFFFFFFF</focusedcolor>
+							<label>$INFO[Window(Home).Property(InfoWindow.Premiered)]</label>
+							<align>center</align>
+							<aligny>center</aligny>
+							<texturefocus colordiffuse="80000000" border="2,2,2,2">colors/white.png</texturefocus>
+							<texturenofocus colordiffuse="80000000" border="2,2,2,2">colors/white.png</texturenofocus>
+							<bordertexture colordiffuse="FFFFFFFF" border="2">colors/white.png</bordertexture>
+							<bordersize>2</bordersize>
+							<onclick>noop</onclick>
+							<enable>false</enable>
+							<visible>!String.IsEmpty(Window(Home).Property(InfoWindow.Premiered))</visible>
+						</control>
+
+						<!-- Duration -->
+						<control type="button" id="8003">
+							<left>0</left>
+							<top>110</top>
+							<width>100</width>
+							<height>40</height>
+							<font>font10</font>
+							<textcolor>FFFFFFFF</textcolor>
+							<focusedcolor>FFFFFFFF</focusedcolor>
+							<label>$INFO[Window(Home).Property(InfoWindow.Duration)]</label>
+							<align>center</align>
+							<aligny>center</aligny>
+							<texturefocus colordiffuse="80000000" border="2,2,2,2">colors/white.png</texturefocus>
+							<texturenofocus colordiffuse="80000000" border="2,2,2,2">colors/white.png</texturenofocus>
+							<bordertexture colordiffuse="FFFFFFFF" border="2">colors/white.png</bordertexture>
+							<bordersize>2</bordersize>
+							<onclick>noop</onclick>
+							<enable>false</enable>
+							<visible>!String.IsEmpty(Window(Home).Property(InfoWindow.Duration))</visible>
+						</control>
+
+						<!-- MPAA -->
+						<control type="button" id="8004">
+							<left>0</left>
+							<top>160</top>
+							<width>100</width>
+							<height>40</height>
+							<font>font10</font>
+							<textcolor>FFFFFFFF</textcolor>
+							<focusedcolor>FFFFFFFF</focusedcolor>
+							<label>$INFO[Window(Home).Property(InfoWindow.MPAA)]</label>
+							<align>center</align>
+							<aligny>center</aligny>
+							<texturefocus colordiffuse="80000000" border="2,2,2,2">colors/white.png</texturefocus>
+							<texturenofocus colordiffuse="80000000" border="2,2,2,2">colors/white.png</texturenofocus>
+							<bordertexture colordiffuse="FFDC143C" border="2">colors/white.png</bordertexture>
+							<bordersize>2</bordersize>
+							<onclick>noop</onclick>
+							<enable>false</enable>
+							<visible>!String.IsEmpty(Window(Home).Property(InfoWindow.MPAA))</visible>
+						</control>
+
+						<!-- IMDb Rating -->
+						<control type="group">
+							<left>0</left>
+							<top>210</top>
+							<width>150</width>
+							<height>40</height>
+							<visible>!String.IsEmpty(Window(Home).Property(InfoWindow.Rating))</visible>
+
+							<!-- Rating Chip Background -->
+							<control type="image">
+								<left>0</left>
+								<top>0</top>
+								<width>150</width>
+								<height>40</height>
+								<texture colordiffuse="80000000" border="2,2,2,2">colors/white.png</texture>
+								<bordertexture colordiffuse="FFF5C518" border="2">colors/white.png</bordertexture>
+								<bordersize>2</bordersize>
+							</control>
+
+							<!-- IMDb Logo (inside chip) -->
+							<control type="image">
+								<left>10</left>
+								<top>5</top>
+								<width>60</width>
+								<height>30</height>
+								<texture>imdb_logo.png</texture>
+								<aspectratio>keep</aspectratio>
+							</control>
+
+							<!-- Rating Text -->
+							<control type="label">
+								<left>75</left>
+								<top>0</top>
+								<width>75</width>
+								<height>40</height>
+								<align>center</align>
+								<aligny>center</aligny>
+								<font>font10</font>
+								<textcolor>FFFFFFFF</textcolor>
+								<label>$INFO[Window(Home).Property(InfoWindow.Rating)]</label>
+							</control>
+						</control>
+					</control>
+
 					<!-- Related Content Row -->
 					<control type="label">
 						<left>0</left>
