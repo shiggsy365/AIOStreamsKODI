@@ -810,6 +810,9 @@ def create_listitem_with_context(meta, content_type, action_url):
     for i in range(1, 4):
         genre_val = genres_list[i-1] if i <= len(genres_list) else ""
         list_item.setProperty(f'Genre{i}', str(genre_val))
+
+    # Add debug logging for metadata
+    xbmc.log(f"[AIOStreams] Creating item: {title}, Rating: {meta.get('imdbRating') or meta.get('rating')}, Genres: {genres_list}", xbmc.LOGDEBUG)
     
     # Add runtime (handle "2h16min", "48min", "120" formats)
     runtime = meta.get('runtime', '')
@@ -4904,11 +4907,8 @@ def smart_widget():
                     # Merge with full metadata if available (for logos, cast, etc.)
                     full_meta = metadata_map.get(item_id, {})
                     if full_meta:
-                        # Merge: full_meta provides detailed info, catalog meta provides basics
-                        merged_meta = {**meta, **full_meta.get('meta', {})}
-                        # Ensure logo from full metadata is used
-                        if full_meta.get('meta', {}).get('logo'):
-                            merged_meta['logo'] = full_meta['meta']['logo']
+                        # Merge: full_meta is already the inner metadata dict from get_meta
+                        merged_meta = {**meta, **full_meta}
                     else:
                         merged_meta = meta
                     
