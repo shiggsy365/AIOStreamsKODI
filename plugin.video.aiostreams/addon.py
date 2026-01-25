@@ -797,6 +797,12 @@ def create_listitem_with_context(meta, content_type, action_url):
     genres = meta.get('genres', [])
     if genres:
         info_tag.setGenres(genres)
+        # Also set individual genre properties for skin chips (max 3)
+        for i in range(1, 4):
+            if i <= len(genres):
+                list_item.setProperty(f'Genre{i}', genres[i-1])
+            else:
+                list_item.setProperty(f'Genre{i}', '')
     
     # Add runtime (handle "2h16min", "48min", "120" formats)
     runtime = meta.get('runtime', '')
@@ -865,8 +871,11 @@ def create_listitem_with_context(meta, content_type, action_url):
     imdb_rating = meta.get('imdbRating', '')
     if imdb_rating:
         try:
-            info_tag.setRating(float(imdb_rating), votes=0, default=True)
+            rating_value = float(imdb_rating)
+            info_tag.setRating(rating_value, votes=0, rating_type='imdb', default=True)
             info_tag.setIMDBNumber(meta.get('imdb_id', meta.get('id', '')))
+            # Also set as property for direct skin access
+            list_item.setProperty('IMDbRating', str(rating_value))
         except:
             pass
 

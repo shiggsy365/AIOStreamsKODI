@@ -134,7 +134,7 @@
 			<!-- Metadata Chips for Episodes: [S01E01] [premiered] [duration] [mpaa] [rating] -->
 			<control type="group">
 				<left>0</left>
-				<top>400</top>
+				<top>450</top>
 				<width>1550</width>
 				<height>50</height>
 				<visible>!String.IsEmpty(Control.GetLabel(8889))</visible>
@@ -229,7 +229,7 @@
 					<textcolor>FFFFFFFF</textcolor>
 					<focusedcolor>FFFFFFFF</focusedcolor>
 					<textoffsetx>75</textoffsetx>
-					<label>$INFO[Container($VAR[ActiveWidgetID]).ListItem.Rating]</label>
+					<label>$INFO[Container($VAR[ActiveWidgetID]).ListItem.Property(IMDbRating)]</label>
 					<align>center</align>
 					<aligny>center</aligny>
 					<texturefocus colordiffuse="80000000" border="2,2,2,2">colors/white.png</texturefocus>
@@ -254,7 +254,7 @@
 			<!-- Metadata Chips for Shows/Movies: [premiered] [duration] [mpaa] [rating] -->
 			<control type="group">
 				<left>0</left>
-				<top>400</top>
+				<top>450</top>
 				<width>1550</width>
 				<height>50</height>
 				<visible>String.IsEmpty(Control.GetLabel(8889))</visible>
@@ -329,7 +329,7 @@
 					<textcolor>FFFFFFFF</textcolor>
 					<focusedcolor>FFFFFFFF</focusedcolor>
 					<textoffsetx>75</textoffsetx>
-					<label>$INFO[Container($VAR[ActiveWidgetID]).ListItem.Rating]</label>
+					<label>$INFO[Container($VAR[ActiveWidgetID]).ListItem.Property(IMDbRating)]</label>
 					<align>center</align>
 					<aligny>center</aligny>
 					<texturefocus colordiffuse="80000000" border="2,2,2,2">colors/white.png</texturefocus>
@@ -351,11 +351,11 @@
 				</control>
 			</control>
 
-			<!-- Genre Chips (3 individual chips below metadata) -->
+			<!-- Genre Chips (3 individual chips to the right of clearlogo) -->
 			<control type="group">
-				<left>0</left>
-				<top>450</top>
-				<width>1550</width>
+				<left>510</left>
+				<top>140</top>
+				<width>1000</width>
 				<height>40</height>
 
 				<!-- Genre 1 -->
@@ -367,7 +367,7 @@
 					<font>font10</font>
 					<textcolor>FFFFFFFF</textcolor>
 					<focusedcolor>FFFFFFFF</focusedcolor>
-					<label>$INFO[Window(Home).Property(Widget.Genre.1)]</label>
+					<label>$INFO[Container($VAR[ActiveWidgetID]).ListItem.Property(Genre1)]</label>
 					<align>center</align>
 					<aligny>center</aligny>
 					<texturefocus colordiffuse="80000000" border="2,2,2,2">colors/white.png</texturefocus>
@@ -376,7 +376,7 @@
 					<bordersize>2</bordersize>
 					<onclick>noop</onclick>
 					<enable>false</enable>
-					<visible>!String.IsEmpty(Window(Home).Property(Widget.Genre.1))</visible>
+					<visible>!String.IsEmpty(Container($VAR[ActiveWidgetID]).ListItem.Property(Genre1))</visible>
 				</control>
 
 				<!-- Genre 2 -->
@@ -388,7 +388,7 @@
 					<font>font10</font>
 					<textcolor>FFFFFFFF</textcolor>
 					<focusedcolor>FFFFFFFF</focusedcolor>
-					<label>$INFO[Window(Home).Property(Widget.Genre.2)]</label>
+					<label>$INFO[Container($VAR[ActiveWidgetID]).ListItem.Property(Genre2)]</label>
 					<align>center</align>
 					<aligny>center</aligny>
 					<texturefocus colordiffuse="80000000" border="2,2,2,2">colors/white.png</texturefocus>
@@ -397,7 +397,7 @@
 					<bordersize>2</bordersize>
 					<onclick>noop</onclick>
 					<enable>false</enable>
-					<visible>!String.IsEmpty(Window(Home).Property(Widget.Genre.2))</visible>
+					<visible>!String.IsEmpty(Container($VAR[ActiveWidgetID]).ListItem.Property(Genre2))</visible>
 				</control>
 
 				<!-- Genre 3 -->
@@ -409,7 +409,7 @@
 					<font>font10</font>
 					<textcolor>FFFFFFFF</textcolor>
 					<focusedcolor>FFFFFFFF</focusedcolor>
-					<label>$INFO[Window(Home).Property(Widget.Genre.3)]</label>
+					<label>$INFO[Container($VAR[ActiveWidgetID]).ListItem.Property(Genre3)]</label>
 					<align>center</align>
 					<aligny>center</aligny>
 					<texturefocus colordiffuse="80000000" border="2,2,2,2">colors/white.png</texturefocus>
@@ -418,7 +418,7 @@
 					<bordersize>2</bordersize>
 					<onclick>noop</onclick>
 					<enable>false</enable>
-					<visible>!String.IsEmpty(Window(Home).Property(Widget.Genre.3))</visible>
+					<visible>!String.IsEmpty(Container($VAR[ActiveWidgetID]).ListItem.Property(Genre3))</visible>
 				</control>
 			</control>
 		</control>
