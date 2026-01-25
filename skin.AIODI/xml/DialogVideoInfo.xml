@@ -582,7 +582,7 @@
 
 					<!-- Metadata Section (to right of cast) -->
 					<control type="group">
-						<left>1060</left>
+						<left>1010</left>
 						<top>0</top>
 						<width>400</width>
 						<height>280</height>
@@ -591,7 +591,7 @@
 						<control type="button" id="8001">
 							<left>0</left>
 							<top>10</top>
-							<width>120</width>
+							<width>144</width>
 							<height>40</height>
 							<font>font10</font>
 							<textcolor>FFFFFFFF</textcolor>
@@ -611,7 +611,7 @@
 						<control type="button" id="8002">
 							<left>0</left>
 							<top>60</top>
-							<width>140</width>
+							<width>168</width>
 							<height>40</height>
 							<font>font10</font>
 							<textcolor>FFFFFFFF</textcolor>
@@ -631,7 +631,7 @@
 						<control type="button" id="8003">
 							<left>0</left>
 							<top>110</top>
-							<width>100</width>
+							<width>120</width>
 							<height>40</height>
 							<font>font10</font>
 							<textcolor>FFFFFFFF</textcolor>
@@ -651,7 +651,7 @@
 						<control type="button" id="8004">
 							<left>0</left>
 							<top>160</top>
-							<width>100</width>
+							<width>120</width>
 							<height>40</height>
 							<font>font10</font>
 							<textcolor>FFFFFFFF</textcolor>
@@ -671,12 +671,12 @@
 						<control type="button" id="8005">
 							<left>0</left>
 							<top>210</top>
-							<width>150</width>
+							<width>180</width>
 							<height>40</height>
 							<font>font10</font>
 							<textcolor>FFFFFFFF</textcolor>
 							<focusedcolor>FFFFFFFF</focusedcolor>
-							<textoffsetx>75</textoffsetx>
+							<textoffsetx>90</textoffsetx>
 							<label>$INFO[ListItem.Rating]</label>
 							<align>center</align>
 							<aligny>center</aligny>
