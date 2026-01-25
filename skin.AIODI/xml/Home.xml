@@ -134,7 +134,7 @@
 			<!-- Metadata Chips for Episodes: [S01E01] [premiered] [duration] [mpaa] [rating] -->
 			<control type="group">
 				<left>0</left>
-				<top>450</top>
+				<top>400</top>
 				<width>1550</width>
 				<height>50</height>
 				<visible>!String.IsEmpty(Control.GetLabel(8889))</visible>
@@ -254,7 +254,7 @@
 			<!-- Metadata Chips for Shows/Movies: [premiered] [duration] [mpaa] [rating] -->
 			<control type="group">
 				<left>0</left>
-				<top>450</top>
+				<top>400</top>
 				<width>1550</width>
 				<height>50</height>
 				<visible>String.IsEmpty(Control.GetLabel(8889))</visible>
@@ -354,7 +354,7 @@
 			<!-- Genre Chip (single wide chip below metadata) -->
 			<control type="button" id="9930">
 				<left>0</left>
-				<top>500</top>
+				<top>450</top>
 				<width>700</width>
 				<height>40</height>
 				<font>font10</font>
