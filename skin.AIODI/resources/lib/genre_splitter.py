@@ -10,11 +10,16 @@ import sys
 def split_genres():
     """Split genre string from focused widget item into individual genres (max 3)."""
     try:
-        # Get genre string from the currently focused list item
-        # When called from onfocus, ListItem refers to the focused item
-        genre_string = xbmc.getInfoLabel('ListItem.Genre')
+        # Get the active widget ID
+        active_widget = xbmc.getInfoLabel('Skin.String(ActiveWidgetID)')
 
         win = xbmcgui.Window(10000)
+
+        # Get genre string from the currently focused item in the active widget
+        if active_widget:
+            genre_string = xbmc.getInfoLabel(f'Container({active_widget}).ListItem.Genre')
+        else:
+            genre_string = xbmc.getInfoLabel('ListItem.Genre')
 
         # Clear previous genres
         for i in range(1, 4):
