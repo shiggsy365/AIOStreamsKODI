@@ -4471,7 +4471,7 @@ def optimize_database():
 
 def database_reset():
     """Complete database reset: clear all tables, caches, and resync Trakt."""
-    from resources.lib import trakt
+    from resources.lib.database.trakt_sync import TraktSyncDatabase
     if not HAS_MODULES:
         return
 
@@ -4489,8 +4489,8 @@ def database_reset():
     if not confirm:
         return
         
-    db = Database()
-    db.truncate_all()
+    db = TraktSyncDatabase()
+    db.clear_all_trakt_data()
     
     # Invalidate all caches
     invalidate_progress_cache()
