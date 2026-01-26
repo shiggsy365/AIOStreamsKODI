@@ -820,8 +820,13 @@ def create_listitem_with_context(meta, content_type, action_url):
         genre_val = str(genre_val).replace('{', '').replace('}', '').strip()
         list_item.setProperty(f'Genre{i}', genre_val)
 
+    # IMDb Rating property for skin use
+    rating = meta.get('imdbRating') or meta.get('rating') or meta.get('Rating') or ''
+    list_item.setProperty('IMDbRating', str(rating))
+
     # Add debug logging for metadata
-    xbmc.log(f"[AIOStreams] Creating item: {title}, Rating: {meta.get('imdbRating') or meta.get('rating')}, Genres: {genres_list}", xbmc.LOGDEBUG)
+    xbmc.log(f"[AIOStreams] DEBUG: create_listitem_with_context for title={title}", xbmc.LOGINFO)
+    xbmc.log(f"[AIOStreams] DEBUG: item_rating={rating}, item_genres={genres_list}", xbmc.LOGINFO)
     
     # Add runtime (handle "2h16min", "48min", "120" formats)
     runtime = meta.get('runtime', '')
@@ -2378,6 +2383,13 @@ def browse_catalog():
 
     xbmcplugin.setPluginCategory(HANDLE, category_title)
     xbmcplugin.setContent(HANDLE, 'movies' if content_type == 'movie' else 'tvshows')
+    
+    # DEBUG LOGGING for User
+    if catalog_data.get('metas') and len(catalog_data['metas']) > 0:
+        first_item = catalog_data['metas'][0]
+        xbmc.log(f"[AIOStreams] DEBUG: First widget item label={category_title}, item_name={first_item.get('name')}", xbmc.LOGINFO)
+        xbmc.log(f"[AIOStreams] DEBUG: First item rating={first_item.get('imdbRating') or first_item.get('rating')}", xbmc.LOGINFO)
+        xbmc.log(f"[AIOStreams] DEBUG: First item genres={first_item.get('genres')}", xbmc.LOGINFO)
     
     # Display catalog items
     for meta in catalog_data['metas']:

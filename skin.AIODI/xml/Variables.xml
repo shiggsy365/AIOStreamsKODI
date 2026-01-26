@@ -1327,20 +1327,44 @@
 	</variable>
 
 	<variable name="Genre1_Text">
-		<value>$INFO[Container($VAR[ActiveWidgetID]).ListItem.Property(Genre1)]</value>
+		<value condition="String.IsEqual(Skin.String(SideMenuFocus),home) + String.IsEqual(Skin.String(Home_WidgetIndex),0)">$INFO[Container(10100).ListItem.Property(Genre1)]</value>
+		<value condition="String.IsEqual(Skin.String(SideMenuFocus),home) + String.IsEqual(Skin.String(Home_WidgetIndex),1)">$INFO[Container(10200).ListItem.Property(Genre1)]</value>
+		<value condition="String.IsEqual(Skin.String(SideMenuFocus),home) + String.IsEqual(Skin.String(Home_WidgetIndex),2)">$INFO[Container(10300).ListItem.Property(Genre1)]</value>
+		<value condition="String.IsEqual(Skin.String(SideMenuFocus),movies) + String.IsEqual(Skin.String(Movies_WidgetIndex),0)">$INFO[Container(5100).ListItem.Property(Genre1)]</value>
+		<!-- Fallback to focused item -->
+		<value>$INFO[ListItem.Property(Genre1)]</value>
 	</variable>
+
 	<variable name="Genre2_Text">
-		<value>$INFO[Container($VAR[ActiveWidgetID]).ListItem.Property(Genre2)]</value>
+		<value condition="String.IsEqual(Skin.String(SideMenuFocus),home) + String.IsEqual(Skin.String(Home_WidgetIndex),0)">$INFO[Container(10100).ListItem.Property(Genre2)]</value>
+		<value condition="String.IsEqual(Skin.String(SideMenuFocus),home) + String.IsEqual(Skin.String(Home_WidgetIndex),1)">$INFO[Container(10200).ListItem.Property(Genre2)]</value>
+		<value condition="String.IsEqual(Skin.String(SideMenuFocus),home) + String.IsEqual(Skin.String(Home_WidgetIndex),2)">$INFO[Container(10300).ListItem.Property(Genre2)]</value>
+		<value condition="String.IsEqual(Skin.String(SideMenuFocus),movies) + String.IsEqual(Skin.String(Movies_WidgetIndex),0)">$INFO[Container(5100).ListItem.Property(Genre2)]</value>
+		<value>$INFO[ListItem.Property(Genre2)]</value>
 	</variable>
+
 	<variable name="Genre3_Text">
-		<value>$INFO[Container($VAR[ActiveWidgetID]).ListItem.Property(Genre3)]</value>
+		<value condition="String.IsEqual(Skin.String(SideMenuFocus),home) + String.IsEqual(Skin.String(Home_WidgetIndex),0)">$INFO[Container(10100).ListItem.Property(Genre3)]</value>
+		<value condition="String.IsEqual(Skin.String(SideMenuFocus),home) + String.IsEqual(Skin.String(Home_WidgetIndex),1)">$INFO[Container(10200).ListItem.Property(Genre3)]</value>
+		<value condition="String.IsEqual(Skin.String(SideMenuFocus),home) + String.IsEqual(Skin.String(Home_WidgetIndex),2)">$INFO[Container(10300).ListItem.Property(Genre3)]</value>
+		<value condition="String.IsEqual(Skin.String(SideMenuFocus),movies) + String.IsEqual(Skin.String(Movies_WidgetIndex),0)">$INFO[Container(5100).ListItem.Property(Genre3)]</value>
+		<value>$INFO[ListItem.Property(Genre3)]</value>
 	</variable>
 
 	<variable name="ActiveItem_IMDbRating">
-		<value>$INFO[Container($VAR[ActiveWidgetID]).ListItem.Property(IMDbRating)]</value>
+		<value condition="String.IsEqual(Skin.String(SideMenuFocus),home) + String.IsEqual(Skin.String(Home_WidgetIndex),0)">$INFO[Container(10100).ListItem.Property(IMDbRating)]</value>
+		<value condition="String.IsEqual(Skin.String(SideMenuFocus),home) + String.IsEqual(Skin.String(Home_WidgetIndex),1)">$INFO[Container(10200).ListItem.Property(IMDbRating)]</value>
+		<value condition="String.IsEqual(Skin.String(SideMenuFocus),home) + String.IsEqual(Skin.String(Home_WidgetIndex),2)">$INFO[Container(10300).ListItem.Property(IMDbRating)]</value>
+		<value condition="String.IsEqual(Skin.String(SideMenuFocus),movies) + String.IsEqual(Skin.String(Movies_WidgetIndex),0)">$INFO[Container(5100).ListItem.Property(IMDbRating)]</value>
+		<value>$INFO[ListItem.Property(IMDbRating)]</value>
 	</variable>
+
 	<variable name="ActiveItem_MPAA">
-		<value>$INFO[Container($VAR[ActiveWidgetID]).ListItem.Mpaa]</value>
+		<value condition="String.IsEqual(Skin.String(SideMenuFocus),home) + String.IsEqual(Skin.String(Home_WidgetIndex),0)">$INFO[Container(10100).ListItem.Mpaa]</value>
+		<value condition="String.IsEqual(Skin.String(SideMenuFocus),home) + String.IsEqual(Skin.String(Home_WidgetIndex),1)">$INFO[Container(10200).ListItem.Mpaa]</value>
+		<value condition="String.IsEqual(Skin.String(SideMenuFocus),home) + String.IsEqual(Skin.String(Home_WidgetIndex),2)">$INFO[Container(10300).ListItem.Mpaa]</value>
+		<value condition="String.IsEqual(Skin.String(SideMenuFocus),movies) + String.IsEqual(Skin.String(Movies_WidgetIndex),0)">$INFO[Container(5100).ListItem.Mpaa]</value>
+		<value>$INFO[ListItem.Mpaa]</value>
 	</variable>
 
 	<!-- Info Window Variables (Fallback to ListItem if window properties missing) -->
