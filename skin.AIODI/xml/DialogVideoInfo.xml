@@ -503,14 +503,14 @@
 						<left>1040</left>
 						<top>0</top>
 						<width>220</width>
-						<height>280</height>
+						<height>270</height>
 
 						<!-- Stacked Metadata Chips -->
 						<control type="grouplist">
 							<left>0</left>
 							<top>0</top>
 							<width>220</width>
-							<height>280</height>
+							<height>270</height>
 							<itemgap>5</itemgap>
 							<orientation>vertical</orientation>
 
@@ -649,7 +649,7 @@
 					<!-- Related Content Row -->
 					<control type="group">
 						<left>0</left>
-						<top>130</top>
+						<top>230</top>
 						<width>1245</width>
 						<height>350</height>
 						<visible>!String.IsEmpty(Window(Home).Property(InfoWindow.Related.1.Title))</visible>
