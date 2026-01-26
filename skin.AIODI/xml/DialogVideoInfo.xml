@@ -334,7 +334,7 @@
 				<!-- Cast Area -->
 				<control type="group">
 					<left>0</left>
-					<top>540</top>
+					<top>440</top>
 					<width>1245</width>
 					<height>800</height>
 
@@ -649,7 +649,7 @@
 					<!-- Related Content Row -->
 					<control type="group">
 						<left>0</left>
-						<top>330</top>
+						<top>130</top>
 						<width>1245</width>
 						<height>350</height>
 						<visible>!String.IsEmpty(Window(Home).Property(InfoWindow.Related.1.Title))</visible>
