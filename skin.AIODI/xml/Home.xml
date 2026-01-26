@@ -54,35 +54,24 @@
 		</control>
 
 		<!-- Fanart Left Edge Gradient: black (left) to transparent (right), 200px wide, aligned with fanart left edge -->
+        <control type="image">
+            <depth>DepthBackground</depth>
+            <left>48%</left>
+            <top>0</top>
+            <width>256</width>
+            <bottom>520</bottom>
+            <texture>media/gradient_black_horizontal.png</texture>
+            <aspectratio>stretch</aspectratio>
+        </control>
+
+		<!-- Fanart Bottom Edge Gradient: black (bottom) to transparent (top), 200px tall, aligned with fanart bottom edge -->
 		<control type="image">
 			<depth>DepthBackground</depth>
 			<left>48%</left>
-			<top>0</top>
-			<width>200</width>
-			<bottom>520</bottom>
-			<texture>colors/gradient_left_to_right.png</texture>
-			<aspectratio>stretch</aspectratio>
-		</control>
-
-		<!-- Fanart Bottom Edge Gradient: black (bottom) to transparent (top), 150px tall, aligned with fanart bottom edge -->
-		<control type="image">
-			<depth>DepthBackground</depth>
 			<right>0</right>
 			<bottom>520</bottom>
-			<width>52%</width>
-			<height>150</height>
-			<texture>colors/gradient_top_to_bottom.png</texture>
-			<aspectratio>stretch</aspectratio>
-		</control>
-
-		<!-- Gradient Overlay (Left to Right Black) -->
-		<control type="image">
-			<depth>DepthBackground</depth>
-			<left>0</left>
-			<top>0</top>
-			<bottom>0</bottom>
-			<width>1000</width>
-			<texture colordiffuse="E0FFFFFF">colors/gradient_left_to_right.png</texture>
+			<height>200</height>
+			<texture>media/gradient_black.png</texture>
 			<aspectratio>stretch</aspectratio>
 		</control>
 		
