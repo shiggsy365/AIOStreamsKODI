@@ -353,12 +353,12 @@
 				</control>
 			</control>
 
-			<!-- Genre Chips (3 individual chips to the right of clearlogo) -->
+			<!-- Genre Chips (Stacked vertically, aligned with middle of clearlogo (y=90)) -->
 			<control type="group">
 				<left>510</left>
-				<top>140</top>
-				<width>1000</width>
-				<height>40</height>
+				<top>20</top>
+				<width>220</width>
+				<height>140</height>
 
 				<!-- Genre 1 -->
 				<control type="button" id="9930">
@@ -382,8 +382,8 @@
 
 				<!-- Genre 2 -->
 				<control type="button" id="9931">
-					<left>220</left>
-					<top>0</top>
+					<left>0</left>
+					<top>50</top>
 					<width>210</width>
 					<height>40</height>
 					<font>font10</font>
@@ -402,8 +402,8 @@
 
 				<!-- Genre 3 -->
 				<control type="button" id="9932">
-					<left>440</left>
-					<top>0</top>
+					<left>0</left>
+					<top>100</top>
 					<width>210</width>
 					<height>40</height>
 					<font>font10</font>
@@ -415,74 +415,6 @@
 					<texturefocus colordiffuse="80000000" border="2,2,2,2">colors/white.png</texturefocus>
 					<texturenofocus colordiffuse="80000000" border="2,2,2,2">colors/white.png</texturenofocus>
 					<bordertexture colordiffuse="FFFFFFFF" border="2">colors/white.png</bordertexture>
-					<bordersize>2</bordersize>
-					<onclick>noop</onclick>
-					<enable>false</enable>
-				</control>
-			</control>
-
-			<!-- Cast Chips (3 individual chips below genres) -->
-			<control type="group">
-				<left>510</left>
-				<top>190</top>
-				<width>1000</width>
-				<height>40</height>
-
-				<!-- Director -->
-				<control type="button" id="9940">
-					<left>0</left>
-					<top>0</top>
-					<width>210</width>
-					<height>40</height>
-					<font>font10</font>
-					<textcolor>FFFFFFFF</textcolor>
-					<focusedcolor>FFFFFFFF</focusedcolor>
-					<label>$VAR[Director_Text]</label>
-					<align>center</align>
-					<aligny>center</aligny>
-					<texturefocus colordiffuse="80000000" border="2,2,2,2">colors/white.png</texturefocus>
-					<texturenofocus colordiffuse="80000000" border="2,2,2,2">colors/white.png</texturenofocus>
-					<bordertexture colordiffuse="FF4169E1" border="2">colors/white.png</bordertexture>
-					<bordersize>2</bordersize>
-					<onclick>noop</onclick>
-					<enable>false</enable>
-				</control>
-
-				<!-- Cast 1 -->
-				<control type="button" id="9941">
-					<left>220</left>
-					<top>0</top>
-					<width>210</width>
-					<height>40</height>
-					<font>font10</font>
-					<textcolor>FFFFFFFF</textcolor>
-					<focusedcolor>FFFFFFFF</focusedcolor>
-					<label>$VAR[Cast1_Text]</label>
-					<align>center</align>
-					<aligny>center</aligny>
-					<texturefocus colordiffuse="80000000" border="2,2,2,2">colors/white.png</texturefocus>
-					<texturenofocus colordiffuse="80000000" border="2,2,2,2">colors/white.png</texturenofocus>
-					<bordertexture colordiffuse="FF32CD32" border="2">colors/white.png</bordertexture>
-					<bordersize>2</bordersize>
-					<onclick>noop</onclick>
-					<enable>false</enable>
-				</control>
-
-				<!-- Cast 2 -->
-				<control type="button" id="9942">
-					<left>440</left>
-					<top>0</top>
-					<width>210</width>
-					<height>40</height>
-					<font>font10</font>
-					<textcolor>FFFFFFFF</textcolor>
-					<focusedcolor>FFFFFFFF</focusedcolor>
-					<label>$VAR[Cast2_Text]</label>
-					<align>center</align>
-					<aligny>center</aligny>
-					<texturefocus colordiffuse="80000000" border="2,2,2,2">colors/white.png</texturefocus>
-					<texturenofocus colordiffuse="80000000" border="2,2,2,2">colors/white.png</texturenofocus>
-					<bordertexture colordiffuse="FF32CD32" border="2">colors/white.png</bordertexture>
 					<bordersize>2</bordersize>
 					<onclick>noop</onclick>
 					<enable>false</enable>

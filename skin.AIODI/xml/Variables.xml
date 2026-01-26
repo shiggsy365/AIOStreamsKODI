@@ -1337,7 +1337,8 @@
 	</variable>
 
 	<variable name="ActiveItem_IMDbRating">
-		<value>$INFO[Container($VAR[ActiveWidgetID]).ListItem.Property(IMDbRating)]</value>
+		<value condition="!String.IsEmpty(Container($VAR[ActiveWidgetID]).ListItem.Property(IMDbRating))">$INFO[Container($VAR[ActiveWidgetID]).ListItem.Property(IMDbRating)]</value>
+		<value>$INFO[Container($VAR[ActiveWidgetID]).ListItem.Rating]</value>
 	</variable>
 	<variable name="ActiveItem_MPAA">
 		<value>$INFO[Container($VAR[ActiveWidgetID]).ListItem.Mpaa]</value>
