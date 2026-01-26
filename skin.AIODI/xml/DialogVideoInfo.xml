@@ -93,6 +93,12 @@
                             <colordiffuse>FFFFFFFF</colordiffuse>
                             <texturefocus>special://skin/media/buttons/tr_play_fo.png</texturefocus>
                             <texturenofocus>special://skin/media/buttons/tr_play_nofo.png</texturenofocus>
+							<!-- Next Up episode - always play directly -->
+							<onclick condition="String.IsEqual(ListItem.Property(IsNextUpEpisode),true)">Dialog.Close(1107)</onclick>
+							<onclick condition="String.IsEqual(ListItem.Property(IsNextUpEpisode),true)">Dialog.Close(1108)</onclick>
+							<onclick condition="String.IsEqual(ListItem.Property(IsNextUpEpisode),true)">Dialog.Close(movieinformation)</onclick>
+							<onclick condition="String.IsEqual(ListItem.Property(IsNextUpEpisode),true)">ActivateWindow(Videos,plugin://plugin.video.aiostreams/?action=play&amp;content_type=series&amp;imdb_id=$INFO[ListItem.Property(NextUpShowIMDb)]&amp;season=$INFO[ListItem.Property(NextUpSeason)]&amp;episode=$INFO[ListItem.Property(NextUpEpisode)],return)</onclick>
+							<!-- Regular series - browse seasons -->
 							<onclick condition="String.IsEqual(ListItem.Property(content_type),series) | String.IsEqual(ListItem.DBType,tvshow) | String.IsEqual(ListItem.DBType,series)">Dialog.Close(1107)</onclick>
 							<onclick condition="String.IsEqual(ListItem.Property(content_type),series) | String.IsEqual(ListItem.DBType,tvshow) | String.IsEqual(ListItem.DBType,series)">Dialog.Close(1108)</onclick>
 							<onclick condition="String.IsEqual(ListItem.Property(content_type),series) | String.IsEqual(ListItem.DBType,tvshow) | String.IsEqual(ListItem.DBType,series)">Dialog.Close(movieinformation)</onclick>
@@ -112,6 +118,7 @@
                             <top>74</top>
                             <width>258</width>
                             <height>64</height>
+                            <visible>!String.IsEqual(ListItem.Property(IsNextUpEpisode),true)</visible>
                             <!-- Dynamic background images -->
                             <control type="image">
                                 <width>258</width>
@@ -164,6 +171,7 @@
                             <top>74</top>
                             <width>258</width>
                             <height>64</height>
+                            <visible>!String.IsEqual(ListItem.Property(IsNextUpEpisode),true)</visible>
                             <!-- Dynamic background images -->
                             <control type="image">
                                 <width>258</width>
