@@ -42,12 +42,37 @@
 			<texture>colors/black.png</texture>
 			<aspectratio>scale</aspectratio>
 		</control>
-		<!-- Background Fanart -->
+		<!-- Background Fanart - 50% size anchored to top right -->
 		<control type="image">
 			<depth>DepthBackground</depth>
-			<include>FullScreenDimensions</include>
+			<right>0</right>
+			<top>0</top>
+			<width>50%</width>
+			<height>50%</height>
 			<texture background="true">$VAR[CurrentWidgetFanart]</texture>
 			<aspectratio>scale</aspectratio>
+		</control>
+
+		<!-- Fanart Left Edge Gradient (fade into background) -->
+		<control type="image">
+			<depth>DepthBackground</depth>
+			<left>50%</left>
+			<top>0</top>
+			<width>200</width>
+			<height>50%</height>
+			<texture flipx="true">colors/gradient_left_to_right.png</texture>
+			<aspectratio>stretch</aspectratio>
+		</control>
+
+		<!-- Fanart Bottom Edge Gradient (fade into background) -->
+		<control type="image">
+			<depth>DepthBackground</depth>
+			<right>0</right>
+			<top>50%</top>
+			<width>50%</width>
+			<height>200</height>
+			<texture flipy="true">colors/gradient_left_to_right.png</texture>
+			<aspectratio>stretch</aspectratio>
 		</control>
 
 
