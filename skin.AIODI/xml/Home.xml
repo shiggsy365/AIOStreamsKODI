@@ -47,8 +47,8 @@
 		<control type="group">
 			<right>0</right>
 			<top>0</top>
-			<width>996</width>
-			<height>560</height>
+			<width>1138</width>
+			<height>640</height>
 			
 			<!-- Fanart Image (Scaled to fill) -->
 			<control type="image">
@@ -59,25 +59,12 @@
 				<aspectratio aligny="top">scale</aspectratio>
 			</control>
 
-			<!-- Fanart Left Edge Gradient (Relative to fanart left edge) -->
+			<!-- New Composite Overlay (Left & Bottom Gradients) -->
 			<control type="image">
 				<depth>DepthBackground</depth>
-				<left>0</left>
-				<top>0</top>
-				<bottom>0</bottom>
-				<width>200</width>
-				<texture>colors/gradient_black_horizontal.png</texture>
-				<aspectratio>stretch</aspectratio>
-			</control>
-
-			<!-- Fanart Bottom Edge Gradient (Relative to fanart bottom edge) -->
-			<control type="image">
-				<depth>DepthBackground</depth>
-				<left>0</left>
-				<right>0</right>
-				<bottom>0</bottom>
-				<height>150</height>
-				<texture>colors/gradient_black.png</texture>
+				<width>100%</width>
+				<height>100%</height>
+				<texture>colors/fanart_overlay.png</texture>
 				<aspectratio>stretch</aspectratio>
 			</control>
 		</control>
