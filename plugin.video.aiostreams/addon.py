@@ -4923,12 +4923,23 @@ def smart_widget():
                 item_id = meta.get('id')
                 if item_id:
                     items_to_fetch.append({'ids': {'imdb': item_id}})
+
+            # Debug: Log first catalog item's rating data
+            if catalog_data.get('metas'):
+                first_catalog_item = catalog_data['metas'][0]
+                xbmc.log(f'[AIOStreams] DEBUG smart_widget catalog_meta rating: imdbRating={first_catalog_item.get("imdbRating")}, rating={first_catalog_item.get("rating")}, Rating={first_catalog_item.get("Rating")}', xbmc.LOGINFO)
             
             # Fetch metadata with logos in parallel
             metadata_map = {}
             if items_to_fetch:
                 xbmc.log(f'[AIOStreams] smart_widget: Fetching {len(items_to_fetch)} items metadata in parallel...', xbmc.LOGDEBUG)
                 metadata_map = fetch_metadata_parallel(items_to_fetch, content_type)
+                # Debug: Log first item's rating data
+                if metadata_map:
+                    first_id = list(metadata_map.keys())[0] if metadata_map else None
+                    if first_id:
+                        first_meta = metadata_map[first_id]
+                        xbmc.log(f'[AIOStreams] DEBUG smart_widget full_meta rating: imdbRating={first_meta.get("imdbRating")}, rating={first_meta.get("rating")}, Rating={first_meta.get("Rating")}', xbmc.LOGINFO)
 
             for meta in catalog_data['metas']:
                 try:
@@ -4939,8 +4950,17 @@ def smart_widget():
                     # Merge with full metadata if available (for logos, cast, etc.)
                     full_meta = metadata_map.get(item_id, {})
                     if full_meta:
-                        # Merge: full_meta is already the inner metadata dict from get_meta
+                        # Smart merge: full_meta overwrites meta, but preserve non-empty rating fields from catalog
                         merged_meta = {**meta, **full_meta}
+
+                        # Preserve catalog rating if full_meta rating is empty
+                        for rating_field in ['imdbRating', 'rating', 'Rating']:
+                            if not merged_meta.get(rating_field) and meta.get(rating_field):
+                                merged_meta[rating_field] = meta[rating_field]
+
+                        # Debug: Log merged rating for first item only
+                        if item_id == list(metadata_map.keys())[0]:
+                            xbmc.log(f'[AIOStreams] DEBUG smart_widget merged_meta rating: imdbRating={merged_meta.get("imdbRating")}, rating={merged_meta.get("rating")}, Rating={merged_meta.get("Rating")}', xbmc.LOGINFO)
                     else:
                         merged_meta = meta
                     
