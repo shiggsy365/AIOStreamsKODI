@@ -2757,8 +2757,14 @@ def show_seasons():
     """Show seasons for a TV series."""
     from resources.lib import trakt
     params = dict(parse_qsl(sys.argv[2][1:]))
-    meta_id = params['meta_id']
-    
+    meta_id = params.get('meta_id')
+
+    if not meta_id:
+        xbmc.log('[AIOStreams] show_seasons: meta_id parameter is missing or empty', xbmc.LOGERROR)
+        xbmcgui.Dialog().notification('AIOStreams', 'Invalid show ID', xbmcgui.NOTIFICATION_ERROR)
+        xbmcplugin.endOfDirectory(HANDLE)
+        return
+
     # === DB OPTIMIZATION: Try local SyncDB first ===
     meta_data = None
     try:
@@ -2963,8 +2969,13 @@ def youtube_menu():
 def browse_show():
     """Open custom browse window for TV show with seasons and episodes."""
     params = dict(parse_qsl(sys.argv[2][1:]))
-    meta_id = params['meta_id']
-    
+    meta_id = params.get('meta_id')
+
+    if not meta_id:
+        xbmc.log('[AIOStreams] browse_show: meta_id parameter is missing or empty', xbmc.LOGERROR)
+        xbmcgui.Dialog().notification('AIOStreams', 'Invalid show ID', xbmcgui.NOTIFICATION_ERROR)
+        return
+
     meta_data = get_meta('series', meta_id)
     
     if not meta_data or 'meta' not in meta_data:
@@ -3012,9 +3023,23 @@ def show_episodes():
     """Show episodes for a specific season."""
     from resources.lib import trakt
     params = dict(parse_qsl(sys.argv[2][1:]))
-    meta_id = params['meta_id']
-    season = int(params['season'])
-    
+    meta_id = params.get('meta_id')
+    season_param = params.get('season')
+
+    if not meta_id or not season_param:
+        xbmc.log('[AIOStreams] show_episodes: meta_id or season parameter is missing', xbmc.LOGERROR)
+        xbmcgui.Dialog().notification('AIOStreams', 'Invalid episode parameters', xbmcgui.NOTIFICATION_ERROR)
+        xbmcplugin.endOfDirectory(HANDLE)
+        return
+
+    try:
+        season = int(season_param)
+    except (ValueError, TypeError):
+        xbmc.log(f'[AIOStreams] show_episodes: Invalid season number: {season_param}', xbmc.LOGERROR)
+        xbmcgui.Dialog().notification('AIOStreams', 'Invalid season number', xbmcgui.NOTIFICATION_ERROR)
+        xbmcplugin.endOfDirectory(HANDLE)
+        return
+
     # === DB OPTIMIZATION: Try local SyncDB first ===
     meta_data = None
     try:
@@ -3217,7 +3242,7 @@ def show_episodes():
         episode_clearlogo = meta.get('logo', '')
         context_menu = [
             ('[COLOR lightcoral]Scrape Streams[/COLOR]', f'RunPlugin({get_url(action="show_streams", content_type="series", media_id=episode_media_id, title=episode_title, poster=episode_poster, fanart=episode_fanart, clearlogo=episode_clearlogo)})'),
-            ('[COLOR lightcoral]Browse Show[/COLOR]', f'ActivateWindow(Videos,{sys.argv[0]}?{urlencode({"action": "show_seasons", "meta_id": meta_id})},return)')
+            ('[COLOR lightcoral]Browse Show[/COLOR]', f'ActivateWindow(Videos,{get_url(action="show_seasons", meta_id=meta_id)},return)')
         ]
 
         # Add Trakt watched toggle if authorized
@@ -3672,7 +3697,7 @@ def trakt_next_up():
             # Build context menu (create_listitem_with_context already adds standard ones)
             context_menu = []
             context_menu.append(('[COLOR lightcoral]Scrape Streams[/COLOR]', f'RunPlugin({get_url(action="show_streams", content_type="series", media_id=f"{show_imdb}:{season}:{episode}", title=label, poster=poster, fanart=fanart, clearlogo=logo)})'))
-            context_menu.append(('[COLOR lightcoral]Browse Show[/COLOR]', f'ActivateWindow(Videos,{sys.argv[0]}?{urlencode({"action": "show_seasons", "meta_id": show_imdb})},return)'))
+            context_menu.append(('[COLOR lightcoral]Browse Show[/COLOR]', f'ActivateWindow(Videos,{get_url(action="show_seasons", meta_id=show_imdb)},return)'))
             list_item.addContextMenuItems(context_menu)
             list_item.setProperty('IsPlayable', 'true')
 
