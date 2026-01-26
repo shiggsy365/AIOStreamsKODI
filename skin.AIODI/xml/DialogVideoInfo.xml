@@ -605,7 +605,7 @@
 							<bordersize>2</bordersize>
 							<onclick>noop</onclick>
 							<enable>false</enable>
-							<visible>!String.IsEmpty(VAR[InfoWindow_Director])</visible>
+							<visible>!String.IsEmpty($VAR[InfoWindow_Director])</visible>
 						</control>
 						
 						<!-- Premiered -->
@@ -626,7 +626,7 @@
 							<bordersize>2</bordersize>
 							<onclick>noop</onclick>
 							<enable>false</enable>
-							<visible>!String.IsEmpty(VAR[InfoWindow_Premiered])</visible>
+							<visible>!String.IsEmpty($VAR[InfoWindow_Premiered])</visible>
 						</control>
 
 						<!-- Duration -->
@@ -647,7 +647,7 @@
 							<bordersize>2</bordersize>
 							<onclick>noop</onclick>
 							<enable>false</enable>
-							<visible>!String.IsEmpty(VAR[InfoWindow_Duration])</visible>
+							<visible>!String.IsEmpty($VAR[InfoWindow_Duration])</visible>
 						</control>
 
 						<!-- Season & Episode -->

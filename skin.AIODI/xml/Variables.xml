@@ -1368,7 +1368,9 @@
 	</variable>
 	<variable name="InfoWindow_Rating">
 		<value condition="!String.IsEmpty(Window(Home).Property(InfoWindow.Rating))">$INFO[Window(Home).Property(InfoWindow.Rating)]</value>
-		<value>$INFO[ListItem.Property(IMDbRating)]</value>
+		<value condition="!String.IsEmpty(ListItem.Property(IMDbRating))">$INFO[ListItem.Property(IMDbRating)]</value>
+		<value condition="!String.IsEmpty(ListItem.Property(rating_imdb))">$INFO[ListItem.Property(rating_imdb)]</value>
+		<value>$INFO[ListItem.Rating]</value>
 	</variable>
 	<variable name="InfoWindow_Genre">
 		<value condition="!String.IsEmpty(Window(Home).Property(InfoWindow.Genre))">$INFO[Window(Home).Property(InfoWindow.Genre)]</value>
@@ -1380,14 +1382,17 @@
 	</variable>
 	<variable name="InfoWindow_Director">
 		<value condition="!String.IsEmpty(Window(Home).Property(InfoWindow.Director))">$INFO[Window(Home).Property(InfoWindow.Director)]</value>
+		<value condition="!String.IsEmpty(ListItem.Property(Director))">$INFO[ListItem.Property(Director)]</value>
 		<value>$INFO[ListItem.Director]</value>
 	</variable>
 	<variable name="InfoWindow_Premiered">
 		<value condition="!String.IsEmpty(Window(Home).Property(InfoWindow.Premiered))">$INFO[Window(Home).Property(InfoWindow.Premiered)]</value>
+		<value condition="!String.IsEmpty(ListItem.Property(AiredDate))">$INFO[ListItem.Property(AiredDate)]</value>
 		<value>$INFO[ListItem.Premiered]</value>
 	</variable>
 	<variable name="InfoWindow_Duration">
 		<value condition="!String.IsEmpty(Window(Home).Property(InfoWindow.Duration))">$INFO[Window(Home).Property(InfoWindow.Duration)]</value>
+		<value condition="!String.IsEmpty(ListItem.Property(Runtime))">$INFO[ListItem.Property(Runtime),, min]</value>
 		<value>$INFO[ListItem.Duration]</value>
 	</variable>
 	<variable name="SeasonNumberPadded">
