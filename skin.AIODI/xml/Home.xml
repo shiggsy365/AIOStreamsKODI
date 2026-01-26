@@ -65,7 +65,7 @@
 				<left>0</left>
 				<top>0</top>
 				<bottom>0</bottom>
-				<width>256</width>
+				<width>512</width>
 				<texture>colors/gradient_black_horizontal.png</texture>
 				<aspectratio>stretch</aspectratio>
 			</control>
