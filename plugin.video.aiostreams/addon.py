@@ -4503,9 +4503,9 @@ def database_reset():
     from resources.lib import trakt
     trakt.invalidate_progress_cache()
     
-    # Clear manifest cache
-    from resources.lib.manifest import ManifestManager
-    ManifestManager().clear_cache()
+    # Clear local cache
+    from resources.lib import cache
+    cache.cleanup_expired_cache(force_all=True)
     
     xbmcgui.Dialog().notification('Database Reset', 'Core database and caches cleared', xbmcgui.NOTIFICATION_INFO)
     

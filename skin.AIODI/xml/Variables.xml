@@ -1325,6 +1325,57 @@
 		<!-- Generic Fallback -->
 		<value>$INFO[Container($VAR[ActiveWidgetID]).ListItem.Premiered]$INFO[Container($VAR[ActiveWidgetID]).ListItem.Genre,  |  ]$INFO[Container($VAR[ActiveWidgetID]).ListItem.Duration,  |  , min]</value>
 	</variable>
+
+	<variable name="Genre1_Text">
+		<value>$INFO[Container($VAR[ActiveWidgetID]).ListItem.Property(Genre1)]</value>
+	</variable>
+	<variable name="Genre2_Text">
+		<value>$INFO[Container($VAR[ActiveWidgetID]).ListItem.Property(Genre2)]</value>
+	</variable>
+	<variable name="Genre3_Text">
+		<value>$INFO[Container($VAR[ActiveWidgetID]).ListItem.Property(Genre3)]</value>
+	</variable>
+
+	<variable name="ActiveItem_IMDbRating">
+		<value>$INFO[Container($VAR[ActiveWidgetID]).ListItem.Property(IMDbRating)]</value>
+	</variable>
+	<variable name="ActiveItem_MPAA">
+		<value>$INFO[Container($VAR[ActiveWidgetID]).ListItem.Mpaa]</value>
+	</variable>
+
+	<!-- Info Window Variables (Fallback to ListItem if window properties missing) -->
+	<variable name="InfoWindow_Title">
+		<value condition="!String.IsEmpty(Window(Home).Property(InfoWindow.Title))">$INFO[Window(Home).Property(InfoWindow.Title)]</value>
+		<value>$INFO[ListItem.Title]</value>
+	</variable>
+	<variable name="InfoWindow_Plot">
+		<value condition="!String.IsEmpty(Window(Home).Property(InfoWindow.Plot))">$INFO[Window(Home).Property(InfoWindow.Plot)]</value>
+		<value>$INFO[ListItem.Plot]</value>
+	</variable>
+	<variable name="InfoWindow_Rating">
+		<value condition="!String.IsEmpty(Window(Home).Property(InfoWindow.Rating))">$INFO[Window(Home).Property(InfoWindow.Rating)]</value>
+		<value>$INFO[ListItem.Property(IMDbRating)]</value>
+	</variable>
+	<variable name="InfoWindow_Genre">
+		<value condition="!String.IsEmpty(Window(Home).Property(InfoWindow.Genre))">$INFO[Window(Home).Property(InfoWindow.Genre)]</value>
+		<value>$INFO[ListItem.Genre]</value>
+	</variable>
+	<variable name="InfoWindow_Year">
+		<value condition="!String.IsEmpty(Window(Home).Property(InfoWindow.Year))">$INFO[Window(Home).Property(InfoWindow.Year)]</value>
+		<value>$INFO[ListItem.Year]</value>
+	</variable>
+	<variable name="InfoWindow_Director">
+		<value condition="!String.IsEmpty(Window(Home).Property(InfoWindow.Director))">$INFO[Window(Home).Property(InfoWindow.Director)]</value>
+		<value>$INFO[ListItem.Director]</value>
+	</variable>
+	<variable name="InfoWindow_Premiered">
+		<value condition="!String.IsEmpty(Window(Home).Property(InfoWindow.Premiered))">$INFO[Window(Home).Property(InfoWindow.Premiered)]</value>
+		<value>$INFO[ListItem.Premiered]</value>
+	</variable>
+	<variable name="InfoWindow_Duration">
+		<value condition="!String.IsEmpty(Window(Home).Property(InfoWindow.Duration))">$INFO[Window(Home).Property(InfoWindow.Duration)]</value>
+		<value>$INFO[ListItem.Duration]</value>
+	</variable>
 	<variable name="SeasonNumberPadded">
 		<value condition="Integer.IsLess(ListItem.Season,10)">S0$INFO[ListItem.Season]</value>
 		<value>S$INFO[ListItem.Season]</value>

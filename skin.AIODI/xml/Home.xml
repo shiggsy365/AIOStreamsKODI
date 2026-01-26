@@ -208,7 +208,8 @@
 					<font>font10</font>
 					<textcolor>FFFFFFFF</textcolor>
 					<focusedcolor>FFFFFFFF</focusedcolor>
-					<label>$INFO[Container($VAR[ActiveWidgetID]).ListItem.Mpaa]</label>
+										<label>$VAR[ActiveItem_MPAA]</label>
+
 					<align>center</align>
 					<aligny>center</aligny>
 					<texturefocus colordiffuse="80000000" border="2,2,2,2">colors/white.png</texturefocus>
@@ -228,9 +229,10 @@
 					<font>font10</font>
 					<textcolor>FFFFFFFF</textcolor>
 					<focusedcolor>FFFFFFFF</focusedcolor>
-					<textoffsetx>75</textoffsetx>
-					<label>$INFO[Container($VAR[ActiveWidgetID]).ListItem.Property(IMDbRating)]</label>
-					<align>center</align>
+							<textoffsetx>75</textoffsetx>
+							<label>$VAR[ActiveItem_IMDbRating]</label>
+							<align>center</align>
+
 					<aligny>center</aligny>
 					<texturefocus colordiffuse="80000000" border="2,2,2,2">colors/white.png</texturefocus>
 					<texturenofocus colordiffuse="80000000" border="2,2,2,2">colors/white.png</texturenofocus>
@@ -367,7 +369,7 @@
 					<font>font10</font>
 					<textcolor>FFFFFFFF</textcolor>
 					<focusedcolor>FFFFFFFF</focusedcolor>
-					<label>$INFO[Container($VAR[ActiveWidgetID]).ListItem.Property(Genre1)]</label>
+					<label>$VAR[Genre1_Text]</label>
 					<align>center</align>
 					<aligny>center</aligny>
 					<texturefocus colordiffuse="80000000" border="2,2,2,2">colors/white.png</texturefocus>
@@ -376,7 +378,7 @@
 					<bordersize>2</bordersize>
 					<onclick>noop</onclick>
 					<enable>false</enable>
-					<visible>!String.IsEmpty(Container($VAR[ActiveWidgetID]).ListItem.Property(Genre1))</visible>
+					<visible>!String.IsEmpty($VAR[Genre1_Text])</visible>
 				</control>
 
 				<!-- Genre 2 -->
@@ -388,7 +390,7 @@
 					<font>font10</font>
 					<textcolor>FFFFFFFF</textcolor>
 					<focusedcolor>FFFFFFFF</focusedcolor>
-					<label>$INFO[Container($VAR[ActiveWidgetID]).ListItem.Property(Genre2)]</label>
+					<label>$VAR[Genre2_Text]</label>
 					<align>center</align>
 					<aligny>center</aligny>
 					<texturefocus colordiffuse="80000000" border="2,2,2,2">colors/white.png</texturefocus>
@@ -397,7 +399,7 @@
 					<bordersize>2</bordersize>
 					<onclick>noop</onclick>
 					<enable>false</enable>
-					<visible>!String.IsEmpty(Container($VAR[ActiveWidgetID]).ListItem.Property(Genre2))</visible>
+					<visible>!String.IsEmpty($VAR[Genre2_Text])</visible>
 				</control>
 
 				<!-- Genre 3 -->
@@ -409,7 +411,7 @@
 					<font>font10</font>
 					<textcolor>FFFFFFFF</textcolor>
 					<focusedcolor>FFFFFFFF</focusedcolor>
-					<label>$INFO[Container($VAR[ActiveWidgetID]).ListItem.Property(Genre3)]</label>
+					<label>$VAR[Genre3_Text]</label>
 					<align>center</align>
 					<aligny>center</aligny>
 					<texturefocus colordiffuse="80000000" border="2,2,2,2">colors/white.png</texturefocus>
@@ -418,7 +420,7 @@
 					<bordersize>2</bordersize>
 					<onclick>noop</onclick>
 					<enable>false</enable>
-					<visible>!String.IsEmpty(Container($VAR[ActiveWidgetID]).ListItem.Property(Genre3))</visible>
+					<visible>!String.IsEmpty($VAR[Genre3_Text])</visible>
 				</control>
 			</control>
 		</control>

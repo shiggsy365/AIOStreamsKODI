@@ -677,7 +677,7 @@
 							<textcolor>FFFFFFFF</textcolor>
 							<focusedcolor>FFFFFFFF</focusedcolor>
 							<textoffsetx>90</textoffsetx>
-							<label>$INFO[ListItem.Property(IMDbRating)]</label>
+							<label>$VAR[InfoWindow_Rating]</label>
 							<align>center</align>
 							<aligny>center</aligny>
 							<texturefocus colordiffuse="80000000" border="2,2,2,2">colors/white.png</texturefocus>
