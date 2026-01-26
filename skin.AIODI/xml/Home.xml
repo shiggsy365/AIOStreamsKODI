@@ -220,15 +220,22 @@
 					<enable>false</enable>
 				</control>
 
-				<!-- IMDb Rating with Logo -->
-				<control type="button" id="9905">
-					<left>548</left>
-					<top>0</top>
-					<width>150</width>
-					<height>40</height>
-					<font>font10</font>
-					<textcolor>FFFFFFFF</textcolor>
-					<focusedcolor>FFFFFFFF</focusedcolor>
+					<!-- Rating Chip -->
+					<control type="group">
+						<left>548</left>
+						<top>0</top>
+						<width>150</width>
+						<height>40</height>
+						<visible>!String.IsEmpty($VAR[ActiveItem_IMDbRating])</visible>
+
+						<control type="button" id="9905">
+							<left>0</left>
+							<top>0</top>
+							<width>150</width>
+							<height>40</height>
+							<font>font10</font>
+							<textcolor>FFFFFFFF</textcolor>
+							<focusedcolor>FFFFFFFF</focusedcolor>
 							<textoffsetx>20</textoffsetx>
 							<label>$VAR[ActiveItem_IMDbRating]</label>
 							<align>right</align>
@@ -241,16 +248,16 @@
 							<enable>false</enable>
 						</control>
 
-
-				<!-- IMDb Logo (overlaid on rating chip) -->
-				<control type="image">
-					<left>558</left>
-					<top>5</top>
-					<width>60</width>
-					<height>30</height>
-					<texture>imdb_logo.png</texture>
-					<aspectratio>keep</aspectratio>
-				</control>
+						<!-- IMDb Logo (overlaid on rating chip) -->
+						<control type="image">
+							<left>10</left>
+							<top>5</top>
+							<width>60</width>
+							<height>30</height>
+							<texture>imdb_logo.png</texture>
+							<aspectratio>keep</aspectratio>
+						</control>
+					</control>
 			</control>
 
 			<!-- Metadata Chips for Shows/Movies: [premiered] [duration] [mpaa] [rating] -->
@@ -322,34 +329,42 @@
 				</control>
 
 				<!-- IMDb Rating with Logo -->
-				<control type="button" id="9914">
+				<control type="group">
 					<left>418</left>
 					<top>0</top>
 					<width>150</width>
 					<height>40</height>
-					<font>font10</font>
-					<textcolor>FFFFFFFF</textcolor>
-					<focusedcolor>FFFFFFFF</focusedcolor>
-					<textoffsetx>20</textoffsetx>
-					<label>$VAR[ActiveItem_IMDbRating]</label>
-					<align>right</align>
-					<aligny>center</aligny>
-					<texturefocus colordiffuse="80000000" border="2,2,2,2">colors/white.png</texturefocus>
-					<texturenofocus colordiffuse="80000000" border="2,2,2,2">colors/white.png</texturenofocus>
-					<bordertexture colordiffuse="FFF5C518" border="2">colors/white.png</bordertexture>
-					<bordersize>2</bordersize>
-					<onclick>noop</onclick>
-					<enable>false</enable>
-				</control>
+					<visible>!String.IsEmpty($VAR[ActiveItem_IMDbRating])</visible>
 
-				<!-- IMDb Logo (overlaid on rating chip) -->
-				<control type="image">
-					<left>428</left>
-					<top>5</top>
-					<width>60</width>
-					<height>30</height>
-					<texture>imdb_logo.png</texture>
-					<aspectratio>keep</aspectratio>
+					<control type="button" id="9914">
+						<left>0</left>
+						<top>0</top>
+						<width>150</width>
+						<height>40</height>
+						<font>font10</font>
+						<textcolor>FFFFFFFF</textcolor>
+						<focusedcolor>FFFFFFFF</focusedcolor>
+						<textoffsetx>20</textoffsetx>
+						<label>$VAR[ActiveItem_IMDbRating]</label>
+						<align>right</align>
+						<aligny>center</aligny>
+						<texturefocus colordiffuse="80000000" border="2,2,2,2">colors/white.png</texturefocus>
+						<texturenofocus colordiffuse="80000000" border="2,2,2,2">colors/white.png</texturenofocus>
+						<bordertexture colordiffuse="FFF5C518" border="2">colors/white.png</bordertexture>
+						<bordersize>2</bordersize>
+						<onclick>noop</onclick>
+						<enable>false</enable>
+					</control>
+
+					<!-- IMDb Logo (overlaid on rating chip) -->
+					<control type="image">
+						<left>10</left>
+						<top>5</top>
+						<width>60</width>
+						<height>30</height>
+						<texture>imdb_logo.png</texture>
+						<aspectratio>keep</aspectratio>
+					</control>
 				</control>
 			</control>
 
