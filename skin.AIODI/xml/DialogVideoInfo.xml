@@ -334,9 +334,9 @@
 				<!-- Cast Area -->
 				<control type="group">
 					<left>0</left>
-					<top>440</top>
+					<top>320</top>
 					<width>1245</width>
-					<height>350</height>
+					<height>400</height>
 
 					<!-- Cast Header -->
 					<control type="label">
@@ -368,7 +368,7 @@
 						<left>0</left>
 						<top>40</top>
 						<width>1020</width>
-						<height>310</height>
+						<height>350</height>
 
 						<control type="label">
 							<left>0</left>
