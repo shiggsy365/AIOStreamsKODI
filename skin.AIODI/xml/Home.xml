@@ -43,36 +43,43 @@
 			<aspectratio>scale</aspectratio>
 		</control>
 		<!-- Background Fanart - scaled to widget row, aspect ratio maintained, anchored to top right -->
-		<control type="image">
-			<depth>DepthBackground</depth>
+		<!-- Fanart Composition Group -->
+		<control type="group">
 			<left>48%</left>
 			<right>0</right>
 			<top>0</top>
 			<bottom>520</bottom>
-			<texture background="true">$VAR[CurrentWidgetFanart]</texture>
-			<aspectratio align="right" aligny="top">keep</aspectratio>
-		</control>
+			
+			<!-- Fanart Image (Scaled to fill) -->
+			<control type="image">
+				<depth>DepthBackground</depth>
+				<width>100%</width>
+				<height>100%</height>
+				<texture background="true">$VAR[CurrentWidgetFanart]</texture>
+				<aspectratio aligny="top">scale</aspectratio>
+			</control>
 
-		<!-- Fanart Left Edge Gradient: black (left) to transparent (right), 200px wide, aligned with fanart left edge -->
-        <control type="image">
-            <depth>DepthBackground</depth>
-            <left>48%</left>
-            <top>0</top>
-            <width>256</width>
-            <bottom>520</bottom>
-            <texture>colors/gradient_black_horizontal.png</texture>
-            <aspectratio>stretch</aspectratio>
-        </control>
+			<!-- Fanart Left Edge Gradient (Relative to fanart left edge) -->
+			<control type="image">
+				<depth>DepthBackground</depth>
+				<left>0</left>
+				<top>0</top>
+				<bottom>0</bottom>
+				<width>256</width>
+				<texture>colors/gradient_black_horizontal.png</texture>
+				<aspectratio>stretch</aspectratio>
+			</control>
 
-		<!-- Fanart Bottom Edge Gradient: black (bottom) to transparent (top), 200px tall, aligned with fanart bottom edge -->
-		<control type="image">
-			<depth>DepthBackground</depth>
-			<left>48%</left>
-			<right>0</right>
-			<bottom>520</bottom>
-			<height>200</height>
-			<texture>colors/gradient_black.png</texture>
-			<aspectratio>stretch</aspectratio>
+			<!-- Fanart Bottom Edge Gradient (Relative to fanart bottom edge) -->
+			<control type="image">
+				<depth>DepthBackground</depth>
+				<left>0</left>
+				<right>0</right>
+				<bottom>0</bottom>
+				<height>200</height>
+				<texture>colors/gradient_black.png</texture>
+				<aspectratio>stretch</aspectratio>
+			</control>
 		</control>
 		
 		<!-- Info Overlay -->
