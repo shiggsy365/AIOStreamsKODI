@@ -3559,13 +3559,64 @@ def trakt_next_up():
         xbmc.log(f'[AIOStreams] Set {count_prop} = {len(next_episodes)}', xbmc.LOGDEBUG)
 
     def process_ep(ep_data):
-                             break
+        try:
+            show_imdb = ep_data.get('show_imdb_id', '')
+            show_title = ep_data.get('show_title', 'Unknown')
+            season = ep_data.get('season', 0)
+            episode = ep_data.get('episode', 0)
+            episode_imdb = ep_data.get('episode_imdb_id', '')
 
-            # Prepare metadata for create_listitem_with_context
-            # Use episode metadata as base
-            ep_meta = {
+            # Get artwork and basic metadata placeholders
+            poster = ''
+            fanart = ''
+            logo = ''
+            episode_thumb = ''
+            episode_title = f'Episode {episode}'
+            episode_overview = ''
+            episode_air_date = ep_data.get('air_date', '')
+
+            # 1. Try to get episode-specific metadata from database
+            episode_meta = ep_data.get('episode_metadata')
+            if episode_meta:
+                episode_title = episode_meta.get('title', episode_title)
+                episode_overview = episode_meta.get('overview', '')
+                if not episode_air_date:
+                    episode_air_date = episode_meta.get('first_aired', '') or episode_meta.get('aired', '')
+
+            # 2. Get show metadata from our parallel fetch results
+            meta_data = None
+            if show_imdb and show_imdb in metadata_map:
+                meta_data = metadata_map[show_imdb]
+            
+            # If not in map, try local DB
+            if not meta_data and show_imdb:
+                 meta_data = ep_data.get('show_metadata')
+
+            # Extract artwork from show metadata
+            if meta_data:
+                show_title = meta_data.get('name', show_title)
+                poster = meta_data.get('poster', '')
+                fanart = meta_data.get('background', '')
+                logo = meta_data.get('logo', '')
+
+                # Try to get episode thumbnail from show metadata videos
+                if not episode_thumb:
+                    videos = meta_data.get('videos', [])
+                    for video in videos:
+                        if video.get('season') == season and video.get('episode') == episode:
+                            episode_thumb = video.get('thumbnail', '')
+                            if not episode_meta:
+                                episode_title = video.get('title', episode_title)
+                                episode_overview = video.get('description', '')
+                            break
+
+            label = f'{show_title} S{season:02d}E{episode:02d}'
+            url = get_url(action='play', content_type='episode', imdb_id=show_imdb, season=season, episode=episode, title=label, poster=poster, fanart=fanart, clearlogo=logo)
+
+            # Prepare metadata for creation (merging show-level info for chips)
+            meta = {
                 'id': episode_imdb or show_imdb,
-                'name': episode_title,
+                'name': label,
                 'description': episode_overview,
                 'released': episode_air_date,
                 'poster': poster,
@@ -3573,211 +3624,68 @@ def trakt_next_up():
                 'logo': logo
             }
             
-            # Merge show-level metadata from parallel fetch results (genres, mpaa, etc.)
+            # Merge show-level metadata (genres, mpaa, rating) for chips
             if meta_data:
-                ep_meta['genres'] = meta_data.get('genres', [])
-                ep_meta['mpaa'] = meta_data.get('mpaa', '') or meta_data.get('certification', '')
-                # Use show rating if episode rating not specifically available from another source
-                ep_meta['imdbRating'] = str(meta_data.get('rating', '')) if meta_data.get('rating') else ''
-                # Handle runtime
+                meta['genres'] = meta_data.get('genres', [])
+                meta['mpaa'] = meta_data.get('mpaa', '') or meta_data.get('certification', '')
+                meta['imdbRating'] = str(meta_data.get('rating', '')) if meta_data.get('rating') else ''
                 if meta_data.get('runtime'):
-                    ep_meta['runtime'] = str(meta_data['runtime'])
+                    meta['runtime'] = str(meta_data['runtime'])
 
-            # Use helper to create listitem with all properties set
-            url = get_url(action='play', content_type='episode', imdb_id=show_imdb, 
-                         season=season, episode=episode, title=episode_title,
-                         poster=poster, fanart=fanart, clearlogo=logo)
-                         
-            list_item = create_listitem_with_context(ep_meta, 'episode', url)
+            list_item = create_listitem_with_context(meta, 'episode', url)
             
-            # Additional episode-specific info tag cleanup
-            info_tag = list_item.getVideoInfoTag()
-            info_tag.setTvShowTitle(show_title)
-            info_tag.setSeason(season)
-            info_tag.setEpisode(episode)
-            
-            if episode_air_date:
-                air_date_str = episode_air_date.split('T')[0] if 'T' in episode_air_date else episode_air_date
-                formatted_date = format_date_with_ordinal(air_date_str)
-                list_item.setProperty('AirDate', formatted_date)
-                list_item.setLabel2(formatted_date)
-
-            # Set artwork (already handled by create_listitem_with_context from ep_meta, but thumb needs special care)
-            if episode_thumb:
-                list_item.setArt({'thumb': episode_thumb, 'poster': poster, 'fanart': fanart, 'clearlogo': logo})
-            
-            xbmcplugin.addDirectoryItem(HANDLE, url, list_item, False)
-            return True
-
-            label = f'{show_title} S{season:02d}E{episode:02d}'
-
-            list_item = xbmcgui.ListItem(label=label)
+            # InfoTag cleanup
             info_tag = list_item.getVideoInfoTag()
             info_tag.setTitle(episode_title)
             info_tag.setTvShowTitle(show_title)
             info_tag.setSeason(season)
             info_tag.setEpisode(episode)
-            info_tag.setMediaType('episode')
-            xbmc.log(f'[AIOStreams] Processing episode S{season}E{episode}: setMediaType("episode") called', xbmc.LOGDEBUG)
-            info_tag.setPlot(episode_overview)
             
-            # Set air date if available (shows in subtitle)
             if episode_air_date:
                 air_date_str = episode_air_date.split('T')[0] if 'T' in episode_air_date else episode_air_date
-                info_tag.setPremiered(air_date_str)
-                info_tag.setFirstAired(air_date_str)
                 formatted_date = format_date_with_ordinal(air_date_str)
                 list_item.setProperty('AirDate', formatted_date)
                 list_item.setLabel2(formatted_date)
 
-            # Set artwork
-            art = {}
             if episode_thumb:
-                art['thumb'] = episode_thumb
-                if poster:
-                    art['poster'] = poster
+                list_item.setArt({'thumb': episode_thumb, 'poster': poster, 'fanart': fanart, 'clearlogo': logo})
             elif poster:
-                art['thumb'] = poster
-                art['poster'] = poster
+                list_item.setArt({'thumb': poster, 'poster': poster, 'fanart': fanart, 'clearlogo': logo})
+
+            # Watched status and bookmarks
+            percent = ep_data.get('percent_played', 0)
+            if percent and percent > 0:
+                list_item.setProperty('PercentPlayed', str(int(percent)))
+                info_tag.setPercentPlayed(float(percent))
+                resume_time = ep_data.get('resume_time', 0)
+                if resume_time > 0:
+                    list_item.setProperty('StartOffset', str(resume_time))
             
-            if fanart:
-                art['fanart'] = fanart
-            
-            if logo:
-                # Check for cached logo (fast check)
-                cached_logo = get_cached_clearlogo_path('series', show_imdb)
-                if cached_logo:
-                    art['clearlogo'] = cached_logo
-                    art['logo'] = cached_logo
-                    # xbmc.log(f'[AIOStreams] Used cached clearlogo for {show_title}: {cached_logo}', xbmc.LOGDEBUG)
-                else:
-                    xbmc.log(f'[AIOStreams] No cached logo for {show_title}, using URL: {logo}', xbmc.LOGDEBUG)
-                    art['clearlogo'] = logo
-                    art['logo'] = logo
-                    # Ensure it's getting cached (background)
-                    _ensure_clearlogo_cached({'meta': {'logo': logo}}, 'series', show_imdb)
+            show_trakt_id = ep_data.get('show_trakt_id')
+            if show_trakt_id:
+                is_watched = db.is_item_watched(show_trakt_id, 'episode', season, episode)
+                if is_watched:
+                    info_tag.setPlaycount(1)
+                    list_item.setProperty('watched', 'true')
+                    list_item.setProperty('WatchedOverlay', 'indicator_watched.png')
 
-                # Update ep_data for window properties
-                ep_data['Logo'] = art['clearlogo']
-                
-            if art:
-                list_item.setArt(art)
+            # Build context menu (create_listitem_with_context already adds standard ones)
+            context_menu = []
+            context_menu.append(('[COLOR lightcoral]Scrape Streams[/COLOR]', f'RunPlugin({get_url(action="show_streams", content_type="series", media_id=f"{show_imdb}:{season}:{episode}", title=label, poster=poster, fanart=fanart, clearlogo=logo)})'))
+            context_menu.append(('[COLOR lightcoral]Browse Show[/COLOR]', f'ActivateWindow(Videos,{sys.argv[0]}?{urlencode({"action": "show_seasons", "meta_id": show_imdb})},return)'))
+            list_item.addContextMenuItems(context_menu)
+            list_item.setProperty('IsPlayable', 'true')
 
-            # Enhancement: Add Director, Duration
-            if meta_data:
-                runtime = meta_data.get('runtime', 0)
-                if runtime:
-                    try:
-                        info_tag.setDuration(int(runtime) * 60)
-                    except: pass
-                
-                # Add Directors
-                if meta_data.get('director'):
-                     info_tag.setDirectors([d.strip() for d in str(meta_data['director']).split(',') if d.strip()])
-
-            # Add PercentPlayed and Watched status from database
-            try:
-                # Set MediaType property for skin assist
-                list_item.setProperty('MediaType', 'episode')
-                
-                # Check for progress data in joined query result
-                percent = ep_data.get('percent_played', 0)
-                xbmc.log(f'[AIOStreams] Episode S{season}E{episode}: percent_played from query = {percent}', xbmc.LOGDEBUG)
-                
-                if percent and percent > 0:
-                    list_item.setProperty('PercentPlayed', str(int(percent)))
-                    info_tag.setPercentPlayed(float(percent))
-                    xbmc.log(f'[AIOStreams] Set PercentPlayed property and info_tag for S{season}E{episode} to {percent}%', xbmc.LOGINFO)
-                    resume_time = ep_data.get('resume_time', 0)
-                    if resume_time > 0:
-                        list_item.setProperty('StartOffset', str(resume_time))
-                else:
-                    # Fallback to separate lookup if not in joined result
-                    # Extract all available IDs from episode metadata
-                    episode_trakt_id = ep_data.get('episode_trakt_id')
-                    
-                    # Try to get IDs from episode metadata
-                    episode_meta = ep_data.get('episode_metadata')
-                    episode_tvdb = None
-                    episode_tmdb = None
-                    episode_imdb = ep_data.get('episode_imdb_id')
-                    
-                    if episode_meta and isinstance(episode_meta, dict):
-                        ids = episode_meta.get('ids', {})
-                        episode_tvdb = ids.get('tvdb')
-                        episode_tmdb = ids.get('tmdb')
-                        if not episode_imdb:
-                            episode_imdb = ids.get('imdb')
-                    
-                    if episode_trakt_id or episode_tvdb or episode_tmdb or episode_imdb:
-                        bookmark = db.get_bookmark(
-                            trakt_id=episode_trakt_id,
-                            tvdb_id=episode_tvdb,
-                            tmdb_id=episode_tmdb,
-                            imdb_id=episode_imdb
-                        )
-                        if bookmark:
-                            percent = bookmark.get('percent_played', 0)
-                            if percent > 0:
-                                list_item.setProperty('PercentPlayed', str(int(percent)))
-                                info_tag.setPercentPlayed(float(percent))
-                                xbmc.log(f'[AIOStreams] Set PercentPlayed from fallback for S{season}E{episode} to {percent}%', xbmc.LOGINFO)
-                                resume_time = bookmark.get('resume_time', 0)
-                                if resume_time > 0:
-                                    list_item.setProperty('StartOffset', str(resume_time))
-
-                show_trakt_id = ep_data.get('show_trakt_id')
-                if show_trakt_id:
-                    is_watched = db.is_item_watched(show_trakt_id, 'episode', season, episode)
-                    if is_watched:
-                        info_tag.setPlaycount(1)
-                        list_item.setProperty('watched', 'true')
-                        list_item.setProperty('WatchedOverlay', 'indicator_watched.png')
-            except:
-                pass
-
-            # Build context menu
-            episode_media_id = f"{show_imdb}:{season}:{episode}"
-            episode_title_str = f'{show_title} - S{season:02d}E{episode:02d}'
-            context_menu = [
-                ('[COLOR lightcoral]Scrape Streams[/COLOR]', f'RunPlugin({get_url(action="show_streams", content_type="series", media_id=episode_media_id, title=episode_title_str, poster=poster, fanart=fanart, clearlogo=logo)})'),
-                ('[COLOR lightcoral]Browse Show[/COLOR]', f'ActivateWindow(Videos,{sys.argv[0]}?{urlencode({"action": "show_seasons", "meta_id": show_imdb})},return)')
-            ]
-
-            if HAS_MODULES and trakt.get_access_token() and show_imdb:
-                is_episode_watched = trakt.is_episode_watched(show_imdb, season, episode)
-                if is_episode_watched:
-                    context_menu.append(('[COLOR lightcoral]Mark Episode As Unwatched[/COLOR]',
-                                        f'RunPlugin({get_url(action="trakt_mark_unwatched", media_type="show", imdb_id=show_imdb, season=season, episode=episode)})'))
-                else:
-                    context_menu.append(('[COLOR lightcoral]Mark Episode As Watched[/COLOR]',
-                                        f'RunPlugin({get_url(action="trakt_mark_watched", media_type="show", imdb_id=show_imdb, season=season, episode=episode)})'))
-                
-                context_menu.append(('[COLOR lightcoral]Stop Watching (Drop) Trakt[/COLOR]',
-                                    f'RunPlugin({get_url(action="trakt_hide_from_progress", media_type="series", imdb_id=show_imdb)})'))
-
-            if context_menu:
-                list_item.addContextMenuItems(context_menu)
-
-            if show_imdb:
-                url = get_url(action='play', content_type='series', imdb_id=show_imdb, season=season, episode=episode, title=episode_title_str, poster=poster, fanart=fanart, clearlogo=logo)
-                list_item.setProperty('IsPlayable', 'true')
-                
-                air_date = ep_data.get('air_date')
-                if air_date:
-                    formatted_date = format_date_with_ordinal(air_date)
-                    list_item.setProperty('AiredDate', formatted_date)
-                    
             return (url, list_item, False)
-        
         except Exception as e:
+            xbmc.log(f'[AIOStreams] Error processing Next Up episode: {e}', xbmc.LOGERROR)
             return None
 
-    # Execute processing (lightweight now since metadata is pre-fetched)
+    # Execute processing
     for ep in next_episodes:
         result = process_ep(ep)
         if result:
-             xbmcplugin.addDirectoryItem(HANDLE, result[0], result[1], result[2])
+            xbmcplugin.addDirectoryItem(HANDLE, result[0], result[1], result[2])
 
     # Push Next Up data to window properties for instant widget updates
     _push_next_up_to_window(next_episodes)

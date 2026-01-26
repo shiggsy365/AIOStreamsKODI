@@ -301,3 +301,9 @@ Data retrieved: True, Has Metas: True, Count: 20
 Action: browse_catalog, Catalog ID: 39fe3b0.mdblist.3091
 Fetching catalog data from source...
 Data retrieved: True, Has Metas: True, Count: 20
+Action: browse_catalog, Catalog ID: 39fe3b0.trakt.trending.shows
+Fetching catalog data from source...
+Data retrieved: True, Has Metas: True, Count: 20
+Action: browse_catalog, Catalog ID: 39fe3b0.trakt.trending.movies
+Fetching catalog data from source...
+Data retrieved: True, Has Metas: True, Count: 16
