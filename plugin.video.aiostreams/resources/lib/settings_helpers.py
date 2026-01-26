@@ -52,11 +52,6 @@ def get_fallback_behavior():
     return get_setting('fallback_behavior', 'show_streams')
 
 
-def get_quality_preference():
-    """Get preferred quality setting."""
-    return get_setting('preferred_quality', constants.DEFAULT_QUALITY_PREFERENCE)
-
-
 def get_min_quality():
     """Get minimum quality setting."""
     return get_setting('min_quality', constants.DEFAULT_MIN_QUALITY)
@@ -84,19 +79,14 @@ def get_stream_timeout():
     return get_int_setting('stream_test_timeout', constants.DEFAULT_STREAM_TIMEOUT)
 
 
-def get_learn_preferences():
-    """Check if preference learning is enabled."""
-    return get_bool_setting('learn_preferences', constants.DEFAULT_LEARN_PREFERENCES)
-
-
 def get_show_progress_bars():
     """Check if progress bars should be shown."""
     return get_bool_setting('show_progress_bars', constants.DEFAULT_SHOW_PROGRESS_BARS)
 
 
-def get_color_code_items():
-    """Check if items should be color coded."""
-    return get_bool_setting('color_code_items', constants.DEFAULT_COLOR_CODE_ITEMS)
+def get_show_quality_badges():
+    """Check if quality badges should be shown."""
+    return get_bool_setting('show_quality_badges', True)
 
 
 def get_cache_expiry_hours():

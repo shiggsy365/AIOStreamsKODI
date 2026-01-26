@@ -115,68 +115,29 @@ class StreamManager:
 
     def sort_streams(self, streams):
         """
-        Sort streams by:
-        1. Reliability score
-        2. User preferences
-        3. Quality
+        Sort streams.
+        (DISABLED: Returns original JSON order at user request)
         """
-        def get_stream_score(stream):
-            stream_name = stream.get('name', stream.get('title', ''))
-            stream_url = stream.get('url', stream.get('externalUrl', ''))
-
-            # Get reliability score (0-1000 range)
-            reliability = self.get_reliability_score(stream_url) * 10
-
-            # Get quality score (0-400 range)
-            _, quality_rank, _ = self.detect_quality(stream_name)
-
-            # Get preference bonus (0-100 range)
-            preference = self.get_preference_score(stream_name)
-
-            # Total score
-            return reliability + quality_rank + preference
-
-        return sorted(streams, key=get_stream_score, reverse=True)
+        return streams
 
     def get_best_stream_fast(self, streams, quality_threshold='1080p', reliability_threshold=80):
-        """Get best stream with early termination if excellent quality found.
-
-        Implements "short-circuit" optimization - if we find a high-quality, reliable
-        stream early, return it immediately without processing remaining streams.
+        """Get best stream with original ordering logic removed.
 
         Args:
             streams: List of stream dicts
-            quality_threshold: Minimum quality to short-circuit (default: 1080p)
-            reliability_threshold: Minimum reliability score to short-circuit (default: 80%)
+            quality_threshold: Ignored (reserved for compatibility)
+            reliability_threshold: Ignored
 
         Returns:
-            Best stream dict or None if no streams
+            First stream from the list (original JSON order)
         """
         if not streams:
             return None
 
-        # Sort streams first
-        sorted_streams = self.sort_streams(streams)
-
-        # Get quality rank threshold
-        min_quality_rank = constants.QUALITY_RANKS.get(quality_threshold, constants.QUALITY_RANKS['1080p'])
-
-        # Check first few streams for excellent quality
-        for stream in sorted_streams[:5]:  # Only check top 5 for fast path
-            stream_name = stream.get('name', stream.get('title', ''))
-            stream_url = stream.get('url', stream.get('externalUrl', ''))
-
-            _, quality_rank, quality_label = self.detect_quality(stream_name)
-            reliability = self.get_reliability_score(stream_url)
-
-            # Short-circuit: Found excellent stream
-            if quality_rank >= min_quality_rank and reliability >= reliability_threshold:
-                xbmc.log(f'[AIOStreams] Fast path: Found excellent stream ({quality_label}, {reliability}% reliable)', xbmc.LOGINFO)
-                return stream
-
-        # No excellent stream found in top 5, return best overall
-        xbmc.log('[AIOStreams] No excellent stream in top 5, using best available', xbmc.LOGDEBUG)
-        return sorted_streams[0] if sorted_streams else None
+        # Filter streams by quality preference if applicable (handled by caller)
+        # But we return the first available after filtering
+        xbmc.log('[AIOStreams] Fast path active - returning first available stream in JSON order', xbmc.LOGDEBUG)
+        return streams[0]
 
     def get_reliability_score(self, stream_url):
         """
@@ -267,20 +228,18 @@ class StreamManager:
             return '☆☆☆'  # Poor
 
     def format_stream_title(self, stream):
-        """Format stream title with quality badge and reliability indicator."""
+        """Format stream title with quality badge."""
         stream_name = stream.get('name', stream.get('title', 'Unknown Stream'))
-        stream_url = stream.get('url', stream.get('externalUrl', ''))
 
         # Detect quality
-        quality_key, quality_rank, quality_label = self.detect_quality(stream_name)
+        _, quality_rank, quality_label = self.detect_quality(stream_name)
         quality_color = self.get_quality_color(quality_rank)
 
-        # Get reliability
-        reliability = self.get_reliability_score(stream_url)
-        reliability_icon = self.get_reliability_icon(reliability)
-
-        # Format title
-        formatted = f"{reliability_icon} [COLOR {quality_color}]{quality_label}[/COLOR] {stream_name}"
+        # Format title - Remove reliability icons for a cleaner presentation
+        if settings_helpers.get_show_quality_badges():
+            formatted = f"[COLOR {quality_color}]{quality_label}[/COLOR] {stream_name}"
+        else:
+            formatted = stream_name
 
         # Add description if available
         if stream.get('description'):

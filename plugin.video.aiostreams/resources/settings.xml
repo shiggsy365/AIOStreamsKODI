@@ -7,7 +7,6 @@
         <setting id="fallback_behavior" type="select" label="Fallback on Stream Failure" values="play_next|show_streams" default="show_streams" enable="eq(-1,play_first)"/>
 
         <setting id="quality_settings" type="lsep" label="Quality Settings"/>
-        <setting id="preferred_quality" type="select" label="Preferred Quality" values="any|4k|1080p|720p|480p" default="any"/>
         <setting id="min_quality" type="select" label="Minimum Quality" values="240p|360p|480p|720p|1080p" default="480p"/>
         <setting id="filter_low_quality" type="bool" label="Hide Low Quality Streams" default="false"/>
 
@@ -59,8 +58,7 @@
         <setting id="show_progress_bars" type="bool" label="Show Progress Bars" default="true"/>
         <setting id="color_code_items" type="bool" label="Color Code by Watch Status" default="true"/>
         <setting id="show_quality_badges" type="bool" label="Show Quality Badges" default="true"/>
-        <setting id="show_reliability_icons" type="bool" label="Show Reliability Icons" default="true"/>
-        <setting id="learn_preferences" type="bool" label="Learn Stream Preferences" default="true"/>
+        <setting id="show_quality_badges" type="bool" label="Show Quality Badges" default="true"/>
     </category>
 
     <!-- Advanced Settings -->
@@ -78,8 +76,6 @@
         <setting id="database_reset" type="action" label="Database Reset" action="RunPlugin(plugin://plugin.video.aiostreams/?action=database_reset)"/>
         <setting id="show_database_info" type="action" label="Show Database Info" action="RunPlugin(plugin://plugin.video.aiostreams/?action=show_database_info)"/>
         <setting id="optimize_database" type="action" label="Optimize Database" action="RunPlugin(plugin://plugin.video.aiostreams/?action=optimize_database)"/>
-        <setting id="clear_stream_stats" type="action" label="Clear Stream Statistics" action="RunPlugin(plugin://plugin.video.aiostreams/?action=clear_stream_stats)"/>
-        <setting id="clear_preferences" type="action" label="Clear Learned Preferences" action="RunPlugin(plugin://plugin.video.aiostreams/?action=clear_preferences)"/>
         <setting id="test_connection" type="action" label="Test AIOStreams Connection" action="RunPlugin(plugin://plugin.video.aiostreams/?action=test_connection)"/>
         
         <setting id="last_clearlogo_purge_time" type="text" default="0" visible="false"/>
