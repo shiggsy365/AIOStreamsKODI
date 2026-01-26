@@ -101,9 +101,15 @@ def populate_cast_properties(content_type=None):
             home_window.clearProperty(f'InfoWindow.Cast.{i}.Role')
             home_window.clearProperty(f'InfoWindow.Cast.{i}.Thumb')
         
-        # Fetch cast and trailer from API
+        # Fetch cast and metadata from API
         try:
-            cast_list, trailer_url = fetch_cast_from_api(imdb_id, content_type)
+            meta_data = fetch_cast_from_api(imdb_id, content_type)
+            if not meta_data:
+                log(f'No data returned from API for {imdb_id}', xbmc.LOGWARNING)
+                return imdb_id
+
+            cast_list = meta_data.get('cast', [])
+            trailer_url = meta_data.get('trailer_url')
             
             # Set Trailer Property
             if trailer_url:
@@ -112,9 +118,9 @@ def populate_cast_properties(content_type=None):
             else:
                 home_window.clearProperty('InfoWindow.Trailer')
             
+            # Set Cast properties
             if cast_list:
                 log(f'Found {len(cast_list)} cast members from API')
-                
                 # Set properties for up to 5 cast members
                 for i in range(1, 6):
                     if i <= len(cast_list):
@@ -126,13 +132,36 @@ def populate_cast_properties(content_type=None):
                         home_window.setProperty(f'InfoWindow.Cast.{i}.Name', name)
                         home_window.setProperty(f'InfoWindow.Cast.{i}.Role', role)
                         home_window.setProperty(f'InfoWindow.Cast.{i}.Thumb', thumb)
-                        log(f'Set cast {i}: {name} as {role}')
-                
-                log(f'Cast properties populated successfully: {len(cast_list)} members')
-            else:
-                log(f'No cast data returned from API for {imdb_id}', xbmc.LOGWARNING)
+                        log(f'Set cast {i}: {name}')
+            
+            # SET ADDITIONAL METADATA PROPERTIES
+            director = meta_data.get('director', '')
+            rating = meta_data.get('rating', '')
+            premiered = meta_data.get('premiered', '')
+            runtime = meta_data.get('runtime', '')
+            
+            if director:
+                home_window.setProperty('InfoWindow.Director', director)
+                log(f'Set InfoWindow.Director: {director}')
+            
+            if rating:
+                home_window.setProperty('InfoWindow.Rating', rating)
+                log(f'Set InfoWindow.Rating: {rating}')
+            
+            if premiered:
+                # Format: "2008-01-20T12:00:00.000Z" -> "2008-01-20"
+                if 'T' in premiered: premiered = premiered.split('T')[0]
+                home_window.setProperty('InfoWindow.Premiered', premiered)
+                log(f'Set InfoWindow.Premiered: {premiered}')
+            
+            if runtime:
+                # Format: "125 min" or "2h 5m"
+                home_window.setProperty('InfoWindow.Duration', runtime)
+                log(f'Set InfoWindow.Duration: {runtime}')
+
+            log(f'Cast and metadata properties populated successfully for {imdb_id}')
         except Exception as e:
-            log(f'Error fetching cast from API: {e}', xbmc.LOGERROR)
+            log(f'Error fetching data from API: {e}', xbmc.LOGERROR)
             import traceback
             log(traceback.format_exc(), xbmc.LOGERROR)
         
@@ -150,16 +179,11 @@ def reset_info_properties():
     win = xbmcgui.Window(10000)
     win.setProperty('AsyncLoading', 'true')
     
-    # Clear Cast
-    for i in range(1, 50):  # Clear reasonable range
-        win.clearProperty(f'InfoWindow.Cast.{i}.Name')
-        win.clearProperty(f'InfoWindow.Cast.{i}.Role')
-        win.clearProperty(f'InfoWindow.Cast.{i}.Thumb')
-    
-    # Clear Related
-    for i in range(1, 20):
-        win.clearProperty(f'InfoWindow.Related.{i}.Title')
-        win.clearProperty(f'InfoWindow.Related.{i}.Thumb')
+    # Clear Metadata
+    win.clearProperty('InfoWindow.Director')
+    win.clearProperty('InfoWindow.Rating')
+    win.clearProperty('InfoWindow.Premiered')
+    win.clearProperty('InfoWindow.Duration')
     
     xbmc.log('[info_window_helper] Properties reset. AsyncLoading=true', xbmc.LOGINFO)
 

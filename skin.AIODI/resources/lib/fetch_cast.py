@@ -78,15 +78,34 @@ def fetch_cast_from_api(imdb_id, content_type='movie'):
              if youtube_id:
                  trailer_url = f'plugin://plugin.video.youtube/play/?video_id={youtube_id}'
 
-        log(f'Successfully fetched {len(cast_list)} cast members. Trailer found: {bool(trailer_url)} ({trailer_url})')
-        return cast_list, trailer_url
+        # Extract other metadata for InfoWindow properties
+        director = meta.get('director')
+        if isinstance(director, list) and director:
+            director = director[0]
+        elif not director:
+            director = ''
+            
+        rating = meta.get('imdbRating') or meta.get('rating') or ''
+        released = meta.get('released', '')
+        runtime = meta.get('runtime', '')
+
+        log(f'Successfully fetched meta for {imdb_id}. Cast: {len(cast_list)}, Trailer: {bool(trailer_url)}, Director: {director}, Rating: {rating}')
+        
+        return {
+            'cast': cast_list,
+            'trailer_url': trailer_url,
+            'director': str(director),
+            'rating': str(rating),
+            'premiered': str(released),
+            'runtime': str(runtime)
+        }
         
     except requests.exceptions.Timeout:
         log(f'Timeout fetching cast from API for {imdb_id}', xbmc.LOGWARNING)
-        return [], None
+        return None
     except requests.exceptions.RequestException as e:
         log(f'Error fetching cast from API: {e}', xbmc.LOGERROR)
-        return [], None
+        return None
     except Exception as e:
         log(f'Unexpected error fetching cast: {e}', xbmc.LOGERROR)
-        return [], None
+        return None
