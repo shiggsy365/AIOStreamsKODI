@@ -795,13 +795,20 @@ def create_listitem_with_context(meta, content_type, action_url):
     
     # Set genres (handle both list and comma-separated string)
     genres_data = meta.get('genres', [])
+    genres_list = []
     if isinstance(genres_data, str):
-        genres_list = [g.strip() for g in genres_data.split(',')]
+        genres_list = [g.strip() for g in genres_data.split(',') if g.strip()]
     elif isinstance(genres_data, list):
-        genres_list = genres_data
-    else:
-        genres_list = []
-
+        for g in genres_data:
+            if isinstance(g, str):
+                genres_list.append(g)
+            elif isinstance(g, dict):
+                # Handle dicts by extracting name if present
+                name = g.get('name') or g.get('label')
+                if name: genres_list.append(str(name))
+            else:
+                genres_list.append(str(g))
+    
     if genres_list:
         info_tag.setGenres(genres_list)
     
@@ -809,7 +816,9 @@ def create_listitem_with_context(meta, content_type, action_url):
     # This ensures old values are cleared when list items are recycled
     for i in range(1, 4):
         genre_val = genres_list[i-1] if i <= len(genres_list) else ""
-        list_item.setProperty(f'Genre{i}', str(genre_val))
+        # Clean up any potential dict-like strings that might cause "{ " errors
+        genre_val = str(genre_val).replace('{', '').replace('}', '').strip()
+        list_item.setProperty(f'Genre{i}', genre_val)
 
     # Add debug logging for metadata
     xbmc.log(f"[AIOStreams] Creating item: {title}, Rating: {meta.get('imdbRating') or meta.get('rating')}, Genres: {genres_list}", xbmc.LOGDEBUG)
@@ -924,20 +933,6 @@ def create_listitem_with_context(meta, content_type, action_url):
     # Only use cast from AIOStreams (no Trakt API calls to avoid rate limiting)
     if cast_list:
         info_tag.setCast(cast_list)
-        
-        # Also set window properties for custom info window (first 5 cast members)
-        window = xbmcgui.Window(10000)  # Home window
-        for i in range(1, 6):
-            if i <= len(aio_cast):
-                cast_member = aio_cast[i-1]
-                window.setProperty(f'AIOStreams.Cast.{i}.Name', cast_member.get('name', ''))
-                window.setProperty(f'AIOStreams.Cast.{i}.Role', cast_member.get('character', ''))
-                window.setProperty(f'AIOStreams.Cast.{i}.Thumb', cast_member.get('photo', ''))
-            else:
-                # Clear if no more cast
-                window.clearProperty(f'AIOStreams.Cast.{i}.Name')
-                window.clearProperty(f'AIOStreams.Cast.{i}.Role')
-                window.clearProperty(f'AIOStreams.Cast.{i}.Thumb')
 
     # Add directors - try app_extras first (array format), then top level (comma-separated string)
     directors = app_extras.get('directors', [])
@@ -2924,7 +2919,7 @@ def youtube_menu():
         for label, url, icon in items:
             list_item = xbmcgui.ListItem(label=label)
             list_item.setArt({'icon': icon, 'thumb': icon})
-            list_item.setInfo('video', {'title': label})
+            list_item.getVideoInfoTag().setTitle(label)
             # YouTube plugin items are folders
             xbmcplugin.addDirectoryItem(HANDLE, url, list_item, True)
 
@@ -3486,7 +3481,7 @@ def trakt_next_up():
         
         # Fallback item for visual confirmation
         li = xbmcgui.ListItem(label='[No Next Up Episodes Found]')
-        li.setInfo('video', {'plot': 'Trakt returned no next up episodes.\nCheck your Trakt history or scrobbling status.'})
+        li.getVideoInfoTag().setPlot('Trakt returned no next up episodes.\nCheck your Trakt history or scrobbling status.')
         url = get_url(action='noop')
         xbmcplugin.addDirectoryItem(HANDLE, url, li, False)
         
@@ -4505,7 +4500,8 @@ def database_reset():
     db.clear_all_trakt_data()
     
     # Invalidate all caches
-    invalidate_progress_cache()
+    from resources.lib import trakt
+    trakt.invalidate_progress_cache()
     
     # Clear manifest cache
     from resources.lib.manifest import ManifestManager
@@ -5135,45 +5131,8 @@ def action_info(params):
         # However, we can use the 'open_info_dialog' helper pattern if available, or extended script.
         # But a trick is to open a hidden directory containing this item and trigger Info? No.
         
-        # Best approach for skin integration:
-        # 1. Set Window Properties (which the skin uses for Cast, etc.)
-        # Open Info Dialog explicitly to ensure it opens with new properties
-        # We use ID 12003 which is the standard id for MovieInformation
-        xbmc.executebuiltin('ActivateWindow(12003)')
-        
-        # If the user wants a full "scrape", we might need to update the focused item?
-        # That's hard from here.
-        
-        # Alternative: Use script.extendedinfo if available?
-        # xbmc.executebuiltin(f'RunScript(script.extendedinfo,info=extendedinfo,dbid={meta_id})') # if library?
-        
-        # Let's rely on standard Kodi behavior: 
-        # If we have the metadata, maybe we can just show a custom notification or assume the skin reads properties?
-        # The user said "calling for info ... should scrape and give me the information".
-        
-        # Let's try populating Window(Home) properties with EVERYTHING, just like we did for Cast.
-        # If the skin's DialogVideoInfo.xml uses $INFO[ListItem.Title], it uses the focused item.
-        # We cannot easily change the focused item's data on the fly.
-        
-        # However, we can use xbmcgui.Dialog().info(list_item) IF it existed. 
-        # Since it doesn't, we can try OpenInfo script format.
-        
-        # Let's populate Window Properties and hope the skin uses them or we modify the skin to key off a "ScrapedInfo" property.
-        # Actually, let's look at DialogVideoInfo.xml again. It uses $INFO[ListItem.Thumb], etc.
-        
-        # If we cannot update the ListItem, we are stuck unless we open a *different* window or reload the container.
-        # Refreshing the container with new data is too slow/disruptive.
-        
-        # Proxy solution: Open a temporary playlist? No.
-        
-        # Let's assume the user is okay with us setting Properties and they might edit the skin to read them 
-        # OR (better) we modify the skin to use a variable: $VAR[InfoTitle] which checks Window Property first.
-        
-        # But wait, checking the code for Cast Refactor:
-        # We used $INFO[Window(Home).Property(InfoWindow.Cast.X.Name)]
-        # So using Window Properties is established pattern here!
-        
-        # Let's set standard InfoWindow properties
+        # Now open the dialog.
+        # Set properties BEFORE opening window to ensure they are available on load
         window = xbmcgui.Window(10000)
         window.setProperty('InfoWindow.IsCustom', 'true')
         window.setProperty('InfoWindow.IMDB', meta_id)
@@ -5181,10 +5140,40 @@ def action_info(params):
         window.setProperty('InfoWindow.Plot', meta.get('description', ''))
         window.setProperty('InfoWindow.Year', str(meta.get('year', '')))
         window.setProperty('InfoWindow.Director', meta.get('director', ''))
-        window.setProperty('InfoWindow.Premiered', meta.get('released', '').split('T')[0])
+        window.setProperty('InfoWindow.Premiered', meta.get('released', '').split('T')[0] if meta.get('released') else "")
         window.setProperty('InfoWindow.DBType', content_type)
         window.setProperty('InfoWindow.Poster', meta.get('poster', ''))
         window.setProperty('InfoWindow.Fanart', meta.get('background', ''))
+        
+        # Add Rating to InfoWindow (matches the property we set for list items)
+        imdb_rating = meta.get('imdbRating') or meta.get('rating') or meta.get('Rating') or ''
+        try:
+            val = float(imdb_rating)
+            window.setProperty('InfoWindow.Rating', f"{val:.1f}")
+        except:
+            window.setProperty('InfoWindow.Rating', "")
+
+        # Add Genre to InfoWindow
+        genres_data = meta.get('genres', [])
+        if isinstance(genres_data, list):
+            genre_str = ' | '.join([str(g.get('name') if isinstance(g, dict) else g) for g in genres_data])
+        else:
+            genre_str = str(genres_data)
+        window.setProperty('InfoWindow.Genre', genre_str)
+
+        # Add cast members (up to 12) for the skin chips
+        info_tag = list_item.getVideoInfoTag()
+        actors = info_tag.getCast() or []
+        for i in range(1, 13):
+            if i <= len(actors):
+                actor = actors[i-1]
+                window.setProperty(f'InfoWindow.Cast.{i}.Name', actor.name if hasattr(actor, 'name') else str(actor))
+                window.setProperty(f'InfoWindow.Cast.{i}.Role', actor.role if hasattr(actor, 'role') else "")
+                window.setProperty(f'InfoWindow.Cast.{i}.Thumb', actor.thumbnail if hasattr(actor, 'thumbnail') else "")
+            else:
+                window.clearProperty(f'InfoWindow.Cast.{i}.Name')
+                window.clearProperty(f'InfoWindow.Cast.{i}.Role')
+                window.clearProperty(f'InfoWindow.Cast.{i}.Thumb')
         
         # Duration handling
         try:
@@ -5197,8 +5186,7 @@ def action_info(params):
             pass
 
         # Now open the dialog.
-        # Short sleep to ensure properties are propagated
-        xbmc.sleep(200)
+        xbmc.sleep(100)
         xbmc.executebuiltin('ActivateWindow(12003)') # DialogVideoInfo
         
     except Exception as e:

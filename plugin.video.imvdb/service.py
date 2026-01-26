@@ -27,10 +27,11 @@ def set_listitem_info(list_item, info):
             if 'year' in info: tag.setYear(int(info['year']))
             if 'mediatype' in info: tag.setMediaType(str(info['mediatype']))
         else:
-            list_item.setInfo('video', info)
+            # Fallback for very old Kodi, though info tag is much preferred
+            try: list_item.setInfo('video', info)
+            except: pass
     except Exception as e:
         log(f"Error setting InfoTag: {str(e)}", xbmc.LOGDEBUG)
-        list_item.setInfo('video', info)
 
 class IMVDbPlayer(xbmc.Player):
     def __init__(self, *args, **kwargs):
