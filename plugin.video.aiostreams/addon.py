@@ -2757,8 +2757,14 @@ def show_seasons():
     """Show seasons for a TV series."""
     from resources.lib import trakt
     params = dict(parse_qsl(sys.argv[2][1:]))
-    meta_id = params['meta_id']
-    
+    meta_id = params.get('meta_id')
+
+    if not meta_id:
+        xbmc.log('[AIOStreams] show_seasons: meta_id parameter is missing or empty', xbmc.LOGERROR)
+        xbmcgui.Dialog().notification('AIOStreams', 'Invalid show ID', xbmcgui.NOTIFICATION_ERROR)
+        xbmcplugin.endOfDirectory(HANDLE)
+        return
+
     # === DB OPTIMIZATION: Try local SyncDB first ===
     meta_data = None
     try:
@@ -2963,8 +2969,13 @@ def youtube_menu():
 def browse_show():
     """Open custom browse window for TV show with seasons and episodes."""
     params = dict(parse_qsl(sys.argv[2][1:]))
-    meta_id = params['meta_id']
-    
+    meta_id = params.get('meta_id')
+
+    if not meta_id:
+        xbmc.log('[AIOStreams] browse_show: meta_id parameter is missing or empty', xbmc.LOGERROR)
+        xbmcgui.Dialog().notification('AIOStreams', 'Invalid show ID', xbmcgui.NOTIFICATION_ERROR)
+        return
+
     meta_data = get_meta('series', meta_id)
     
     if not meta_data or 'meta' not in meta_data:
@@ -3012,9 +3023,23 @@ def show_episodes():
     """Show episodes for a specific season."""
     from resources.lib import trakt
     params = dict(parse_qsl(sys.argv[2][1:]))
-    meta_id = params['meta_id']
-    season = int(params['season'])
-    
+    meta_id = params.get('meta_id')
+    season_param = params.get('season')
+
+    if not meta_id or not season_param:
+        xbmc.log('[AIOStreams] show_episodes: meta_id or season parameter is missing', xbmc.LOGERROR)
+        xbmcgui.Dialog().notification('AIOStreams', 'Invalid episode parameters', xbmcgui.NOTIFICATION_ERROR)
+        xbmcplugin.endOfDirectory(HANDLE)
+        return
+
+    try:
+        season = int(season_param)
+    except (ValueError, TypeError):
+        xbmc.log(f'[AIOStreams] show_episodes: Invalid season number: {season_param}', xbmc.LOGERROR)
+        xbmcgui.Dialog().notification('AIOStreams', 'Invalid season number', xbmcgui.NOTIFICATION_ERROR)
+        xbmcplugin.endOfDirectory(HANDLE)
+        return
+
     # === DB OPTIMIZATION: Try local SyncDB first ===
     meta_data = None
     try:
@@ -3217,7 +3242,7 @@ def show_episodes():
         episode_clearlogo = meta.get('logo', '')
         context_menu = [
             ('[COLOR lightcoral]Scrape Streams[/COLOR]', f'RunPlugin({get_url(action="show_streams", content_type="series", media_id=episode_media_id, title=episode_title, poster=episode_poster, fanart=episode_fanart, clearlogo=episode_clearlogo)})'),
-            ('[COLOR lightcoral]Browse Show[/COLOR]', f'ActivateWindow(Videos,{sys.argv[0]}?{urlencode({"action": "show_seasons", "meta_id": meta_id})},return)')
+            ('[COLOR lightcoral]Browse Show[/COLOR]', f'ActivateWindow(Videos,{get_url(action="show_seasons", meta_id=meta_id)},return)')
         ]
 
         # Add Trakt watched toggle if authorized
@@ -3672,7 +3697,7 @@ def trakt_next_up():
             # Build context menu (create_listitem_with_context already adds standard ones)
             context_menu = []
             context_menu.append(('[COLOR lightcoral]Scrape Streams[/COLOR]', f'RunPlugin({get_url(action="show_streams", content_type="series", media_id=f"{show_imdb}:{season}:{episode}", title=label, poster=poster, fanart=fanart, clearlogo=logo)})'))
-            context_menu.append(('[COLOR lightcoral]Browse Show[/COLOR]', f'ActivateWindow(Videos,{sys.argv[0]}?{urlencode({"action": "show_seasons", "meta_id": show_imdb})},return)'))
+            context_menu.append(('[COLOR lightcoral]Browse Show[/COLOR]', f'ActivateWindow(Videos,{get_url(action="show_seasons", meta_id=show_imdb)},return)'))
             list_item.addContextMenuItems(context_menu)
             list_item.setProperty('IsPlayable', 'true')
 
@@ -4076,15 +4101,34 @@ def clear_cache():
 
     try:
         xbmc.log('[AIOStreams] Starting cache clear operation', xbmc.LOGINFO)
-        
+
+        # Clear in-memory caches FIRST
+        xbmc.log('[AIOStreams] Clearing in-memory caches', xbmc.LOGINFO)
+        cache.get_cache().clear_memory_cache()
+
         # Clear generic caches (manifest, metadata, catalogs, HTTP headers)
         xbmc.log('[AIOStreams] Clearing manifest, metadata, catalog, and HTTP header caches', xbmc.LOGINFO)
         cache.cleanup_expired_cache(force_all=True)
-        
-        # Also clear Trakt progress caches (memory + disk)
+
+        # Clear Trakt progress caches (memory + disk)
         xbmc.log('[AIOStreams] Clearing Trakt progress caches', xbmc.LOGINFO)
         trakt.invalidate_progress_cache()
-        
+
+        # Clear clearlogo cache
+        xbmc.log('[AIOStreams] Clearing clearlogo cache', xbmc.LOGINFO)
+        if clear_clearlogo_cache():
+            xbmc.log('[AIOStreams] Clearlogo cache cleared successfully', xbmc.LOGINFO)
+
+        # Clear stream stats and preferences
+        xbmc.log('[AIOStreams] Clearing stream statistics and preferences', xbmc.LOGINFO)
+        try:
+            stream_mgr = streams.get_stream_manager()
+            stream_mgr.clear_stats()
+            stream_mgr.clear_preferences()
+            xbmc.log('[AIOStreams] Stream stats and preferences cleared', xbmc.LOGINFO)
+        except Exception as e:
+            xbmc.log(f'[AIOStreams] Error clearing stream data: {e}', xbmc.LOGWARNING)
+
         # Verify manifest cache was cleared by checking for manifest files
         cache_dir = cache.get_cache_dir()
         remaining_manifests = []
@@ -4130,11 +4174,17 @@ def refresh_manifest_cache():
         # Use the cache module's invalidate method instead of manual file deletion
         # This handles the internal naming conventions correctly
         cache.get_cache().invalidate('manifest', cache_key)
-        
+
+        # CRITICAL: Also clear HTTP headers cache (ETag/Last-Modified) to prevent 304 response
+        # The full_cache_key format is "manifest:{cache_key}" as used in make_request()
+        full_cache_key = f'manifest:{cache_key}'
+        cache.get_cache().invalidate('http_headers', full_cache_key)
+        xbmc.log(f'[AIOStreams] Invalidated HTTP headers cache for key: {full_cache_key}', xbmc.LOGDEBUG)
+
         # Also clear from cache module's internal tracking
         cache.cleanup_expired_cache(force_all=False)
 
-        # Now fetch fresh manifest
+        # Now fetch fresh manifest (will not send If-None-Match since headers cache is cleared)
         xbmc.log('[AIOStreams] Fetching fresh manifest from server', xbmc.LOGINFO)
         manifest = get_manifest(force=True)
 
@@ -4442,20 +4492,40 @@ def database_reset():
 
     if not confirm:
         return
-        
+
+    # Clear in-memory caches FIRST (critical for avoiding stale data)
+    xbmc.log('[AIOStreams] Clearing in-memory caches before database reset', xbmc.LOGINFO)
+    from resources.lib import cache
+    cache.get_cache().clear_memory_cache()
+
     db = TraktSyncDatabase()
     db.clear_all_trakt_data()
-    
+
     # Invalidate all caches
     from resources.lib import trakt
     trakt.invalidate_progress_cache()
-    
-    # Clear local cache
-    from resources.lib import cache
+
+    # Clear local file caches (manifest, metadata, catalogs, HTTP headers)
+    xbmc.log('[AIOStreams] Clearing file caches (manifest, metadata, catalogs, HTTP headers)', xbmc.LOGINFO)
     cache.cleanup_expired_cache(force_all=True)
-    
-    xbmcgui.Dialog().notification('Database Reset', 'Core database and caches cleared', xbmcgui.NOTIFICATION_INFO)
-    
+
+    # Clear clearlogo cache
+    xbmc.log('[AIOStreams] Clearing clearlogo cache', xbmc.LOGINFO)
+    if clear_clearlogo_cache():
+        xbmc.log('[AIOStreams] Clearlogo cache cleared successfully', xbmc.LOGINFO)
+
+    # Clear stream stats and preferences
+    xbmc.log('[AIOStreams] Clearing stream statistics and preferences', xbmc.LOGINFO)
+    try:
+        stream_mgr = streams.get_stream_manager()
+        stream_mgr.clear_stats()
+        stream_mgr.clear_preferences()
+        xbmc.log('[AIOStreams] Stream stats and preferences cleared', xbmc.LOGINFO)
+    except Exception as e:
+        xbmc.log(f'[AIOStreams] Error clearing stream data: {e}', xbmc.LOGWARNING)
+
+    xbmcgui.Dialog().notification('Database Reset', 'All database tables and caches cleared', xbmcgui.NOTIFICATION_INFO)
+
     # Trigger Trakt re-sync if enabled
     if ADDON.getSettingBool('trakt_sync_auto'):
         from resources.lib import trakt
