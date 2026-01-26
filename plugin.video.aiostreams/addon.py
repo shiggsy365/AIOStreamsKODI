@@ -1044,7 +1044,7 @@ def create_listitem_with_context(meta, content_type, action_url):
                         if user_rating:
                             list_item.setProperty('TraktUserRating', str(user_rating))
             except Exception as e:
-                xbmc.log(f'[AIOStreams) Error setting watched/bookmark/rating status for {item_id}: {e}', xbmc.LOGDEBUG)
+                xbmc.log(f'[AIOStreams] Error setting watched/bookmark/rating status for {item_id}: {e}', xbmc.LOGDEBUG)
     
     # Set artwork
     art = {}

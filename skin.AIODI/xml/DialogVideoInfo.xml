@@ -347,7 +347,7 @@
 						<font>font13_title</font>
 						<textcolor>white</textcolor>
 						<label>Cast</label>
-						<visible>!String.IsEmpty(ListItem.Cast)</visible>
+						<visible>Integer.GreaterThan(Container(50).NumItems,0)</visible>
 					</control>
 
 					<!-- Loading Indicator -->
@@ -754,7 +754,7 @@
 					<!-- Related Content Row -->
 					<control type="label">
 						<left>0</left>
-						<top>280</top>
+						<top>680</top>
 						<width>1245</width>
 						<height>30</height>
 						<font>font13_title</font>
@@ -764,7 +764,7 @@
 					</control>
 					<control type="fixedlist" id="5000">
 						<left>5</left>
-						<top>320</top>
+						<top>720</top>
 						<width>1245</width>
 						<height>280</height>
 						<onup>50</onup>

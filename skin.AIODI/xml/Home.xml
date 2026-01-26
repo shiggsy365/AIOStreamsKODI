@@ -121,7 +121,7 @@
 				<left>0</left>
 				<top>200</top>
 				<width>632</width>
-				<height>340</height>
+				<height>310</height>
 				<font>font13</font>
 				<textcolor>FFFFFFFF</textcolor>
 				<label>$VAR[CurrentWidgetPlot]</label>
@@ -132,7 +132,7 @@
 			<!-- Metadata Chips for Episodes: [S01E01] [premiered] [duration] [mpaa] [rating] -->
 			<control type="group">
 				<left>0</left>
-				<top>540</top>
+				<top>510</top>
 				<width>1550</width>
 				<height>50</height>
 				<visible>!String.IsEmpty(Control.GetLabel(8889))</visible>
@@ -266,7 +266,7 @@
 			<!-- Metadata Chips for Shows/Movies: [premiered] [duration] [mpaa] [rating] -->
 			<control type="group">
 				<left>0</left>
-				<top>540</top>
+				<top>510</top>
 				<width>1550</width>
 				<height>50</height>
 				<visible>String.IsEmpty(Control.GetLabel(8889))</visible>
