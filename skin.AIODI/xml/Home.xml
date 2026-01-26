@@ -232,15 +232,16 @@
 							<textoffsetx>75</textoffsetx>
 							<label>$VAR[ActiveItem_IMDbRating]</label>
 							<align>center</align>
+							<aligny>center</aligny>
+							<texturefocus colordiffuse="80000000" border="2,2,2,2">colors/white.png</texturefocus>
+							<texturenofocus colordiffuse="80000000" border="2,2,2,2">colors/white.png</texturenofocus>
+							<bordertexture colordiffuse="FFF5C518" border="2">colors/white.png</bordertexture>
+							<bordersize>2</bordersize>
+							<onclick>noop</onclick>
+							<enable>false</enable>
+							<visible>Variable.ActiveItem_IMDbRating_Visible</visible>
+						</control>
 
-					<aligny>center</aligny>
-					<texturefocus colordiffuse="80000000" border="2,2,2,2">colors/white.png</texturefocus>
-					<texturenofocus colordiffuse="80000000" border="2,2,2,2">colors/white.png</texturenofocus>
-					<bordertexture colordiffuse="FFF5C518" border="2">colors/white.png</bordertexture>
-					<bordersize>2</bordersize>
-					<onclick>noop</onclick>
-					<enable>false</enable>
-				</control>
 
 				<!-- IMDb Logo (overlaid on rating chip) -->
 				<control type="image">
@@ -249,6 +250,7 @@
 					<width>60</width>
 					<height>30</height>
 					<texture>imdb_logo.png</texture>
+					<visible>Variable.ActiveItem_IMDbRating_Visible</visible>
 					<aspectratio>keep</aspectratio>
 				</control>
 			</control>
@@ -310,7 +312,7 @@
 					<font>font10</font>
 					<textcolor>FFFFFFFF</textcolor>
 					<focusedcolor>FFFFFFFF</focusedcolor>
-					<label>$INFO[Container($VAR[ActiveWidgetID]).ListItem.Mpaa]</label>
+					<label>$VAR[ActiveItem_MPAA]</label>
 					<align>center</align>
 					<aligny>center</aligny>
 					<texturefocus colordiffuse="80000000" border="2,2,2,2">colors/white.png</texturefocus>
@@ -331,7 +333,7 @@
 					<textcolor>FFFFFFFF</textcolor>
 					<focusedcolor>FFFFFFFF</focusedcolor>
 					<textoffsetx>75</textoffsetx>
-					<label>$INFO[Container($VAR[ActiveWidgetID]).ListItem.Property(IMDbRating)]</label>
+					<label>$VAR[ActiveItem_IMDbRating]</label>
 					<align>center</align>
 					<aligny>center</aligny>
 					<texturefocus colordiffuse="80000000" border="2,2,2,2">colors/white.png</texturefocus>
@@ -378,7 +380,7 @@
 					<bordersize>2</bordersize>
 					<onclick>noop</onclick>
 					<enable>false</enable>
-					<visible>!String.IsEmpty($VAR[Genre1_Text])</visible>
+					<visible>Variable.Genre1_Visible</visible>
 				</control>
 
 				<!-- Genre 2 -->
@@ -399,7 +401,7 @@
 					<bordersize>2</bordersize>
 					<onclick>noop</onclick>
 					<enable>false</enable>
-					<visible>!String.IsEmpty($VAR[Genre2_Text])</visible>
+					<visible>Variable.Genre2_Visible</visible>
 				</control>
 
 				<!-- Genre 3 -->
@@ -420,7 +422,7 @@
 					<bordersize>2</bordersize>
 					<onclick>noop</onclick>
 					<enable>false</enable>
-					<visible>!String.IsEmpty($VAR[Genre3_Text])</visible>
+					<visible>Variable.Genre3_Visible</visible>
 				</control>
 			</control>
 		</control>

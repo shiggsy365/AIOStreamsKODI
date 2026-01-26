@@ -823,6 +823,14 @@ def create_listitem_with_context(meta, content_type, action_url):
     # IMDb Rating property for skin use
     rating = meta.get('imdbRating') or meta.get('rating') or meta.get('Rating') or ''
     list_item.setProperty('IMDbRating', str(rating))
+    
+    # Set Rating in InfoTag for standard ListItem.Rating support
+    if rating:
+        try:
+            val = float(rating)
+            info_tag.setRating(val)
+        except:
+            pass
 
     # Add debug logging for metadata
     xbmc.log(f"[AIOStreams] DEBUG: create_listitem_with_context for title={title}", xbmc.LOGINFO)
