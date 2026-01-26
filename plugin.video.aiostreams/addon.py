@@ -3698,6 +3698,19 @@ def trakt_next_up():
             context_menu = []
             context_menu.append(('[COLOR lightcoral]Scrape Streams[/COLOR]', f'RunPlugin({get_url(action="show_streams", content_type="series", media_id=f"{show_imdb}:{season}:{episode}", title=label, poster=poster, fanart=fanart, clearlogo=logo)})'))
             context_menu.append(('[COLOR lightcoral]Browse Show[/COLOR]', f'ActivateWindow(Videos,{get_url(action="show_seasons", meta_id=show_imdb)},return)'))
+
+            # Add Trakt watched toggle for episodes if authorized
+            if HAS_MODULES and trakt.get_access_token() and show_imdb:
+                show_trakt_id = ep_data.get('show_trakt_id')
+                if show_trakt_id:
+                    is_watched = db.is_item_watched(show_trakt_id, 'episode', season, episode)
+                    if is_watched:
+                        context_menu.append(('[COLOR lightcoral]Mark Episode As Unwatched[/COLOR]',
+                                            f'RunPlugin({get_url(action="trakt_mark_unwatched", media_type="show", imdb_id=show_imdb, season=season, episode=episode)})'))
+                    else:
+                        context_menu.append(('[COLOR lightcoral]Mark Episode As Watched[/COLOR]',
+                                            f'RunPlugin({get_url(action="trakt_mark_watched", media_type="show", imdb_id=show_imdb, season=season, episode=episode)})'))
+
             list_item.addContextMenuItems(context_menu)
             list_item.setProperty('IsPlayable', 'true')
 
