@@ -824,6 +824,22 @@ def create_listitem_with_context(meta, content_type, action_url):
     rating = meta.get('imdbRating') or meta.get('rating') or meta.get('Rating') or ''
     list_item.setProperty('IMDbRating', str(rating))
     
+    # Cast & Director
+    director = meta.get('director') or ''
+    list_item.setProperty('Director', str(director))
+    
+    cast_data = meta.get('cast', [])
+    if isinstance(cast_data, str):
+        cast_list = [c.strip() for c in cast_data.split(',') if c.strip()]
+    else:
+        cast_list = cast_data
+        
+    for i in range(1, 4):
+        val = cast_list[i-1] if i <= len(cast_list) else ""
+        if isinstance(val, dict):
+            val = val.get('name') or val.get('label') or ""
+        list_item.setProperty(f'Cast{i}', str(val))
+
     # Set Rating in InfoTag for standard ListItem.Rating support
     if rating:
         try:
