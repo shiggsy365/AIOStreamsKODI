@@ -946,7 +946,7 @@
 					<param name="posy" value="320" />
 					<param name="visible" value="true" />
 				</include>
-			</control>
+
 			<control type="label">
 				<right>80</right>
 				<top>970</top>
