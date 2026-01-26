@@ -43,30 +43,47 @@
 			<aspectratio>scale</aspectratio>
 		</control>
 		<!-- Background Fanart - scaled to widget row, aspect ratio maintained, anchored to top right -->
-		<!-- Fanart Composition Group -->
-		<control type="group">
+		<control type="image">
+			<depth>DepthBackground</depth>
+			<left>48%</left>
 			<right>0</right>
 			<top>0</top>
-			<width>1138</width>
-			<height>640</height>
-			
-			<!-- Fanart Image (Scaled to fill) -->
-			<control type="image">
-				<depth>DepthBackground</depth>
-				<width>100%</width>
-				<height>100%</height>
-				<texture background="true">$VAR[CurrentWidgetFanart]</texture>
-				<aspectratio aligny="top">scale</aspectratio>
-			</control>
+			<bottom>520</bottom>
+			<texture background="true">$VAR[CurrentWidgetFanart]</texture>
+			<aspectratio align="right" aligny="top">keep</aspectratio>
+		</control>
 
-			<!-- New Composite Overlay (Left & Bottom Gradients) -->
-			<control type="image">
-				<depth>DepthBackground</depth>
-				<width>100%</width>
-				<height>100%</height>
-				<texture>colors/fanart_overlay.png</texture>
-				<aspectratio>stretch</aspectratio>
-			</control>
+		<!-- Fanart Left Edge Gradient: black (left) to transparent (right), 200px wide, aligned with fanart left edge -->
+		<control type="image">
+			<depth>DepthBackground</depth>
+			<left>48%</left>
+			<top>0</top>
+			<width>200</width>
+			<bottom>520</bottom>
+			<texture>colors/gradient_left_to_right.png</texture>
+			<aspectratio>stretch</aspectratio>
+		</control>
+
+		<!-- Fanart Bottom Edge Gradient: black (bottom) to transparent (top), 150px tall, aligned with fanart bottom edge -->
+		<control type="image">
+			<depth>DepthBackground</depth>
+			<right>0</right>
+			<bottom>520</bottom>
+			<width>52%</width>
+			<height>150</height>
+			<texture>colors/gradient_top_to_bottom.png</texture>
+			<aspectratio>stretch</aspectratio>
+		</control>
+
+		<!-- Gradient Overlay (Left to Right Black) -->
+		<control type="image">
+			<depth>DepthBackground</depth>
+			<left>0</left>
+			<top>0</top>
+			<bottom>0</bottom>
+			<width>1000</width>
+			<texture colordiffuse="E0FFFFFF">colors/gradient_left_to_right.png</texture>
+			<aspectratio>stretch</aspectratio>
 		</control>
 		
 		<!-- Info Overlay -->
@@ -120,9 +137,9 @@
 			<control type="textbox">
 				<left>0</left>
 				<top>200</top>
-				<width>632</width>
-				<height>310</height>
-				<font>font13</font>
+				<width>900</width>
+				<height>220</height>
+				<font>font15</font>
 				<textcolor>FFFFFFFF</textcolor>
 				<label>$VAR[CurrentWidgetPlot]</label>
 				<shadowcolor>text_shadow</shadowcolor>
@@ -132,7 +149,7 @@
 			<!-- Metadata Chips for Episodes: [S01E01] [premiered] [duration] [mpaa] [rating] -->
 			<control type="group">
 				<left>0</left>
-				<top>510</top>
+				<top>450</top>
 				<width>1550</width>
 				<height>50</height>
 				<visible>!String.IsEmpty(Control.GetLabel(8889))</visible>
@@ -151,7 +168,6 @@
 					<aligny>center</aligny>
 					<texturefocus colordiffuse="80000000" border="2,2,2,2">colors/white.png</texturefocus>
 					<texturenofocus colordiffuse="80000000" border="2,2,2,2">colors/white.png</texturenofocus>
-					<disabledcolor>FFFFFFFF</disabledcolor>
 					<bordertexture colordiffuse="FFFFFFFF" border="2">colors/white.png</bordertexture>
 					<bordersize>2</bordersize>
 					<onclick>noop</onclick>
@@ -172,7 +188,6 @@
 					<aligny>center</aligny>
 					<texturefocus colordiffuse="80000000" border="2,2,2,2">colors/white.png</texturefocus>
 					<texturenofocus colordiffuse="80000000" border="2,2,2,2">colors/white.png</texturenofocus>
-					<disabledcolor>FFFFFFFF</disabledcolor>
 					<bordertexture colordiffuse="FFFFFFFF" border="2">colors/white.png</bordertexture>
 					<bordersize>2</bordersize>
 					<onclick>noop</onclick>
@@ -193,7 +208,6 @@
 					<aligny>center</aligny>
 					<texturefocus colordiffuse="80000000" border="2,2,2,2">colors/white.png</texturefocus>
 					<texturenofocus colordiffuse="80000000" border="2,2,2,2">colors/white.png</texturenofocus>
-					<disabledcolor>FFFFFFFF</disabledcolor>
 					<bordertexture colordiffuse="FFFFFFFF" border="2">colors/white.png</bordertexture>
 					<bordersize>2</bordersize>
 					<onclick>noop</onclick>
@@ -215,7 +229,6 @@
 					<aligny>center</aligny>
 					<texturefocus colordiffuse="80000000" border="2,2,2,2">colors/white.png</texturefocus>
 					<texturenofocus colordiffuse="80000000" border="2,2,2,2">colors/white.png</texturenofocus>
-					<disabledcolor>FFFFFFFF</disabledcolor>
 					<bordertexture colordiffuse="FFDC143C" border="2">colors/white.png</bordertexture>
 					<bordersize>2</bordersize>
 					<onclick>noop</onclick>
@@ -228,7 +241,7 @@
 						<top>0</top>
 						<width>150</width>
 						<height>40</height>
-						<visible>!String.IsEmpty(VAR[ActiveItem_IMDbRating])</visible>
+						<visible>!String.IsEmpty($VAR[ActiveItem_IMDbRating])</visible>
 
 						<control type="button" id="9905">
 							<left>0</left>
@@ -244,7 +257,6 @@
 							<aligny>center</aligny>
 							<texturefocus colordiffuse="80000000" border="2,2,2,2">colors/white.png</texturefocus>
 							<texturenofocus colordiffuse="80000000" border="2,2,2,2">colors/white.png</texturenofocus>
-							<disabledcolor>FFFFFFFF</disabledcolor>
 							<bordertexture colordiffuse="FFF5C518" border="2">colors/white.png</bordertexture>
 							<bordersize>2</bordersize>
 							<onclick>noop</onclick>
@@ -266,7 +278,7 @@
 			<!-- Metadata Chips for Shows/Movies: [premiered] [duration] [mpaa] [rating] -->
 			<control type="group">
 				<left>0</left>
-				<top>510</top>
+				<top>450</top>
 				<width>1550</width>
 				<height>50</height>
 				<visible>String.IsEmpty(Control.GetLabel(8889))</visible>
@@ -337,7 +349,7 @@
 					<top>0</top>
 					<width>150</width>
 					<height>40</height>
-					<visible>!String.IsEmpty(VAR[ActiveItem_IMDbRating])</visible>
+					<visible>!String.IsEmpty($VAR[ActiveItem_IMDbRating])</visible>
 
 					<control type="button" id="9914">
 						<left>0</left>
@@ -373,7 +385,7 @@
 
 			<!-- Genre Chips (Stacked vertically, aligned with middle of clearlogo (y=90)) -->
 			<control type="group">
-				<left>500</left>
+				<left>510</left>
 				<top>20</top>
 				<width>220</width>
 				<height>140</height>
@@ -392,7 +404,6 @@
 					<aligny>center</aligny>
 					<texturefocus colordiffuse="80000000" border="2,2,2,2">colors/white.png</texturefocus>
 					<texturenofocus colordiffuse="80000000" border="2,2,2,2">colors/white.png</texturenofocus>
-					<disabledcolor>FFFFFFFF</disabledcolor>
 					<bordertexture colordiffuse="FFFFFFFF" border="2">colors/white.png</bordertexture>
 					<bordersize>2</bordersize>
 					<onclick>noop</onclick>
@@ -413,7 +424,6 @@
 					<aligny>center</aligny>
 					<texturefocus colordiffuse="80000000" border="2,2,2,2">colors/white.png</texturefocus>
 					<texturenofocus colordiffuse="80000000" border="2,2,2,2">colors/white.png</texturenofocus>
-					<disabledcolor>FFFFFFFF</disabledcolor>
 					<bordertexture colordiffuse="FFFFFFFF" border="2">colors/white.png</bordertexture>
 					<bordersize>2</bordersize>
 					<onclick>noop</onclick>
@@ -434,7 +444,6 @@
 					<aligny>center</aligny>
 					<texturefocus colordiffuse="80000000" border="2,2,2,2">colors/white.png</texturefocus>
 					<texturenofocus colordiffuse="80000000" border="2,2,2,2">colors/white.png</texturenofocus>
-					<disabledcolor>FFFFFFFF</disabledcolor>
 					<bordertexture colordiffuse="FFFFFFFF" border="2">colors/white.png</bordertexture>
 					<bordersize>2</bordersize>
 					<onclick>noop</onclick>
@@ -787,7 +796,7 @@
 <!-- Home Widgets -->
 <control type="group" id="11000">
 	<zorder>10</zorder>
-	<bottom>0</bottom>
+	<bottom>50</bottom>
 	<left>150</left>
 	<width>1750</width>
 	<height>470</height>

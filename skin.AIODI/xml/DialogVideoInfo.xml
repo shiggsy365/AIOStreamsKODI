@@ -338,18 +338,6 @@
 					<width>1245</width>
 					<height>800</height>
 
-					<!-- Cast Header -->
-					<control type="label">
-						<left>0</left>
-						<top>0</top>
-						<width>1245</width>
-						<height>30</height>
-						<font>font13_title</font>
-						<textcolor>white</textcolor>
-						<label>Cast</label>
-						<visible>!String.IsEmpty(ListItem.Cast)</visible>
-					</control>
-
 					<!-- Loading Indicator -->
 					<control type="group">
 						<visible>!String.IsEmpty(Window(Home).Property(AsyncLoading))</visible>
@@ -363,10 +351,10 @@
 						</control>
 					</control>
 
-					<!-- Cast List (shifted down for header) -->
+					<!-- Cast List -->
 					<control type="fixedlist" id="50">
 						<left>0</left>
-						<top>40</top>
+						<top>0</top>
 						<width>1245</width>
 						<height>280</height>
 						<onup>8000</onup>
@@ -412,12 +400,12 @@
 								</control>
 							</control>
 						</itemlayout>
-						<focusedlayout width="175" height="270">
+						<focusedlayout width="200" height="270">
 							<control type="group">
 								<animation effect="zoom" center="90,135" start="100" end="110" time="200" tween="sine" easing="out">Focus</animation>
 								<left>0</left>
 								<top>0</top>
-								<width>155</width>
+								<width>180</width>
 								<height>270</height>
 								<control type="image">
 									<left>0</left>
@@ -432,7 +420,7 @@
 								<control type="image">
 									<left>0</left>
 									<top>220</top>
-									<width>155</width>
+									<width>180</width>
 									<height>50</height>
 									<texture>colors/black_50.png</texture>
 								</control>
@@ -628,7 +616,6 @@
 								<aligny>center</aligny>
 								<texturefocus colordiffuse="80000000" border="2,2,2,2">colors/white.png</texturefocus>
 								<texturenofocus colordiffuse="80000000" border="2,2,2,2">colors/white.png</texturenofocus>
-								<disabledcolor>FFFFFFFF</disabledcolor>
 								<bordertexture colordiffuse="FFFFFFFF" border="2">colors/white.png</bordertexture>
 								<bordersize>2</bordersize>
 								<onclick>noop</onclick>
@@ -647,7 +634,6 @@
 								<aligny>center</aligny>
 								<texturefocus colordiffuse="80000000" border="2,2,2,2">colors/white.png</texturefocus>
 								<texturenofocus colordiffuse="80000000" border="2,2,2,2">colors/white.png</texturenofocus>
-								<disabledcolor>FFFFFFFF</disabledcolor>
 								<bordertexture colordiffuse="FFFFFFFF" border="2">colors/white.png</bordertexture>
 								<bordersize>2</bordersize>
 								<onclick>noop</onclick>
@@ -666,7 +652,6 @@
 								<aligny>center</aligny>
 								<texturefocus colordiffuse="80000000" border="2,2,2,2">colors/white.png</texturefocus>
 								<texturenofocus colordiffuse="80000000" border="2,2,2,2">colors/white.png</texturenofocus>
-								<disabledcolor>FFFFFFFF</disabledcolor>
 								<bordertexture colordiffuse="FFFFFFFF" border="2">colors/white.png</bordertexture>
 								<bordersize>2</bordersize>
 								<onclick>noop</onclick>
@@ -685,7 +670,6 @@
 								<aligny>center</aligny>
 								<texturefocus colordiffuse="80000000" border="2,2,2,2">colors/white.png</texturefocus>
 								<texturenofocus colordiffuse="80000000" border="2,2,2,2">colors/white.png</texturenofocus>
-								<disabledcolor>FFFFFFFF</disabledcolor>
 								<bordertexture colordiffuse="FFFFFFFF" border="2">colors/white.png</bordertexture>
 								<bordersize>2</bordersize>
 								<onclick>noop</onclick>
@@ -705,7 +689,6 @@
 								<aligny>center</aligny>
 								<texturefocus colordiffuse="80000000" border="2,2,2,2">colors/white.png</texturefocus>
 								<texturenofocus colordiffuse="80000000" border="2,2,2,2">colors/white.png</texturenofocus>
-								<disabledcolor>FFFFFFFF</disabledcolor>
 								<bordertexture colordiffuse="FFFFFFFF" border="2">colors/white.png</bordertexture>
 								<bordersize>2</bordersize>
 								<onclick>noop</onclick>
@@ -732,7 +715,6 @@
 								<aligny>center</aligny>
 								<texturefocus colordiffuse="80000000" border="2,2,2,2">colors/white.png</texturefocus>
 								<texturenofocus colordiffuse="80000000" border="2,2,2,2">colors/white.png</texturenofocus>
-								<disabledcolor>FFFFFFFF</disabledcolor>
 								<bordertexture colordiffuse="FFF5C518" border="2">colors/white.png</bordertexture>
 								<bordersize>2</bordersize>
 								<onclick>noop</onclick>
@@ -752,37 +734,30 @@
 				</control>
 
 					<!-- Related Content Row -->
-					<control type="group">
+					<control type="label">
 						<left>0</left>
-						<top>650</top>
+						<top>280</top>
 						<width>1245</width>
-						<height>350</height>
+						<height>30</height>
+						<font>font13_title</font>
+						<textcolor>white</textcolor>
+						<label>Related Content</label>
 						<visible>!String.IsEmpty(Window(Home).Property(InfoWindow.Related.1.Title))</visible>
-
-						<control type="label">
-							<left>0</left>
-							<top>0</top>
-							<width>1245</width>
-							<height>30</height>
-							<font>font13_title</font>
-							<textcolor>white</textcolor>
-							<label>Related Content</label>
-						</control>
-						
-						<control type="fixedlist" id="5000">
-							<left>5</left>
-							<top>40</top>
-							<width>1245</width>
-							<height>280</height>
-							<onup>50</onup>
-							<onleft>8</onleft>
-							<onright>5000</onright>
-							<ondown>8</ondown>
-							<orientation>horizontal</orientation>
-							<viewtype label="535">list</viewtype>
-							<pagecontrol>60</pagecontrol>
-							<focusposition>0</focusposition>
-							<preloaditems>2</preloaditems>
+					</control>
+					<control type="fixedlist" id="5000">
+						<left>5</left>
+						<top>320</top>
+						<width>1245</width>
+						<height>280</height>
+						<onup>50</onup>
+						<onleft>8</onleft>
+						<onright>5000</onright>
+						<ondown>8</ondown>
+						<orientation>horizontal</orientation>
+						<viewtype label="535">list</viewtype>
+						<pagecontrol>60</pagecontrol>
+						<focusposition>0</focusposition>
+						<preloaditems>2</preloaditems>
 						<itemlayout width="205" height="270">
 							<control type="group">
 								<left>0</left>
@@ -935,10 +910,9 @@
 								<visible>!String.IsEmpty(Window(Home).Property(InfoWindow.Related.10.Title))</visible>
 							</item>
 						</content>
-					</control> <!-- End of Related Content Group -->
-				</control> <!-- End of Content Inner Group -->
-			</control> <!-- End of Right Content Group -->
-
+					</control>
+				</control>
+				</control>
 				<include content="LeftRightArrows">
 					<param name="list_id" value="50" />
 					<param name="left_posx" value="-15" />
@@ -946,7 +920,7 @@
 					<param name="posy" value="320" />
 					<param name="visible" value="true" />
 				</include>
-
+			</control>
 			<control type="label">
 				<right>80</right>
 				<top>970</top>
@@ -1015,8 +989,8 @@
 				</control>
 			</control>
 		</control>
-		</control>
-		</control>
 		<include condition="Skin.HasSetting(touchmode)">TouchBackButton</include>
+	</controls>
+</window>
 	</controls>
 </window>
