@@ -229,9 +229,9 @@
 					<font>font10</font>
 					<textcolor>FFFFFFFF</textcolor>
 					<focusedcolor>FFFFFFFF</focusedcolor>
-							<textoffsetx>75</textoffsetx>
+							<textoffsetx>20</textoffsetx>
 							<label>$VAR[ActiveItem_IMDbRating]</label>
-							<align>center</align>
+							<align>right</align>
 							<aligny>center</aligny>
 							<texturefocus colordiffuse="80000000" border="2,2,2,2">colors/white.png</texturefocus>
 							<texturenofocus colordiffuse="80000000" border="2,2,2,2">colors/white.png</texturenofocus>
@@ -330,9 +330,9 @@
 					<font>font10</font>
 					<textcolor>FFFFFFFF</textcolor>
 					<focusedcolor>FFFFFFFF</focusedcolor>
-					<textoffsetx>75</textoffsetx>
+					<textoffsetx>20</textoffsetx>
 					<label>$VAR[ActiveItem_IMDbRating]</label>
-					<align>center</align>
+					<align>right</align>
 					<aligny>center</aligny>
 					<texturefocus colordiffuse="80000000" border="2,2,2,2">colors/white.png</texturefocus>
 					<texturenofocus colordiffuse="80000000" border="2,2,2,2">colors/white.png</texturenofocus>

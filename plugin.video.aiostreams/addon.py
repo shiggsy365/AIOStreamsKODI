@@ -849,9 +849,7 @@ def create_listitem_with_context(meta, content_type, action_url):
             pass
 
     # Add debug logging for metadata
-    xbmc.log(f"[AIOStreams] DEBUG: create_listitem_with_context for title={title}", xbmc.LOGINFO)
-    xbmc.log(f"[AIOStreams] DEBUG: item_rating={rating}, item_genres={genres_list}", xbmc.LOGINFO)
-    
+    # IMDb Rating, Genre, Premiered and Duration chips support
     # Add runtime (handle "2h16min", "48min", "120" formats)
     runtime = meta.get('runtime', '')
     if runtime:
@@ -3431,6 +3429,18 @@ def trakt_watchlist(params=None):
             # Get cast from cached AIOStreams data (includes photos)
             if 'cast' in cached_data:
                 meta['cast'] = cached_data['cast']
+                
+            # MERGE CHIP METADATA: genres, rating, mpaa
+            if cached_data.get('genres'):
+                meta['genres'] = cached_data['genres']
+            if cached_data.get('rating'):
+                meta['imdbRating'] = str(cached_data['rating'])
+            if cached_data.get('mpaa') or cached_data.get('certification'):
+                meta['mpaa'] = cached_data.get('mpaa') or cached_data.get('certification')
+            if cached_data.get('runtime'):
+                meta['runtime'] = str(cached_data['runtime'])
+            if cached_data.get('released'):
+                meta['released'] = cached_data['released']
 
         # Set URL and folder status based on content type
         if content_type == 'series':
@@ -3549,62 +3559,55 @@ def trakt_next_up():
         xbmc.log(f'[AIOStreams] Set {count_prop} = {len(next_episodes)}', xbmc.LOGDEBUG)
 
     def process_ep(ep_data):
-        try:
-            show_imdb = ep_data.get('show_imdb_id', '')
-            show_title = ep_data.get('show_title', 'Unknown')
-            season = ep_data.get('season', 0)
-            episode = ep_data.get('episode', 0)
-            episode_imdb = ep_data.get('episode_imdb_id', '')
+                             break
 
-            # Get AIOStreams metadata for artwork (fetch from API if not cached)
-            poster = ''
-            fanart = ''
-            logo = ''
-            episode_thumb = ''
-            episode_title = f'Episode {episode}'
-            episode_overview = ''
-            # Get air date from database query (already included in ep_data)
-            episode_air_date = ep_data.get('air_date', '')
-
-            # 1. First, try to get episode-specific metadata from database (instant!)
-            episode_meta = ep_data.get('episode_metadata')
-            if episode_meta:
-                episode_title = episode_meta.get('title', episode_title)
-                episode_overview = episode_meta.get('overview', '')
-                if not episode_air_date:
-                    episode_air_date = episode_meta.get('first_aired', '') or episode_meta.get('aired', '')
-
-            # 2. Get show metadata from our parallel fetch results
-            meta_data = None
-            if show_imdb and show_imdb in metadata_map:
-                meta_data = metadata_map[show_imdb]
+            # Prepare metadata for create_listitem_with_context
+            # Use episode metadata as base
+            ep_meta = {
+                'id': episode_imdb or show_imdb,
+                'name': episode_title,
+                'description': episode_overview,
+                'released': episode_air_date,
+                'poster': poster,
+                'background': fanart,
+                'logo': logo
+            }
             
-            # If not in map, try local DB (might have been missed or failed)
-            if not meta_data and show_imdb:
-                 meta_data = ep_data.get('show_metadata')
-
-            # Extract artwork from show metadata
+            # Merge show-level metadata from parallel fetch results (genres, mpaa, etc.)
             if meta_data:
-                # Get show title from metadata if available
-                show_title = meta_data.get('name', show_title)
-                poster = meta_data.get('poster', '')
-                fanart = meta_data.get('background', '')
-                logo = meta_data.get('logo', '')
+                ep_meta['genres'] = meta_data.get('genres', [])
+                ep_meta['mpaa'] = meta_data.get('mpaa', '') or meta_data.get('certification', '')
+                # Use show rating if episode rating not specifically available from another source
+                ep_meta['imdbRating'] = str(meta_data.get('rating', '')) if meta_data.get('rating') else ''
+                # Handle runtime
+                if meta_data.get('runtime'):
+                    ep_meta['runtime'] = str(meta_data['runtime'])
 
-                # Try to get episode thumbnail from show metadata videos (fallback if not in DB)
-                if not episode_thumb:
-                    videos = meta_data.get('videos', [])
-                    for video in videos:
-                        if video.get('season') == season and video.get('episode') == episode:
-                            episode_thumb = video.get('thumbnail', '')
-                            # Only override episode title/overview if not already from DB
-                            if not episode_meta:
-                                episode_title = video.get('title', episode_title)
-                                episode_overview = video.get('description', '')
-                                # Also try to get air date from video metadata
-                                if not episode_air_date:
-                                    episode_air_date = video.get('released', '') or video.get('first_aired', '')
-                            break
+            # Use helper to create listitem with all properties set
+            url = get_url(action='play', content_type='episode', imdb_id=show_imdb, 
+                         season=season, episode=episode, title=episode_title,
+                         poster=poster, fanart=fanart, clearlogo=logo)
+                         
+            list_item = create_listitem_with_context(ep_meta, 'episode', url)
+            
+            # Additional episode-specific info tag cleanup
+            info_tag = list_item.getVideoInfoTag()
+            info_tag.setTvShowTitle(show_title)
+            info_tag.setSeason(season)
+            info_tag.setEpisode(episode)
+            
+            if episode_air_date:
+                air_date_str = episode_air_date.split('T')[0] if 'T' in episode_air_date else episode_air_date
+                formatted_date = format_date_with_ordinal(air_date_str)
+                list_item.setProperty('AirDate', formatted_date)
+                list_item.setLabel2(formatted_date)
+
+            # Set artwork (already handled by create_listitem_with_context from ep_meta, but thumb needs special care)
+            if episode_thumb:
+                list_item.setArt({'thumb': episode_thumb, 'poster': poster, 'fanart': fanart, 'clearlogo': logo})
+            
+            xbmcplugin.addDirectoryItem(HANDLE, url, list_item, False)
+            return True
 
             label = f'{show_title} S{season:02d}E{episode:02d}'
 
