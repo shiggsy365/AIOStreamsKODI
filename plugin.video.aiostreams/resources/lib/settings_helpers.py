@@ -89,6 +89,11 @@ def get_show_quality_badges():
     return get_bool_setting('show_quality_badges', True)
 
 
+def get_color_code_items():
+    """Check if items should be color coded by watch status."""
+    return get_bool_setting('color_code_items', True)
+
+
 def get_cache_expiry_hours():
     """Get cache expiry in hours."""
     return get_int_setting('cache_expiry_hours', 24)
