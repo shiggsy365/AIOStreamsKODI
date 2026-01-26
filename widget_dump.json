@@ -1,0 +1,141 @@
+{
+  "home": [
+    {
+      "label": "Trakt Next Up",
+      "path": "plugin://plugin.video.aiostreams/?action=trakt_next_up",
+      "type": "series",
+      "is_trakt": true
+    },
+    {
+      "label": "Trakt Watchlist Series",
+      "path": "plugin://plugin.video.aiostreams/?action=trakt_watchlist&media_type=shows",
+      "type": "series",
+      "is_trakt": true
+    },
+    {
+      "label": "Trakt Watchlist Movies",
+      "path": "plugin://plugin.video.aiostreams/?action=trakt_watchlist&media_type=movies",
+      "type": "movie",
+      "is_trakt": true
+    }
+  ],
+  "tvshows": [
+    {
+      "label": "Trakt Trending",
+      "path": "plugin://plugin.video.aiostreams/?action=browse_catalog&catalog_id=39fe3b0.mdblist.88434&content_type=series&catalog_name=Trakt+Trending",
+      "type": "series",
+      "is_trakt": false
+    },
+    {
+      "label": "TMDB Popular",
+      "path": "plugin://plugin.video.aiostreams/?action=browse_catalog&catalog_id=39fe3b0.tmdb.top_series&content_type=series&catalog_name=TMDB+Popular",
+      "type": "series",
+      "is_trakt": false
+    },
+    {
+      "label": "Latest Airing",
+      "path": "plugin://plugin.video.aiostreams/?action=browse_catalog&catalog_id=39fe3b0.mdblist.86710&content_type=series&catalog_name=Latest+Airing",
+      "type": "series",
+      "is_trakt": false
+    },
+    {
+      "label": "Amazon Prime Latest",
+      "path": "plugin://plugin.video.aiostreams/?action=browse_catalog&catalog_id=39fe3b0.mdblist.86753&content_type=series&catalog_name=Amazon+Prime+Latest",
+      "type": "series",
+      "is_trakt": false
+    },
+    {
+      "label": "Apple+  Latest",
+      "path": "plugin://plugin.video.aiostreams/?action=browse_catalog&catalog_id=39fe3b0.mdblist.88319&content_type=series&catalog_name=Apple%2B++Latest",
+      "type": "series",
+      "is_trakt": false
+    },
+    {
+      "label": "Disney+  Latest",
+      "path": "plugin://plugin.video.aiostreams/?action=browse_catalog&catalog_id=39fe3b0.mdblist.86758&content_type=series&catalog_name=Disney%2B++Latest",
+      "type": "series",
+      "is_trakt": false
+    },
+    {
+      "label": "HBO Max Latest",
+      "path": "plugin://plugin.video.aiostreams/?action=browse_catalog&catalog_id=39fe3b0.mdblist.89649&content_type=series&catalog_name=HBO+Max+Latest",
+      "type": "series",
+      "is_trakt": false
+    },
+    {
+      "label": "Netflix Latest",
+      "path": "plugin://plugin.video.aiostreams/?action=browse_catalog&catalog_id=39fe3b0.mdblist.86751&content_type=series&catalog_name=Netflix+Latest",
+      "type": "series",
+      "is_trakt": false
+    },
+    {
+      "label": "Top Documentaries",
+      "path": "plugin://plugin.video.aiostreams/?action=browse_catalog&catalog_id=39fe3b0.mdblist.84403&content_type=series&catalog_name=Top+Documentaries",
+      "type": "series",
+      "is_trakt": false
+    }
+  ],
+  "movies": [
+    {
+      "label": "Trakt Trending",
+      "path": "plugin://plugin.video.aiostreams/?action=browse_catalog&catalog_id=39fe3b0.mdblist.87667&content_type=movie&catalog_name=Trakt+Trending",
+      "type": "movie",
+      "is_trakt": false
+    },
+    {
+      "label": "TMDB Popular",
+      "path": "plugin://plugin.video.aiostreams/?action=browse_catalog&catalog_id=39fe3b0.tmdb.top_movie&content_type=movie&catalog_name=TMDB+Popular",
+      "type": "movie",
+      "is_trakt": false
+    },
+    {
+      "label": "Latest Digital Release",
+      "path": "plugin://plugin.video.aiostreams/?action=browse_catalog&catalog_id=39fe3b0.mdblist.86934&content_type=movie&catalog_name=Latest+Digital+Release",
+      "type": "movie",
+      "is_trakt": false
+    },
+    {
+      "label": "Amazon Prime Latest",
+      "path": "plugin://plugin.video.aiostreams/?action=browse_catalog&catalog_id=39fe3b0.mdblist.86755&content_type=movie&catalog_name=Amazon+Prime+Latest",
+      "type": "movie",
+      "is_trakt": false
+    },
+    {
+      "label": "Apple+ Latest",
+      "path": "plugin://plugin.video.aiostreams/?action=browse_catalog&catalog_id=39fe3b0.mdblist.88317&content_type=movie&catalog_name=Apple%2B+Latest",
+      "type": "movie",
+      "is_trakt": false
+    },
+    {
+      "label": "Disney+ Latest",
+      "path": "plugin://plugin.video.aiostreams/?action=browse_catalog&catalog_id=39fe3b0.mdblist.86759&content_type=movie&catalog_name=Disney%2B+Latest",
+      "type": "movie",
+      "is_trakt": false
+    },
+    {
+      "label": "HBO Max Latest",
+      "path": "plugin://plugin.video.aiostreams/?action=browse_catalog&catalog_id=39fe3b0.mdblist.89647&content_type=movie&catalog_name=HBO+Max+Latest",
+      "type": "movie",
+      "is_trakt": false
+    },
+    {
+      "label": "Netflix Latest",
+      "path": "plugin://plugin.video.aiostreams/?action=browse_catalog&catalog_id=39fe3b0.mdblist.88328&content_type=movie&catalog_name=Netflix+Latest",
+      "type": "movie",
+      "is_trakt": false
+    },
+    {
+      "label": "Paramount+ Latest",
+      "path": "plugin://plugin.video.aiostreams/?action=browse_catalog&catalog_id=39fe3b0.mdblist.86762&content_type=movie&catalog_name=Paramount%2B+Latest",
+      "type": "movie",
+      "is_trakt": false
+    },
+    {
+      "label": "Top Documentaries",
+      "path": "plugin://plugin.video.aiostreams/?action=browse_catalog&catalog_id=39fe3b0.mdblist.84677&content_type=movie&catalog_name=Top+Documentaries",
+      "type": "movie",
+      "is_trakt": false
+    }
+  ],
+  "version": 2
+}

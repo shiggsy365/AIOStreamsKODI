@@ -983,12 +983,11 @@ class TraktSyncDatabase(Database):
             return False
     def get_trakt_id_for_item(self, imdb_id, mediatype):
         """Retrieve Trakt ID for an item by its IMDB ID."""
-        if not self.connection and not self.connect():
-            return None
         try:
             table = 'movies' if mediatype == 'movie' else 'shows'
             sql = f"SELECT trakt_id FROM {table} WHERE imdb_id = ?"
-            row = self.fetch_one(sql, (imdb_id,))
+            # Use safe wrapper that handles connection/disconnection
+            row = self.fetchone(sql, (imdb_id,))
             return row['trakt_id'] if row else None
         except Exception as e:
             xbmc.log(f'[AIOStreams] DB error getting trakt_id: {e}', xbmc.LOGWARNING)
@@ -996,8 +995,6 @@ class TraktSyncDatabase(Database):
 
     def get_bookmark(self, trakt_id=None, tvdb_id=None, tmdb_id=None, imdb_id=None):
         """Retrieve playback bookmark for an item using any available ID."""
-        if not self.connection and not self.connect():
-            return None
         try:
             # Try matching on any available ID
             sql_parts = []
@@ -1020,41 +1017,43 @@ class TraktSyncDatabase(Database):
                 return None
             
             sql = f"SELECT resume_time, percent_played FROM bookmarks WHERE ({' OR '.join(sql_parts)})"
-            return self.fetch_one(sql, tuple(params))
+            # Use safe wrapper that handles connection/disconnection
+            return self.fetchone(sql, tuple(params))
         except Exception as e:
             xbmc.log(f'[AIOStreams] DB error getting bookmark: {e}', xbmc.LOGWARNING)
             return None
 
     def is_item_watched(self, trakt_id, mediatype, season=None, episode=None):
         """Check if an item is marked as watched."""
-        if not self.connection and not self.connect():
-            return False
+    def is_item_watched(self, trakt_id, mediatype, season=None, episode=None):
+        """Check if an item is marked as watched."""
         try:
             if mediatype == 'movie':
                 sql = "SELECT watched FROM movies WHERE trakt_id = ?"
-                row = self.fetch_one(sql, (trakt_id,))
+                # Use safe wrapper that handles connection/disconnection
+                row = self.fetchone(sql, (trakt_id,))
                 return bool(row and row['watched'])
             elif mediatype == 'episode':
                 sql = "SELECT watched FROM episodes WHERE show_trakt_id = ? AND season = ? AND episode = ?"
-                row = self.fetch_one(sql, (trakt_id, season, episode))
+                row = self.fetchone(sql, (trakt_id, season, episode))
                 return bool(row and row['watched'])
             elif mediatype in ['series', 'tvshow']:
                 # Use refined show statistics from the shows table
                 # These are updated in activities.py and account for all aired episodes via metadata
                 sql = "SELECT watched_episodes, unwatched_episodes FROM shows WHERE trakt_id = ?"
-                row = self.fetch_one(sql, (trakt_id,))
+                row = self.fetchone(sql, (trakt_id,))
                 # Considered watched if we have at least one watched episode and NO unwatched ones
                 return bool(row and row['watched_episodes'] > 0 and row['unwatched_episodes'] == 0)
             elif mediatype == 'season':
                 if season == 0: return False # Specials are optional
                 # Check episodes for this specific season
                 sql = "SELECT COUNT(*) as unwatched FROM episodes WHERE show_trakt_id = ? AND season = ? AND watched = 0"
-                row = self.fetch_one(sql, (trakt_id, season))
+                row = self.fetchone(sql, (trakt_id, season))
                 if not row or row['unwatched'] > 0:
                     return False
                 # Ensure there's actually at least one watched episode (to avoid empty seasons)
                 sql = "SELECT COUNT(*) as watched FROM episodes WHERE show_trakt_id = ? AND season = ? AND watched = 1"
-                row = self.fetch_one(sql, (trakt_id, season))
+                row = self.fetchone(sql, (trakt_id, season))
                 return bool(row and row['watched'] > 0)
             return False
         except Exception as e:
@@ -1067,14 +1066,10 @@ class TraktSyncDatabase(Database):
             return False
             
         try:
-            # Ensure connection
-            if not self.connection:
-                if not self.connect():
-                    return False
-
             if mediatype == 'movie':
                 # Check movies table
-                row = self.fetch_one("SELECT watched FROM movies WHERE imdb_id = ?", (imdb_id,))
+                # Use safe wrapper that handles connection/disconnection
+                row = self.fetchone("SELECT watched FROM movies WHERE imdb_id = ?", (imdb_id,))
                 is_watched = bool(row and row['watched'])
                 # xbmc.log(f'[AIOStreams] DB Check Movie {imdb_id}: {is_watched}', xbmc.LOGDEBUG)
                 return is_watched
@@ -1082,7 +1077,7 @@ class TraktSyncDatabase(Database):
             elif mediatype in ['show', 'series', 'tvshow']:
                 # For shows, we need to check if all aired episodes are watched
                 # First get the show's Trakt ID
-                row = self.fetch_one("SELECT trakt_id FROM shows WHERE imdb_id = ?", (imdb_id,))
+                row = self.fetchone("SELECT trakt_id FROM shows WHERE imdb_id = ?", (imdb_id,))
                 if not row:
                     # xbmc.log(f'[AIOStreams] DB Check Show {imdb_id}: Show not found in DB', xbmc.LOGDEBUG)
                     return False
@@ -1090,7 +1085,7 @@ class TraktSyncDatabase(Database):
                 trakt_id = row['trakt_id']
                 
                 # Count total and watched episodes
-                stats = self.fetch_one("""
+                stats = self.fetchone("""
                     SELECT 
                         COUNT(*) as total,
                         SUM(CASE WHEN watched = 1 THEN 1 ELSE 0 END) as watched_count
@@ -1108,7 +1103,7 @@ class TraktSyncDatabase(Database):
                 
             elif mediatype == 'episode':
                 # Check specific episode
-                row = self.fetch_one("SELECT watched FROM episodes WHERE imdb_id = ?", (imdb_id,))
+                row = self.fetchone("SELECT watched FROM episodes WHERE imdb_id = ?", (imdb_id,))
                 is_watched = bool(row and row['watched'])
                 # xbmc.log(f'[AIOStreams] DB Check Episode {imdb_id}: {is_watched}', xbmc.LOGDEBUG)
                 return is_watched
@@ -1124,20 +1119,16 @@ class TraktSyncDatabase(Database):
             return None
             
         try:
-            # Ensure connection
-            if not self.connection:
-                if not self.connect():
-                    return None
-
             # First get the show's Trakt ID
-            row = self.fetch_one("SELECT trakt_id FROM shows WHERE imdb_id = ?", (imdb_id,))
+            # Use safe wrapper that handles connection/disconnection
+            row = self.fetchone("SELECT trakt_id FROM shows WHERE imdb_id = ?", (imdb_id,))
             if not row:
                 return None
             
             trakt_id = row['trakt_id']
             
             # Count total and watched episodes (only aired ones)
-            stats = self.fetch_one("""
+            stats = self.fetchone("""
                 SELECT 
                     COUNT(*) as total,
                     SUM(CASE WHEN watched = 1 THEN 1 ELSE 0 END) as watched_count
@@ -1162,11 +1153,6 @@ class TraktSyncDatabase(Database):
             return False
             
         try:
-            # Ensure connection
-            if not self.connection:
-                if not self.connect():
-                    return False
-
             # 1. Get Trakt ID from local movies/shows table
             trakt_id = self.get_trakt_id_for_item(imdb_id, mediatype)
             if not trakt_id:
@@ -1178,7 +1164,8 @@ class TraktSyncDatabase(Database):
             formatted_type = 'movie' if mediatype == 'movie' else 'show'
             
             sql = "SELECT 1 FROM watchlist WHERE trakt_id = ? AND mediatype = ?"
-            row = self.fetch_one(sql, (trakt_id, formatted_type))
+            # Use safe wrapper that handles connection/disconnection
+            row = self.fetchone(sql, (trakt_id, formatted_type))
             return bool(row)
             
         except Exception as e:
