@@ -45,10 +45,10 @@
 		<!-- Background Fanart - scaled to widget row, aspect ratio maintained, anchored to top right -->
 		<!-- Fanart Composition Group -->
 		<control type="group">
-			<left>48%</left>
 			<right>0</right>
 			<top>0</top>
-			<bottom>520</bottom>
+			<width>996</width>
+			<height>560</height>
 			
 			<!-- Fanart Image (Scaled to fill) -->
 			<control type="image">
@@ -65,7 +65,7 @@
 				<left>0</left>
 				<top>0</top>
 				<bottom>0</bottom>
-				<width>512</width>
+				<width>200</width>
 				<texture>colors/gradient_black_horizontal.png</texture>
 				<aspectratio>stretch</aspectratio>
 			</control>
@@ -76,7 +76,7 @@
 				<left>0</left>
 				<right>0</right>
 				<bottom>0</bottom>
-				<height>200</height>
+				<height>150</height>
 				<texture>colors/gradient_black.png</texture>
 				<aspectratio>stretch</aspectratio>
 			</control>
