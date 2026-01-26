@@ -336,7 +336,7 @@
 					<left>0</left>
 					<top>440</top>
 					<width>1245</width>
-					<height>800</height>
+					<height>350</height>
 
 					<!-- Cast Header -->
 					<control type="label">
