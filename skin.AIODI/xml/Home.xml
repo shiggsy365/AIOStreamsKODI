@@ -962,7 +962,7 @@
 <!-- Movie Widgets -->
 	<control type="group" id="5000">
 	<zorder>10</zorder>
-	<bottom>50</bottom>
+	<bottom>0</bottom>
 	<left>150</left>
 	<width>1750</width>
 	<height>470</height>
@@ -1407,7 +1407,7 @@
 <!-- ========== TV SHOWS WIDGETS (20 ROWS) ========== -->
 <control type="group" id="6000">
 	<zorder>10</zorder>
-	<bottom>50</bottom>
+	<bottom>0</bottom>
 	<left>150</left>
 	<width>1750</width>
 	<height>470</height>
