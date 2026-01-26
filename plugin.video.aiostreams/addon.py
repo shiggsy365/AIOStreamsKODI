@@ -3658,7 +3658,13 @@ def trakt_next_up():
                     meta['runtime'] = str(meta_data['runtime'])
 
             list_item = create_listitem_with_context(meta, 'episode', url)
-            
+
+            # Mark this as a Next Up episode for special handling in the info panel
+            list_item.setProperty('IsNextUpEpisode', 'true')
+            list_item.setProperty('NextUpShowIMDb', show_imdb)
+            list_item.setProperty('NextUpSeason', str(season))
+            list_item.setProperty('NextUpEpisode', str(episode))
+
             # InfoTag cleanup
             info_tag = list_item.getVideoInfoTag()
             info_tag.setTitle(episode_title)

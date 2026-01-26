@@ -1450,12 +1450,7 @@
     </variable>
 
     <variable name="PlayButtonLabelVar">
-        <value condition="String.IsEqual(ListItem.DBType,episode) | String.IsEqual(ListItem.DBType,movie)">Play</value>
-        <value>Browse</value>
-    </variable>
-
-    <variable name="PlayButtonLabelVar">
-        <value condition="String.IsEqual(ListItem.DBType,episode) | String.IsEqual(ListItem.DBType,movie)">Play</value>
+        <value condition="String.IsEqual(ListItem.Property(IsNextUpEpisode),true) | String.IsEqual(ListItem.DBType,episode) | String.IsEqual(ListItem.DBType,movie)">Play</value>
         <value>Browse</value>
     </variable>
 
