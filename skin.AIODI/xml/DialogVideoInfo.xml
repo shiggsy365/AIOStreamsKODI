@@ -334,7 +334,7 @@
 				<!-- Cast Area -->
 				<control type="group">
 					<left>0</left>
-					<top>340</top>
+					<top>540</top>
 					<width>1245</width>
 					<height>800</height>
 
@@ -588,7 +588,6 @@
 								<bordersize>2</bordersize>
 								<onclick>noop</onclick>
 								<enable>false</enable>
-								<visible>!String.IsEmpty(ListItem.Mpaa)</visible>
 							</control>
 
 							<!-- Season/Episode (Show specific) -->
@@ -608,14 +607,12 @@
 								<bordersize>2</bordersize>
 								<onclick>noop</onclick>
 								<enable>false</enable>
-								<visible>!String.IsEmpty(ListItem.Season)</visible>
 							</control>
 
 							<!-- IMDb Rating -->
 							<control type="group">
 								<width>200</width>
 								<height>40</height>
-								<visible>!String.IsEmpty($VAR[InfoWindow_Rating])</visible>
 								<control type="button" id="8005">
 									<left>0</left>
 									<top>0</top>
