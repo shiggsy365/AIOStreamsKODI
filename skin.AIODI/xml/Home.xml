@@ -60,7 +60,7 @@
             <top>0</top>
             <width>256</width>
             <bottom>520</bottom>
-            <texture>media/gradient_black_horizontal.png</texture>
+            <texture>colors/gradient_black_horizontal.png</texture>
             <aspectratio>stretch</aspectratio>
         </control>
 
@@ -71,7 +71,7 @@
 			<right>0</right>
 			<bottom>520</bottom>
 			<height>200</height>
-			<texture>media/gradient_black.png</texture>
+			<texture>colors/gradient_black.png</texture>
 			<aspectratio>stretch</aspectratio>
 		</control>
 		
