@@ -587,11 +587,74 @@
 						<width>400</width>
 						<height>280</height>
 
-						<!-- Episode Number (for episodes only) -->
+						<!-- Director -->
 						<control type="button" id="8001">
 							<left>0</left>
 							<top>10</top>
-							<width>144</width>
+							<width>280</width>
+							<height>40</height>
+							<font>font10</font>
+							<textcolor>FFFFFFFF</textcolor>
+							<focusedcolor>FFFFFFFF</focusedcolor>
+							<label>$VAR[InfoWindow_Director]</label>
+							<align>center</align>
+							<aligny>center</aligny>
+							<texturefocus colordiffuse="80000000" border="2,2,2,2">colors/white.png</texturefocus>
+							<texturenofocus colordiffuse="80000000" border="2,2,2,2">colors/white.png</texturenofocus>
+							<bordertexture colordiffuse="FFFFFFFF" border="2">colors/white.png</bordertexture>
+							<bordersize>2</bordersize>
+							<onclick>noop</onclick>
+							<enable>false</enable>
+							<visible>!String.IsEmpty(VAR[InfoWindow_Director])</visible>
+						</control>
+						
+						<!-- Premiered -->
+						<control type="button" id="8002">
+							<left>0</left>
+							<top>60</top>
+							<width>180</width>
+							<height>40</height>
+							<font>font10</font>
+							<textcolor>FFFFFFFF</textcolor>
+							<focusedcolor>FFFFFFFF</focusedcolor>
+							<label>$VAR[InfoWindow_Premiered]</label>
+							<align>center</align>
+							<aligny>center</aligny>
+							<texturefocus colordiffuse="80000000" border="2,2,2,2">colors/white.png</texturefocus>
+							<texturenofocus colordiffuse="80000000" border="2,2,2,2">colors/white.png</texturenofocus>
+							<bordertexture colordiffuse="FFFFFFFF" border="2">colors/white.png</bordertexture>
+							<bordersize>2</bordersize>
+							<onclick>noop</onclick>
+							<enable>false</enable>
+							<visible>!String.IsEmpty(VAR[InfoWindow_Premiered])</visible>
+						</control>
+
+						<!-- Duration -->
+						<control type="button" id="8003">
+							<left>0</left>
+							<top>110</top>
+							<width>140</width>
+							<height>40</height>
+							<font>font10</font>
+							<textcolor>FFFFFFFF</textcolor>
+							<focusedcolor>FFFFFFFF</focusedcolor>
+							<label>$VAR[InfoWindow_Duration]</label>
+							<align>center</align>
+							<aligny>center</aligny>
+							<texturefocus colordiffuse="80000000" border="2,2,2,2">colors/white.png</texturefocus>
+							<texturenofocus colordiffuse="80000000" border="2,2,2,2">colors/white.png</texturenofocus>
+							<bordertexture colordiffuse="FFFFFFFF" border="2">colors/white.png</bordertexture>
+							<bordersize>2</bordersize>
+							<onclick>noop</onclick>
+							<enable>false</enable>
+							<visible>!String.IsEmpty(VAR[InfoWindow_Duration])</visible>
+						</control>
+
+						<!-- Season & Episode -->
+						<control type="button" id="8004">
+							<left>0</left>
+							<top>160</top>
+							<width>140</width>
 							<height>40</height>
 							<font>font10</font>
 							<textcolor>FFFFFFFF</textcolor>
@@ -605,66 +668,7 @@
 							<bordersize>2</bordersize>
 							<onclick>noop</onclick>
 							<enable>false</enable>
-						</control>
-
-						<!-- Premiered -->
-						<control type="button" id="8002">
-							<left>0</left>
-							<top>60</top>
-							<width>168</width>
-							<height>40</height>
-							<font>font10</font>
-							<textcolor>FFFFFFFF</textcolor>
-							<focusedcolor>FFFFFFFF</focusedcolor>
-							<label>$INFO[ListItem.Premiered]</label>
-							<align>center</align>
-							<aligny>center</aligny>
-							<texturefocus colordiffuse="80000000" border="2,2,2,2">colors/white.png</texturefocus>
-							<texturenofocus colordiffuse="80000000" border="2,2,2,2">colors/white.png</texturenofocus>
-							<bordertexture colordiffuse="FFFFFFFF" border="2">colors/white.png</bordertexture>
-							<bordersize>2</bordersize>
-							<onclick>noop</onclick>
-							<enable>false</enable>
-						</control>
-
-						<!-- Duration -->
-						<control type="button" id="8003">
-							<left>0</left>
-							<top>110</top>
-							<width>120</width>
-							<height>40</height>
-							<font>font10</font>
-							<textcolor>FFFFFFFF</textcolor>
-							<focusedcolor>FFFFFFFF</focusedcolor>
-							<label>$INFO[ListItem.Duration]</label>
-							<align>center</align>
-							<aligny>center</aligny>
-							<texturefocus colordiffuse="80000000" border="2,2,2,2">colors/white.png</texturefocus>
-							<texturenofocus colordiffuse="80000000" border="2,2,2,2">colors/white.png</texturenofocus>
-							<bordertexture colordiffuse="FFFFFFFF" border="2">colors/white.png</bordertexture>
-							<bordersize>2</bordersize>
-							<onclick>noop</onclick>
-							<enable>false</enable>
-						</control>
-
-						<!-- MPAA -->
-						<control type="button" id="8004">
-							<left>0</left>
-							<top>160</top>
-							<width>120</width>
-							<height>40</height>
-							<font>font10</font>
-							<textcolor>FFFFFFFF</textcolor>
-							<focusedcolor>FFFFFFFF</focusedcolor>
-							<label>$INFO[ListItem.Mpaa]</label>
-							<align>center</align>
-							<aligny>center</aligny>
-							<texturefocus colordiffuse="80000000" border="2,2,2,2">colors/white.png</texturefocus>
-							<texturenofocus colordiffuse="80000000" border="2,2,2,2">colors/white.png</texturenofocus>
-							<bordertexture colordiffuse="FFDC143C" border="2">colors/white.png</bordertexture>
-							<bordersize>2</bordersize>
-							<onclick>noop</onclick>
-							<enable>false</enable>
+							<visible>!String.IsEmpty(ListItem.Season)</visible>
 						</control>
 
 						<!-- IMDb Rating -->
@@ -676,9 +680,9 @@
 							<font>font10</font>
 							<textcolor>FFFFFFFF</textcolor>
 							<focusedcolor>FFFFFFFF</focusedcolor>
-							<textoffsetx>90</textoffsetx>
+							<textoffsetx>20</textoffsetx>
 							<label>$VAR[InfoWindow_Rating]</label>
-							<align>center</align>
+							<align>right</align>
 							<aligny>center</aligny>
 							<texturefocus colordiffuse="80000000" border="2,2,2,2">colors/white.png</texturefocus>
 							<texturenofocus colordiffuse="80000000" border="2,2,2,2">colors/white.png</texturenofocus>
