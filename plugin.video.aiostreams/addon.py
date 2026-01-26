@@ -3636,7 +3636,7 @@ def trakt_next_up():
                             break
 
             label = f'{show_title} S{season:02d}E{episode:02d}'
-            url = get_url(action='play', content_type='episode', imdb_id=show_imdb, season=season, episode=episode, title=label, poster=poster, fanart=fanart, clearlogo=logo)
+            url = get_url(action='play', content_type='series', imdb_id=show_imdb, season=season, episode=episode, title=label, poster=poster, fanart=fanart, clearlogo=logo)
 
             # Prepare metadata for creation (merging show-level info for chips)
             meta = {
