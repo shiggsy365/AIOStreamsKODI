@@ -45,17 +45,18 @@
 		<!-- Background Fanart - scaled to widget row, aspect ratio maintained, anchored to top right -->
 		<control type="image">
 			<depth>DepthBackground</depth>
+			<left>48%</left>
 			<right>0</right>
 			<top>0</top>
 			<bottom>520</bottom>
 			<texture background="true">$VAR[CurrentWidgetFanart]</texture>
-			<aspectratio>keep</aspectratio>
+			<aspectratio align="right" aligny="top">keep</aspectratio>
 		</control>
 
 		<!-- Fanart Left Edge Gradient: black (left) to transparent (right), 200px wide, aligned with fanart left edge -->
 		<control type="image">
 			<depth>DepthBackground</depth>
-			<left>42%</left>
+			<left>48%</left>
 			<top>0</top>
 			<width>200</width>
 			<bottom>520</bottom>
@@ -68,7 +69,7 @@
 			<depth>DepthBackground</depth>
 			<right>0</right>
 			<bottom>520</bottom>
-			<width>58%</width>
+			<width>52%</width>
 			<height>150</height>
 			<texture>colors/gradient_top_to_bottom.png</texture>
 			<aspectratio>stretch</aspectratio>
