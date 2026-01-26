@@ -1338,6 +1338,8 @@
 
 	<variable name="ActiveItem_IMDbRating">
 		<value condition="!String.IsEmpty(Container($VAR[ActiveWidgetID]).ListItem.Property(IMDbRating))">$INFO[Container($VAR[ActiveWidgetID]).ListItem.Property(IMDbRating)]</value>
+		<value condition="!String.IsEmpty(Container($VAR[ActiveWidgetID]).ListItem.Property(TraktRating))">$INFO[Container($VAR[ActiveWidgetID]).ListItem.Property(TraktRating)]</value>
+		<value condition="!String.IsEmpty(Container($VAR[ActiveWidgetID]).ListItem.Property(TraktUserRating))">$INFO[Container($VAR[ActiveWidgetID]).ListItem.Property(TraktUserRating)]</value>
 		<value>$INFO[Container($VAR[ActiveWidgetID]).ListItem.Rating]</value>
 	</variable>
 	<variable name="ActiveItem_MPAA">
@@ -1369,6 +1371,8 @@
 	<variable name="InfoWindow_Rating">
 		<value condition="!String.IsEmpty(Window(Home).Property(InfoWindow.Rating))">$INFO[Window(Home).Property(InfoWindow.Rating)]</value>
 		<value condition="!String.IsEmpty(ListItem.Property(IMDbRating))">$INFO[ListItem.Property(IMDbRating)]</value>
+		<value condition="!String.IsEmpty(ListItem.Property(TraktRating))">$INFO[ListItem.Property(TraktRating)]</value>
+		<value condition="!String.IsEmpty(ListItem.Property(TraktUserRating))">$INFO[ListItem.Property(TraktUserRating)]</value>
 		<value condition="!String.IsEmpty(ListItem.Property(rating_imdb))">$INFO[ListItem.Property(rating_imdb)]</value>
 		<value>$INFO[ListItem.Rating]</value>
 	</variable>

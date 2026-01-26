@@ -151,6 +151,7 @@
 					<aligny>center</aligny>
 					<texturefocus colordiffuse="80000000" border="2,2,2,2">colors/white.png</texturefocus>
 					<texturenofocus colordiffuse="80000000" border="2,2,2,2">colors/white.png</texturenofocus>
+					<disabledcolor>FFFFFFFF</disabledcolor>
 					<bordertexture colordiffuse="FFFFFFFF" border="2">colors/white.png</bordertexture>
 					<bordersize>2</bordersize>
 					<onclick>noop</onclick>
@@ -171,6 +172,7 @@
 					<aligny>center</aligny>
 					<texturefocus colordiffuse="80000000" border="2,2,2,2">colors/white.png</texturefocus>
 					<texturenofocus colordiffuse="80000000" border="2,2,2,2">colors/white.png</texturenofocus>
+					<disabledcolor>FFFFFFFF</disabledcolor>
 					<bordertexture colordiffuse="FFFFFFFF" border="2">colors/white.png</bordertexture>
 					<bordersize>2</bordersize>
 					<onclick>noop</onclick>
@@ -191,6 +193,7 @@
 					<aligny>center</aligny>
 					<texturefocus colordiffuse="80000000" border="2,2,2,2">colors/white.png</texturefocus>
 					<texturenofocus colordiffuse="80000000" border="2,2,2,2">colors/white.png</texturenofocus>
+					<disabledcolor>FFFFFFFF</disabledcolor>
 					<bordertexture colordiffuse="FFFFFFFF" border="2">colors/white.png</bordertexture>
 					<bordersize>2</bordersize>
 					<onclick>noop</onclick>
@@ -212,6 +215,7 @@
 					<aligny>center</aligny>
 					<texturefocus colordiffuse="80000000" border="2,2,2,2">colors/white.png</texturefocus>
 					<texturenofocus colordiffuse="80000000" border="2,2,2,2">colors/white.png</texturenofocus>
+					<disabledcolor>FFFFFFFF</disabledcolor>
 					<bordertexture colordiffuse="FFDC143C" border="2">colors/white.png</bordertexture>
 					<bordersize>2</bordersize>
 					<onclick>noop</onclick>
@@ -240,6 +244,7 @@
 							<aligny>center</aligny>
 							<texturefocus colordiffuse="80000000" border="2,2,2,2">colors/white.png</texturefocus>
 							<texturenofocus colordiffuse="80000000" border="2,2,2,2">colors/white.png</texturenofocus>
+							<disabledcolor>FFFFFFFF</disabledcolor>
 							<bordertexture colordiffuse="FFF5C518" border="2">colors/white.png</bordertexture>
 							<bordersize>2</bordersize>
 							<onclick>noop</onclick>
@@ -779,7 +784,7 @@
 <!-- Home Widgets -->
 <control type="group" id="11000">
 	<zorder>10</zorder>
-	<bottom>50</bottom>
+	<bottom>0</bottom>
 	<left>150</left>
 	<width>1750</width>
 	<height>470</height>
