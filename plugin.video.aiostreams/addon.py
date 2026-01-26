@@ -1024,8 +1024,27 @@ def create_listitem_with_context(meta, content_type, action_url):
                         resume_time = bookmark.get('resume_time', 0)
                         if resume_time > 0:
                             list_item.setProperty('StartOffset', str(resume_time))
+
+                    # NEW: Add Trakt ratings from local DB for skin access
+                    trakt_data = None
+                    if content_type == 'movies':
+                        trakt_data = db.get_movie(item_id)
+                    elif content_type in ['series', 'tvshow']:
+                        trakt_data = db.get_show(item_id)
+                    
+                    if trakt_data and trakt_data.get('metadata'):
+                        meta_blob = trakt_data['metadata']
+                        # Trakt ratings are in the 'rating' field of the metadata blob
+                        trakt_rating = meta_blob.get('rating')
+                        if trakt_rating:
+                            list_item.setProperty('TraktRating', f"{float(trakt_rating):.1f}")
+                        
+                        # Check for user rating if available
+                        user_rating = meta_blob.get('user_rating')
+                        if user_rating:
+                            list_item.setProperty('TraktUserRating', str(user_rating))
             except Exception as e:
-                xbmc.log(f'[AIOStreams] Error setting watched/bookmark status for {item_id}: {e}', xbmc.LOGDEBUG)
+                xbmc.log(f'[AIOStreams) Error setting watched/bookmark/rating status for {item_id}: {e}', xbmc.LOGDEBUG)
     
     # Set artwork
     art = {}

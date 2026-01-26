@@ -120,9 +120,9 @@
 			<control type="textbox">
 				<left>0</left>
 				<top>200</top>
-				<width>900</width>
-				<height>220</height>
-				<font>font15</font>
+				<width>632</width>
+				<height>340</height>
+				<font>font13</font>
 				<textcolor>FFFFFFFF</textcolor>
 				<label>$VAR[CurrentWidgetPlot]</label>
 				<shadowcolor>text_shadow</shadowcolor>
@@ -132,7 +132,7 @@
 			<!-- Metadata Chips for Episodes: [S01E01] [premiered] [duration] [mpaa] [rating] -->
 			<control type="group">
 				<left>0</left>
-				<top>450</top>
+				<top>540</top>
 				<width>1550</width>
 				<height>50</height>
 				<visible>!String.IsEmpty(Control.GetLabel(8889))</visible>
@@ -266,7 +266,7 @@
 			<!-- Metadata Chips for Shows/Movies: [premiered] [duration] [mpaa] [rating] -->
 			<control type="group">
 				<left>0</left>
-				<top>450</top>
+				<top>540</top>
 				<width>1550</width>
 				<height>50</height>
 				<visible>String.IsEmpty(Control.GetLabel(8889))</visible>
@@ -373,7 +373,7 @@
 
 			<!-- Genre Chips (Stacked vertically, aligned with middle of clearlogo (y=90)) -->
 			<control type="group">
-				<left>510</left>
+				<left>500</left>
 				<top>20</top>
 				<width>220</width>
 				<height>140</height>
@@ -392,6 +392,7 @@
 					<aligny>center</aligny>
 					<texturefocus colordiffuse="80000000" border="2,2,2,2">colors/white.png</texturefocus>
 					<texturenofocus colordiffuse="80000000" border="2,2,2,2">colors/white.png</texturenofocus>
+					<disabledcolor>FFFFFFFF</disabledcolor>
 					<bordertexture colordiffuse="FFFFFFFF" border="2">colors/white.png</bordertexture>
 					<bordersize>2</bordersize>
 					<onclick>noop</onclick>
@@ -412,6 +413,7 @@
 					<aligny>center</aligny>
 					<texturefocus colordiffuse="80000000" border="2,2,2,2">colors/white.png</texturefocus>
 					<texturenofocus colordiffuse="80000000" border="2,2,2,2">colors/white.png</texturenofocus>
+					<disabledcolor>FFFFFFFF</disabledcolor>
 					<bordertexture colordiffuse="FFFFFFFF" border="2">colors/white.png</bordertexture>
 					<bordersize>2</bordersize>
 					<onclick>noop</onclick>
@@ -432,6 +434,7 @@
 					<aligny>center</aligny>
 					<texturefocus colordiffuse="80000000" border="2,2,2,2">colors/white.png</texturefocus>
 					<texturenofocus colordiffuse="80000000" border="2,2,2,2">colors/white.png</texturenofocus>
+					<disabledcolor>FFFFFFFF</disabledcolor>
 					<bordertexture colordiffuse="FFFFFFFF" border="2">colors/white.png</bordertexture>
 					<bordersize>2</bordersize>
 					<onclick>noop</onclick>
