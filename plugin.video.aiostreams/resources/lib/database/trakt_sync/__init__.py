@@ -983,6 +983,8 @@ class TraktSyncDatabase(Database):
             return False
     def get_trakt_id_for_item(self, imdb_id, mediatype):
         """Retrieve Trakt ID for an item by its IMDB ID."""
+        if not self.connection and not self.connect():
+            return None
         try:
             table = 'movies' if mediatype == 'movie' else 'shows'
             sql = f"SELECT trakt_id FROM {table} WHERE imdb_id = ?"
@@ -995,6 +997,8 @@ class TraktSyncDatabase(Database):
 
     def get_bookmark(self, trakt_id=None, tvdb_id=None, tmdb_id=None, imdb_id=None):
         """Retrieve playback bookmark for an item using any available ID."""
+        if not self.connection and not self.connect():
+            return None
         try:
             # Try matching on any available ID
             sql_parts = []
@@ -1027,6 +1031,8 @@ class TraktSyncDatabase(Database):
         """Check if an item is marked as watched."""
     def is_item_watched(self, trakt_id, mediatype, season=None, episode=None):
         """Check if an item is marked as watched."""
+        if not self.connection and not self.connect():
+            return False
         try:
             if mediatype == 'movie':
                 sql = "SELECT watched FROM movies WHERE trakt_id = ?"
@@ -1066,6 +1072,11 @@ class TraktSyncDatabase(Database):
             return False
             
         try:
+            # Ensure connection
+            if not self.connection:
+                if not self.connect():
+                    return False
+
             if mediatype == 'movie':
                 # Check movies table
                 # Use safe wrapper that handles connection/disconnection
@@ -1119,6 +1130,11 @@ class TraktSyncDatabase(Database):
             return None
             
         try:
+            # Ensure connection
+            if not self.connection:
+                if not self.connect():
+                    return None
+
             # First get the show's Trakt ID
             # Use safe wrapper that handles connection/disconnection
             row = self.fetchone("SELECT trakt_id FROM shows WHERE imdb_id = ?", (imdb_id,))
@@ -1153,6 +1169,11 @@ class TraktSyncDatabase(Database):
             return False
             
         try:
+            # Ensure connection
+            if not self.connection:
+                if not self.connect():
+                    return False
+
             # 1. Get Trakt ID from local movies/shows table
             trakt_id = self.get_trakt_id_for_item(imdb_id, mediatype)
             if not trakt_id:

@@ -184,6 +184,10 @@ class Database:
             return cursor.fetchall()
         return []
 
+    # Aliases for compatibility
+    fetchone = fetch_one
+    fetchall = fetch_all
+
     def commit(self):
         """
         Commit the current transaction.
