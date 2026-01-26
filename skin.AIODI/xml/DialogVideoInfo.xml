@@ -347,7 +347,7 @@
 						<font>font13_title</font>
 						<textcolor>white</textcolor>
 						<label>Cast</label>
-						<visible>Integer.GreaterThan(Container(50).NumItems,0)</visible>
+						<visible>!String.IsEmpty(ListItem.Cast)</visible>
 					</control>
 
 					<!-- Loading Indicator -->
@@ -752,30 +752,37 @@
 				</control>
 
 					<!-- Related Content Row -->
-					<control type="label">
+					<control type="group">
 						<left>0</left>
-						<top>680</top>
+						<top>650</top>
 						<width>1245</width>
-						<height>30</height>
-						<font>font13_title</font>
-						<textcolor>white</textcolor>
-						<label>Related Content</label>
+						<height>350</height>
 						<visible>!String.IsEmpty(Window(Home).Property(InfoWindow.Related.1.Title))</visible>
-					</control>
-					<control type="fixedlist" id="5000">
-						<left>5</left>
-						<top>720</top>
-						<width>1245</width>
-						<height>280</height>
-						<onup>50</onup>
-						<onleft>8</onleft>
-						<onright>5000</onright>
-						<ondown>8</ondown>
-						<orientation>horizontal</orientation>
-						<viewtype label="535">list</viewtype>
-						<pagecontrol>60</pagecontrol>
-						<focusposition>0</focusposition>
-						<preloaditems>2</preloaditems>
+
+						<control type="label">
+							<left>0</left>
+							<top>0</top>
+							<width>1245</width>
+							<height>30</height>
+							<font>font13_title</font>
+							<textcolor>white</textcolor>
+							<label>Related Content</label>
+						</control>
+						
+						<control type="fixedlist" id="5000">
+							<left>5</left>
+							<top>40</top>
+							<width>1245</width>
+							<height>280</height>
+							<onup>50</onup>
+							<onleft>8</onleft>
+							<onright>5000</onright>
+							<ondown>8</ondown>
+							<orientation>horizontal</orientation>
+							<viewtype label="535">list</viewtype>
+							<pagecontrol>60</pagecontrol>
+							<focusposition>0</focusposition>
+							<preloaditems>2</preloaditems>
 						<itemlayout width="205" height="270">
 							<control type="group">
 								<left>0</left>
@@ -928,9 +935,10 @@
 								<visible>!String.IsEmpty(Window(Home).Property(InfoWindow.Related.10.Title))</visible>
 							</item>
 						</content>
-					</control>
-				</control>
-				</control>
+					</control> <!-- End of Related Content Group -->
+				</control> <!-- End of Content Inner Group -->
+			</control> <!-- End of Right Content Group -->
+
 				<include content="LeftRightArrows">
 					<param name="list_id" value="50" />
 					<param name="left_posx" value="-15" />

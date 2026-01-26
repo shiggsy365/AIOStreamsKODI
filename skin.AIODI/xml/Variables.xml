@@ -1340,7 +1340,7 @@
 		<value condition="Control.HasFocus(10100) | Control.HasFocus(10200) | Control.HasFocus(10300) | Control.HasFocus(10400) | Control.HasFocus(10500) | Control.HasFocus(10600) | Control.HasFocus(10700) | Control.HasFocus(10800) | Control.HasFocus(10900) | Control.HasFocus(11000) | Control.HasFocus(11100)">$INFO[Container($VAR[ActiveWidgetID]).ListItem.Property(IMDbRating)]</value>
 		<value condition="Control.HasFocus(5100) | Control.HasFocus(5110) | Control.HasFocus(5120) | Control.HasFocus(5130) | Control.HasFocus(5140) | Control.HasFocus(5150) | Control.HasFocus(5160) | Control.HasFocus(5170) | Control.HasFocus(5180) | Control.HasFocus(5190) | Control.HasFocus(5200) | Control.HasFocus(5210) | Control.HasFocus(5220) | Control.HasFocus(5230) | Control.HasFocus(5240) | Control.HasFocus(5250) | Control.HasFocus(5260) | Control.HasFocus(5270) | Control.HasFocus(5280) | Control.HasFocus(5290)">$INFO[Container($VAR[ActiveWidgetID]).ListItem.Property(IMDbRating)]</value>
 		<value condition="Control.HasFocus(6100) | Control.HasFocus(6110) | Control.HasFocus(6120) | Control.HasFocus(6130) | Control.HasFocus(6140) | Control.HasFocus(6150) | Control.HasFocus(6160) | Control.HasFocus(6170) | Control.HasFocus(6180) | Control.HasFocus(6190)">$INFO[Container($VAR[ActiveWidgetID]).ListItem.Property(IMDbRating)]</value>
-		<!-- Default fallback to Rating -->
+		<!-- Fallback to generic rating if IMDbRating property is missing -->
 		<value>$INFO[Container($VAR[ActiveWidgetID]).ListItem.Rating]</value>
 	</variable>
 	<variable name="ActiveItem_MPAA">
@@ -1370,10 +1370,9 @@
 		<value>$INFO[ListItem.Plot]</value>
 	</variable>
 	<variable name="InfoWindow_Rating">
-		<value condition="!String.IsEmpty(Window(Home).Property(InfoWindow.Rating))">$INFO[Window(Home).Property(InfoWindow.Rating)]</value>
 		<value condition="!String.IsEmpty(ListItem.Property(IMDbRating))">$INFO[ListItem.Property(IMDbRating)]</value>
+		<value condition="!String.IsEmpty(Window(Home).Property(InfoWindow.Rating))">$INFO[Window(Home).Property(InfoWindow.Rating)]</value>
 		<value condition="!String.IsEmpty(ListItem.Property(TraktRating))">$INFO[ListItem.Property(TraktRating)]</value>
-		<value condition="!String.IsEmpty(ListItem.Property(TraktUserRating))">$INFO[ListItem.Property(TraktUserRating)]</value>
 		<value>$INFO[ListItem.Rating]</value>
 	</variable>
 	<variable name="InfoWindow_Genre">
