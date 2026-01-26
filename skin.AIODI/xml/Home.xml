@@ -143,11 +143,11 @@
 				<visible>String.IsEmpty(Control.GetLabel(8888))</visible>
 			</control>
 
-			<!-- Plot Description (aligned with clearlogo) -->
+			<!-- Plot Description (aligned with clearlogo) - reduced to 900px width -->
 			<control type="textbox">
 				<left>0</left>
 				<top>200</top>
-				<width>1500</width>
+				<width>900</width>
 				<height>220</height>
 				<font>font15</font>
 				<textcolor>FFFFFFFF</textcolor>
