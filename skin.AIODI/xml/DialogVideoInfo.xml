@@ -336,32 +336,7 @@
 					<left>0</left>
 					<top>320</top>
 					<width>1245</width>
-					<height>400</height>
-
-					<!-- Cast Header -->
-					<control type="label">
-						<left>0</left>
-						<top>0</top>
-						<width>1245</width>
-						<height>30</height>
-						<font>font13_title</font>
-						<textcolor>white</textcolor>
-						<label>Cast</label>
-						<visible>!String.IsEmpty(ListItem.Cast)</visible>
-					</control>
-
-					<!-- Loading Indicator -->
-					<control type="group">
-						<visible>!String.IsEmpty(Window(Home).Property(AsyncLoading))</visible>
-						<control type="image">
-							<left>572</left>
-							<top>300</top>
-							<width>100</width>
-							<height>100</height>
-							<texture>common/spinner_outer.png</texture>
-							<animation effect="rotate" center="auto" start="0" end="360" time="1000" loop="true" condition="true">Conditional</animation>
-						</control>
-					</control>
+					<height>350</height>
 
 					<!-- Cast Row - 5 Static Tiles -->
 					<control type="group" id="50">
