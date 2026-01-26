@@ -18,7 +18,7 @@
     </extension>
 </addon>
 
-<addon id="plugin.video.aiostreams" name="AIOStreams" version="1.1.295" provider-name="Jon">
+<addon id="plugin.video.aiostreams" name="AIOStreams" version="1.1.296" provider-name="Jon">
     <requires>
         <import addon="xbmc.python" version="3.0.0"/>
         <import addon="script.module.requests" version="2.25.1"/>
@@ -51,7 +51,7 @@
         </assets>
     </extension>
 </addon>
-<addon id="plugin.video.imvdb" name="IMVDb Music Videos" version="1.0.150" provider-name="Jon">
+<addon id="plugin.video.imvdb" name="IMVDb Music Videos" version="1.0.151" provider-name="Jon">
     <requires>
         <import addon="xbmc.python" version="3.0.0"/>
         <import addon="script.module.requests" version="2.25.1"/>
@@ -73,7 +73,7 @@
     </extension>
 </addon>
 
-<addon id="script.aiodi.onboarding" name="AIODI Onboarding Wizard" version="1.0.157" provider-name="You">
+<addon id="script.aiodi.onboarding" name="AIODI Onboarding Wizard" version="1.0.158" provider-name="You">
     <requires>
         <import addon="xbmc.python" version="3.0.0"/>
         <import addon="script.module.requests" version="1.0.0"/>
@@ -92,7 +92,7 @@
     </extension>
 </addon>
 
-<addon id="skin.AIODI" version="6.0.557" name="AIODI" provider-name="Jon">
+<addon id="skin.AIODI" version="6.0.558" name="AIODI" provider-name="Jon">
 	<requires>
 		<import addon="xbmc.gui" version="5.17.0"/>
 		<import addon="plugin.video.aiostreams" version="1.1.139"/>
