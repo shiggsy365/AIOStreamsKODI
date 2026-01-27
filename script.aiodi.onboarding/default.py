@@ -740,24 +740,24 @@ def run_guided_installer(selections):
     
     active_addons = [(id, name) for id, name in target_addons if selections.get(name.lower().replace(" ", ""), True)]
     
-    # Force a repository refresh before starting
+    # Force a repository refresh before starting (Wait 10s for metadata sync)
     xbmc.log("[Onboarding] Refreshing repositories...", xbmc.LOGINFO)
     xbmc.executebuiltin('UpdateAddonRepos')
-    time.sleep(1)
+    time.sleep(10)
 
     for addon_id, name in active_addons:
         if not xbmc.getCondVisibility(f'System.HasAddon({addon_id})'):
             msg = (
                 f"[B]Guided Setup: {name}[/B]\n\n"
-                f"I will now trigger the official installation popup for {name}.\n\n"
-                "1. Click [B]YES / INSTALL[/B] on the popup.\n"
-                "2. If prompted for dependencies, select [B]OK[/B].\n"
-                "3. Once finished, return here (back out) to continue."
+                f"I will now open the official info page for {name}.\n"
+                "Kodi may take a few seconds to load the information.\n\n"
+                "1. Click [B]INSTALL[/B] on the screen.\n"
+                "2. Return here (back out) when finished."
             )
             xbmcgui.Dialog().ok("AIODI Setup", msg)
             
-            # Direct Installation Trigger
-            xbmc.executebuiltin(f'InstallAddon({addon_id})')
+            # Robust Addon Info protocol via Addon Browser (Window 10040)
+            xbmc.executebuiltin(f'ActivateWindow(10040,"addoninfo://{addon_id}",return)')
             
             # Detect install (Wait up to 120s)
             for _ in range(240):
