@@ -719,12 +719,16 @@ def run_installer(selections, data, is_stage_2=False):
     final_msg = (
         "[B]Setup Complete![/B]\n\n"
         "All components have been configured with your settings.\n\n"
-        "1. Switch to AIODI skin in Settings > Interface.\n"
-        "2. Restart Kodi one last time to finalize everything.\n\n"
+        "The AIODI interface will now be activated.\n\n"
         "Enjoy your new setup!"
     )
     xbmcgui.Dialog().ok("AIODI Setup Complete", final_msg)
-    xbmc.executebuiltin('RestartApp')
+    
+    # Final Visual Pivot: Switch Skin
+    if selections.get('skin') and xbmc.getCondVisibility('System.HasAddon(skin.AIODI)'):
+        xbmc.executebuiltin('SetSkin(skin.AIODI)')
+    
+    return True
 
 def run_guided_installer(selections):
     """One-Click navigator that bundles all plugins via the AIODI Skin"""
@@ -815,15 +819,19 @@ def run():
     
     if cancelled: return
 
-    # Save to local cache first
+    # 1. Save to local cache
     cache_data = data.copy()
     cache_data.update(selections)
     save_cache(cache_data)
 
-    # Perform injection and trigger Stage 1 Restart
-    inject_dependencies(selections)
-    run_installer(selections, data, is_stage_2=False)
-
+    # 2. Sequential Build Execution (Seamless)
+    xbmc.log("[Onboarding] Starting Seamless Build Execution...", xbmc.LOGINFO)
+    
+    # Trigger Guided Install (Skin + Bundled Dependencies)
+    if run_guided_installer(selections):
+        # Apply Configuration to all installed components
+        run_installer(selections, data, is_stage_2=True)
+    
 if __name__ == '__main__':
     run()
 
