@@ -5218,7 +5218,6 @@ def action_info(params):
         window = xbmcgui.Window(10000)
         window.setProperty('InfoWindow.IsCustom', 'true')
         window.setProperty('InfoWindow.IMDB', meta_id)
-        xbmc.log(f'[AIOStreams] action_info: Set InfoWindow.IsCustom=true, InfoWindow.IMDB={meta_id}', xbmc.LOGWARNING)
         window.setProperty('InfoWindow.Title', meta.get('name', ''))
         window.setProperty('InfoWindow.Plot', meta.get('description', ''))
         window.setProperty('InfoWindow.Year', str(meta.get('year', '')))
