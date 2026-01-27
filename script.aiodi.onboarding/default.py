@@ -54,6 +54,49 @@ def save_cache(data):
             json.dump(data, f)
     except: pass
 
+def inject_dependencies(selections):
+    """Dynamically add selected addons to requires list in addon.xml to force Kodi to install them"""
+    try:
+        xml_path = os.path.join(ADDON_PATH, 'addon.xml')
+        if not os.path.exists(xml_path):
+            xbmc.log(f"[Onboarding] addon.xml not found at {xml_path}", xbmc.LOGERROR)
+            return
+
+        import xml.etree.ElementTree as ET
+        tree = ET.parse(xml_path)
+        root = tree.getroot()
+        requires = root.find('requires')
+
+        if requires is None:
+            requires = ET.SubElement(root, 'requires')
+
+        # List of addons to inject based on selections
+        target_addons = [('plugin.video.aiostreams', True)] # Always needed
+        if selections.get('skin'): target_addons.append(('skin.AIODI', True))
+        if selections.get('youtube'): target_addons.append(('plugin.video.youtube', True))
+        if selections.get('upnext'): target_addons.append(('service.upnext', True))
+        if selections.get('iptv'): target_addons.append(('pvr.iptvsimple', True))
+        if selections.get('imvdb'): target_addons.append(('plugin.video.imvdb', True))
+        if selections.get('tmdbh'): target_addons.append(('script.module.tmdbhelper', True))
+
+        existing_deps = [imp.get('addon') for imp in requires.findall('import')]
+        modified = False
+
+        for addon_id, needed in target_addons:
+            if needed and addon_id not in existing_deps:
+                # Add without version requirement to be flexible
+                ET.SubElement(requires, 'import', addon=addon_id)
+                modified = True
+                xbmc.log(f"[Onboarding] Injected dependency: {addon_id}", xbmc.LOGINFO)
+
+        if modified:
+            tree.write(xml_path, encoding='utf-8', xml_declaration=True)
+            xbmc.log("[Onboarding] addon.xml updated with new dependencies", xbmc.LOGINFO)
+            return True
+    except Exception as e:
+        xbmc.log(f"[Onboarding] Failed to inject dependencies: {e}", xbmc.LOGERROR)
+    return False
+
 def install_with_wait(addon_id, progress, start_pct, end_pct, update_if_exists=False, silent=False, max_wait_time=60):
     # Check if already installed
     if xbmc.getCondVisibility(f'System.HasAddon({addon_id})'):
@@ -871,18 +914,25 @@ def run_installer(selections, data):
     else:
         xbmc.log('[Onboarding] Skin installation not requested (selections.get("skin") returned False/None)', xbmc.LOGINFO)
 
+    # 8. Dependency Injection (The fix for failed installations)
+    xbmc.log("[Onboarding] Performing Dependency Injection for missing components...", xbmc.LOGINFO)
+    if inject_dependencies(selections):
+        notify("Addon dependencies updated ✓")
+        time.sleep(1)
+
     notify(f"Setup complete! All {total_steps} steps finished.")
     xbmc.log(f'[Onboarding] Installation complete. Processed {current_step}/{total_steps} steps.', xbmc.LOGINFO)
     time.sleep(1)
 
     # Show final completion message with next steps
     final_msg = (
-        "[B]Setup Complete - Next Steps[/B]\n\n"
-        "1. Switch to AIODI skin:\n   Settings > Interface > Skin > AIODI\n\n"
-        "2. Configure widgets:\n   Use widget manager (left from Settings icon)\n\n"
-        "3. Log into YouTube:\n   Settings > Add-ons > Video add-ons > YouTube > Configure\n\n"
-        "4. Restart Kodi one more time to finalize\n\n"
-        "Restarting Kodi now..."
+        "[B]Step 1: Restart Kodi[/B]\n"
+        "Go back to the Home screen and exit/close Kodi completely.\n\n"
+        "[B]Step 2: Install Prompt[/B]\n"
+        "Re-open Kodi. You will see a prompt to 'Install missing dependencies'. [B]Select YES[/B].\n\n"
+        "[B]Step 3: Finalize[/B]\n"
+        "Once installed, everything will be pre-configured.\n\n"
+        "Restarting Kodi now to trigger the prompt..."
     )
     xbmcgui.Dialog().ok("AIODI Setup Complete", final_msg)
 
