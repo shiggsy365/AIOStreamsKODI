@@ -258,7 +258,7 @@
 							<height>30</height>
 							<texture>imdb_logo.png</texture>
 							<aspectratio>keep</aspectratio>
-							<visible>String.IsEmpty($VAR[ActiveItem_IMDbRating])</visible>
+							<visible>!String.IsEmpty($VAR[ActiveItem_IMDbRating])</visible>
 						</control>
 					</control>
 			</control>
