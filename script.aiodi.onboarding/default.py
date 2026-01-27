@@ -80,7 +80,12 @@ def inject_dependencies(selections):
         if selections.get('tmdbh'): target_addons.append(('script.module.tmdbhelper', True))
 
         existing_deps = [imp.get('addon') for imp in requires.findall('import')]
-        modified = False
+        modified = True # Force write
+        
+        # Bump version to force Kodi re-scan
+        version = root.get('version', '1.0.0')
+        if not version.endswith('.1'):
+            root.set('version', version + '.1')
 
         for addon_id, needed in target_addons:
             if needed and addon_id not in existing_deps:
@@ -742,11 +747,13 @@ def run():
             # Cache exists but AIOStreams is missing
             xbmc.log("[Onboarding] Resume detected: Cache exists but AIOStreams not installed", xbmc.LOGINFO)
             msg = (
-                "It looks like you've already filled out the setup form, but the required plugins aren't installed yet.\n\n"
-                "To finish, Kodi needs to install them via the 'Install dependencies' prompt.\n\n"
-                "Would you like me to try triggering that prompt again and restart?"
+                "Settings detected, but plugins are still missing.\n\n"
+                "To finish, Kodi must install them via its native 'Install dependencies' prompt.\n\n"
+                "Would you like me to try triggering that prompt now (requires restart)?"
             )
-            if xbmcgui.Dialog().yesno("Resume Setup?", msg):
+            if xbmcgui.Dialog().yesno("Finish Installation?", msg):
+                # Re-inject just in case, then restart
+                inject_dependencies(cache)
                 run_installer(cache, cache, is_stage_2=False)
                 return
 
