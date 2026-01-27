@@ -237,7 +237,7 @@
 							<font>font10</font>
 							<textcolor>FFFFFFFF</textcolor>
 							<focusedcolor>FFFFFFFF</focusedcolor>
-							<textoffsetx>40</textoffsetx>
+							<textoffsetx>20</textoffsetx>
 							<label>$VAR[ActiveItem_IMDbRating]</label>
 							<align>right</align>
 							<aligny>center</aligny>
