@@ -336,7 +336,7 @@
 					<left>0</left>
 					<top>320</top>
 					<width>1245</width>
-					<height>350</height>
+					<height>700</height>
 
 					<control type="label">
 						<left>0</left>
@@ -353,7 +353,7 @@
 						<left>0</left>
 						<top>40</top>
 						<width>1020</width>
-						<height>320</height>
+						<height>310</height>
 
 						<!-- Cast Tile 1 -->
 						<control type="button">
@@ -627,7 +627,7 @@
 					<!-- Related Content Row -->
 					<control type="group">
 						<left>0</left>
-						<top>230</top>
+						<top>350</top>
 						<width>1245</width>
 						<height>350</height>
 						<visible>!String.IsEmpty(Window(Home).Property(InfoWindow.Related.1.Title))</visible>
