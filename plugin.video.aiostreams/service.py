@@ -214,6 +214,69 @@ class AIOStreamsService:
         self.reload_settings()
         xbmc.log('[AIOStreams Service] Service initialized', xbmc.LOGINFO)
 
+    def silent_retrieve_manifest(self):
+        """Silently retrieve manifest URL using stored credentials"""
+        import requests
+        host_url = self.addon.getSetting('aiostreams_host').rstrip('/')
+        uuid = self.addon.getSetting('aiostreams_uuid')
+        password = self.addon.getSetting('aiostreams_password')
+
+        if not all([host_url, uuid, password]):
+            return False
+
+        try:
+            api_url = f'{host_url}/api/v1/user?uuid={uuid}&password={password}'
+            response = requests.get(api_url, timeout=10)
+            if response.status_code == 200:
+                data = response.json()
+                response_data = data.get('data', {})
+                encrypted_password = response_data.get('encryptedPassword')
+                if encrypted_password:
+                    # Construct and save manifest URL
+                    manifest_url = f'{host_url}/stremio/{uuid}/{encrypted_password}/manifest.json'
+                    self.addon.setSetting('base_url', manifest_url)
+                    xbmc.log(f'[AIOStreams Service] Silent manifest retrieval successful', xbmc.LOGINFO)
+                    return True
+        except Exception as e:
+            xbmc.log(f'[AIOStreams Service] Silent manifest retrieval failed: {e}', xbmc.LOGERROR)
+        return False
+
+    def startup_widget_guard(self):
+        """Initialize all widget properties and ensure backend readiness"""
+        import json
+        win_home = xbmcgui.Window(10000)
+        
+        # 1. Manifest Guard
+        if not self.addon.getSetting('base_url'):
+            xbmc.log('[AIOStreams Service] Manifest missing, attempting silent recovery...', xbmc.LOGINFO)
+            if self._wait_for_network(max_wait=10):
+                self.silent_retrieve_manifest()
+
+        # 2. Property Injection Guard (Pre-set all labels/paths to prevent ghost headers)
+        try:
+            from resources.lib.widget_config_loader import load_widget_config
+            config = load_widget_config()
+            
+            # Map of page types to property prefixes
+            mapping = {
+                'home': 'WidgetLabel_Home_',
+                'movies': 'movie_catalog_{index}_name',
+                'tvshows': 'series_catalog_{index}_name'
+            }
+            
+            for page, prefix in mapping.items():
+                widgets = config.get(page, [])
+                for idx, widget in enumerate(widgets):
+                    label = widget.get('label', 'Unknown')
+                    prop_name = prefix.format(index=idx) if '{index}' in prefix else f"{prefix}{idx}"
+                    win_home.setProperty(prop_name, label)
+                    # Generic fallback
+                    win_home.setProperty(f"{page}_widget_{idx}_name", label)
+                    
+            xbmc.log(f'[AIOStreams Service] Startup Widget Guard: Injected {len(config.get("home", []))} home properties', xbmc.LOGINFO)
+        except Exception as e:
+            xbmc.log(f'[AIOStreams Service] Startup Widget Guard: Error injecting properties: {e}', xbmc.LOGERROR)
+
     def _detect_android(self):
         """Detect if running on Android platform."""
         try:
@@ -371,6 +434,9 @@ class AIOStreamsService:
         self.run_migrations()
         self.run_cache_cleanup()
         self.run_clearlogo_check()
+        
+        # Execute Startup Widget Guard (Inject labels and check manifest)
+        self.startup_widget_guard()
         
         # Wait for UI to fully load before starting sync (10 seconds delay)
         xbmc.log('[AIOStreams Service] Waiting 10 seconds for UI to fully load...', xbmc.LOGINFO)
