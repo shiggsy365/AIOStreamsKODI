@@ -1,5 +1,5 @@
 <?xml version="4.0.3" encoding="UTF-8"?>
-<addon id="skin.AIODI" version="6.0.660" name="AIODI" provider-name="Jon">
+<addon id="skin.AIODI" version="6.0.661" name="AIODI" provider-name="Jon">
 	<requires>
 		<import addon="xbmc.gui" version="5.17.0"/>
 		<import addon="plugin.video.aiostreams" version="1.1.139"/>
@@ -7,6 +7,20 @@
 		<import addon="service.upnext" version="1.1.8"/>
 		<import addon="pvr.iptvsimple" version="20.10.1"/>
 		<import addon="plugin.video.imvdb" version="1.0.0"/>
+		<!-- Core Libraries -->
+		<import addon="inputstream.adaptive" version="20.3.5"/>
+		<import addon="script.module.requests" version="2.25.1"/>
+		<import addon="script.module.routing" version="0.2.3"/>
+		<import addon="script.module.kodi-six" version="0.1.3"/>
+		<import addon="script.module.simplecache" version="1.0.20"/>
+		<import addon="script.module.urllib3" version="1.26.4"/>
+		<import addon="script.module.chardet" version="4.0.0"/>
+		<import addon="script.module.certifi" version="2020.12.5"/>
+		<import addon="script.module.idna" version="2.10.0"/>
+		<import addon="script.module.six" version="1.15.0"/>
+		<import addon="script.module.beautifulsoup4" version="4.9.3"/>
+		<import addon="script.module.arrow" version="0.17.0"/>
+		<import addon="script.module.dateutil" version="2.8.1"/>
 	</requires>
 	<extension point="xbmc.gui.skin" debugging="false">
 		<res width="1920" height="1440" aspect="4:3" default="false" folder="xml" />

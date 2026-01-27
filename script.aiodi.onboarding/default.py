@@ -376,75 +376,6 @@ class InputWindow(xbmcgui.WindowXMLDialog):
         except Exception as e:
             xbmc.log(f'[Onboarding] Error collecting data: {e}', xbmc.LOGERROR)
 
-def pre_install_dependencies(progress, selections):
-    """Pre-install all dependencies to suppress popup dialogs during main installation"""
-    # Core dependencies needed by multiple addons
-    core_deps = [
-        'inputstream.adaptive',     # Common streaming dependency
-        'script.module.requests',    # HTTP library
-        'script.module.routing',     # Routing library
-        'script.module.kodi-six',    # Python 2/3 compatibility
-        'script.module.simplecache', # Caching library
-        'script.module.urllib3',     # HTTP library
-        'script.module.chardet',     # Character encoding detection
-        'script.module.certifi',     # SSL certificates
-        'script.module.idna',        # Internationalized domain names
-    ]
-
-    # Add addon-specific dependencies based on selections
-    addon_deps = []
-    if selections.get('youtube'):
-        addon_deps.extend([
-            'script.module.six',
-            'script.module.beautifulsoup4',
-        ])
-    if selections.get('upnext'):
-        addon_deps.append('script.module.arrow')
-    if selections.get('iptv'):
-        addon_deps.append('script.module.dateutil')
-
-    all_deps = list(set(core_deps + addon_deps))  # Remove duplicates
-    total_deps = len(all_deps)
-
-    xbmc.log(f'[Onboarding] Pre-installing {total_deps} dependencies...', xbmc.LOGINFO)
-    progress.update(1, f"Installing dependencies (0/{total_deps})...")
-
-    for idx, dep in enumerate(all_deps, 1):
-        if not xbmc.getCondVisibility(f'System.HasAddon({dep})'):
-            xbmc.log(f'[Onboarding] Installing dependency {idx}/{total_deps}: {dep}', xbmc.LOGINFO)
-            base_pct = 1 + int((idx / total_deps) * 4)
-            progress.update(base_pct, f"Installing dependencies ({idx}/{total_deps}): {dep.split('.')[-1]}...")
-            progress.update(base_pct, f"Installing dependencies ({idx}/{total_deps}): {dep.split('.')[-1]}...")
-            xbmc.executebuiltin(f'InstallAddon({dep})')
-
-            # Auto-approve
-            auto_approve_dialog(timeout=10, step_name=f"Dep {dep}")
-
-            # Wait for installation with timeout and progress updates
-
-            # Wait for installation with timeout and progress updates
-            for wait_iter in range(20):  # Max 10 seconds per dependency
-                # Update progress every 4 iterations
-                if wait_iter % 4 == 0:
-                    elapsed = wait_iter * 0.5
-                    progress.update(base_pct, f"Installing {dep.split('.')[-1]}... ({int(elapsed)}s)")
-
-                if xbmc.getCondVisibility(f'System.HasAddon({dep})'):
-                    xbmc.executebuiltin(f'EnableAddon({dep})')
-                    time.sleep(0.1)  # Quick clear of enable notification
-                    progress.update(base_pct, f"Dependency {idx}/{total_deps} ready: {dep.split('.')[-1]}")
-                    break
-                time.sleep(0.5)
-        else:
-            # Ensure it's enabled even if already installed
-            xbmc.executebuiltin(f'EnableAddon({dep})')
-            time.sleep(0.1)  # Quick clear
-            xbmc.log(f'[Onboarding] Dependency {idx}/{total_deps} already installed: {dep}', xbmc.LOGINFO)
-            progress.update(1 + int((idx / total_deps) * 4), f"Dependencies ({idx}/{total_deps}): {dep.split('.')[-1]} ready")
-
-    progress.update(5, f"Dependencies ready ({total_deps}/{total_deps})")
-    time.sleep(0.5)
-
 def run_installer(selections, data, is_stage_2=False):
     # Use notifications instead of progress dialog
     def notify(message):
@@ -463,8 +394,9 @@ def run_installer(selections, data, is_stage_2=False):
     data_keys = list(data.keys())
     xbmc.log(f"[Onboarding] Received data keys: {data_keys}", xbmc.LOGINFO)
 
-    # Pre-install all dependencies to prevent popup dialogs
-    pre_install_dependencies(progress, selections)
+    # All dependencies are now natively bundled with the skin.
+    # Pass 2 proceeds directly to setting configuration.
+    xbmc.log("[Onboarding] Native bundle confirmed. Proceeding to configuration...", xbmc.LOGINFO)
 
     # helper to ensure addon is loaded before setting settings
     def ensure_addon(addon_id, max_attempts=5):
