@@ -9,7 +9,8 @@ import xml.etree.ElementTree as ET
 import os
 
 def log(msg, level=xbmc.LOGINFO):
-    xbmc.log(f'[AIOStreams] {msg}', level)
+    if level in [xbmc.LOGERROR, xbmc.LOGWARNING]:
+        xbmc.log(f'[AIOStreams] {msg}', level)
 
 def get_plugin_setting(setting_id):
     """Get setting from plugin.video.aiostreams."""

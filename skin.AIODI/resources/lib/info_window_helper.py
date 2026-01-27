@@ -12,7 +12,8 @@ import time
 
 
 def log(msg, level=xbmc.LOGINFO):
-    xbmc.log(f'[AIOStreams] {msg}', level)
+    if level in [xbmc.LOGERROR, xbmc.LOGWARNING]:
+        xbmc.log(f'[AIOStreams] {msg}', level)
 
 
 def populate_cast_properties(content_type=None):
@@ -217,7 +218,7 @@ def reset_info_properties():
     win.clearProperty('InfoWindow.IsWatchlist')
     win.clearProperty('InfoWindow.IsWatched')
 
-    xbmc.log('[info_window_helper] All properties reset. AsyncLoading=true', xbmc.LOGINFO)
+    # Restricted logging for reset
 
 def populate_all():
     """Populates all info window data asynchronously."""

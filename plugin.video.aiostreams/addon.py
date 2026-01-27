@@ -262,7 +262,7 @@ def get_manifest(force=False):
             if manifest:
                 # Server returned new data (200 OK) - cache it
                 cache.cache_data('manifest', cache_key, manifest)
-                xbmc.log('[AIOStreams] Manifest updated from server', xbmc.LOGINFO)
+                xbmc.log('[AIOStreams] Manifest updated from server', xbmc.LOGDEBUG)
                 return manifest
             else:
                 # Request failed or 304 (already handled in make_request)
@@ -353,7 +353,7 @@ def search_catalog(query, content_type='movie', skip=0):
     
     url += ".json"
     
-    xbmc.log(f'[AIOStreams] Performing search for "{query}" (type: {m_type}, catalog: {catalog_id})', xbmc.LOGINFO)
+    xbmc.log(f'[AIOStreams] Performing search for "{query}" (type: {m_type}, catalog: {catalog_id})', xbmc.LOGDEBUG)
     return make_request(url, 'Search error')
 
 
@@ -364,7 +364,7 @@ def get_streams(content_type, media_id):
     xbmc.log(f'[AIOStreams] Requesting streams from: {url}', xbmc.LOGDEBUG)
     result = make_request(url, 'Stream error')
     if result:
-        xbmc.log(f'[AIOStreams] Received {len(result.get("streams", []))} streams for {media_id}', xbmc.LOGINFO)
+        xbmc.log(f'[AIOStreams] Received {len(result.get("streams", []))} streams for {media_id}', xbmc.LOGDEBUG)
     return result
 
 
@@ -431,7 +431,7 @@ def get_subtitles(content_type, media_id):
     """Fetch subtitles for a given media ID."""
     base_url = get_base_url()
     url = f"{base_url}/subtitles/{content_type}/{media_id}.json"
-    xbmc.log(f'[AIOStreams] Requesting subtitles from: {url}', xbmc.LOGINFO)
+    xbmc.log(f'[AIOStreams] Requesting subtitles from: {url}', xbmc.LOGDEBUG)
     return make_request(url, 'Subtitle error')
 
 
@@ -668,7 +668,7 @@ def get_meta(content_type, meta_id):
     # Cache miss, fetch from API
     base_url = get_base_url()
     url = f"{base_url}/meta/{content_type}/{meta_id}.json"
-    xbmc.log(f'[AIOStreams] Requesting meta from: {url}', xbmc.LOGINFO)
+    xbmc.log(f'[AIOStreams] Requesting meta from: {url}', xbmc.LOGDEBUG)
     result = make_request(url, 'Meta error')
 
     # Store in cache
@@ -2428,9 +2428,6 @@ def browse_catalog():
     # DEBUG LOGGING for User
     if catalog_data.get('metas') and len(catalog_data['metas']) > 0:
         first_item = catalog_data['metas'][0]
-        xbmc.log(f"[AIOStreams] DEBUG: First widget item label={category_title}, item_name={first_item.get('name')}", xbmc.LOGINFO)
-        xbmc.log(f"[AIOStreams] DEBUG: First item rating={first_item.get('imdbRating') or first_item.get('rating')}", xbmc.LOGINFO)
-        xbmc.log(f"[AIOStreams] DEBUG: First item genres={first_item.get('genres')}", xbmc.LOGINFO)
     
     # Display catalog items
     for meta in catalog_data['metas']:
@@ -4981,10 +4978,10 @@ def smart_widget():
                     list_item = create_listitem_with_context(merged_meta, content_type, url)
                     xbmcplugin.addDirectoryItem(HANDLE, url, list_item, is_folder)
 
-                    # Log IMDb rating for first movie widget item (for debugging home page ratings)
-                    if content_type == 'movie' and page == 'Movies' and index == 0 and meta == catalog_data['metas'][0]:
+                    # Log IMDb rating for movie widget items (for debugging home page ratings)
+                    if content_type == 'movie' and page == 'movies':
                         imdb_rating = list_item.getProperty('IMDbRating')
-                        xbmc.log(f'[AIOStreams] Home page Movies widget first item: title={merged_meta.get("name")}, IMDbRating property={imdb_rating}, merged_meta.imdbRating={merged_meta.get("imdbRating")}, merged_meta.rating={merged_meta.get("rating")}', xbmc.LOGINFO)
+                        xbmc.log(f'[AIOStreams] API returned rating for {merged_meta.get("name")}: {imdb_rating}', xbmc.LOGINFO)
                 except Exception as e:
                     import traceback
                     xbmc.log(f'[AIOStreams] smart_widget: Failed to add item: {e}', xbmc.LOGDEBUG)
