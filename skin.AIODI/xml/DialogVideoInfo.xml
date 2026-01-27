@@ -591,6 +591,7 @@
 							<control type="group">
 								<width>200</width>
 								<height>40</height>
+								<visible>!String.IsEmpty($VAR[InfoWindow_Rating])</visible>
 								<control type="button" id="8005">
 									<left>0</left>
 									<top>0</top>
@@ -619,7 +620,7 @@
 								<height>30</height>
 								<texture>imdb_logo.png</texture>
 								<aspectratio>keep</aspectratio>
-								<visible>true</visible>
+								<visible>!String.IsEmpty($VAR[InfoWindow_Rating])</visible>
 							</control>
 						</control>
 					</control>

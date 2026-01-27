@@ -175,17 +175,35 @@ def populate_cast_properties(content_type=None):
 
 
 def reset_info_properties():
-    """Resets all info window properties to trigger loading state."""
+    """Resets all info window properties to trigger loading state and clear previous data."""
     win = xbmcgui.Window(10000)
     win.setProperty('AsyncLoading', 'true')
-    
+
     # Clear Metadata
     win.clearProperty('InfoWindow.Director')
     win.clearProperty('InfoWindow.Rating')
     win.clearProperty('InfoWindow.Premiered')
     win.clearProperty('InfoWindow.Duration')
-    
-    xbmc.log('[info_window_helper] Properties reset. AsyncLoading=true', xbmc.LOGINFO)
+    win.clearProperty('InfoWindow.Trailer')
+
+    # Clear Cast properties (1-5)
+    for i in range(1, 6):
+        win.clearProperty(f'InfoWindow.Cast.{i}.Name')
+        win.clearProperty(f'InfoWindow.Cast.{i}.Role')
+        win.clearProperty(f'InfoWindow.Cast.{i}.Thumb')
+
+    # Clear Related Content properties (1-10)
+    for i in range(1, 11):
+        win.clearProperty(f'InfoWindow.Related.{i}.Title')
+        win.clearProperty(f'InfoWindow.Related.{i}.Thumb')
+        win.clearProperty(f'InfoWindow.Related.{i}.Year')
+        win.clearProperty(f'InfoWindow.Related.{i}.IMDB')
+
+    # Clear Trakt status properties
+    win.clearProperty('InfoWindow.IsWatchlist')
+    win.clearProperty('InfoWindow.IsWatched')
+
+    xbmc.log('[info_window_helper] All properties reset. AsyncLoading=true', xbmc.LOGINFO)
 
 def populate_all():
     """Populates all info window data asynchronously."""
