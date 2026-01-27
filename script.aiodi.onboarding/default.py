@@ -729,7 +729,7 @@ def run_installer(selections, data, is_stage_2=False):
 def run_guided_installer(selections):
     """Sequential navigator that guides the user through official Kodi installation pages"""
     target_addons = [
-        ('plugin.video.aiostreams', "AIOStreams", 'addons://repository/repository.aiostreams/'),
+        ('plugin.video.aiostreams', "AIOStreams", 'addons://repository.aiostreams/'),
         ('plugin.video.youtube', "YouTube", 'addoninfo://plugin.video.youtube'),
         ('service.upnext', "UpNext", 'addoninfo://service.upnext'),
         ('pvr.iptvsimple', "IPTV Simple", 'addoninfo://pvr.iptvsimple'),
