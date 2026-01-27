@@ -332,23 +332,6 @@ class InputWindow(xbmcgui.WindowXMLDialog):
 
             if controlId == 9010: # Install Selected
                 self.collect_data()
-                # Save all settings AND selections to cache
-                cache_data = self.data.copy()
-                cache_data.update(self.selections)
-                save_cache(cache_data)
-
-                # Trigger Phase 1: Injection & Restart
-                xbmc.log("[Onboarding] Phase 1: Injecting dependencies and triggering restart", xbmc.LOGINFO)
-                inject_dependencies(self.selections)
-                
-                msg = (
-                    "[B]Phase 1 Complete[/B]\n\n"
-                    "Settings saved and components injected.\n"
-                    "Kodi must now restart to install the missing plugins.\n\n"
-                    "[I]Please select YES on the native 'Install dependencies' prompt after Kodi starts.[/I]"
-                )
-                xbmcgui.Dialog().ok("AIODI Setup", msg)
-                
                 self.cancelled = False
                 self.close()
 
@@ -468,16 +451,7 @@ def run_installer(selections, data, is_stage_2=False):
     def notify(message):
         xbmcgui.Dialog().notification("AIODI Setup", message, xbmcgui.NOTIFICATION_INFO, 3000)
 
-    if not is_stage_2:
-        # Phase 1: Just restart
-        xbmc.log("[Onboarding] Stage 1 restart triggered", xbmc.LOGINFO)
-        # Force Kodi to re-scan addon.xml
-        xbmc.executebuiltin('UpdateLocalAddons')
-        time.sleep(1)
-        xbmc.executebuiltin('RestartApp')
-        return
-
-    notify("Phase 2: Configuring components...")
+    notify("Configuring components...")
     class DummyProgress:
         def update(self, pct, msg=""): notify(msg) if msg else None
         def iscanceled(self): return False
@@ -489,22 +463,6 @@ def run_installer(selections, data, is_stage_2=False):
     # Log non-sensitive data only
     data_keys = list(data.keys())
     xbmc.log(f"[Onboarding] Received data keys: {data_keys}", xbmc.LOGINFO)
-
-    # Sync repositories first to ensure newest versions are visible
-    xbmc.log("[Onboarding] Triggering repository update and forced refresh...", xbmc.LOGINFO)
-    xbmc.executebuiltin('UpdateLocalAddons')
-    time.sleep(3)
-    xbmc.executebuiltin('UpdateAddonRepos')
-    # Force a database update for the addon database specifically if possible
-    xbmc.executebuiltin('UpdateAddonRepos') 
-    
-    # Give it a substantial amount of time to pull the latest metadata
-    notify("Refreshing Addon Repositories (may take 20s)...")
-    for i in range(40):
-        if progress.iscanceled(): break
-        if i % 10 == 0:
-            xbmc.log(f"[Onboarding] Repo update wait: {i*0.5}s", xbmc.LOGINFO)
-        time.sleep(0.5)
 
     # Pre-install all dependencies to prevent popup dialogs
     pre_install_dependencies(progress, selections)
