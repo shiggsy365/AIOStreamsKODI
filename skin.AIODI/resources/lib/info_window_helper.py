@@ -47,17 +47,23 @@ def populate_cast_properties(content_type=None):
             log(f'ListItem.Filenameandpath: {xbmc.getInfoLabel("ListItem.Filenameandpath")}')
             log(f'ListItem.Path: {xbmc.getInfoLabel("ListItem.Path")}')
 
-            # If that's empty, try getting from custom property
+            # If that's empty, try getting from custom property (standardized)
             if not imdb_id:
                 imdb_id = xbmc.getInfoLabel('ListItem.Property(imdb_id)')
+            
+            if not imdb_id:
+                imdb_id = xbmc.getInfoLabel('ListItem.Property(meta_id)')
+            
+            if not imdb_id:
+                imdb_id = xbmc.getInfoLabel('ListItem.Property(id)')
 
             # If still empty, try from unique IDs
             if not imdb_id:
                 imdb_id = xbmc.getInfoLabel('ListItem.UniqueID(imdb)')
 
             if not imdb_id:
-                path = xbmc.getInfoLabel('ListItem.Filenameandpath')
-                # Check for imdb_id or meta_id
+                path = xbmc.getInfoLabel('ListItem.Filenameandpath') or xbmc.getInfoLabel('ListItem.Path')
+                # Check for imdb_id or meta_id in URL/Path
                 import re
                 match = re.search(r'(?:imdb_id|meta_id)=([^&]+)', path)
                 if match:

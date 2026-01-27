@@ -824,7 +824,7 @@ def fetch_metadata_parallel(items, content_type='movie'):
 def create_listitem_with_context(meta, content_type, action_url):
     """Create ListItem with full metadata, artwork, and context menus."""
     from resources.lib import trakt
-    title = meta.get('name', 'Unknown')
+    title = meta.get('name') or meta.get('title') or 'Unknown Title'
     list_item = xbmcgui.ListItem(label=title)
     
     # Use InfoTagVideo instead of deprecated setInfo
@@ -834,6 +834,8 @@ def create_listitem_with_context(meta, content_type, action_url):
     
     # Set properties for Skin access (crucial for Search Info)
     list_item.setProperty('id', str(meta.get('id', '')))
+    list_item.setProperty('meta_id', str(meta.get('id', '')))
+    list_item.setProperty('imdb_id', str(meta.get('id', '')))
     list_item.setProperty('content_type', str(content_type))
     
     # Set genres (handle both list and comma-separated string)
@@ -1347,159 +1349,41 @@ def cancel_all_background_tasks(active=True):
         xbmc.log(f'[AIOStreams] Error managing background tasks: {e}', xbmc.LOGDEBUG)
 
 
-def search():
-    """Handle search input."""
-    params = dict(parse_qsl(sys.argv[2][1:]))
-    content_type = params.get('content_type', 'both')  # Default to both
-    query = params.get('query', '').strip()  # Get query and strip whitespace
+def action_search(params=None):
+    """Unified search action for both plugin menus and external calls."""
+    if params is None:
+        params = dict(parse_qsl(sys.argv[2][1:]))
+    
+    content_type = params.get('content_type', 'both')
+    query = params.get('query', '').strip()
     skip = int(params.get('skip', 0))
+    is_widget = params.get('widget') == 'true'
     
     win = xbmcgui.Window(10000)
     cancel_all_background_tasks(True)
-
+    
     # Get search query from user if not provided or empty
     if not query:
         keyboard = xbmcgui.Dialog().input('Search', type=xbmcgui.INPUT_ALPHANUM)
         if not keyboard:
-            # User cancelled - close the directory properly
             xbmcplugin.endOfDirectory(HANDLE, succeeded=False)
+            cancel_all_background_tasks(False)
             return
         query = keyboard.strip()
 
-    # If content_type is 'both', use unified search directly
-    if content_type == 'both':
+    # If content_type is 'both' and skip=0, show unified search with headers
+    if content_type == 'both' and skip == 0:
         try:
-            search_unified_internal(query)
+            search_all_results(query)
         finally:
             cancel_all_background_tasks(False)
         return
 
-    # Show progress dialog
-    progress = xbmcgui.DialogProgress()
-    progress.create('AIOStreams', 'Searching...')
-
-    # Perform search
-    results = search_catalog(query, content_type, skip=skip)
-    progress.close()
-
-    if not results or 'metas' not in results or len(results['metas']) == 0:
-        # No results found - Set count to 0
-        if content_type == 'movie':
-            win.setProperty('GlobalSearch.MoviesCount', '0')
-        elif content_type in ['tvshows', 'series']:
-            win.setProperty('GlobalSearch.SeriesCount', '0')
-        elif content_type in ['video', 'youtube']:
-            win.setProperty('GlobalSearch.YoutubeCount', '0')
-            
-        xbmc.log(f'[AIOStreams] Search returned no results for "{query}"', xbmc.LOGINFO)
-        xbmcplugin.endOfDirectory(HANDLE, succeeded=True)
-        return
-    
-    # Apply filters
-    if HAS_MODULES and filters:
-        results['metas'] = filters.filter_items(results['metas'])
-    
-    xbmcplugin.setPluginCategory(HANDLE, f'Search: {query}')
-    xbmcplugin.setContent(HANDLE, 'movies' if content_type == 'movie' else 'tvshows')
-    
-    # Calculate counts
-    # Only update the property for the current content type to avoid overwriting others
-    if content_type == 'movie':
-        win.setProperty('GlobalSearch.MoviesCount', str(len(results['metas'])))
-    elif content_type == 'tvshows' or content_type == 'series':
-        win.setProperty('GlobalSearch.SeriesCount', str(len(results['metas'])))
-    elif content_type == 'video' or 'youtube' in str(content_type): # Broad check for youtube
-        win.setProperty('GlobalSearch.YoutubeCount', str(len(results['metas'])))
-    
-    # Display search results
-    for meta in results['metas']:
-        item_id = meta.get('id')
-        item_type = meta.get('type', content_type)
-
-        # Determine if this is a series or movie
-        if item_type == 'series':
-            # For series, drill down to seasons
-            url = get_url(action='show_seasons', meta_id=item_id)
-            is_folder = True
-        elif content_type in ['video', 'youtube'] or 'youtube' in str(item_type):
-            # For YouTube results, check if it's a folder (channel/playlist) or a playable video
-            # YouTube API returns different types which the YouTube plugin handles
-            # Folders have 'url' that contains channel/playlist paths
-            item_url = meta.get('url', '')
-            item_name = meta.get('name', '')
-            
-            # Detect if this is a folder item (channel/playlist)
-            is_youtube_folder = (
-                '/channel/' in item_url or
-                '/playlist/' in item_url or
-                'Channels' in item_name or
-                'Playlists' in item_name or
-                meta.get('mediatype') in ['channel', 'playlist']
-            )
-            
-            if is_youtube_folder:
-                youtube_available = xbmc.getCondVisibility('System.HasAddon(plugin.video.youtube)')
-                if not youtube_available:
-                    continue
-                # Use a custom action to close the dialog before opening the folder
-                # This fixes the "Activate of window refused because there are active modal dialogs" error
-                item_url = item_url if item_url else meta.get('id', '')
-                url = get_url(action='open_youtube_folder', url=item_url)
-                is_folder = False # Treat as actionable item to trigger our plugin logic
-                xbmc.log(f'[AIOStreams] YouTube folder detected (custom action): {item_name}', xbmc.LOGDEBUG)
-            else:
-                # It's a playable video
-                title = meta.get('name', 'Unknown')
-                poster = meta.get('poster', '')
-                fanart = meta.get('background', '')
-                clearlogo = meta.get('logo', '')
-                url = get_url(action='play', content_type='video', imdb_id=item_id, title=title, poster=poster, fanart=fanart, clearlogo=clearlogo)
-                is_folder = False
-        else:
-            # For movies, make them playable directly
-            title = meta.get('name', 'Unknown')
-            poster = meta.get('poster', '')
-            fanart = meta.get('background', '')
-            clearlogo = meta.get('logo', '')
-            url = get_url(action='play', content_type='movie', imdb_id=item_id, title=title, poster=poster, fanart=fanart, clearlogo=clearlogo)
-            is_folder = False
-
-        list_item = create_listitem_with_context(meta, content_type, url)
-
-        # Set IsPlayable property only for non-folder items
-        if not is_folder and 'open_youtube_folder' not in url:
-            list_item.setProperty('IsPlayable', 'true')
-
-        xbmcplugin.addDirectoryItem(HANDLE, url, list_item, is_folder)
-    
-    cancel_all_background_tasks(False)
-    
-    # Check if next page likely exists based on result count
-    # Default limit is usually 20 items per page
-    if len(results['metas']) >= 20:
-        # Next page likely exists, show "Load More"
-        list_item = xbmcgui.ListItem(label='[COLOR yellow]» Load More...[/COLOR]')
-        next_skip = skip + 20
-        url = get_url(action='search', content_type=content_type, query=query, skip=next_skip)
-        xbmcplugin.addDirectoryItem(HANDLE, url, list_item, True)
-    
-    xbmcplugin.endOfDirectory(HANDLE)
-
-
-def search_unified_internal(query):
-    """Internal unified search. Go directly to unified results."""
-    # We no longer show a selection dialog to avoid interrupting the user flow
-    search_all_results(query)
-
-
-def search_by_tab(query, content_type, is_widget=False):
-    """Search with tab-specific content type with navigation tabs."""
+    # For specific content types or paginated results, show list with tabs
     xbmcplugin.setPluginCategory(HANDLE, f'Search {content_type.title()}: {query}')
-
-    # Set proper content type for poster view
     xbmcplugin.setContent(HANDLE, 'movies' if content_type == 'movie' else 'tvshows')
 
-    # Add navigation tabs at the top (unless widget)
+    # Add navigation tabs at the top (unless it's a widget or paginated)
     if not is_widget:
         add_tab_switcher(query, content_type)
 
@@ -1509,76 +1393,101 @@ def search_by_tab(query, content_type, is_widget=False):
     progress.create('AIOStreams', f'Searching {content_label}...')
 
     # Perform search
-    results = search_catalog(query, content_type, skip=0)
+    results = search_catalog(query, content_type, skip=skip)
     progress.close()
 
     if not results or 'metas' not in results or len(results['metas']) == 0:
-        # Check if we were interrupted or if it's a legitimate "no results"
-        # We check both global and internal flags
-        win = xbmcgui.Window(10000)
-        search_active = win.getProperty('AIOStreams.SearchActive') == 'true' or \
-                        win.getProperty('AIOStreams.InternalSearchActive') == 'true'
-        
-        if not search_active:
-            # No results found - offer to try again in case of typo
-            dialog = xbmcgui.Dialog()
-            retry = dialog.yesno(
-                'No Results Found',
-                f'No {content_type}s found for "{query}".',
-                'Check spelling and try again?',
-                nolabel='Cancel',
-                yeslabel='Try Again'
-            )
-            if retry:
-                # Let user correct the search query
-                keyboard = dialog.input('Search', query, type=xbmcgui.INPUT_ALPHANUM)
-                if keyboard and keyboard.strip():
-                    # Recursively call unified search with corrected query
-                    corrected_query = keyboard.strip()
-                    xbmc.log(f'[AIOStreams] Retrying search with corrected query: {corrected_query}', xbmc.LOGINFO)
-                    xbmc.executebuiltin(f'Container.Update({get_url(action="search", content_type="both", query=corrected_query)})')
-        else:
-            xbmc.log('[AIOStreams] Search returned no results during active suppression - skipping modal dialog', xbmc.LOGINFO)
+        # Update counts for skin
+        if content_type == 'movie':
+            win.setProperty('GlobalSearch.MoviesCount', '0')
+        elif content_type in ['tvshows', 'series']:
+            win.setProperty('GlobalSearch.SeriesCount', '0')
+        elif content_type in ['video', 'youtube']:
+            win.setProperty('GlobalSearch.YoutubeCount', '0')
             
-        xbmcplugin.endOfDirectory(HANDLE, succeeded=False)
+        xbmc.log(f'[AIOStreams] Search returned no results for "{query}"', xbmc.LOGINFO)
+        xbmcplugin.endOfDirectory(HANDLE, succeeded=True)
+        cancel_all_background_tasks(False)
         return
+    
+    # Update counts for skin
+    if content_type == 'movie':
+        win.setProperty('GlobalSearch.MoviesCount', str(len(results['metas'])))
+    elif content_type in ['tvshows', 'series']:
+        win.setProperty('GlobalSearch.SeriesCount', str(len(results['metas'])))
+    elif content_type in ['video', 'youtube'] or 'youtube' in str(content_type):
+        win.setProperty('GlobalSearch.YoutubeCount', str(len(results['metas'])))
 
     # Apply filters
     items = results['metas']
     if HAS_MODULES and filters:
         items = filters.filter_items(items)
 
-    # Add results
+    # Display results
     for meta in items:
         item_id = meta.get('id')
+        item_type = meta.get('type', content_type)
 
-        if content_type == 'series':
+        if item_type == 'series':
             url = get_url(action='show_seasons', meta_id=item_id)
             is_folder = True
+        elif content_type in ['video', 'youtube'] or 'youtube' in str(item_type):
+            # YouTube specific logic
+            item_url = meta.get('url', '')
+            item_name = meta.get('name', '')
+            
+            is_youtube_folder = (
+                '/channel/' in item_url or
+                '/playlist/' in item_url or
+                'Channels' in item_name or
+                'Playlists' in item_name or
+                meta.get('mediatype') in ['channel', 'playlist']
+            )
+            
+            if is_youtube_folder:
+                if not xbmc.getCondVisibility('System.HasAddon(plugin.video.youtube)'):
+                    continue
+                item_url = item_url if item_url else meta.get('id', '')
+                url = get_url(action='open_youtube_folder', url=item_url)
+                is_folder = False
+            else:
+                title = meta.get('name') or meta.get('title') or 'Unknown Title'
+                poster = meta.get('poster', '')
+                fanart = meta.get('background', '')
+                clearlogo = meta.get('logo', '')
+                url = get_url(action='play', content_type='video', imdb_id=item_id, title=title, poster=poster, fanart=fanart, clearlogo=clearlogo)
+                is_folder = False
         else:
-            title = meta.get('name', 'Unknown')
+            title = meta.get('name') or meta.get('title') or 'Unknown Title'
             poster = meta.get('poster', '')
             fanart = meta.get('background', '')
             clearlogo = meta.get('logo', '')
-            url = get_url(action='play', content_type='movie', imdb_id=item_id, title=title, poster=poster, fanart=fanart, clearlogo=clearlogo)
+            url = get_url(action='play', content_type='movie' if item_type == 'movie' else item_type, imdb_id=item_id, title=title, poster=poster, fanart=fanart, clearlogo=clearlogo)
             is_folder = False
 
-        list_item = create_listitem_with_context(meta, content_type, url)
-
-        # Set IsPlayable property for movies
+        list_item = create_listitem_with_context(meta, item_type, url)
         if not is_folder:
             list_item.setProperty('IsPlayable', 'true')
 
         xbmcplugin.addDirectoryItem(HANDLE, url, list_item, is_folder)
-
+    
     # Load more if available (heuristic check)
-    if items and len(items) >= 20:
+    if len(results['metas']) >= 20:
         list_item = xbmcgui.ListItem(label='[COLOR yellow]» Load More...[/COLOR]')
-        next_skip = 20
-        url = get_url(action='search_tab', content_type=content_type, query=query, skip=next_skip)
+        next_skip = skip + 20
+        url = get_url(action='search', content_type=content_type, query=query, skip=next_skip)
         xbmcplugin.addDirectoryItem(HANDLE, url, list_item, True)
 
+    cancel_all_background_tasks(False)
     xbmcplugin.endOfDirectory(HANDLE)
+
+
+def search_unified_internal(query):
+    """Internal unified search. Go directly to unified results."""
+    # We no longer show a selection dialog to avoid interrupting the user flow
+    search_all_results(query)
+
+
 
 
 def add_tab_switcher(query, current_tab):
@@ -1615,9 +1524,9 @@ def add_tab_switcher(query, current_tab):
 
         if tab_type != current_tab:
             if tab_type == 'both':
-                url = get_url(action='search_tab', content_type='both', query=query)
+                url = get_url(action='search', content_type='both', query=query)
             else:
-                url = get_url(action='search_tab', content_type=tab_type, query=query)
+                url = get_url(action='search', content_type=tab_type, query=query)
             xbmcplugin.addDirectoryItem(HANDLE, url, list_item, True)
         else:
             xbmcplugin.addDirectoryItem(HANDLE, '', list_item, False)
@@ -1672,7 +1581,7 @@ def search_all_results(query):
 
             if len(movies) > 10:
                 list_item = xbmcgui.ListItem(label=f'[COLOR yellow]   » View All Movies ({len(movies)} results)[/COLOR]')
-                url = get_url(action='search_tab', content_type='movie', query=query)
+                url = get_url(action='search', content_type='movie', query=query)
                 xbmcplugin.addDirectoryItem(HANDLE, url, list_item, True)
 
     # TV Shows Section
@@ -5422,8 +5331,8 @@ def update_container():
 ACTION_REGISTRY = {
     # Index/Home
     'index': lambda p: index(),
-    'search': lambda p: search(),
-    'search_tab': lambda p: handle_search_tab(p),
+    'search': lambda p: action_search(p),
+    'search_tab': lambda p: action_search(p),
     'info': lambda p: action_info(p),
     'clear_cache': lambda p: clear_cache(),
     
@@ -5513,67 +5422,6 @@ def open_youtube_folder(params):
         xbmc.executebuiltin(f'ActivateWindow(Videos, "{url}")')
 
 
-def handle_search_tab(params):
-    """Handle search_tab action with pagination logic."""
-    query = params.get('query', '')
-    content_type = params.get('content_type', 'movie')
-    skip = int(params.get('skip', 0))
-    is_widget = params.get('widget') == 'true'
-
-    if not query:
-        keyboard = xbmcgui.Dialog().input('Search', type=xbmcgui.INPUT_ALPHANUM)
-        if keyboard:
-            query = keyboard
-        else:
-            xbmcplugin.endOfDirectory(HANDLE, succeeded=False)
-            return
-
-    if skip > 0:
-        # Handle pagination
-        xbmcplugin.setPluginCategory(HANDLE, f'Search {content_type.title()}: {query}')
-        xbmcplugin.setContent(HANDLE, 'movies' if content_type == 'movie' else 'tvshows')
-
-        if not is_widget:
-            # Add navigation tabs even on paginated results
-            add_tab_switcher(query, content_type)
-
-        results = search_catalog(query, content_type, skip=skip)
-        if results and 'metas' in results:
-            items = results['metas']
-            if HAS_MODULES and filters:
-                items = filters.filter_items(items)
-
-            for meta in items:
-                item_id = meta.get('id')
-                if content_type == 'series':
-                    url = get_url(action='show_seasons', meta_id=item_id)
-                    is_folder = True
-                else:
-                    title = meta.get('name', 'Unknown')
-                    poster = meta.get('poster', '')
-                    fanart = meta.get('background', '')
-                    clearlogo = meta.get('logo', '')
-                    url = get_url(action='play', content_type='movie', imdb_id=item_id, title=title, poster=poster, fanart=fanart, clearlogo=clearlogo)
-                    is_folder = False
-                list_item = create_listitem_with_context(meta, content_type, url)
-
-                # Set IsPlayable property for movies
-                if not is_folder:
-                    list_item.setProperty('IsPlayable', 'true')
-
-                xbmcplugin.addDirectoryItem(HANDLE, url, list_item, is_folder)
-
-            # Check for next page (heuristic check)
-            if items and len(items) >= 20:
-                list_item = xbmcgui.ListItem(label='[COLOR yellow]» Load More...[/COLOR]')
-                next_skip = skip + 20
-                url = get_url(action='search_tab', content_type=content_type, query=query, skip=next_skip)
-                xbmcplugin.addDirectoryItem(HANDLE, url, list_item, True)
-
-        xbmcplugin.endOfDirectory(HANDLE)
-    else:
-        # Initial search - show with tabs
-        search_by_tab(query, content_type, is_widget=is_widget)
 
 
 def router(params):
