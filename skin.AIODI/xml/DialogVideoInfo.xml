@@ -358,7 +358,7 @@
 						<!-- Cast Tile 1 -->
 						<control type="group">
 							<left>0</left>
-							<top>40</top>
+							<top>0</top>
 							<width>180</width>
 							<height>270</height>
 							<visible>!String.IsEmpty(Window(Home).Property(InfoWindow.Cast.1.Name))</visible>
@@ -414,7 +414,7 @@
 						<!-- Cast Tile 2 -->
 						<control type="group">
 							<left>204</left>
-							<top>40</top>
+							<top>0</top>
 							<width>180</width>
 							<height>270</height>
 							<visible>!String.IsEmpty(Window(Home).Property(InfoWindow.Cast.2.Name))</visible>
@@ -470,7 +470,7 @@
 						<!-- Cast Tile 3 -->
 						<control type="group">
 							<left>408</left>
-							<top>40</top>
+							<top>0</top>
 							<width>180</width>
 							<height>270</height>
 							<visible>!String.IsEmpty(Window(Home).Property(InfoWindow.Cast.3.Name))</visible>
@@ -526,7 +526,7 @@
 						<!-- Cast Tile 4 -->
 						<control type="group">
 							<left>612</left>
-							<top>40</top>
+							<top>0</top>
 							<width>180</width>
 							<height>270</height>
 							<visible>!String.IsEmpty(Window(Home).Property(InfoWindow.Cast.4.Name))</visible>
@@ -582,7 +582,7 @@
 						<!-- Cast Tile 5 -->
 						<control type="group">
 							<left>816</left>
-							<top>40</top>
+							<top>0</top>
 							<width>180</width>
 							<height>270</height>
 							<visible>!String.IsEmpty(Window(Home).Property(InfoWindow.Cast.5.Name))</visible>
