@@ -627,7 +627,13 @@ def get_metadata_ttl(meta_data):
 
 
 def get_meta(content_type, meta_id):
-    """Fetch metadata for a show or movie with optimized TTL caching."""
+    """Fetch metadata for a show or movie with optimized TTL caching.
+
+    Cache TTL varies based on content age:
+    - Current year: 7 days (metadata may be updated)
+    - Last year: 30 days
+    - Older: 90 days (metadata is stable)
+    """
     # API Compatibility mapping
     if content_type in ['tvshow', 'tvshows', 'episode']:
         content_type = 'series'
@@ -637,12 +643,6 @@ def get_meta(content_type, meta_id):
         # Default to movie or handle based on path? Usually smart_widget should pass correct type.
         # Fallback to movie for safety
         content_type = 'movie'
-
-    Cache TTL varies based on content age:
-    - Current year: 7 days (metadata may be updated)
-    - Last year: 30 days
-    - Older: 90 days (metadata is stable)
-    """
     from resources.lib import trakt
     # 1. Check SQL cache first (fastest)
     if HAS_MODULES:
