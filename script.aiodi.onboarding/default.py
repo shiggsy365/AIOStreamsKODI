@@ -727,49 +727,54 @@ def run_installer(selections, data, is_stage_2=False):
     xbmc.executebuiltin('RestartApp')
 
 def run_guided_installer(selections):
-    """Sequential navigator that guides the user through official Kodi installation pages"""
+    """One-Click navigator that bundles all plugins via the AIODI Skin"""
+    skin_id = 'skin.AIODI'
     target_addons = [
         ('plugin.video.aiostreams', "AIOStreams"),
         ('plugin.video.youtube', "YouTube"),
         ('service.upnext', "UpNext"),
         ('pvr.iptvsimple', "IPTV Simple"),
         ('plugin.video.imvdb', "IMVDb"),
-        ('script.module.tmdbhelper', "TMDB Helper"),
-        ('skin.AIODI', "AIODI Skin")
+        ('script.module.tmdbhelper', "TMDB Helper")
     ]
     
-    active_addons = [(id, name) for id, name in target_addons if selections.get(name.lower().replace(" ", ""), True)]
-    
-    # Force a repository refresh before starting (Wait 10s for metadata sync)
+    # 1. Force a repository refresh
     xbmc.log("[Onboarding] Refreshing repositories...", xbmc.LOGINFO)
     xbmc.executebuiltin('UpdateAddonRepos')
     time.sleep(10)
 
-    for addon_id, name in active_addons:
-        if not xbmc.getCondVisibility(f'System.HasAddon({addon_id})'):
-            msg = (
-                f"[B]Guided Setup: {name}[/B]\n\n"
-                f"I will now open the official info page for {name}.\n"
-                "Kodi may take a few seconds to load the information.\n\n"
-                "1. Click [B]INSTALL[/B] on the screen.\n"
-                "2. Return here (back out) when finished."
-            )
-            xbmcgui.Dialog().ok("AIODI Setup", msg)
+    # 2. Guide to Skin installation
+    if not xbmc.getCondVisibility(f'System.HasAddon({skin_id})'):
+        msg = (
+            "[B]Guided Setup: One-Click Bundle[/B]\n\n"
+            "I will now open the [B]AIODI Skin[/B] page.\n\n"
+            "1. Click [B]INSTALL[/B].\n"
+            "2. Kodi will show a list of additional plugins—select [B]OK[/B].\n"
+            "3. Once finished, return here (back out) to finalize."
+        )
+        xbmcgui.Dialog().ok("AIODI Setup", msg)
+        
+        # open skin info page
+        xbmc.executebuiltin(f'ActivateWindow(10040,"addoninfo://{skin_id}",return)')
+        
+        # Wait for install
+        for _ in range(300): # 150s
+            if xbmc.getCondVisibility(f'System.HasAddon({skin_id})'):
+                break
+            time.sleep(0.5)
             
-            # Robust Addon Info protocol via Addon Browser (Window 10040)
-            xbmc.executebuiltin(f'ActivateWindow(10040,"addoninfo://{addon_id}",return)')
-            
-            # Detect install (Wait up to 120s)
-            for _ in range(240):
-                if xbmc.getCondVisibility(f'System.HasAddon({addon_id})'):
-                    xbmc.executebuiltin(f'EnableAddon({addon_id})')
-                    break
-                time.sleep(0.5)
-            
-            if not xbmc.getCondVisibility(f'System.HasAddon({addon_id})'):
-                if not xbmcgui.Dialog().yesno("Addon Missing", f"{name} was not detected. Continue to next step?"):
-                    return False
-    return True
+    # 3. Cleanup: Disable addons that were not selected by the user
+    if xbmc.getCondVisibility(f'System.HasAddon({skin_id})'):
+        xbmc.log("[Onboarding] Skin detected. Performing selective dependency cleanup...", xbmc.LOGINFO)
+        for addon_id, name in target_addons:
+            is_selected = selections.get(name.lower().replace(" ", ""), True)
+            if not is_selected and xbmc.getCondVisibility(f'System.HasAddon({addon_id})'):
+                xbmc.log(f"[Onboarding] Disabling unselected dependency: {name} ({addon_id})", xbmc.LOGINFO)
+                xbmc.executebuiltin(f'DisableAddon({addon_id})')
+        return True
+    
+    xbmcgui.Dialog().ok("Setup Incomplete", "The AIODI Skin was not detected. Please try again.")
+    return False
 
 def run():
     cache = load_cache()
