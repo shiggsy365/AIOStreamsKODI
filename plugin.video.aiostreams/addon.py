@@ -627,7 +627,16 @@ def get_metadata_ttl(meta_data):
 
 
 def get_meta(content_type, meta_id):
-    """Fetch metadata for a show or movie with optimized TTL caching.
+    """Fetch metadata for a show or movie with optimized TTL caching."""
+    # API Compatibility mapping
+    if content_type in ['tvshow', 'tvshows', 'episode']:
+        content_type = 'series'
+    
+    # Internal suppression for 'home' type
+    if content_type == 'home':
+        # Default to movie or handle based on path? Usually smart_widget should pass correct type.
+        # Fallback to movie for safety
+        content_type = 'movie'
 
     Cache TTL varies based on content age:
     - Current year: 7 days (metadata may be updated)
@@ -673,6 +682,9 @@ def get_meta(content_type, meta_id):
 
     # Store in cache
     if HAS_MODULES and result:
+        meta_keys = list(result.get('meta', {}).keys())
+        xbmc.log(f'[AIOStreams] get_meta response keys for {meta_id}: {meta_keys}', xbmc.LOGDEBUG)
+        
         ttl = get_metadata_ttl(result)
         # 1. File cache
         cache.cache_meta(content_type, meta_id, result)
@@ -821,7 +833,7 @@ def create_listitem_with_context(meta, content_type, action_url):
         list_item.setProperty(f'Genre{i}', genre_val)
 
     # IMDb Rating property for skin use
-    rating = meta.get('imdbRating') or meta.get('rating') or meta.get('Rating') or ''
+    rating = meta.get('imdbRating') or meta.get('rating') or meta.get('Rating') or meta.get('stremio_rating') or meta.get('trakt_rating') or ''
     list_item.setProperty('IMDbRating', str(rating))
     
     # Cast & Director
@@ -4938,13 +4950,36 @@ def smart_widget():
             for meta in catalog_data['metas']:
                 item_id = meta.get('id')
                 if item_id:
-                    items_to_fetch.append({'ids': {'imdb': item_id}})
+                    # Detect type from ID format or catalog data
+                    item_type = 'series' if item_id.startswith('tt') and ':' in item_id else 'movie'
+                    if not ':' in item_id and content_type == 'series':
+                        item_type = 'series'
+                    
+                    items_to_fetch.append({'ids': {'imdb': item_id}, 'type': item_type})
 
             # Fetch metadata with logos in parallel
             metadata_map = {}
             if items_to_fetch:
                 xbmc.log(f'[AIOStreams] smart_widget: Fetching {len(items_to_fetch)} items metadata in parallel...', xbmc.LOGDEBUG)
-                metadata_map = fetch_metadata_parallel(items_to_fetch, content_type)
+                
+                # Custom parallel fetch to handle mixed types
+                def fetch_single_smart(item):
+                    try:
+                        ids = item.get('ids', {})
+                        i_id = ids.get('imdb')
+                        i_type = item.get('type', 'movie')
+                        res = get_meta(i_type, i_id)
+                        if res and 'meta' in res:
+                            return (i_id, res['meta'])
+                    except: pass
+                    return None
+
+                from concurrent.futures import ThreadPoolExecutor, as_completed
+                with ThreadPoolExecutor(max_workers=10) as executor:
+                    futures = [executor.submit(fetch_single_smart, item) for item in items_to_fetch]
+                    for future in as_completed(futures):
+                        res = future.result()
+                        if res: metadata_map[res[0]] = res[1]
 
             for meta in catalog_data['metas']:
                 try:
