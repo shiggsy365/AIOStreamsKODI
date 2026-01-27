@@ -619,7 +619,7 @@
 								<height>30</height>
 								<texture>imdb_logo.png</texture>
 								<aspectratio>keep</aspectratio>
-								<visible>!String.IsEmpty($VAR[InfoWindow_Rating])</visible>
+								<visible>true</visible>
 							</control>
 						</control>
 					</control>
