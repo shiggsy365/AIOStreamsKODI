@@ -729,40 +729,57 @@ def run_installer(selections, data, is_stage_2=False):
 def run_guided_installer(selections):
     """Sequential navigator that guides the user through official Kodi installation pages"""
     target_addons = [
-        ('plugin.video.aiostreams', "AIOStreams"),
-        ('plugin.video.youtube', "YouTube"),
-        ('service.upnext', "UpNext"),
-        ('pvr.iptvsimple', "IPTV Simple"),
-        ('plugin.video.imvdb', "IMVDb"),
-        ('script.module.tmdbhelper', "TMDB Helper"),
-        ('skin.AIODI', "AIODI Skin")
+        ('plugin.video.aiostreams', "AIOStreams", 'addons://repository/repository.aiostreams/'),
+        ('plugin.video.youtube', "YouTube", 'addoninfo://plugin.video.youtube'),
+        ('service.upnext', "UpNext", 'addoninfo://service.upnext'),
+        ('pvr.iptvsimple', "IPTV Simple", 'addoninfo://pvr.iptvsimple'),
+        ('plugin.video.imvdb', "IMVDb", 'addoninfo://plugin.video.imvdb'),
+        ('script.module.tmdbhelper', "TMDB Helper", 'addoninfo://script.module.tmdbhelper'),
+        ('skin.AIODI', "AIODI Skin", 'addoninfo://skin.AIODI')
     ]
     
-    active_addons = [(id, name) for id, name in target_addons if selections.get(name.lower().replace(" ", ""), True)]
+    active_addons = [(id, name, path) for id, name, path in target_addons if selections.get(name.lower().replace(" ", ""), True)]
     
-    for addon_id, name in active_addons:
+    # Force a repository refresh before starting
+    xbmc.log("[Onboarding] Refreshing repositories...", xbmc.LOGINFO)
+    xbmc.executebuiltin('UpdateAddonRepos')
+    time.sleep(1)
+
+    for addon_id, name, path in active_addons:
         if not xbmc.getCondVisibility(f'System.HasAddon({addon_id})'):
-            msg = (
-                f"[B]Guided Setup: {name}[/B]\n\n"
-                f"I will now open the official information page for {name}.\n\n"
-                "1. Click [B]INSTALL[/B] on the next screen.\n"
-                "2. If prompted about additional addons, select [B]OK[/B].\n"
-                "3. Once finished, return here (back out) to continue."
-            )
+            if "repository.aiostreams" in path:
+                # Specific instructions for the AIOStreams Repository
+                msg = (
+                    f"[B]Guided Setup: {name}[/B]\n\n"
+                    f"I will now open the AIODI Repository.\n\n"
+                    "1. Go into [B]Video add-ons[/B].\n"
+                    "2. Select [B]AIOStreams[/B] and click [B]INSTALL[/B].\n"
+                    "3. Return here (back out) when finished."
+                )
+            else:
+                msg = (
+                    f"[B]Guided Setup: {name}[/B]\n\n"
+                    f"I will open the official page for {name}.\n\n"
+                    "1. Click [B]INSTALL[/B] on the next screen.\n"
+                    "2. Return here (back out) to continue."
+                )
             xbmcgui.Dialog().ok("AIODI Setup", msg)
             
-            # Open native info page
-            xbmc.executebuiltin(f'ActivateWindow(10040,"addoninfo://{addon_id}",return)')
+            # Open native location
+            if "addoninfo://" in path:
+                xbmc.executebuiltin(f'ActivateWindow(10040,"{path}",return)')
+            else:
+                xbmc.executebuiltin(f'ActivateWindow(AddonBrowser,"{path}",return)')
             
-            # Detect install (Wait up to 60s while user might be on the info page)
-            for _ in range(120):
+            # Detect install (Wait up to 120s)
+            for _ in range(240):
                 if xbmc.getCondVisibility(f'System.HasAddon({addon_id})'):
                     xbmc.executebuiltin(f'EnableAddon({addon_id})')
                     break
                 time.sleep(0.5)
             
             if not xbmc.getCondVisibility(f'System.HasAddon({addon_id})'):
-                if not xbmcgui.Dialog().yesno("Addon Missing", f"{name} isn't installed. Continue anyway?"):
+                if not xbmcgui.Dialog().yesno("Addon Missing", f"{name} was not detected. Continue to next step?"):
                     return False
     return True
 
