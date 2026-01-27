@@ -65,9 +65,9 @@
 			<!-- Primary List: Seasons and Episodes -->
 			<control type="list" id="56">
 				<left>150</left>
-				<top>480</top>
+				<top>680</top>
 				<width>1620</width>
-				<height>600</height>
+				<height>400</height>
 				<onleft>9000</onleft>
 				<onright>noop</onright>
 				<onup>9000</onup>
