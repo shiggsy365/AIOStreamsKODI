@@ -98,9 +98,15 @@ def install_with_wait(addon_id, progress, start_pct, end_pct, update_if_exists=F
     progress.update(int(start_pct), f"Installing {addon_id}...")
     xbmc.executebuiltin(f'InstallAddon({addon_id})')
 
-    # Auto-approve installation dialog and clear notification quickly
-    time.sleep(0.3)  # Brief wait for dialog to appear
-    xbmc.executebuiltin('SendClick(12)')  # Click Yes on dialog
+    # Auto-approve installation dialog - loop for several seconds to catch it
+    # Control 11/12 are common 'Yes'/'OK' buttons in Kodi confirmation dialogs
+    for _ in range(10): # Try for 5 seconds
+        if xbmc.getCondVisibility('Window.IsActive(yesnodialog)') or xbmc.getCondVisibility('Window.IsActive(progressdialog)'):
+             xbmc.executebuiltin('SendClick(11)')
+             xbmc.executebuiltin('SendClick(12)')
+             break
+        time.sleep(0.5)
+
     time.sleep(0.1)  # Minimal wait to clear notification
 
     # Wait loop with progress updates (max_wait_time seconds)
@@ -405,6 +411,13 @@ def run_installer(selections, data):
     # Log non-sensitive data only
     data_keys = list(data.keys())
     xbmc.log(f"[Onboarding] Received data keys: {data_keys}", xbmc.LOGINFO)
+
+    # Sync repositories first to ensure newest versions are visible
+    xbmc.log("[Onboarding] Refreshing local addon database...", xbmc.LOGINFO)
+    xbmc.executebuiltin('UpdateLocalAddons')
+    time.sleep(2)
+    xbmc.executebuiltin('UpdateAddonRepos')
+    time.sleep(1)
 
     # Pre-install all dependencies to prevent popup dialogs
     pre_install_dependencies(progress, selections)
@@ -748,27 +761,28 @@ def run_installer(selections, data):
             xbmc.log(f"[Onboarding] IMVDb installation timed out", xbmc.LOGWARNING)
             notify("IMVDb installation timed out")
 
-    # 6. If TMDB helper players are selected, save a copy of the zip file to the special://home directory
+    # 6. If TMDB helper players are selected, install the addon and copy players
     if selections.get('tmdbh'):
         current_step += 1
-        xbmc.log(f'[Onboarding] Step {current_step}/{total_steps}: Setting up TMDB Helper Players', xbmc.LOGINFO)
-        notify(f"Step {current_step}/{total_steps}: Setting up TMDB Helper Players...")
-        try:
-            src = os.path.join(os.path.dirname(ADDON_PATH), "TMDB Helper Players", "tmdbhelper-players.zip")
-            # Fallback path for development environment
-            if not xbmcvfs.exists(src):
-                src = "/home/jon/Downloads/AIOStreamsKODI/AIOStreamsKODI/TMDB Helper Players/tmdbhelper-players.zip"
+        xbmc.log(f'[Onboarding] Step {current_step}/{total_steps}: Setting up TMDB Helper', xbmc.LOGINFO)
+        notify(f"Step {current_step}/{total_steps}: Installing TMDB Helper...")
+        if install_with_wait('script.module.tmdbhelper', progress, 88, 92, update_if_exists=True):
+            try:
+                src = os.path.join(os.path.dirname(ADDON_PATH), "TMDB Helper Players", "tmdbhelper-players.zip")
+                # Fallback path for development environment
+                if not xbmcvfs.exists(src):
+                    src = "/home/jon/Downloads/AIOStreamsKODI/AIOStreamsKODI/TMDB Helper Players/tmdbhelper-players.zip"
 
-            dst = xbmcvfs.translatePath("special://home/tmdbhelper-players.zip")
-            if xbmcvfs.exists(src):
-                xbmcvfs.copy(src, dst)
-                notify(f"Step {current_step}/{total_steps}: TMDB Helper Players ready ✓")
-                time.sleep(0.5)
-                xbmc.log(f"[Onboarding] TMDB Helper Players copied to {dst}", xbmc.LOGINFO)
-            else:
-                xbmc.log(f"[Onboarding] TMDB Helper Players source not found at {src}", xbmc.LOGWARNING)
-        except Exception as e:
-            xbmc.log(f"[Onboarding] Failed to copy players ZIP: {e}", xbmc.LOGERROR)
+                dst = xbmcvfs.translatePath("special://home/tmdbhelper-players.zip")
+                if xbmcvfs.exists(src):
+                    xbmcvfs.copy(src, dst)
+                    notify(f"Step {current_step}/{total_steps}: TMDB Helper Players ready ✓")
+                    time.sleep(0.5)
+                    xbmc.log(f"[Onboarding] TMDB Helper Players copied to {dst}", xbmc.LOGINFO)
+                else:
+                    xbmc.log(f"[Onboarding] TMDB Helper Players source not found at {src}", xbmc.LOGWARNING)
+            except Exception as e:
+                xbmc.log(f"[Onboarding] Failed to copy players ZIP: {e}", xbmc.LOGERROR)
 
     # 7. YouTube interactive setup (if YouTube was installed)
     # Configuration is already done, user can sign in later through the YouTube addon if needed
