@@ -470,9 +470,15 @@ def run_installer(selections, data, is_stage_2=False):
                 apply_setting(aio, 'trakt_client_id', data.get('trakt_id', ''), 'Trakt Client ID')
                 apply_setting(aio, 'trakt_client_secret', data.get('trakt_secret', ''), 'Trakt Client Secret')
                 
-                # Refresh local versions
+                # Refresh and Wait for manifest
                 xbmc.executebuiltin('RunPlugin(plugin://plugin.video.aiostreams/?action=retrieve_manifest)')
-                time.sleep(2)
+                
+                # Extended wait for AIOStreams to populate its base_url
+                for _ in range(30): # 15s
+                    if aio.getSetting('base_url'):
+                        xbmc.log("[Onboarding] AIOStreams Manifest confirmed", xbmc.LOGINFO)
+                        break
+                    time.sleep(0.5)
                 
                 notify(f"AIOStreams configured ✓")
                 del aio
@@ -631,11 +637,36 @@ def run():
     # Force an index refresh right at the start
     xbmc.executebuiltin('UpdateLocalAddons')
     
+    def setup_default_widgets():
+        """Ensure AIOStreams has default widgets populated for the AIODI Skin"""
+        try:
+            path = xbmcvfs.translatePath("special://profile/addon_data/plugin.video.aiostreams/widget_config.json")
+            if not xbmcvfs.exists(path):
+                os.makedirs(os.path.dirname(path), exist_ok=True)
+                config = {
+                    "home": [
+                        {"label": "Next Up", "path": "plugin://plugin.video.aiostreams/?action=trakt_next_up", "type": "series", "is_trakt": True},
+                        {"label": "Watchlist (Movies)", "path": "plugin://plugin.video.aiostreams/?action=trakt_watchlist&media_type=movies", "type": "movie", "is_trakt": True},
+                        {"label": "Watchlist (Shows)", "path": "plugin://plugin.video.aiostreams/?action=trakt_watchlist&media_type=series", "type": "series", "is_trakt": True}
+                    ],
+                    "tvshows": [],
+                    "movies": [],
+                    "version": 2
+                }
+                with open(path, 'w') as f:
+                    json.dump(config, f, indent=2)
+                xbmc.log("[Onboarding] Default AIOStreams widgets populated", xbmc.LOGINFO)
+        except Exception as e:
+            xbmc.log(f"[Onboarding] Widget setup error: {e}", xbmc.LOGERROR)
+
     # PASS 2: Detection & Completion
     if robust_check(skin_id) and cache.get('aiostreams_host'):
         xbmc.log("[Onboarding] Pass 2 detected: Skin present via robust check", xbmc.LOGINFO)
         if xbmcgui.Dialog().yesno("AIODI Setup", "Skin detected! Finish configuration now?"):
-            # Disable unselected addons (Cleanup)
+            # Step A: Setup Widgets
+            setup_default_widgets()
+            
+            # Step B: Configuration Cleanup
             target_addons = [
                 ('plugin.video.aiostreams', "AIOStreams"),
                 ('plugin.video.youtube', "YouTube"),
