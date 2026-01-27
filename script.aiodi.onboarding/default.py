@@ -756,8 +756,8 @@ def run_guided_installer(selections):
             )
             xbmcgui.Dialog().ok("AIODI Setup", msg)
             
-            # Open official Addon Info dialog (Window 10146)
-            xbmc.executebuiltin(f'ActivateWindow(10146,"{addon_id}",return)')
+            # Unified Official Addon Info dialog (Window 10146) with addonid prefix
+            xbmc.executebuiltin(f'ActivateWindow(10146,"addonid={addon_id}",return)')
             
             # Detect install (Wait up to 120s)
             for _ in range(240):
