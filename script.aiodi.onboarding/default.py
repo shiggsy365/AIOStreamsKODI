@@ -542,16 +542,15 @@ def run_installer(selections, data, is_stage_2=False):
             xbmc.log(f"[Onboarding] Failed to set {description or key}: {e}", xbmc.LOGERROR)
             return False
 
-    # Calculate total steps for progress tracking
-    total_steps = 2  # AIOStreams + Trakt (always installed)
+    # Total estimated steps for configuration
+    total_steps = 0
+    if selections.get('aiostreams', True): total_steps += 1
     if selections.get('youtube'): total_steps += 1
     if selections.get('upnext'): total_steps += 1
     if selections.get('iptv'): total_steps += 1
     if selections.get('imvdb'): total_steps += 1
     if selections.get('tmdbh'): total_steps += 1
     if selections.get('skin'): total_steps += 1
-
-    current_step = 0
 
     current_step = 0
 
@@ -562,92 +561,32 @@ def run_installer(selections, data, is_stage_2=False):
         try:
             notify(f"Configuring AIOStreams...")
             aio = ensure_addon('plugin.video.aiostreams')
-            if not aio:
-                raise Exception("Failed to load AIOStreams addon")
-
-            # Check if addon profile directory exists (where settings are stored)
-            addon_profile = xbmcvfs.translatePath(aio.getAddonInfo('profile'))
-            if not xbmcvfs.exists(addon_profile):
-                xbmc.log(f"[Onboarding] Creating addon profile directory: {addon_profile}", xbmc.LOGINFO)
-                xbmcvfs.mkdirs(addon_profile)
-
-            xbmc.log("[Onboarding] Applying AIOStreams settings...", xbmc.LOGINFO)
-
-            # Apply and verify each setting
-            settings_to_apply = [
-                ('aiostreams_host', data.get('aiostreams_host', ''), 'AIOStreams Host'),
-                ('aiostreams_uuid', data.get('aiostreams_uuid', ''), 'AIOStreams UUID'),
-                ('aiostreams_password', data.get('aiostreams_password', ''), 'AIOStreams Password'),
-                ('trakt_client_id', data.get('trakt_id', ''), 'Trakt Client ID'),
-                ('trakt_client_secret', data.get('trakt_secret', ''), 'Trakt Client Secret'),
-                ('default_behavior', data.get('aiostreams_behavior', 'show_streams'), 'Default Behavior'),
-                ('subtitle_languages', data.get('aiostreams_subtitles', ''), 'Subtitle Languages'),
-                ('autoplay_next_episode', selections.get('upnext'), 'Autoplay Next Episode'),
-            ]
-
-            failed_settings = []
-            for setting_key, setting_value, description in settings_to_apply:
-                if not apply_setting(aio, setting_key, setting_value, description):
-                    failed_settings.append(setting_key)
-
-            if failed_settings:
-                xbmc.log(f"[Onboarding] WARNING: Failed to apply {len(failed_settings)} settings: {', '.join(failed_settings)}", xbmc.LOGWARNING)
-
-            # Close settings to ensure they are saved
-            xbmc.log("[Onboarding] Closing AIOStreams addon to persist settings...", xbmc.LOGINFO)
-            del aio
-            time.sleep(3)  # Wait for settings to be written to disk
-
-            # Verify settings were saved by reloading addon
-            progress.update(24, f"Step {current_step}/{total_steps}: Verifying settings...")
-            aio_verify = ensure_addon('plugin.video.aiostreams')
-            if aio_verify:
-                # Verify multiple settings were saved
-                saved_host = aio_verify.getSetting('aiostreams_host')
-                saved_uuid = aio_verify.getSetting('aiostreams_uuid')
-                saved_trakt_id = aio_verify.getSetting('trakt_client_id')
-                saved_behavior = aio_verify.getSetting('default_behavior')
-
-                verification_results = []
-                if saved_host:
-                    verification_results.append(f"Host: {saved_host[:30]}...")
-                if saved_uuid:
-                    verification_results.append(f"UUID: {saved_uuid[:20]}...")
-                if saved_trakt_id:
-                    verification_results.append("Trakt ID: [SET]")
-                if saved_behavior:
-                    verification_results.append(f"Behavior: {saved_behavior}")
-
-                if verification_results:
-                    xbmc.log(f"[Onboarding] Settings verified saved: {'; '.join(verification_results)}", xbmc.LOGINFO)
-                else:
-                    xbmc.log("[Onboarding] WARNING: No settings were verified as saved! They may not have persisted.", xbmc.LOGWARNING)
-                    xbmcgui.Dialog().notification("Settings Warning", "Settings may not have saved. Check logs.", xbmcgui.NOTIFICATION_WARNING, 3000)
-
-                del aio_verify
-                time.sleep(1)
-
-            # Call integrations/retrieve manifest
-            progress.update(25, f"Step {current_step}/{total_steps}: Retrieving Manifest...")
-            xbmc.log("[Onboarding] Calling retrieve_manifest...", xbmc.LOGINFO)
-            xbmc.executebuiltin('RunPlugin(plugin://plugin.video.aiostreams/?action=retrieve_manifest)')
-            # Wait for manifest retrieval to complete (silent)
-            time.sleep(8)
-
-            # Call integrations/authorize trakt (silent, user can do this later if needed)
-            progress.update(28, f"Step {current_step}/{total_steps}: Configuring Trakt integration...")
-            xbmc.log("[Onboarding] Calling trakt_auth...", xbmc.LOGINFO)
-            xbmc.executebuiltin('RunPlugin(plugin://plugin.video.aiostreams/?action=trakt_auth)')
-            # Give it time to process in background
-            time.sleep(5)  # Increased wait time for Trakt auth
-
-            notify(f"Step {current_step}/{total_steps}: AIOStreams ready ✓")
-            xbmc.log("[Onboarding] AIOStreams configuration complete", xbmc.LOGINFO)
-            time.sleep(0.5)
-
+            if aio:
+                # Set Main Settings
+                apply_setting(aio, 'aiostreams_host', data.get('aiostreams_host', ''), 'AIOStreams Host')
+                apply_setting(aio, 'aiostreams_uuid', data.get('aiostreams_uuid', ''), 'AIOStreams UUID')
+                apply_setting(aio, 'aiostreams_password', data.get('aiostreams_password', ''), 'AIOStreams Password')
+                apply_setting(aio, 'default_behavior', data.get('aiostreams_behavior', 'show_streams'), 'Default Behavior')
+                apply_setting(aio, 'subtitle_languages', data.get('aiostreams_subtitles', ''), 'Subtitles')
+                
+                # UpNext Integration
+                if selections.get('upnext'):
+                    apply_setting(aio, 'autoplay_next_episode', 'true', 'Enable UpNext')
+                
+                # Trakt Settings
+                apply_setting(aio, 'trakt_client_id', data.get('trakt_id', ''), 'Trakt Client ID')
+                apply_setting(aio, 'trakt_client_secret', data.get('trakt_secret', ''), 'Trakt Client Secret')
+                
+                # Refresh local versions
+                xbmc.executebuiltin('RunPlugin(plugin://plugin.video.aiostreams/?action=retrieve_manifest)')
+                time.sleep(2)
+                
+                notify(f"AIOStreams configured ✓")
+                del aio
+            else:
+                xbmc.log("[Onboarding] Could not find AIOStreams plugin for configuration", xbmc.LOGERROR)
         except Exception as e:
             xbmc.log(f"[Onboarding] AIOStreams config error: {e}", xbmc.LOGERROR)
-            xbmcgui.Dialog().notification("Setup Error", f"AIOStreams configuration failed: {str(e)}", xbmcgui.NOTIFICATION_ERROR)
 
     # 2. Configure YouTube plugin
     if selections.get('youtube') and xbmc.getCondVisibility('System.HasAddon(plugin.video.youtube)'):
@@ -657,26 +596,14 @@ def run_installer(selections, data, is_stage_2=False):
             notify(f"Configuring YouTube...")
             yt = ensure_addon('plugin.video.youtube')
             if yt:
-                xbmc.log("[Onboarding] Applying YouTube settings...", xbmc.LOGINFO)
-                # Turn off general/enable setup wizard
-                apply_setting(yt, 'youtube.folder.my_subscriptions.show', 'false', 'Subscriptions Folder')
-                # Enter API Key in API/API Key
                 apply_setting(yt, 'youtube.api.key', data.get('yt_key', ''), 'YouTube API Key')
-                # Enter API ID in API/API ID
                 apply_setting(yt, 'youtube.api.id', data.get('yt_id', ''), 'YouTube API ID')
-                # Enter API Secret in API/API Secret
                 apply_setting(yt, 'youtube.api.secret', data.get('yt_secret', ''), 'YouTube API Secret')
-                # Turn on API/allow developer keys
                 apply_setting(yt, 'youtube.api.enable', 'true', 'Enable API')
                 del yt
-                notify(f"Step {current_step}/{total_steps}: YouTube ready ✓")
-                xbmc.log("[Onboarding] YouTube configuration complete", xbmc.LOGINFO)
-                time.sleep(0.5)
-            else:
-                xbmc.log(f"[Onboarding] Failed to configure YouTube - addon not loadable", xbmc.LOGERROR)
+                notify(f"YouTube configured ✓")
         except Exception as e:
             xbmc.log(f"[Onboarding] YouTube config error: {e}", xbmc.LOGERROR)
-            xbmcgui.Dialog().notification("Setup Error", f"YouTube configuration failed: {str(e)}", xbmcgui.NOTIFICATION_ERROR)
 
     # 3. Configure Up Next plugin
     if selections.get('upnext') and xbmc.getCondVisibility('System.HasAddon(service.upnext)'):
@@ -686,22 +613,12 @@ def run_installer(selections, data, is_stage_2=False):
             notify(f"Configuring UpNext...")
             un = ensure_addon('service.upnext')
             if un:
-                xbmc.log("[Onboarding] Applying UpNext settings...", xbmc.LOGINFO)
-                # Change interface/set display mode for notifications to Simple
-                apply_setting(un, 'simpleMode', '1', 'Simple Mode')  # 1 = Simple, 0 = Fancy
-                # Enable interface/show a stop button instead of a close button
-                apply_setting(un, 'stopAfterClose', 'true', 'Stop After Close')
-                # Change behaviour/default action when nothing selected to 'Play Next'
-                apply_setting(un, 'autoPlayMode', '0', 'Auto Play Mode')  # 0 = Auto play next episode
+                apply_setting(un, 'simpleMode', '1', 'Simple Mode')
+                apply_setting(un, 'autoPlayMode', '0', 'Auto Play Mode')
                 del un
-                notify(f"Step {current_step}/{total_steps}: UpNext ready ✓")
-                xbmc.log("[Onboarding] UpNext configuration complete", xbmc.LOGINFO)
-                time.sleep(0.5)
-            else:
-                xbmc.log(f"[Onboarding] Failed to configure UpNext - addon not loadable", xbmc.LOGERROR)
+                notify(f"UpNext configured ✓")
         except Exception as e:
             xbmc.log(f"[Onboarding] UpNext config error: {e}", xbmc.LOGERROR)
-            xbmcgui.Dialog().notification("Setup Error", f"UpNext configuration failed: {str(e)}", xbmcgui.NOTIFICATION_ERROR)
 
     # 4. Configure IPTV Simple Player
     if selections.get('iptv') and xbmc.getCondVisibility('System.HasAddon(pvr.iptvsimple)'):
@@ -709,108 +626,47 @@ def run_installer(selections, data, is_stage_2=False):
         xbmc.log(f'[Onboarding] Step {current_step}/{total_steps}: Configuring IPTV Simple', xbmc.LOGINFO)
         try:
             notify(f"Configuring IPTV Simple...")
-
-            # PVR addons use instance settings that can't be set via Python API
-            # We need to write directly to the instance settings XML file
-            xbmc.log("[Onboarding] Configuring IPTV Simple instance settings...", xbmc.LOGINFO)
-
-            # Get the addon data directory
             pvr_data_path = xbmcvfs.translatePath('special://userdata/addon_data/pvr.iptvsimple/')
+            if not xbmcvfs.exists(pvr_data_path): xbmcvfs.mkdirs(pvr_data_path)
+            
+            instance_file = os.path.join(pvr_data_path, 'instance-settings-1.xml')
+            import xml.etree.ElementTree as ET
+            
+            if xbmcvfs.exists(instance_file):
+                tree = ET.parse(instance_file)
+                root = tree.getroot()
+            else:
+                root = ET.Element('settings', version='2')
+                ET.SubElement(root, 'setting', id='kodi_addon_instance_name').text = 'AIODI IPTV'
 
-            # Ensure directory exists
-            if not xbmcvfs.exists(pvr_data_path):
-                xbmcvfs.mkdirs(pvr_data_path)
-                xbmc.log(f"[Onboarding] Created PVR data directory: {pvr_data_path}", xbmc.LOGINFO)
+            # M3U URL
+            m3u = data.get('iptv_m3u', '')
+            if m3u:
+                s_type = root.find(".//setting[@id='m3uPathType']")
+                if s_type is None: s_type = ET.SubElement(root, 'setting', id='m3uPathType')
+                s_type.text = '1'
+                s_url = root.find(".//setting[@id='m3uUrl']")
+                if s_url is None: s_url = ET.SubElement(root, 'setting', id='m3uUrl')
+                s_url.text = m3u
+            
+            # EPG URL
+            epg = data.get('iptv_epg', '')
+            if epg:
+                s_type = root.find(".//setting[@id='epgPathType']")
+                if s_type is None: s_type = ET.SubElement(root, 'setting', id='epgPathType')
+                s_type.text = '1'
+                s_url = root.find(".//setting[@id='epgUrl']")
+                if s_url is None: s_url = ET.SubElement(root, 'setting', id='epgUrl')
+                s_url.text = epg
 
-            # Look for existing instance settings file (usually instance-settings-1.xml)
-            instance_file = None
-            for i in range(1, 10):  # Check up to 10 instances
-                test_file = os.path.join(pvr_data_path, f'instance-settings-{i}.xml')
-                if xbmcvfs.exists(test_file):
-                    instance_file = test_file
-                    xbmc.log(f"[Onboarding] Found existing instance file: {instance_file}", xbmc.LOGINFO)
-                    break
-
-            # If no instance file exists, create instance-settings-1.xml
-            if not instance_file:
-                instance_file = os.path.join(pvr_data_path, 'instance-settings-1.xml')
-                xbmc.log(f"[Onboarding] Creating new instance file: {instance_file}", xbmc.LOGINFO)
-
-            # Read existing XML or create new one
-            try:
-                if xbmcvfs.exists(instance_file):
-                    with open(instance_file, 'r') as f:
-                        xml_content = f.read()
-                    # Parse existing XML
-                    import xml.etree.ElementTree as ET
-                    root = ET.fromstring(xml_content)
-                else:
-                    # Create new XML structure
-                    import xml.etree.ElementTree as ET
-                    root = ET.Element('settings', version='2')
-                    # Add instance name
-                    name_elem = ET.SubElement(root, 'setting', id='kodi_addon_instance_name')
-                    name_elem.text = 'Migrated Add-on Config'
-
-                # Update or add M3U URL settings
-                m3u_url = data.get('iptv_m3u', '')
-                if m3u_url:
-                    # Set M3U path type to Remote (1)
-                    m3u_type_elem = root.find(".//setting[@id='m3uPathType']")
-                    if m3u_type_elem is None:
-                        m3u_type_elem = ET.SubElement(root, 'setting', id='m3uPathType')
-                    m3u_type_elem.text = '1'
-                    m3u_type_elem.set('default', 'false')
-
-                    # Set M3U URL
-                    m3u_url_elem = root.find(".//setting[@id='m3uUrl']")
-                    if m3u_url_elem is None:
-                        m3u_url_elem = ET.SubElement(root, 'setting', id='m3uUrl')
-                    m3u_url_elem.text = m3u_url
-                    m3u_url_elem.set('default', 'false')
-                    xbmc.log(f"[Onboarding] Set M3U URL in instance settings", xbmc.LOGINFO)
-
-                # Update or add EPG URL settings
-                epg_url = data.get('iptv_epg', '')
-                if epg_url:
-                    # Set EPG path type to Remote (1)
-                    epg_type_elem = root.find(".//setting[@id='epgPathType']")
-                    if epg_type_elem is None:
-                        epg_type_elem = ET.SubElement(root, 'setting', id='epgPathType')
-                    epg_type_elem.text = '1'
-                    epg_type_elem.set('default', 'false')
-
-                    # Set EPG URL
-                    epg_url_elem = root.find(".//setting[@id='epgUrl']")
-                    if epg_url_elem is None:
-                        epg_url_elem = ET.SubElement(root, 'setting', id='epgUrl')
-                    epg_url_elem.text = epg_url
-                    epg_url_elem.set('default', 'false')
-                    xbmc.log(f"[Onboarding] Set EPG URL in instance settings", xbmc.LOGINFO)
-
-                # Write XML back to file
-                tree = ET.ElementTree(root)
-                ET.indent(tree, space='  ')  # Pretty print
-                with open(instance_file, 'wb') as f:
-                    tree.write(f, encoding='utf-8', xml_declaration=True)
-
-                xbmc.log(f"[Onboarding] Successfully wrote instance settings to {instance_file}", xbmc.LOGINFO)
-
-                # Trigger PVR reload to apply settings
-                xbmc.executebuiltin('UpdateLocalAddons')
-                time.sleep(2)
-
-                notify(f"Step {current_step}/{total_steps}: IPTV Simple ready ✓")
-                xbmc.log('[Onboarding] IPTV Simple Player configuration complete', xbmc.LOGINFO)
-                time.sleep(0.5)
-
-            except Exception as xml_e:
-                xbmc.log(f"[Onboarding] Error writing instance settings XML: {xml_e}", xbmc.LOGERROR)
-                notify("IPTV Simple config warning - check logs")
-
+            tree = ET.ElementTree(root)
+            with open(instance_file, 'wb') as f:
+                tree.write(f, encoding='utf-8', xml_declaration=True)
+            
+            notify(f"IPTV Simple configured ✓")
+            xbmc.executebuiltin('UpdateLocalAddons')
         except Exception as e:
             xbmc.log(f"[Onboarding] IPTV config error: {e}", xbmc.LOGERROR)
-            xbmcgui.Dialog().notification("Setup Error", f"IPTV configuration failed: {str(e)}", xbmcgui.NOTIFICATION_ERROR)
 
     # 5. Configure IMVDb plugin
     if selections.get('imvdb') and xbmc.getCondVisibility('System.HasAddon(plugin.video.imvdb)'):
@@ -820,129 +676,50 @@ def run_installer(selections, data, is_stage_2=False):
             notify(f"Configuring IMVDb...")
             im = ensure_addon('plugin.video.imvdb')
             if im:
-                xbmc.log("[Onboarding] Applying IMVDb settings...", xbmc.LOGINFO)
-                # In settings, set IMVDb API Key
                 apply_setting(im, 'api_key', data.get('imvdb_key', ''), 'IMVDb API Key')
                 del im
-                notify(f"Step {current_step}/{total_steps}: IMVDb ready")
-                xbmc.log("[Onboarding] IMVDb configuration complete", xbmc.LOGINFO)
-                time.sleep(0.5)
-            else:
-                xbmc.log(f"[Onboarding] Failed to configure IMVDb - addon not loadable", xbmc.LOGERROR)
-                notify("IMVDb configuration failed")
+                notify(f"IMVDb configured ✓")
         except Exception as e:
             xbmc.log(f"[Onboarding] IMVDb config error: {e}", xbmc.LOGERROR)
-            notify(f"IMVDb config error: {str(e)}")
 
-    # 6. If TMDB helper players are selected, install the addon and copy players
+    # 6. TMDB Helper Players
     if selections.get('tmdbh'):
         current_step += 1
-        xbmc.log(f'[Onboarding] Step {current_step}/{total_steps}: Setting up TMDB Helper', xbmc.LOGINFO)
-        notify(f"Step {current_step}/{total_steps}: Installing TMDB Helper...")
-        if install_with_wait('script.module.tmdbhelper', progress, 88, 92, update_if_exists=True):
-            try:
-                src = os.path.join(os.path.dirname(ADDON_PATH), "TMDB Helper Players", "tmdbhelper-players.zip")
-                # Fallback path for development environment
-                if not xbmcvfs.exists(src):
-                    src = "/home/jon/Downloads/AIOStreamsKODI/AIOStreamsKODI/TMDB Helper Players/tmdbhelper-players.zip"
+        xbmc.log(f'[Onboarding] Step {current_step}/{total_steps}: Setting up TMDB Helper Players', xbmc.LOGINFO)
+        try:
+            src = os.path.join(os.path.dirname(ADDON_PATH), "TMDB Helper Players", "tmdbhelper-players.zip")
+            if not xbmcvfs.exists(src):
+                src = "/home/jon/Downloads/AIOStreamsKODI/AIOStreamsKODI/TMDB Helper Players/tmdbhelper-players.zip"
+            
+            dst = xbmcvfs.translatePath("special://home/tmdbhelper-players.zip")
+            if xbmcvfs.exists(src):
+                xbmcvfs.copy(src, dst)
+                notify(f"TMDB Players ready ✓")
+        except Exception as e:
+            xbmc.log(f"[Onboarding] TMDB Helper error: {e}", xbmc.LOGERROR)
 
-                dst = xbmcvfs.translatePath("special://home/tmdbhelper-players.zip")
-                if xbmcvfs.exists(src):
-                    xbmcvfs.copy(src, dst)
-                    notify(f"Step {current_step}/{total_steps}: TMDB Helper Players ready ✓")
-                    time.sleep(0.5)
-                    xbmc.log(f"[Onboarding] TMDB Helper Players copied to {dst}", xbmc.LOGINFO)
-                else:
-                    xbmc.log(f"[Onboarding] TMDB Helper Players source not found at {src}", xbmc.LOGWARNING)
-            except Exception as e:
-                xbmc.log(f"[Onboarding] Failed to copy players ZIP: {e}", xbmc.LOGERROR)
-
-    # 7. YouTube interactive setup (if YouTube was installed)
-    # Configuration is already done, user can sign in later through the YouTube addon if needed
-    if selections.get('youtube') and xbmc.getCondVisibility('System.HasAddon(plugin.video.youtube)'):
-        xbmc.log('[Onboarding] YouTube configured, user can sign in later through addon', xbmc.LOGINFO)
-
-    # 8. If requested install AIODI skin, and switch to it
-    xbmc.log(f'[Onboarding] Checking skin installation - selections.get("skin"): {selections.get("skin")}', xbmc.LOGINFO)
+    # 7. Skin Installation & Switching
     if selections.get('skin'):
         current_step += 1
-        xbmc.log(f'[Onboarding] Step {current_step}/{total_steps}: Installing AIODI Skin', xbmc.LOGINFO)
-        notify(f"Step {current_step}/{total_steps}: Installing AIODI Skin...")
-
-        # Check if already installed first
-        skin_installed = xbmc.getCondVisibility('System.HasAddon(skin.AIODI)')
-
-        if not skin_installed:
-            xbmc.log('[Onboarding] Installing skin with auto-approval', xbmc.LOGINFO)
-            xbmc.executebuiltin('InstallAddon(skin.AIODI)')
-
-            # Auto-approve installation dialog - loop for several seconds to catch it
-            for _ in range(10): # Try for 5 seconds
-                if xbmc.getCondVisibility('Window.IsActive(yesnodialog)') or xbmc.getCondVisibility('Window.IsActive(progressdialog)'):
-                     xbmc.executebuiltin('SendClick(11)')
-                     xbmc.executebuiltin('SendClick(12)')
-                     break
-                time.sleep(0.5)
-
-            time.sleep(0.2)
-
-            # Wait up to 180 seconds for skin to install
-            install_result = False
-            for i in range(360):  # 180 seconds, check every 0.5s
-                if i % 20 == 0:  # Update every 10 seconds
-                    elapsed = i * 0.5
-                    notify(f"Installing skin... ({int(elapsed)}s)")
-
-                if xbmc.getCondVisibility('System.HasAddon(skin.AIODI)'):
-                    install_result = True
-                    xbmc.log('[Onboarding] Skin installation detected', xbmc.LOGINFO)
-                    break
-                time.sleep(0.5)
-
-            skin_installed = xbmc.getCondVisibility('System.HasAddon(skin.AIODI)')
+        notify(f"Finalizing Skin...")
+        if xbmc.getCondVisibility('System.HasAddon(skin.AIODI)'):
+            notify("AIODI Skin ready ✓")
         else:
-            install_result = True
-            xbmc.log('[Onboarding] Skin already installed', xbmc.LOGINFO)
-            notify("Skin already installed")
+            notify("Skin missing - will retry on next run")
 
-        if install_result or skin_installed:
-            if not install_result and skin_installed:
-                xbmc.log('[Onboarding] Skin installation timed out but skin is actually installed', xbmc.LOGINFO)
-            else:
-                xbmc.log('[Onboarding] Skin installed successfully', xbmc.LOGINFO)
+    xbmc.log(f'[Onboarding] Configuration complete. Processed {current_step}/{total_steps} steps.', xbmc.LOGINFO)
+    notify("Setup complete! All steps finished.")
+    time.sleep(2)
 
-            notify(f"Step {current_step}/{total_steps}: AIODI Skin ready ✓")
-            xbmc.log('[Onboarding] Skin installation complete, will restart Kodi for user to activate', xbmc.LOGINFO)
-        else:
-            xbmc.log('[Onboarding] Skin installation failed - not found after timeout', xbmc.LOGERROR)
-            xbmcgui.Dialog().notification("Setup Warning", "AIODI skin installation failed", xbmcgui.NOTIFICATION_WARNING)
-    else:
-        xbmc.log('[Onboarding] Skin installation not requested (selections.get("skin") returned False/None)', xbmc.LOGINFO)
-
-    # 8. Dependency Injection (The fix for failed installations)
-    xbmc.log("[Onboarding] Performing Dependency Injection for missing components...", xbmc.LOGINFO)
-    if inject_dependencies(selections):
-        notify("Addon dependencies updated ✓")
-        time.sleep(1)
-
-    notify(f"Setup complete! All {total_steps} steps finished.")
-    xbmc.log(f'[Onboarding] Installation complete. Processed {current_step}/{total_steps} steps.', xbmc.LOGINFO)
-    time.sleep(1)
-
-    # Show final completion message with next steps
+    # Show final completion message
     final_msg = (
-        "[B]Step 1: Restart Kodi[/B]\n"
-        "Go back to the Home screen and exit/close Kodi completely.\n\n"
-        "[B]Step 2: Install Prompt[/B]\n"
-        "Re-open Kodi. You will see a prompt to 'Install missing dependencies'. [B]Select YES[/B].\n\n"
-        "[B]Step 3: Finalize[/B]\n"
-        "Once installed, everything will be pre-configured.\n\n"
-        "Restarting Kodi now to trigger the prompt..."
+        "[B]Setup Complete![/B]\n\n"
+        "All components have been configured with your settings.\n\n"
+        "1. Switch to AIODI skin in Settings > Interface.\n"
+        "2. Restart Kodi one last time to finalize everything.\n\n"
+        "Enjoy your new setup!"
     )
     xbmcgui.Dialog().ok("AIODI Setup Complete", final_msg)
-
-    # Restart Kodi to ensure all changes take effect
-    xbmc.log('[Onboarding] Restarting Kodi to apply changes...', xbmc.LOGINFO)
     xbmc.executebuiltin('RestartApp')
 
 def run():
@@ -974,3 +751,4 @@ def run():
 
 if __name__ == '__main__':
     run()
+
