@@ -11,10 +11,10 @@ ADDON = xbmcaddon.Addon()
 ADDON_PATH = ADDON.getAddonInfo('path')
 WINDOW = xbmcgui.Window(10000) # Home window for property storage
 
-def auto_approve_dialog(timeout=10, step_name=""):
-    """Repeatedly try to click 'Yes/OK' on confirmation dialogs"""
-    xbmc.log(f'[Onboarding] {step_name}: Watching for confirmation dialogs...', xbmc.LOGINFO)
-    for i in range(timeout * 2): # 0.5s per iteration
+def auto_approve_thread(stop_event, step_name=""):
+    """Background thread to click 'Yes/OK' on confirmation dialogs until stopped"""
+    xbmc.log(f'[Onboarding] {step_name}: Auto-approval thread started', xbmc.LOGINFO)
+    while not stop_event.is_set():
         if xbmc.getCondVisibility('Window.IsActive(yesnodialog)') or \
            xbmc.getCondVisibility('Window.IsActive(progressdialog)') or \
            xbmc.getCondVisibility('Window.IsActive(okdialog)') or \
@@ -24,13 +24,20 @@ def auto_approve_dialog(timeout=10, step_name=""):
             xbmc.executebuiltin('SendClick(11)') # Yes/OK
             xbmc.executebuiltin('SendClick(12)') # Yes (alternate)
             xbmc.executebuiltin('SendClick(10)') # OK (alternate)
-            xbmc.log(f'[Onboarding] {step_name}: Clicked approval on iteration {i}', xbmc.LOGINFO)
+            xbmc.log(f'[Onboarding] {step_name}: Clicked approval', xbmc.LOGINFO)
             time.sleep(1)
-            # If the dialog is gone, we're done
-            if not (xbmc.getCondVisibility('Window.IsActive(yesnodialog)') or xbmc.getCondVisibility('Window.IsActive(okdialog)')):
-                return True
         time.sleep(0.5)
-    return False
+    xbmc.log(f'[Onboarding] {step_name}: Auto-approval thread stopped', xbmc.LOGINFO)
+
+def auto_approve_dialog(timeout=10, step_name=""):
+    """Legacy wrapper for single-step auto-approval"""
+    stop_event = threading.Event()
+    thread = threading.Thread(target=auto_approve_thread, args=(stop_event, step_name))
+    thread.start()
+    time.sleep(timeout)
+    stop_event.set()
+    thread.join()
+    return True
 
 # Persistence helpers
 def get_cache_path():
@@ -751,24 +758,35 @@ def run_manual_installer(selections, progress):
     total = len(active_addons)
     current = 0
     
-    for addon_id, name in active_addons:
-        if not xbmc.getCondVisibility(f'System.HasAddon({addon_id})'):
-            current += 1
-            pct = int((current / total) * 100)
-            progress.update(pct, f"Installing {name} ({current}/{total})...")
-            
-            xbmc.log(f"[Onboarding] Manual Installation: {addon_id}", xbmc.LOGINFO)
-            xbmc.executebuiltin(f'InstallAddon({addon_id})')
-            
-            # Start background auto-approval
-            auto_approve_dialog(timeout=15, step_name=f"Manual {name}")
-            
-            # Wait for install
-            for _ in range(30): # max 15s per addon
-                if xbmc.getCondVisibility(f'System.HasAddon({addon_id})'):
-                    xbmc.executebuiltin(f'EnableAddon({addon_id})')
-                    break
-                time.sleep(0.5)
+    # Start persistent background auto-approval thread
+    stop_event = threading.Event()
+    approval_thread = threading.Thread(target=auto_approve_thread, args=(stop_event, "Manual Install Loop"))
+    approval_thread.start()
+    
+    try:
+        for addon_id, name in active_addons:
+            if not xbmc.getCondVisibility(f'System.HasAddon({addon_id})'):
+                current += 1
+                pct = int((current / total) * 100)
+                progress.update(pct, f"Installing {name} ({current}/{total})...")
+                
+                xbmc.log(f"[Onboarding] Manual Installation: {addon_id}", xbmc.LOGINFO)
+                xbmc.executebuiltin(f'InstallAddon({addon_id})')
+                
+                # Wait for install with detection
+                for _ in range(40): # max 20s per addon
+                    if xbmc.getCondVisibility(f'System.HasAddon({addon_id})'):
+                        xbmc.executebuiltin(f'EnableAddon({addon_id})')
+                        break
+                    time.sleep(0.5)
+    finally:
+        stop_event.set()
+        approval_thread.join()
+
+def run_native_info_fallback(addon_id, name):
+    """Opens the native Kodi info page for an addon so the user can click 'Install' manually"""
+    xbmcgui.Dialog().ok("Manual Fix", f"I'll open the official {name} page.\n\nPlease click [B]INSTALL[/B] on the next screen, then come back here.")
+    xbmc.executebuiltin(f'ActivateWindow(AddonBrowser, "addoninfo://{addon_id}", return)')
 
 def run():
     cache = load_cache()
@@ -786,12 +804,11 @@ def run():
         else:
             # Cache exists but AIOStreams is missing -> FALLBACK Required
             xbmc.log("[Onboarding] Stuck detected: Cache exists but AIOStreams missing", xbmc.LOGINFO)
-            msg = (
-                "Settings are saved, but plugins failed to install automatically.\n\n"
-                "Would you like to try the [B]Manual Fallback Installer[/B]?\n"
-                "(I will handle the installation and auto-approve prompts for you)"
-            )
-            if xbmcgui.Dialog().yesno("Manual Installation?", msg):
+            
+            options = ["Try Manual Installation (Auto)", "Open Addon Page (Native Fix)", "Exit"]
+            choice = xbmcgui.Dialog().select("Finish Installation?", options)
+            
+            if choice == 0: # Manual Auto
                 class DummyProgress:
                     def update(self, pct, msg=""): 
                         xbmcgui.Dialog().notification("Manual Setup", msg, xbmcgui.NOTIFICATION_INFO, 3000)
@@ -802,10 +819,17 @@ def run():
                 
                 # Check if it worked
                 if xbmc.getCondVisibility('System.HasAddon(plugin.video.aiostreams)'):
-                    xbmcgui.Dialog().ok("Success", "Plugins installed manually! Proceeding to final configuration...")
+                    xbmcgui.Dialog().ok("Success", "Plugins installed! Proceeding to configuration...")
                     run_installer(cache, cache, is_stage_2=True)
                 else:
-                    xbmcgui.Dialog().ok("Error", "Manual installation failed. Please check your internet connection and try again.")
+                    xbmcgui.Dialog().ok("Manual Installation Stuck", "Still missing components. Use 'Native Fix' to open the addon page directly.")
+                return
+            
+            elif choice == 1: # Native Fix
+                run_native_info_fallback('plugin.video.aiostreams', 'AIOStreams')
+                return
+            
+            else:
                 return
 
     # [STATE: FRESH/START]
