@@ -11,6 +11,27 @@ ADDON = xbmcaddon.Addon()
 ADDON_PATH = ADDON.getAddonInfo('path')
 WINDOW = xbmcgui.Window(10000) # Home window for property storage
 
+def auto_approve_dialog(timeout=10, step_name=""):
+    """Repeatedly try to click 'Yes/OK' on confirmation dialogs"""
+    xbmc.log(f'[Onboarding] {step_name}: Watching for confirmation dialogs...', xbmc.LOGINFO)
+    for i in range(timeout * 2): # 0.5s per iteration
+        if xbmc.getCondVisibility('Window.IsActive(yesnodialog)') or \
+           xbmc.getCondVisibility('Window.IsActive(progressdialog)') or \
+           xbmc.getCondVisibility('Window.IsActive(okdialog)') or \
+           xbmc.getCondVisibility('Window.IsActive(addonbrowser)'):
+            
+            # Try common confirmation buttons
+            xbmc.executebuiltin('SendClick(11)') # Yes/OK
+            xbmc.executebuiltin('SendClick(12)') # Yes (alternate)
+            xbmc.executebuiltin('SendClick(10)') # OK (alternate)
+            xbmc.log(f'[Onboarding] {step_name}: Clicked approval on iteration {i}', xbmc.LOGINFO)
+            time.sleep(1)
+            # If the dialog is gone, we're done
+            if not (xbmc.getCondVisibility('Window.IsActive(yesnodialog)') or xbmc.getCondVisibility('Window.IsActive(okdialog)')):
+                return True
+        time.sleep(0.5)
+    return False
+
 # Persistence helpers
 def get_cache_path():
     path = xbmcvfs.translatePath(ADDON.getAddonInfo('profile'))
@@ -98,16 +119,10 @@ def install_with_wait(addon_id, progress, start_pct, end_pct, update_if_exists=F
     progress.update(int(start_pct), f"Installing {addon_id}...")
     xbmc.executebuiltin(f'InstallAddon({addon_id})')
 
-    # Auto-approve installation dialog - loop for several seconds to catch it
-    # Control 11/12 are common 'Yes'/'OK' buttons in Kodi confirmation dialogs
-    for _ in range(10): # Try for 5 seconds
-        if xbmc.getCondVisibility('Window.IsActive(yesnodialog)') or xbmc.getCondVisibility('Window.IsActive(progressdialog)'):
-             xbmc.executebuiltin('SendClick(11)')
-             xbmc.executebuiltin('SendClick(12)')
-             break
-        time.sleep(0.5)
+    # Wait and auto-approve
+    auto_approve_dialog(timeout=15, step_name=f"Install {addon_id}")
 
-    time.sleep(0.1)  # Minimal wait to clear notification
+    # Wait loop with progress updates (max_wait_time seconds)
 
     # Wait loop with progress updates (max_wait_time seconds)
     max_iterations = int(max_wait_time / 0.5)  # 0.5s per iteration
@@ -361,12 +376,13 @@ def pre_install_dependencies(progress, selections):
             xbmc.log(f'[Onboarding] Installing dependency {idx}/{total_deps}: {dep}', xbmc.LOGINFO)
             base_pct = 1 + int((idx / total_deps) * 4)
             progress.update(base_pct, f"Installing dependencies ({idx}/{total_deps}): {dep.split('.')[-1]}...")
+            progress.update(base_pct, f"Installing dependencies ({idx}/{total_deps}): {dep.split('.')[-1]}...")
             xbmc.executebuiltin(f'InstallAddon({dep})')
 
-            # Auto-approve installation dialog and clear notification quickly
-            time.sleep(0.3)  # Brief wait for dialog to appear
-            xbmc.executebuiltin('SendClick(12)')  # Click Yes on dialog
-            time.sleep(0.1)  # Minimal wait to clear notification
+            # Auto-approve
+            auto_approve_dialog(timeout=10, step_name=f"Dep {dep}")
+
+            # Wait for installation with timeout and progress updates
 
             # Wait for installation with timeout and progress updates
             for wait_iter in range(20):  # Max 10 seconds per dependency
@@ -413,11 +429,20 @@ def run_installer(selections, data):
     xbmc.log(f"[Onboarding] Received data keys: {data_keys}", xbmc.LOGINFO)
 
     # Sync repositories first to ensure newest versions are visible
-    xbmc.log("[Onboarding] Refreshing local addon database...", xbmc.LOGINFO)
+    xbmc.log("[Onboarding] Triggering repository update and forced refresh...", xbmc.LOGINFO)
     xbmc.executebuiltin('UpdateLocalAddons')
-    time.sleep(2)
+    time.sleep(3)
     xbmc.executebuiltin('UpdateAddonRepos')
-    time.sleep(1)
+    # Force a database update for the addon database specifically if possible
+    xbmc.executebuiltin('UpdateAddonRepos') 
+    
+    # Give it a substantial amount of time to pull the latest metadata
+    notify("Refreshing Addon Repositories (may take 20s)...")
+    for i in range(40):
+        if progress.iscanceled(): break
+        if i % 10 == 0:
+            xbmc.log(f"[Onboarding] Repo update wait: {i*0.5}s", xbmc.LOGINFO)
+        time.sleep(0.5)
 
     # Pre-install all dependencies to prevent popup dialogs
     pre_install_dependencies(progress, selections)
