@@ -212,8 +212,7 @@ class InputWindow(xbmcgui.WindowXMLDialog):
             'youtube': self.cache.get('youtube', False),
             'upnext': self.cache.get('upnext', True),
             'iptv': self.cache.get('iptv', False),
-            'imvdb': self.cache.get('imvdb', False),
-            'tmdbh': self.cache.get('tmdbh', True)
+            'imvdb': self.cache.get('imvdb', False)
         }
         self.data = {}
         self.cancelled = True
@@ -228,7 +227,9 @@ class InputWindow(xbmcgui.WindowXMLDialog):
             self.getControl(10105).setSelected(self.selections['upnext'])
             self.getControl(10106).setSelected(self.selections['iptv'])
             self.getControl(10107).setSelected(self.selections['imvdb'])
-            self.getControl(10108).setSelected(self.selections['tmdbh'])
+            
+            # Control 10108 disabled/hidden
+            self.getControl(10108).setVisible(False)
 
             # Pre-fill settings from cache - use setText() for edit controls
             if 'aiostreams_host' in self.cache:
@@ -322,8 +323,6 @@ class InputWindow(xbmcgui.WindowXMLDialog):
             elif controlId == 10107:
                 self.selections['imvdb'] = self.getControl(10107).isSelected()
                 self.refresh_tabs()
-            elif controlId == 10108:
-                self.selections['tmdbh'] = self.getControl(10108).isSelected()
 
             if controlId == 10004: # Default Behavior toggle
                 current = self.getControl(10004).getLabel().split(": ")[-1]
@@ -644,23 +643,7 @@ def run_installer(selections, data, is_stage_2=False):
         except Exception as e:
             xbmc.log(f"[Onboarding] IMVDb config error: {e}", xbmc.LOGERROR)
 
-    # 6. TMDB Helper Players
-    if selections.get('tmdbh'):
-        current_step += 1
-        xbmc.log(f'[Onboarding] Step {current_step}/{total_steps}: Setting up TMDB Helper Players', xbmc.LOGINFO)
-        try:
-            src = os.path.join(os.path.dirname(ADDON_PATH), "TMDB Helper Players", "tmdbhelper-players.zip")
-            if not xbmcvfs.exists(src):
-                src = "/home/jon/Downloads/AIOStreamsKODI/AIOStreamsKODI/TMDB Helper Players/tmdbhelper-players.zip"
-            
-            dst = xbmcvfs.translatePath("special://home/tmdbhelper-players.zip")
-            if xbmcvfs.exists(src):
-                xbmcvfs.copy(src, dst)
-                notify(f"TMDB Players ready ✓")
-        except Exception as e:
-            xbmc.log(f"[Onboarding] TMDB Helper error: {e}", xbmc.LOGERROR)
-
-    # 7. Skin Installation & Switching
+    # 6. Finalizing
     if selections.get('skin'):
         current_step += 1
         notify(f"Finalizing Skin...")
@@ -696,8 +679,7 @@ def run_guided_installer(selections):
         ('plugin.video.youtube', "YouTube"),
         ('service.upnext', "UpNext"),
         ('pvr.iptvsimple', "IPTV Simple"),
-        ('plugin.video.imvdb', "IMVDb"),
-        ('script.module.tmdbhelper', "TMDB Helper")
+        ('plugin.video.imvdb', "IMVDb")
     ]
     
     # 1. Force a repository refresh
