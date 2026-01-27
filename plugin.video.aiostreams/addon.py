@@ -353,8 +353,13 @@ def search_catalog(query, content_type='movie', skip=0):
     
     url += ".json"
     
+    # Build manifest-specific identifier for search to prevent cross-manifest stale data
+    import hashlib
+    m_hash = hashlib.md5(base_url.encode()).hexdigest()[:16]
+    search_cache_key = f"search:{m_hash}:{m_type}:{catalog_id}:{hashlib.md5(query.encode()).hexdigest()[:16]}"
+    
     xbmc.log(f'[AIOStreams] Performing search for "{query}" (type: {m_type}, catalog: {catalog_id})', xbmc.LOGDEBUG)
-    return make_request(url, 'Search error')
+    return make_request(url, 'Search error', cache_key=search_cache_key)
 
 
 def get_streams(content_type, media_id):
@@ -371,8 +376,14 @@ def get_streams(content_type, media_id):
 def get_catalog(content_type, catalog_id, genre=None, skip=0):
     """Fetch a catalog from AIOStreams with 6-hour caching."""
     from resources.lib import trakt
+    base_url = get_base_url()
+    
+    # Build manifest-specific identifier to prevent cross-manifest stale data
+    import hashlib
+    m_hash = hashlib.md5(base_url.encode()).hexdigest()[:16]
+    
     # Build cache identifier from all parameters
-    cache_id = f"{content_type}:{catalog_id}:{genre or 'none'}:{skip}"
+    cache_id = f"{m_hash}:{content_type}:{catalog_id}:{genre or 'none'}:{skip}"
 
     # Check SQL cache first (fastest)
     if HAS_MODULES:
@@ -4273,6 +4284,13 @@ def refresh_manifest_cache():
         # Use the cache module's invalidate method instead of manual file deletion
         # This handles the internal naming conventions correctly
         cache.get_cache().invalidate('manifest', cache_key)
+        
+        # ALSO CLEAR CATALOG CACHE: Since manifest changed, catalogs might be stale/different
+        # and we don't want old manifest data persisting in the UI
+        xbmc.log('[AIOStreams] Invalidating ALL catalog caches due to manifest refresh', xbmc.LOGINFO)
+        cache.get_cache().invalidate_type('catalog')
+        # Also clear search caches
+        cache.get_cache().invalidate_type('search')
 
         # CRITICAL: Also clear HTTP headers cache (ETag/Last-Modified) to prevent 304 response
         # The full_cache_key format is "manifest:{cache_key}" as used in make_request()
