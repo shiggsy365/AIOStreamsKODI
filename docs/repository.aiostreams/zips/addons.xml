@@ -73,7 +73,7 @@
     </extension>
 </addon>
 
-<addon id="script.aiodi.onboarding" name="AIODI Onboarding Wizard" version="1.0.261" provider-name="You">
+<addon id="script.aiodi.onboarding" name="AIODI Onboarding Wizard" version="1.0.262" provider-name="You">
     <requires>
         <import addon="xbmc.python" version="3.0.0"/>
         <import addon="script.module.requests" version="1.0.0"/>

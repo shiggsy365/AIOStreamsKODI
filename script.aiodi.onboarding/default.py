@@ -672,58 +672,55 @@ def run_installer(selections, data, is_stage_2=False):
     return True
 
 def run_guided_installer(selections):
-    """One-Click navigator that bundles all plugins via the AIODI Skin"""
+    """Pass 1: Gather requirements and guide to Bundled Installation"""
     skin_id = 'skin.AIODI'
-    target_addons = [
-        ('plugin.video.aiostreams', "AIOStreams"),
-        ('plugin.video.youtube', "YouTube"),
-        ('service.upnext', "UpNext"),
-        ('pvr.iptvsimple', "IPTV Simple"),
-        ('plugin.video.imvdb', "IMVDb")
-    ]
     
     # 1. Force a repository refresh
     xbmc.log("[Onboarding] Refreshing repositories...", xbmc.LOGINFO)
     xbmc.executebuiltin('UpdateAddonRepos')
-    time.sleep(10)
+    time.sleep(5)
 
     # 2. Guide to Skin installation
-    if not xbmc.getCondVisibility(f'System.HasAddon({skin_id})'):
-        msg = (
-            "[B]Guided Setup: One-Click Bundle[/B]\n\n"
-            "I will now open the [B]AIODI Skin[/B] page.\n\n"
-            "1. Click [B]INSTALL[/B].\n"
-            "2. Kodi will show a list of additional plugins—select [B]OK[/B].\n"
-            "3. Once finished, return here (back out) to finalize."
-        )
-        xbmcgui.Dialog().ok("AIODI Setup", msg)
-        
-        # open skin info page
-        xbmc.executebuiltin(f'ActivateWindow(10040,"addoninfo://{skin_id}",return)')
-        
-        # Wait for install
-        for _ in range(300): # 150s
-            if xbmc.getCondVisibility(f'System.HasAddon({skin_id})'):
-                break
-            time.sleep(0.5)
-            
-    # 3. Cleanup: Disable addons that were not selected by the user
-    if xbmc.getCondVisibility(f'System.HasAddon({skin_id})'):
-        xbmc.log("[Onboarding] Skin detected. Performing selective dependency cleanup...", xbmc.LOGINFO)
-        for addon_id, name in target_addons:
-            is_selected = selections.get(name.lower().replace(" ", ""), True)
-            if not is_selected and xbmc.getCondVisibility(f'System.HasAddon({addon_id})'):
-                xbmc.log(f"[Onboarding] Disabling unselected dependency: {name} ({addon_id})", xbmc.LOGINFO)
-                xbmc.executebuiltin(f'DisableAddon({addon_id})')
-        return True
+    msg = (
+        "[B]Step 1: Install AIODI Skin[/B]\n\n"
+        "I will now open the [B]AIODI Skin[/B] page.\n\n"
+        "1. Click [B]INSTALL[/B].\n"
+        "2. Select [B]OK[/B] for additional plugins.\n"
+        "3. Once installed, [B]RUN THIS WIZARD AGAIN[/B] to finish setup."
+    )
+    xbmcgui.Dialog().ok("AIODI Setup", msg)
     
-    xbmcgui.Dialog().ok("Setup Incomplete", "The AIODI Skin was not detected. Please try again.")
-    return False
+    # Precise navigation using the Addon Browser info protocol
+    xbmc.executebuiltin(f'ActivateWindow(10040,"addoninfo://{skin_id}",return)')
+    return True
 
 def run():
-    """Main execution entry point: Pure Seamless One-Click Flow"""
+    """Two-Pass Robust Execution Entry Point"""
+    cache = load_cache()
+    skin_id = 'skin.AIODI'
     
-    # [1] Collect User Requirements (Keys/Selections)
+    # PASS 2: Detection & Completion
+    if xbmc.getCondVisibility(f'System.HasAddon({skin_id})') and cache.get('aiostreams_host'):
+        xbmc.log("[Onboarding] Pass 2 detected: Skin present, completing setup", xbmc.LOGINFO)
+        if xbmcgui.Dialog().yesno("AIODI Setup", "Skin detected! Finish configuration now?"):
+            # Disable unselected addons (Cleanup)
+            target_addons = [
+                ('plugin.video.aiostreams', "AIOStreams"),
+                ('plugin.video.youtube', "YouTube"),
+                ('service.upnext', "UpNext"),
+                ('pvr.iptvsimple', "IPTV Simple"),
+                ('plugin.video.imvdb', "IMVDb")
+            ]
+            for addon_id, name in target_addons:
+                is_selected = cache.get(name.lower().replace(" ", ""), True)
+                if not is_selected and xbmc.getCondVisibility(f'System.HasAddon({addon_id})'):
+                    xbmc.executebuiltin(f'DisableAddon({addon_id})')
+            
+            # Apply Settings and Switch Skin
+            run_installer(cache, cache, is_stage_2=True)
+            return
+
+    # PASS 1: Injection & Guidance
     form = InputWindow('onboarding_input.xml', ADDON_PATH, 'Default', '1080i')
     form.doModal()
     data = form.data
@@ -733,19 +730,13 @@ def run():
     
     if cancelled: return
 
-    # [2] Save to local cache (Reference backup)
+    # Save to local cache
     cache_data = data.copy()
     cache_data.update(selections)
     save_cache(cache_data)
 
-    # [3] Seamless Build Execution
-    xbmc.log("[Onboarding] Starting Pure Seamless Build Execution...", xbmc.LOGINFO)
-    
-    # Trigger Bundled Installation (Skin + All Dependencies)
-    if run_guided_installer(selections):
-        xbmc.log("[Onboarding] Installation success. Entering final configuration pass...", xbmc.LOGINFO)
-        # Apply API Keys and Settings to the new plugins
-        run_installer(selections, data, is_stage_2=True)
+    # Start Pass 1 guidance
+    run_guided_installer(selections)
     
 if __name__ == '__main__':
     run()
