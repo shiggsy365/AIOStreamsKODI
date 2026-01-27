@@ -4784,7 +4784,7 @@ def smart_widget():
     win_home = xbmcgui.Window(10000)
     if win_home.getProperty('AIOStreams.SearchActive') == 'true' or \
        win_home.getProperty('AIOStreams.InternalSearchActive') == 'true':
-        xbmc.log('[AIOStreams] Suppression: smart_widget skipped (Search Active)', xbmc.LOGDEBUG)
+        xbmc.log('[AIOStreams] Suppression: smart_widget skipped (Search Active)', xbmc.LOGINFO)
         # Return TRUE but empty to prevent Kodi from showing "Plugin Error" dialog
         xbmcplugin.endOfDirectory(HANDLE, succeeded=True)
         return
@@ -4792,16 +4792,10 @@ def smart_widget():
     params = dict(parse_qsl(sys.argv[2][1:]))
     
     index = int(params.get('index', 0))
-    content_type = params.get('content_type', 'movie')
+    # content_type param from URL (usually 'home', 'movie', 'series')
+    url_content_type = params.get('content_type', 'movie')
 
-    # Optimization: If Search Dialog (1112) or Info Dialog (12003) OR ANY MODAL is open, skip background widget loading
-    # DISABLE OPTIMIZATION TEMPORARILY FOR DEBUGGING
-    # if xbmc.getCondVisibility('Window.IsVisible(1112)') or xbmc.getCondVisibility('Window.IsVisible(12003)') or xbmc.getCondVisibility('System.HasModalDialog'):
-    #     xbmc.log(f'[AIOStreams] smart_widget: Skipping background load (Dialog Open) - index={index}', xbmc.LOGDEBUG)
-    #     xbmcplugin.endOfDirectory(HANDLE)
-    #     return
-
-    xbmc.log(f'[AIOStreams] smart_widget: index={index}, content_type={content_type}', xbmc.LOGDEBUG)
+    xbmc.log(f'[AIOStreams] smart_widget: index={index}, source_page={url_content_type}', xbmc.LOGINFO)
     
     # Use widget_config_loader to get configured widget
     try:
@@ -4809,21 +4803,23 @@ def smart_widget():
         
         # Map content_type to page name
         page_map = {'home': 'home', 'series': 'tvshows', 'movie': 'movies'}
-        page = page_map.get(content_type, content_type)
+        page = page_map.get(url_content_type, url_content_type)
         
         # Get widget from config
         widget = get_widget_at_index(page, index)
 
         if not widget:
-            xbmc.log(f'[AIOStreams] smart_widget: No widget configured at index {index} for {page}', xbmc.LOGDEBUG)
+            xbmc.log(f'[AIOStreams] smart_widget: No widget configured at index {index} for {page}', xbmc.LOGINFO)
             xbmcplugin.endOfDirectory(HANDLE)
             return
         
         # Extract widget details
         path = widget.get('path', '')
         label = widget.get('label', 'Unknown')
+        # CRITICAL: Use the widget's internal type (movie/series) for the API call
+        content_type = widget.get('type', 'movie')
         
-        xbmc.log(f'[AIOStreams] smart_widget: Loading index {index} for {page}: "{label}" (Path: {path})', xbmc.LOGDEBUG)
+        xbmc.log(f'[AIOStreams] smart_widget: Loading "{label}" (Index: {index}, Page: {page}, Type: {content_type})', xbmc.LOGINFO)
 
         # Define property name for the header
         prop_name = None
@@ -4883,7 +4879,7 @@ def smart_widget():
                 xbmcplugin.endOfDirectory(HANDLE)
                 return
             
-            xbmc.log(f'[AIOStreams] smart_widget: Executing catalog/browse_catalog {catalog_id}', xbmc.LOGDEBUG)
+            xbmc.log(f'[AIOStreams] smart_widget: Executing catalog/browse_catalog {catalog_id} (Type: {content_type})', xbmc.LOGINFO)
             xbmcplugin.setPluginCategory(HANDLE, label)
             xbmcplugin.setContent(HANDLE, 'tvshows' if content_type == 'series' else 'movies')
             
@@ -4894,28 +4890,14 @@ def smart_widget():
             catalog_data = _get_cached_widget(cache_key)
             
             if catalog_data is None:
-                try:
-                    with open('/home/jon/Downloads/AIOStreamsKODI/AIOStreamsKODI/smart_widget_debug.txt', 'a') as f:
-                        f.write(f"Fetching catalog data from source...\n")
-                except: pass
-                
-                import time
                 start_time = time.time()
                 catalog_data = get_catalog(content_type, catalog_id, genre=None, skip=0)
                 duration = time.time() - start_time
-                xbmc.log(f'[AIOStreams] smart_widget: get_catalog took {duration:.2f} seconds for {catalog_id}', xbmc.LOGDEBUG)
+                xbmc.log(f'[AIOStreams] smart_widget: get_catalog took {duration:.2f} seconds for {catalog_id}', xbmc.LOGINFO)
 
                 if catalog_data and 'metas' in catalog_data:
                     _cache_widget(cache_key, catalog_data)
             
-            try:
-                with open('/home/jon/Downloads/AIOStreamsKODI/AIOStreamsKODI/smart_widget_debug.txt', 'a') as f:
-                    has_data = catalog_data is not None
-                    has_metas = 'metas' in catalog_data if has_data else False
-                    meta_count = len(catalog_data['metas']) if has_metas else 0
-                    f.write(f"Data retrieved: {has_data}, Has Metas: {has_metas}, Count: {meta_count}\n")
-            except: pass
-
             if not catalog_data or 'metas' not in catalog_data:
                 xbmc.log(f'[AIOStreams] smart_widget: No data found for catalog {catalog_id}', xbmc.LOGWARNING)
                 xbmcplugin.endOfDirectory(HANDLE)
