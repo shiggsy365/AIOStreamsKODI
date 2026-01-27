@@ -91,11 +91,10 @@ class StreamManager:
 
     def filter_by_quality(self, streams):
         """Filter streams based on quality preferences."""
-        quality_pref = settings_helpers.get_quality_preference()
         min_quality = settings_helpers.get_min_quality()
         filter_low = settings_helpers.get_filter_low_quality()
 
-        if quality_pref == 'any' and not filter_low:
+        if not filter_low:
             return streams
 
         min_rank = constants.QUALITY_RANKS.get(min_quality, 0)
@@ -106,7 +105,7 @@ class StreamManager:
             _, quality_rank, _ = self.detect_quality(stream_name)
 
             # Filter by minimum quality
-            if filter_low and quality_rank < min_rank:
+            if quality_rank < min_rank:
                 continue
 
             filtered.append(stream)

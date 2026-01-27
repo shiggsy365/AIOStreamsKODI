@@ -104,6 +104,11 @@ def get_max_streams():
     return get_int_setting('max_streams_to_show', 20)
 
 
+def get_learn_preferences():
+    """Check if stream preference learning is enabled."""
+    return get_bool_setting('learn_preferences', False)
+
+
 def get_debug_logging():
     """Check if debug logging is enabled."""
     return get_bool_setting('debug_logging', False)

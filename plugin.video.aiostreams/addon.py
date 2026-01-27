@@ -200,8 +200,15 @@ def make_request(url, error_message='Request failed', cache_key=None):
         response.raise_for_status()
         data = response.json()
 
-        # Cache response headers (ETag/Last-Modified) for future conditional requests
+        # Cache response data and headers for future conditional requests
         if cache_key and HAS_MODULES:
+            # Cache the actual response data
+            parts = cache_key.split(':', 1)
+            if len(parts) == 2:
+                cache.cache_data(parts[0], parts[1], data)
+                xbmc.log(f'[AIOStreams] Cached response data for {cache_key}', xbmc.LOGDEBUG)
+
+            # Cache response headers (ETag/Last-Modified)
             cache_headers = {}
             if 'etag' in response.headers:
                 cache_headers['etag'] = response.headers['etag']
