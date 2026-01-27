@@ -237,8 +237,8 @@ class TraktSyncDatabase(BaseTraktDB):
         """Sync watched movies from Trakt."""
         xbmc.log('[AIOStreams] Syncing watched movies...', xbmc.LOGDEBUG)
         
-        # Fetch from Trakt
-        watched_movies = trakt.call_trakt('sync/history/movies', with_auth=True)
+        # Fetch from Trakt with full metadata for ratings
+        watched_movies = trakt.call_trakt('sync/history/movies', params={'extended': 'full'}, with_auth=True)
         
         if not watched_movies:
             return
@@ -252,10 +252,12 @@ class TraktSyncDatabase(BaseTraktDB):
             if not trakt_id:
                 continue
             
+            import pickle
             batch_data.append((
                 trakt_id,
                 movie.get('ids', {}).get('imdb'),
                 movie.get('ids', {}).get('tmdb'),
+                pickle.dumps(movie),
                 item.get('watched_at')
             ))
             
@@ -263,8 +265,8 @@ class TraktSyncDatabase(BaseTraktDB):
         if batch_data:
             self.execute_sql_batch("""
                 INSERT OR REPLACE INTO movies (
-                    trakt_id, imdb_id, tmdb_id, watched, last_watched_at, last_updated
-                ) VALUES (?, ?, ?, 1, ?, datetime('now'))
+                    trakt_id, imdb_id, tmdb_id, metadata, watched, last_watched_at, last_updated
+                ) VALUES (?, ?, ?, ?, 1, ?, datetime('now'))
             """, batch_data)
         
         xbmc.log(f'[AIOStreams] Synced {len(watched_movies)} watched movies', xbmc.LOGDEBUG)
@@ -273,7 +275,7 @@ class TraktSyncDatabase(BaseTraktDB):
         """Sync collected movies from Trakt."""
         xbmc.log('[AIOStreams] Syncing collected movies...', xbmc.LOGDEBUG)
         
-        collected_movies = trakt.call_trakt('sync/collection/movies', with_auth=True)
+        collected_movies = trakt.call_trakt('sync/collection/movies', params={'extended': 'full'}, with_auth=True)
         
         if not collected_movies:
             return
@@ -287,10 +289,12 @@ class TraktSyncDatabase(BaseTraktDB):
             if not trakt_id:
                 continue
             
+            import pickle
             batch_data.append((
                 trakt_id,
                 movie.get('ids', {}).get('imdb'),
                 movie.get('ids', {}).get('tmdb'),
+                pickle.dumps(movie),
                 item.get('collected_at')
             ))
             
@@ -298,8 +302,8 @@ class TraktSyncDatabase(BaseTraktDB):
         if batch_data:
             self.execute_sql_batch("""
                 INSERT OR REPLACE INTO movies (
-                    trakt_id, imdb_id, tmdb_id, collected, collected_at, last_updated
-                ) VALUES (?, ?, ?, 1, ?, datetime('now'))
+                    trakt_id, imdb_id, tmdb_id, metadata, collected, collected_at, last_updated
+                ) VALUES (?, ?, ?, ?, 1, ?, datetime('now'))
             """, batch_data)
         
         xbmc.log(f'[AIOStreams] Synced {len(collected_movies)} collected movies', xbmc.LOGDEBUG)
@@ -311,8 +315,8 @@ class TraktSyncDatabase(BaseTraktDB):
         # Clear existing watchlist entries for movies
         self.execute_sql("DELETE FROM watchlist WHERE mediatype='movie'")
         
-        # Fetch fresh watchlist
-        watchlist_movies = trakt.call_trakt('sync/watchlist/movies', with_auth=True)
+        # Fetch fresh watchlist with full metadata for ratings
+        watchlist_movies = trakt.call_trakt('sync/watchlist/movies', params={'extended': 'full'}, with_auth=True)
         
         if not watchlist_movies:
             return
@@ -326,17 +330,19 @@ class TraktSyncDatabase(BaseTraktDB):
             if not trakt_id:
                 continue
             
+            import pickle
             batch_data.append((
                 trakt_id,
                 movie.get('ids', {}).get('imdb'),
-                item.get('listed_at')
+                item.get('listed_at'),
+                pickle.dumps(movie)
             ))
             
         # Execute batch update
         if batch_data:
             self.execute_sql_batch("""
-                INSERT OR REPLACE INTO watchlist (trakt_id, mediatype, imdb_id, listed_at)
-                VALUES (?, 'movie', ?, ?)
+                INSERT OR REPLACE INTO watchlist (trakt_id, mediatype, imdb_id, listed_at, metadata)
+                VALUES (?, 'movie', ?, ?, ?)
             """, batch_data)
         
         xbmc.log(f'[AIOStreams] Synced {len(watchlist_movies)} watchlist movies', xbmc.LOGDEBUG)
@@ -396,7 +402,7 @@ class TraktSyncDatabase(BaseTraktDB):
         """
         xbmc.log('[AIOStreams] Syncing watched episodes...', xbmc.LOGDEBUG)
 
-        watched_shows = trakt.call_trakt('sync/watched/shows', with_auth=True)
+        watched_shows = trakt.call_trakt('sync/watched/shows', params={'extended': 'full'}, with_auth=True)
 
         if not watched_shows:
             return
@@ -416,13 +422,14 @@ class TraktSyncDatabase(BaseTraktDB):
                 show.get('ids', {}).get('tmdb'),
                 show.get('ids', {}).get('tvdb'),
                 show.get('ids', {}).get('slug'),
-                show.get('title', 'Unknown')
+                show.get('title', 'Unknown'),
+                pickle.dumps(show)
             ))
         
         if batch_shows:
             self.execute_sql_batch("""
-                INSERT OR IGNORE INTO shows (trakt_id, imdb_id, tmdb_id, tvdb_id, slug, title, last_updated)
-                VALUES (?, ?, ?, ?, ?, ?, datetime('now'))
+                INSERT OR IGNORE INTO shows (trakt_id, imdb_id, tmdb_id, tvdb_id, slug, title, metadata, last_updated)
+                VALUES (?, ?, ?, ?, ?, ?, ?, datetime('now'))
             """, batch_shows)
             
         import pickle
@@ -548,7 +555,7 @@ class TraktSyncDatabase(BaseTraktDB):
         # Clear existing show watchlist
         self.execute_sql("DELETE FROM watchlist WHERE mediatype='show'")
         
-        watchlist_shows = trakt.call_trakt('sync/watchlist/shows', with_auth=True)
+        watchlist_shows = trakt.call_trakt('sync/watchlist/shows', params={'extended': 'full'}, with_auth=True)
         
         if not watchlist_shows:
             return
@@ -561,16 +568,18 @@ class TraktSyncDatabase(BaseTraktDB):
             if not trakt_id:
                 continue
             
+            import pickle
             batch_data.append((
                 trakt_id,
                 show.get('ids', {}).get('imdb'),
-                item.get('listed_at')
+                item.get('listed_at'),
+                pickle.dumps(show)
             ))
             
         if batch_data:
             self.execute_sql_batch("""
-                INSERT OR REPLACE INTO watchlist (trakt_id, mediatype, imdb_id, listed_at)
-                VALUES (?, 'show', ?, ?)
+                INSERT OR REPLACE INTO watchlist (trakt_id, mediatype, imdb_id, listed_at, metadata)
+                VALUES (?, 'show', ?, ?, ?)
             """, batch_data)
         
         xbmc.log(f'[AIOStreams] Synced {len(watchlist_shows)} watchlist shows', xbmc.LOGDEBUG)

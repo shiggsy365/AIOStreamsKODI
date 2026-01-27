@@ -404,7 +404,10 @@ class TraktSyncDatabase(Database):
                 return None
 
         try:
-            sql = "SELECT * FROM shows WHERE trakt_id = ?"
+            if isinstance(trakt_id, str) and trakt_id.startswith('tt'):
+                sql = "SELECT * FROM shows WHERE imdb_id = ?"
+            else:
+                sql = "SELECT * FROM shows WHERE trakt_id = ?"
             row = self.fetch_one(sql, (trakt_id,))
             if row:
                 return self._unpack_show_row(row)
@@ -570,7 +573,10 @@ class TraktSyncDatabase(Database):
                 return None
 
         try:
-            sql = "SELECT * FROM movies WHERE trakt_id = ?"
+            if isinstance(trakt_id, str) and trakt_id.startswith('tt'):
+                sql = "SELECT * FROM movies WHERE imdb_id = ?"
+            else:
+                sql = "SELECT * FROM movies WHERE trakt_id = ?"
             row = self.fetch_one(sql, (trakt_id,))
             if row:
                 return self._unpack_movie_row(row)

@@ -3532,7 +3532,9 @@ def trakt_watchlist(params=None):
             'description': item_data.get('overview', ''),
             'year': item_data.get('year', 0),
             'genres': item_data.get('genres', []),
-            'imdbRating': str(item_data.get('rating', '')) if item_data.get('rating') else ''
+            'imdbRating': str(item_data.get('rating', '')) if item_data.get('rating') else '',
+            'rating': item_data.get('rating', ''),
+            'trakt_rating': item_data.get('rating', '')
         }
 
         # Use fetched metadata (parallel results)
@@ -3755,7 +3757,10 @@ def trakt_next_up():
             if meta_data:
                 meta['genres'] = meta_data.get('genres', [])
                 meta['mpaa'] = meta_data.get('mpaa', '') or meta_data.get('certification', '')
-                meta['imdbRating'] = str(meta_data.get('rating', '')) if meta_data.get('rating') else ''
+                rating_val = meta_data.get('rating', '')
+                meta['imdbRating'] = str(rating_val) if rating_val else ''
+                meta['rating'] = rating_val
+                meta['trakt_rating'] = rating_val
                 if meta_data.get('runtime'):
                     meta['runtime'] = str(meta_data['runtime'])
 
