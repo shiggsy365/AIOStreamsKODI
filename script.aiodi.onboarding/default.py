@@ -749,15 +749,15 @@ def run_guided_installer(selections):
         if not xbmc.getCondVisibility(f'System.HasAddon({addon_id})'):
             msg = (
                 f"[B]Guided Setup: {name}[/B]\n\n"
-                f"I will now open the official information dialog for {name}.\n\n"
-                "1. Click [B]INSTALL[/B] on the popup.\n"
+                f"I will now trigger the official installation popup for {name}.\n\n"
+                "1. Click [B]YES / INSTALL[/B] on the popup.\n"
                 "2. If prompted for dependencies, select [B]OK[/B].\n"
                 "3. Once finished, return here (back out) to continue."
             )
             xbmcgui.Dialog().ok("AIODI Setup", msg)
             
-            # Unified Official Addon Info dialog (Window 10146) with addonid prefix
-            xbmc.executebuiltin(f'ActivateWindow(10146,"addonid={addon_id}",return)')
+            # Direct Installation Trigger
+            xbmc.executebuiltin(f'InstallAddon({addon_id})')
             
             # Detect install (Wait up to 120s)
             for _ in range(240):
