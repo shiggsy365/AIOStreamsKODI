@@ -819,23 +819,20 @@ def run_installer(selections, data, is_stage_2=False):
         try:
             notify(f"Configuring IMVDb...")
             im = ensure_addon('plugin.video.imvdb')
-                if im:
-                    xbmc.log("[Onboarding] Applying IMVDb settings...", xbmc.LOGINFO)
-                    # In settings, set IMVDb API Key
-                    apply_setting(im, 'api_key', data.get('imvdb_key', ''), 'IMVDb API Key')
-                    del im
-                    notify(f"Step {current_step}/{total_steps}: IMVDb ready")
-                    xbmc.log("[Onboarding] IMVDb configuration complete", xbmc.LOGINFO)
-                    time.sleep(0.5)
-                else:
-                    xbmc.log(f"[Onboarding] Failed to configure IMVDb - addon not loadable", xbmc.LOGERROR)
-                    notify("IMVDb configuration failed")
-            except Exception as e:
-                xbmc.log(f"[Onboarding] IMVDb config error: {e}", xbmc.LOGERROR)
-                notify(f"IMVDb config error: {str(e)}")
-        else:
-            xbmc.log(f"[Onboarding] IMVDb installation timed out", xbmc.LOGWARNING)
-            notify("IMVDb installation timed out")
+            if im:
+                xbmc.log("[Onboarding] Applying IMVDb settings...", xbmc.LOGINFO)
+                # In settings, set IMVDb API Key
+                apply_setting(im, 'api_key', data.get('imvdb_key', ''), 'IMVDb API Key')
+                del im
+                notify(f"Step {current_step}/{total_steps}: IMVDb ready")
+                xbmc.log("[Onboarding] IMVDb configuration complete", xbmc.LOGINFO)
+                time.sleep(0.5)
+            else:
+                xbmc.log(f"[Onboarding] Failed to configure IMVDb - addon not loadable", xbmc.LOGERROR)
+                notify("IMVDb configuration failed")
+        except Exception as e:
+            xbmc.log(f"[Onboarding] IMVDb config error: {e}", xbmc.LOGERROR)
+            notify(f"IMVDb config error: {str(e)}")
 
     # 6. If TMDB helper players are selected, install the addon and copy players
     if selections.get('tmdbh'):
