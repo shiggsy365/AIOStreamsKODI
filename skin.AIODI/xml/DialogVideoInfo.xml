@@ -358,7 +358,7 @@
 						<!-- Cast Tile 1 -->
 						<control type="button">
 							<left>0</left>
-							<top>0</top>
+							<top>170</top>
 							<width>180</width>
 							<height>270</height>
 							<texturenofocus>$INFO[Window(Home).Property(InfoWindow.Cast.1.Thumb)]</texturenofocus>
@@ -382,7 +382,7 @@
 						<!-- Cast Tile 2 -->
 						<control type="button">
 							<left>204</left>
-							<top>0</top>
+							<top>150</top>
 							<width>180</width>
 							<height>270</height>
 							<texturenofocus>$INFO[Window(Home).Property(InfoWindow.Cast.2.Thumb)]</texturenofocus>
@@ -406,7 +406,7 @@
 						<!-- Cast Tile 3 -->
 						<control type="button">
 							<left>408</left>
-							<top>0</top>
+							<top>130</top>
 							<width>180</width>
 							<height>270</height>
 							<texturenofocus>$INFO[Window(Home).Property(InfoWindow.Cast.3.Thumb)]</texturenofocus>
@@ -430,7 +430,7 @@
 						<!-- Cast Tile 4 -->
 						<control type="button">
 							<left>612</left>
-							<top>0</top>
+							<top>110</top>
 							<width>180</width>
 							<height>270</height>
 							<texturenofocus>$INFO[Window(Home).Property(InfoWindow.Cast.4.Thumb)]</texturenofocus>
@@ -454,7 +454,7 @@
 						<!-- Cast Tile 5 -->
 						<control type="button">
 							<left>816</left>
-							<top>0</top>
+							<top>90</top>
 							<width>180</width>
 							<height>270</height>
 							<texturenofocus>$INFO[Window(Home).Property(InfoWindow.Cast.5.Thumb)]</texturenofocus>
