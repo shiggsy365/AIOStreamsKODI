@@ -5196,12 +5196,14 @@ def action_info(params):
     
     try:
         # Fetch metadata
-        meta = get_meta(content_type, meta_id)
-        
-        if not meta:
+        result = get_meta(content_type, meta_id)
+
+        if not result or 'meta' not in result:
             xbmc.executebuiltin('Dialog.Close(busydialog)')
             xbmcgui.Dialog().notification('AIOStreams', 'Metadata not found', xbmcgui.NOTIFICATION_ERROR)
             return
+
+        meta = result['meta']
 
         # Create list item with full context
         # We need a dummy URL since we aren't playing it immediately, but it might be used for Play button in dialog
