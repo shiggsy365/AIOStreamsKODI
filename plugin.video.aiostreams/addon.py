@@ -389,7 +389,7 @@ def get_catalog(content_type, catalog_id, genre=None, skip=0):
     
     # Build cache identifier from all parameters
     cache_id = f"{m_hash}:{content_type}:{catalog_id}:{genre or 'none'}:{skip}"
-    xbmc.log(f'[AIOStreams] get_catalog: id={catalog_id}, type={content_type}, genre={genre}, skip={skip}, cache_id={cache_id}', xbmc.LOGINFO)
+
 
     # Check SQL cache first (fastest)
     if HAS_MODULES:
@@ -870,11 +870,7 @@ def create_listitem_with_context(meta, content_type, action_url):
     # --- Consolidated Rating Logic ---
     rating = meta.get('imdbRating') or meta.get('rating') or meta.get('Rating') or meta.get('stremio_rating') or meta.get('trakt_rating') or ''
     
-    # Debug log for raw API rating
-    if rating:
-        xbmc.log(f'[AIOStreams] API returned rating for {title}: {rating}', xbmc.LOGINFO)
-    else:
-        xbmc.log(f'[AIOStreams] API returned no rating for {title}', xbmc.LOGINFO)
+
 
     # Fallback to Trakt database for rating if API is empty
     if not rating and 'tt' in str(meta.get('id', '')):
@@ -3409,7 +3405,7 @@ def trakt_watchlist(params=None):
             items_to_fetch.append({'ids': {'imdb': item_id}})
 
     # Parallel fetch all metadata
-    xbmc.log(f'[AIOStreams] Watchlist: Fetching metadata for {len(items_to_fetch)} items in parallel...', xbmc.LOGINFO)
+
     content_type_fetch = 'movie' if media_type == 'movies' else 'series'
     metadata_map = fetch_metadata_parallel(items_to_fetch, content_type=content_type_fetch)
 
@@ -3560,9 +3556,7 @@ def trakt_next_up():
         xbmcplugin.endOfDirectory(HANDLE)
         return
 
-    xbmc.log(f'[AIOStreams] Next Up: Found {len(next_episodes)} shows with next episodes', xbmc.LOGINFO)
 
-    xbmc.log(f'[AIOStreams] Next Up: Found {len(next_episodes)} shows with next episodes', xbmc.LOGINFO)
 
     # Prepare item list for parallel fetching
     items_to_fetch = []
@@ -3572,9 +3566,8 @@ def trakt_next_up():
             items_to_fetch.append({'ids': {'imdb': show_imdb}})
             
     # Fetch all metadata in parallel
-    xbmc.log(f'[AIOStreams] Next Up: Fetching metadata for {len(items_to_fetch)} items in parallel...', xbmc.LOGINFO)
+
     metadata_map = fetch_metadata_parallel(items_to_fetch, content_type='series')
-    xbmc.log(f'[AIOStreams] Next Up: Metadata fetch complete', xbmc.LOGINFO)
 
     # Set NumItems property if called from smart_widget
     # We check sys.argv for widget=true or similar if not passed in params
@@ -5005,10 +4998,7 @@ def smart_widget():
                     list_item = create_listitem_with_context(merged_meta, content_type, url)
                     xbmcplugin.addDirectoryItem(HANDLE, url, list_item, is_folder)
 
-                    # Log IMDb rating for movie widget items (for debugging home page ratings)
-                    if content_type == 'movie' and page == 'movies':
-                        imdb_rating = list_item.getProperty('IMDbRating')
-                        xbmc.log(f'[AIOStreams] API returned rating for {merged_meta.get("name")}: {imdb_rating}', xbmc.LOGINFO)
+
                 except Exception as e:
                     import traceback
                     xbmc.log(f'[AIOStreams] smart_widget: Failed to add item: {e}', xbmc.LOGDEBUG)
