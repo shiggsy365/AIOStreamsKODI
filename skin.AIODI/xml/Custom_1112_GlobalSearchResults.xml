@@ -186,7 +186,7 @@
                     <onup>50</onup>
                     <onleft>100</onleft>
                     <onright>100</onright>
-                    <oninfo>RunPlugin(plugin://plugin.video.aiostreams/?action=info&amp;id=$INFO[ListItem.Property(id)]&amp;content_type=$INFO[ListItem.Property(content_type)])</oninfo>
+                    <!-- oninfo removed - let Kodi use default Info action which preserves ListItem context better -->
                     <pagecontrol>-</pagecontrol>
                     <scrolltime>200</scrolltime>
                     <orientation>vertical</orientation>
@@ -335,7 +335,7 @@
                     <onup>51</onup>
                     <onleft>101</onleft>
                     <onright>101</onright>
-                    <oninfo>RunPlugin(plugin://plugin.video.aiostreams/?action=info&amp;id=$INFO[ListItem.Property(id)]&amp;content_type=$INFO[ListItem.Property(content_type)])</oninfo>
+                    <!-- oninfo removed - let Kodi use default Info action which preserves ListItem context better -->
                     <pagecontrol>-</pagecontrol>
                     <scrolltime>200</scrolltime>
                     <orientation>vertical</orientation>
