@@ -80,24 +80,28 @@ def inject_dependencies(selections):
         if selections.get('tmdbh'): target_addons.append(('script.module.tmdbhelper', True))
 
         existing_deps = [imp.get('addon') for imp in requires.findall('import')]
-        modified = True # Force write
         
-        # Bump version to force Kodi re-scan
+        # Aggressive version bumping to force Kodi re-scan
         version = root.get('version', '1.0.0')
-        if not version.endswith('.1'):
-            root.set('version', version + '.1')
+        version_parts = version.split('.')
+        try:
+            # Increment the last part of the version
+            version_parts[-1] = str(int(version_parts[-1]) + 1)
+            new_version = ".".join(version_parts)
+            root.set('version', new_version)
+            xbmc.log(f"[Onboarding] Version bumped to {new_version} to force re-scan", xbmc.LOGINFO)
+        except:
+            root.set('version', version + ".1")
 
+        modified = True
         for addon_id, needed in target_addons:
             if needed and addon_id not in existing_deps:
-                # Add without version requirement to be flexible
                 ET.SubElement(requires, 'import', addon=addon_id)
-                modified = True
                 xbmc.log(f"[Onboarding] Injected dependency: {addon_id}", xbmc.LOGINFO)
 
-        if modified:
-            tree.write(xml_path, encoding='utf-8', xml_declaration=True)
-            xbmc.log("[Onboarding] addon.xml updated with new dependencies", xbmc.LOGINFO)
-            return True
+        tree.write(xml_path, encoding='utf-8', xml_declaration=True)
+        xbmc.log("[Onboarding] addon.xml updated with new dependencies", xbmc.LOGINFO)
+        return True
     except Exception as e:
         xbmc.log(f"[Onboarding] Failed to inject dependencies: {e}", xbmc.LOGERROR)
     return False
@@ -730,6 +734,42 @@ def run_installer(selections, data, is_stage_2=False):
     xbmcgui.Dialog().ok("AIODI Setup Complete", final_msg)
     xbmc.executebuiltin('RestartApp')
 
+def run_manual_installer(selections, progress):
+    """Fallback installer that manually calls InstallAddon for each missing component"""
+    target_addons = [
+        ('plugin.video.aiostreams', "AIOStreams"),
+        ('plugin.video.youtube', "YouTube"),
+        ('service.upnext', "UpNext"),
+        ('pvr.iptvsimple', "IPTV Simple"),
+        ('plugin.video.imvdb', "IMVDb"),
+        ('script.module.tmdbhelper', "TMDB Helper"),
+        ('skin.AIODI', "AIODI Skin")
+    ]
+    
+    # Filter only selected addons
+    active_addons = [(id, name) for id, name in target_addons if selections.get(name.lower().replace(" ", ""), True)]
+    total = len(active_addons)
+    current = 0
+    
+    for addon_id, name in active_addons:
+        if not xbmc.getCondVisibility(f'System.HasAddon({addon_id})'):
+            current += 1
+            pct = int((current / total) * 100)
+            progress.update(pct, f"Installing {name} ({current}/{total})...")
+            
+            xbmc.log(f"[Onboarding] Manual Installation: {addon_id}", xbmc.LOGINFO)
+            xbmc.executebuiltin(f'InstallAddon({addon_id})')
+            
+            # Start background auto-approval
+            auto_approve_dialog(timeout=15, step_name=f"Manual {name}")
+            
+            # Wait for install
+            for _ in range(30): # max 15s per addon
+                if xbmc.getCondVisibility(f'System.HasAddon({addon_id})'):
+                    xbmc.executebuiltin(f'EnableAddon({addon_id})')
+                    break
+                time.sleep(0.5)
+
 def run():
     cache = load_cache()
     
@@ -740,24 +780,35 @@ def run():
         if aiostreams_installed:
             xbmc.log("[Onboarding] Stage 2 detected: Components installed, applying settings", xbmc.LOGINFO)
             # Use simple yes/no to confirm Phase 2 vs fresh start
-            if xbmcgui.Dialog().yesno("AIODI Setup", "It looks like your settings have been saved and components are installed.\n\nWould you like to apply the configuration now?"):
+            if xbmcgui.Dialog().yesno("AIODI Setup", "Settings detected and components installed.\n\nApply configuration now?"):
                 run_installer(cache, cache, is_stage_2=True)
                 return
         else:
-            # Cache exists but AIOStreams is missing
-            xbmc.log("[Onboarding] Resume detected: Cache exists but AIOStreams not installed", xbmc.LOGINFO)
+            # Cache exists but AIOStreams is missing -> FALLBACK Required
+            xbmc.log("[Onboarding] Stuck detected: Cache exists but AIOStreams missing", xbmc.LOGINFO)
             msg = (
-                "Settings detected, but plugins are still missing.\n\n"
-                "To finish, Kodi must install them via its native 'Install dependencies' prompt.\n\n"
-                "Would you like me to try triggering that prompt now (requires restart)?"
+                "Settings are saved, but plugins failed to install automatically.\n\n"
+                "Would you like to try the [B]Manual Fallback Installer[/B]?\n"
+                "(I will handle the installation and auto-approve prompts for you)"
             )
-            if xbmcgui.Dialog().yesno("Finish Installation?", msg):
-                # Re-inject just in case, then restart
-                inject_dependencies(cache)
-                run_installer(cache, cache, is_stage_2=False)
+            if xbmcgui.Dialog().yesno("Manual Installation?", msg):
+                class DummyProgress:
+                    def update(self, pct, msg=""): 
+                        xbmcgui.Dialog().notification("Manual Setup", msg, xbmcgui.NOTIFICATION_INFO, 3000)
+                    def iscanceled(self): return False
+                    def close(self): pass
+                
+                run_manual_installer(cache, DummyProgress())
+                
+                # Check if it worked
+                if xbmc.getCondVisibility('System.HasAddon(plugin.video.aiostreams)'):
+                    xbmcgui.Dialog().ok("Success", "Plugins installed manually! Proceeding to final configuration...")
+                    run_installer(cache, cache, is_stage_2=True)
+                else:
+                    xbmcgui.Dialog().ok("Error", "Manual installation failed. Please check your internet connection and try again.")
                 return
 
-    # Phase 1: Data Collection & Injection
+    # [STATE: FRESH/START]
     form = InputWindow('onboarding_input.xml', ADDON_PATH, 'Default', '1080i')
     form.doModal()
     data = form.data
@@ -767,7 +818,13 @@ def run():
     
     if cancelled: return
 
-    # Trigger Restart for Phase 1
+    # Save to local cache first
+    cache_data = data.copy()
+    cache_data.update(selections)
+    save_cache(cache_data)
+
+    # Perform injection and trigger Stage 1 Restart
+    inject_dependencies(selections)
     run_installer(selections, data, is_stage_2=False)
 
 if __name__ == '__main__':
