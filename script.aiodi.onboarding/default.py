@@ -729,7 +729,7 @@ def run_installer(selections, data, is_stage_2=False):
 def run_guided_installer(selections):
     """Sequential navigator that guides the user through official Kodi installation pages"""
     target_addons = [
-        ('plugin.video.aiostreams', "AIOStreams", 'addons://repository.aiostreams/'),
+        ('plugin.video.aiostreams', "AIOStreams", 'addons://repository.aiostreams/plugin.video.aiostreams'),
         ('plugin.video.youtube', "YouTube", 'addoninfo://plugin.video.youtube'),
         ('service.upnext', "UpNext", 'addoninfo://service.upnext'),
         ('pvr.iptvsimple', "IPTV Simple", 'addoninfo://pvr.iptvsimple'),
@@ -748,13 +748,12 @@ def run_guided_installer(selections):
     for addon_id, name, path in active_addons:
         if not xbmc.getCondVisibility(f'System.HasAddon({addon_id})'):
             if "repository.aiostreams" in path:
-                # Specific instructions for the AIOStreams Repository
+                # Precision landing for AIOStreams
                 msg = (
                     f"[B]Guided Setup: {name}[/B]\n\n"
-                    f"I will now open the AIODI Repository.\n\n"
-                    "1. Go into [B]Video add-ons[/B].\n"
-                    "2. Select [B]AIOStreams[/B] and click [B]INSTALL[/B].\n"
-                    "3. Return here (back out) when finished."
+                    f"I will now open the [B]AIOStreams[/B] page within the official repository.\n\n"
+                    "1. Click [B]INSTALL[/B] on the next screen.\n"
+                    "2. Return here (back out) when the installation finishes."
                 )
             else:
                 msg = (
