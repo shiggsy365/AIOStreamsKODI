@@ -7,7 +7,7 @@ import xbmc
 
 
 def log(msg, level=xbmc.LOGINFO):
-    xbmc.log(f'[AIOStreams] [FetchCast] {msg}', level)
+    xbmc.log(f'[AIOStreams] {msg}', level)
 
 
 def fetch_cast_from_api(imdb_id, content_type='movie'):
