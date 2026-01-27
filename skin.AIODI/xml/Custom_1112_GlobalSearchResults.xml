@@ -186,7 +186,10 @@
                     <onup>50</onup>
                     <onleft>100</onleft>
                     <onright>100</onright>
-                    <!-- oninfo removed - let Kodi use default Info action which preserves ListItem context better -->
+                    <oninfo>Dialog.Close(1112)</oninfo>
+                    <oninfo>Action(Info)</oninfo>
+                    <onclick>Dialog.Close(1112)</onclick>
+                    <onclick>ActivateWindow(Videos,plugin://plugin.video.aiostreams/?action=play&amp;content_type=movie&amp;imdb_id=$INFO[ListItem.Property(id)],return)</onclick>
                     <pagecontrol>-</pagecontrol>
                     <scrolltime>200</scrolltime>
                     <orientation>vertical</orientation>
@@ -335,7 +338,10 @@
                     <onup>51</onup>
                     <onleft>101</onleft>
                     <onright>101</onright>
-                    <!-- oninfo removed - let Kodi use default Info action which preserves ListItem context better -->
+                    <oninfo>Dialog.Close(1112)</oninfo>
+                    <oninfo>Action(Info)</oninfo>
+                    <onclick>Dialog.Close(1112)</onclick>
+                    <onclick>ActivateWindow(Videos,plugin://plugin.video.aiostreams/?action=show_seasons&amp;meta_id=$INFO[ListItem.Property(id)],return)</onclick>
                     <pagecontrol>-</pagecontrol>
                     <scrolltime>200</scrolltime>
                     <orientation>vertical</orientation>
