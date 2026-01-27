@@ -377,6 +377,9 @@ def get_catalog(content_type, catalog_id, genre=None, skip=0):
     """Fetch a catalog from AIOStreams with 6-hour caching."""
     from resources.lib import trakt
     base_url = get_base_url()
+    if not base_url:
+        xbmc.log('[AIOStreams] get_catalog: No base_url found!', xbmc.LOGERROR)
+        return None
     
     # Build manifest-specific identifier to prevent cross-manifest stale data
     import hashlib
@@ -384,6 +387,7 @@ def get_catalog(content_type, catalog_id, genre=None, skip=0):
     
     # Build cache identifier from all parameters
     cache_id = f"{m_hash}:{content_type}:{catalog_id}:{genre or 'none'}:{skip}"
+    xbmc.log(f'[AIOStreams] get_catalog: id={catalog_id}, type={content_type}, genre={genre}, skip={skip}, cache_id={cache_id}', xbmc.LOGINFO)
 
     # Check SQL cache first (fastest)
     if HAS_MODULES:
@@ -910,7 +914,7 @@ def create_listitem_with_context(meta, content_type, action_url):
     if rating:
         list_item.setProperty('IMDbRating', f"{rating_value:.1f}")
         list_item.setProperty('TraktRating', f"{rating_value:.1f}")
-        info_tag.setRating(rating_value, votes=0, rating_type='imdb', default=True)
+        info_tag.setRating(rating_value, 0, 'imdb', True)
         info_tag.setIMDBNumber(meta.get('imdb_id', meta.get('id', '')))
     else:
         list_item.setProperty('IMDbRating', '')
@@ -2474,13 +2478,20 @@ def browse_catalog():
     genre = params.get('genre')
     skip = int(params.get('skip', 0))
 
+    xbmc.log(f'[AIOStreams] browse_catalog: START catalog_id={catalog_id}, content_type={content_type}, genre={genre}, skip={skip}', xbmc.LOGINFO)
+    
     # Prime watchlist and watched caches for performance (batch fetch)
     if HAS_MODULES:
-        trakt.prime_database_cache(content_type)
+        try:
+            trakt.prime_database_cache(content_type)
+        except Exception as e:
+            xbmc.log(f'[AIOStreams] browse_catalog: Failed to prime cache: {e}', xbmc.LOGERROR)
         
     # Fetch catalog data (treat 'All' as no genre filter)
     genre_filter = None if genre == 'All' else genre
+    xbmc.log(f'[AIOStreams] browse_catalog: Calling get_catalog with genre_filter={genre_filter}', xbmc.LOGINFO)
     catalog_data = get_catalog(content_type, catalog_id, genre_filter, skip)
+    xbmc.log(f'[AIOStreams] browse_catalog: get_catalog returned data: {bool(catalog_data)}', xbmc.LOGINFO)
 
     if not catalog_data or 'metas' not in catalog_data:
         xbmcgui.Dialog().notification('AIOStreams', 'No items found', xbmcgui.NOTIFICATION_INFO)
