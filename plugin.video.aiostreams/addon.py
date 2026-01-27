@@ -919,10 +919,15 @@ def create_listitem_with_context(meta, content_type, action_url):
         list_item.setProperty('IMDbRating', f"{rating_value:.1f}")
         list_item.setProperty('TraktRating', f"{rating_value:.1f}")
         info_tag.setRating(rating_value, 0, 'imdb', True)
-        info_tag.setIMDBNumber(meta.get('imdb_id', meta.get('id', '')))
     else:
         list_item.setProperty('IMDbRating', '')
         list_item.setProperty('TraktRating', '')
+
+    # Always set IMDBNumber and UniqueID for info window compatibility
+    imdb_id = meta.get('imdb_id', meta.get('id', ''))
+    info_tag.setIMDBNumber(imdb_id)
+    if imdb_id:
+        info_tag.setUniqueID(imdb_id, 'imdb')
     # --- End Consolidated Rating Logic ---
     
     # Cast & Director
