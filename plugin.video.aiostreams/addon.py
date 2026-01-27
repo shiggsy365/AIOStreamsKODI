@@ -680,6 +680,22 @@ def get_meta(content_type, meta_id):
     xbmc.log(f'[AIOStreams] Requesting meta from: {url}', xbmc.LOGDEBUG)
     result = make_request(url, 'Meta error')
 
+    # FALLBACK: If result is empty or missing rating, try the "master" token from the skin's fetch_cast script
+    # This token is known to return ratings when others don't.
+    if not result or not result.get('meta', {}).get('imdbRating'):
+        master_token = 'eyJpdiI6IkN3cXkreVNITW45QnhJaHU2dHVyM3c9PSIsImVuY3J5cHRlZCI6IitUeVZEUE5ZMHNxMjhOY2drSTJTMW44V0U2UUc5d0Qvd3RKL0REMGdzQzQ9IiwidHlwZSI6ImFpb0VuY3J5cHQifQ'
+        master_id = '3301cce2-06c1-4794-ad5b-e44c95f60e9c'
+        fallback_url = f"https://aiostreams.shiggsy.co.uk/stremio/{master_id}/{master_token}/meta/{content_type}/{meta_id}.json"
+        
+        fallback_res = make_request(fallback_url, 'Fallback Meta error')
+        if fallback_res and fallback_res.get('meta', {}).get('imdbRating'):
+            xbmc.log(f'[AIOStreams] Master token fallback SUCCESS for {meta_id}', xbmc.LOGINFO)
+            result = fallback_res
+        elif not result and fallback_res:
+            # Even if no rating, if primary failed completely, use fallback if it has ANYTHING
+            result = fallback_res
+            xbmc.log(f'[AIOStreams] Master token fallback used as primary failed for {meta_id}', xbmc.LOGINFO)
+
     # Store in cache
     if HAS_MODULES and result:
         meta_keys = list(result.get('meta', {}).keys())
@@ -834,7 +850,28 @@ def create_listitem_with_context(meta, content_type, action_url):
 
     # IMDb Rating property for skin use
     rating = meta.get('imdbRating') or meta.get('rating') or meta.get('Rating') or meta.get('stremio_rating') or meta.get('trakt_rating') or ''
+    
+    # Fallback to Trakt database for rating if API is empty
+    if not rating and 'tt' in str(meta.get('id', '')):
+        try:
+            db = trakt.get_trakt_db()
+            if db:
+                db_item = None
+                if content_type == 'movie':
+                    db_item = db.get_movie(meta['id'])
+                else:
+                    db_item = db.get_show(meta['id'])
+                
+                if db_item and db_item.get('metadata'):
+                    m = db_item['metadata']
+                    rating = m.get('rating') or m.get('imdbRating') or ''
+                    if rating:
+                        xbmc.log(f'[AIOStreams] Found database rating for {title}: {rating}', xbmc.LOGDEBUG)
+        except:
+            pass
+
     list_item.setProperty('IMDbRating', str(rating))
+    list_item.setProperty('TraktRating', str(rating)) # Consistency for skin
     
     # Cast & Director
     director = meta.get('director') or ''
@@ -4993,11 +5030,11 @@ def smart_widget():
                         # Smart merge: full_meta overwrites catalog data, but preserve non-empty rating fields
                         merged_meta = {**meta, **full_meta}
 
-                        # Preserve catalog rating if API rating is empty
-                        for rating_field in ['imdbRating', 'rating', 'Rating']:
-                            if not merged_meta.get(rating_field) and meta.get(rating_field):
-                                merged_meta[rating_field] = meta[rating_field]
-                                xbmc.log(f'[AIOStreams] Preserved catalog {rating_field}={meta[rating_field]} for {item_id}', xbmc.LOGDEBUG)
+                        # Preserve catalog values if API result is missing them (or empty)
+                        for field in ['imdbRating', 'rating', 'Rating', 'stremio_rating', 'trakt_rating']:
+                            if not merged_meta.get(field) and meta.get(field):
+                                merged_meta[field] = meta[field]
+                                xbmc.log(f'[AIOStreams] Preserved catalog {field}={meta[field]} for {item_id}', xbmc.LOGDEBUG)
                     else:
                         merged_meta = meta
                     
