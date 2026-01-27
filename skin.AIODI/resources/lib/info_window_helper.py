@@ -12,7 +12,7 @@ import time
 
 
 def log(msg, level=xbmc.LOGINFO):
-    xbmc.log(f'[AIOStreams] [InfoWindowHelper] {msg}', level)
+    xbmc.log(f'[AIOStreams] {msg}', level)
 
 
 def populate_cast_properties(content_type=None):

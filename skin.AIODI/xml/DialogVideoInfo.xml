@@ -362,6 +362,8 @@
 							<width>180</width>
 							<height>270</height>
 							<visible>!String.IsEmpty(Window(Home).Property(InfoWindow.Cast.1.Name))</visible>
+							<animation effect="zoom" center="auto" start="100" end="110" time="200" tween="sine" easing="out">Focus</animation>
+							<animation effect="zoom" center="auto" start="110" end="100" time="200" tween="sine" easing="in">UnFocus</animation>
 							<!-- Background image -->
 							<control type="image">
 								<left>0</left>
@@ -370,6 +372,8 @@
 								<height>270</height>
 								<aspectratio aligny="center">scale</aspectratio>
 								<texture background="true">$INFO[Window(Home).Property(InfoWindow.Cast.1.Thumb)]</texture>
+								<bordertexture border="3" colordiffuse="FFFF0000">colors/white.png</bordertexture>
+								<bordersize>3</bordersize>
 							</control>
 							<!-- Name label overlay -->
 							<control type="image">
@@ -414,6 +418,8 @@
 							<width>180</width>
 							<height>270</height>
 							<visible>!String.IsEmpty(Window(Home).Property(InfoWindow.Cast.2.Name))</visible>
+							<animation effect="zoom" center="auto" start="100" end="110" time="200" tween="sine" easing="out">Focus</animation>
+							<animation effect="zoom" center="auto" start="110" end="100" time="200" tween="sine" easing="in">UnFocus</animation>
 							<!-- Background image -->
 							<control type="image">
 								<left>0</left>
@@ -422,6 +428,8 @@
 								<height>270</height>
 								<aspectratio aligny="center">scale</aspectratio>
 								<texture background="true">$INFO[Window(Home).Property(InfoWindow.Cast.2.Thumb)]</texture>
+								<bordertexture border="3" colordiffuse="FFFF0000">colors/white.png</bordertexture>
+								<bordersize>3</bordersize>
 							</control>
 							<!-- Name label overlay -->
 							<control type="image">
@@ -466,6 +474,8 @@
 							<width>180</width>
 							<height>270</height>
 							<visible>!String.IsEmpty(Window(Home).Property(InfoWindow.Cast.3.Name))</visible>
+							<animation effect="zoom" center="auto" start="100" end="110" time="200" tween="sine" easing="out">Focus</animation>
+							<animation effect="zoom" center="auto" start="110" end="100" time="200" tween="sine" easing="in">UnFocus</animation>
 							<!-- Background image -->
 							<control type="image">
 								<left>0</left>
@@ -474,6 +484,8 @@
 								<height>270</height>
 								<aspectratio aligny="center">scale</aspectratio>
 								<texture background="true">$INFO[Window(Home).Property(InfoWindow.Cast.3.Thumb)]</texture>
+								<bordertexture border="3" colordiffuse="FFFF0000">colors/white.png</bordertexture>
+								<bordersize>3</bordersize>
 							</control>
 							<!-- Name label overlay -->
 							<control type="image">
@@ -518,6 +530,8 @@
 							<width>180</width>
 							<height>270</height>
 							<visible>!String.IsEmpty(Window(Home).Property(InfoWindow.Cast.4.Name))</visible>
+							<animation effect="zoom" center="auto" start="100" end="110" time="200" tween="sine" easing="out">Focus</animation>
+							<animation effect="zoom" center="auto" start="110" end="100" time="200" tween="sine" easing="in">UnFocus</animation>
 							<!-- Background image -->
 							<control type="image">
 								<left>0</left>
@@ -526,6 +540,8 @@
 								<height>270</height>
 								<aspectratio aligny="center">scale</aspectratio>
 								<texture background="true">$INFO[Window(Home).Property(InfoWindow.Cast.4.Thumb)]</texture>
+								<bordertexture border="3" colordiffuse="FFFF0000">colors/white.png</bordertexture>
+								<bordersize>3</bordersize>
 							</control>
 							<!-- Name label overlay -->
 							<control type="image">
@@ -570,6 +586,8 @@
 							<width>180</width>
 							<height>270</height>
 							<visible>!String.IsEmpty(Window(Home).Property(InfoWindow.Cast.5.Name))</visible>
+							<animation effect="zoom" center="auto" start="100" end="110" time="200" tween="sine" easing="out">Focus</animation>
+							<animation effect="zoom" center="auto" start="110" end="100" time="200" tween="sine" easing="in">UnFocus</animation>
 							<!-- Background image -->
 							<control type="image">
 								<left>0</left>
@@ -578,6 +596,8 @@
 								<height>270</height>
 								<aspectratio aligny="center">scale</aspectratio>
 								<texture background="true">$INFO[Window(Home).Property(InfoWindow.Cast.5.Thumb)]</texture>
+								<bordertexture border="3" colordiffuse="FFFF0000">colors/white.png</bordertexture>
+								<bordersize>3</bordersize>
 							</control>
 							<!-- Name label overlay -->
 							<control type="image">

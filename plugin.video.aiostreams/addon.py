@@ -4943,21 +4943,11 @@ def smart_widget():
                 if item_id:
                     items_to_fetch.append({'ids': {'imdb': item_id}})
 
-            # Debug: Log first catalog item's rating data
-            if catalog_data.get('metas'):
-                first_catalog = catalog_data['metas'][0]
-                xbmc.log(f'[AIOStreams] DEBUG smart_widget catalog rating: imdbRating={first_catalog.get("imdbRating")}, rating={first_catalog.get("rating")}, Rating={first_catalog.get("Rating")}', xbmc.LOGINFO)
-
             # Fetch metadata with logos in parallel
             metadata_map = {}
             if items_to_fetch:
                 xbmc.log(f'[AIOStreams] smart_widget: Fetching {len(items_to_fetch)} items metadata in parallel...', xbmc.LOGDEBUG)
                 metadata_map = fetch_metadata_parallel(items_to_fetch, content_type)
-                # Debug: Log first API item's rating data
-                if metadata_map:
-                    first_id = list(metadata_map.keys())[0]
-                    first_api = metadata_map[first_id]
-                    xbmc.log(f'[AIOStreams] DEBUG smart_widget API rating: imdbRating={first_api.get("imdbRating")}, rating={first_api.get("rating")}, Rating={first_api.get("Rating")}', xbmc.LOGINFO)
 
             for meta in catalog_data['metas']:
                 try:
@@ -4990,6 +4980,11 @@ def smart_widget():
                     
                     list_item = create_listitem_with_context(merged_meta, content_type, url)
                     xbmcplugin.addDirectoryItem(HANDLE, url, list_item, is_folder)
+
+                    # Log IMDb rating for first movie widget item (for debugging home page ratings)
+                    if content_type == 'movie' and page == 'Movies' and index == 0 and meta == catalog_data['metas'][0]:
+                        imdb_rating = list_item.getProperty('IMDbRating')
+                        xbmc.log(f'[AIOStreams] Home page Movies widget first item: title={merged_meta.get("name")}, IMDbRating property={imdb_rating}, merged_meta.imdbRating={merged_meta.get("imdbRating")}, merged_meta.rating={merged_meta.get("rating")}', xbmc.LOGINFO)
                 except Exception as e:
                     import traceback
                     xbmc.log(f'[AIOStreams] smart_widget: Failed to add item: {e}', xbmc.LOGDEBUG)
