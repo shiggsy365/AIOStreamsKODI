@@ -358,7 +358,7 @@
 						<!-- Cast Tile 1 -->
 						<control type="button">
 							<left>0</left>
-							<top>170</top>
+							<top>150</top>
 							<width>180</width>
 							<height>270</height>
 							<texturenofocus>$INFO[Window(Home).Property(InfoWindow.Cast.1.Thumb)]</texturenofocus>
@@ -406,7 +406,7 @@
 						<!-- Cast Tile 3 -->
 						<control type="button">
 							<left>408</left>
-							<top>130</top>
+							<top>150</top>
 							<width>180</width>
 							<height>270</height>
 							<texturenofocus>$INFO[Window(Home).Property(InfoWindow.Cast.3.Thumb)]</texturenofocus>
@@ -430,7 +430,7 @@
 						<!-- Cast Tile 4 -->
 						<control type="button">
 							<left>612</left>
-							<top>110</top>
+							<top>150</top>
 							<width>180</width>
 							<height>270</height>
 							<texturenofocus>$INFO[Window(Home).Property(InfoWindow.Cast.4.Thumb)]</texturenofocus>
@@ -454,7 +454,7 @@
 						<!-- Cast Tile 5 -->
 						<control type="button">
 							<left>816</left>
-							<top>90</top>
+							<top>150</top>
 							<width>180</width>
 							<height>270</height>
 							<texturenofocus>$INFO[Window(Home).Property(InfoWindow.Cast.5.Thumb)]</texturenofocus>
@@ -599,7 +599,7 @@
 									<font>font10</font>
 									<textcolor>FFFFFFFF</textcolor>
 									<focusedcolor>FFFFFFFF</focusedcolor>
-									<textoffsetx>20</textoffsetx>
+									<textoffsetx>50</textoffsetx>
 									<label>$VAR[InfoWindow_Rating]</label>
 								<align>right</align>
 								<aligny>center</aligny>
