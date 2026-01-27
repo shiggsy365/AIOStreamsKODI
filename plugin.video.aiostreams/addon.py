@@ -919,10 +919,15 @@ def create_listitem_with_context(meta, content_type, action_url):
         list_item.setProperty('IMDbRating', f"{rating_value:.1f}")
         list_item.setProperty('TraktRating', f"{rating_value:.1f}")
         info_tag.setRating(rating_value, 0, 'imdb', True)
-        info_tag.setIMDBNumber(meta.get('imdb_id', meta.get('id', '')))
     else:
         list_item.setProperty('IMDbRating', '')
         list_item.setProperty('TraktRating', '')
+
+    # Always set IMDBNumber and UniqueID for info window compatibility
+    imdb_id = meta.get('imdb_id', meta.get('id', ''))
+    info_tag.setIMDBNumber(imdb_id)
+    if imdb_id:
+        info_tag.setUniqueID(imdb_id, 'imdb')
     # --- End Consolidated Rating Logic ---
     
     # Cast & Director
@@ -1385,9 +1390,7 @@ def action_search(params=None):
     xbmcplugin.setPluginCategory(HANDLE, f'Search {content_type.title()}: {query}')
     xbmcplugin.setContent(HANDLE, 'movies' if content_type == 'movie' else 'tvshows')
 
-    # Add navigation tabs at the top (unless it's a widget or paginated)
-    if not is_widget:
-        add_tab_switcher(query, content_type)
+    # Tab switcher removed - no placeholder headings
 
     # Show progress dialog
     progress = xbmcgui.DialogProgress()
@@ -1539,8 +1542,7 @@ def search_all_results(query):
     xbmcplugin.setPluginCategory(HANDLE, f'Search: {query}')
     xbmcplugin.setContent(HANDLE, 'videos')
 
-    # Add navigation tabs at the top for easy filtering
-    add_tab_switcher(query, 'both') # Changed from add_search_tabs to add_tab_switcher as per existing code
+    # Tab switcher removed - no placeholder headings
 
     # Show progress dialog
     progress = xbmcgui.DialogProgress()
@@ -1561,15 +1563,7 @@ def search_all_results(query):
             movies = filters.filter_items(movies)
 
         if movies:
-            # Add Movies Header
-            header = xbmcgui.ListItem(label='[B][COLOR lightblue]─── MOVIES ───[/COLOR][/B]')
-            header.setProperty('IsPlayable', 'false')
-            header.setArt({'icon': 'DefaultMovies.png', 'thumb': 'DefaultMovies.png'})
-            info_tag = header.getVideoInfoTag()
-            info_tag.setTitle("MOVIES")
-            info_tag.setPlot(f"Found {len(movies)} movie results for '{query}'")
-            xbmcplugin.addDirectoryItem(HANDLE, '', header, False)
-
+            # Movies section header removed
             for meta in movies[:10]:
                 item_id = meta.get('id')
                 title = meta.get('name', 'Unknown')
@@ -1593,15 +1587,7 @@ def search_all_results(query):
             shows = filters.filter_items(shows)
 
         if shows:
-            # Add TV Shows Header
-            header = xbmcgui.ListItem(label='[B][COLOR lightblue]─── TV SHOWS ───[/COLOR][/B]')
-            header.setProperty('IsPlayable', 'false')
-            header.setArt({'icon': 'DefaultTVShows.png', 'thumb': 'DefaultTVShows.png'})
-            info_tag = header.getVideoInfoTag()
-            info_tag.setTitle("TV SHOWS")
-            info_tag.setPlot(f"Found {len(shows)} TV show results for '{query}'")
-            xbmcplugin.addDirectoryItem(HANDLE, '', header, False)
-
+            # TV Shows section header removed
             for meta in shows[:10]:
                 item_id = meta.get('id')
                 url = get_url(action='show_seasons', meta_id=item_id)
@@ -5215,12 +5201,14 @@ def action_info(params):
     
     try:
         # Fetch metadata
-        meta = get_meta(content_type, meta_id)
-        
-        if not meta:
+        result = get_meta(content_type, meta_id)
+
+        if not result or 'meta' not in result:
             xbmc.executebuiltin('Dialog.Close(busydialog)')
             xbmcgui.Dialog().notification('AIOStreams', 'Metadata not found', xbmcgui.NOTIFICATION_ERROR)
             return
+
+        meta = result['meta']
 
         # Create list item with full context
         # We need a dummy URL since we aren't playing it immediately, but it might be used for Play button in dialog
