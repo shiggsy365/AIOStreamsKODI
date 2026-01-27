@@ -237,7 +237,7 @@
 							<font>font10</font>
 							<textcolor>FFFFFFFF</textcolor>
 							<focusedcolor>FFFFFFFF</focusedcolor>
-							<textoffsetx>20</textoffsetx>
+							<textoffsetx>40</textoffsetx>
 							<label>$VAR[ActiveItem_IMDbRating]</label>
 							<align>right</align>
 							<aligny>center</aligny>
@@ -258,6 +258,7 @@
 							<height>30</height>
 							<texture>imdb_logo.png</texture>
 							<aspectratio>keep</aspectratio>
+							<visible>String.IsEmpty($VAR[ActiveItem_IMDbRating])</visible>
 						</control>
 					</control>
 			</control>
