@@ -37,7 +37,14 @@ def populate_cast_properties(content_type=None):
             log(f'Custom cast fetch - IMDB: {imdb_id}, Type: {content_type}')
         else:
             # Get current item's IMDb ID - try multiple methods
-            imdb_id = xbmc.getInfoLabel('ListItem.IMDBNumber')
+            # PRIORITY: Check if this is a Next Up episode (needs show IMDb for cast, not episode IMDb)
+            imdb_id = xbmc.getInfoLabel('ListItem.Property(NextUpShowIMDb)')
+            if imdb_id:
+                log(f'Found Next Up show IMDb ID: {imdb_id}', xbmc.LOGWARNING)
+                if not content_type:
+                    content_type = 'tvshow'
+            else:
+                imdb_id = xbmc.getInfoLabel('ListItem.IMDBNumber')
 
             # Debug: log all available info
             log(f'ListItem.Title: {xbmc.getInfoLabel("ListItem.Title")}')
@@ -45,6 +52,7 @@ def populate_cast_properties(content_type=None):
             log(f'ListItem.Year: {xbmc.getInfoLabel("ListItem.Year")}')
             log(f'ListItem.IMDBNumber: {xbmc.getInfoLabel("ListItem.IMDBNumber")}')
             log(f'ListItem.Property(imdb_id): {xbmc.getInfoLabel("ListItem.Property(imdb_id)")}')
+            log(f'ListItem.Property(NextUpShowIMDb): {xbmc.getInfoLabel("ListItem.Property(NextUpShowIMDb)")}')
             log(f'ListItem.UniqueID(imdb): {xbmc.getInfoLabel("ListItem.UniqueID(imdb)")}')
             log(f'ListItem.Filenameandpath: {xbmc.getInfoLabel("ListItem.Filenameandpath")}')
             log(f'ListItem.Path: {xbmc.getInfoLabel("ListItem.Path")}')
@@ -84,8 +92,15 @@ def populate_cast_properties(content_type=None):
                 content_type = xbmc.getInfoLabel('ListItem.DBType')  # 'movie' or 'tvshow'
         
         if not imdb_id:
-            log(f'No IMDb ID found for current item. Tried: IMDBNumber, Property(imdb_id), UniqueID(imdb), Path extraction', xbmc.LOGWARNING)
-            return None
+            # Last resort fallback: Check Window properties (in case dialog opened without ListItem context)
+            imdb_id = xbmc.getInfoLabel('Window(Home).Property(InfoWindow.IMDB)')
+            if imdb_id:
+                log(f'Fallback: Found IMDb ID from Window property: {imdb_id}', xbmc.LOGWARNING)
+                if not content_type:
+                    content_type = xbmc.getInfoLabel('Window(Home).Property(InfoWindow.DBType)') or 'movie'
+            else:
+                log(f'No IMDb ID found for current item. Tried: IMDBNumber, Property(imdb_id), UniqueID(imdb), Path extraction, Window properties', xbmc.LOGWARNING)
+                return None
         
         log(f'Fetching cast for {content_type}: {imdb_id}')
         
