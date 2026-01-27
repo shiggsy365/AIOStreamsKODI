@@ -803,9 +803,14 @@ def run_installer(selections, data):
             xbmc.log('[Onboarding] Installing skin with auto-approval', xbmc.LOGINFO)
             xbmc.executebuiltin('InstallAddon(skin.AIODI)')
 
-            # Auto-approve installation dialog
-            time.sleep(0.5)  # Wait for dialog
-            xbmc.executebuiltin('SendClick(12)')  # Click Yes
+            # Auto-approve installation dialog - loop for several seconds to catch it
+            for _ in range(10): # Try for 5 seconds
+                if xbmc.getCondVisibility('Window.IsActive(yesnodialog)') or xbmc.getCondVisibility('Window.IsActive(progressdialog)'):
+                     xbmc.executebuiltin('SendClick(11)')
+                     xbmc.executebuiltin('SendClick(12)')
+                     break
+                time.sleep(0.5)
+
             time.sleep(0.2)
 
             # Wait up to 180 seconds for skin to install
