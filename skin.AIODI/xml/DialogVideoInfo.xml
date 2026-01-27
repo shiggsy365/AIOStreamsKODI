@@ -338,22 +338,22 @@
 					<width>1245</width>
 					<height>350</height>
 
+					<control type="label">
+						<left>0</left>
+						<top>0</top>
+						<width>1245</width>
+						<height>30</height>
+						<font>font13_title</font>
+						<textcolor>white</textcolor>
+						<label>Cast</label>
+					</control>
+					
 					<!-- Cast Row - 5 Static Tiles -->
 					<control type="group" id="50">
 						<left>0</left>
 						<top>40</top>
 						<width>1020</width>
-						<height>350</height>
-
-						<control type="label">
-							<left>0</left>
-							<top>0</top>
-							<width>1245</width>
-							<height>30</height>
-							<font>font13_title</font>
-							<textcolor>white</textcolor>
-							<label>Cast</label>
-						</control>
+						<height>320</height>
 
 						<!-- Cast Tile 1 -->
 						<control type="button">
@@ -476,26 +476,19 @@
 						</control>
 					</control>
 
-
-
-
-
-
-
-
 					<!-- Metadata Section (to right of cast) -->
 					<control type="group">
 						<left>1040</left>
 						<top>0</top>
 						<width>220</width>
-						<height>270</height>
+						<height>350</height>
 
 						<!-- Stacked Metadata Chips -->
 						<control type="grouplist">
 							<left>0</left>
 							<top>0</top>
 							<width>220</width>
-							<height>270</height>
+							<height>350</height>
 							<itemgap>5</itemgap>
 							<orientation>vertical</orientation>
 
