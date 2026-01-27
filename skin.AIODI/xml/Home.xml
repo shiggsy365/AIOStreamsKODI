@@ -337,7 +337,7 @@
 					<top>0</top>
 					<width>150</width>
 					<height>40</height>
-					<visible>!String.IsEmpty(VAR[ActiveItem_IMDbRating])</visible>
+					<visible>true</visible>
 
 					<control type="button" id="9914">
 						<left>0</left>
