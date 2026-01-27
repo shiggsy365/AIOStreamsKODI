@@ -359,14 +359,9 @@ def search_catalog(query, content_type='movie', skip=0):
         url += f"&skip={skip}"
     
     url += ".json"
-    
-    # Build manifest-specific identifier for search to prevent cross-manifest stale data
-    import hashlib
-    m_hash = hashlib.md5(base_url.encode()).hexdigest()[:16]
-    search_cache_key = f"search:{m_hash}:{m_type}:{catalog_id}:{hashlib.md5(query.encode()).hexdigest()[:16]}"
-    
+
     xbmc.log(f'[AIOStreams] Performing search for "{query}" (type: {m_type}, catalog: {catalog_id})', xbmc.LOGDEBUG)
-    return make_request(url, 'Search error', cache_key=search_cache_key)
+    return make_request(url, 'Search error')
 
 
 def get_streams(content_type, media_id):
