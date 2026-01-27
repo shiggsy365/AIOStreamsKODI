@@ -12,7 +12,8 @@ import time
 
 
 def log(msg, level=xbmc.LOGINFO):
-    xbmc.log(f'[info_window_helper] {msg}', level)
+    if level in [xbmc.LOGERROR, xbmc.LOGWARNING]:
+        xbmc.log(f'[info_window_helper] {msg}', level)
 
 
 def populate_cast_properties(content_type=None):
@@ -20,42 +21,23 @@ def populate_cast_properties(content_type=None):
     Query database directly for cast data using current ListItem's IMDb ID.
     """
     try:
-        log('Starting cast property population')
-
         # Check if this is a custom info window (opened from plugin action)
-        custom_flag = xbmc.getInfoLabel('Window(Home).Property(InfoWindow.IsCustom)')
-        log(f'InfoWindow.IsCustom property value: "{custom_flag}"', xbmc.LOGWARNING)
-        is_custom = custom_flag == 'true'
-        log(f'Custom mode detected: {is_custom}', xbmc.LOGWARNING)
+        is_custom = xbmc.getInfoLabel('Window(Home).Property(InfoWindow.IsCustom)') == 'true'
 
         if is_custom:
             # Use Window Properties set by plugin
-            log('Custom info window detected - using Window Properties for cast')
             imdb_id = xbmc.getInfoLabel('Window(Home).Property(InfoWindow.IMDB)')
             if not content_type:
                 content_type = xbmc.getInfoLabel('Window(Home).Property(InfoWindow.DBType)')
-            log(f'Custom cast fetch - IMDB: {imdb_id}, Type: {content_type}')
         else:
             # Get current item's IMDb ID - try multiple methods
             # PRIORITY: Check if this is a Next Up episode (needs show IMDb for cast, not episode IMDb)
             imdb_id = xbmc.getInfoLabel('ListItem.Property(NextUpShowIMDb)')
             if imdb_id:
-                log(f'Found Next Up show IMDb ID: {imdb_id}', xbmc.LOGWARNING)
                 if not content_type:
                     content_type = 'tvshow'
             else:
                 imdb_id = xbmc.getInfoLabel('ListItem.IMDBNumber')
-
-            # Debug: log all available info
-            log(f'ListItem.Title: {xbmc.getInfoLabel("ListItem.Title")}')
-            log(f'ListItem.Label: {xbmc.getInfoLabel("ListItem.Label")}')
-            log(f'ListItem.Year: {xbmc.getInfoLabel("ListItem.Year")}')
-            log(f'ListItem.IMDBNumber: {xbmc.getInfoLabel("ListItem.IMDBNumber")}')
-            log(f'ListItem.Property(imdb_id): {xbmc.getInfoLabel("ListItem.Property(imdb_id)")}')
-            log(f'ListItem.Property(NextUpShowIMDb): {xbmc.getInfoLabel("ListItem.Property(NextUpShowIMDb)")}')
-            log(f'ListItem.UniqueID(imdb): {xbmc.getInfoLabel("ListItem.UniqueID(imdb)")}')
-            log(f'ListItem.Filenameandpath: {xbmc.getInfoLabel("ListItem.Filenameandpath")}')
-            log(f'ListItem.Path: {xbmc.getInfoLabel("ListItem.Path")}')
 
             # If that's empty, try getting from custom property (standardized)
             if not imdb_id:
@@ -78,15 +60,11 @@ def populate_cast_properties(content_type=None):
                 match = re.search(r'(?:imdb_id|meta_id)=([^&]+)', path)
                 if match:
                     imdb_id = match.group(1)
-                    log(f'Extracted IMDb ID from Filenameandpath: {imdb_id}')
                 elif 'tt' in path:
                     # Fallback for just finding a tt ID in the path
                     match_tt = re.search(r'tt\d{7,}', path)
                     if match_tt:
                         imdb_id = match_tt.group(0)
-                        log(f'Extracted IMDb ID from pattern match: {imdb_id}')
-
-                        log(f'Extracted IMDb ID from Filenameandpath: {imdb_id}')
 
             if not content_type:
                 content_type = xbmc.getInfoLabel('ListItem.DBType')  # 'movie' or 'tvshow'
@@ -95,28 +73,22 @@ def populate_cast_properties(content_type=None):
             # Last resort fallback: Check Window properties (in case dialog opened without ListItem context)
             imdb_id = xbmc.getInfoLabel('Window(Home).Property(InfoWindow.IMDB)')
             if imdb_id:
-                log(f'Fallback: Found IMDb ID from Window property: {imdb_id}', xbmc.LOGWARNING)
                 if not content_type:
                     content_type = xbmc.getInfoLabel('Window(Home).Property(InfoWindow.DBType)') or 'movie'
             else:
                 log(f'No IMDb ID found for current item. Tried: IMDBNumber, Property(imdb_id), UniqueID(imdb), Path extraction, Window properties', xbmc.LOGWARNING)
                 return None
-        
-        log(f'Fetching cast for {content_type}: {imdb_id}')
-        
+
         # Import standalone API fetcher
         try:
             from fetch_cast import fetch_cast_from_api
-            log('Successfully imported fetch_cast_from_api')
         except Exception as e:
             log(f'Failed to import fetch_cast_from_api: {e}', xbmc.LOGERROR)
             return
-        
+
         # Determine content type from path or default to movie
         if not content_type:
             content_type = 'movie' if 'content_type=movie' in xbmc.getInfoLabel('ListItem.Filenameandpath') else 'tvshow'
-        
-        log(f'Fetching cast from API for {content_type}: {imdb_id}')
         
         # Get home window and clear old cast properties
         home_window = xbmcgui.Window(10000)
@@ -138,13 +110,11 @@ def populate_cast_properties(content_type=None):
             # Set Trailer Property
             if trailer_url:
                 home_window.setProperty('InfoWindow.Trailer', trailer_url)
-                log(f'Set InfoWindow.Trailer: {trailer_url}')
             else:
                 home_window.clearProperty('InfoWindow.Trailer')
-            
+
             # Set Cast properties
             if cast_list:
-                log(f'Found {len(cast_list)} cast members from API')
                 # Set properties for up to 5 cast members
                 for i in range(1, 6):
                     if i <= len(cast_list):
@@ -152,26 +122,23 @@ def populate_cast_properties(content_type=None):
                         name = cast_member.get('name', '')
                         role = cast_member.get('character', '')
                         thumb = cast_member.get('photo', '')
-                        
+
                         home_window.setProperty(f'InfoWindow.Cast.{i}.Name', name)
                         home_window.setProperty(f'InfoWindow.Cast.{i}.Role', role)
                         home_window.setProperty(f'InfoWindow.Cast.{i}.Thumb', thumb)
-                        log(f'Set cast {i}: Name="{name}", Role="{role}", Thumb="{thumb}"')
-            
+
             # SET ADDITIONAL METADATA PROPERTIES
             director = meta_data.get('director', '')
             rating = meta_data.get('rating', '')
             premiered = meta_data.get('premiered', '')
             runtime = meta_data.get('runtime', '')
-            
+
             if director:
                 home_window.setProperty('InfoWindow.Director', director)
-                log(f'Set InfoWindow.Director: {director}')
-            
+
             if rating:
                 home_window.setProperty('InfoWindow.Rating', rating)
-                log(f'Set InfoWindow.Rating: {rating}')
-            
+
             if premiered:
                 # Format: "2008-01-20T12:00:00.000Z" -> user's date format
                 if 'T' in premiered:
@@ -186,18 +153,13 @@ def populate_cast_properties(content_type=None):
                     # Convert Python strftime format: %d/%m/%Y -> dd/mm/yyyy
                     formatted_date = date_obj.strftime(date_format)
                     home_window.setProperty('InfoWindow.Premiered', formatted_date)
-                    log(f'Set InfoWindow.Premiered: {formatted_date}')
-                except Exception as e:
+                except Exception:
                     # Fallback to original if formatting fails
                     home_window.setProperty('InfoWindow.Premiered', premiered)
-                    log(f'Set InfoWindow.Premiered (fallback): {premiered}')
-            
+
             if runtime:
                 # Format: "125 min" or "2h 5m"
                 home_window.setProperty('InfoWindow.Duration', runtime)
-                log(f'Set InfoWindow.Duration: {runtime}')
-
-            log(f'Cast and metadata properties populated successfully for {imdb_id}')
         except Exception as e:
             log(f'Error fetching data from API: {e}', xbmc.LOGERROR)
             import traceback
@@ -253,17 +215,14 @@ def populate_all():
 
     if is_custom:
         # Use Window Properties set by plugin
-        log('Custom info window detected - using Window Properties')
         db_type = xbmc.getInfoLabel('Window(Home).Property(InfoWindow.DBType)')
         title = xbmc.getInfoLabel('Window(Home).Property(InfoWindow.Title)')
         imdb_id = xbmc.getInfoLabel('Window(Home).Property(InfoWindow.IMDB)')
         tmdb_id = ''  # Plugin uses IMDb ID primarily
         season = ''
         episode = ''
-        log(f'Custom info - DBType: {db_type}, Title: {title}, IMDB: {imdb_id}')
     else:
         # Extract IDs from ListItem (normal flow)
-        log('Normal info window - using ListItem properties')
         db_type = xbmc.getInfoLabel('ListItem.DBType')
         title = xbmc.getInfoLabel('ListItem.Title')
         imdb_id = xbmc.getInfoLabel('ListItem.IMDBNumber')
@@ -302,9 +261,7 @@ def populate_all():
             if final_id:
                 try:
                     from fetch_related import populate_related_properties
-                    log(f'Imported populate_related_properties. Attempting fetch for {content_type}: {final_id}')
-                    count = populate_related_properties(final_id, content_type)
-                    log(f'populate_related_properties returned count: {count}')
+                    populate_related_properties(final_id, content_type)
                 except Exception as e:
                     log(f'Failed to fetch related items: {e}', xbmc.LOGERROR)
             else:
@@ -344,17 +301,12 @@ def get_trakt_status(content_type, imdb_id):
         win = xbmcgui.Window(10000)
         
         # Check Watchlist
-        # For cached check, we might need to ensure cache is initialized or use direct check
         is_watchlist = trakt.is_in_watchlist(content_type, imdb_id)
         win.setProperty('InfoWindow.IsWatchlist', 'true' if is_watchlist else 'false')
-        log(f'Set InfoWindow.IsWatchlist: {is_watchlist}')
-        
+
         # Check Watched
-        # For movies, easy. For shows, check if fully watched? Or just check if watched in general?
-        # User asked for "Watched" button.
         is_watched = trakt.is_watched(content_type, imdb_id)
         win.setProperty('InfoWindow.IsWatched', 'true' if is_watched else 'false')
-        log(f'Set InfoWindow.IsWatched: {is_watched}')
         
     except Exception as e:
         log(f'Error checking Trakt status: {e}', xbmc.LOGERROR)
