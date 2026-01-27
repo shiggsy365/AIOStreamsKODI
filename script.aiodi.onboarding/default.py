@@ -590,14 +590,9 @@ def run_installer(selections, data, is_stage_2=False):
 
     # Final Visual Pivot: Switch Skin
     if selections.get('skin') and xbmc.getCondVisibility('System.HasAddon(skin.AIODI)'):
-        final_msg = (
-            "[B]Setup Complete![/B]\n\n"
-            "All components have been configured.\n\n"
-            "The AIODI interface will now be activated.\n\n"
-            "Enjoy your new setup!"
-        )
+        final_msg = "Now manually switch to the skin from AIOStreams Repository > Look and Feel > Skin > AIODI > Use"
         xbmcgui.Dialog().ok("AIODI Setup Complete", final_msg)
-        xbmc.executebuiltin('SetSkin(skin.AIODI)')
+        # xbmc.executebuiltin('SetSkin(skin.AIODI)') # Respecting manual switch instruction
     else:
         xbmcgui.Dialog().ok("AIODI Setup Complete", "[B]Setup Complete![/B]\n\nAll components have been configured.")
     
@@ -613,13 +608,7 @@ def run_guided_installer(selections):
     time.sleep(5)
 
     # 2. Guide to Skin installation
-    msg = (
-        "[B]Step 1: Install AIODI Skin[/B]\n\n"
-        "I will now open the [B]AIODI Skin[/B] page.\n\n"
-        "1. Click [B]INSTALL[/B].\n"
-        "2. Select [B]OK[/B] for additional plugins.\n"
-        "3. Once installed, [B]RUN THIS WIZARD AGAIN[/B] to finish setup."
-    )
+    msg = "Please install the AIODI skin from AIOStreams Repository > Look and Feel > Skin > AIODI. Once installed, re-run this wizard"
     xbmcgui.Dialog().ok("AIODI Setup", msg)
     
     # Precise navigation using the Addon Browser info protocol
