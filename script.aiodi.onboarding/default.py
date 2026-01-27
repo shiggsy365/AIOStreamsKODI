@@ -699,9 +699,20 @@ def run():
     cache = load_cache()
     skin_id = 'skin.AIODI'
     
+    def robust_check(addon_id):
+        """Check for addon using condition AND disk fallback"""
+        if xbmc.getCondVisibility(f'System.HasAddon({addon_id})'):
+            return True
+        # Disk fallback: check for addon.xml in the addons directory
+        path = xbmcvfs.translatePath(f"special://home/addons/{addon_id}/addon.xml")
+        return xbmcvfs.exists(path)
+
+    # Force an index refresh right at the start
+    xbmc.executebuiltin('UpdateLocalAddons')
+    
     # PASS 2: Detection & Completion
-    if xbmc.getCondVisibility(f'System.HasAddon({skin_id})') and cache.get('aiostreams_host'):
-        xbmc.log("[Onboarding] Pass 2 detected: Skin present, completing setup", xbmc.LOGINFO)
+    if robust_check(skin_id) and cache.get('aiostreams_host'):
+        xbmc.log("[Onboarding] Pass 2 detected: Skin present via robust check", xbmc.LOGINFO)
         if xbmcgui.Dialog().yesno("AIODI Setup", "Skin detected! Finish configuration now?"):
             # Disable unselected addons (Cleanup)
             target_addons = [
@@ -713,7 +724,7 @@ def run():
             ]
             for addon_id, name in target_addons:
                 is_selected = cache.get(name.lower().replace(" ", ""), True)
-                if not is_selected and xbmc.getCondVisibility(f'System.HasAddon({addon_id})'):
+                if not is_selected and robust_check(addon_id):
                     xbmc.executebuiltin(f'DisableAddon({addon_id})')
             
             # Apply Settings and Switch Skin
