@@ -715,18 +715,18 @@ def run_installer(selections, data, is_stage_2=False):
     notify("Setup complete! All steps finished.")
     time.sleep(2)
 
-    # Show final completion message
-    final_msg = (
-        "[B]Setup Complete![/B]\n\n"
-        "All components have been configured with your settings.\n\n"
-        "The AIODI interface will now be activated.\n\n"
-        "Enjoy your new setup!"
-    )
-    xbmcgui.Dialog().ok("AIODI Setup Complete", final_msg)
-    
     # Final Visual Pivot: Switch Skin
     if selections.get('skin') and xbmc.getCondVisibility('System.HasAddon(skin.AIODI)'):
+        final_msg = (
+            "[B]Setup Complete![/B]\n\n"
+            "All components have been configured.\n\n"
+            "The AIODI interface will now be activated.\n\n"
+            "Enjoy your new setup!"
+        )
+        xbmcgui.Dialog().ok("AIODI Setup Complete", final_msg)
         xbmc.executebuiltin('SetSkin(skin.AIODI)')
+    else:
+        xbmcgui.Dialog().ok("AIODI Setup Complete", "[B]Setup Complete![/B]\n\nAll components have been configured.")
     
     return True
 
@@ -781,35 +781,9 @@ def run_guided_installer(selections):
     return False
 
 def run():
-    cache = load_cache()
+    """Main execution entry point: Pure Seamless One-Click Flow"""
     
-    # Check if we have cached data (Phase 2 candidate)
-    if cache.get('aiostreams_host'):
-        aiostreams_installed = xbmc.getCondVisibility('System.HasAddon(plugin.video.aiostreams)')
-        
-        if aiostreams_installed:
-            xbmc.log("[Onboarding] Stage 2 detected: Components installed, applying settings", xbmc.LOGINFO)
-            # Use simple yes/no to confirm Phase 2 vs fresh start
-            if xbmcgui.Dialog().yesno("AIODI Setup", "Settings detected and components installed.\n\nApply configuration now?"):
-                run_installer(cache, cache, is_stage_2=True)
-                return
-        else:
-            # Cache exists but AIOStreams is missing -> GUIDED Flow
-            xbmc.log("[Onboarding] Resume detected: Entering Guided Installation Mode", xbmc.LOGINFO)
-            
-            options = ["Start Guided Installation (Recommended)", "Exit Setup"]
-            choice = xbmcgui.Dialog().select("Finish AIODI Installation", options)
-            
-            if choice == 0:
-                if run_guided_installer(cache):
-                    if xbmc.getCondVisibility('System.HasAddon(plugin.video.aiostreams)'):
-                        xbmcgui.Dialog().ok("Success", "Plugins ready! Finalizing configuration...")
-                        run_installer(cache, cache, is_stage_2=True)
-                return
-            else:
-                return
-
-    # [STATE: FRESH/START]
+    # [1] Collect User Requirements (Keys/Selections)
     form = InputWindow('onboarding_input.xml', ADDON_PATH, 'Default', '1080i')
     form.doModal()
     data = form.data
@@ -819,17 +793,16 @@ def run():
     
     if cancelled: return
 
-    # 1. Save to local cache
-    cache_data = data.copy()
-    cache_data.update(selections)
-    save_cache(cache_data)
+    # [2] Save to local cache (Reference backup)
+    save_cache(data.copy().update(selections))
 
-    # 2. Sequential Build Execution (Seamless)
-    xbmc.log("[Onboarding] Starting Seamless Build Execution...", xbmc.LOGINFO)
+    # [3] Seamless Build Execution
+    xbmc.log("[Onboarding] Starting Pure Seamless Build Execution...", xbmc.LOGINFO)
     
-    # Trigger Guided Install (Skin + Bundled Dependencies)
+    # Trigger Bundled Installation (Skin + All Dependencies)
     if run_guided_installer(selections):
-        # Apply Configuration to all installed components
+        xbmc.log("[Onboarding] Installation success. Entering final configuration pass...", xbmc.LOGINFO)
+        # Apply API Keys and Settings to the new plugins
         run_installer(selections, data, is_stage_2=True)
     
 if __name__ == '__main__':
