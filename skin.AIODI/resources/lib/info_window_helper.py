@@ -12,8 +12,7 @@ import time
 
 
 def log(msg, level=xbmc.LOGINFO):
-    if level in [xbmc.LOGERROR, xbmc.LOGWARNING]:
-        xbmc.log(f'[AIOStreams] {msg}', level)
+    xbmc.log(f'[info_window_helper] {msg}', level)
 
 
 def populate_cast_properties(content_type=None):
@@ -24,7 +23,10 @@ def populate_cast_properties(content_type=None):
         log('Starting cast property population')
 
         # Check if this is a custom info window (opened from plugin action)
-        is_custom = xbmc.getInfoLabel('Window(Home).Property(InfoWindow.IsCustom)') == 'true'
+        custom_flag = xbmc.getInfoLabel('Window(Home).Property(InfoWindow.IsCustom)')
+        log(f'InfoWindow.IsCustom property value: "{custom_flag}"', xbmc.LOGWARNING)
+        is_custom = custom_flag == 'true'
+        log(f'Custom mode detected: {is_custom}', xbmc.LOGWARNING)
 
         if is_custom:
             # Use Window Properties set by plugin
