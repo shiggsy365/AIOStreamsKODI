@@ -848,9 +848,15 @@ def create_listitem_with_context(meta, content_type, action_url):
         genre_val = str(genre_val).replace('{', '').replace('}', '').strip()
         list_item.setProperty(f'Genre{i}', genre_val)
 
-    # IMDb Rating property for skin use
+    # --- Consolidated Rating Logic ---
     rating = meta.get('imdbRating') or meta.get('rating') or meta.get('Rating') or meta.get('stremio_rating') or meta.get('trakt_rating') or ''
     
+    # Debug log for raw API rating
+    if rating:
+        xbmc.log(f'[AIOStreams] API returned rating for {title}: {rating}', xbmc.LOGINFO)
+    else:
+        xbmc.log(f'[AIOStreams] API returned no rating for {title}', xbmc.LOGINFO)
+
     # Fallback to Trakt database for rating if API is empty
     if not rating and 'tt' in str(meta.get('id', '')):
         try:
@@ -870,8 +876,35 @@ def create_listitem_with_context(meta, content_type, action_url):
         except:
             pass
 
-    list_item.setProperty('IMDbRating', str(rating))
-    list_item.setProperty('TraktRating', str(rating)) # Consistency for skin
+    # Filter out dummy/placeholder ratings (like 0.0 or 7.0 for unreleased items)
+    rating_value = 0.0
+    if rating:
+        try:
+            rating_value = float(rating)
+            # If rating is exactly 7.0 and item is from Cinemate or unreleased, it might be a placeholder
+            # But let's be conservative: only filter 0.0 for now, unless we see 7.0 is definitely a dummy.
+            # User says 7.0 is everywhere, so it's likely a dummy if the API log showed empty.
+            if rating_value == 0:
+                rating = ''
+            elif rating_value == 7.0:
+                # Check if it's a very new item (no released date or in the future)
+                released_str = meta.get('released', '')
+                if not released_str:
+                    xbmc.log(f'[AIOStreams] Filtering out likely dummy 7.0 rating for unreleased item: {title}', xbmc.LOGINFO)
+                    rating = ''
+        except:
+            pass
+
+    # Set properties for skin use
+    if rating:
+        list_item.setProperty('IMDbRating', f"{rating_value:.1f}")
+        list_item.setProperty('TraktRating', f"{rating_value:.1f}")
+        info_tag.setRating(rating_value, votes=0, rating_type='imdb', default=True)
+        info_tag.setIMDBNumber(meta.get('imdb_id', meta.get('id', '')))
+    else:
+        list_item.setProperty('IMDbRating', '')
+        list_item.setProperty('TraktRating', '')
+    # --- End Consolidated Rating Logic ---
     
     # Cast & Director
     director = meta.get('director') or ''
@@ -889,13 +922,7 @@ def create_listitem_with_context(meta, content_type, action_url):
             val = val.get('name') or val.get('label') or ""
         list_item.setProperty(f'Cast{i}', str(val))
 
-    # Set Rating in InfoTag for standard ListItem.Rating support
-    if rating:
-        try:
-            val = float(rating)
-            info_tag.setRating(val)
-        except:
-            pass
+    # Rating already set in consolidated block
 
     # Add debug logging for metadata
     # IMDb Rating, Genre, Premiered and Duration chips support
@@ -962,19 +989,7 @@ def create_listitem_with_context(meta, content_type, action_url):
         except:
             pass
 
-    # Add rating - check multiple possible fields from different sources
-    imdb_rating = meta.get('imdbRating') or meta.get('rating') or meta.get('Rating') or ''
-    if imdb_rating:
-        try:
-            rating_value = float(imdb_rating)
-            info_tag.setRating(rating_value, votes=0, rating_type='imdb', default=True)
-            info_tag.setIMDBNumber(meta.get('imdb_id', meta.get('id', '')))
-            # Also set as property for direct skin access (formatted to 1 decimal)
-            list_item.setProperty('IMDbRating', f"{rating_value:.1f}")
-        except:
-            list_item.setProperty('IMDbRating', '')
-    else:
-        list_item.setProperty('IMDbRating', '')
+    # Rating already set in consolidated block
 
     # Get app_extras once for multiple uses
     app_extras = meta.get('app_extras', {})
@@ -5032,9 +5047,18 @@ def smart_widget():
 
                         # Preserve catalog values if API result is missing them (or empty)
                         for field in ['imdbRating', 'rating', 'Rating', 'stremio_rating', 'trakt_rating']:
-                            if not merged_meta.get(field) and meta.get(field):
-                                merged_meta[field] = meta[field]
-                                xbmc.log(f'[AIOStreams] Preserved catalog {field}={meta[field]} for {item_id}', xbmc.LOGDEBUG)
+                            val = meta.get(field)
+                            if not merged_meta.get(field) and val:
+                                # Filter likely dummy values from catalogs (like 7 or 0)
+                                try:
+                                    f_val = float(val)
+                                    if f_val == 0: continue
+                                    # If it's a new item (likely from Cinemate), ignore the '7' placeholder
+                                    if f_val == 7.0 and not meta.get('released'): continue
+                                except: pass
+                                
+                                merged_meta[field] = val
+                                xbmc.log(f'[AIOStreams] Preserved catalog {field}={val} for {item_id}', xbmc.LOGDEBUG)
                     else:
                         merged_meta = meta
                     
