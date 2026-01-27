@@ -1385,9 +1385,7 @@ def action_search(params=None):
     xbmcplugin.setPluginCategory(HANDLE, f'Search {content_type.title()}: {query}')
     xbmcplugin.setContent(HANDLE, 'movies' if content_type == 'movie' else 'tvshows')
 
-    # Add navigation tabs at the top (unless it's a widget or paginated)
-    if not is_widget:
-        add_tab_switcher(query, content_type)
+    # Tab switcher removed - no placeholder headings
 
     # Show progress dialog
     progress = xbmcgui.DialogProgress()
@@ -1539,8 +1537,7 @@ def search_all_results(query):
     xbmcplugin.setPluginCategory(HANDLE, f'Search: {query}')
     xbmcplugin.setContent(HANDLE, 'videos')
 
-    # Add navigation tabs at the top for easy filtering
-    add_tab_switcher(query, 'both') # Changed from add_search_tabs to add_tab_switcher as per existing code
+    # Tab switcher removed - no placeholder headings
 
     # Show progress dialog
     progress = xbmcgui.DialogProgress()
@@ -1561,15 +1558,7 @@ def search_all_results(query):
             movies = filters.filter_items(movies)
 
         if movies:
-            # Add Movies Header
-            header = xbmcgui.ListItem(label='[B][COLOR lightblue]─── MOVIES ───[/COLOR][/B]')
-            header.setProperty('IsPlayable', 'false')
-            header.setArt({'icon': 'DefaultMovies.png', 'thumb': 'DefaultMovies.png'})
-            info_tag = header.getVideoInfoTag()
-            info_tag.setTitle("MOVIES")
-            info_tag.setPlot(f"Found {len(movies)} movie results for '{query}'")
-            xbmcplugin.addDirectoryItem(HANDLE, '', header, False)
-
+            # Movies section header removed
             for meta in movies[:10]:
                 item_id = meta.get('id')
                 title = meta.get('name', 'Unknown')
@@ -1593,15 +1582,7 @@ def search_all_results(query):
             shows = filters.filter_items(shows)
 
         if shows:
-            # Add TV Shows Header
-            header = xbmcgui.ListItem(label='[B][COLOR lightblue]─── TV SHOWS ───[/COLOR][/B]')
-            header.setProperty('IsPlayable', 'false')
-            header.setArt({'icon': 'DefaultTVShows.png', 'thumb': 'DefaultTVShows.png'})
-            info_tag = header.getVideoInfoTag()
-            info_tag.setTitle("TV SHOWS")
-            info_tag.setPlot(f"Found {len(shows)} TV show results for '{query}'")
-            xbmcplugin.addDirectoryItem(HANDLE, '', header, False)
-
+            # TV Shows section header removed
             for meta in shows[:10]:
                 item_id = meta.get('id')
                 url = get_url(action='show_seasons', meta_id=item_id)
