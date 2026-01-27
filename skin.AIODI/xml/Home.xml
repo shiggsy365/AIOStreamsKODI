@@ -228,7 +228,6 @@
 						<top>0</top>
 						<width>150</width>
 						<height>40</height>
-						<visible>!String.IsEmpty($VAR[ActiveItem_IMDbRating])</visible>
 
 						<control type="button" id="9905">
 							<left>0</left>
@@ -338,7 +337,6 @@
 					<top>0</top>
 					<width>150</width>
 					<height>40</height>
-					<visible>!String.IsEmpty($VAR[ActiveItem_IMDbRating])</visible>
 
 					<control type="button" id="9914">
 						<left>0</left>
@@ -368,7 +366,6 @@
 						<height>30</height>
 						<texture>imdb_logo.png</texture>
 						<aspectratio>keep</aspectratio>
-						<visible>!String.IsEmpty($VAR[ActiveItem_IMDbRating])</visible>
 					</control>
 				</control>
 			</control>
