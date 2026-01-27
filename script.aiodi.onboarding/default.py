@@ -470,6 +470,9 @@ def run_installer(selections, data, is_stage_2=False):
     if not is_stage_2:
         # Phase 1: Just restart
         xbmc.log("[Onboarding] Stage 1 restart triggered", xbmc.LOGINFO)
+        # Force Kodi to re-scan addon.xml
+        xbmc.executebuiltin('UpdateLocalAddons')
+        time.sleep(1)
         xbmc.executebuiltin('RestartApp')
         return
 
@@ -725,16 +728,27 @@ def run_installer(selections, data, is_stage_2=False):
 def run():
     cache = load_cache()
     
-    # Check if we are in Stage 2 (addons are now installed)
-    # If AIOStreams is installed AND we have cached data, we can skip to configuration
-    aiostreams_installed = xbmc.getCondVisibility('System.HasAddon(plugin.video.aiostreams)')
-    
-    if aiostreams_installed and cache.get('aiostreams_host'):
-        xbmc.log("[Onboarding] Stage 2 detected: Components installed, applying settings", xbmc.LOGINFO)
-        # Use simple yes/no to confirm Phase 2 vs fresh start
-        if xbmcgui.Dialog().yesno("AIODI Setup", "Components detected. Apply cached settings now?"):
-            run_installer(cache, cache, is_stage_2=True)
-            return
+    # Check if we have cached data (Phase 2 candidate)
+    if cache.get('aiostreams_host'):
+        aiostreams_installed = xbmc.getCondVisibility('System.HasAddon(plugin.video.aiostreams)')
+        
+        if aiostreams_installed:
+            xbmc.log("[Onboarding] Stage 2 detected: Components installed, applying settings", xbmc.LOGINFO)
+            # Use simple yes/no to confirm Phase 2 vs fresh start
+            if xbmcgui.Dialog().yesno("AIODI Setup", "It looks like your settings have been saved and components are installed.\n\nWould you like to apply the configuration now?"):
+                run_installer(cache, cache, is_stage_2=True)
+                return
+        else:
+            # Cache exists but AIOStreams is missing
+            xbmc.log("[Onboarding] Resume detected: Cache exists but AIOStreams not installed", xbmc.LOGINFO)
+            msg = (
+                "It looks like you've already filled out the setup form, but the required plugins aren't installed yet.\n\n"
+                "To finish, Kodi needs to install them via the 'Install dependencies' prompt.\n\n"
+                "Would you like me to try triggering that prompt again and restart?"
+            )
+            if xbmcgui.Dialog().yesno("Resume Setup?", msg):
+                run_installer(cache, cache, is_stage_2=False)
+                return
 
     # Phase 1: Data Collection & Injection
     form = InputWindow('onboarding_input.xml', ADDON_PATH, 'Default', '1080i')
