@@ -132,7 +132,7 @@ def populate_cast_properties(content_type=None):
                         home_window.setProperty(f'InfoWindow.Cast.{i}.Name', name)
                         home_window.setProperty(f'InfoWindow.Cast.{i}.Role', role)
                         home_window.setProperty(f'InfoWindow.Cast.{i}.Thumb', thumb)
-                        log(f'Set cast {i}: {name}')
+                        log(f'Set cast {i}: Name="{name}", Role="{role}", Thumb="{thumb}"')
             
             # SET ADDITIONAL METADATA PROPERTIES
             director = meta_data.get('director', '')
