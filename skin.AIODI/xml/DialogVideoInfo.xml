@@ -361,8 +361,8 @@
 							<top>150</top>
 							<width>180</width>
 							<height>270</height>
-							<texturenofocus>$INFO[Window(Home).Property(InfoWindow.Cast.1.Thumb)]</texturenofocus>
-							<texturefocus border="3" colordiffuse="FFFF0000">$INFO[Window(Home).Property(InfoWindow.Cast.1.Thumb)]</texturefocus>
+							<texturenofocus background="true">$INFO[Window(Home).Property(InfoWindow.Cast.1.Thumb)]</texturenofocus>
+							<texturefocus background="true" border="3" colordiffuse="FFFF0000">$INFO[Window(Home).Property(InfoWindow.Cast.1.Thumb)]</texturefocus>
 							<aspectratio aligny="center">scale</aspectratio>
 							<label>$INFO[Window(Home).Property(InfoWindow.Cast.1.Name)]</label>
 							<font>font12</font>
@@ -385,8 +385,8 @@
 							<top>150</top>
 							<width>180</width>
 							<height>270</height>
-							<texturenofocus>$INFO[Window(Home).Property(InfoWindow.Cast.2.Thumb)]</texturenofocus>
-							<texturefocus border="3" colordiffuse="FFFF0000">$INFO[Window(Home).Property(InfoWindow.Cast.2.Thumb)]</texturefocus>
+							<texturenofocus background="true">$INFO[Window(Home).Property(InfoWindow.Cast.2.Thumb)]</texturenofocus>
+							<texturefocus background="true" border="3" colordiffuse="FFFF0000">$INFO[Window(Home).Property(InfoWindow.Cast.2.Thumb)]</texturefocus>
 							<aspectratio aligny="center">scale</aspectratio>
 							<label>$INFO[Window(Home).Property(InfoWindow.Cast.2.Name)]</label>
 							<font>font12</font>
@@ -409,8 +409,8 @@
 							<top>150</top>
 							<width>180</width>
 							<height>270</height>
-							<texturenofocus>$INFO[Window(Home).Property(InfoWindow.Cast.3.Thumb)]</texturenofocus>
-							<texturefocus border="3" colordiffuse="FFFF0000">$INFO[Window(Home).Property(InfoWindow.Cast.3.Thumb)]</texturefocus>
+							<texturenofocus background="true">$INFO[Window(Home).Property(InfoWindow.Cast.3.Thumb)]</texturenofocus>
+							<texturefocus background="true" border="3" colordiffuse="FFFF0000">$INFO[Window(Home).Property(InfoWindow.Cast.3.Thumb)]</texturefocus>
 							<aspectratio aligny="center">scale</aspectratio>
 							<label>$INFO[Window(Home).Property(InfoWindow.Cast.3.Name)]</label>
 							<font>font12</font>
@@ -433,8 +433,8 @@
 							<top>150</top>
 							<width>180</width>
 							<height>270</height>
-							<texturenofocus>$INFO[Window(Home).Property(InfoWindow.Cast.4.Thumb)]</texturenofocus>
-							<texturefocus border="3" colordiffuse="FFFF0000">$INFO[Window(Home).Property(InfoWindow.Cast.4.Thumb)]</texturefocus>
+							<texturenofocus background="true">$INFO[Window(Home).Property(InfoWindow.Cast.4.Thumb)]</texturenofocus>
+							<texturefocus background="true" border="3" colordiffuse="FFFF0000">$INFO[Window(Home).Property(InfoWindow.Cast.4.Thumb)]</texturefocus>
 							<aspectratio aligny="center">scale</aspectratio>
 							<label>$INFO[Window(Home).Property(InfoWindow.Cast.4.Name)]</label>
 							<font>font12</font>
@@ -457,8 +457,8 @@
 							<top>150</top>
 							<width>180</width>
 							<height>270</height>
-							<texturenofocus>$INFO[Window(Home).Property(InfoWindow.Cast.5.Thumb)]</texturenofocus>
-							<texturefocus border="3" colordiffuse="FFFF0000">$INFO[Window(Home).Property(InfoWindow.Cast.5.Thumb)]</texturefocus>
+							<texturenofocus background="true">$INFO[Window(Home).Property(InfoWindow.Cast.5.Thumb)]</texturenofocus>
+							<texturefocus background="true" border="3" colordiffuse="FFFF0000">$INFO[Window(Home).Property(InfoWindow.Cast.5.Thumb)]</texturefocus>
 							<aspectratio aligny="center">scale</aspectratio>
 			<label>$INFO[Window(Home).Property(InfoWindow.Cast.5.Name)]</label>
 							<font>font12</font>
