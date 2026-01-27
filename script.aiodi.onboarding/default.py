@@ -331,11 +331,23 @@ class InputWindow(xbmcgui.WindowXMLDialog):
 
             if controlId == 9010: # Install Selected
                 self.collect_data()
-                # Also save to cache
+                # Save all settings AND selections to cache
                 cache_data = self.data.copy()
                 cache_data.update(self.selections)
                 save_cache(cache_data)
 
+                # Trigger Phase 1: Injection & Restart
+                xbmc.log("[Onboarding] Phase 1: Injecting dependencies and triggering restart", xbmc.LOGINFO)
+                inject_dependencies(self.selections)
+                
+                msg = (
+                    "[B]Phase 1 Complete[/B]\n\n"
+                    "Settings saved and components injected.\n"
+                    "Kodi must now restart to install the missing plugins.\n\n"
+                    "[I]Please select YES on the native 'Install dependencies' prompt after Kodi starts.[/I]"
+                )
+                xbmcgui.Dialog().ok("AIODI Setup", msg)
+                
                 self.cancelled = False
                 self.close()
 
@@ -450,19 +462,22 @@ def pre_install_dependencies(progress, selections):
     progress.update(5, f"Dependencies ready ({total_deps}/{total_deps})")
     time.sleep(0.5)
 
-def run_installer(selections, data):
+def run_installer(selections, data, is_stage_2=False):
     # Use notifications instead of progress dialog
     def notify(message):
         xbmcgui.Dialog().notification("AIODI Setup", message, xbmcgui.NOTIFICATION_INFO, 3000)
 
-    notify("Starting installation...")
+    if not is_stage_2:
+        # Phase 1: Just restart
+        xbmc.log("[Onboarding] Stage 1 restart triggered", xbmc.LOGINFO)
+        xbmc.executebuiltin('RestartApp')
+        return
 
-    # Create a dummy progress object for compatibility
+    notify("Phase 2: Configuring components...")
     class DummyProgress:
         def update(self, pct, msg=""): notify(msg) if msg else None
         def iscanceled(self): return False
         def close(self): pass
-
     progress = DummyProgress()
 
     # Log received data for debugging
@@ -538,13 +553,14 @@ def run_installer(selections, data):
 
     current_step = 0
 
-    # 1. Install AIOStreams Plugin (or update if already installed)
-    current_step += 1
-    xbmc.log(f'[Onboarding] Step {current_step}/{total_steps}: Installing AIOStreams', xbmc.LOGINFO)
-    notify(f"Step {current_step}/{total_steps}: Installing AIOStreams...")
-    if install_with_wait('plugin.video.aiostreams', progress, 10, 20, update_if_exists=True):
+    current_step = 0
+
+    # 1. Configure AIOStreams Plugin
+    if selections.get('aiostreams', True):
+        current_step += 1
+        xbmc.log(f'[Onboarding] Step {current_step}/{total_steps}: Configuring AIOStreams', xbmc.LOGINFO)
         try:
-            notify(f"Step {current_step}/{total_steps}: Configuring AIOStreams...")
+            notify(f"Configuring AIOStreams...")
             aio = ensure_addon('plugin.video.aiostreams')
             if not aio:
                 raise Exception("Failed to load AIOStreams addon")
@@ -633,15 +649,13 @@ def run_installer(selections, data):
             xbmc.log(f"[Onboarding] AIOStreams config error: {e}", xbmc.LOGERROR)
             xbmcgui.Dialog().notification("Setup Error", f"AIOStreams configuration failed: {str(e)}", xbmcgui.NOTIFICATION_ERROR)
 
-    # 2. If requested, Install YouTube plugin from kodi repository (or update if already installed)
-    if selections.get('youtube'):
+    # 2. Configure YouTube plugin
+    if selections.get('youtube') and xbmc.getCondVisibility('System.HasAddon(plugin.video.youtube)'):
         current_step += 1
-        xbmc.log(f'[Onboarding] Step {current_step}/{total_steps}: Installing YouTube', xbmc.LOGINFO)
-        notify(f"Step {current_step}/{total_steps}: Installing YouTube...")
-        if install_with_wait('plugin.video.youtube', progress, 35, 45, update_if_exists=True):
-            try:
-                notify(f"Step {current_step}/{total_steps}: Configuring YouTube...")
-                yt = ensure_addon('plugin.video.youtube')
+        xbmc.log(f'[Onboarding] Step {current_step}/{total_steps}: Configuring YouTube', xbmc.LOGINFO)
+        try:
+            notify(f"Configuring YouTube...")
+            yt = ensure_addon('plugin.video.youtube')
                 if yt:
                     xbmc.log("[Onboarding] Applying YouTube settings...", xbmc.LOGINFO)
                     # Turn off general/enable setup wizard
@@ -664,15 +678,13 @@ def run_installer(selections, data):
                 xbmc.log(f"[Onboarding] YouTube config error: {e}", xbmc.LOGERROR)
                 xbmcgui.Dialog().notification("Setup Error", f"YouTube configuration failed: {str(e)}", xbmcgui.NOTIFICATION_ERROR)
 
-    # 3. If requested, Install Up Next plugin from kodi repository (or update if already installed)
-    if selections.get('upnext'):
+    # 3. Configure Up Next plugin
+    if selections.get('upnext') and xbmc.getCondVisibility('System.HasAddon(service.upnext)'):
         current_step += 1
-        xbmc.log(f'[Onboarding] Step {current_step}/{total_steps}: Installing UpNext', xbmc.LOGINFO)
-        notify(f"Step {current_step}/{total_steps}: Installing UpNext...")
-        if install_with_wait('service.upnext', progress, 52, 60, update_if_exists=True):
-            try:
-                notify(f"Step {current_step}/{total_steps}: Configuring UpNext...")
-                un = ensure_addon('service.upnext')
+        xbmc.log(f'[Onboarding] Step {current_step}/{total_steps}: Configuring UpNext', xbmc.LOGINFO)
+        try:
+            notify(f"Configuring UpNext...")
+            un = ensure_addon('service.upnext')
                 if un:
                     xbmc.log("[Onboarding] Applying UpNext settings...", xbmc.LOGINFO)
                     # Change interface/set display mode for notifications to Simple
@@ -691,14 +703,12 @@ def run_installer(selections, data):
                 xbmc.log(f"[Onboarding] UpNext config error: {e}", xbmc.LOGERROR)
                 xbmcgui.Dialog().notification("Setup Error", f"UpNext configuration failed: {str(e)}", xbmcgui.NOTIFICATION_ERROR)
 
-    # 4. If requested install IPTV Simple Player from kodi repository (or update if already installed)
-    if selections.get('iptv'):
+    # 4. Configure IPTV Simple Player
+    if selections.get('iptv') and xbmc.getCondVisibility('System.HasAddon(pvr.iptvsimple)'):
         current_step += 1
-        xbmc.log(f'[Onboarding] Step {current_step}/{total_steps}: Installing IPTV Simple', xbmc.LOGINFO)
-        notify(f"Step {current_step}/{total_steps}: Installing IPTV Simple...")
-        if install_with_wait('pvr.iptvsimple', progress, 67, 75, update_if_exists=True):
-            try:
-                notify(f"Step {current_step}/{total_steps}: Configuring IPTV Simple...")
+        xbmc.log(f'[Onboarding] Step {current_step}/{total_steps}: Configuring IPTV Simple', xbmc.LOGINFO)
+        try:
+            notify(f"Configuring IPTV Simple...")
 
                 # PVR addons use instance settings that can't be set via Python API
                 # We need to write directly to the instance settings XML file
@@ -802,15 +812,13 @@ def run_installer(selections, data):
                 xbmc.log(f"[Onboarding] IPTV config error: {e}", xbmc.LOGERROR)
                 xbmcgui.Dialog().notification("Setup Error", f"IPTV configuration failed: {str(e)}", xbmcgui.NOTIFICATION_ERROR)
 
-    # 5. If requested install IMVDb plugin from my repository (or update if already installed)
-    if selections.get('imvdb'):
+    # 5. Configure IMVDb plugin
+    if selections.get('imvdb') and xbmc.getCondVisibility('System.HasAddon(plugin.video.imvdb)'):
         current_step += 1
-        xbmc.log(f'[Onboarding] Step {current_step}/{total_steps}: Installing IMVDb', xbmc.LOGINFO)
-        notify(f"Step {current_step}/{total_steps}: Installing IMVDb...")
-        if install_with_wait('plugin.video.imvdb', progress, 82, 87, update_if_exists=True):
-            try:
-                notify(f"Step {current_step}/{total_steps}: Configuring IMVDb...")
-                im = ensure_addon('plugin.video.imvdb')
+        xbmc.log(f'[Onboarding] Step {current_step}/{total_steps}: Configuring IMVDb', xbmc.LOGINFO)
+        try:
+            notify(f"Configuring IMVDb...")
+            im = ensure_addon('plugin.video.imvdb')
                 if im:
                     xbmc.log("[Onboarding] Applying IMVDb settings...", xbmc.LOGINFO)
                     # In settings, set IMVDb API Key
@@ -941,7 +949,20 @@ def run_installer(selections, data):
     xbmc.executebuiltin('RestartApp')
 
 def run():
-    # Launch consolidated Input Window directly
+    cache = load_cache()
+    
+    # Check if we are in Stage 2 (addons are now installed)
+    # If AIOStreams is installed AND we have cached data, we can skip to configuration
+    aiostreams_installed = xbmc.getCondVisibility('System.HasAddon(plugin.video.aiostreams)')
+    
+    if aiostreams_installed and cache.get('aiostreams_host'):
+        xbmc.log("[Onboarding] Stage 2 detected: Components installed, applying settings", xbmc.LOGINFO)
+        # Use simple yes/no to confirm Phase 2 vs fresh start
+        if xbmcgui.Dialog().yesno("AIODI Setup", "Components detected. Apply cached settings now?"):
+            run_installer(cache, cache, is_stage_2=True)
+            return
+
+    # Phase 1: Data Collection & Injection
     form = InputWindow('onboarding_input.xml', ADDON_PATH, 'Default', '1080i')
     form.doModal()
     data = form.data
@@ -951,8 +972,8 @@ def run():
     
     if cancelled: return
 
-    # Installation
-    run_installer(selections, data)
+    # Trigger Restart for Phase 1
+    run_installer(selections, data, is_stage_2=False)
 
 if __name__ == '__main__':
     run()
