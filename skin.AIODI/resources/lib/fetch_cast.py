@@ -44,6 +44,15 @@ def fetch_cast_from_api(imdb_id, content_type='movie'):
         meta = data.get('meta', {})
         app_extras = meta.get('app_extras', {})
         cast_list = app_extras.get('cast', [])
+
+        # Debug: Log the raw cast data structure
+        log(f'API returned {len(cast_list)} cast members')
+        if cast_list:
+            for idx, cast_member in enumerate(cast_list[:3]):  # Log first 3 for debugging
+                log(f'Cast {idx+1} data: {cast_member}')
+                log(f'  - name: {cast_member.get("name", "MISSING")}')
+                log(f'  - character: {cast_member.get("character", "MISSING")}')
+                log(f'  - photo: {cast_member.get("photo", "MISSING")}')
         
         # Extract Trailer
         trailers = []
