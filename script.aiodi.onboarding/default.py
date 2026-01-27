@@ -794,7 +794,9 @@ def run():
     if cancelled: return
 
     # [2] Save to local cache (Reference backup)
-    save_cache(data.copy().update(selections))
+    cache_data = data.copy()
+    cache_data.update(selections)
+    save_cache(cache_data)
 
     # [3] Seamless Build Execution
     xbmc.log("[Onboarding] Starting Pure Seamless Build Execution...", xbmc.LOGINFO)
