@@ -391,18 +391,18 @@
 								<label>$INFO[Window(Home).Property(InfoWindow.Cast.1.Name)]</label>
 							</control>
 							<!-- Clickable button overlay -->
-							<control type="button">
+							<control type="button" id="50001">
 								<left>0</left>
 								<top>0</top>
 								<width>180</width>
 								<height>270</height>
 								<texturenofocus>-</texturenofocus>
-								<texturefocus border="3" colordiffuse="FFFF0000">colors/white.png</texturefocus>
+								<texturefocus border="3">borders/border-focus.png</texturefocus>
 								<onclick>Dialog.Close(MovieInformation)</onclick>
 								<onclick>RunScript(special://skin/resources/lib/global_search.py, $INFO[Window(Home).Property(InfoWindow.Cast.1.Name)])</onclick>
 								<onup>8000</onup>
 								<onleft>8</onleft>
-								<onright>50</onright>
+								<onright>50002</onright>
 								<ondown>5000</ondown>
 							</control>
 						</control>
@@ -443,18 +443,18 @@
 								<label>$INFO[Window(Home).Property(InfoWindow.Cast.2.Name)]</label>
 							</control>
 							<!-- Clickable button overlay -->
-							<control type="button">
+							<control type="button" id="50002">
 								<left>0</left>
 								<top>0</top>
 								<width>180</width>
 								<height>270</height>
 								<texturenofocus>-</texturenofocus>
-								<texturefocus border="3" colordiffuse="FFFF0000">colors/white.png</texturefocus>
+								<texturefocus border="3">borders/border-focus.png</texturefocus>
 								<onclick>Dialog.Close(MovieInformation)</onclick>
 								<onclick>RunScript(special://skin/resources/lib/global_search.py, $INFO[Window(Home).Property(InfoWindow.Cast.2.Name)])</onclick>
 								<onup>8000</onup>
-								<onleft>50</onleft>
-								<onright>50</onright>
+								<onleft>50001</onleft>
+								<onright>50003</onright>
 								<ondown>5000</ondown>
 							</control>
 						</control>
@@ -495,18 +495,18 @@
 								<label>$INFO[Window(Home).Property(InfoWindow.Cast.3.Name)]</label>
 							</control>
 							<!-- Clickable button overlay -->
-							<control type="button">
+							<control type="button" id="50003">
 								<left>0</left>
 								<top>0</top>
 								<width>180</width>
 								<height>270</height>
 								<texturenofocus>-</texturenofocus>
-								<texturefocus border="3" colordiffuse="FFFF0000">colors/white.png</texturefocus>
+								<texturefocus border="3">borders/border-focus.png</texturefocus>
 								<onclick>Dialog.Close(MovieInformation)</onclick>
 								<onclick>RunScript(special://skin/resources/lib/global_search.py, $INFO[Window(Home).Property(InfoWindow.Cast.3.Name)])</onclick>
 								<onup>8000</onup>
-								<onleft>50</onleft>
-								<onright>50</onright>
+								<onleft>50002</onleft>
+								<onright>50004</onright>
 								<ondown>5000</ondown>
 							</control>
 						</control>
@@ -547,18 +547,18 @@
 								<label>$INFO[Window(Home).Property(InfoWindow.Cast.4.Name)]</label>
 							</control>
 							<!-- Clickable button overlay -->
-							<control type="button">
+							<control type="button" id="50004">
 								<left>0</left>
 								<top>0</top>
 								<width>180</width>
 								<height>270</height>
 								<texturenofocus>-</texturenofocus>
-								<texturefocus border="3" colordiffuse="FFFF0000">colors/white.png</texturefocus>
+								<texturefocus border="3">borders/border-focus.png</texturefocus>
 								<onclick>Dialog.Close(MovieInformation)</onclick>
 								<onclick>RunScript(special://skin/resources/lib/global_search.py, $INFO[Window(Home).Property(InfoWindow.Cast.4.Name)])</onclick>
 								<onup>8000</onup>
-								<onleft>50</onleft>
-								<onright>50</onright>
+								<onleft>50003</onleft>
+								<onright>50005</onright>
 								<ondown>5000</ondown>
 							</control>
 						</control>
@@ -599,17 +599,17 @@
 								<label>$INFO[Window(Home).Property(InfoWindow.Cast.5.Name)]</label>
 							</control>
 							<!-- Clickable button overlay -->
-							<control type="button">
+							<control type="button" id="50005">
 								<left>0</left>
 								<top>0</top>
 								<width>180</width>
 								<height>270</height>
 								<texturenofocus>-</texturenofocus>
-								<texturefocus border="3" colordiffuse="FFFF0000">colors/white.png</texturefocus>
+								<texturefocus border="3">borders/border-focus.png</texturefocus>
 								<onclick>Dialog.Close(MovieInformation)</onclick>
 								<onclick>RunScript(special://skin/resources/lib/global_search.py, $INFO[Window(Home).Property(InfoWindow.Cast.5.Name)])</onclick>
 								<onup>8000</onup>
-								<onleft>50</onleft>
+								<onleft>50004</onleft>
 								<onright>8001</onright>
 								<ondown>5000</ondown>
 							</control>

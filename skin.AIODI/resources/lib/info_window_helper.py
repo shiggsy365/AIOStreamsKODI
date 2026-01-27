@@ -149,10 +149,24 @@ def populate_cast_properties(content_type=None):
                 log(f'Set InfoWindow.Rating: {rating}')
             
             if premiered:
-                # Format: "2008-01-20T12:00:00.000Z" -> "2008-01-20"
-                if 'T' in premiered: premiered = premiered.split('T')[0]
-                home_window.setProperty('InfoWindow.Premiered', premiered)
-                log(f'Set InfoWindow.Premiered: {premiered}')
+                # Format: "2008-01-20T12:00:00.000Z" -> user's date format
+                if 'T' in premiered:
+                    premiered = premiered.split('T')[0]
+
+                # Convert to Kodi's default date format
+                try:
+                    from datetime import datetime
+                    date_obj = datetime.strptime(premiered, '%Y-%m-%d')
+                    # Use Kodi's regional date format
+                    date_format = xbmc.getRegion('dateshort')
+                    # Convert Python strftime format: %d/%m/%Y -> dd/mm/yyyy
+                    formatted_date = date_obj.strftime(date_format)
+                    home_window.setProperty('InfoWindow.Premiered', formatted_date)
+                    log(f'Set InfoWindow.Premiered: {formatted_date}')
+                except Exception as e:
+                    # Fallback to original if formatting fails
+                    home_window.setProperty('InfoWindow.Premiered', premiered)
+                    log(f'Set InfoWindow.Premiered (fallback): {premiered}')
             
             if runtime:
                 # Format: "125 min" or "2h 5m"
