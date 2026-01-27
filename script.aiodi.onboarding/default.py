@@ -729,46 +729,35 @@ def run_installer(selections, data, is_stage_2=False):
 def run_guided_installer(selections):
     """Sequential navigator that guides the user through official Kodi installation pages"""
     target_addons = [
-        ('plugin.video.aiostreams', "AIOStreams", 'addons://repository.aiostreams/plugin.video.aiostreams'),
-        ('plugin.video.youtube', "YouTube", 'addoninfo://plugin.video.youtube'),
-        ('service.upnext', "UpNext", 'addoninfo://service.upnext'),
-        ('pvr.iptvsimple', "IPTV Simple", 'addoninfo://pvr.iptvsimple'),
-        ('plugin.video.imvdb', "IMVDb", 'addoninfo://plugin.video.imvdb'),
-        ('script.module.tmdbhelper', "TMDB Helper", 'addoninfo://script.module.tmdbhelper'),
-        ('skin.AIODI', "AIODI Skin", 'addoninfo://skin.AIODI')
+        ('plugin.video.aiostreams', "AIOStreams"),
+        ('plugin.video.youtube', "YouTube"),
+        ('service.upnext', "UpNext"),
+        ('pvr.iptvsimple', "IPTV Simple"),
+        ('plugin.video.imvdb', "IMVDb"),
+        ('script.module.tmdbhelper', "TMDB Helper"),
+        ('skin.AIODI', "AIODI Skin")
     ]
     
-    active_addons = [(id, name, path) for id, name, path in target_addons if selections.get(name.lower().replace(" ", ""), True)]
+    active_addons = [(id, name) for id, name in target_addons if selections.get(name.lower().replace(" ", ""), True)]
     
     # Force a repository refresh before starting
     xbmc.log("[Onboarding] Refreshing repositories...", xbmc.LOGINFO)
     xbmc.executebuiltin('UpdateAddonRepos')
     time.sleep(1)
 
-    for addon_id, name, path in active_addons:
+    for addon_id, name in active_addons:
         if not xbmc.getCondVisibility(f'System.HasAddon({addon_id})'):
-            if "repository.aiostreams" in path:
-                # Precision landing for AIOStreams
-                msg = (
-                    f"[B]Guided Setup: {name}[/B]\n\n"
-                    f"I will now open the [B]AIOStreams[/B] page within the official repository.\n\n"
-                    "1. Click [B]INSTALL[/B] on the next screen.\n"
-                    "2. Return here (back out) when the installation finishes."
-                )
-            else:
-                msg = (
-                    f"[B]Guided Setup: {name}[/B]\n\n"
-                    f"I will open the official page for {name}.\n\n"
-                    "1. Click [B]INSTALL[/B] on the next screen.\n"
-                    "2. Return here (back out) to continue."
-                )
+            msg = (
+                f"[B]Guided Setup: {name}[/B]\n\n"
+                f"I will now open the official information dialog for {name}.\n\n"
+                "1. Click [B]INSTALL[/B] on the popup.\n"
+                "2. If prompted for dependencies, select [B]OK[/B].\n"
+                "3. Once finished, return here (back out) to continue."
+            )
             xbmcgui.Dialog().ok("AIODI Setup", msg)
             
-            # Open native location
-            if "addoninfo://" in path:
-                xbmc.executebuiltin(f'ActivateWindow(10040,"{path}",return)')
-            else:
-                xbmc.executebuiltin(f'ActivateWindow(AddonBrowser,"{path}",return)')
+            # Open official Addon Info dialog (Window 10146)
+            xbmc.executebuiltin(f'ActivateWindow(10146,"{addon_id}",return)')
             
             # Detect install (Wait up to 120s)
             for _ in range(240):
