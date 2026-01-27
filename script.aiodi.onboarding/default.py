@@ -656,27 +656,27 @@ def run_installer(selections, data, is_stage_2=False):
         try:
             notify(f"Configuring YouTube...")
             yt = ensure_addon('plugin.video.youtube')
-                if yt:
-                    xbmc.log("[Onboarding] Applying YouTube settings...", xbmc.LOGINFO)
-                    # Turn off general/enable setup wizard
-                    apply_setting(yt, 'youtube.folder.my_subscriptions.show', 'false', 'Subscriptions Folder')
-                    # Enter API Key in API/API Key
-                    apply_setting(yt, 'youtube.api.key', data.get('yt_key', ''), 'YouTube API Key')
-                    # Enter API ID in API/API ID
-                    apply_setting(yt, 'youtube.api.id', data.get('yt_id', ''), 'YouTube API ID')
-                    # Enter API Secret in API/API Secret
-                    apply_setting(yt, 'youtube.api.secret', data.get('yt_secret', ''), 'YouTube API Secret')
-                    # Turn on API/allow developer keys
-                    apply_setting(yt, 'youtube.api.enable', 'true', 'Enable API')
-                    del yt
-                    notify(f"Step {current_step}/{total_steps}: YouTube ready ✓")
-                    xbmc.log("[Onboarding] YouTube configuration complete", xbmc.LOGINFO)
-                    time.sleep(0.5)
-                else:
-                    xbmc.log(f"[Onboarding] Failed to configure YouTube - addon not loadable", xbmc.LOGERROR)
-            except Exception as e:
-                xbmc.log(f"[Onboarding] YouTube config error: {e}", xbmc.LOGERROR)
-                xbmcgui.Dialog().notification("Setup Error", f"YouTube configuration failed: {str(e)}", xbmcgui.NOTIFICATION_ERROR)
+            if yt:
+                xbmc.log("[Onboarding] Applying YouTube settings...", xbmc.LOGINFO)
+                # Turn off general/enable setup wizard
+                apply_setting(yt, 'youtube.folder.my_subscriptions.show', 'false', 'Subscriptions Folder')
+                # Enter API Key in API/API Key
+                apply_setting(yt, 'youtube.api.key', data.get('yt_key', ''), 'YouTube API Key')
+                # Enter API ID in API/API ID
+                apply_setting(yt, 'youtube.api.id', data.get('yt_id', ''), 'YouTube API ID')
+                # Enter API Secret in API/API Secret
+                apply_setting(yt, 'youtube.api.secret', data.get('yt_secret', ''), 'YouTube API Secret')
+                # Turn on API/allow developer keys
+                apply_setting(yt, 'youtube.api.enable', 'true', 'Enable API')
+                del yt
+                notify(f"Step {current_step}/{total_steps}: YouTube ready ✓")
+                xbmc.log("[Onboarding] YouTube configuration complete", xbmc.LOGINFO)
+                time.sleep(0.5)
+            else:
+                xbmc.log(f"[Onboarding] Failed to configure YouTube - addon not loadable", xbmc.LOGERROR)
+        except Exception as e:
+            xbmc.log(f"[Onboarding] YouTube config error: {e}", xbmc.LOGERROR)
+            xbmcgui.Dialog().notification("Setup Error", f"YouTube configuration failed: {str(e)}", xbmcgui.NOTIFICATION_ERROR)
 
     # 3. Configure Up Next plugin
     if selections.get('upnext') and xbmc.getCondVisibility('System.HasAddon(service.upnext)'):
@@ -685,23 +685,23 @@ def run_installer(selections, data, is_stage_2=False):
         try:
             notify(f"Configuring UpNext...")
             un = ensure_addon('service.upnext')
-                if un:
-                    xbmc.log("[Onboarding] Applying UpNext settings...", xbmc.LOGINFO)
-                    # Change interface/set display mode for notifications to Simple
-                    apply_setting(un, 'simpleMode', '1', 'Simple Mode')  # 1 = Simple, 0 = Fancy
-                    # Enable interface/show a stop button instead of a close button
-                    apply_setting(un, 'stopAfterClose', 'true', 'Stop After Close')
-                    # Change behaviour/default action when nothing selected to 'Play Next'
-                    apply_setting(un, 'autoPlayMode', '0', 'Auto Play Mode')  # 0 = Auto play next episode
-                    del un
-                    notify(f"Step {current_step}/{total_steps}: UpNext ready ✓")
-                    xbmc.log("[Onboarding] UpNext configuration complete", xbmc.LOGINFO)
-                    time.sleep(0.5)
-                else:
-                    xbmc.log(f"[Onboarding] Failed to configure UpNext - addon not loadable", xbmc.LOGERROR)
-            except Exception as e:
-                xbmc.log(f"[Onboarding] UpNext config error: {e}", xbmc.LOGERROR)
-                xbmcgui.Dialog().notification("Setup Error", f"UpNext configuration failed: {str(e)}", xbmcgui.NOTIFICATION_ERROR)
+            if un:
+                xbmc.log("[Onboarding] Applying UpNext settings...", xbmc.LOGINFO)
+                # Change interface/set display mode for notifications to Simple
+                apply_setting(un, 'simpleMode', '1', 'Simple Mode')  # 1 = Simple, 0 = Fancy
+                # Enable interface/show a stop button instead of a close button
+                apply_setting(un, 'stopAfterClose', 'true', 'Stop After Close')
+                # Change behaviour/default action when nothing selected to 'Play Next'
+                apply_setting(un, 'autoPlayMode', '0', 'Auto Play Mode')  # 0 = Auto play next episode
+                del un
+                notify(f"Step {current_step}/{total_steps}: UpNext ready ✓")
+                xbmc.log("[Onboarding] UpNext configuration complete", xbmc.LOGINFO)
+                time.sleep(0.5)
+            else:
+                xbmc.log(f"[Onboarding] Failed to configure UpNext - addon not loadable", xbmc.LOGERROR)
+        except Exception as e:
+            xbmc.log(f"[Onboarding] UpNext config error: {e}", xbmc.LOGERROR)
+            xbmcgui.Dialog().notification("Setup Error", f"UpNext configuration failed: {str(e)}", xbmcgui.NOTIFICATION_ERROR)
 
     # 4. Configure IPTV Simple Player
     if selections.get('iptv') and xbmc.getCondVisibility('System.HasAddon(pvr.iptvsimple)'):
