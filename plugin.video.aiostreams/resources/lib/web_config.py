@@ -11,6 +11,8 @@ import platform
 import webbrowser
 import subprocess
 import time
+import hashlib
+import json
 
 import xbmc
 import xbmcgui
@@ -362,16 +364,7 @@ def configure_aiostreams(host_url=None):
 
     # Valid manifest URL detected - save it
     if manifest_url:
-        addon.setSetting('base_url', manifest_url)
-
-        # Try to extract and save the host URL
-        try:
-            from urllib.parse import urlparse
-            parsed = urlparse(manifest_url)
-            host_base = f'{parsed.scheme}://{parsed.netloc}'
-            addon.setSetting('aiostreams_host', host_base)
-        except:
-            pass
+        _save_manifest_configuration(addon, manifest_url)
 
         # Clear clipboard after saving for security
         clear_clipboard()
@@ -417,15 +410,7 @@ def configure_aiostreams(host_url=None):
                 return None
 
             # Save
-            addon.setSetting('base_url', manifest_url)
-
-            try:
-                from urllib.parse import urlparse
-                parsed = urlparse(manifest_url)
-                host_base = f'{parsed.scheme}://{parsed.netloc}'
-                addon.setSetting('aiostreams_host', host_base)
-            except:
-                pass
+            _save_manifest_configuration(addon, manifest_url)
 
             xbmcgui.Dialog().notification(
                 'AIOStreams',
@@ -486,160 +471,207 @@ def _api_host_url(value):
     return value.rstrip('/')
 
 
+def _normalize_manifest_setup_input(value):
+    """Classify a pasted host, manifest URL, or AIOStreams configuration link."""
+    from urllib.parse import parse_qs, urlparse
+
+    value = (value or '').strip()
+    if value.startswith('stremio://'):
+        value = 'https://' + value[len('stremio://'):]
+    parsed = urlparse(value)
+    if parsed.scheme not in ('http', 'https') or not parsed.netloc:
+        return None
+
+    segments = [segment for segment in parsed.path.split('/') if segment]
+    uuid = parse_qs(parsed.query).get('uuid', [''])[0]
+    try:
+        stremio_index = segments.index('stremio')
+        path_uuid = segments[stremio_index + 1]
+        if path_uuid.lower() not in ('configure', 'manifest.json'):
+            uuid = uuid or path_uuid
+    except (ValueError, IndexError):
+        pass
+    is_manifest = bool(segments and segments[-1].lower() == 'manifest.json')
+    return {
+        'host_url': f'{parsed.scheme}://{parsed.netloc}',
+        'manifest_url': value if is_manifest else '',
+        'uuid': uuid,
+    }
+
+
+def _manifest_checksum(manifest):
+    """Return a short checksum of a successfully retrieved manifest document."""
+    if not manifest:
+        return 'Not retrieved'
+    canonical_manifest = json.dumps(
+        manifest, sort_keys=True, separators=(',', ':'), ensure_ascii=True,
+    )
+    digest = hashlib.sha256(canonical_manifest.encode('utf-8')).hexdigest()[:12]
+    return f'SHA-256: {digest}'
+
+
+def _save_manifest_configuration(addon, manifest_url):
+    """Persist a changed manifest URL and reset only that new configuration's status."""
+    manifest_url = (manifest_url or '').strip()
+    if addon.getSetting('base_url').strip() == manifest_url:
+        return
+    addon.setSetting('base_url', manifest_url)
+    addon.setSetting(
+        'aiostreams_manifest_checksum', 'Not retrieved' if manifest_url else 'Not configured',
+    )
+    addon.setSetting('aiostreams_manifest_checksum_version', '')
+
+    target = _normalize_manifest_setup_input(manifest_url)
+    if not target:
+        return
+    addon.setSetting('aiostreams_host', target['host_url'])
+    if target['uuid']:
+        addon.setSetting('aiostreams_uuid', target['uuid'])
+
+
+def _save_manifest_checksum(addon, manifest):
+    """Record that Kodi retrieved a valid manifest and identify that document."""
+    addon.setSetting('aiostreams_manifest_checksum', _manifest_checksum(manifest))
+    addon.setSetting('aiostreams_manifest_checksum_version', '1')
+
+
+def _fetch_manifest_document(request_get, manifest_url, timeout=15):
+    """Fetch and validate a manifest before recording its checksum."""
+    response = request_get(manifest_url, timeout=timeout)
+    if response.status_code != 200:
+        return None, f'Manifest returned error: {response.status_code}'
+    try:
+        manifest = response.json()
+    except ValueError:
+        return None, 'The manifest did not return JSON.'
+    if not isinstance(manifest, dict):
+        return None, 'The manifest response is not a JSON object.'
+    return manifest, None
+
+
+def _retrieve_manifest_url(request_get, host_url, uuid, password):
+    """Return a manifest URL or a safe, user-facing retrieval failure."""
+    response = _retrieve_user_response(request_get, host_url, uuid, password)
+    if 300 <= response.status_code < 400:
+        return None, (
+            'API authentication was redirected.\n'
+            'This host may not support Kodi API auth.\n'
+            'Paste a manifest.json URL instead.'
+        )
+    if response.status_code != 200:
+        message = f'Server returned error: {response.status_code}'
+        try:
+            error_data = response.json()
+            error = error_data.get('error') or {}
+            message = error.get('message', message) if isinstance(error, dict) else str(error)
+        except ValueError:
+            pass
+        return None, message
+    try:
+        data = response.json()
+    except ValueError:
+        return None, (
+            'The server did not return API data.\n'
+            'Check the host URL or paste manifest.json.'
+        )
+    if not data.get('success', True):
+        error = data.get('error') or {}
+        return None, error.get('message', 'Invalid UUID or password.') if isinstance(error, dict) else str(error)
+    response_data = data.get('data') or {}
+    encrypted_password = response_data.get('encryptedPassword')
+    if not encrypted_password:
+        return None, 'Could not retrieve an encrypted password. Please check your UUID and password.'
+    response_uuid = (response_data.get('userData') or {}).get('uuid') or uuid
+    return f'{host_url.rstrip("/")}/stremio/{response_uuid}/{encrypted_password}/manifest.json', None
+
+
 def retrieve_manifest():
     """
-    Retrieve manifest URL using UUID and password authentication.
-
-    Workflow:
-    1. Get host URL, UUID, and password from settings
-    2. Call [host url]/api/v1/user?uuid=[uuid]&password=[password]
-    3. Get 'encryptedPassword' from json response (at data.encryptedPassword)
-    4. Construct manifest URL as [host url]/stremio/[uuid]/[encryptedPassword]/manifest.json
-    5. Save to base_url setting
+    Configure the manifest from a direct URL or supported User API credentials.
     """
     import requests
 
     addon = xbmcaddon.Addon()
 
-    # Get settings
-    host_url = addon.getSetting('aiostreams_host')
-    uuid = addon.getSetting('aiostreams_uuid')
-    password = addon.getSetting('aiostreams_password')
+    supplied_url = xbmcgui.Dialog().input(
+        'AIOStreams URL',
+        defaultt=addon.getSetting('base_url') or addon.getSetting('aiostreams_host'),
+    )
+    target = _normalize_manifest_setup_input(supplied_url)
+    if not target:
+        if supplied_url:
+            xbmcgui.Dialog().ok(
+                'AIOStreams', 'Enter an https:// host, an AIOStreams configuration URL, or a manifest.json URL.'
+            )
+        return None
 
-    # Validate inputs
-    # Validate inputs with interactive prompts
-    if not host_url:
-        host_url = xbmcgui.Dialog().input('AIOStreams Host (e.g. https://aiostreams.elfhosted.com)', defaultt='https://aiostreams.elfhosted.com')
-        if not host_url:
+    host_url = target['host_url']
+    if target['manifest_url']:
+        progress = xbmcgui.DialogProgress()
+        progress.create('AIOStreams', 'Retrieving manifest...')
+        try:
+            manifest, error_message = _fetch_manifest_document(requests.get, target['manifest_url'])
+        except requests.exceptions.RequestException:
+            manifest, error_message = None, 'Could not retrieve the manifest. Check the URL and try again.'
+        progress.close()
+        if error_message:
+            xbmcgui.Dialog().ok('AIOStreams Error', error_message)
             return None
-        addon.setSetting('aiostreams_host', host_url)
+        _save_manifest_configuration(addon, target['manifest_url'])
+        _save_manifest_checksum(addon, manifest)
+        xbmcgui.Dialog().notification(
+            'AIOStreams', 'Manifest URL saved successfully!', xbmcgui.NOTIFICATION_INFO, 3000
+        )
+        return target['manifest_url']
 
+    uuid = xbmcgui.Dialog().input(
+        'AIOStreams UUID', defaultt=target['uuid'] or addon.getSetting('aiostreams_uuid'),
+    )
     if not uuid:
-        uuid = xbmcgui.Dialog().input('AIOStreams UUID')
-        if not uuid:
-            return None
-        addon.setSetting('aiostreams_uuid', uuid)
+        return None
 
+    password = xbmcgui.Dialog().input(
+        'AIOStreams Password', defaultt=addon.getSetting('aiostreams_password'),
+        option=xbmcgui.INPUT_PASSWORD,
+    )
     if not password:
-        password = xbmcgui.Dialog().input('AIOStreams Password', option=xbmcgui.INPUT_PASSWORD)
-        if not password:
-            return None
-        addon.setSetting('aiostreams_password', password)
-
-    # Settings may contain a copied manifest/configuration URL. The user API
-    # always lives at the instance host root.
-    host_url = _api_host_url(host_url)
-    addon.setSetting('aiostreams_host', host_url)
+        return None
 
     # Show progress dialog
     progress = xbmcgui.DialogProgress()
     progress.create('AIOStreams', 'Retrieving manifest...')
 
     try:
-        # Current AIOStreams user retrieval authenticates with HTTP Basic
-        # credentials. Query-string credentials were removed by the backend.
         xbmc.log('[AIOStreams WebConfig] Retrieving manifest credentials', xbmc.LOGINFO)
 
         progress.update(25, 'Contacting AIOStreams server...')
 
         # Make API request
-        response = _retrieve_user_response(requests.get, host_url, uuid, password)
-
-        progress.update(50, 'Processing response...')
-
-        if 300 <= response.status_code < 400:
+        manifest_url, error_message = _retrieve_manifest_url(requests.get, host_url, uuid, password)
+        if error_message:
             progress.close()
-            xbmcgui.Dialog().ok(
-                'AIOStreams',
-                'The User API redirected the request before authentication completed.\n\n'
-                'This host may not support User API authentication from Kodi. '
-                'A directly entered manifest.json URL will still work.',
-            )
-            xbmc.log(
-                f'[AIOStreams WebConfig] User API redirected before authentication: status={response.status_code}',
-                xbmc.LOGWARNING,
-            )
+            xbmcgui.Dialog().ok('AIOStreams Error', error_message)
+            xbmc.log('[AIOStreams WebConfig] Manifest credential retrieval failed', xbmc.LOGWARNING)
             return None
 
-        if response.status_code != 200:
-            progress.close()
-            error_msg = f'Server returned error: {response.status_code}'
-            try:
-                error_data = response.json()
-                if 'error' in error_data:
-                    error_msg = str(error_data['error'])
-                elif 'message' in error_data:
-                    error_msg = str(error_data['message'])
-            except:
-                pass
-            xbmcgui.Dialog().ok('AIOStreams Error', str(error_msg))
-            xbmc.log(f'[AIOStreams WebConfig] API error: {error_msg}', xbmc.LOGERROR)
-            return None
-
-        # Parse response. A successful HTTP status can still be an HTML proxy
-        # page, so do not surface a raw JSON decoder exception to Kodi users.
+        progress.update(60, 'Retrieving manifest...')
         try:
-            data = response.json()
-        except ValueError:
+            manifest, error_message = _fetch_manifest_document(requests.get, manifest_url)
+        except requests.exceptions.RequestException:
+            manifest, error_message = None, 'Could not retrieve the manifest. Check the URL and try again.'
+        if error_message:
             progress.close()
-            xbmcgui.Dialog().ok(
-                'AIOStreams Error',
-                'The server returned a non-JSON response.\n\n'
-                'Confirm that Host Base URL is your AIOStreams instance URL.',
-            )
-            content_type = getattr(response, 'headers', {}).get('content-type', 'unknown')
-            xbmc.log(
-                f'[AIOStreams WebConfig] User API returned non-JSON content: status={response.status_code}, type={content_type}',
-                xbmc.LOGERROR,
-            )
-            return None
-        xbmc.log(f'[AIOStreams WebConfig] API response top-level keys: {list(data.keys())}', xbmc.LOGINFO)
-
-        if not data.get('success', True):
-            progress.close()
-            error = data.get('error') or {}
-            message = error.get('message') if isinstance(error, dict) else str(error)
-            xbmcgui.Dialog().ok('AIOStreams Error', message or 'Invalid UUID or password.')
-            xbmc.log('[AIOStreams WebConfig] User API rejected the supplied credentials', xbmc.LOGERROR)
+            xbmcgui.Dialog().ok('AIOStreams Error', error_message)
             return None
 
-        # FIXED: Navigate to data object (encryptedPassword is at data.encryptedPassword, NOT data.userData.encryptedPassword)
-        response_data = data.get('data', {})
-        
-        if not response_data:
-            progress.close()
-            xbmcgui.Dialog().ok(
-                'AIOStreams Error',
-                'Could not retrieve data from server.\n'
-                'Please check your UUID and password.'
-            )
-            xbmc.log('[AIOStreams WebConfig] No data in response', xbmc.LOGERROR)
-            return None
-        
-        # Get encrypted password from data (NOT from userData)
-        encrypted_password = response_data.get('encryptedPassword')
-        if not encrypted_password:
-            progress.close()
-            xbmcgui.Dialog().ok(
-                'AIOStreams Error',
-                'Could not retrieve encrypted password from server.\n'
-                'Please check your UUID and password.'
-            )
-            xbmc.log('[AIOStreams WebConfig] No encryptedPassword in data', xbmc.LOGERROR)
-            return None
+        progress.update(75, 'Saving manifest...')
 
-        # Get UUID from userData (use response UUID or fallback to input UUID)
-        user_data = response_data.get('userData', {})
-        uuid_from_response = user_data.get('uuid', uuid)
-
-        progress.update(75, 'Building manifest URL...')
-
-        # Construct manifest URL with encrypted password
-        manifest_url = f'{host_url}/stremio/{uuid_from_response}/{encrypted_password}/manifest.json'
         xbmc.log('[AIOStreams WebConfig] Constructed manifest URL', xbmc.LOGINFO)
 
         # Save to settings
-        addon.setSetting('base_url', manifest_url)
+        _save_manifest_configuration(addon, manifest_url)
+        _save_manifest_checksum(addon, manifest)
+        addon.setSetting('aiostreams_password', password)
 
         progress.update(100, 'Configuration saved!')
         xbmc.sleep(500)

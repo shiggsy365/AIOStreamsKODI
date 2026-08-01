@@ -155,10 +155,17 @@ def get_manifest(force=False):
     """Fetch the configured manifest through the shared API client."""
     if not get_base_url():
         return None
-    return request_aiostreams(
+    manifest = request_aiostreams(
         'manifest', 'Error fetching manifest',
         lambda: get_aiostreams_client().get_manifest(force=force),
     )
+    if manifest:
+        try:
+            from resources.lib.web_config import _save_manifest_checksum
+            _save_manifest_checksum(ADDON, manifest)
+        except Exception:
+            pass
+    return manifest
 
 
 def get_search_catalog_id(content_type):

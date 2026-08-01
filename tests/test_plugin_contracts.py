@@ -223,7 +223,11 @@ class PluginRouteTests(unittest.TestCase):
 
     def test_manifest_retrieval_uses_http_basic_authentication(self):
         install()
-        from resources.lib.web_config import _api_host_url, _retrieve_user_response
+        from resources.lib.web_config import (
+            _api_host_url, _fetch_manifest_document, _manifest_checksum,
+            _normalize_manifest_setup_input, _retrieve_manifest_url,
+            _retrieve_user_response, _save_manifest_checksum, _save_manifest_configuration,
+        )
 
         calls = []
         response = _retrieve_user_response(
@@ -242,13 +246,99 @@ class PluginRouteTests(unittest.TestCase):
         self.assertEqual('https://example.invalid', _api_host_url('https://example.invalid/stremio/id/token/manifest.json'))
         self.assertEqual('https://example.invalid', _api_host_url('https://example.invalid/stremio/configure'))
 
+        self.assertEqual(
+            {
+                'host_url': 'https://example.invalid',
+                'manifest_url': 'https://example.invalid/stremio/user-uuid/token/manifest.json',
+                'uuid': 'user-uuid',
+            },
+            _normalize_manifest_setup_input('stremio://example.invalid/stremio/user-uuid/token/manifest.json'),
+        )
+        self.assertEqual(
+            {
+                'host_url': 'https://example.invalid', 'manifest_url': '', 'uuid': 'user-uuid',
+            },
+            _normalize_manifest_setup_input('https://example.invalid/stremio/user-uuid'),
+        )
+        self.assertEqual(
+            {
+                'host_url': 'https://example.invalid', 'manifest_url': '', 'uuid': '',
+            },
+            _normalize_manifest_setup_input('https://example.invalid/stremio/configure'),
+        )
+
+        class Response:
+            status_code = 200
+
+            @staticmethod
+            def json():
+                return {'success': True, 'data': {'encryptedPassword': 'token'}}
+
+        manifest_url, error = _retrieve_manifest_url(
+            lambda *_args, **_kwargs: Response(), 'https://example.invalid', 'user-uuid', 'password',
+        )
+        self.assertIsNone(error)
+        self.assertEqual(
+            'https://example.invalid/stremio/user-uuid/token/manifest.json', manifest_url,
+        )
+        self.assertEqual('Not retrieved', _manifest_checksum(None))
+        self.assertEqual(
+            'SHA-256: 98da7eff28c3',
+            _manifest_checksum({'id': 'test', 'catalogs': []}),
+        )
+
+        class ManifestResponse:
+            status_code = 200
+
+            @staticmethod
+            def json():
+                return {'id': 'test', 'catalogs': []}
+
+        manifest, error = _fetch_manifest_document(
+            lambda *_args, **_kwargs: ManifestResponse(), 'https://example.invalid/manifest.json',
+        )
+        self.assertIsNone(error)
+        self.assertEqual({'id': 'test', 'catalogs': []}, manifest)
+
+        class Addon:
+            values = {}
+
+            def getSetting(self, name):
+                return self.values.get(name, '')
+
+            def setSetting(self, name, value):
+                self.values[name] = value
+
+        addon = Addon()
+        _save_manifest_configuration(
+            addon, 'https://example.invalid/stremio/user-uuid/token/manifest.json',
+        )
+        self.assertEqual('Not retrieved', addon.values['aiostreams_manifest_checksum'])
+        _save_manifest_checksum(addon, manifest)
+        self.assertEqual('SHA-256: 98da7eff28c3', addon.values['aiostreams_manifest_checksum'])
+        _save_manifest_configuration(
+            addon, 'https://example.invalid/stremio/user-uuid/token/manifest.json',
+        )
+        self.assertEqual('SHA-256: 98da7eff28c3', addon.values['aiostreams_manifest_checksum'])
+
 
 class SettingsContractTests(unittest.TestCase):
     def test_settings_are_unique_and_include_all_genre_filter_controls(self):
         settings_path = os.path.join(ADDON_ROOT, 'resources', 'settings.xml')
-        settings = [node.attrib['id'] for node in ET.parse(settings_path).iter('setting')]
+        document = ET.parse(settings_path)
+        settings = [node.attrib['id'] for node in document.iter('setting')]
 
         self.assertEqual(len(settings), len(set(settings)))
+        self.assertIn('aiostreams_manifest_checksum', settings)
+        integrations = next(category for category in document.iter('category') if category.attrib['label'] == 'Integrations')
+        integration_settings = [node for node in integrations.findall('setting')]
+        integration_ids = [node.attrib['id'] for node in integration_settings]
+        attributes = {node.attrib['id']: node.attrib for node in integration_settings}
+        self.assertLess(integration_ids.index('retrieve_manifest'), integration_ids.index('aiostreams_host'))
+        self.assertEqual('false', attributes['aiostreams_host']['enable'])
+        self.assertEqual('false', attributes['aiostreams_uuid']['enable'])
+        self.assertEqual('false', attributes['aiostreams_password']['visible'])
+        self.assertEqual('false', attributes['base_url']['visible'])
         self.assertIn('filter_genres_enabled', settings)
         for genre in (
             'action', 'adventure', 'animation', 'anime', 'comedy', 'crime',
