@@ -96,7 +96,7 @@ class StreamUtilsTests(unittest.TestCase):
         self.assertEqual('Comet', fields['addon'])
         self.assertEqual('8.00 GB', fields['size'])
         self.assertEqual('YES', fields['cached'])
-        self.assertEqual('N/A', fields['duration'])
+        self.assertEqual('', fields['duration'])
         self.assertEqual('BluRay | HEVC | IMAX', fields['video'])
         self.assertEqual('DD | 5.1 | English', fields['audio'])
         self.assertEqual('Movie.2026.1080p.mkv', fields['filename'])

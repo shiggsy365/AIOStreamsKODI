@@ -120,7 +120,7 @@
                         <height>35</height>
                         <font>font10</font>
                         <textcolor>grey</textcolor>
-                        <label>[COLOR white]SIZE:[/COLOR] $INFO[ListItem.Property(size)]  •  [COLOR white]PROXIED:[/COLOR] $INFO[ListItem.Property(proxied)]  •  [COLOR white]CACHED:[/COLOR] $INFO[ListItem.Property(cached)]  •  [COLOR white]IN LIBRARY:[/COLOR] $INFO[ListItem.Property(in_library)]  •  [COLOR white]DURATION:[/COLOR] $INFO[ListItem.Property(duration)]</label>
+                        <label>[COLOR white]SIZE:[/COLOR] $INFO[ListItem.Property(size)]  •  [COLOR white]PROXIED:[/COLOR] $INFO[ListItem.Property(proxied)]  •  [COLOR white]CACHED:[/COLOR] $INFO[ListItem.Property(cached)]  •  [COLOR white]IN LIBRARY:[/COLOR] $INFO[ListItem.Property(in_library)]</label>
                     </control>
                     <control type="label">
                         <top>35</top>
@@ -210,7 +210,7 @@
                         <height>35</height>
                         <font>font10</font>
                         <textcolor>white</textcolor>
-                        <label>[COLOR gold]SIZE:[/COLOR] $INFO[ListItem.Property(size)]  •  [COLOR gold]PROXIED:[/COLOR] $INFO[ListItem.Property(proxied)]  •  [COLOR gold]CACHED:[/COLOR] $INFO[ListItem.Property(cached)]  •  [COLOR gold]IN LIBRARY:[/COLOR] $INFO[ListItem.Property(in_library)]  •  [COLOR gold]DURATION:[/COLOR] $INFO[ListItem.Property(duration)]</label>
+                        <label>[COLOR gold]SIZE:[/COLOR] $INFO[ListItem.Property(size)]  •  [COLOR gold]PROXIED:[/COLOR] $INFO[ListItem.Property(proxied)]  •  [COLOR gold]CACHED:[/COLOR] $INFO[ListItem.Property(cached)]  •  [COLOR gold]IN LIBRARY:[/COLOR] $INFO[ListItem.Property(in_library)]</label>
                     </control>
                     <control type="label">
                         <top>35</top>

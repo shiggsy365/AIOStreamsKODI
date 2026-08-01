@@ -160,7 +160,7 @@ def stream_display_fields(stream):
         'proxied': 'YES' if data.get('proxied') is True else ('NO' if data.get('proxied') is False else ''),
         'cached': cached,
         'in_library': 'YES' if data.get('library') is True else ('NO' if data.get('library') is False else ''),
-        'duration': duration or 'N/A',
+        'duration': duration,
         'video': video,
         'audio': audio,
         'indexer': str(data.get('indexer') or ''),
