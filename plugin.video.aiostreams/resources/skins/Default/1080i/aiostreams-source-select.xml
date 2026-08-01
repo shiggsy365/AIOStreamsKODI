@@ -57,7 +57,7 @@
                     <top>2</top>
                     <width>1028</width>
                     <height>126</height>
-                    <texture colordiffuse="E6191919">colors/white.png</texture>
+                    <texture colordiffuse="FF161616">colors/white.png</texture>
                 </control>
                 <control type="image">
                     <left>220</left>
@@ -71,7 +71,7 @@
                     <top>2</top>
                     <width>216</width>
                     <height>126</height>
-                    <texture colordiffuse="E645101A">colors/white.png</texture>
+                    <texture colordiffuse="FF402027">colors/white.png</texture>
                 </control>
                 <control type="image">
                     <left>2</left>
@@ -119,7 +119,7 @@
                         <width>250</width>
                         <height>35</height>
                         <font>font10</font>
-                        <textcolor>grey</textcolor>
+                        <textcolor>white</textcolor>
                         <label>[COLOR white]SIZE[/COLOR]  $INFO[ListItem.Property(size)]</label>
                     </control>
                     <control type="label">
@@ -128,7 +128,7 @@
                         <width>180</width>
                         <height>35</height>
                         <font>font10</font>
-                        <textcolor>grey</textcolor>
+                        <textcolor>white</textcolor>
                         <label>[COLOR white]CACHED[/COLOR]  $INFO[ListItem.Property(cached)]</label>
                     </control>
                     <control type="label">
@@ -137,7 +137,7 @@
                         <width>180</width>
                         <height>35</height>
                         <font>font10</font>
-                        <textcolor>grey</textcolor>
+                        <textcolor>white</textcolor>
                         <label>[COLOR white]PROXY[/COLOR]  $INFO[ListItem.Property(proxied)]</label>
                     </control>
                     <control type="label">
@@ -146,7 +146,7 @@
                         <width>330</width>
                         <height>35</height>
                         <font>font10</font>
-                        <textcolor>grey</textcolor>
+                        <textcolor>white</textcolor>
                         <label>[COLOR white]LIBRARY[/COLOR]  $INFO[ListItem.Property(in_library)]</label>
                     </control>
                     <control type="label">
@@ -154,7 +154,7 @@
                         <width>490</width>
                         <height>35</height>
                         <font>font10</font>
-                        <textcolor>grey</textcolor>
+                        <textcolor>white</textcolor>
                         <label>[COLOR white]VIDEO[/COLOR]  $INFO[ListItem.Property(video)]</label>
                     </control>
                     <control type="label">
@@ -163,24 +163,24 @@
                         <width>470</width>
                         <height>35</height>
                         <font>font10</font>
-                        <textcolor>grey</textcolor>
+                        <textcolor>white</textcolor>
                         <label>[COLOR white]AUDIO[/COLOR]  $INFO[ListItem.Property(audio)]</label>
                     </control>
                     <control type="label">
                         <top>70</top>
-                        <width>300</width>
+                        <width>420</width>
                         <height>35</height>
                         <font>font10</font>
-                        <textcolor>grey</textcolor>
+                        <textcolor>white</textcolor>
                         <label>[COLOR white]INDEXER[/COLOR]  $INFO[ListItem.Property(indexer)]</label>
                     </control>
                     <control type="label">
-                        <left>310</left>
+                        <left>430</left>
                         <top>70</top>
-                        <width>660</width>
+                        <width>540</width>
                         <height>35</height>
                         <font>font10</font>
-                        <textcolor>grey</textcolor>
+                        <textcolor>white</textcolor>
                         <label>[COLOR white]FILE[/COLOR]  $INFO[ListItem.Property(filename)]</label>
                     </control>
                 </control>
@@ -192,28 +192,28 @@
                     <top>2</top>
                     <width>1028</width>
                     <height>126</height>
-                    <texture colordiffuse="burgundy">colors/white.png</texture>
+                    <texture colordiffuse="FF681522">colors/white.png</texture>
                 </control>
                 <control type="image">
                     <left>2</left>
                     <top>2</top>
                     <width>216</width>
                     <height>126</height>
-                    <texture colordiffuse="burgundy">colors/white.png</texture>
+                    <texture colordiffuse="FF8A1018">colors/white.png</texture>
                 </control>
                 <control type="image">
                     <left>2</left>
                     <top>2</top>
                     <width>216</width>
                     <height>126</height>
-                    <texture border="1" colordiffuse="glass_border">colors/white.png</texture>
+                    <texture border="1" colordiffuse="88FFFFFF">colors/white.png</texture>
                 </control>
                 <control type="image">
                     <left>2</left>
                     <top>2</top>
                     <width>216</width>
                     <height>126</height>
-                    <texture colordiffuse="ff800000">colors/white.png</texture>
+                    <texture colordiffuse="FF8A1018">colors/white.png</texture>
                 </control>
                 <control type="group">
                     <left>12</left>
@@ -303,16 +303,16 @@
                     </control>
                     <control type="label">
                         <top>70</top>
-                        <width>300</width>
+                        <width>420</width>
                         <height>35</height>
                         <font>font10</font>
                         <textcolor>white</textcolor>
                         <label>[COLOR gold]INDEXER[/COLOR]  $INFO[ListItem.Property(indexer)]</label>
                     </control>
                     <control type="label">
-                        <left>310</left>
+                        <left>430</left>
                         <top>70</top>
-                        <width>660</width>
+                        <width>540</width>
                         <height>35</height>
                         <font>font10</font>
                         <textcolor>white</textcolor>

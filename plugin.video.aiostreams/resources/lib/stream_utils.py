@@ -153,7 +153,7 @@ def stream_display_fields(stream):
     video = joined(parsed.get('quality'), parsed.get('encode'), parsed.get('visualTags')) or 'Unknown'
     audio = joined(parsed.get('audioTags'), parsed.get('audioChannels'), parsed.get('languages')) or 'Unknown'
     return {
-        'resolution': str(parsed.get('resolution') or (resolution_match.group(1).upper() if resolution_match else '')),
+        'resolution': str(parsed.get('resolution') or (resolution_match.group(1).upper() if resolution_match else 'Unknown')),
         'service': str(service),
         'addon': str(data.get('addon') or ''),
         'size': _format_bytes(data.get('size')),
