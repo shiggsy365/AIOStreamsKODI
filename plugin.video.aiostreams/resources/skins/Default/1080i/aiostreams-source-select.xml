@@ -57,28 +57,28 @@
                     <top>2</top>
                     <width>1028</width>
                     <height>126</height>
-                    <texture colordiffuse="glass_bg">colors/white.png</texture>
+                    <texture colordiffuse="E6191919">colors/white.png</texture>
                 </control>
                 <control type="image">
                     <left>220</left>
                     <top>2</top>
                     <width>1028</width>
                     <height>126</height>
-                    <texture border="1" colordiffuse="glass_border">colors/white.png</texture>
+                    <texture border="1" colordiffuse="55FFFFFF">colors/white.png</texture>
                 </control>
                 <control type="image">
                     <left>2</left>
                     <top>2</top>
                     <width>216</width>
                     <height>126</height>
-                    <texture colordiffuse="burgundy_bg">colors/white.png</texture>
+                    <texture colordiffuse="E645101A">colors/white.png</texture>
                 </control>
                 <control type="image">
                     <left>2</left>
                     <top>2</top>
                     <width>216</width>
                     <height>126</height>
-                    <texture border="1" colordiffuse="glass_border">colors/white.png</texture>
+                    <texture border="1" colordiffuse="55FFFFFF">colors/white.png</texture>
                 </control>
                 <control type="group">
                     <left>12</left>
@@ -88,6 +88,7 @@
                         <width>200</width>
                         <height>50</height>
                         <font>font13</font>
+                        <textcolor>white</textcolor>
                         <align>left</align>
                         <label>$INFO[ListItem.Property(resolution)]</label>
                     </control>
@@ -96,6 +97,7 @@
                         <width>200</width>
                         <height>30</height>
                         <font>font10</font>
+                        <textcolor>white</textcolor>
                         <align>left</align>
                         <label>$INFO[ListItem.Property(service)]</label>
                     </control>
@@ -104,6 +106,7 @@
                         <width>200</width>
                         <height>30</height>
                         <font>font10</font>
+                        <textcolor>white</textcolor>
                         <align>left</align>
                         <label>$INFO[ListItem.Property(addon)]</label>
                     </control>

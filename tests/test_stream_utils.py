@@ -10,7 +10,7 @@ from resources.lib.stream_utils import (  # noqa: E402
     DIRECT_URL, EXTERNAL_URL, SYNTHETIC_ERROR, SYNTHETIC_STATISTIC,
     TORRENT, UNKNOWN, USENET, YOUTUBE, canonical_episode_id,
     canonical_meta_id, classify_stream, client_user_agent, display_label, kodi_headers,
-    matching_episode_id,
+    matching_episode_id, stream_display_fields,
     normalize_streams, playable_url, stream_search_text,
 )
 
@@ -74,6 +74,24 @@ class StreamUtilsTests(unittest.TestCase):
         self.assertEqual('Movie.4K.mkv', display_label(stream))
         self.assertIn('2160p', stream_search_text(stream))
         self.assertIn('Movie.4K.mkv', stream_search_text(stream))
+
+    def test_structured_display_fields(self):
+        stream = {
+            'name': 'FHD',
+            'behaviorHints': {'filename': 'Movie.2026.1080p.mkv'},
+            'streamData': {
+                'service': {'id': 'debridge', 'cached': True},
+                'addon': 'Comet', 'size': 8 * 1024 ** 3, 'proxied': False,
+                'library': False, 'indexer': 'ExampleIndexer',
+            },
+        }
+        fields = stream_display_fields(stream)
+        self.assertEqual('FHD', fields['resolution'])
+        self.assertEqual('debridge', fields['service'])
+        self.assertEqual('Comet', fields['addon'])
+        self.assertEqual('8.00 GB', fields['size'])
+        self.assertEqual('YES', fields['cached'])
+        self.assertEqual('Movie.2026.1080p.mkv', fields['filename'])
 
 
 if __name__ == '__main__':

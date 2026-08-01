@@ -2,6 +2,7 @@
 from collections import Counter
 from urllib.parse import quote
 from urllib.parse import urlsplit
+import re
 
 
 DIRECT_URL = 'direct_url'
@@ -108,6 +109,51 @@ def display_label(stream):
     return (_text(stream.get('name')) or _text(stream.get('title')) or
             _text(hints.get('filename')) or _text(stream.get('description')) or
             'Direct stream')
+
+
+def _format_bytes(value):
+    try:
+        size = float(value)
+    except (TypeError, ValueError):
+        return ''
+    for unit in ('B', 'KB', 'MB', 'GB', 'TB'):
+        if size < 1024 or unit == 'TB':
+            return f'{size:.2f} {unit}' if unit in ('GB', 'TB') else f'{size:.0f} {unit}'
+        size /= 1024
+    return ''
+
+
+def stream_display_fields(stream):
+    """Extract useful dialog fields from formatter text and structured data."""
+    data = stream.get('streamData') or {}
+    hints = stream.get('behaviorHints') or {}
+    search_text = stream_search_text(stream)
+    resolution_match = re.search(r'(?i)\b(4k|uhd|fhd|(?:2160|1440|1080|720|576|480|360)p)\b', search_text)
+    service = data.get('service') or ''
+    cached = ''
+    if isinstance(service, dict):
+        cached_value = service.get('cached')
+        cached = 'YES' if cached_value is True else ('NO' if cached_value is False else '')
+        service = service.get('name') or service.get('id') or ''
+    duration = data.get('duration')
+    if isinstance(duration, (int, float)) and duration > 0:
+        duration = f'{int(duration) // 3600}h {(int(duration) % 3600) // 60}m'
+    else:
+        duration = ''
+    return {
+        'resolution': resolution_match.group(1).upper() if resolution_match else '',
+        'service': str(service),
+        'addon': str(data.get('addon') or ''),
+        'size': _format_bytes(data.get('size')),
+        'proxied': 'YES' if data.get('proxied') is True else ('NO' if data.get('proxied') is False else ''),
+        'cached': cached,
+        'in_library': 'YES' if data.get('library') is True else ('NO' if data.get('library') is False else ''),
+        'duration': duration,
+        'video': '',
+        'audio': '',
+        'indexer': str(data.get('indexer') or ''),
+        'filename': str(hints.get('filename') or data.get('filename') or ''),
+    }
 
 
 def stream_message(stream):
