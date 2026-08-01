@@ -241,7 +241,19 @@ class AIOStreamsService:
                 if encrypted_password:
                     # Construct and save manifest URL
                     manifest_url = f'{host_url}/stremio/{uuid}/{encrypted_password}/manifest.json'
-                    self.addon.setSetting('base_url', manifest_url)
+                    from resources.lib.web_config import (
+                        _fetch_manifest_document, _save_manifest_checksum,
+                        _save_manifest_configuration,
+                    )
+                    try:
+                        manifest, error = _fetch_manifest_document(
+                            requests.get, manifest_url, timeout=10,
+                        )
+                        if not error:
+                            _save_manifest_configuration(self.addon, manifest_url)
+                            _save_manifest_checksum(self.addon, manifest)
+                    except requests.RequestException:
+                        pass
                     xbmc.log(f'[AIOStreams Service] Silent manifest retrieval successful', xbmc.LOGINFO)
                     return True
         except Exception as e:

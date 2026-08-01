@@ -24,11 +24,13 @@
     <!-- Integrations Settings -->
     <category label="Integrations">
         <setting id="aiostreams_config" type="lsep" label="AIOStreams Integration"/>
-        <setting id="aiostreams_host" type="text" label="Host Base URL" default="https://aiostreams.elfhosted.com"/>
-        <setting id="aiostreams_uuid" type="text" label="UUID" default=""/>
-        <setting id="aiostreams_password" type="text" label="Password" default="" option="hidden"/>
-        <setting id="retrieve_manifest" type="action" label="Retrieve Manifest" action="RunPlugin(plugin://plugin.video.aiostreams/?action=retrieve_manifest)"/>
-        <setting id="base_url" type="text" label="Manifest URL" default=""/>
+        <setting id="retrieve_manifest" type="action" label="Configure Manifest" action="RunPlugin(plugin://plugin.video.aiostreams/?action=retrieve_manifest)"/>
+        <setting id="aiostreams_host" type="text" label="Host Base URL" default="" enable="false"/>
+        <setting id="aiostreams_uuid" type="text" label="UUID" default="" enable="false"/>
+        <setting id="aiostreams_manifest_checksum" type="text" label="Manifest Checksum" default="Not configured" enable="false"/>
+        <setting id="aiostreams_manifest_checksum_version" type="text" default="" visible="false"/>
+        <setting id="aiostreams_password" type="text" label="Password" default="" option="hidden" visible="false"/>
+        <setting id="base_url" type="text" label="Manifest URL" default="" visible="false"/>
         <setting id="timeout" type="number" label="Request Timeout (seconds)" default="10"/>
 
         <setting id="trakt_config" type="lsep" label="Trakt Integration"/>
