@@ -14,6 +14,29 @@ def install():
 
     xbmcplugin = types.ModuleType('xbmcplugin')
     xbmcgui = types.ModuleType('xbmcgui')
+    xbmcgui.NOTIFICATION_ERROR = 0
+    xbmcgui.NOTIFICATION_INFO = 1
+    xbmcgui.NOTIFICATION_WARNING = 2
+    xbmcvfs = types.ModuleType('xbmcvfs')
+    xbmcaddon = types.ModuleType('xbmcaddon')
+    xbmcvfs.translatePath = lambda path: path
+    xbmcvfs.exists = lambda path: False
+    xbmcvfs.mkdirs = lambda path: None
+
+    class Addon:
+        def getSetting(self, _setting_id):
+            return ''
+
+        def setSetting(self, _setting_id, _value):
+            return None
+
+        def getSettingBool(self, _setting_id):
+            return False
+
+        def getAddonInfo(self, key):
+            return {'path': '', 'profile': '', 'version': '0.0.0'}.get(key, '')
+
+    xbmcaddon.Addon = Addon
 
     class InfoTagVideo:
         def __init__(self):
@@ -42,5 +65,8 @@ def install():
             self.art.update(art)
 
     xbmcgui.ListItem = ListItem
-    sys.modules.update({'xbmc': xbmc, 'xbmcgui': xbmcgui, 'xbmcplugin': xbmcplugin})
+    sys.modules.update({
+        'xbmc': xbmc, 'xbmcgui': xbmcgui, 'xbmcplugin': xbmcplugin,
+        'xbmcvfs': xbmcvfs, 'xbmcaddon': xbmcaddon,
+    })
     return xbmc, xbmcplugin
