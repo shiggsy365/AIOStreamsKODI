@@ -327,7 +327,7 @@ def configure_aiostreams(host_url=None):
 
             if clipboard_content and clipboard_content != last_clipboard:
                 last_clipboard = clipboard_content
-                xbmc.log(f'[AIOStreams WebConfig] Clipboard changed, checking: {clipboard_content[:50]}...', xbmc.LOGDEBUG)
+                xbmc.log('[AIOStreams WebConfig] Clipboard changed; checking configuration URL', xbmc.LOGDEBUG)
 
                 # Check if it's a valid manifest URL
                 if is_valid_manifest_url(clipboard_content):
@@ -337,7 +337,7 @@ def configure_aiostreams(host_url=None):
                     if manifest_url.startswith('stremio://'):
                         manifest_url = 'https://' + manifest_url[10:]
 
-                    xbmc.log(f'[AIOStreams WebConfig] Valid manifest URL detected: {manifest_url}', xbmc.LOGINFO)
+                    xbmc.log('[AIOStreams WebConfig] Valid manifest URL detected', xbmc.LOGINFO)
                     break
 
             # Sleep before next poll
@@ -387,7 +387,7 @@ def configure_aiostreams(host_url=None):
             3000
         )
 
-        xbmc.log(f'[AIOStreams WebConfig] Configuration saved: {manifest_url}', xbmc.LOGINFO)
+        xbmc.log('[AIOStreams WebConfig] Configuration saved', xbmc.LOGINFO)
         return manifest_url
 
     # No URL detected - offer manual entry
@@ -578,7 +578,7 @@ def retrieve_manifest():
 
         # Construct manifest URL with encrypted password
         manifest_url = f'{host_url}/stremio/{uuid_from_response}/{encrypted_password}/manifest.json'
-        xbmc.log(f'[AIOStreams WebConfig] Constructed manifest URL: {manifest_url[:50]}...', xbmc.LOGINFO)
+        xbmc.log('[AIOStreams WebConfig] Constructed manifest URL', xbmc.LOGINFO)
 
         # Save to settings
         addon.setSetting('base_url', manifest_url)

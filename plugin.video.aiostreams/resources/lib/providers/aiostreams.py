@@ -146,7 +146,7 @@ class AIOStreamsProvider(BaseProvider):
             return None
         except requests.RequestException as e:
             xbmcgui.Dialog().notification('AIOStreams', f'{error_message}', xbmcgui.NOTIFICATION_ERROR)
-            self.log(f'Request error: {e}', xbmc.LOGERROR)
+            self.log(f'Request error: {type(e).__name__}', xbmc.LOGERROR)
             return None
         except ValueError:
             xbmcgui.Dialog().notification('AIOStreams', 'Invalid JSON response', xbmcgui.NOTIFICATION_ERROR)
@@ -226,7 +226,7 @@ class AIOStreamsProvider(BaseProvider):
             return None
 
         url = f"{base_url}/stream/{content_type}/{media_id}.json"
-        self.log(f'Requesting streams: {url}', xbmc.LOGINFO)
+        self.log(f'Requesting streams: type={content_type}, id={media_id}', xbmc.LOGINFO)
 
         result = self._make_request(url, 'Stream error')
 
@@ -316,7 +316,7 @@ class AIOStreamsProvider(BaseProvider):
         else:
             url = f"{url_parts[0]}.json"
 
-        self.log(f'Requesting catalog: {url}', xbmc.LOGINFO)
+        self.log(f'Requesting catalog: type={content_type}, id={catalog_id}, skip={skip}', xbmc.LOGINFO)
         catalog = self._make_request(url, 'Catalog error')
 
         if catalog:
@@ -356,7 +356,7 @@ class AIOStreamsProvider(BaseProvider):
 
         # Fetch from API
         url = f"{base_url}/meta/{content_type}/{meta_id}.json"
-        self.log(f'Requesting meta: {url}', xbmc.LOGINFO)
+        self.log(f'Requesting metadata: type={content_type}, id={meta_id}', xbmc.LOGINFO)
         result = self._make_request(url, 'Meta error')
 
         if result:
@@ -413,7 +413,7 @@ class AIOStreamsProvider(BaseProvider):
             return None
 
         url = f"{base_url}/subtitles/{content_type}/{media_id}.json"
-        self.log(f'Requesting subtitles: {url}', xbmc.LOGINFO)
+        self.log(f'Requesting subtitles: type={content_type}, id={media_id}', xbmc.LOGINFO)
         return self._make_request(url, 'Subtitle error')
 
     def test_connection(self):
