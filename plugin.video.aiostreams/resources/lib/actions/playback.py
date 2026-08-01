@@ -28,15 +28,30 @@ class PlaybackDependencies:
     get_stream_manager: object
     get_max_streams: object
     show_source_dialog: object
+    origin_fingerprint: object = None
 
 
 def _media_params(params):
+    """Read new explicit routes and the historical overloaded route shape.
+
+    Older URLs put the playback ID in ``imdb_id``.  New URLs keep it in
+    ``media_id`` and reserve ``imdb_id`` for Trakt/scrobbling.
+    """
     content_type = params.get('content_type', 'movie')
     imdb_id = params.get('imdb_id', '')
+    meta_id = params.get('meta_id', '')
     season = params.get('season') if content_type != 'movie' else None
     episode = params.get('episode') if content_type != 'movie' else None
-    media_id = imdb_id if content_type == 'movie' else params.get('media_id') or f'{imdb_id}:{season}:{episode}'
-    return content_type, imdb_id, media_id, season, episode
+    media_id = params.get('media_id', '')
+    if not media_id:
+        # Compatibility with legacy URLs.  Prefer the old imdb_id value even
+        # when it is an opaque stream identifier, then retain the old episode
+        # derivation as a final fallback.
+        if content_type != 'movie' and season is not None and episode is not None:
+            media_id = f'{imdb_id or meta_id}:{season}:{episode}'
+        else:
+            media_id = imdb_id or meta_id
+    return content_type, meta_id, imdb_id, media_id, season, episode
 
 
 def _add_subtitles(list_item, content_type, media_id, dependencies):
@@ -122,7 +137,8 @@ def _select_stream(streams, title, poster, fanart, clearlogo, plot, dependencies
     )
 
 
-def _show_dialog(content_type, media_id, stream_data, title, poster, fanart, clearlogo, plot, dependencies, from_playable=False):
+def _show_dialog(content_type, media_id, stream_data, title, poster, fanart, clearlogo, plot, dependencies,
+                 from_playable=False, imdb_id=None, season=None, episode=None):
     streams = _filtered_streams(stream_data, dependencies)
     if not streams:
         xbmcgui.Dialog().notification('AIOStreams', 'No streams match your quality preferences', xbmcgui.NOTIFICATION_ERROR)
@@ -139,14 +155,14 @@ def _show_dialog(content_type, media_id, stream_data, title, poster, fanart, cle
         dependencies.get_stream_manager().record_stream_selection(streams[selected].get('name', ''))
     success = play_stream_by_index(
         content_type, media_id, stream_data, selected, dependencies,
-        use_player=not from_playable,
+        use_player=not from_playable, imdb_id=imdb_id, season=season, episode=episode,
     )
     if success:
         return success
     for index in range(selected + 1, len(streams)):
         if play_stream_by_index(
             content_type, media_id, stream_data, index, dependencies,
-            use_player=not from_playable,
+            use_player=not from_playable, imdb_id=imdb_id, season=season, episode=episode,
         ):
             return True
     xbmcgui.Dialog().notification('AIOStreams', 'All streams failed', xbmcgui.NOTIFICATION_ERROR)
@@ -156,16 +172,19 @@ def _show_dialog(content_type, media_id, stream_data, title, poster, fanart, cle
 def play(params, dependencies):
     """Respect the configured default stream-selection behavior."""
     xbmc.executebuiltin('Dialog.Close(busydialog)')
-    content_type, imdb_id, media_id, season, episode = _media_params(params)
+    content_type, meta_id, imdb_id, media_id, season, episode = _media_params(params)
     title = params.get('title', 'Unknown' if content_type == 'movie' else f'S{season}E{episode}')
     poster, fanart, clearlogo = (params.get('poster', ''), params.get('fanart', ''), params.get('clearlogo', ''))
     requested_media_id = media_id
+    metadata_id = meta_id or imdb_id or media_id
     if not poster or not fanart or not clearlogo or (not params.get('media_id') and not imdb_id.startswith('tt')):
-        metadata = dependencies.get_meta(content_type, imdb_id)
+        metadata = dependencies.get_meta(content_type, metadata_id)
         if metadata and metadata.get('meta'):
             meta = metadata['meta']
-            canonical_id = MediaRef.from_meta(meta, content_type).playback_id or imdb_id
+            media_ref = MediaRef.from_meta(meta, content_type, dependencies.origin_fingerprint)
+            canonical_id = media_ref.playback_id or media_id
             media_id = canonical_id if content_type == 'movie' else (params.get('media_id') or matching_episode_id(meta, canonical_id, season, episode))
+            imdb_id = imdb_id or media_ref.imdb_id or ''
             poster, fanart, clearlogo = poster or meta.get('poster', ''), fanart or meta.get('background', ''), clearlogo or meta.get('logo', '')
             if media_id != requested_media_id:
                 xbmc.log(f'[AIOStreams] Resolved canonical stream ID: type={content_type}, id={media_id}', xbmc.LOGINFO)
@@ -187,7 +206,11 @@ def play(params, dependencies):
             xbmc.sleep(200)
             xbmc.executebuiltin('Dialog.Close(busydialog)')
             xbmc.sleep(100)
-            return _show_dialog(content_type, media_id, stream_data, title, poster, fanart, clearlogo, params.get('plot', ''), dependencies, from_playable=True)
+            return _show_dialog(
+                content_type, media_id, stream_data, title, poster, fanart, clearlogo,
+                params.get('plot', ''), dependencies, from_playable=True, imdb_id=imdb_id,
+                season=season, episode=episode,
+            )
         stream = stream_data['streams'][0]
         stream_url = stream.get('_playback_url', '')
         if not stream_url:
@@ -209,7 +232,7 @@ def play_first(params, dependencies):
     xbmc.executebuiltin('Dialog.Close(busydialog)')
     if dependencies.handle >= 0:
         xbmcplugin.setResolvedUrl(dependencies.handle, False, xbmcgui.ListItem())
-    content_type, imdb_id, media_id, season, episode = _media_params(params)
+    content_type, _meta_id, imdb_id, media_id, season, episode = _media_params(params)
     progress = xbmcgui.DialogProgress()
     progress.create('AIOStreams', 'Scraping streams...')
     try:
@@ -235,14 +258,14 @@ def select_stream(params, dependencies):
     xbmc.executebuiltin('Dialog.Close(busydialog)')
     if dependencies.handle >= 0:
         xbmcplugin.setResolvedUrl(dependencies.handle, False, xbmcgui.ListItem())
-    content_type, imdb_id, media_id, season, episode = _media_params(params)
+    content_type, meta_id, imdb_id, media_id, season, episode = _media_params(params)
     title, poster, fanart, clearlogo = (params.get('title', ''), params.get('poster', ''), params.get('fanart', ''), params.get('clearlogo', ''))
     progress = xbmcgui.DialogProgress()
     progress.create('AIOStreams', 'Fetching metadata...')
     try:
         plot = params.get('plot', '')
         if not poster or not fanart or not clearlogo:
-            metadata = dependencies.get_meta(content_type, imdb_id)
+            metadata = dependencies.get_meta(content_type, meta_id or imdb_id or media_id)
             if metadata and metadata.get('meta'):
                 meta = metadata['meta']
                 title, poster, fanart, clearlogo = title or meta.get('name', ''), poster or meta.get('poster', ''), fanart or meta.get('background', ''), clearlogo or meta.get('logo', '')
@@ -252,28 +275,15 @@ def select_stream(params, dependencies):
         progress.close()
     if not stream_data or not stream_data.get('streams'):
         return dependencies.show_no_playable_streams(stream_data)
-    return _show_dialog(content_type, media_id, stream_data, title, poster, fanart, clearlogo, plot or xbmc.getInfoLabel('ListItem.Plot'), dependencies)
+    return _show_dialog(
+        content_type, media_id, stream_data, title, poster, fanart, clearlogo,
+        plot or xbmc.getInfoLabel('ListItem.Plot'), dependencies, imdb_id=imdb_id,
+        season=season, episode=episode,
+    )
 
 
-def show_streams(params, dependencies):
-    """Fetch and present streams from an explicit context-menu request."""
-    xbmcgui.Window(10000).clearProperty('AIOStreams_ShowLogo')
-    xbmc.executebuiltin('Dialog.Close(busydialog)')
-    content_type, _imdb_id, media_id, _season, _episode = _media_params(params)
-    progress = xbmcgui.DialogProgress()
-    progress.create('AIOStreams', 'Scraping streams...')
-    try:
-        stream_data = dependencies.get_streams(content_type, media_id)
-    finally:
-        progress.close()
-    if not stream_data or not stream_data.get('streams'):
-        dependencies.show_no_playable_streams(stream_data)
-        xbmcplugin.endOfDirectory(dependencies.handle, succeeded=False)
-        return None
-    return _show_dialog(content_type, media_id, stream_data, params.get('title', 'Unknown'), params.get('poster', ''), params.get('fanart', ''), params.get('clearlogo', ''), params.get('plot', ''), dependencies)
-
-
-def play_stream_by_index(content_type, media_id, stream_data, index, dependencies, use_player=False):
+def play_stream_by_index(content_type, media_id, stream_data, index, dependencies, use_player=False,
+                         imdb_id=None, season=None, episode=None):
     """Play a selected stream and return whether Kodi accepted the handoff."""
     streams = stream_data.get('streams', [])
     if index < 0 or index >= len(streams):
@@ -285,9 +295,10 @@ def play_stream_by_index(content_type, media_id, stream_data, index, dependencie
         if not use_player:
             xbmcplugin.setResolvedUrl(dependencies.handle, False, xbmcgui.ListItem())
         return False
-    imdb_id, season, episode = media_id, None, None
-    if content_type == 'series' and ':' in media_id:
-        imdb_id, season, episode = (media_id.split(':') + [None, None])[:3]
+    if imdb_id is None:
+        imdb_id, season, episode = media_id, None, None
+        if content_type == 'series' and ':' in media_id:
+            imdb_id, season, episode = (media_id.split(':') + [None, None])[:3]
     if not use_player:
         return _play_item(url, content_type, media_id, imdb_id, season, episode, dependencies)
 

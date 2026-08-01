@@ -27,6 +27,7 @@ class BrowseDependencies:
     format_episode_title: object
     apply_media_identity: object
     create_listitem: object
+    origin_fingerprint: object = None
 
 
 def index(params, dependencies):
@@ -227,7 +228,7 @@ def browse_catalog(params, dependencies):
     xbmcplugin.setPluginCategory(dependencies.handle, category_title)
     xbmcplugin.setContent(dependencies.handle, 'movies' if content_type == 'movie' else 'tvshows')
     for meta in items:
-        media = MediaRef.from_meta(meta, meta.get('type', content_type))
+        media = MediaRef.from_meta(meta, meta.get('type', content_type), dependencies.origin_fingerprint)
         if media.content_type == 'series':
             url = dependencies.get_url(
                 action='show_seasons', **media_action_params('show_seasons', media)
@@ -313,7 +314,7 @@ def show_seasons(params, dependencies):
         return None
 
     meta = meta_data['meta']
-    show_ref = MediaRef.from_meta(meta, 'series')
+    show_ref = MediaRef.from_meta(meta, 'series', dependencies.origin_fingerprint)
     series_name = meta.get('name', 'Unknown Series')
     xbmcplugin.setPluginCategory(dependencies.handle, series_name)
     xbmcplugin.setContent(dependencies.handle, 'seasons')
@@ -331,7 +332,7 @@ def show_seasons(params, dependencies):
 
     show_progress = None
     if dependencies.has_modules and trakt.get_access_token():
-        show_progress = trakt.get_show_progress(meta_id)
+        show_progress = trakt.get_show_progress(show_ref.imdb_id or meta_id)
 
     for season_num in sorted(seasons):
         episode_count = len(seasons[season_num])
@@ -478,7 +479,7 @@ def show_episodes(params, dependencies):
         xbmcplugin.endOfDirectory(dependencies.handle)
         return None
     meta = meta_data['meta']
-    show_ref = MediaRef.from_meta(meta, 'series')
+    show_ref = MediaRef.from_meta(meta, 'series', dependencies.origin_fingerprint)
     series_name = meta.get('name', 'Unknown Series')
     _set_series_logo(meta, meta_id, dependencies)
     xbmcplugin.setPluginCategory(dependencies.handle, f'{series_name} - Season {season}')
@@ -499,7 +500,7 @@ def show_episodes(params, dependencies):
 
     watched_episodes = set()
     if dependencies.has_modules and trakt.get_access_token():
-        show_progress = trakt.get_show_progress(meta_id)
+        show_progress = trakt.get_show_progress(show_ref.imdb_id or meta_id)
         if show_progress:
             for season_data in show_progress.get('seasons', []):
                 if season_data.get('number') == season:
@@ -508,7 +509,7 @@ def show_episodes(params, dependencies):
                         if episode.get('completed', False)
                     }
                     break
-        trakt.is_in_watchlist('series', meta_id)
+        trakt.is_in_watchlist('series', show_ref.imdb_id or meta_id)
 
     for episode in episodes:
         _add_episode(episode, season, meta_id, meta, show_ref, series_name, watched_episodes, dependencies)
@@ -524,7 +525,7 @@ def _add_episode(episode, season, meta_id, meta, show_ref, series_name, watched_
         label = dependencies.format_episode_title(episode_num, raw_title, is_watched, 100 if is_watched else 0)
     else:
         label = f'{episode_num}. {raw_title}'
-    episode_ref = MediaRef.episode(show_ref, episode, season, episode_num)
+    episode_ref = MediaRef.episode(show_ref, episode, season, episode_num, dependencies.origin_fingerprint)
     list_item = xbmcgui.ListItem(label=label)
     dependencies.apply_media_identity(list_item, episode_ref)
     info_tag = list_item.getVideoInfoTag()
@@ -547,10 +548,6 @@ def _add_episode(episode, season, meta_id, meta, show_ref, series_name, watched_
     episode_fanart = meta.get('background', '')
     episode_clearlogo = meta.get('logo', '')
     context_menu = [
-        (
-            '[COLOR lightcoral]Scrape Streams[/COLOR]',
-            f'RunPlugin({dependencies.get_url(action="show_streams", content_type="series", media_id=episode_media_id, title=episode_title, poster=episode_poster, fanart=episode_fanart, clearlogo=episode_clearlogo)})',
-        ),
         (
             '[COLOR lightcoral]Browse Show[/COLOR]',
             f'ActivateWindow(Videos,{dependencies.get_url(action="show_seasons", **media_action_params("show_seasons", show_ref))},return)',
@@ -688,7 +685,7 @@ def show_related(params, dependencies):
                 'genres': [],
             }
 
-        media = MediaRef.from_meta(meta, item_content_type)
+        media = MediaRef.from_meta(meta, item_content_type, dependencies.origin_fingerprint)
         if media.content_type == 'series':
             url = dependencies.get_url(action='show_seasons', **media_action_params('show_seasons', media))
             is_folder = True
@@ -735,6 +732,7 @@ class WidgetDependencies:
     get_meta: object
     create_listitem: object
     dispatch_action: object
+    origin_fingerprint: object = None
 
 
 _widget_cache = {}
@@ -985,15 +983,15 @@ def smart_widget(params, dependencies):
                     else:
                         merged_meta = meta
 
-                    media = MediaRef.from_meta(merged_meta, content_type)
+                    media = MediaRef.from_meta(merged_meta, content_type, dependencies.origin_fingerprint)
                     if media.content_type == 'series':
                         url = dependencies.get_url(action='show_seasons', **media_action_params('show_seasons', media))
                         is_folder = True
                     else:
                         url = dependencies.get_url(
-                            action='show_streams',
+                            action='play',
                             **media_action_params(
-                                'show_streams', media, media_id=media.playback_id,
+                                'play', media, media_id=media.playback_id,
                                 clearlogo=merged_meta.get('logo', ''),
                             )
                         )
@@ -1115,7 +1113,7 @@ def configured_widget(params, dependencies):
 
                 # Add items
                 for meta in catalog_data['metas']:
-                    media = MediaRef.from_meta(meta, content_type)
+                    media = MediaRef.from_meta(meta, content_type, dependencies.origin_fingerprint)
                     if not media.navigation_id:
                         continue
 
@@ -1125,9 +1123,9 @@ def configured_widget(params, dependencies):
                         is_folder = True
                     else:
                         url = dependencies.get_url(
-                            action='show_streams',
+                            action='play',
                             **media_action_params(
-                                'show_streams', media, media_id=media.playback_id,
+                                'play', media, media_id=media.playback_id,
                                 clearlogo=meta.get('logo', ''),
                             )
                         )
@@ -1160,6 +1158,7 @@ class InfoDependencies:
     get_url: object
     create_listitem: object
     clear_window_properties: object
+    origin_fingerprint: object = None
 
 
 def action_info(params, dependencies):
@@ -1195,7 +1194,7 @@ def action_info(params, dependencies):
 
         # Create list item with full context
         # We need a dummy URL since we aren't playing it immediately, but it might be used for Play button in dialog
-        media = MediaRef.from_meta(meta, content_type)
+        media = MediaRef.from_meta(meta, content_type, dependencies.origin_fingerprint)
         play_url = dependencies.get_url(action='play', **media_action_params('play', media))
         list_item = dependencies.create_listitem(meta, media.content_type, play_url)
 
@@ -1268,8 +1267,3 @@ def action_info(params, dependencies):
     except Exception as e:
         xbmc.executebuiltin('Dialog.Close(busydialog)')
         xbmc.log(f'[AIOStreams] action_info error: {e}', xbmc.LOGERROR)
-    else:
-        # If it returns False or None (though implementation returns None currently, let's assume success if no error logged)
-        # Actually clear_clearlogo_cache() from line 235 logs but doesn't return value explicitly (returns None)
-        # So check the logic.
-        xbmcgui.Dialog().notification("AIOStreams", "Clearlogo cache cleared", xbmcgui.NOTIFICATION_INFO, 3000)

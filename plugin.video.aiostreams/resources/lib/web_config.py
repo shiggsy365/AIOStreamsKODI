@@ -467,6 +467,25 @@ def reconfigure_aiostreams():
         return configure_aiostreams()
 
 
+def _retrieve_user_response(request_get, host_url, uuid, password, timeout=15):
+    """Request the current user configuration using the documented API auth."""
+    return request_get(
+        f'{host_url.rstrip("/")}/api/v1/user', auth=(uuid, password), timeout=timeout,
+        allow_redirects=False,
+    )
+
+
+def _api_host_url(value):
+    """Return an API host when a user pasted a manifest or configure URL."""
+    from urllib.parse import urlparse
+
+    value = (value or '').strip()
+    parsed = urlparse(value)
+    if parsed.scheme in ('http', 'https') and parsed.netloc:
+        return f'{parsed.scheme}://{parsed.netloc}'
+    return value.rstrip('/')
+
+
 def retrieve_manifest():
     """
     Retrieve manifest URL using UUID and password authentication.
@@ -507,24 +526,40 @@ def retrieve_manifest():
             return None
         addon.setSetting('aiostreams_password', password)
 
-    # Clean up host URL
-    host_url = host_url.rstrip('/')
+    # Settings may contain a copied manifest/configuration URL. The user API
+    # always lives at the instance host root.
+    host_url = _api_host_url(host_url)
+    addon.setSetting('aiostreams_host', host_url)
 
     # Show progress dialog
     progress = xbmcgui.DialogProgress()
     progress.create('AIOStreams', 'Retrieving manifest...')
 
     try:
-        # Build API URL
-        api_url = f'{host_url}/api/v1/user?uuid={uuid}&password={password}'
+        # Current AIOStreams user retrieval authenticates with HTTP Basic
+        # credentials. Query-string credentials were removed by the backend.
         xbmc.log('[AIOStreams WebConfig] Retrieving manifest credentials', xbmc.LOGINFO)
 
         progress.update(25, 'Contacting AIOStreams server...')
 
         # Make API request
-        response = requests.get(api_url, timeout=15)
+        response = _retrieve_user_response(requests.get, host_url, uuid, password)
 
         progress.update(50, 'Processing response...')
+
+        if 300 <= response.status_code < 400:
+            progress.close()
+            xbmcgui.Dialog().ok(
+                'AIOStreams',
+                'The User API redirected the request before authentication completed.\n\n'
+                'This host may not support User API authentication from Kodi. '
+                'A directly entered manifest.json URL will still work.',
+            )
+            xbmc.log(
+                f'[AIOStreams WebConfig] User API redirected before authentication: status={response.status_code}',
+                xbmc.LOGWARNING,
+            )
+            return None
 
         if response.status_code != 200:
             progress.close()
@@ -541,9 +576,32 @@ def retrieve_manifest():
             xbmc.log(f'[AIOStreams WebConfig] API error: {error_msg}', xbmc.LOGERROR)
             return None
 
-        # Parse response
-        data = response.json()
+        # Parse response. A successful HTTP status can still be an HTML proxy
+        # page, so do not surface a raw JSON decoder exception to Kodi users.
+        try:
+            data = response.json()
+        except ValueError:
+            progress.close()
+            xbmcgui.Dialog().ok(
+                'AIOStreams Error',
+                'The server returned a non-JSON response.\n\n'
+                'Confirm that Host Base URL is your AIOStreams instance URL.',
+            )
+            content_type = getattr(response, 'headers', {}).get('content-type', 'unknown')
+            xbmc.log(
+                f'[AIOStreams WebConfig] User API returned non-JSON content: status={response.status_code}, type={content_type}',
+                xbmc.LOGERROR,
+            )
+            return None
         xbmc.log(f'[AIOStreams WebConfig] API response top-level keys: {list(data.keys())}', xbmc.LOGINFO)
+
+        if not data.get('success', True):
+            progress.close()
+            error = data.get('error') or {}
+            message = error.get('message') if isinstance(error, dict) else str(error)
+            xbmcgui.Dialog().ok('AIOStreams Error', message or 'Invalid UUID or password.')
+            xbmc.log('[AIOStreams WebConfig] User API rejected the supplied credentials', xbmc.LOGERROR)
+            return None
 
         # FIXED: Navigate to data object (encryptedPassword is at data.encryptedPassword, NOT data.userData.encryptedPassword)
         response_data = data.get('data', {})

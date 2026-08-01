@@ -81,12 +81,13 @@ class PluginRouteTests(unittest.TestCase):
         keys = action_registry_keys()
         self.assertTrue({
             'search', 'browse_catalog', 'show_seasons', 'show_episodes',
-            'play', 'play_first', 'select_stream', 'show_streams',
+            'play', 'play_first', 'select_stream',
             'trakt_watchlist', 'trakt_next_up', 'refresh_manifest_cache',
         }.issubset(keys))
         self.assertEqual(1, Counter(keys)['info'])
         self.assertNotIn('trakt_collection', keys)
         self.assertNotIn('trakt_recommendations', keys)
+        self.assertNotIn('show_streams', keys)
 
     def test_metadata_uses_only_the_configured_backend(self):
         source = Path(os.path.join(ADDON_ROOT, 'resources', 'lib', 'plugin_runtime.py')).read_text(encoding='utf-8')
@@ -214,6 +215,32 @@ class PluginRouteTests(unittest.TestCase):
         actions_dir = Path(os.path.join(ADDON_ROOT, 'resources', 'lib', 'actions'))
         for source_path in actions_dir.glob('*.py'):
             self.assertNotIn('sys.argv', source_path.read_text(encoding='utf-8'))
+
+    def test_presenter_has_no_direct_trakt_persistence_dependency(self):
+        source = Path(os.path.join(ADDON_ROOT, 'resources', 'lib', 'items.py')).read_text(encoding='utf-8')
+        self.assertNotIn('from resources.lib import trakt', source)
+        self.assertNotIn('get_trakt_db(', source)
+
+    def test_manifest_retrieval_uses_http_basic_authentication(self):
+        install()
+        from resources.lib.web_config import _api_host_url, _retrieve_user_response
+
+        calls = []
+        response = _retrieve_user_response(
+            lambda *args, **kwargs: calls.append((args, kwargs)) or 'response',
+            'https://example.invalid/', 'user-uuid', 'password', timeout=12,
+        )
+
+        self.assertEqual('response', response)
+        self.assertEqual(
+            (
+                ('https://example.invalid/api/v1/user',),
+                {'auth': ('user-uuid', 'password'), 'timeout': 12, 'allow_redirects': False},
+            ),
+            calls[0],
+        )
+        self.assertEqual('https://example.invalid', _api_host_url('https://example.invalid/stremio/id/token/manifest.json'))
+        self.assertEqual('https://example.invalid', _api_host_url('https://example.invalid/stremio/configure'))
 
 
 class SettingsContractTests(unittest.TestCase):

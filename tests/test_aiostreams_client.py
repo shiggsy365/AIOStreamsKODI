@@ -2,6 +2,8 @@ import os
 import sys
 import unittest
 
+import requests
+
 
 ROOT = os.path.dirname(os.path.dirname(__file__))
 sys.path.insert(0, os.path.join(ROOT, 'plugin.video.aiostreams'))
@@ -63,6 +65,7 @@ class SqlCache:
         self.catalog_writes = []
         self.meta_reads = []
         self.meta_writes = []
+        self.invalidations = []
 
     def get_catalog(self, *args):
         self.catalog_reads.append(args)
@@ -77,6 +80,9 @@ class SqlCache:
 
     def set_meta(self, *args):
         self.meta_writes.append(args)
+
+    def invalidate_cached_configuration(self, fingerprint):
+        self.invalidations.append(fingerprint)
 
 
 class AIOStreamsClientTests(unittest.TestCase):
@@ -168,6 +174,41 @@ class AIOStreamsClientTests(unittest.TestCase):
 
         self.assertEqual({'id': 'configured-manifest'}, client.get_manifest(force=True))
         self.assertEqual('manifest-etag', session.calls[0][1]['If-None-Match'])
+
+    def test_connection_does_not_accept_a_stale_manifest_after_a_network_failure(self):
+        class FailingSession:
+            def get(self, *_args, **_kwargs):
+                raise requests.RequestException('offline')
+
+        cache = Cache()
+        client = AIOStreamsClient('https://example.invalid/config-a', session=FailingSession(), cache=cache)
+        cache.values[('manifest', client.cache_key('manifest'))] = {'stale': True}
+
+        with self.assertRaisesRegex(Exception, 'manifest request failed'):
+            client.test_connection()
+
+    def test_configuration_invalidation_clears_file_and_sql_catalog_caches(self):
+        class InvalidationCache(Cache):
+            def __init__(self):
+                super().__init__()
+                self.invalidated = []
+                self.invalidated_types = []
+
+            def invalidate(self, cache_type, identifier):
+                self.invalidated.append((cache_type, identifier))
+
+            def invalidate_type(self, cache_type):
+                self.invalidated_types.append(cache_type)
+
+        cache = InvalidationCache()
+        sql_cache = SqlCache()
+        client = AIOStreamsClient('https://example.invalid/config-a', cache=cache, sql_cache=sql_cache)
+
+        client.invalidate_configuration_cache()
+
+        self.assertIn(('manifest', client.cache_key('manifest')), cache.invalidated)
+        self.assertEqual(['catalog', 'search'], cache.invalidated_types)
+        self.assertEqual([client.fingerprint], sql_cache.invalidations)
 
 
 if __name__ == '__main__':

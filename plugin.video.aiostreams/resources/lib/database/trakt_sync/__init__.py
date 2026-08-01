@@ -965,6 +965,19 @@ class TraktSyncDatabase(Database):
             xbmc.log(f'[AIOStreams] DB error setting catalog: {e}', xbmc.LOGWARNING)
             return False
 
+    def invalidate_cached_configuration(self, configuration):
+        """Remove disposable AIOStreams cache rows for one backend fingerprint."""
+        if not self.connection and not self.connect():
+            return False
+        try:
+            self.execute('DELETE FROM metas WHERE configuration=?', (configuration,))
+            self.execute('DELETE FROM catalogs WHERE configuration=?', (configuration,))
+            self.commit()
+            return True
+        except Exception as e:
+            xbmc.log(f'[AIOStreams] DB error invalidating cached configuration: {e}', xbmc.LOGWARNING)
+            return False
+
     def cleanup_cached_data(self):
         """Remove expired metadata and catalog entries from the database."""
         if not self.connection and not self.connect():

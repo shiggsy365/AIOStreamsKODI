@@ -20,6 +20,7 @@ class TraktDependencies:
     create_listitem: object
     format_date: object
     clear_trakt_widget_cache: object
+    origin_fingerprint: object = None
 
 
 def trakt_menu(params, dependencies):
@@ -222,7 +223,7 @@ def trakt_watchlist(params, dependencies):
             if cached_data.get('released'):
                 meta['released'] = cached_data['released']
 
-        media = MediaRef.from_meta(meta, content_type)
+        media = MediaRef.from_meta(meta, content_type, dependencies.origin_fingerprint)
         # Set URL and folder status based on content type
         if media.content_type == 'series':
             url = dependencies.get_url(action='show_seasons', **media_action_params('show_seasons', media))
@@ -354,6 +355,7 @@ def trakt_next_up(params, dependencies):
                  meta_data = ep_data.get('show_metadata')
 
             # Extract artwork from show metadata
+            matched_video = None
             if meta_data:
                 show_title = meta_data.get('name', show_title)
                 poster = meta_data.get('poster', '')
@@ -365,6 +367,7 @@ def trakt_next_up(params, dependencies):
                     videos = meta_data.get('videos', [])
                     for video in videos:
                         if video.get('season') == season and video.get('episode') == episode:
+                            matched_video = video
                             episode_thumb = video.get('thumbnail', '')
                             if not episode_meta:
                                 episode_title = video.get('title', episode_title)
@@ -374,10 +377,11 @@ def trakt_next_up(params, dependencies):
             label = f'{show_title} S{season:02d}E{episode:02d}'
             show_ref = MediaRef.from_meta(
                 meta_data or {'id': show_imdb, 'imdb_id': show_imdb, 'name': show_title},
-                'series',
+                'series', dependencies.origin_fingerprint,
             )
             episode_ref = MediaRef.episode(
-                show_ref, episode_meta or {'id': episode_imdb}, season, episode
+                show_ref, matched_video or episode_meta or {'id': episode_imdb}, season, episode,
+                dependencies.origin_fingerprint,
             )
             url = dependencies.get_url(
                 action='play',
@@ -455,7 +459,6 @@ def trakt_next_up(params, dependencies):
 
             # Build context menu (create_listitem_with_context already adds standard ones)
             context_menu = []
-            context_menu.append(('[COLOR lightcoral]Scrape Streams[/COLOR]', f'RunPlugin({dependencies.get_url(action="show_streams", content_type="series", media_id=episode_ref.playback_id, title=label, poster=poster, fanart=fanart, clearlogo=logo)})'))
             context_menu.append(('[COLOR lightcoral]Browse Show[/COLOR]', f'ActivateWindow(Videos,{dependencies.get_url(action="show_seasons", **media_action_params("show_seasons", show_ref))},return)'))
 
             # Add Trakt watched toggle for episodes if authorized

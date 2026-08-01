@@ -55,12 +55,45 @@ class MediaRefTests(unittest.TestCase):
         self.assertEqual('Winter Is Coming', episode.title)
 
     def test_action_parameters_use_navigation_and_playback_fields_explicitly(self):
-        media = MediaRef.from_meta({'id': 'meta:1', 'imdb_id': 'tt1', 'name': 'Title'}, 'movie')
+        media = MediaRef.from_meta({
+            'id': 'catalog:movie:42', 'stream_id': 'stream:movie:42',
+            'imdb_id': 'tt1375666', 'tmdb_id': '27205', 'name': 'Title',
+        }, 'movie')
 
-        self.assertEqual({'meta_id': 'meta:1', 'title': 'Title'}, media_action_params('show_seasons', media))
+        self.assertEqual({'meta_id': 'catalog:movie:42', 'title': 'Title'}, media_action_params('show_seasons', media))
         self.assertEqual(
-            {'content_type': 'movie', 'imdb_id': 'tt1', 'title': 'Title'},
+            {
+                'content_type': 'movie', 'meta_id': 'catalog:movie:42',
+                'media_id': 'stream:movie:42', 'imdb_id': 'tt1375666',
+                'tmdb_id': '27205', 'title': 'Title',
+            },
             media_action_params('play', media),
+        )
+
+    def test_playback_route_contract_accepts_legacy_and_normalized_identities(self):
+        install()
+        from resources.lib.actions.playback import _media_params
+
+        self.assertEqual(
+            ('movie', '', '', 'tt1375666', None, None),
+            _media_params({'content_type': 'movie', 'media_id': 'tt1375666'}),
+        )
+        self.assertEqual(
+            ('movie', '', 'stream:movie:42', 'stream:movie:42', None, None),
+            _media_params({'content_type': 'movie', 'imdb_id': 'stream:movie:42'}),
+        )
+        self.assertEqual(
+            ('movie', 'catalog:movie:42', 'tt1375666', 'stream:movie:42', None, None),
+            _media_params({
+                'content_type': 'movie', 'meta_id': 'catalog:movie:42',
+                'media_id': 'stream:movie:42', 'imdb_id': 'tt1375666', 'tmdb_id': '27205',
+            }),
+        )
+        self.assertEqual(
+            ('series', '', 'tt0944947', 'tt0944947:1:1', '1', '1'),
+            _media_params({
+                'content_type': 'series', 'imdb_id': 'tt0944947', 'season': '1', 'episode': '1',
+            }),
         )
 
     def test_content_type_aliases(self):

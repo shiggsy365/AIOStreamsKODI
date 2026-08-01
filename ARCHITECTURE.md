@@ -109,7 +109,6 @@ ACTION_REGISTRY = {
     'play': play_action,
     'play_first': play_first_action,
     'select_stream': select_stream_action,
-    'show_streams': show_streams_action,
     'trakt_watchlist': trakt_watchlist_action,
     'trakt_next_up': trakt_next_up_action,
     'quick_actions': quick_actions_action,
@@ -121,7 +120,6 @@ ACTION_REGISTRY = {
 - **`play`** - Respects user's `default_behavior` setting (play_first or show_streams)
 - **`play_first`** - Always direct plays first stream, ignores user setting (used by TMDBHelper)
 - **`select_stream`** - Always shows selection dialog (used by TMDBHelper fallback)
-- **`show_streams`** - Displays all streams with full metadata browsing
 
 Widget-originated Trakt and catalog requests use this same action table; they do not maintain a second manual dispatch chain.
 

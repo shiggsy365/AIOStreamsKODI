@@ -14,9 +14,10 @@ try:
     from resources.lib.plugin_args import parse_plugin_params
     from resources.lib.safe_logging import redact_identifier
     from resources.lib.items import (
-        PresentationDependencies, apply_media_identity,
+        ItemState, PresentationDependencies, apply_media_identity,
         create_listitem_with_context as present_media_list_item,
     )
+    from resources.lib.media import MediaRef
     from resources.lib.globals import g
     from resources.lib.routing import dispatch
     from resources.lib.actions import search as search_actions
@@ -77,6 +78,40 @@ _aiostreams_client = None
 _aiostreams_client_config = None
 
 
+def _trakt_item_state(media):
+    """Read optional Trakt state outside the list-item presenter."""
+    if not HAS_MODULES or not media.imdb_id:
+        return ItemState()
+    try:
+        from resources.lib import trakt
+        if not trakt.get_access_token():
+            return ItemState()
+        database = trakt.get_trakt_db()
+        if not database:
+            return ItemState(trakt_available=True)
+        if media.content_type == 'movie':
+            watched = database.is_imdb_watched(media.imdb_id, 'movie')
+            record = database.get_movie(media.imdb_id)
+        else:
+            progress = database.get_imdb_show_progress(media.imdb_id) or {}
+            watched = progress.get('aired', 0) > 0 and progress.get('aired') == progress.get('completed')
+            record = database.get_show(media.imdb_id)
+        bookmark = database.get_bookmark(imdb_id=media.imdb_id) or {}
+        metadata = (record or {}).get('metadata') or {}
+        return ItemState(
+            trakt_available=True,
+            watched=watched,
+            watchlisted=database.is_imdb_in_watchlist(media.imdb_id, media.content_type),
+            percent_played=bookmark.get('percent_played', 0) or 0,
+            resume_time=bookmark.get('resume_time', 0) or 0,
+            rating=metadata.get('rating') or metadata.get('imdbRating'),
+            user_rating=metadata.get('user_rating'),
+        )
+    except Exception as error:
+        xbmc.log(f'[AIOStreams] Item-state lookup failed: {type(error).__name__}', xbmc.LOGDEBUG)
+        return ItemState()
+
+
 # Clearlogo Helpers moved to resources/lib/clearlogo.py
 
 
@@ -88,12 +123,19 @@ def _presentation_dependencies():
         get_cached_clearlogo_path=get_cached_clearlogo_path,
         ensure_clearlogo_cached=_ensure_clearlogo_cached,
         redact_identifier=redact_identifier,
+        origin_fingerprint=get_aiostreams_client().fingerprint,
+        get_item_state=_trakt_item_state,
     )
 
 
 def create_listitem_with_context(meta, content_type, action_url):
     """Present one media item through the shared presenter."""
     return present_media_list_item(meta, content_type, action_url, _presentation_dependencies())
+
+
+def media_ref(meta, content_type):
+    """Build a media identity tied to the active AIOStreams configuration."""
+    return MediaRef.from_meta(meta, content_type, get_aiostreams_client().fingerprint)
 
 
 def _search_dependencies():
@@ -105,6 +147,7 @@ def _search_dependencies():
         search_catalog=search_catalog,
         get_url=get_url,
         create_listitem=create_listitem_with_context,
+        origin_fingerprint=get_aiostreams_client().fingerprint,
     )
 
 
@@ -124,6 +167,7 @@ def _playback_dependencies():
         get_stream_manager=streams.get_stream_manager,
         get_max_streams=settings_helpers.get_max_streams,
         show_source_dialog=show_source_select_dialog,
+        origin_fingerprint=get_aiostreams_client().fingerprint,
     )
 
 
@@ -144,6 +188,7 @@ def _browse_dependencies():
         format_episode_title=ui_helpers.format_episode_title,
         apply_media_identity=apply_media_identity,
         create_listitem=create_listitem_with_context,
+        origin_fingerprint=get_aiostreams_client().fingerprint,
     )
 
 
@@ -180,6 +225,7 @@ def _trakt_dependencies():
         create_listitem=create_listitem_with_context,
         format_date=format_date_with_ordinal,
         clear_trakt_widget_cache=browse_actions.clear_trakt_widget_cache,
+        origin_fingerprint=get_aiostreams_client().fingerprint,
     )
 
 
@@ -212,6 +258,7 @@ def _widget_dependencies():
         get_meta=get_meta,
         create_listitem=create_listitem_with_context,
         dispatch_action=_dispatch_registered_action,
+        origin_fingerprint=get_aiostreams_client().fingerprint,
     )
 
 
@@ -221,6 +268,7 @@ def _info_dependencies():
         get_url=get_url,
         create_listitem=create_listitem_with_context,
         clear_window_properties=ui_helpers.clear_window_properties,
+        origin_fingerprint=get_aiostreams_client().fingerprint,
     )
 
 
@@ -332,7 +380,6 @@ ACTION_REGISTRY = {
     'play_next_source': _bind_action(playback_actions.play_next_source, _playback_dependencies),
     'play_first': _bind_action(playback_actions.play_first, _playback_dependencies),
     'select_stream': _bind_action(playback_actions.select_stream, _playback_dependencies),
-    'show_streams': _bind_action(playback_actions.show_streams, _playback_dependencies),
 }
 
 

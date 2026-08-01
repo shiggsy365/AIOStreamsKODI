@@ -19,6 +19,7 @@ class SearchDependencies:
     search_catalog: object
     get_url: object
     create_listitem: object
+    origin_fingerprint: object = None
 
 
 def _set_background_suppression(active):
@@ -113,7 +114,7 @@ def _set_result_count(window, content_type, count):
 
 def _add_result(meta, content_type, dependencies):
     item_type = 'video' if content_type in ('video', 'youtube') else meta.get('type', content_type)
-    media = MediaRef.from_meta(meta, item_type)
+    media = MediaRef.from_meta(meta, item_type, dependencies.origin_fingerprint)
     item_type = media.content_type
     if item_type == 'series':
         url = dependencies.get_url(

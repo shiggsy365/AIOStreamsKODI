@@ -27,11 +27,13 @@ def quick_actions(params, dependencies):
 
     content_type = params.get('content_type', 'movie')
     imdb_id = params.get('imdb_id', '')
+    media_id = params.get('media_id') or imdb_id
+    meta_id = params.get('meta_id', '')
     title = params.get('title', 'Unknown')
     poster = params.get('poster', '')
     fanart = params.get('fanart', '')
     clearlogo = params.get('clearlogo', '')
-    if not imdb_id:
+    if not media_id and not meta_id:
         xbmcgui.Dialog().notification('AIOStreams', 'No content selected', xbmcgui.NOTIFICATION_ERROR)
         return None
 
@@ -54,7 +56,7 @@ def quick_actions(params, dependencies):
     elif selected == 4:
         if content_type == 'movie':
             xbmc.executebuiltin(
-                f'RunPlugin({dependencies.get_url(action="show_streams", content_type="movie", media_id=imdb_id, title=title, poster=poster, fanart=fanart, clearlogo=clearlogo)})'
+                f'RunPlugin({dependencies.get_url(action="play", content_type="movie", meta_id=meta_id, media_id=media_id, imdb_id=imdb_id, tmdb_id=params.get("tmdb_id", ""), title=title, poster=poster, fanart=fanart, clearlogo=clearlogo)})'
             )
         else:
             xbmc.executebuiltin(
@@ -71,7 +73,7 @@ def test_connection(params, dependencies):
         return None
     try:
         started = time.time()
-        manifest = dependencies.get_manifest()
+        manifest = dependencies.get_client().test_connection()
         elapsed = time.time() - started
         if manifest:
             xbmcgui.Dialog().ok(
@@ -138,15 +140,9 @@ def refresh_manifest_cache(params, dependencies):
             xbmcgui.Dialog().notification('AIOStreams', 'No manifest URL configured', xbmcgui.NOTIFICATION_ERROR)
             return None
         client = dependencies.get_client()
-        cache_key = client.cache_key('manifest')
-        cache_instance = dependencies.cache.get_cache()
-        xbmc.log(f'[AIOStreams] Invalidating manifest cache for key: {cache_key}', xbmc.LOGINFO)
-        cache_instance.invalidate('manifest', cache_key)
-        cache_instance.invalidate_type('catalog')
-        cache_instance.invalidate_type('search')
-        cache_instance.invalidate('http_headers', client.cache_key('http_headers', 'manifest', cache_key))
-        cache_instance.cleanup_expired(force_all=False)
-        manifest = dependencies.get_manifest(force=True)
+        xbmc.log('[AIOStreams] Invalidating AIOStreams cache for the active configuration', xbmc.LOGINFO)
+        client.invalidate_configuration_cache()
+        manifest = client.get_manifest(force=True, allow_stale=False)
         if manifest:
             xbmcgui.Dialog().notification('AIOStreams', 'Manifest cache refreshed successfully', xbmcgui.NOTIFICATION_INFO, 3000)
             xbmc.log(f'[AIOStreams] Manifest refreshed, catalogs: {len(manifest.get("catalogs", []))}', xbmc.LOGINFO)

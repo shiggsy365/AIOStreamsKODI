@@ -217,7 +217,14 @@ class AIOStreamsService:
     def silent_retrieve_manifest(self):
         """Silently retrieve manifest URL using stored credentials"""
         import requests
-        host_url = self.addon.getSetting('aiostreams_host').rstrip('/')
+        from urllib.parse import urlparse
+        configured_host = self.addon.getSetting('aiostreams_host').strip()
+        parsed_host = urlparse(configured_host)
+        host_url = (
+            f'{parsed_host.scheme}://{parsed_host.netloc}'
+            if parsed_host.scheme in ('http', 'https') and parsed_host.netloc
+            else configured_host.rstrip('/')
+        )
         uuid = self.addon.getSetting('aiostreams_uuid')
         password = self.addon.getSetting('aiostreams_password')
 
@@ -225,8 +232,8 @@ class AIOStreamsService:
             return False
 
         try:
-            api_url = f'{host_url}/api/v1/user?uuid={uuid}&password={password}'
-            response = requests.get(api_url, timeout=10)
+            api_url = f'{host_url}/api/v1/user'
+            response = requests.get(api_url, auth=(uuid, password), timeout=10, allow_redirects=False)
             if response.status_code == 200:
                 data = response.json()
                 response_data = data.get('data', {})

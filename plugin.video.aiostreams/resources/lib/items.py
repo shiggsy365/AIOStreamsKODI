@@ -1,4 +1,5 @@
 """Shared Kodi media presentation and navigation parameter helpers."""
+from dataclasses import dataclass
 from urllib.parse import urlencode
 
 from .media import MediaRef
@@ -17,9 +18,16 @@ def media_action_params(action, media, **extra):
     params = dict(extra)
     if action in ('show_seasons', 'show_episodes', 'browse_show'):
         params.setdefault('meta_id', media.navigation_id)
-    elif action in ('play', 'play_first', 'select_stream', 'show_streams'):
+    elif action in ('play', 'play_first', 'select_stream'):
         params.setdefault('content_type', media.content_type)
-        params.setdefault('imdb_id', media.playback_id)
+        # These values have different consumers.  Keep each identity on the
+        # route instead of overloading ``imdb_id`` with a Stremio stream ID.
+        params.setdefault('meta_id', media.navigation_id)
+        params.setdefault('media_id', media.playback_id)
+        if media.imdb_id:
+            params.setdefault('imdb_id', media.imdb_id)
+        if media.tmdb_id:
+            params.setdefault('tmdb_id', media.tmdb_id)
     params.setdefault('title', media.title)
     if media.poster:
         params.setdefault('poster', media.poster)
@@ -56,20 +64,47 @@ def create_media_list_item(meta, media):
 class PresentationDependencies:
     """Add-on collaborators used while enriching a Kodi media item."""
 
-    def __init__(self, has_modules, get_url, format_date, get_cached_clearlogo_path, ensure_clearlogo_cached, redact_identifier):
+    def __init__(self, has_modules, get_url, format_date, get_cached_clearlogo_path, ensure_clearlogo_cached, redact_identifier, origin_fingerprint=None, get_item_state=None):
         self.has_modules = has_modules
         self.get_url = get_url
         self.format_date = format_date
         self.get_cached_clearlogo_path = get_cached_clearlogo_path
         self.ensure_clearlogo_cached = ensure_clearlogo_cached
         self.redact_identifier = redact_identifier
+        self.origin_fingerprint = origin_fingerprint
+        self.get_item_state = get_item_state
+
+
+@dataclass(frozen=True)
+class ItemState:
+    """Precomputed, optional user state used while presenting one item."""
+
+    trakt_available: bool = False
+    watched: bool = False
+    watchlisted: bool = False
+    percent_played: float = 0
+    resume_time: float = 0
+    rating: object = None
+    user_rating: object = None
+
+
+def _item_state(media, dependencies):
+    if not dependencies.get_item_state:
+        return ItemState()
+    try:
+        state = dependencies.get_item_state(media)
+        return state if isinstance(state, ItemState) else ItemState(**(state or {}))
+    except Exception as error:
+        import xbmc
+        xbmc.log(f'[AIOStreams] Could not obtain item state: {type(error).__name__}', xbmc.LOGDEBUG)
+        return ItemState()
 
 
 def create_listitem_with_context(meta, content_type, action_url, dependencies):
     """Create ListItem with full metadata, artwork, and context menus."""
     import xbmc
-    from resources.lib import trakt
-    media = MediaRef.from_meta(meta, content_type)
+    media = MediaRef.from_meta(meta, content_type, dependencies.origin_fingerprint)
+    state = _item_state(media, dependencies)
     content_type = media.content_type
     list_item, info_tag = create_media_list_item(meta, media)
     title = media.title
@@ -106,24 +141,8 @@ def create_listitem_with_context(meta, content_type, action_url, dependencies):
 
 
 
-    # Fallback to Trakt database for rating if API is empty
-    if not rating and media.imdb_id:
-        try:
-            db = trakt.get_trakt_db()
-            if db:
-                db_item = None
-                if content_type == 'movie':
-                    db_item = db.get_movie(media.imdb_id)
-                else:
-                    db_item = db.get_show(media.imdb_id)
-
-                if db_item and db_item.get('metadata'):
-                    m = db_item['metadata']
-                    rating = m.get('rating') or m.get('imdbRating') or ''
-                    if rating:
-                        xbmc.log(f'[AIOStreams] Found database rating for {title}: {rating}', xbmc.LOGDEBUG)
-        except:
-            pass
+    if not rating and state.rating:
+        rating = state.rating
 
     # Filter out dummy/placeholder ratings (like 0.0 or 7.0 for unreleased items)
     rating_value = 0.0
@@ -316,52 +335,19 @@ def create_listitem_with_context(meta, content_type, action_url, dependencies):
     elif content_type == 'series':
         info_tag.setMediaType('tvshow')
 
-    # Check if watched in Trakt and add overlay/properties
-    if dependencies.has_modules and trakt.get_access_token():
-        trakt_id = media.imdb_id
-        if trakt_id:
-            try:
-                # Use thread-local DB connection for efficiency
-                db = trakt.get_trakt_db()
-                if db:
-                    # Check watched status using local DB directly with IMDb ID
-                    is_watched = db.is_imdb_watched(trakt_id, content_type)
-                    if is_watched:
-                        info_tag.setPlaycount(1)
-                        list_item.setProperty('WatchedOverlay', 'indicator_watched.png')
-                        list_item.setProperty('watched', 'true')
-
-                    # Check for bookmarks (playback progress)
-                    bookmark = db.get_bookmark(imdb_id=trakt_id)
-                    if bookmark and bookmark.get('percent_played', 0) > 0:
-                        percent = bookmark['percent_played']
-                        list_item.setProperty('PercentPlayed', str(int(percent)))
-                        info_tag.setPercentPlayed(float(percent))
-                        # Set StartOffset for Kodi's internal resume prompt
-                        resume_time = bookmark.get('resume_time', 0)
-                        if resume_time > 0:
-                            list_item.setProperty('StartOffset', str(resume_time))
-
-                    # NEW: Add Trakt ratings from local DB for skin access
-                    trakt_data = None
-                    if content_type == 'movies':
-                        trakt_data = db.get_movie(trakt_id)
-                    elif content_type in ['series', 'tvshow']:
-                        trakt_data = db.get_show(trakt_id)
-
-                    if trakt_data and trakt_data.get('metadata'):
-                        meta_blob = trakt_data['metadata']
-                        # Trakt ratings are in the 'rating' field of the metadata blob
-                        trakt_rating = meta_blob.get('rating')
-                        if trakt_rating:
-                            list_item.setProperty('TraktRating', f"{float(trakt_rating):.1f}")
-
-                        # Check for user rating if available
-                        user_rating = meta_blob.get('user_rating')
-                        if user_rating:
-                            list_item.setProperty('TraktUserRating', str(user_rating))
-            except Exception as e:
-                xbmc.log(f'[AIOStreams] Error setting watched/bookmark/rating status for {dependencies.redact_identifier(trakt_id)}: {e}', xbmc.LOGDEBUG)
+    if state.watched:
+        info_tag.setPlaycount(1)
+        list_item.setProperty('WatchedOverlay', 'indicator_watched.png')
+        list_item.setProperty('watched', 'true')
+    if state.percent_played > 0:
+        list_item.setProperty('PercentPlayed', str(int(state.percent_played)))
+        info_tag.setPercentPlayed(float(state.percent_played))
+    if state.resume_time > 0:
+        list_item.setProperty('StartOffset', str(state.resume_time))
+    if state.rating:
+        list_item.setProperty('TraktRating', f"{float(state.rating):.1f}")
+    if state.user_rating:
+        list_item.setProperty('TraktUserRating', str(state.user_rating))
 
     # Set artwork
     art = {}
@@ -395,7 +381,6 @@ def create_listitem_with_context(meta, content_type, action_url, dependencies):
     # Build context menu based on content type
     context_menu = []
 
-    playback_id = media.playback_id
     trakt_id = media.imdb_id
     title = media.title
     poster = media.poster or ''
@@ -404,8 +389,7 @@ def create_listitem_with_context(meta, content_type, action_url, dependencies):
     clearlogo = art.get('clearlogo', meta.get('logo', ''))
 
     if content_type == 'movie':
-        # Movie context menu: Scrape Streams, View Trailer, Mark as Watched, Watchlist
-        context_menu.append(('[COLOR lightcoral]Scrape Streams[/COLOR]', f'RunPlugin({dependencies.get_url(action="show_streams", content_type="movie", media_id=playback_id, title=title, poster=poster, fanart=fanart, clearlogo=clearlogo)})'))
+        # Movie context menu: View Trailer, Mark as Watched, Watchlist
 
         # Add trailer if available
         trailers = meta.get('trailers', [])
@@ -420,27 +404,15 @@ def create_listitem_with_context(meta, content_type, action_url, dependencies):
                 context_menu.append(('[COLOR lightcoral]View Trailer[/COLOR]', f'PlayMedia({play_url})'))
 
         # Trakt context menus if authorized
-        if dependencies.has_modules and trakt.get_access_token() and trakt_id:
-            db = trakt.get_trakt_db()
-
-            # OPTIMIZATION: Use local DB for Watched status
-            is_watched = False
-            if db:
-                is_watched = db.is_imdb_watched(trakt_id, content_type)
-
-            if is_watched:
+        if state.trakt_available and trakt_id:
+            if state.watched:
                 context_menu.append(('[COLOR lightcoral]Mark Movie As Unwatched[/COLOR]',
                                     f'RunPlugin({dependencies.get_url(action="trakt_mark_unwatched", media_type=content_type, imdb_id=trakt_id)})'))
             else:
                 context_menu.append(('[COLOR lightcoral]Mark Movie As Watched[/COLOR]',
                                     f'RunPlugin({dependencies.get_url(action="trakt_mark_watched", media_type=content_type, imdb_id=trakt_id)})'))
 
-            # OPTIMIZATION: Use local DB for Watchlist
-            is_in_watchlist = False
-            if db:
-                is_in_watchlist = db.is_imdb_in_watchlist(trakt_id, content_type)
-
-            if is_in_watchlist:
+            if state.watchlisted:
                 context_menu.append(('[COLOR lightcoral]Remove from Watchlist[/COLOR]',
                                     f'RunPlugin({dependencies.get_url(action="trakt_remove_watchlist", media_type=content_type, imdb_id=trakt_id)})'))
             else:
@@ -463,20 +435,8 @@ def create_listitem_with_context(meta, content_type, action_url, dependencies):
 
         # Trakt context menus if authorized
         # Trakt context menus if authorized
-        if dependencies.has_modules and trakt.get_access_token() and trakt_id:
-            # OPTIMIZATION: Use local DB only
-            db = trakt.get_trakt_db()
-
-            # Check if show is fully watched using local DB
-            is_watched = False
-            if db:
-                progress = db.get_imdb_show_progress(trakt_id)
-                if progress:
-                    aired = progress.get('aired', 0)
-                    completed = progress.get('completed', 0)
-                    is_watched = aired > 0 and aired == completed
-
-            if is_watched:
+        if state.trakt_available and trakt_id:
+            if state.watched:
                 context_menu.append(('[COLOR lightcoral]Mark Show As Unwatched[/COLOR]',
                                     f'RunPlugin({dependencies.get_url(action="trakt_mark_unwatched", media_type=content_type, imdb_id=trakt_id)})'))
             else:
@@ -490,13 +450,7 @@ def create_listitem_with_context(meta, content_type, action_url, dependencies):
                 context_menu.append(('[COLOR lightgreen]Resume Watching (Unhide) Trakt[/COLOR]',
                                     f'RunPlugin({dependencies.get_url(action="trakt_unhide_from_progress", media_type="series", imdb_id=trakt_id)})'))
 
-            # OPTIMIZATION: Use local DB for Watchlist
-            is_in_watchlist = False
-            # Reuse db from earlier in this block (lines ~1009)
-            if db:
-                is_in_watchlist = db.is_imdb_in_watchlist(trakt_id, content_type)
-
-            if is_in_watchlist:
+            if state.watchlisted:
                 context_menu.append(('[COLOR lightcoral]Remove from Watchlist[/COLOR]',
                                     f'RunPlugin({dependencies.get_url(action="trakt_remove_watchlist", media_type=content_type, imdb_id=trakt_id)})'))
             else:

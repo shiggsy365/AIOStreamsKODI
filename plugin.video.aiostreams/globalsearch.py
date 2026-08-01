@@ -60,7 +60,7 @@ def search(query):
         # Add movie results
         if movie_results and 'metas' in movie_results:
             for meta in movie_results['metas'][:10]:  # Limit to 10 results
-                media = addon.MediaRef.from_meta(meta, 'movie')
+                media = addon.media_ref(meta, 'movie')
                 url = plugin_url(
                     'play',
                     **addon.media_action_params('play', media, clearlogo=meta.get('logo', ''))
@@ -72,7 +72,7 @@ def search(query):
         # Add TV show results
         if series_results and 'metas' in series_results:
             for meta in series_results['metas'][:10]:  # Limit to 10 results
-                media = addon.MediaRef.from_meta(meta, 'series')
+                media = addon.media_ref(meta, 'series')
                 url = plugin_url(
                     'show_seasons', **addon.media_action_params('show_seasons', media)
                 )
@@ -82,7 +82,7 @@ def search(query):
         # Add YouTube results
         if youtube_available and youtube_results and 'metas' in youtube_results:
             for meta in youtube_results['metas'][:5]:  # Limit to 5 results
-                media = addon.MediaRef.from_meta(meta, 'video')
+                media = addon.media_ref(meta, 'video')
                 url = plugin_url('play', **addon.media_action_params('play', media))
                 list_item = addon.create_listitem_with_context(meta, 'video', url)
                 list_item.setProperty('IsPlayable', 'true')

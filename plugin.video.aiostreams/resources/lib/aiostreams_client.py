@@ -115,7 +115,7 @@ class AIOStreamsClient:
         except ValueError as error:
             raise AIOStreamsClientError(f'{operation} returned invalid JSON') from error
 
-    def get_manifest(self, force=False):
+    def get_manifest(self, force=False, allow_stale=True):
         cache_id = self.cache_key('manifest')
         cached = self._cache_get('manifest', cache_id, 86400 * 365)
         if cached is not None and not force:
@@ -127,7 +127,7 @@ class AIOStreamsClient:
                 'manifest', 'manifest.json', cache_type='manifest', cache_id=cache_id
             )
         except AIOStreamsClientError:
-            if cached is not None:
+            if cached is not None and allow_stale:
                 return cached
             raise
         self._cache_set('manifest', cache_id, manifest)
@@ -202,8 +202,33 @@ class AIOStreamsClient:
         )
 
     def test_connection(self):
-        """Fetch the manifest as the backend connection health check."""
-        return self.get_manifest(force=True)
+        """Fetch a fresh manifest; a stale cache is not a healthy connection."""
+        return self.get_manifest(force=True, allow_stale=False)
+
+    def invalidate_configuration_cache(self):
+        """Discard this backend configuration's disposable catalog state.
+
+        The file cache does not retain reversible identifiers for every catalog
+        entry, so type invalidation is the narrowest safe operation there. SQL
+        rows are keyed by fingerprint and can be removed exactly.
+        """
+        cache = self._get_cache()
+        if cache:
+            manifest_id = self.cache_key('manifest')
+            try:
+                cache.invalidate('manifest', manifest_id)
+                cache.invalidate(
+                    'http_headers', self.cache_key('http_headers', 'manifest', manifest_id)
+                )
+                cache.invalidate_type('catalog')
+                cache.invalidate_type('search')
+            except Exception:
+                pass
+        if self._sql_cache:
+            try:
+                self._sql_cache.invalidate_cached_configuration(self.fingerprint)
+            except Exception:
+                pass
 
     @staticmethod
     def metadata_ttl(metadata):
