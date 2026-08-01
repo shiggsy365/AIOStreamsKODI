@@ -544,8 +544,8 @@ def get_watchlist(list_type='movies', force_refresh=False, check_delta=True):
 
     # Try cache first
     if not force_refresh and HAS_MODULES:
-        cached = cache.get_cached_data(cache_key, 'trakt')
-        last_sync = cache.get_cached_data(sync_key, 'trakt')
+        cached = cache.get_cache().get(cache_key, 'trakt', 86400 * 365)
+        last_sync = cache.get_cache().get(sync_key, 'trakt', 86400 * 365)
 
         if cached:
             # Check for delta updates
@@ -563,11 +563,11 @@ def get_watchlist(list_type='movies', force_refresh=False, check_delta=True):
                             changes += 1
 
                     if changes > 0:
-                        cache.cache_data(cache_key, 'trakt', updated)
-                        cache.cache_data(sync_key, 'trakt', datetime.now(timezone.utc).isoformat())
+                        cache.get_cache().set(cache_key, 'trakt', updated)
+                        cache.get_cache().set(sync_key, 'trakt', datetime.now(timezone.utc).isoformat())
                         xbmc.log(f'[AIOStreams] Watchlist delta: +{changes} items', xbmc.LOGINFO)
                         return updated
-                    cache.cache_data(sync_key, 'trakt', datetime.now(timezone.utc).isoformat())
+                    cache.get_cache().set(sync_key, 'trakt', datetime.now(timezone.utc).isoformat())
                     return cached
             return cached
 
@@ -585,8 +585,8 @@ def get_watchlist(list_type='movies', force_refresh=False, check_delta=True):
         page += 1
 
     if HAS_MODULES:
-        cache.cache_data(cache_key, 'trakt', all_items)
-        cache.cache_data(sync_key, 'trakt', datetime.now(timezone.utc).isoformat())
+        cache.get_cache().set(cache_key, 'trakt', all_items)
+        cache.get_cache().set(sync_key, 'trakt', datetime.now(timezone.utc).isoformat())
     return all_items
 
 
@@ -599,8 +599,8 @@ def get_collection(list_type='movies', force_refresh=False, check_delta=True):
 
     # Try cache first
     if not force_refresh and HAS_MODULES:
-        cached = cache.get_cached_data(cache_key, 'trakt')
-        last_sync = cache.get_cached_data(sync_key, 'trakt')
+        cached = cache.get_cache().get(cache_key, 'trakt', 86400 * 365)
+        last_sync = cache.get_cache().get(sync_key, 'trakt', 86400 * 365)
 
         if cached:
             # Check for delta updates
@@ -618,11 +618,11 @@ def get_collection(list_type='movies', force_refresh=False, check_delta=True):
                             changes += 1
 
                     if changes > 0:
-                        cache.cache_data(cache_key, 'trakt', updated)
-                        cache.cache_data(sync_key, 'trakt', datetime.now(timezone.utc).isoformat())
+                        cache.get_cache().set(cache_key, 'trakt', updated)
+                        cache.get_cache().set(sync_key, 'trakt', datetime.now(timezone.utc).isoformat())
                         xbmc.log(f'[AIOStreams] Collection delta: +{changes} items', xbmc.LOGINFO)
                         return updated
-                    cache.cache_data(sync_key, 'trakt', datetime.now(timezone.utc).isoformat())
+                    cache.get_cache().set(sync_key, 'trakt', datetime.now(timezone.utc).isoformat())
                     return cached
             return cached
 
@@ -640,8 +640,8 @@ def get_collection(list_type='movies', force_refresh=False, check_delta=True):
         page += 1
 
     if HAS_MODULES:
-        cache.cache_data(cache_key, 'trakt', all_items)
-        cache.cache_data(sync_key, 'trakt', datetime.now(timezone.utc).isoformat())
+        cache.get_cache().set(cache_key, 'trakt', all_items)
+        cache.get_cache().set(sync_key, 'trakt', datetime.now(timezone.utc).isoformat())
     return all_items
 
 
@@ -654,8 +654,8 @@ def get_watched(list_type='movies', force_refresh=False, check_delta=True):
 
     # Try cache first
     if not force_refresh and HAS_MODULES:
-        cached = cache.get_cached_data(cache_key, 'trakt')
-        last_sync = cache.get_cached_data(sync_key, 'trakt')
+        cached = cache.get_cache().get(cache_key, 'trakt', 86400 * 365)
+        last_sync = cache.get_cache().get(sync_key, 'trakt', 86400 * 365)
 
         if cached:
             # Check for delta updates
@@ -673,11 +673,11 @@ def get_watched(list_type='movies', force_refresh=False, check_delta=True):
                             changes += 1
 
                     if changes > 0:
-                        cache.cache_data(cache_key, 'trakt', updated)
-                        cache.cache_data(sync_key, 'trakt', datetime.now(timezone.utc).isoformat())
+                        cache.get_cache().set(cache_key, 'trakt', updated)
+                        cache.get_cache().set(sync_key, 'trakt', datetime.now(timezone.utc).isoformat())
                         xbmc.log(f'[AIOStreams] Watched delta: +{changes} items', xbmc.LOGINFO)
                         return updated
-                    cache.cache_data(sync_key, 'trakt', datetime.now(timezone.utc).isoformat())
+                    cache.get_cache().set(sync_key, 'trakt', datetime.now(timezone.utc).isoformat())
                     return cached
             return cached
 
@@ -695,8 +695,8 @@ def get_watched(list_type='movies', force_refresh=False, check_delta=True):
         page += 1
 
     if HAS_MODULES:
-        cache.cache_data(cache_key, 'trakt', all_items)
-        cache.cache_data(sync_key, 'trakt', datetime.now(timezone.utc).isoformat())
+        cache.get_cache().set(cache_key, 'trakt', all_items)
+        cache.get_cache().set(sync_key, 'trakt', datetime.now(timezone.utc).isoformat())
     return all_items
 
 
@@ -727,7 +727,7 @@ def get_show_progress_by_trakt_id(show_id):
     # Check cache first (1 hour TTL)
     if HAS_MODULES:
         cache_key = f'show_progress_{show_id}'
-        cached = cache.get_cached_data(cache_key, 'trakt', max_age=3600)  # 1 hour cache
+        cached = cache.get_cache().get(cache_key, 'trakt', 3600)  # 1 hour cache
         if cached:
             xbmc.log(f'[AIOStreams] Using cached show progress for {show_id}', xbmc.LOGDEBUG)
             return cached
@@ -738,7 +738,7 @@ def get_show_progress_by_trakt_id(show_id):
 
     # Cache the result
     if result and HAS_MODULES:
-        cache.cache_data(cache_key, 'trakt', result)
+        cache.get_cache().set(cache_key, 'trakt', result)
 
     return result
 
@@ -761,8 +761,10 @@ def get_hidden_shows(force_refresh=False, check_delta=True):
 
     # Try cache first
     if not force_refresh and HAS_MODULES:
-        cached = cache.get_cached_data('hidden_shows', 'progress_watched')
-        last_sync = cache.get_cached_data('hidden_shows_last_sync', 'progress_watched')
+        cached = cache.get_cache().get('hidden_shows', 'progress_watched', 86400 * 365)
+        last_sync = cache.get_cache().get(
+            'hidden_shows_last_sync', 'progress_watched', 86400 * 365
+        )
 
         if cached:
             # If we have cache and should check for delta updates
@@ -793,15 +795,15 @@ def get_hidden_shows(force_refresh=False, check_delta=True):
 
                     if changes_applied > 0:
                         # Update cache with changes
-                        cache.cache_data('hidden_shows', 'progress_watched', updated_cache)
+                        cache.get_cache().set('hidden_shows', 'progress_watched', updated_cache)
                         sync_time = datetime.now(timezone.utc).isoformat()
-                        cache.cache_data('hidden_shows_last_sync', 'progress_watched', sync_time)
+                        cache.get_cache().set('hidden_shows_last_sync', 'progress_watched', sync_time)
                         xbmc.log(f'[AIOStreams] Delta sync applied {changes_applied} changes, updated cache to {len(updated_cache)} items', xbmc.LOGINFO)
                         return updated_cache
                     else:
                         # No changes, update sync time and return cached
                         sync_time = datetime.now(timezone.utc).isoformat()
-                        cache.cache_data('hidden_shows_last_sync', 'progress_watched', sync_time)
+                        cache.get_cache().set('hidden_shows_last_sync', 'progress_watched', sync_time)
                         xbmc.log(f'[AIOStreams] Delta sync: No changes detected, using cache ({len(cached)} items)', xbmc.LOGDEBUG)
                         return cached
                 else:
@@ -855,10 +857,10 @@ def get_hidden_shows(force_refresh=False, check_delta=True):
     # Cache the result and sync timestamp (for delta sync)
     if HAS_MODULES:
         from datetime import datetime, timezone
-        cache.cache_data('hidden_shows', 'progress_watched', hidden_ids)
+        cache.get_cache().set('hidden_shows', 'progress_watched', hidden_ids)
         # Store sync timestamp in ISO format for X-Start-Date header
         sync_time = datetime.now(timezone.utc).isoformat()
-        cache.cache_data('hidden_shows_last_sync', 'progress_watched', sync_time)
+        cache.get_cache().set('hidden_shows_last_sync', 'progress_watched', sync_time)
         xbmc.log(f'[AIOStreams] Cached hidden shows with sync timestamp: {sync_time}', xbmc.LOGDEBUG)
 
     return hidden_ids
@@ -1047,11 +1049,11 @@ def hide_from_progress(media_type, imdb_id):
 
         # Update hidden shows cache directly instead of invalidating (incremental sync)
         if HAS_MODULES and trakt_id_to_cache:
-            cached = cache.get_cached_data('hidden_shows', 'progress_watched')
+            cached = cache.get_cache().get('hidden_shows', 'progress_watched', 86400 * 365)
             if cached and isinstance(cached, list):
                 if trakt_id_to_cache not in cached:
                     cached.append(trakt_id_to_cache)
-                    cache.cache_data('hidden_shows', 'progress_watched', cached)
+                    cache.get_cache().set('hidden_shows', 'progress_watched', cached)
                     xbmc.log(f'[AIOStreams] Added Trakt ID {trakt_id_to_cache} to hidden shows cache (incremental update)', xbmc.LOGINFO)
                 else:
                     xbmc.log(f'[AIOStreams] Trakt ID {trakt_id_to_cache} already in hidden shows cache', xbmc.LOGDEBUG)

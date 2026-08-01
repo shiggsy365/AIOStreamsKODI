@@ -8,7 +8,6 @@ import os
 import json
 import time
 import hashlib
-import functools
 import threading
 import xbmc
 import xbmcaddon
@@ -190,6 +189,10 @@ class TieredCache:
                 xbmcvfs.mkdirs(self._cache_dir)
 
         return self._cache_dir
+
+    def get_cache_dir(self):
+        """Return the profile-local directory used for disposable cache files."""
+        return self._get_cache_dir()
 
     def _get_cache_key(self, cache_type, identifier):
         """Generate cache filename from type and identifier."""
@@ -499,91 +502,3 @@ def get_cache():
     if _cache is None:
         _cache = TieredCache()
     return _cache
-
-
-# Decorator for automatic caching
-def cached(cache_type, ttl_seconds=None, key_func=None):
-    """
-    Decorator for automatic function result caching.
-
-    Args:
-        cache_type: Type of cache to use
-        ttl_seconds: Optional TTL override
-        key_func: Optional function to generate cache key from args
-                  If None, uses function name + hashed args
-
-    Usage:
-        @cached('catalog', ttl_seconds=21600)
-        def get_catalog(content_type, catalog_id):
-            return api_call(...)
-    """
-    def decorator(func):
-        @functools.wraps(func)
-        def wrapper(*args, **kwargs):
-            cache = get_cache()
-
-            # Generate cache key
-            if key_func:
-                identifier = key_func(*args, **kwargs)
-            else:
-                # Default: function name + arg hash
-                arg_str = f"{args}:{sorted(kwargs.items())}"
-                arg_hash = hashlib.md5(arg_str.encode()).hexdigest()[:16]
-                identifier = f"{func.__name__}:{arg_hash}"
-
-            # Check cache
-            ttl = ttl_seconds if ttl_seconds else TieredCache.DEFAULT_TTLS.get(cache_type, 86400)
-            cached_data = cache.get(cache_type, identifier, ttl)
-
-            if cached_data is not None:
-                return cached_data
-
-            # Execute function
-            result = func(*args, **kwargs)
-
-            # Cache result if not None
-            if result is not None:
-                cache.set(cache_type, identifier, result)
-
-            return result
-        return wrapper
-    return decorator
-
-
-# ============================================================================
-# Legacy API compatibility (for existing code)
-# ============================================================================
-
-def get_cache_dir():
-    """Get cache directory path (legacy compatibility)."""
-    return get_cache()._get_cache_dir()
-
-
-def get_cached_data(cache_type, identifier, ttl_seconds=86400*365):
-    """Get data from cache (legacy compatibility)."""
-    return get_cache().get(cache_type, identifier, ttl_seconds)
-
-
-def cache_data(cache_type, identifier, data):
-    """Store data in cache (legacy compatibility)."""
-    get_cache().set(cache_type, identifier, data)
-
-
-def get_cached_meta(content_type, item_id, ttl_seconds=2592000):
-    """Get metadata from cache (legacy compatibility)."""
-    return get_cache().get('metadata', f"{content_type}:{item_id}", ttl_seconds)
-
-
-def cache_meta(content_type, item_id, metadata):
-    """Store metadata in cache (legacy compatibility)."""
-    get_cache().set('metadata', f"{content_type}:{item_id}", metadata)
-
-
-def get_cache_age(cache_type, identifier):
-    """Get cache age (legacy compatibility)."""
-    return get_cache().get_age(cache_type, identifier)
-
-
-def cleanup_expired_cache(force_all=False):
-    """Remove expired cache files (legacy compatibility)."""
-    get_cache().cleanup_expired(force_all=force_all)
