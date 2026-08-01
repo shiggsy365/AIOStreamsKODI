@@ -4,7 +4,7 @@ import xbmcgui
 import xbmcplugin
 import xbmcaddon
 import xbmcvfs
-from urllib.parse import urlencode, parse_qsl, quote_plus
+from urllib.parse import urlencode, parse_qsl
 import requests
 import json
 import threading
@@ -26,16 +26,14 @@ try:
     from resources.lib import ui_helpers, settings_helpers, constants, filters, cache, streams
     from resources.lib.plugin_args import parse_plugin_params
     from resources.lib.safe_logging import redact_identifier
+    from resources.lib.aiostreams_client import AIOStreamsClient, AIOStreamsClientError
     from resources.lib.stream_utils import (
-        canonical_episode_id, canonical_meta_id, client_user_agent, matching_episode_id,
+        canonical_episode_id, canonical_meta_id, matching_episode_id,
         normalize_streams,
     )
     from resources.lib.globals import g
     from resources.lib.router import get_router, action, dispatch, set_default
     
-    # ProviderManager and GUI helpers are needed somewhat early but let's check optimization
-    from resources.lib.providers import ProviderManager, AIOStreamsProvider
-    from resources.lib.providers.base import get_provider_manager
     from resources.lib.gui import show_source_select_dialog
     # Clearlogo is needed for init sometimes?
     from resources.lib.clearlogo import clear_clearlogo_cache, get_cached_clearlogo_path, download_and_cache_clearlogo, get_clearlogo_cache_dir
@@ -62,15 +60,6 @@ if HAS_NEW_MODULES:
 ADDON = xbmcaddon.Addon()
 ADDON_PATH = xbmcvfs.translatePath(ADDON.getAddonInfo('path'))
 HANDLE = int(sys.argv[1])
-
-# Initialize provider manager
-if HAS_NEW_MODULES:
-    try:
-        provider_manager = get_provider_manager()
-        aiostreams_provider = AIOStreamsProvider()
-        provider_manager.register(aiostreams_provider)
-    except Exception as e:
-        xbmc.log(f'[AIOStreams] Failed to initialize providers: {e}', xbmc.LOGERROR)
 
 # Run initialize logic once per addon execution
 # Run initialize logic once per addon execution - MOVED TO SERVICE.PY (Background)
@@ -100,6 +89,42 @@ def get_base_url():
         url = url[:-14]  # Remove /manifest.json
     
     return url
+
+
+_aiostreams_client = None
+_aiostreams_client_config = None
+
+
+def get_aiostreams_client():
+    """Return the one client for the current add-on configuration."""
+    global _aiostreams_client, _aiostreams_client_config
+    base_url = get_base_url()
+    config = (base_url, get_timeout(), ADDON.getAddonInfo('version'))
+    if _aiostreams_client is not None and _aiostreams_client_config == config:
+        return _aiostreams_client
+
+    sql_cache = None
+    if HAS_MODULES:
+        try:
+            from resources.lib import trakt
+            sql_cache = trakt.get_trakt_db()
+        except Exception:
+            pass
+    _aiostreams_client = AIOStreamsClient(
+        base_url, timeout=config[1], addon_version=config[2], sql_cache=sql_cache
+    )
+    _aiostreams_client_config = config
+    return _aiostreams_client
+
+
+def request_aiostreams(operation, error_message, request):
+    """Translate client failures at the Kodi action boundary."""
+    try:
+        return request()
+    except AIOStreamsClientError as error:
+        xbmc.log(f'[AIOStreams] {operation} failed: {type(error).__name__}', xbmc.LOGERROR)
+        xbmcgui.Dialog().notification('AIOStreams', error_message, xbmcgui.NOTIFICATION_ERROR)
+        return None
 
 
 def get_all_catalogs_action():
@@ -163,137 +188,14 @@ def get_url(**kwargs):
 
 
 
-def make_request(url, error_message='Request failed', cache_key=None):
-    """Make HTTP request with conditional caching support (ETag/If-None-Match).
-
-    Args:
-        url: URL to fetch
-        error_message: Error message to display on failure
-        cache_key: Optional cache key for conditional requests (format: "type:identifier")
-
-    Returns:
-        JSON response data, or cached data on 304, or None on error
-    """
-    headers = {'User-Agent': client_user_agent(ADDON.getAddonInfo('version'))}
-
-    # Check for cached ETag/Last-Modified headers to enable conditional requests
-    if cache_key and HAS_MODULES:
-        cached_headers = cache.get_cached_data('http_headers', cache_key, 86400*365)  # 1 year TTL
-        if cached_headers:
-            if 'etag' in cached_headers:
-                headers['If-None-Match'] = cached_headers['etag']
-                xbmc.log(f'[AIOStreams] Conditional request with ETag for {cache_key}', xbmc.LOGDEBUG)
-            if 'last-modified' in cached_headers:
-                headers['If-Modified-Since'] = cached_headers['last-modified']
-                xbmc.log(f'[AIOStreams] Conditional request with Last-Modified for {cache_key}', xbmc.LOGDEBUG)
-
-    try:
-        response = requests.get(url, headers=headers, timeout=get_timeout())
-
-        # 304 Not Modified - content hasn't changed, use cached data
-        if response.status_code == 304:
-            xbmc.log(f'[AIOStreams] HTTP 304 Not Modified: Using cached data for {cache_key}', xbmc.LOGDEBUG)
-            if cache_key and HAS_MODULES:
-                parts = cache_key.split(':', 1)
-                if len(parts) == 2:
-                    cached_data = cache.get_cached_data(parts[0], parts[1], 86400*365)
-                    if cached_data:
-                        return cached_data
-            # Fallback if cache lookup fails
-            xbmc.log(f'[AIOStreams] Warning: 304 received but no cached data found', xbmc.LOGWARNING)
-            return None
-
-        response.raise_for_status()
-        data = response.json()
-
-        # Cache response data and headers for future conditional requests
-        if cache_key and HAS_MODULES:
-            # Cache the actual response data
-            parts = cache_key.split(':', 1)
-            if len(parts) == 2:
-                cache.cache_data(parts[0], parts[1], data)
-                xbmc.log(f'[AIOStreams] Cached response data for {cache_key}', xbmc.LOGDEBUG)
-
-            # Cache response headers (ETag/Last-Modified)
-            cache_headers = {}
-            if 'etag' in response.headers:
-                cache_headers['etag'] = response.headers['etag']
-                xbmc.log(f'[AIOStreams] Cached ETag for {cache_key}', xbmc.LOGDEBUG)
-            if 'last-modified' in response.headers:
-                cache_headers['last-modified'] = response.headers['last-modified']
-                xbmc.log(f'[AIOStreams] Cached Last-Modified for {cache_key}', xbmc.LOGDEBUG)
-            if cache_headers:
-                cache.cache_data('http_headers', cache_key, cache_headers)
-
-        return data
-    except requests.Timeout:
-        xbmcgui.Dialog().notification('AIOStreams', 'Request timed out', xbmcgui.NOTIFICATION_ERROR)
-        return None
-    except requests.RequestException as e:
-        xbmcgui.Dialog().notification('AIOStreams', error_message, xbmcgui.NOTIFICATION_ERROR)
-        xbmc.log(f'[AIOStreams] Request error: {type(e).__name__}', xbmc.LOGERROR)
-        return None
-    except ValueError:
-        xbmcgui.Dialog().notification('AIOStreams', 'Invalid JSON response', xbmcgui.NOTIFICATION_ERROR)
-        return None
-
-
 def get_manifest(force=False):
-    """Fetch the manifest from AIOStreams with stale-while-revalidate caching.
-
-    Uses HTTP conditional requests (ETag/If-None-Match) to minimize bandwidth:
-    - Serves cached data immediately if < 5 minutes old (unless force=True)
-    - For older cache, checks server with If-None-Match (gets 304 if unchanged)
-    - Only downloads full manifest if actually changed on server
-    """
-    base_url = get_base_url()
-    if not base_url:
+    """Fetch the configured manifest through the shared API client."""
+    if not get_base_url():
         return None
-
-    # Use base_url as cache key to support multiple user profiles with different manifests
-    import hashlib
-    cache_key = hashlib.md5(base_url.encode()).hexdigest()[:16]
-    full_cache_key = f'manifest:{cache_key}'
-
-    # Check cache first (never expire - rely on conditional requests)
-    if HAS_MODULES:
-        cached = cache.get_cached_data('manifest', cache_key, 86400*365)  # 1 year
-        cache_age = cache.get_cache_age('manifest', cache_key)
-
-        if cached:
-            # Fresh cache (< 5 minutes) - serve immediately
-            if not force and cache_age is not None and cache_age < 300:  # Fresh cache (< 5 minutes) - serve immediately
-                xbmc.log(f'[AIOStreams] Serving fresh manifest from cache (age: {int(cache_age)}s)', xbmc.LOGDEBUG)
-                return cached
-
-            # Stale cache - check server with conditional request
-            xbmc.log(f'[AIOStreams] Cache stale (age: {int(cache_age)}s), checking server with conditional request', xbmc.LOGDEBUG)
-            manifest = make_request(f"{base_url}/manifest.json",
-                                   'Error fetching manifest',
-                                   cache_key=full_cache_key)
-
-            if manifest:
-                # Server returned new data (200 OK) - cache it
-                cache.cache_data('manifest', cache_key, manifest)
-                xbmc.log('[AIOStreams] Manifest updated from server', xbmc.LOGDEBUG)
-                return manifest
-            else:
-                # Request failed or 304 (already handled in make_request)
-                # If it was 304, make_request returned cached data
-                # If it failed, return stale cache as fallback
-                xbmc.log('[AIOStreams] Using stale manifest as fallback', xbmc.LOGDEBUG)
-                return cached
-
-    # No cache - fetch fresh
-    xbmc.log('[AIOStreams] No cached manifest, fetching fresh', xbmc.LOGDEBUG)
-    manifest = make_request(f"{base_url}/manifest.json",
-                           'Error fetching manifest',
-                           cache_key=full_cache_key)
-
-    if manifest and HAS_MODULES:
-        cache.cache_data('manifest', cache_key, manifest)
-
-    return manifest
+    return request_aiostreams(
+        'manifest', 'Error fetching manifest',
+        lambda: get_aiostreams_client().get_manifest(force=force),
+    )
 
 
 def get_search_catalog_id(content_type):
@@ -340,8 +242,6 @@ def search_catalog(query, content_type='movie', skip=0):
             xbmc.log(f'[AIOStreams] Blocking YouTube search request for "{query}"', xbmc.LOGINFO)
             return {'metas': []}
 
-    base_url = get_base_url()
-    
     # Mapping for content types to match manifest expectations
     m_type_map = {
         'movies': 'movie',
@@ -350,35 +250,19 @@ def search_catalog(query, content_type='movie', skip=0):
         'series': 'series'
     }
     m_type = m_type_map.get(content_type, content_type)
-    
     catalog_id = get_search_catalog_id(m_type)
-    
-    # URL encode the query
-    encoded_query = quote_plus(query)
-    
-    # Construction of the search URL
-    # We use m_type for the URL type parameter to ensure API compatibility
-    url = f"{base_url}/catalog/{m_type}/{catalog_id}/search={encoded_query}"
-    
-    # Add skip parameter for pagination
-    if skip > 0:
-        url += f"&skip={skip}"
-    
-    url += ".json"
-
-    xbmc.log(f'[AIOStreams] Performing search for "{query}" (type: {m_type}, catalog: {catalog_id})', xbmc.LOGDEBUG)
-    return make_request(url, 'Search error')
+    return request_aiostreams(
+        'search', 'Search error',
+        lambda: get_aiostreams_client().search(query, m_type, catalog_id, skip),
+    )
 
 
 def get_streams(content_type, media_id):
     """Fetch streams for a given media ID."""
-    base_url = get_base_url()
-    if not base_url:
-        xbmc.log('[AIOStreams] Cannot request streams: no configured base URL', xbmc.LOGERROR)
-        return None
-    url = f"{base_url}/stream/{content_type}/{media_id}.json"
-    xbmc.log(f'[AIOStreams] Requesting streams: type={content_type}, id={media_id}', xbmc.LOGINFO)
-    result = make_request(url, 'Stream error')
+    result = request_aiostreams(
+        'streams', 'Stream error',
+        lambda: get_aiostreams_client().get_streams(content_type, media_id),
+    )
     if result:
         normalized = normalize_streams(result.get('streams', []))
         result['streams'] = normalized['playable']
@@ -411,80 +295,19 @@ def show_no_playable_streams(stream_data, resolve=False):
 
 
 def get_catalog(content_type, catalog_id, genre=None, skip=0):
-    """Fetch a catalog from AIOStreams with 6-hour caching."""
-    from resources.lib import trakt
-    base_url = get_base_url()
-    if not base_url:
-        xbmc.log('[AIOStreams] get_catalog: No base_url found!', xbmc.LOGERROR)
-        return None
-    
-    # Build manifest-specific identifier to prevent cross-manifest stale data
-    import hashlib
-    m_hash = hashlib.md5(base_url.encode()).hexdigest()[:16]
-    
-    # Build cache identifier from all parameters
-    cache_id = f"{m_hash}:{content_type}:{catalog_id}:{genre or 'none'}:{skip}"
-
-
-    # Check SQL cache first (fastest)
-    if HAS_MODULES:
-        try:
-            db = trakt.get_trakt_db()
-            if db:
-                cached_sql = db.get_catalog(content_type, catalog_id, genre, skip)
-                if cached_sql:
-                    xbmc.log(f'[AIOStreams] SQL Cache hit for catalog: {catalog_id}', xbmc.LOGDEBUG)
-                    return cached_sql
-        except Exception as e:
-             xbmc.log(f'[AIOStreams] SQL Cache error for catalog: {e}', xbmc.LOGDEBUG)
-
-    # Check file cache second (legacy)
-    if HAS_MODULES:
-        cached = cache.get_cached_data('catalog', cache_id, 21600)
-        if cached:
-            return cached
-
-    # Cache miss, fetch from API
-    base_url = get_base_url()
-
-    # Build catalog URL with optional filters
-    url_parts = [f"{base_url}/catalog/{content_type}/{catalog_id}"]
-
-    extras = []
-    if genre:
-        extras.append(f"genre={genre}")
-    if skip > 0:
-        extras.append(f"skip={skip}")
-
-    if extras:
-        url = f"{url_parts[0]}/{'&'.join(extras)}.json"
-    else:
-        url = f"{url_parts[0]}.json"
-
-    xbmc.log(f'[AIOStreams] Requesting catalog: type={content_type}, id={catalog_id}, skip={skip}', xbmc.LOGDEBUG)
-    catalog = make_request(url, 'Catalog error')
-
-    # Cache the result in both tiers
-    if catalog and HAS_MODULES:
-        # 1. File cache
-        cache.cache_data('catalog', cache_id, catalog)
-        # 2. SQL cache
-        try:
-            db = trakt.get_trakt_db()
-            if db:
-                db.set_catalog(content_type, catalog_id, genre, skip, catalog, 21600)
-        except:
-            pass
-
-    return catalog
+    """Fetch a configuration-scoped catalog through the shared API client."""
+    return request_aiostreams(
+        'catalog', 'Catalog error',
+        lambda: get_aiostreams_client().get_catalog(content_type, catalog_id, genre, skip),
+    )
 
 
 def get_subtitles(content_type, media_id):
     """Fetch subtitles for a given media ID."""
-    base_url = get_base_url()
-    url = f"{base_url}/subtitles/{content_type}/{media_id}.json"
-    xbmc.log(f'[AIOStreams] Requesting subtitles: type={content_type}, id={media_id}', xbmc.LOGDEBUG)
-    return make_request(url, 'Subtitle error')
+    return request_aiostreams(
+        'subtitles', 'Subtitle error',
+        lambda: get_aiostreams_client().get_subtitles(content_type, media_id),
+    )
 
 
 def get_subtitle_language_filter():
@@ -644,134 +467,18 @@ def format_date_with_ordinal(date_str):
         return date_str
 
 
-def get_metadata_ttl(meta_data):
-    """Determine appropriate cache TTL based on content age.
-
-    Args:
-        meta_data: Metadata dict from API (must contain 'meta' key)
-
-    Returns:
-        TTL in seconds
-    """
-    from datetime import datetime
-
-    try:
-        meta = meta_data.get('meta', {})
-        year = meta.get('year')
-
-        if year:
-            current_year = datetime.now().year
-
-            # Recent/current year content may get metadata updates (cast, artwork, etc.)
-            if year >= current_year:
-                return 86400 * 7  # 7 days
-
-            # Last year's content - moderate refresh
-            elif year >= current_year - 1:
-                return 86400 * 30  # 30 days
-
-        # Older content is stable - extended cache
-        return 86400 * 90  # 90 days
-
-    except:
-        # Default to 30 days on any error
-        return 86400 * 30
-
-
 def get_meta(content_type, meta_id):
-    """Fetch metadata for a show or movie with optimized TTL caching.
-
-    Cache TTL varies based on content age:
-    - Current year: 7 days (metadata may be updated)
-    - Last year: 30 days
-    - Older: 90 days (metadata is stable)
-    """
-    # API Compatibility mapping
+    """Fetch metadata through the shared client and retain clearlogo behavior."""
     if content_type in ['tvshow', 'tvshows', 'episode']:
         content_type = 'series'
-    
-    # Internal suppression for 'home' type
     if content_type == 'home':
-        # Default to movie or handle based on path? Usually smart_widget should pass correct type.
-        # Fallback to movie for safety
         content_type = 'movie'
-    from resources.lib import trakt
-    # 1. Check SQL cache first (fastest)
-    if HAS_MODULES:
-        try:
-            db = trakt.get_trakt_db()
-            if db:
-                # Initial check with long TTL (handled by DB expires column)
-                cached_sql = db.get_meta(content_type, meta_id)
-                if cached_sql:
-                    xbmc.log(
-                        f'[AIOStreams] SQL metadata cache hit: {redact_identifier(meta_id)}',
-                        xbmc.LOGDEBUG,
-                    )
-                    # Ensure clearlogo is cached even on metadata hit
-                    _ensure_clearlogo_cached(cached_sql, content_type, meta_id)
-                    return cached_sql
-        except:
-            pass
-
-    # 2. Check file-based cache (middle tier)
-    if HAS_MODULES:
-        cached = cache.get_cached_meta(content_type, meta_id, ttl_seconds=86400*365)
-        if cached:
-            # Calculate appropriate TTL based on content
-            ttl = get_metadata_ttl(cached)
-
-            # Re-check cache with calculated TTL
-            cached = cache.get_cached_meta(content_type, meta_id, ttl_seconds=ttl)
-            if cached:
-                xbmc.log(
-                    f'[AIOStreams] File metadata cache hit: {redact_identifier(meta_id)}',
-                    xbmc.LOGDEBUG,
-                )
-                # Ensure clearlogo is cached even on metadata hit
-                _ensure_clearlogo_cached(cached, content_type, meta_id)
-                return cached
-
-    # Cache miss, fetch from API
-    base_url = get_base_url()
-    url = f"{base_url}/meta/{content_type}/{meta_id}.json"
-    xbmc.log(
-        f'[AIOStreams] Requesting metadata: type={content_type}, id={redact_identifier(meta_id)}',
-        xbmc.LOGDEBUG,
+    result = request_aiostreams(
+        'metadata', 'Meta error',
+        lambda: get_aiostreams_client().get_meta(content_type, meta_id),
     )
-    result = make_request(url, 'Meta error')
-
-    # Store in cache
-    if HAS_MODULES and result:
-        meta_keys = list(result.get('meta', {}).keys())
-        xbmc.log(
-            f'[AIOStreams] Metadata response fields for {redact_identifier(meta_id)}: {meta_keys}',
-            xbmc.LOGDEBUG,
-        )
-        
-        ttl = get_metadata_ttl(result)
-        # 1. File cache
-        cache.cache_meta(content_type, meta_id, result)
-        # 2. SQL cache
-        try:
-            db = trakt.get_trakt_db()
-            if db:
-                db.set_meta(content_type, meta_id, result, ttl)
-        except:
-            pass
-        xbmc.log(
-            f'[AIOStreams] Cached metadata for {redact_identifier(meta_id)}',
-            xbmc.LOGDEBUG,
-        )
-        
-        # 3. Cache clearlogo if present
-        if result.get('meta', {}).get('logo'):
-            clearlogo_url = result['meta']['logo']
-            try:
-                download_and_cache_clearlogo(clearlogo_url, content_type, meta_id)
-            except Exception as e:
-                xbmc.log(f'[AIOStreams] Error caching clearlogo during metadata fetch: {e}', xbmc.LOGDEBUG)
-
+    if result:
+        _ensure_clearlogo_cached(result, content_type, meta_id)
     return result
 
 
@@ -4216,14 +3923,12 @@ def refresh_manifest_cache():
         return
 
     try:
-        base_url = get_base_url()
-        if not base_url:
+        if not get_base_url():
             xbmcgui.Dialog().notification('AIOStreams', 'No manifest URL configured', xbmcgui.NOTIFICATION_ERROR)
             return
 
-        import hashlib
-        # Generate cache key matching the one used in get_manifest()
-        cache_key = hashlib.md5(base_url.encode()).hexdigest()[:16]
+        client = get_aiostreams_client()
+        cache_key = client.cache_key('manifest')
 
         xbmc.log(f'[AIOStreams] Invalidating manifest cache for key: {cache_key}', xbmc.LOGINFO)
 
@@ -4238,11 +3943,9 @@ def refresh_manifest_cache():
         # Also clear search caches
         cache.get_cache().invalidate_type('search')
 
-        # CRITICAL: Also clear HTTP headers cache (ETag/Last-Modified) to prevent 304 response
-        # The full_cache_key format is "manifest:{cache_key}" as used in make_request()
-        full_cache_key = f'manifest:{cache_key}'
-        cache.get_cache().invalidate('http_headers', full_cache_key)
-        xbmc.log(f'[AIOStreams] Invalidated HTTP headers cache for key: {full_cache_key}', xbmc.LOGDEBUG)
+        header_key = client.cache_key('http_headers', 'manifest', cache_key)
+        cache.get_cache().invalidate('http_headers', header_key)
+        xbmc.log('[AIOStreams] Invalidated manifest response headers', xbmc.LOGDEBUG)
 
         # Also clear from cache module's internal tracking
         cache.cleanup_expired_cache(force_all=False)
@@ -4723,7 +4426,7 @@ def test_connection():
                                f'Server: {base_url}\n'
                                f'Please check your settings and try again.')
     except Exception as e:
-        xbmc.log(f'[AIOStreams] Connection test failed: {e}', xbmc.LOGERROR)
+        xbmc.log(f'[AIOStreams] Connection test failed: {type(e).__name__}', xbmc.LOGERROR)
         xbmcgui.Dialog().ok('AIOStreams Connection Test',
                            f'✗ Connection failed\n\n'
                            f'Error: {str(e)}\n\n'

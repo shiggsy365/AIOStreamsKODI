@@ -113,20 +113,24 @@ class TraktSyncDatabase(Database):
     """
 
     METAS_SCHEMA = """
-        id TEXT PRIMARY KEY,
+        configuration TEXT NOT NULL,
+        id TEXT NOT NULL,
         content_type TEXT,
         metadata BLOB,
-        expires INTEGER
+        expires INTEGER,
+        PRIMARY KEY (configuration, id, content_type)
     """
 
     CATALOGS_SCHEMA = """
-        id TEXT PRIMARY KEY,
+        configuration TEXT NOT NULL,
+        id TEXT NOT NULL,
         content_type TEXT,
         catalog_id TEXT,
         genre TEXT,
         skip INTEGER,
         data BLOB,
-        expires INTEGER
+        expires INTEGER,
+        PRIMARY KEY (configuration, id)
     """
 
     def clear_all_trakt_data(self):
@@ -200,6 +204,20 @@ class TraktSyncDatabase(Database):
                     self.execute("ALTER TABLE bookmarks ADD COLUMN imdb_id TEXT")
                 
                 self.commit()
+
+            # Cached AIOStreams responses are disposable. Rebuild these tables so a
+            # response from one configured backend can never satisfy another one.
+            for table, schema in (('metas', self.METAS_SCHEMA), ('catalogs', self.CATALOGS_SCHEMA)):
+                cursor = self.execute(f"PRAGMA table_info({table})")
+                columns = [row[1] for row in cursor.fetchall()] if cursor else []
+                if 'configuration' not in columns:
+                    self.execute(f"DROP TABLE IF EXISTS {table}")
+                    self.create_table(table, schema)
+                    xbmc.log(
+                        f'[AIOStreams] Rebuilt disposable {table} cache for configuration isolation',
+                        xbmc.LOGDEBUG,
+                    )
+            self.commit()
 
             # Migration: Add air_date column to episodes table (v3.1.0)
             # Check if column exists first to avoid error logging
@@ -887,13 +905,13 @@ class TraktSyncDatabase(Database):
             if connected:
                 self.disconnect()
 
-    def get_meta(self, content_type, meta_id):
+    def get_meta(self, configuration, content_type, meta_id):
         """Get metadata from the SQL cache."""
         if not self.connection and not self.connect():
             return None
         try:
-            sql = "SELECT metadata FROM metas WHERE id=? AND content_type=? AND expires > ?"
-            row = self.fetch_one(sql, (meta_id, content_type, int(time.time())))
+            sql = "SELECT metadata FROM metas WHERE configuration=? AND id=? AND content_type=? AND expires > ?"
+            row = self.fetch_one(sql, (configuration, meta_id, content_type, int(time.time())))
             if row and row['metadata']:
                 return pickle.loads(row['metadata'])
             return None
@@ -901,28 +919,28 @@ class TraktSyncDatabase(Database):
             xbmc.log(f'[AIOStreams] DB error getting meta: {e}', xbmc.LOGWARNING)
             return None
 
-    def set_meta(self, content_type, meta_id, metadata, ttl_seconds):
+    def set_meta(self, configuration, content_type, meta_id, metadata, ttl_seconds):
         """Store metadata in the SQL cache."""
         if not self.connection and not self.connect():
             return False
         try:
             expires = int(time.time()) + ttl_seconds
             pickled_metadata = pickle.dumps(metadata)
-            sql = "INSERT OR REPLACE INTO metas (id, content_type, metadata, expires) VALUES (?, ?, ?, ?)"
-            self.execute(sql, (meta_id, content_type, pickled_metadata, expires))
+            sql = "INSERT OR REPLACE INTO metas (configuration, id, content_type, metadata, expires) VALUES (?, ?, ?, ?, ?)"
+            self.execute(sql, (configuration, meta_id, content_type, pickled_metadata, expires))
             self.commit()
             return True
         except Exception as e:
             xbmc.log(f'[AIOStreams] DB error setting meta: {e}', xbmc.LOGWARNING)
             return False
 
-    def get_catalog(self, content_type, catalog_id, genre=None, skip=0):
+    def get_catalog(self, configuration, content_type, catalog_id, genre=None, skip=0):
         """Get catalog data from the SQL cache."""
         if not self.connection and not self.connect():
             return None
         try:
-            sql = "SELECT data FROM catalogs WHERE catalog_id=? AND content_type=? AND (genre=? OR (genre IS NULL AND ? IS NULL)) AND skip=? AND expires > ?"
-            row = self.fetch_one(sql, (catalog_id, content_type, genre, genre, skip, int(time.time())))
+            sql = "SELECT data FROM catalogs WHERE configuration=? AND catalog_id=? AND content_type=? AND (genre=? OR (genre IS NULL AND ? IS NULL)) AND skip=? AND expires > ?"
+            row = self.fetch_one(sql, (configuration, catalog_id, content_type, genre, genre, skip, int(time.time())))
             if row and row['data']:
                 return pickle.loads(row['data'])
             return None
@@ -930,7 +948,7 @@ class TraktSyncDatabase(Database):
             xbmc.log(f'[AIOStreams] DB error getting catalog: {e}', xbmc.LOGWARNING)
             return None
 
-    def set_catalog(self, content_type, catalog_id, genre, skip, data, ttl_seconds):
+    def set_catalog(self, configuration, content_type, catalog_id, genre, skip, data, ttl_seconds):
         """Store catalog data in the SQL cache."""
         if not self.connection and not self.connect():
             return False
@@ -939,8 +957,8 @@ class TraktSyncDatabase(Database):
             pickled_data = pickle.dumps(data)
             # Use unique key for catalogs: content_type:catalog_id:genre:skip
             cache_id = f"{content_type}:{catalog_id}:{genre or 'none'}:{skip}"
-            sql = "INSERT OR REPLACE INTO catalogs (id, content_type, catalog_id, genre, skip, data, expires) VALUES (?, ?, ?, ?, ?, ?, ?)"
-            self.execute(sql, (cache_id, content_type, catalog_id, genre, skip, pickled_data, expires))
+            sql = "INSERT OR REPLACE INTO catalogs (configuration, id, content_type, catalog_id, genre, skip, data, expires) VALUES (?, ?, ?, ?, ?, ?, ?, ?)"
+            self.execute(sql, (configuration, cache_id, content_type, catalog_id, genre, skip, pickled_data, expires))
             self.commit()
             return True
         except Exception as e:

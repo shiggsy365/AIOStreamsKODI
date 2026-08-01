@@ -39,12 +39,10 @@ plugin.video.aiostreams/
 │   │   ├── ui_helpers.py # UI formatting & colors
 │   │   ├── cache.py      # Caching system
 │   │   ├── network.py    # HTTP requests
+│   │   ├── aiostreams_client.py # Configured AIOStreams/Stremio API client
 │   │   ├── trakt.py      # Trakt API integration
 │   │   ├── filters.py    # Content filtering
 │   │   ├── autoplay.py   # Autoplay next episode logic
-│   │   ├── providers/    # Stream provider implementations
-│   │   │   ├── aiostreams.py
-│   │   │   └── base.py
 │   │   ├── database/     # Local database for Trakt sync
 │   │   │   └── trakt_sync/
 │   │   └── gui/          # Custom dialogs & windows
