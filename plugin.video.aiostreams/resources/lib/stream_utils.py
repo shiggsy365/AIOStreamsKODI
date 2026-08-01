@@ -126,6 +126,7 @@ def _format_bytes(value):
 def stream_display_fields(stream):
     """Extract useful dialog fields from formatter text and structured data."""
     data = stream.get('streamData') or {}
+    parsed = data.get('parsedFile') or {}
     hints = stream.get('behaviorHints') or {}
     search_text = stream_search_text(stream)
     resolution_match = re.search(r'(?i)\b(4k|uhd|fhd|(?:2160|1440|1080|720|576|480|360)p)\b', search_text)
@@ -140,17 +141,28 @@ def stream_display_fields(stream):
         duration = f'{int(duration) // 3600}h {(int(duration) % 3600) // 60}m'
     else:
         duration = ''
+    def joined(*values):
+        result = []
+        for value in values:
+            candidates = value if isinstance(value, (list, tuple)) else [value]
+            for candidate in candidates:
+                if candidate and str(candidate) not in result:
+                    result.append(str(candidate))
+        return ' | '.join(result)
+
+    video = joined(parsed.get('quality'), parsed.get('encode'), parsed.get('visualTags'))
+    audio = joined(parsed.get('audioTags'), parsed.get('audioChannels'), parsed.get('languages'))
     return {
-        'resolution': resolution_match.group(1).upper() if resolution_match else '',
+        'resolution': str(parsed.get('resolution') or (resolution_match.group(1).upper() if resolution_match else '')),
         'service': str(service),
         'addon': str(data.get('addon') or ''),
         'size': _format_bytes(data.get('size')),
         'proxied': 'YES' if data.get('proxied') is True else ('NO' if data.get('proxied') is False else ''),
         'cached': cached,
         'in_library': 'YES' if data.get('library') is True else ('NO' if data.get('library') is False else ''),
-        'duration': duration,
-        'video': '',
-        'audio': '',
+        'duration': duration or 'N/A',
+        'video': video,
+        'audio': audio,
         'indexer': str(data.get('indexer') or ''),
         'filename': str(hints.get('filename') or data.get('filename') or ''),
     }

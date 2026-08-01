@@ -83,14 +83,22 @@ class StreamUtilsTests(unittest.TestCase):
                 'service': {'id': 'debridge', 'cached': True},
                 'addon': 'Comet', 'size': 8 * 1024 ** 3, 'proxied': False,
                 'library': False, 'indexer': 'ExampleIndexer',
+                'parsedFile': {
+                    'resolution': '1080p', 'quality': 'BluRay', 'encode': 'HEVC',
+                    'visualTags': ['IMAX'], 'audioTags': ['DD'],
+                    'audioChannels': ['5.1'], 'languages': ['English'],
+                },
             },
         }
         fields = stream_display_fields(stream)
-        self.assertEqual('FHD', fields['resolution'])
+        self.assertEqual('1080p', fields['resolution'])
         self.assertEqual('debridge', fields['service'])
         self.assertEqual('Comet', fields['addon'])
         self.assertEqual('8.00 GB', fields['size'])
         self.assertEqual('YES', fields['cached'])
+        self.assertEqual('N/A', fields['duration'])
+        self.assertEqual('BluRay | HEVC | IMAX', fields['video'])
+        self.assertEqual('DD | 5.1 | English', fields['audio'])
         self.assertEqual('Movie.2026.1080p.mkv', fields['filename'])
 
 
