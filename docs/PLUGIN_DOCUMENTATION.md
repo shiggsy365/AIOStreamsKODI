@@ -48,7 +48,7 @@ Access settings via: **Add-ons → Video add-ons → AIOStreams → Right-click 
 
 **General**
 - **AIOStreams Host URL**: Your backend URL (e.g., `https://aiostreams.elfhosted.com`)
-- **API Timeout**: Request timeout in seconds (default: 30)
+- **API Timeout**: How long the add-on waits for a backend response
 
 **Playback**
 - **Preferred Quality**: Set your preferred stream quality (4K, 1080p, 720p, etc.)
@@ -58,7 +58,7 @@ Access settings via: **Add-ons → Video add-ons → AIOStreams → Right-click 
 **Trakt Integration** (Optional)
 - **Enable Trakt**: Authorize your Trakt account for sync features
 - **Auto-Sync**: Automatic synchronization of watch history and progress
-- **Sync Interval**: How often to sync with Trakt (default: 5 minutes)
+- **Auto-Sync**: Keeps watch history and progress synchronized in the background
 
 ---
 
@@ -152,7 +152,7 @@ While AIOStreams works with any Kodi skin, we offer **AIODI** - a custom skin de
 ### Trakt Sync Issues
 - Re-authorize Trakt in plugin settings
 - Check Trakt API status at [trakt.tv/status](https://trakt.tv/status)
-- Verify auto-sync interval isn't too aggressive (minimum 5 minutes)
+- Verify automatic sync is enabled and allow it to complete before retrying
 
 ---
 
@@ -164,8 +164,6 @@ If you find this plugin useful, consider supporting development:
 
 ---
 
-**Version**: 1.1.210  
-**Last Updated**: 2026-01-19  
 **License**: MIT
 
 **Powered by**:

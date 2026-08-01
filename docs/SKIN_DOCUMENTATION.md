@@ -21,7 +21,7 @@ AIODI is purpose-built for AIOStreams, providing:
 
 #### Widget Features:
 - **Catalog Widgets**: Display any AIOStreams catalog (Trending, Popular, Genre-specific)
-- **More Results Button**: Pagination support - click to load next 20 items
+- **More Results Button**: Pagination support for loading additional items
 - **Custom Artwork**: Poster and landscape layouts with clearlogo support
 - **Progress Indicators**: Visual progress bars for partially watched content
 - **Watched Overlays**: Green checkmarks for completed content
@@ -78,14 +78,14 @@ Full Trakt synchronization with dedicated widgets and features:
 #### Next Up Widget
 - **Smart Episode Detection**: Shows next unwatched episode from your watched shows
 - **Progress Tracking**: Visual indicators show watch progress
-- **Zero API Calls**: Pure SQL-based, instant loading
+- **Local State**: Reads widget state from the local database
 - **Auto-Refresh**: Updates when you mark episodes as watched
 
 #### Watchlist Widgets
 - **Separate Movie/TV Widgets**: Dedicated widgets for movies and series
-- **Real-Time Sync**: Automatically syncs with Trakt every 5 minutes
+- **Background Sync**: Keeps Trakt widgets synchronized automatically
 - **Add/Remove Actions**: Quick context menu actions to manage watchlist
-- **Database-First**: Instant loading from local cache
+- **Database-First**: Loads widget data from the local cache when available
 
 #### Watched Status Integration
 - **Info Panel Buttons**: Toggle watched/watchlist status from info screen
@@ -97,7 +97,7 @@ Full Trakt synchronization with dedicated widgets and features:
 - **Automatic Scrobbling**: Playback automatically tracked to Trakt
 - **Collection Support**: View and manage your Trakt collection
 - **Hidden Items**: Hide shows from progress tracking
-- **Delta Sync**: Only downloads changed data (90%+ API reduction)
+- **Delta Sync**: Downloads data only when Trakt activity has changed
 
 ---
 
@@ -149,7 +149,7 @@ The left-side menu provides quick access to all features:
 
 Detailed information screen with:
 - **Metadata**: Title, plot, year, rating, runtime, genres
-- **Cast**: Top 5 cast members with photos
+- **Cast**: Cast members with photos
 - **Buttons**: Play, Trailer, Watchlist, Watched
 - **Related Content**: Similar movies/shows
 - **Dynamic Icons**: Buttons show current status (tick = in watchlist/watched)
@@ -198,8 +198,8 @@ Access via: **Settings → Skin Settings**
 ## Tips & Tricks
 
 ### Optimizing Performance
-- **Limit Widgets**: Keep 5-8 widgets per page for best performance
-- **Use Trakt Widgets**: Database-first widgets load instantly
+- **Limit Widgets**: Keep the number of widgets manageable for responsive navigation
+- **Use Trakt Widgets**: Database-first widgets can use local data
 - **Clear Cache**: Periodically clear plugin cache for fresh content
 
 ### Customization Ideas
@@ -283,8 +283,6 @@ If you enjoy AIODI skin, please consider supporting development:
 
 ---
 
-**Version**: 6.0.474  
-**Last Updated**: 2026-01-19  
 **License**: MIT
 
 **Built for**: AIOStreams Plugin  
