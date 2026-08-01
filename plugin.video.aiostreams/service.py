@@ -402,8 +402,8 @@ class AIOStreamsService:
         """Run cache cleanup on startup and periodically."""
         try:
             # 1. Cleanup file-based cache
-            from resources.lib.cache import cleanup_expired_cache
-            cleanup_expired_cache()
+            from resources.lib.cache import get_cache
+            get_cache().cleanup_expired()
             
             # 2. Cleanup SQL-based cache
             from resources.lib.database.trakt_sync.activities import TraktSyncDatabase
