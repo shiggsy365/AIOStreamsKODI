@@ -26,7 +26,7 @@ The addon is built as a Kodi Python 3 plugin with a modular architecture designe
 
 ```
 plugin.video.aiostreams/
-├── addon.py              # Main entry point & routing logic (~3800 lines)
+├── addon.py              # Main entry point & routing logic
 ├── service.py            # Background service for Trakt sync
 ├── addon.xml             # Plugin manifest & dependencies
 ├── resources/
@@ -79,7 +79,7 @@ def router(params):
 #### Background Service (`service.py`)
 
 Runs continuously in the background for:
-- Automatic Trakt sync every 5 minutes
+- Periodic automatic Trakt sync
 - Background task queue processing
 - Stream prefetching
 
@@ -168,8 +168,8 @@ def sync_trakt_data():
 ```
 
 **Benefits:**
-- **90%+ API call reduction** compared to full sync
-- Fast subsequent syncs (seconds vs minutes)
+- Requests only data whose remote activity timestamp has changed
+- Fast subsequent syncs
 - Respects Trakt API rate limits
 - Minimal bandwidth usage
 
@@ -313,8 +313,8 @@ CREATE TABLE metadata_cache (
 ```
 
 **Performance Benefits:**
-- **Instant list loading** - No API calls for cached data
-- **95%+ API call reduction** - Only fetch when cache expired
+- Cached data can be rendered without a network request
+- Expired entries are refreshed only when needed
 - **Offline capability** - Browse watchlist without internet
 - **Cross-session persistence** - Data survives Kodi restarts
 
@@ -378,20 +378,20 @@ Intelligent autoplay system for seamless binge-watching:
    - Has next episode available
 4. Monitor thread starts tracking playback time
 
-5. At (configured_time - 10s) before end:
+5. Shortly before the configured autoplay point:
    - Background thread scrapes next episode streams
    - Fetches next episode metadata (title, thumbnail)
 
-6. At configured_time before end:
+6. At the configured autoplay point:
    - Dialog appears at bottom left of screen
    - Shows episode thumbnail and title
    - Displays "Play Now" and "Stop Watching" buttons
-   - 10-second countdown begins
+   - A countdown begins
 
 7. User can:
    - Click "Play Now" - Immediately start next episode
    - Click "Stop Watching" - Cancel autoplay
-   - Wait 10 seconds - Auto-play next episode
+   - Wait for the countdown - Auto-play next episode
 
 8. If auto-playing:
    - Current episode stops
@@ -578,7 +578,7 @@ def _parse_stream_fields(text):
         'resolution': '',  # 2160p, 1080p, 720p, etc.
         'service': '',     # Real-Debrid, AllDebrid, etc.
         'addon': '',       # Torrentio, Jackett, etc.
-        'size': '',        # 62.5 GB
+        'size': '',        # Human-readable file size
         'proxied': '',     # YES/NO
         'cached': '',      # YES/NO
         'in_library': '',  # YES/NO
@@ -808,7 +808,7 @@ def sort_streams_by_preference(streams):
 
 1. **In-memory cache** - Fastest, cleared on restart
 2. **Database cache** - Persistent, configurable TTL
-3. **Stream prefetch** - Pre-loads next 3 episodes
+3. **Stream prefetch** - Pre-loads upcoming episodes
 
 ```python
 # In-memory cache (globals.py)
@@ -832,8 +832,8 @@ def get_cached_meta(content_type, meta_id, ttl_seconds):
 
 # Stream prefetch (stream_prefetch.py)
 def prefetch_next_up_streams():
-    """Pre-load streams for first 3 Next Up episodes"""
-    next_episodes = get_next_up_episodes()[:3]
+    """Pre-load streams for upcoming Next Up episodes"""
+    next_episodes = get_next_up_episodes()
     for episode in next_episodes:
         get_streams_async(episode)  # Background fetch
 ```

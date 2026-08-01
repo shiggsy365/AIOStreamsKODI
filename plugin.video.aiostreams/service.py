@@ -238,7 +238,10 @@ class AIOStreamsService:
                     xbmc.log(f'[AIOStreams Service] Silent manifest retrieval successful', xbmc.LOGINFO)
                     return True
         except Exception as e:
-            xbmc.log(f'[AIOStreams Service] Silent manifest retrieval failed: {e}', xbmc.LOGERROR)
+            xbmc.log(
+                f'[AIOStreams Service] Silent manifest retrieval failed: {type(e).__name__}',
+                xbmc.LOGERROR,
+            )
         return False
 
     def startup_widget_guard(self):

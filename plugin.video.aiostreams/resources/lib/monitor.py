@@ -331,7 +331,7 @@ class AIOStreamsPlayer(xbmc.Player):
                 }
                 play_url = f'plugin://plugin.video.aiostreams/?{urlencode(play_params)}'
                 
-                xbmc.log(f'[AIOStreams] UpNext play_url: {play_url}', xbmc.LOGINFO)
+                xbmc.log('[AIOStreams] Prepared UpNext playback route', xbmc.LOGINFO)
                 
                 # Store next episode params for our custom playback handler
                 # We'll monitor for when service.upnext tries to play and intercept it
@@ -439,7 +439,7 @@ class AIOStreamsPlayer(xbmc.Player):
             json_command = json.dumps(payload)
             response = xbmc.executeJSONRPC(json_command)
             
-            xbmc.log(f'[AIOStreams] Sent UpNext signal via JSONRPC. Response: {response}', xbmc.LOGDEBUG)
+            xbmc.log('[AIOStreams] Sent UpNext signal via JSONRPC', xbmc.LOGDEBUG)
         except Exception as e:
             xbmc.log(f'[AIOStreams] Error sending JSONRPC signal: {e}', xbmc.LOGERROR)
 
@@ -508,7 +508,7 @@ class AIOStreamsPlayer(xbmc.Player):
                               stored_season, stored_episode)
                 
                 if response:
-                    xbmc.log(f'[AIOStreams] Scrobble stop successful (response: {json.dumps(response)})', xbmc.LOGINFO)
+                    xbmc.log('[AIOStreams] Scrobble stop successful', xbmc.LOGINFO)
                 else:
                     xbmc.log(f'[AIOStreams] Scrobble stop failed (no response)', xbmc.LOGWARNING)
             except Exception as e:
