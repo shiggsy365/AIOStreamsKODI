@@ -27,8 +27,10 @@ try:
     from resources.lib.plugin_args import parse_plugin_params
     from resources.lib.safe_logging import redact_identifier
     from resources.lib.aiostreams_client import AIOStreamsClient, AIOStreamsClientError
+    from resources.lib.media import MediaRef
+    from resources.lib.items import apply_media_identity, create_media_list_item, media_action_params
     from resources.lib.stream_utils import (
-        canonical_episode_id, canonical_meta_id, matching_episode_id,
+        matching_episode_id,
         normalize_streams,
     )
     from resources.lib.globals import g
@@ -570,19 +572,10 @@ def fetch_metadata_parallel(items, content_type='movie'):
 def create_listitem_with_context(meta, content_type, action_url):
     """Create ListItem with full metadata, artwork, and context menus."""
     from resources.lib import trakt
-    title = meta.get('name') or meta.get('title') or 'Unknown Title'
-    list_item = xbmcgui.ListItem(label=title)
-    
-    # Use InfoTagVideo instead of deprecated setInfo
-    info_tag = list_item.getVideoInfoTag()
-    info_tag.setTitle(title)
-    info_tag.setPlot(meta.get('description', ''))
-    
-    # Set properties for Skin access (crucial for Search Info)
-    list_item.setProperty('id', str(meta.get('id', '')))
-    list_item.setProperty('meta_id', str(meta.get('id', '')))
-    list_item.setProperty('imdb_id', str(meta.get('id', '')))
-    list_item.setProperty('content_type', str(content_type))
+    media = MediaRef.from_meta(meta, content_type)
+    content_type = media.content_type
+    list_item, info_tag = create_media_list_item(meta, media)
+    title = media.title
     
     # Set genres (handle both list and comma-separated string)
     genres_data = meta.get('genres', [])
@@ -617,15 +610,15 @@ def create_listitem_with_context(meta, content_type, action_url):
 
 
     # Fallback to Trakt database for rating if API is empty
-    if not rating and 'tt' in str(meta.get('id', '')):
+    if not rating and media.imdb_id:
         try:
             db = trakt.get_trakt_db()
             if db:
                 db_item = None
                 if content_type == 'movie':
-                    db_item = db.get_movie(meta['id'])
+                    db_item = db.get_movie(media.imdb_id)
                 else:
-                    db_item = db.get_show(meta['id'])
+                    db_item = db.get_show(media.imdb_id)
                 
                 if db_item and db_item.get('metadata'):
                     m = db_item['metadata']
@@ -664,10 +657,9 @@ def create_listitem_with_context(meta, content_type, action_url):
         list_item.setProperty('TraktRating', '')
 
     # Always set IMDBNumber and UniqueID for info window compatibility
-    imdb_id = meta.get('imdb_id', meta.get('id', ''))
-    info_tag.setIMDBNumber(imdb_id)
-    if imdb_id:
-        info_tag.setUniqueID(imdb_id, 'imdb')
+    if media.imdb_id:
+        info_tag.setIMDBNumber(media.imdb_id)
+        info_tag.setUniqueID(media.imdb_id, 'imdb')
     # --- End Consolidated Rating Logic ---
     
     # Cast & Director
@@ -829,21 +821,21 @@ def create_listitem_with_context(meta, content_type, action_url):
     
     # Check if watched in Trakt and add overlay/properties
     if HAS_MODULES and trakt.get_access_token():
-        item_id = meta.get('id', '')
-        if item_id:
+        trakt_id = media.imdb_id
+        if trakt_id:
             try:
                 # Use thread-local DB connection for efficiency
                 db = trakt.get_trakt_db()
                 if db:
                     # Check watched status using local DB directly with IMDb ID
-                    is_watched = db.is_imdb_watched(item_id, content_type)
+                    is_watched = db.is_imdb_watched(trakt_id, content_type)
                     if is_watched:
                         info_tag.setPlaycount(1)
                         list_item.setProperty('WatchedOverlay', 'indicator_watched.png')
                         list_item.setProperty('watched', 'true')
                     
                     # Check for bookmarks (playback progress)
-                    bookmark = db.get_bookmark(imdb_id=item_id)
+                    bookmark = db.get_bookmark(imdb_id=trakt_id)
                     if bookmark and bookmark.get('percent_played', 0) > 0:
                         percent = bookmark['percent_played']
                         list_item.setProperty('PercentPlayed', str(int(percent)))
@@ -856,9 +848,9 @@ def create_listitem_with_context(meta, content_type, action_url):
                     # NEW: Add Trakt ratings from local DB for skin access
                     trakt_data = None
                     if content_type == 'movies':
-                        trakt_data = db.get_movie(item_id)
+                        trakt_data = db.get_movie(trakt_id)
                     elif content_type in ['series', 'tvshow']:
-                        trakt_data = db.get_show(item_id)
+                        trakt_data = db.get_show(trakt_id)
                     
                     if trakt_data and trakt_data.get('metadata'):
                         meta_blob = trakt_data['metadata']
@@ -872,7 +864,7 @@ def create_listitem_with_context(meta, content_type, action_url):
                         if user_rating:
                             list_item.setProperty('TraktUserRating', str(user_rating))
             except Exception as e:
-                xbmc.log(f'[AIOStreams] Error setting watched/bookmark/rating status for {item_id}: {e}', xbmc.LOGDEBUG)
+                xbmc.log(f'[AIOStreams] Error setting watched/bookmark/rating status for {redact_identifier(trakt_id)}: {e}', xbmc.LOGDEBUG)
     
     # Set artwork
     art = {}
@@ -884,8 +876,8 @@ def create_listitem_with_context(meta, content_type, action_url):
     logo_url = meta.get('logo')
     if logo_url and isinstance(logo_url, str) and logo_url.lower() != 'none' and logo_url.lower().startswith('http'):
         # Try to use cached clearlogo first
-        item_id = meta.get('id', '')
-        cached_clearlogo = get_cached_clearlogo_path(content_type, item_id) if item_id else None
+        metadata_id = media.navigation_id
+        cached_clearlogo = get_cached_clearlogo_path(content_type, metadata_id) if metadata_id else None
         
         if cached_clearlogo:
             art['clearlogo'] = cached_clearlogo
@@ -898,7 +890,7 @@ def create_listitem_with_context(meta, content_type, action_url):
             art['logo'] = logo_url
             if content_type == 'series':
                 art['tvshow.clearlogo'] = logo_url
-            _ensure_clearlogo_cached(meta, content_type, item_id)
+            _ensure_clearlogo_cached(meta, content_type, metadata_id)
             
     if art:
         list_item.setArt(art)
@@ -906,16 +898,17 @@ def create_listitem_with_context(meta, content_type, action_url):
     # Build context menu based on content type
     context_menu = []
 
-    item_id = meta.get('id', '')
-    title = meta.get('name', 'Unknown')
-    poster = meta.get('poster', '')
-    fanart = meta.get('background', '')
+    playback_id = media.playback_id
+    trakt_id = media.imdb_id
+    title = media.title
+    poster = media.poster or ''
+    fanart = media.fanart or ''
     # Use the actual clearlogo being used (cached path or URL)
     clearlogo = art.get('clearlogo', meta.get('logo', ''))
 
     if content_type == 'movie':
         # Movie context menu: Scrape Streams, View Trailer, Mark as Watched, Watchlist
-        context_menu.append(('[COLOR lightcoral]Scrape Streams[/COLOR]', f'RunPlugin({get_url(action="show_streams", content_type="movie", media_id=item_id, title=title, poster=poster, fanart=fanart, clearlogo=clearlogo)})'))
+        context_menu.append(('[COLOR lightcoral]Scrape Streams[/COLOR]', f'RunPlugin({get_url(action="show_streams", content_type="movie", media_id=playback_id, title=title, poster=poster, fanart=fanart, clearlogo=clearlogo)})'))
 
         # Add trailer if available
         trailers = meta.get('trailers', [])
@@ -930,32 +923,32 @@ def create_listitem_with_context(meta, content_type, action_url):
                 context_menu.append(('[COLOR lightcoral]View Trailer[/COLOR]', f'PlayMedia({play_url})'))
 
         # Trakt context menus if authorized
-        if HAS_MODULES and trakt.get_access_token() and item_id:
+        if HAS_MODULES and trakt.get_access_token() and trakt_id:
             db = trakt.get_trakt_db()
             
             # OPTIMIZATION: Use local DB for Watched status
             is_watched = False
             if db:
-                is_watched = db.is_imdb_watched(item_id, content_type)
+                is_watched = db.is_imdb_watched(trakt_id, content_type)
 
             if is_watched:
                 context_menu.append(('[COLOR lightcoral]Mark Movie As Unwatched[/COLOR]',
-                                    f'RunPlugin({get_url(action="trakt_mark_unwatched", media_type=content_type, imdb_id=item_id)})'))
+                                    f'RunPlugin({get_url(action="trakt_mark_unwatched", media_type=content_type, imdb_id=trakt_id)})'))
             else:
                 context_menu.append(('[COLOR lightcoral]Mark Movie As Watched[/COLOR]',
-                                    f'RunPlugin({get_url(action="trakt_mark_watched", media_type=content_type, imdb_id=item_id)})'))
+                                    f'RunPlugin({get_url(action="trakt_mark_watched", media_type=content_type, imdb_id=trakt_id)})'))
 
             # OPTIMIZATION: Use local DB for Watchlist
             is_in_watchlist = False
             if db:
-                is_in_watchlist = db.is_imdb_in_watchlist(item_id, content_type)
+                is_in_watchlist = db.is_imdb_in_watchlist(trakt_id, content_type)
 
             if is_in_watchlist:
                 context_menu.append(('[COLOR lightcoral]Remove from Watchlist[/COLOR]',
-                                    f'RunPlugin({get_url(action="trakt_remove_watchlist", media_type=content_type, imdb_id=item_id)})'))
+                                    f'RunPlugin({get_url(action="trakt_remove_watchlist", media_type=content_type, imdb_id=trakt_id)})'))
             else:
                 context_menu.append(('[COLOR lightcoral]Add to Watchlist[/COLOR]',
-                                    f'RunPlugin({get_url(action="trakt_add_watchlist", media_type=content_type, imdb_id=item_id)})'))
+                                    f'RunPlugin({get_url(action="trakt_add_watchlist", media_type=content_type, imdb_id=trakt_id)})'))
 
     elif content_type == 'series':
         # Show context menu: View Trailer, Mark as Watched, Watchlist
@@ -973,14 +966,14 @@ def create_listitem_with_context(meta, content_type, action_url):
 
         # Trakt context menus if authorized
         # Trakt context menus if authorized
-        if HAS_MODULES and trakt.get_access_token() and item_id:
+        if HAS_MODULES and trakt.get_access_token() and trakt_id:
             # OPTIMIZATION: Use local DB only
             db = trakt.get_trakt_db()
             
             # Check if show is fully watched using local DB
             is_watched = False
             if db:
-                progress = db.get_imdb_show_progress(item_id)
+                progress = db.get_imdb_show_progress(trakt_id)
                 if progress:
                     aired = progress.get('aired', 0)
                     completed = progress.get('completed', 0)
@@ -988,30 +981,30 @@ def create_listitem_with_context(meta, content_type, action_url):
 
             if is_watched:
                 context_menu.append(('[COLOR lightcoral]Mark Show As Unwatched[/COLOR]',
-                                    f'RunPlugin({get_url(action="trakt_mark_unwatched", media_type=content_type, imdb_id=item_id)})'))
+                                    f'RunPlugin({get_url(action="trakt_mark_unwatched", media_type=content_type, imdb_id=trakt_id)})'))
             else:
                 context_menu.append(('[COLOR lightcoral]Mark Show As Watched[/COLOR]',
-                                    f'RunPlugin({get_url(action="trakt_mark_watched", media_type=content_type, imdb_id=item_id)})'))
+                                    f'RunPlugin({get_url(action="trakt_mark_watched", media_type=content_type, imdb_id=trakt_id)})'))
 
             # Stop Watching (Drop) and Unhide options for shows
             if content_type in ['show', 'series', 'tvshow']:
                 context_menu.append(('[COLOR lightcoral]Stop Watching (Drop) Trakt[/COLOR]',
-                                    f'RunPlugin({get_url(action="trakt_hide_from_progress", media_type="series", imdb_id=item_id)})'))
+                                    f'RunPlugin({get_url(action="trakt_hide_from_progress", media_type="series", imdb_id=trakt_id)})'))
                 context_menu.append(('[COLOR lightgreen]Resume Watching (Unhide) Trakt[/COLOR]',
-                                    f'RunPlugin({get_url(action="trakt_unhide_from_progress", media_type="series", imdb_id=item_id)})'))
+                                    f'RunPlugin({get_url(action="trakt_unhide_from_progress", media_type="series", imdb_id=trakt_id)})'))
 
             # OPTIMIZATION: Use local DB for Watchlist
             is_in_watchlist = False
             # Reuse db from earlier in this block (lines ~1009)
             if db:
-                is_in_watchlist = db.is_imdb_in_watchlist(item_id, content_type)
+                is_in_watchlist = db.is_imdb_in_watchlist(trakt_id, content_type)
 
             if is_in_watchlist:
                 context_menu.append(('[COLOR lightcoral]Remove from Watchlist[/COLOR]',
-                                    f'RunPlugin({get_url(action="trakt_remove_watchlist", media_type=content_type, imdb_id=item_id)})'))
+                                    f'RunPlugin({get_url(action="trakt_remove_watchlist", media_type=content_type, imdb_id=trakt_id)})'))
             else:
                 context_menu.append(('[COLOR lightcoral]Add to Watchlist[/COLOR]',
-                                    f'RunPlugin({get_url(action="trakt_add_watchlist", media_type=content_type, imdb_id=item_id)})'))
+                                    f'RunPlugin({get_url(action="trakt_add_watchlist", media_type=content_type, imdb_id=trakt_id)})'))
 
     list_item.addContextMenuItems(context_menu)
 
@@ -1174,12 +1167,12 @@ def action_search(params=None):
 
     # Display results
     for meta in items:
-        item_id = meta.get('id')
-        stream_id = canonical_meta_id(meta)
-        item_type = meta.get('type', content_type)
+        item_type = 'video' if content_type in ['video', 'youtube'] else meta.get('type', content_type)
+        media = MediaRef.from_meta(meta, item_type)
+        item_type = media.content_type
 
         if item_type == 'series':
-            url = get_url(action='show_seasons', meta_id=item_id)
+            url = get_url(action='show_seasons', **media_action_params('show_seasons', media))
             is_folder = True
         elif content_type in ['video', 'youtube'] or 'youtube' in str(item_type):
             # YouTube specific logic
@@ -1201,18 +1194,16 @@ def action_search(params=None):
                 url = get_url(action='open_youtube_folder', url=item_url)
                 is_folder = False
             else:
-                title = meta.get('name') or meta.get('title') or 'Unknown Title'
-                poster = meta.get('poster', '')
-                fanart = meta.get('background', '')
-                clearlogo = meta.get('logo', '')
-                url = get_url(action='play', content_type='video', imdb_id=item_id, title=title, poster=poster, fanart=fanart, clearlogo=clearlogo)
+                url = get_url(
+                    action='play',
+                    **media_action_params('play', media, clearlogo=meta.get('logo', ''))
+                )
                 is_folder = False
         else:
-            title = meta.get('name') or meta.get('title') or 'Unknown Title'
-            poster = meta.get('poster', '')
-            fanart = meta.get('background', '')
-            clearlogo = meta.get('logo', '')
-            url = get_url(action='play', content_type='movie' if item_type == 'movie' else item_type, imdb_id=stream_id, title=title, poster=poster, fanart=fanart, clearlogo=clearlogo)
+            url = get_url(
+                action='play',
+                **media_action_params('play', media, clearlogo=meta.get('logo', ''))
+            )
             is_folder = False
 
         list_item = create_listitem_with_context(meta, item_type, url)
@@ -1309,12 +1300,11 @@ def search_all_results(query):
         if movies:
             # Movies section header removed
             for meta in movies[:10]:
-                item_id = meta.get('id')
-                title = meta.get('name', 'Unknown')
-                poster = meta.get('poster', '')
-                fanart = meta.get('background', '')
-                clearlogo = meta.get('logo', '')
-                url = get_url(action='play', content_type='movie', imdb_id=canonical_meta_id(meta), title=title, poster=poster, fanart=fanart, clearlogo=clearlogo)
+                media = MediaRef.from_meta(meta, 'movie')
+                url = get_url(
+                    action='play',
+                    **media_action_params('play', media, clearlogo=meta.get('logo', ''))
+                )
                 list_item = create_listitem_with_context(meta, 'movie', url)
                 list_item.setProperty('IsPlayable', 'true')
                 xbmcplugin.addDirectoryItem(HANDLE, url, list_item, False)
@@ -1333,8 +1323,8 @@ def search_all_results(query):
         if shows:
             # TV Shows section header removed
             for meta in shows[:10]:
-                item_id = meta.get('id')
-                url = get_url(action='show_seasons', meta_id=item_id)
+                media = MediaRef.from_meta(meta, 'series')
+                url = get_url(action='show_seasons', **media_action_params('show_seasons', media))
                 list_item = create_listitem_with_context(meta, 'series', url)
                 xbmcplugin.addDirectoryItem(HANDLE, url, list_item, True)
 
@@ -1409,7 +1399,7 @@ def play(params=None):
         meta_data = get_meta(content_type, imdb_id)
         if meta_data and 'meta' in meta_data:
             meta = meta_data['meta']
-            canonical_id = canonical_meta_id(meta) or imdb_id
+            canonical_id = MediaRef.from_meta(meta, content_type).playback_id or imdb_id
             if content_type == 'movie':
                 media_id = canonical_id
             elif not params.get('media_id'):
@@ -2168,23 +2158,21 @@ def browse_catalog():
     
     # Display catalog items
     for meta in catalog_data['metas']:
-        item_id = meta.get('id')
-        stream_id = canonical_meta_id(meta)
-        item_type = meta.get('type', content_type)
+        media = MediaRef.from_meta(meta, meta.get('type', content_type))
+        item_type = media.content_type
         
         # Determine if this is a series or movie
         if item_type == 'series':
-            url = get_url(action='show_seasons', meta_id=item_id)
+            url = get_url(action='show_seasons', **media_action_params('show_seasons', media))
             is_folder = True
         else:
-            title = meta.get('name', 'Unknown')
-            poster = meta.get('poster', '')
-            fanart = meta.get('background', '')
-            clearlogo = meta.get('logo', '')
-            url = get_url(action='play', content_type='movie', imdb_id=stream_id, title=title, poster=poster, fanart=fanart, clearlogo=clearlogo)
+            url = get_url(
+                action='play',
+                **media_action_params('play', media, clearlogo=meta.get('logo', ''))
+            )
             is_folder = False
 
-        list_item = create_listitem_with_context(meta, content_type, url)
+        list_item = create_listitem_with_context(meta, item_type, url)
 
         # Set IsPlayable property for movies
         if not is_folder:
@@ -2566,6 +2554,7 @@ def show_seasons():
         return
     
     meta = meta_data['meta']
+    show_ref = MediaRef.from_meta(meta, 'series')
     series_name = meta.get('name', 'Unknown Series')
     
     xbmcplugin.setPluginCategory(HANDLE, series_name)
@@ -2677,18 +2666,20 @@ def show_seasons():
         context_menu = []
 
         # Add Trakt watched toggle for season if authorized
-        if HAS_MODULES and trakt.get_access_token():
+        if HAS_MODULES and trakt.get_access_token() and show_ref.imdb_id:
             # Use season watched status (already calculated above)
             if is_season_watched:
                 context_menu.append(('[COLOR lightcoral]Mark Season As Unwatched[/COLOR]',
-                                    f'RunPlugin({get_url(action="trakt_mark_unwatched", media_type="show", imdb_id=meta_id, season=season_num)})'))
+                                    f'RunPlugin({get_url(action="trakt_mark_unwatched", media_type="show", imdb_id=show_ref.imdb_id, season=season_num)})'))
             else:
                 context_menu.append(('[COLOR lightcoral]Mark Season As Watched[/COLOR]',
-                                    f'RunPlugin({get_url(action="trakt_mark_watched", media_type="show", imdb_id=meta_id, season=season_num)})'))
+                                    f'RunPlugin({get_url(action="trakt_mark_watched", media_type="show", imdb_id=show_ref.imdb_id, season=season_num)})'))
 
         list_item.addContextMenuItems(context_menu)
         
-        url = get_url(action='show_episodes', meta_id=meta_id, season=season_num)
+        url = get_url(
+            action='show_episodes', **media_action_params('show_episodes', show_ref, season=season_num)
+        )
         xbmcplugin.addDirectoryItem(HANDLE, url, list_item, True)
     
     xbmcplugin.endOfDirectory(HANDLE)
@@ -2841,8 +2832,7 @@ def show_episodes():
         return
     
     meta = meta_data['meta']
-    series_name = meta.get('name', 'Unknown Series')
-    
+    show_ref = MediaRef.from_meta(meta, 'series')
     series_name = meta.get('name', 'Unknown Series')
     
     # Set window-level artwork properties for the skin
@@ -2921,7 +2911,9 @@ def show_episodes():
         else:
             label = f'{episode_num}. {episode_title}'
 
+        episode_ref = MediaRef.episode(show_ref, episode, season, episode_num)
         list_item = xbmcgui.ListItem(label=label)
+        apply_media_identity(list_item, episode_ref)
 
         info_tag = list_item.getVideoInfoTag()
         info_tag.setTitle(episode_title)
@@ -2992,30 +2984,35 @@ def show_episodes():
 
         # Add episode context menu
         episode_title = f'{series_name} - S{season:02d}E{episode_num:02d}'
-        episode_media_id = canonical_episode_id(episode, canonical_meta_id(meta) or meta_id, season, episode_num)
+        episode_media_id = episode_ref.playback_id
         episode_poster = meta.get('poster', '')
         episode_fanart = meta.get('background', '')
         episode_clearlogo = meta.get('logo', '')
         context_menu = [
             ('[COLOR lightcoral]Scrape Streams[/COLOR]', f'RunPlugin({get_url(action="show_streams", content_type="series", media_id=episode_media_id, title=episode_title, poster=episode_poster, fanart=episode_fanart, clearlogo=episode_clearlogo)})'),
-            ('[COLOR lightcoral]Browse Show[/COLOR]', f'ActivateWindow(Videos,{get_url(action="show_seasons", meta_id=meta_id)},return)')
+            ('[COLOR lightcoral]Browse Show[/COLOR]', f'ActivateWindow(Videos,{get_url(action="show_seasons", **media_action_params("show_seasons", show_ref))},return)')
         ]
 
         # Add Trakt watched toggle if authorized
-        if HAS_MODULES and trakt.get_access_token():
+        if HAS_MODULES and trakt.get_access_token() and show_ref.imdb_id:
             if is_watched:
                 context_menu.append(('[COLOR lightcoral]Mark Episode As Unwatched[/COLOR]',
-                                    f'RunPlugin({get_url(action="trakt_mark_unwatched", media_type="show", imdb_id=meta_id, season=season, episode=episode_num)})'))
+                                    f'RunPlugin({get_url(action="trakt_mark_unwatched", media_type="show", imdb_id=show_ref.imdb_id, season=season, episode=episode_num)})'))
             else:
                 context_menu.append(('[COLOR lightcoral]Mark Episode As Watched[/COLOR]',
-                                    f'RunPlugin({get_url(action="trakt_mark_watched", media_type="show", imdb_id=meta_id, season=season, episode=episode_num)})'))
+                                    f'RunPlugin({get_url(action="trakt_mark_watched", media_type="show", imdb_id=show_ref.imdb_id, season=season, episode=episode_num)})'))
 
         list_item.addContextMenuItems(context_menu)
 
         # Make episodes directly playable
-        url = get_url(action='play', content_type='series', imdb_id=canonical_meta_id(meta) or meta_id,
-                      media_id=episode_media_id, season=season, episode=episode_num, title=episode_title,
-                      poster=episode_poster, fanart=episode_fanart, clearlogo=episode_clearlogo)
+        url = get_url(
+            action='play',
+            **media_action_params(
+                'play', show_ref, media_id=episode_media_id, season=season, episode=episode_num,
+                title=episode_title, poster=episode_poster, fanart=episode_fanart,
+                clearlogo=episode_clearlogo,
+            )
+        )
         list_item.setProperty('IsPlayable', 'true')
         xbmcplugin.addDirectoryItem(HANDLE, url, list_item, False)
     
@@ -3227,16 +3224,18 @@ def trakt_watchlist(params=None):
             if cached_data.get('released'):
                 meta['released'] = cached_data['released']
 
+        media = MediaRef.from_meta(meta, content_type)
         # Set URL and folder status based on content type
-        if content_type == 'series':
-            url = get_url(action='show_seasons', meta_id=item_id)
+        if media.content_type == 'series':
+            url = get_url(action='show_seasons', **media_action_params('show_seasons', media))
             is_folder = True
         else:
-            url = get_url(action='play', content_type='movie', imdb_id=canonical_meta_id(meta), title=meta.get('name', ''),
-                         poster=meta.get('poster', ''), fanart=meta.get('background', ''), clearlogo=meta.get('logo', ''))
+            url = get_url(
+                action='play', **media_action_params('play', media, clearlogo=meta.get('logo', ''))
+            )
             is_folder = False
 
-        list_item = create_listitem_with_context(meta, content_type, url)
+        list_item = create_listitem_with_context(meta, media.content_type, url)
         xbmcplugin.addDirectoryItem(HANDLE, url, list_item, is_folder)
 
     # Set NumItems property if called from smart_widget
@@ -3377,11 +3376,25 @@ def trakt_next_up():
                             break
 
             label = f'{show_title} S{season:02d}E{episode:02d}'
-            url = get_url(action='play', content_type='series', imdb_id=show_imdb, season=season, episode=episode, title=label, poster=poster, fanart=fanart, clearlogo=logo)
+            show_ref = MediaRef.from_meta(
+                meta_data or {'id': show_imdb, 'imdb_id': show_imdb, 'name': show_title},
+                'series',
+            )
+            episode_ref = MediaRef.episode(
+                show_ref, episode_meta or {'id': episode_imdb}, season, episode
+            )
+            url = get_url(
+                action='play',
+                **media_action_params(
+                    'play', show_ref, media_id=episode_ref.playback_id, season=season,
+                    episode=episode, title=label, poster=poster, fanart=fanart, clearlogo=logo,
+                )
+            )
 
             # Prepare metadata for creation (merging show-level info for chips)
             meta = {
-                'id': episode_imdb or show_imdb,
+                'id': episode_ref.metadata_id,
+                'imdb_id': episode_ref.imdb_id,
                 'name': label,
                 'description': episode_overview,
                 'released': episode_air_date,
@@ -3446,20 +3459,20 @@ def trakt_next_up():
 
             # Build context menu (create_listitem_with_context already adds standard ones)
             context_menu = []
-            context_menu.append(('[COLOR lightcoral]Scrape Streams[/COLOR]', f'RunPlugin({get_url(action="show_streams", content_type="series", media_id=f"{show_imdb}:{season}:{episode}", title=label, poster=poster, fanart=fanart, clearlogo=logo)})'))
-            context_menu.append(('[COLOR lightcoral]Browse Show[/COLOR]', f'ActivateWindow(Videos,{get_url(action="show_seasons", meta_id=show_imdb)},return)'))
+            context_menu.append(('[COLOR lightcoral]Scrape Streams[/COLOR]', f'RunPlugin({get_url(action="show_streams", content_type="series", media_id=episode_ref.playback_id, title=label, poster=poster, fanart=fanart, clearlogo=logo)})'))
+            context_menu.append(('[COLOR lightcoral]Browse Show[/COLOR]', f'ActivateWindow(Videos,{get_url(action="show_seasons", **media_action_params("show_seasons", show_ref))},return)'))
 
             # Add Trakt watched toggle for episodes if authorized
-            if HAS_MODULES and trakt.get_access_token() and show_imdb:
+            if HAS_MODULES and trakt.get_access_token() and show_ref.imdb_id:
                 show_trakt_id = ep_data.get('show_trakt_id')
                 if show_trakt_id:
                     is_watched = db.is_item_watched(show_trakt_id, 'episode', season, episode)
                     if is_watched:
                         context_menu.append(('[COLOR lightcoral]Mark Episode As Unwatched[/COLOR]',
-                                            f'RunPlugin({get_url(action="trakt_mark_unwatched", media_type="show", imdb_id=show_imdb, season=season, episode=episode)})'))
+                                            f'RunPlugin({get_url(action="trakt_mark_unwatched", media_type="show", imdb_id=show_ref.imdb_id, season=season, episode=episode)})'))
                     else:
                         context_menu.append(('[COLOR lightcoral]Mark Episode As Watched[/COLOR]',
-                                            f'RunPlugin({get_url(action="trakt_mark_watched", media_type="show", imdb_id=show_imdb, season=season, episode=episode)})'))
+                                            f'RunPlugin({get_url(action="trakt_mark_watched", media_type="show", imdb_id=show_ref.imdb_id, season=season, episode=episode)})'))
 
             list_item.addContextMenuItems(context_menu)
             list_item.setProperty('IsPlayable', 'true')
@@ -3566,18 +3579,17 @@ def show_related():
                 'genres': []
             }
 
-        if item_content_type == 'series':
-            url = get_url(action='show_seasons', meta_id=item_id)
+        media = MediaRef.from_meta(meta, item_content_type)
+        if media.content_type == 'series':
+            url = get_url(action='show_seasons', **media_action_params('show_seasons', media))
             is_folder = True
         else:
-            title = meta.get('name', 'Unknown')
-            poster = meta.get('poster', '')
-            fanart = meta.get('background', '')
-            clearlogo = meta.get('logo', '')
-            url = get_url(action='play', content_type='movie', imdb_id=canonical_meta_id(meta), title=title, poster=poster, fanart=fanart, clearlogo=clearlogo)
+            url = get_url(
+                action='play', **media_action_params('play', media, clearlogo=meta.get('logo', ''))
+            )
             is_folder = False
 
-        list_item = create_listitem_with_context(meta, item_content_type, url)
+        list_item = create_listitem_with_context(meta, media.content_type, url)
 
         # Set IsPlayable property for movies
         if not is_folder:
@@ -3871,7 +3883,7 @@ def clear_cache():
 
         # Clear generic caches (manifest, metadata, catalogs, HTTP headers)
         xbmc.log('[AIOStreams] Clearing manifest, metadata, catalog, and HTTP header caches', xbmc.LOGINFO)
-        cache.cleanup_expired_cache(force_all=True)
+        cache.get_cache().cleanup_expired(force_all=True)
 
         # Clear Trakt progress caches (memory + disk)
         xbmc.log('[AIOStreams] Clearing Trakt progress caches', xbmc.LOGINFO)
@@ -3893,7 +3905,7 @@ def clear_cache():
             xbmc.log(f'[AIOStreams] Error clearing stream data: {e}', xbmc.LOGWARNING)
 
         # Verify manifest cache was cleared by checking for manifest files
-        cache_dir = cache.get_cache_dir()
+        cache_dir = cache.get_cache().get_cache_dir()
         remaining_manifests = []
         try:
             import os
@@ -3948,7 +3960,7 @@ def refresh_manifest_cache():
         xbmc.log('[AIOStreams] Invalidated manifest response headers', xbmc.LOGDEBUG)
 
         # Also clear from cache module's internal tracking
-        cache.cleanup_expired_cache(force_all=False)
+        cache.get_cache().cleanup_expired(force_all=False)
 
         # Now fetch fresh manifest (will not send If-None-Match since headers cache is cleared)
         xbmc.log('[AIOStreams] Fetching fresh manifest from server', xbmc.LOGINFO)
@@ -4273,7 +4285,7 @@ def database_reset():
 
     # Clear local file caches (manifest, metadata, catalogs, HTTP headers)
     xbmc.log('[AIOStreams] Clearing file caches (manifest, metadata, catalogs, HTTP headers)', xbmc.LOGINFO)
-    cache.cleanup_expired_cache(force_all=True)
+    cache.get_cache().cleanup_expired(force_all=True)
 
     # Clear clearlogo cache
     xbmc.log('[AIOStreams] Clearing clearlogo cache', xbmc.LOGINFO)
@@ -4710,16 +4722,21 @@ def smart_widget():
                     else:
                         merged_meta = meta
                     
-                    if content_type == 'series':
-                        url = get_url(action='show_seasons', meta_id=item_id)
+                    media = MediaRef.from_meta(merged_meta, content_type)
+                    if media.content_type == 'series':
+                        url = get_url(action='show_seasons', **media_action_params('show_seasons', media))
                         is_folder = True
                     else:
-                        url = get_url(action='show_streams', content_type='movie', media_id=canonical_meta_id(merged_meta),
-                                    title=merged_meta.get('name', ''), poster=merged_meta.get('poster', ''),
-                                    fanart=merged_meta.get('background', ''), clearlogo=merged_meta.get('logo', ''))
+                        url = get_url(
+                            action='show_streams',
+                            **media_action_params(
+                                'show_streams', media, media_id=media.playback_id,
+                                clearlogo=merged_meta.get('logo', ''),
+                            )
+                        )
                         is_folder = False
                     
-                    list_item = create_listitem_with_context(merged_meta, content_type, url)
+                    list_item = create_listitem_with_context(merged_meta, media.content_type, url)
                     xbmcplugin.addDirectoryItem(HANDLE, url, list_item, is_folder)
 
 
@@ -4830,21 +4847,25 @@ def configured_widget():
 
                 # Add items
                 for meta in catalog_data['metas']:
-                    item_id = meta.get('id')
-                    if not item_id:
+                    media = MediaRef.from_meta(meta, content_type)
+                    if not media.navigation_id:
                         continue
 
                     # For series: navigate to show
-                    if content_type == 'series':
-                        url = get_url(action='show_seasons', meta_id=item_id)
+                    if media.content_type == 'series':
+                        url = get_url(action='show_seasons', **media_action_params('show_seasons', media))
                         is_folder = True
                     else:
-                        url = get_url(action='show_streams', content_type='movie', media_id=canonical_meta_id(meta),
-                                     title=meta.get('name', ''), poster=meta.get('poster', ''),
-                                     fanart=meta.get('background', ''), clearlogo=meta.get('logo', ''))
+                        url = get_url(
+                            action='show_streams',
+                            **media_action_params(
+                                'show_streams', media, media_id=media.playback_id,
+                                clearlogo=meta.get('logo', ''),
+                            )
+                        )
                         is_folder = False
 
-                    list_item = create_listitem_with_context(meta, content_type, url)
+                    list_item = create_listitem_with_context(meta, media.content_type, url)
                     xbmcplugin.addDirectoryItem(HANDLE, url, list_item, is_folder)
 
                 xbmcplugin.endOfDirectory(HANDLE)
@@ -4977,8 +4998,9 @@ def action_info(params):
 
         # Create list item with full context
         # We need a dummy URL since we aren't playing it immediately, but it might be used for Play button in dialog
-        play_url = get_url(action='play', content_type=content_type, imdb_id=meta_id)
-        list_item = create_listitem_with_context(meta, content_type, play_url)
+        media = MediaRef.from_meta(meta, content_type)
+        play_url = get_url(action='play', **media_action_params('play', media))
+        list_item = create_listitem_with_context(meta, media.content_type, play_url)
         
         # Close busy dialog
         xbmc.executebuiltin('Dialog.Close(busydialog)')
