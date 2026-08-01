@@ -24,7 +24,9 @@ from concurrent.futures import ThreadPoolExecutor, as_completed
 try:
     # Essential imports only
     from resources.lib import ui_helpers, settings_helpers, constants, filters, cache, streams
-    from resources.lib.stream_utils import canonical_episode_id, canonical_meta_id, normalize_streams
+    from resources.lib.stream_utils import (
+        canonical_episode_id, canonical_meta_id, matching_episode_id, normalize_streams,
+    )
     from resources.lib.globals import g
     from resources.lib.router import get_router, action, dispatch, set_default
     
@@ -1682,13 +1684,23 @@ def play(params=None):
         episode = params.get('episode')
         media_id = params.get('media_id') or f"{imdb_id}:{season}:{episode}"
         title = params.get('title', f'S{season}E{episode}')
+    requested_media_id = media_id
 
-    # If metadata not provided in params, fetch it from API
-    if not poster or not fanart or not clearlogo:
+    # Full metadata often supplies the canonical IMDb/video ID even when catalog
+    # rows expose only a TMDB ID. Resolve it before making the stream request.
+    needs_canonical_id = not params.get('media_id') and not imdb_id.startswith('tt')
+    if not poster or not fanart or not clearlogo or needs_canonical_id:
         xbmc.log(f'[AIOStreams] play() fetching metadata for {imdb_id} (poster={bool(poster)}, fanart={bool(fanart)}, clearlogo={bool(clearlogo)})', xbmc.LOGINFO)
         meta_data = get_meta(content_type, imdb_id)
         if meta_data and 'meta' in meta_data:
             meta = meta_data['meta']
+            canonical_id = canonical_meta_id(meta) or imdb_id
+            if content_type == 'movie':
+                media_id = canonical_id
+            elif not params.get('media_id'):
+                media_id = matching_episode_id(meta, canonical_id, season, episode)
+            if media_id != requested_media_id:
+                xbmc.log(f'[AIOStreams] Resolved canonical stream ID: type={content_type}, id={media_id}', xbmc.LOGINFO)
             if not poster:
                 poster = meta.get('poster', '')
             if not fanart:

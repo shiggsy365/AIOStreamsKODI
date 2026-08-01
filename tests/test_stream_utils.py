@@ -9,7 +9,7 @@ sys.path.insert(0, os.path.join(ROOT, 'plugin.video.aiostreams'))
 from resources.lib.stream_utils import (  # noqa: E402
     DIRECT_URL, EXTERNAL_URL, SYNTHETIC_ERROR, SYNTHETIC_STATISTIC,
     TORRENT, UNKNOWN, USENET, YOUTUBE, canonical_episode_id,
-    canonical_meta_id, classify_stream, display_label, kodi_headers,
+    canonical_meta_id, classify_stream, display_label, kodi_headers, matching_episode_id,
     normalize_streams, playable_url, stream_search_text,
 )
 
@@ -58,6 +58,12 @@ class StreamUtilsTests(unittest.TestCase):
         self.assertEqual('tt456', canonical_meta_id({'id': 'tmdb:2', 'imdbId': 'tt456'}))
         self.assertEqual('tmdb:1:1:1', canonical_episode_id({'id': 'tmdb:1:1:1'}, 'tt123', 1, 1))
         self.assertEqual('tt123:1:1', canonical_episode_id({}, 'tt123', 1, 1))
+        meta = {'videos': [
+            {'id': 'ignored', 'season': 1, 'episode': 2},
+            {'id': 'canonical-episode-id', 'season': 1, 'episode': 1},
+        ]}
+        self.assertEqual('canonical-episode-id', matching_episode_id(meta, 'tt123', '1', '1'))
+        self.assertEqual('tt123:2:3', matching_episode_id(meta, 'tt123', 2, 3))
 
     def test_display_and_quality_text_fallbacks(self):
         stream = {'description': 'Real Debrid 2160p', 'behaviorHints': {'filename': 'Movie.4K.mkv'}}

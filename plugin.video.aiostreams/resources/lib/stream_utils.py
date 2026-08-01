@@ -24,6 +24,22 @@ def canonical_episode_id(video, show_id, season, episode):
     return video.get('id') or f'{show_id}:{season}:{episode}'
 
 
+def matching_episode_id(meta, show_id, season, episode):
+    """Find and preserve the exact ID for a season/episode in full metadata."""
+    try:
+        wanted_season = int(season)
+        wanted_episode = int(episode)
+    except (TypeError, ValueError):
+        return f'{show_id}:{season}:{episode}'
+    for video in meta.get('videos') or []:
+        try:
+            if int(video.get('season')) == wanted_season and int(video.get('episode')) == wanted_episode:
+                return canonical_episode_id(video, show_id, season, episode)
+        except (TypeError, ValueError):
+            continue
+    return f'{show_id}:{season}:{episode}'
+
+
 def _text(value):
     return value.strip() if isinstance(value, str) else ''
 
