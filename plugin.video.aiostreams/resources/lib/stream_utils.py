@@ -150,8 +150,8 @@ def stream_display_fields(stream):
                     result.append(str(candidate))
         return ' | '.join(result)
 
-    video = joined(parsed.get('quality'), parsed.get('encode'), parsed.get('visualTags'))
-    audio = joined(parsed.get('audioTags'), parsed.get('audioChannels'), parsed.get('languages'))
+    video = joined(parsed.get('quality'), parsed.get('encode'), parsed.get('visualTags')) or 'Unknown'
+    audio = joined(parsed.get('audioTags'), parsed.get('audioChannels'), parsed.get('languages')) or 'Unknown'
     return {
         'resolution': str(parsed.get('resolution') or (resolution_match.group(1).upper() if resolution_match else '')),
         'service': str(service),

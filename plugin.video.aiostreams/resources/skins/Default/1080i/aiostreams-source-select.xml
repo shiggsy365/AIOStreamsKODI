@@ -116,27 +116,72 @@
                     <top>12</top>
                     <control type="label">
                         <top>0</top>
-                        <width>990</width>
+                        <width>250</width>
                         <height>35</height>
                         <font>font10</font>
                         <textcolor>grey</textcolor>
-                        <label>[COLOR white]SIZE:[/COLOR] $INFO[ListItem.Property(size)]  •  [COLOR white]PROXIED:[/COLOR] $INFO[ListItem.Property(proxied)]  •  [COLOR white]CACHED:[/COLOR] $INFO[ListItem.Property(cached)]  •  [COLOR white]IN LIBRARY:[/COLOR] $INFO[ListItem.Property(in_library)]</label>
+                        <label>[COLOR white]SIZE[/COLOR]  $INFO[ListItem.Property(size)]</label>
+                    </control>
+                    <control type="label">
+                        <left>260</left>
+                        <top>0</top>
+                        <width>180</width>
+                        <height>35</height>
+                        <font>font10</font>
+                        <textcolor>grey</textcolor>
+                        <label>[COLOR white]CACHED[/COLOR]  $INFO[ListItem.Property(cached)]</label>
+                    </control>
+                    <control type="label">
+                        <left>450</left>
+                        <top>0</top>
+                        <width>180</width>
+                        <height>35</height>
+                        <font>font10</font>
+                        <textcolor>grey</textcolor>
+                        <label>[COLOR white]PROXY[/COLOR]  $INFO[ListItem.Property(proxied)]</label>
+                    </control>
+                    <control type="label">
+                        <left>640</left>
+                        <top>0</top>
+                        <width>330</width>
+                        <height>35</height>
+                        <font>font10</font>
+                        <textcolor>grey</textcolor>
+                        <label>[COLOR white]LIBRARY[/COLOR]  $INFO[ListItem.Property(in_library)]</label>
                     </control>
                     <control type="label">
                         <top>35</top>
-                        <width>990</width>
+                        <width>490</width>
                         <height>35</height>
                         <font>font10</font>
                         <textcolor>grey</textcolor>
-                        <label>[COLOR white]VIDEO:[/COLOR] $INFO[ListItem.Property(video)]  •  [COLOR white]AUDIO:[/COLOR] $INFO[ListItem.Property(audio)]  •  [COLOR white]INDEXER:[/COLOR] $INFO[ListItem.Property(indexer)]</label>
+                        <label>[COLOR white]VIDEO[/COLOR]  $INFO[ListItem.Property(video)]</label>
+                    </control>
+                    <control type="label">
+                        <left>500</left>
+                        <top>35</top>
+                        <width>470</width>
+                        <height>35</height>
+                        <font>font10</font>
+                        <textcolor>grey</textcolor>
+                        <label>[COLOR white]AUDIO[/COLOR]  $INFO[ListItem.Property(audio)]</label>
                     </control>
                     <control type="label">
                         <top>70</top>
-                        <width>990</width>
+                        <width>300</width>
                         <height>35</height>
                         <font>font10</font>
                         <textcolor>grey</textcolor>
-                        <label>[COLOR white]FILENAME:[/COLOR] $INFO[ListItem.Property(filename)]</label>
+                        <label>[COLOR white]INDEXER[/COLOR]  $INFO[ListItem.Property(indexer)]</label>
+                    </control>
+                    <control type="label">
+                        <left>310</left>
+                        <top>70</top>
+                        <width>660</width>
+                        <height>35</height>
+                        <font>font10</font>
+                        <textcolor>grey</textcolor>
+                        <label>[COLOR white]FILE[/COLOR]  $INFO[ListItem.Property(filename)]</label>
                     </control>
                 </control>
             </itemlayout>
@@ -206,28 +251,73 @@
                     <top>12</top>
                     <control type="label">
                         <top>0</top>
-                        <width>990</width>
+                        <width>250</width>
                         <height>35</height>
                         <font>font10</font>
                         <textcolor>white</textcolor>
-                        <label>[COLOR gold]SIZE:[/COLOR] $INFO[ListItem.Property(size)]  •  [COLOR gold]PROXIED:[/COLOR] $INFO[ListItem.Property(proxied)]  •  [COLOR gold]CACHED:[/COLOR] $INFO[ListItem.Property(cached)]  •  [COLOR gold]IN LIBRARY:[/COLOR] $INFO[ListItem.Property(in_library)]</label>
+                        <label>[COLOR gold]SIZE[/COLOR]  $INFO[ListItem.Property(size)]</label>
+                    </control>
+                    <control type="label">
+                        <left>260</left>
+                        <top>0</top>
+                        <width>180</width>
+                        <height>35</height>
+                        <font>font10</font>
+                        <textcolor>white</textcolor>
+                        <label>[COLOR gold]CACHED[/COLOR]  $INFO[ListItem.Property(cached)]</label>
+                    </control>
+                    <control type="label">
+                        <left>450</left>
+                        <top>0</top>
+                        <width>180</width>
+                        <height>35</height>
+                        <font>font10</font>
+                        <textcolor>white</textcolor>
+                        <label>[COLOR gold]PROXY[/COLOR]  $INFO[ListItem.Property(proxied)]</label>
+                    </control>
+                    <control type="label">
+                        <left>640</left>
+                        <top>0</top>
+                        <width>330</width>
+                        <height>35</height>
+                        <font>font10</font>
+                        <textcolor>white</textcolor>
+                        <label>[COLOR gold]LIBRARY[/COLOR]  $INFO[ListItem.Property(in_library)]</label>
                     </control>
                     <control type="label">
                         <top>35</top>
-                        <width>990</width>
+                        <width>490</width>
                         <height>35</height>
                         <font>font10</font>
                         <textcolor>white</textcolor>
-                        <label>[COLOR gold]VIDEO:[/COLOR] $INFO[ListItem.Property(video)]  •  [COLOR gold]AUDIO:[/COLOR] $INFO[ListItem.Property(audio)]  •  [COLOR gold]INDEXER:[/COLOR] $INFO[ListItem.Property(indexer)]</label>
+                        <label>[COLOR gold]VIDEO[/COLOR]  $INFO[ListItem.Property(video)]</label>
+                    </control>
+                    <control type="label">
+                        <left>500</left>
+                        <top>35</top>
+                        <width>470</width>
+                        <height>35</height>
+                        <font>font10</font>
+                        <textcolor>white</textcolor>
+                        <label>[COLOR gold]AUDIO[/COLOR]  $INFO[ListItem.Property(audio)]</label>
                     </control>
                     <control type="label">
                         <top>70</top>
-                        <width>990</width>
+                        <width>300</width>
+                        <height>35</height>
+                        <font>font10</font>
+                        <textcolor>white</textcolor>
+                        <label>[COLOR gold]INDEXER[/COLOR]  $INFO[ListItem.Property(indexer)]</label>
+                    </control>
+                    <control type="label">
+                        <left>310</left>
+                        <top>70</top>
+                        <width>660</width>
                         <height>35</height>
                         <font>font10</font>
                         <textcolor>white</textcolor>
                         <scroll>true</scroll>
-                        <label>[COLOR gold]FILENAME:[/COLOR] $INFO[ListItem.Property(filename)]</label>
+                        <label>[COLOR gold]FILE[/COLOR]  $INFO[ListItem.Property(filename)]</label>
                     </control>
                 </control>
             </focusedlayout>

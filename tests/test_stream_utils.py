@@ -101,6 +101,11 @@ class StreamUtilsTests(unittest.TestCase):
         self.assertEqual('DD | 5.1 | English', fields['audio'])
         self.assertEqual('Movie.2026.1080p.mkv', fields['filename'])
 
+    def test_missing_media_details_are_explicit(self):
+        fields = stream_display_fields({'name': 'FHD', 'streamData': {}})
+        self.assertEqual('Unknown', fields['video'])
+        self.assertEqual('Unknown', fields['audio'])
+
 
 if __name__ == '__main__':
     unittest.main()
