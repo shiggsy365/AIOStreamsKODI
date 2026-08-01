@@ -4,7 +4,7 @@ import xbmcgui
 import xbmcplugin
 import xbmcaddon
 import xbmcvfs
-from urllib.parse import urlencode, parse_qsl, quote_plus
+from urllib.parse import urlencode, quote_plus
 import requests
 import json
 import threading
@@ -24,6 +24,7 @@ from concurrent.futures import ThreadPoolExecutor, as_completed
 try:
     # Essential imports only
     from resources.lib import ui_helpers, settings_helpers, constants, filters, cache, streams
+    from resources.lib.plugin_args import parse_plugin_params
     from resources.lib.stream_utils import (
         canonical_episode_id, canonical_meta_id, client_user_agent, matching_episode_id,
         normalize_streams,
@@ -5478,22 +5479,9 @@ if __name__ == '__main__':
     xbmc.log(f'[AIOStreams] sys.argv: {sys.argv}', xbmc.LOGDEBUG)
     
     arg_raw = sys.argv[2]
-    if arg_raw.startswith('?'):
-        params = dict(parse_qsl(arg_raw[1:]))
-    elif '/' in arg_raw:
-        # Handle "Clean Paths" for Kodi parser stability
-        # Format: /action/id/season or /action/id
-        parts = [p for p in arg_raw.split('/') if p]
-        params = {}
-        if len(parts) >= 1:
-            params['action'] = parts[0]
-        if len(parts) >= 2:
-            params['meta_id'] = parts[1]
-        if len(parts) >= 3:
-            params['season'] = parts[2]
+    params = parse_plugin_params(arg_raw)
+    if '/' in arg_raw and not arg_raw.startswith('?'):
         xbmc.log(f'[AIOStreams] Clean Path parsed: {params}', xbmc.LOGDEBUG)
-    else:
-        params = {}
         
     xbmc.log(f'[AIOStreams] Parsed params: {params}', xbmc.LOGDEBUG)
     xbmc.log(f'[AIOStreams] Action: {params.get("action", "<none>")}', xbmc.LOGDEBUG)
