@@ -114,6 +114,13 @@ def get_debug_logging():
     return get_bool_setting('debug_logging', False)
 
 
+def log_debug(message):
+    """Emit add-on diagnostic details only when its debug setting is enabled."""
+    if get_debug_logging():
+        import xbmc
+        xbmc.log(f'[AIOStreams] {message}', xbmc.LOGDEBUG)
+
+
 # Profile settings
 def get_current_profile():
     """Get current Kodi profile name."""

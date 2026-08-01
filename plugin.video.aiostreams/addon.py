@@ -24,6 +24,7 @@ from concurrent.futures import ThreadPoolExecutor, as_completed
 try:
     # Essential imports only
     from resources.lib import ui_helpers, settings_helpers, constants, filters, cache, streams
+    from resources.lib.stream_utils import canonical_episode_id, canonical_meta_id, normalize_streams
     from resources.lib.globals import g
     from resources.lib.router import get_router, action, dispatch, set_default
     
@@ -224,8 +225,8 @@ def make_request(url, error_message='Request failed', cache_key=None):
         xbmcgui.Dialog().notification('AIOStreams', 'Request timed out', xbmcgui.NOTIFICATION_ERROR)
         return None
     except requests.RequestException as e:
-        xbmcgui.Dialog().notification('AIOStreams', f'{error_message}: {str(e)}', xbmcgui.NOTIFICATION_ERROR)
-        xbmc.log(f'[AIOStreams] Request error: {str(e)}', xbmc.LOGERROR)
+        xbmcgui.Dialog().notification('AIOStreams', error_message, xbmcgui.NOTIFICATION_ERROR)
+        xbmc.log(f'[AIOStreams] Request error: {type(e).__name__}', xbmc.LOGERROR)
         return None
     except ValueError:
         xbmcgui.Dialog().notification('AIOStreams', 'Invalid JSON response', xbmcgui.NOTIFICATION_ERROR)
@@ -367,12 +368,41 @@ def search_catalog(query, content_type='movie', skip=0):
 def get_streams(content_type, media_id):
     """Fetch streams for a given media ID."""
     base_url = get_base_url()
+    if not base_url:
+        xbmc.log('[AIOStreams] Cannot request streams: no configured base URL', xbmc.LOGERROR)
+        return None
     url = f"{base_url}/stream/{content_type}/{media_id}.json"
-    xbmc.log(f'[AIOStreams] Requesting streams from: {url}', xbmc.LOGDEBUG)
+    xbmc.log(f'[AIOStreams] Requesting streams: type={content_type}, id={media_id}', xbmc.LOGINFO)
     result = make_request(url, 'Stream error')
     if result:
-        xbmc.log(f'[AIOStreams] Received {len(result.get("streams", []))} streams for {media_id}', xbmc.LOGDEBUG)
+        normalized = normalize_streams(result.get('streams', []))
+        result['streams'] = normalized['playable']
+        result['_stream_summary'] = normalized
+        counts = ', '.join(f'{kind}={count}' for kind, count in sorted(normalized['counts'].items())) or 'none'
+        xbmc.log(
+            f'[AIOStreams] Stream response: type={content_type}, id={media_id}, '
+            f'total={sum(normalized["counts"].values())}, playable={len(normalized["playable"])}, '
+            f'transports=({counts})', xbmc.LOGINFO)
+        settings_helpers.log_debug(f'Normalized stream response for type={content_type}, id={media_id}')
+        for message in normalized['messages']:
+            xbmc.log(f'[AIOStreams] Stream message: {message}', xbmc.LOGWARNING)
     return result
+
+
+def show_no_playable_streams(stream_data, resolve=False):
+    """Explain a direct-stream miss and fail an outstanding Kodi resolver."""
+    summary = (stream_data or {}).get('_stream_summary', {})
+    messages = summary.get('messages') or []
+    counts = summary.get('counts') or {}
+    unsupported = sum(count for kind, count in counts.items()
+                      if kind not in ('direct_url', 'synthetic_error', 'synthetic_statistic'))
+    message = messages[0] if messages else (
+        f'No direct streams available ({unsupported} unsupported transport entries)' if unsupported
+        else 'No direct streams available')
+    xbmc.log(f'[AIOStreams] No playable streams: {message}', xbmc.LOGWARNING)
+    xbmcgui.Dialog().notification('AIOStreams', message[:250], xbmcgui.NOTIFICATION_ERROR)
+    if resolve and HANDLE >= 0:
+        xbmcplugin.setResolvedUrl(HANDLE, False, xbmcgui.ListItem())
 
 
 def get_catalog(content_type, catalog_id, genre=None, skip=0):
@@ -426,7 +456,7 @@ def get_catalog(content_type, catalog_id, genre=None, skip=0):
     else:
         url = f"{url_parts[0]}.json"
 
-    xbmc.log(f'[AIOStreams] Requesting catalog from: {url}', xbmc.LOGDEBUG)
+    xbmc.log(f'[AIOStreams] Requesting catalog: type={content_type}, id={catalog_id}, skip={skip}', xbmc.LOGDEBUG)
     catalog = make_request(url, 'Catalog error')
 
     # Cache the result in both tiers
@@ -448,7 +478,7 @@ def get_subtitles(content_type, media_id):
     """Fetch subtitles for a given media ID."""
     base_url = get_base_url()
     url = f"{base_url}/subtitles/{content_type}/{media_id}.json"
-    xbmc.log(f'[AIOStreams] Requesting subtitles from: {url}', xbmc.LOGDEBUG)
+    xbmc.log(f'[AIOStreams] Requesting subtitles: type={content_type}, id={media_id}', xbmc.LOGDEBUG)
     return make_request(url, 'Subtitle error')
 
 
@@ -694,7 +724,7 @@ def get_meta(content_type, meta_id):
     # Cache miss, fetch from API
     base_url = get_base_url()
     url = f"{base_url}/meta/{content_type}/{meta_id}.json"
-    xbmc.log(f'[AIOStreams] Requesting meta from: {url}', xbmc.LOGDEBUG)
+    xbmc.log(f'[AIOStreams] Requesting metadata: type={content_type}, id={meta_id}', xbmc.LOGDEBUG)
     result = make_request(url, 'Meta error')
 
     # FALLBACK: If result is empty or missing rating, try the "master" token from the skin's fetch_cast script
@@ -1427,6 +1457,7 @@ def action_search(params=None):
     # Display results
     for meta in items:
         item_id = meta.get('id')
+        stream_id = canonical_meta_id(meta)
         item_type = meta.get('type', content_type)
 
         if item_type == 'series':
@@ -1463,7 +1494,7 @@ def action_search(params=None):
             poster = meta.get('poster', '')
             fanart = meta.get('background', '')
             clearlogo = meta.get('logo', '')
-            url = get_url(action='play', content_type='movie' if item_type == 'movie' else item_type, imdb_id=item_id, title=title, poster=poster, fanart=fanart, clearlogo=clearlogo)
+            url = get_url(action='play', content_type='movie' if item_type == 'movie' else item_type, imdb_id=stream_id, title=title, poster=poster, fanart=fanart, clearlogo=clearlogo)
             is_folder = False
 
         list_item = create_listitem_with_context(meta, item_type, url)
@@ -1566,7 +1597,7 @@ def search_all_results(query):
                 poster = meta.get('poster', '')
                 fanart = meta.get('background', '')
                 clearlogo = meta.get('logo', '')
-                url = get_url(action='play', content_type='movie', imdb_id=item_id, title=title, poster=poster, fanart=fanart, clearlogo=clearlogo)
+                url = get_url(action='play', content_type='movie', imdb_id=canonical_meta_id(meta), title=title, poster=poster, fanart=fanart, clearlogo=clearlogo)
                 list_item = create_listitem_with_context(meta, 'movie', url)
                 list_item.setProperty('IsPlayable', 'true')
                 xbmcplugin.addDirectoryItem(HANDLE, url, list_item, False)
@@ -1649,7 +1680,7 @@ def play(params=None):
     else:
         season = params.get('season')
         episode = params.get('episode')
-        media_id = f"{imdb_id}:{season}:{episode}"
+        media_id = params.get('media_id') or f"{imdb_id}:{season}:{episode}"
         title = params.get('title', f'S{season}E{episode}')
 
     # If metadata not provided in params, fetch it from API
@@ -1677,9 +1708,9 @@ def play(params=None):
         stream_data = get_streams(content_type, media_id)
         progress.update(75)
 
-        if not stream_data or 'streams' not in stream_data or len(stream_data['streams']) == 0:
+        if not stream_data or not stream_data.get('streams'):
             progress.close()
-            xbmcgui.Dialog().notification('AIOStreams', 'No streams available', xbmcgui.NOTIFICATION_ERROR)
+            show_no_playable_streams(stream_data, resolve=True)
             return
 
         # Check default_behavior setting
@@ -1709,7 +1740,7 @@ def play(params=None):
         # Otherwise, auto-play first stream
         progress.update(85, 'Preparing playback...')
         stream = stream_data['streams'][0]
-        stream_url = stream.get('url') or stream.get('externalUrl')
+        stream_url = stream.get('_playback_url', '')
 
         if not stream_url:
             progress.close()
@@ -1779,7 +1810,7 @@ def play(params=None):
             for s in stream_data['streams']:
                 # Save URL, title/name/info needed for playback
                 min_streams.append({
-                    'url': s.get('url') or s.get('externalUrl'),
+                    'url': s.get('_playback_url', ''),
                     'title': s.get('title', ''),
                     'source': s.get('source', '') 
                 })
@@ -1805,7 +1836,7 @@ def play(params=None):
         # If we have a valid HANDLE (called as a plugin source), we MUST use setResolvedUrl.
         # If we don't (called via RunScript or similar), we use xbmc.Player().play().
         if HANDLE >= 0:
-            xbmc.log(f'[AIOStreams] Resolving URL for playback (HANDLE={HANDLE}): {stream_url}', xbmc.LOGINFO)
+            xbmc.log(f'[AIOStreams] Resolving direct stream for playback (HANDLE={HANDLE})', xbmc.LOGINFO)
             list_item.setPath(stream_url)
             xbmcplugin.setResolvedUrl(HANDLE, True, list_item)
             
@@ -1820,7 +1851,7 @@ def play(params=None):
             import threading
             threading.Thread(target=trigger_monitoring, daemon=True).start()
         else:
-            xbmc.log(f'[AIOStreams] Initiating Player (HANDLE={HANDLE}): {stream_url}', xbmc.LOGINFO)
+            xbmc.log(f'[AIOStreams] Initiating direct stream player (HANDLE={HANDLE})', xbmc.LOGINFO)
             get_player().play(stream_url, list_item)
 
     except Exception as e:
@@ -1856,7 +1887,7 @@ def play_first():
     else:
         season = params.get('season')
         episode = params.get('episode')
-        media_id = f"{imdb_id}:{season}:{episode}"
+        media_id = params.get('media_id') or f"{imdb_id}:{season}:{episode}"
 
     # Show progress dialog while scraping streams
     progress = xbmcgui.DialogProgress()
@@ -1869,15 +1900,15 @@ def play_first():
         stream_data = get_streams(content_type, media_id)
         progress.update(75)
 
-        if not stream_data or 'streams' not in stream_data or len(stream_data['streams']) == 0:
+        if not stream_data or not stream_data.get('streams'):
             progress.close()
-            xbmcgui.Dialog().notification('AIOStreams', 'No streams available', xbmcgui.NOTIFICATION_ERROR)
+            show_no_playable_streams(stream_data, resolve=True)
             return
 
         # Always auto-play first stream (ignore default_behavior setting)
         progress.update(85, 'Preparing playback...')
         stream = stream_data['streams'][0]
-        stream_url = stream.get('url') or stream.get('externalUrl')
+        stream_url = stream.get('_playback_url', '')
 
         if not stream_url:
             progress.close()
@@ -2046,7 +2077,7 @@ def select_stream():
     else:
         season = params.get('season')
         episode = params.get('episode')
-        media_id = f"{imdb_id}:{season}:{episode}"
+        media_id = params.get('media_id') or f"{imdb_id}:{season}:{episode}"
 
     # Cancel Kodi's resolver state immediately to avoid modal dialog conflicts
     # TMDBHelper calls this as a resolver, but we need to show a dialog first
@@ -2096,8 +2127,8 @@ def select_stream():
     # "Activate of window refused because there are active modal dialogs"
     xbmc.sleep(200)
 
-    if not stream_data or 'streams' not in stream_data or len(stream_data['streams']) == 0:
-        xbmcgui.Dialog().notification('AIOStreams', 'No streams available', xbmcgui.NOTIFICATION_ERROR)
+    if not stream_data or not stream_data.get('streams'):
+        show_no_playable_streams(stream_data)
         return
 
     # Use stream manager for enhanced display (same as show_streams_dialog)
@@ -2172,7 +2203,7 @@ def select_stream():
 
     # Get selected stream
     stream = stream_data['streams'][selected]
-    stream_url = stream.get('url') or stream.get('externalUrl')
+    stream_url = stream.get('_playback_url', '')
 
     if not stream_url:
         xbmcgui.Dialog().notification('AIOStreams', 'No playable URL found', xbmcgui.NOTIFICATION_ERROR)
@@ -2411,6 +2442,7 @@ def browse_catalog():
     # Display catalog items
     for meta in catalog_data['metas']:
         item_id = meta.get('id')
+        stream_id = canonical_meta_id(meta)
         item_type = meta.get('type', content_type)
         
         # Determine if this is a series or movie
@@ -2422,7 +2454,7 @@ def browse_catalog():
             poster = meta.get('poster', '')
             fanart = meta.get('background', '')
             clearlogo = meta.get('logo', '')
-            url = get_url(action='play', content_type='movie', imdb_id=item_id, title=title, poster=poster, fanart=fanart, clearlogo=clearlogo)
+            url = get_url(action='play', content_type='movie', imdb_id=stream_id, title=title, poster=poster, fanart=fanart, clearlogo=clearlogo)
             is_folder = False
 
         list_item = create_listitem_with_context(meta, content_type, url)
@@ -2482,8 +2514,8 @@ def show_streams():
     finally:
         progress.close()
 
-    if not stream_data or 'streams' not in stream_data or len(stream_data['streams']) == 0:
-        xbmcgui.Dialog().notification('AIOStreams', 'No streams available', xbmcgui.NOTIFICATION_ERROR)
+    if not stream_data or not stream_data.get('streams'):
+        show_no_playable_streams(stream_data)
         xbmcplugin.endOfDirectory(HANDLE, succeeded=False)
         return
 
@@ -2615,7 +2647,7 @@ def play_stream_by_index(content_type, media_id, stream_data, index, use_player=
         return False
 
     stream = stream_data['streams'][index]
-    stream_url = stream.get('url') or stream.get('externalUrl')
+    stream_url = stream.get('_playback_url', '')
 
     if not stream_url:
         xbmcgui.Dialog().notification('AIOStreams', 'No playable URL found', xbmcgui.NOTIFICATION_ERROR)
@@ -2675,8 +2707,6 @@ def play_stream_by_index(content_type, media_id, stream_data, index, use_player=
                 pass
             
             get_player().set_media_info('episode', episode_imdb_id, season, episode)
-            
-            get_player().set_media_info('episode', episode_imdb_id, season, episode)
         else:
             get_player().set_media_info('movie', media_id, None, None)
 
@@ -2684,13 +2714,17 @@ def play_stream_by_index(content_type, media_id, stream_data, index, use_player=
     if use_player:
         # Called from RunPlugin context (e.g., "Scrape Streams" context menu)
         # Use direct playback
-        xbmc.log(f'[AIOStreams] Starting direct playback: {stream_url}', xbmc.LOGINFO)
+        xbmc.log('[AIOStreams] Starting selected direct stream', xbmc.LOGINFO)
         player = xbmc.Player()
         player.play(stream_url, list_item)
     else:
         # Called from playable listitem context (e.g., clicking a movie/episode)
         # Use setResolvedUrl
         xbmcplugin.setResolvedUrl(HANDLE, True, list_item)
+        # Playback begins only after this plugin invocation returns. The player
+        # monitor owns any later success confirmation; handing Kodi a URL is not
+        # itself a successful playback.
+        return True
 
     # Monitor playback with 30 second timeout
     playback_started = False
@@ -2701,7 +2735,7 @@ def play_stream_by_index(content_type, media_id, stream_data, index, use_player=
     for i in range(300):  # 300 * 0.1 = 30 seconds
         if monitor.abortRequested():
             return False
-        if player.isPlaying():
+        if player.isPlayingVideo():
             playback_started = True
             break
         monitor.waitForAbort(0.1)
@@ -3231,7 +3265,7 @@ def show_episodes():
 
         # Add episode context menu
         episode_title = f'{series_name} - S{season:02d}E{episode_num:02d}'
-        episode_media_id = f"{meta_id}:{season}:{episode_num}"
+        episode_media_id = canonical_episode_id(episode, canonical_meta_id(meta) or meta_id, season, episode_num)
         episode_poster = meta.get('poster', '')
         episode_fanart = meta.get('background', '')
         episode_clearlogo = meta.get('logo', '')
@@ -3252,7 +3286,9 @@ def show_episodes():
         list_item.addContextMenuItems(context_menu)
 
         # Make episodes directly playable
-        url = get_url(action='play', content_type='series', imdb_id=meta_id, season=season, episode=episode_num, title=episode_title, poster=episode_poster, fanart=episode_fanart, clearlogo=episode_clearlogo)
+        url = get_url(action='play', content_type='series', imdb_id=canonical_meta_id(meta) or meta_id,
+                      media_id=episode_media_id, season=season, episode=episode_num, title=episode_title,
+                      poster=episode_poster, fanart=episode_fanart, clearlogo=episode_clearlogo)
         list_item.setProperty('IsPlayable', 'true')
         xbmcplugin.addDirectoryItem(HANDLE, url, list_item, False)
     
@@ -3469,7 +3505,7 @@ def trakt_watchlist(params=None):
             url = get_url(action='show_seasons', meta_id=item_id)
             is_folder = True
         else:
-            url = get_url(action='play', content_type='movie', imdb_id=item_id, title=meta.get('name', ''), 
+            url = get_url(action='play', content_type='movie', imdb_id=canonical_meta_id(meta), title=meta.get('name', ''),
                          poster=meta.get('poster', ''), fanart=meta.get('background', ''), clearlogo=meta.get('logo', ''))
             is_folder = False
 
@@ -3827,7 +3863,7 @@ def show_related():
             poster = meta.get('poster', '')
             fanart = meta.get('background', '')
             clearlogo = meta.get('logo', '')
-            url = get_url(action='play', content_type='movie', imdb_id=item_id, title=title, poster=poster, fanart=fanart, clearlogo=clearlogo)
+            url = get_url(action='play', content_type='movie', imdb_id=canonical_meta_id(meta), title=title, poster=poster, fanart=fanart, clearlogo=clearlogo)
             is_folder = False
 
         list_item = create_listitem_with_context(meta, item_content_type, url)
@@ -4972,7 +5008,7 @@ def smart_widget():
                         url = get_url(action='show_seasons', meta_id=item_id)
                         is_folder = True
                     else:
-                        url = get_url(action='show_streams', content_type='movie', media_id=item_id,
+                        url = get_url(action='show_streams', content_type='movie', media_id=canonical_meta_id(merged_meta),
                                     title=merged_meta.get('name', ''), poster=merged_meta.get('poster', ''),
                                     fanart=merged_meta.get('background', ''), clearlogo=merged_meta.get('logo', ''))
                         is_folder = False
@@ -5097,7 +5133,7 @@ def configured_widget():
                         url = get_url(action='show_seasons', meta_id=item_id)
                         is_folder = True
                     else:
-                        url = get_url(action='show_streams', content_type='movie', media_id=item_id,
+                        url = get_url(action='show_streams', content_type='movie', media_id=canonical_meta_id(meta),
                                      title=meta.get('name', ''), poster=meta.get('poster', ''),
                                      fanart=meta.get('background', ''), clearlogo=meta.get('logo', ''))
                         is_folder = False
@@ -5457,4 +5493,3 @@ if __name__ == '__main__':
             g.deinit()
         except:
             pass
-
