@@ -124,9 +124,6 @@ class Database:
             return cursor
         except sqlite3.Error as e:
             xbmc.log(f'[AIOStreams] SQL execution error: {e}', xbmc.LOGERROR)
-            xbmc.log(f'[AIOStreams] SQL: {sql}', xbmc.LOGDEBUG)
-            if params:
-                xbmc.log(f'[AIOStreams] Params: {params}', xbmc.LOGDEBUG)
             return None
 
     def executemany(self, sql, params_list):
@@ -149,7 +146,6 @@ class Database:
             return cursor
         except sqlite3.Error as e:
             xbmc.log(f'[AIOStreams] SQL batch execution error: {e}', xbmc.LOGERROR)
-            xbmc.log(f'[AIOStreams] SQL: {sql}', xbmc.LOGDEBUG)
             return None
 
     def fetch_one(self, sql, params=None):

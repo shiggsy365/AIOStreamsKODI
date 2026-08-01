@@ -976,9 +976,7 @@ def hide_from_progress(media_type, imdb_id):
     }
 
     import json
-    xbmc.log(f'[AIOStreams] Dropping {media_type} ({imdb_id}) from all sections', xbmc.LOGINFO)
-    xbmc.log(f'[AIOStreams] Request data being sent to Trakt:', xbmc.LOGINFO)
-    xbmc.log(f'{json.dumps(data, indent=2)}', xbmc.LOGINFO)
+    xbmc.log(f'[AIOStreams] Dropping {media_type} from all sections', xbmc.LOGINFO)
 
     success_count = 0
 
@@ -990,11 +988,8 @@ def hide_from_progress(media_type, imdb_id):
         xbmc.log(f'[AIOStreams] Hiding from section: {section}', xbmc.LOGINFO)
         result = call_trakt(f'users/hidden/{section}', method='POST', data=data)
 
-        # Log full API response for debugging
         if result:
-            import json
-            xbmc.log(f'[AIOStreams] Trakt API Response for {section}:', xbmc.LOGINFO)
-            xbmc.log(f'{json.dumps(result, indent=2)}', xbmc.LOGINFO)
+            xbmc.log(f'[AIOStreams] Trakt hidden-state update succeeded for {section}', xbmc.LOGINFO)
         else:
             xbmc.log(f'[AIOStreams] Trakt API returned no data for {section}', xbmc.LOGWARNING)
 
@@ -1103,9 +1098,7 @@ def unhide_from_progress(media_type, imdb_id):
     }
 
     import json
-    xbmc.log(f'[AIOStreams] Unhiding {media_type} ({imdb_id}) from all sections', xbmc.LOGINFO)
-    xbmc.log(f'[AIOStreams] Request data being sent to Trakt:', xbmc.LOGINFO)
-    xbmc.log(f'{json.dumps(data, indent=2)}', xbmc.LOGINFO)
+    xbmc.log(f'[AIOStreams] Unhiding {media_type} from all sections', xbmc.LOGINFO)
 
     success_count = 0
 
@@ -1116,10 +1109,8 @@ def unhide_from_progress(media_type, imdb_id):
         xbmc.log(f'[AIOStreams] Removing from hidden section: {section}', xbmc.LOGINFO)
         result = call_trakt(f'users/hidden/{section}/remove', method='POST', data=data)
 
-        # Log full API response for debugging
         if result:
-            xbmc.log(f'[AIOStreams] Trakt API Response for {section}:', xbmc.LOGINFO)
-            xbmc.log(f'{json.dumps(result, indent=2)}', xbmc.LOGINFO)
+            xbmc.log(f'[AIOStreams] Trakt hidden-state removal succeeded for {section}', xbmc.LOGINFO)
         else:
             xbmc.log(f'[AIOStreams] Trakt API returned no data for {section}', xbmc.LOGWARNING)
 
@@ -1747,15 +1738,14 @@ def mark_watched(media_type, imdb_id, season=None, episode=None, playback_id=Non
         xbmc.log(f'[AIOStreams] ====== TRAKT API REQUEST ======', xbmc.LOGINFO)
         xbmc.log(f'[AIOStreams] Scenario: {scenario.upper()}', xbmc.LOGINFO)
         xbmc.log(f'[AIOStreams] Endpoint: sync/history (POST)', xbmc.LOGINFO)
-        xbmc.log(f'[AIOStreams] Request data:', xbmc.LOGINFO)
-        xbmc.log(f'{json.dumps(data, indent=2)}', xbmc.LOGINFO)
+        xbmc.log('[AIOStreams] Sending watched-state update', xbmc.LOGINFO)
         xbmc.log(f'[AIOStreams] ===============================', xbmc.LOGINFO)
 
         result = call_trakt('sync/history', method='POST', data=data)
 
         xbmc.log(f'[AIOStreams] ====== TRAKT API RESPONSE ======', xbmc.LOGINFO)
         if result:
-            xbmc.log(f'{json.dumps(result, indent=2)}', xbmc.LOGINFO)
+            xbmc.log('[AIOStreams] Trakt watched-state update succeeded', xbmc.LOGINFO)
         else:
             xbmc.log(f'[AIOStreams] No response received from Trakt', xbmc.LOGWARNING)
         xbmc.log(f'[AIOStreams] ================================', xbmc.LOGINFO)
@@ -2121,15 +2111,14 @@ def mark_unwatched(media_type, imdb_id, season=None, episode=None):
         xbmc.log(f'[AIOStreams] ====== TRAKT API REQUEST ======', xbmc.LOGINFO)
         xbmc.log(f'[AIOStreams] Scenario: {scenario.upper()} UNWATCHED', xbmc.LOGINFO)
         xbmc.log(f'[AIOStreams] Endpoint: sync/history/remove (POST)', xbmc.LOGINFO)
-        xbmc.log(f'[AIOStreams] Request data:', xbmc.LOGINFO)
-        xbmc.log(f'{json.dumps(data, indent=2)}', xbmc.LOGINFO)
+        xbmc.log('[AIOStreams] Sending unwatched-state update', xbmc.LOGINFO)
         xbmc.log(f'[AIOStreams] ===============================', xbmc.LOGINFO)
 
         result = call_trakt('sync/history/remove', method='POST', data=data)
 
         xbmc.log(f'[AIOStreams] ====== TRAKT API RESPONSE ======', xbmc.LOGINFO)
         if result:
-            xbmc.log(f'{json.dumps(result, indent=2)}', xbmc.LOGINFO)
+            xbmc.log('[AIOStreams] Trakt unwatched-state update succeeded', xbmc.LOGINFO)
         else:
             xbmc.log(f'[AIOStreams] No response received from Trakt', xbmc.LOGWARNING)
         xbmc.log(f'[AIOStreams] ================================', xbmc.LOGINFO)

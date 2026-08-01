@@ -879,24 +879,7 @@ class TraktSyncDatabase(Database):
             
             # Debug: Check if JOIN is working and if percent_played is populated
             if rows:
-                xbmc.log(f'[AIOStreams] fetchall: Retrieved {len(rows)} results for query: {sql}', xbmc.LOGDEBUG)
-                # Check first result for bookmark data if relevant columns exist
-                first = rows[0]
-                if 'show_trakt_id' in first and 'episode_trakt_id' in first and 'percent_played' in first:
-                    xbmc.log(f'[AIOStreams] First result: show_trakt_id={first.get("show_trakt_id")}, episode_trakt_id={first.get("episode_trakt_id")}, percent_played={first.get("percent_played")}, resume_time={first.get("resume_time")}', xbmc.LOGDEBUG)
-                    
-                    # Check if ANY results have bookmark data
-                    with_progress = [r for r in rows if r.get('percent_played') is not None]
-                    xbmc.log(f'[AIOStreams] Results with progress: {len(with_progress)} out of {len(rows)}', xbmc.LOGDEBUG)
-                    
-                    # Query bookmarks table directly to verify data exists
-                    # This assumes 'fetchall' is being called in a context where episode bookmarks are relevant.
-                    # If this is a generic fetchall, this specific check might be too narrow.
-                    # For now, keeping it as per instruction, assuming it's for a specific use case.
-                    all_bookmarks = self.fetch_all("SELECT trakt_id, tvdb_id, tmdb_id, imdb_id, percent_played FROM bookmarks WHERE type='episode'")
-                    xbmc.log(f'[AIOStreams] Total episode bookmarks in DB: {len(all_bookmarks) if all_bookmarks else 0}', xbmc.LOGDEBUG)
-                    if all_bookmarks and len(all_bookmarks) > 0:
-                        xbmc.log(f'[AIOStreams] Sample bookmark: {all_bookmarks[0]}', xbmc.LOGDEBUG)
+                xbmc.log(f'[AIOStreams] fetchall returned {len(rows)} rows', xbmc.LOGDEBUG)
             
             # Convert sqlite3.Row objects to dicts
             return [dict(row) for row in rows]

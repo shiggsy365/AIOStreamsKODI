@@ -21,7 +21,7 @@ def open_browser(url):
     """Open URL in the system browser, platform-aware."""
     system = platform.system().lower()
 
-    xbmc.log(f'[AIOStreams WebConfig] Opening browser on {system}: {url}', xbmc.LOGINFO)
+    xbmc.log(f'[AIOStreams WebConfig] Opening browser on {system}', xbmc.LOGINFO)
 
     # Check if running on Android
     if xbmc.getCondVisibility('System.Platform.Android'):
@@ -258,7 +258,7 @@ def configure_aiostreams(host_url=None):
         # Fresh configuration
         configure_url = f'{host_url}/stremio/configure'
 
-    xbmc.log(f'[AIOStreams WebConfig] Opening configure page: {configure_url}', xbmc.LOGINFO)
+    xbmc.log('[AIOStreams WebConfig] Opening configure page', xbmc.LOGINFO)
 
     # Open browser
     if not open_browser(configure_url):
@@ -517,7 +517,7 @@ def retrieve_manifest():
     try:
         # Build API URL
         api_url = f'{host_url}/api/v1/user?uuid={uuid}&password={password}'
-        xbmc.log(f'[AIOStreams WebConfig] Calling API: {host_url}/api/v1/user?uuid={uuid}&password=***', xbmc.LOGINFO)
+        xbmc.log('[AIOStreams WebConfig] Retrieving manifest credentials', xbmc.LOGINFO)
 
         progress.update(25, 'Contacting AIOStreams server...')
 

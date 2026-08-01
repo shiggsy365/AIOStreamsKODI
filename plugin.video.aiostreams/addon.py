@@ -4,7 +4,7 @@ import xbmcgui
 import xbmcplugin
 import xbmcaddon
 import xbmcvfs
-from urllib.parse import urlencode, quote_plus
+from urllib.parse import urlencode, parse_qsl, quote_plus
 import requests
 import json
 import threading
@@ -25,6 +25,7 @@ try:
     # Essential imports only
     from resources.lib import ui_helpers, settings_helpers, constants, filters, cache, streams
     from resources.lib.plugin_args import parse_plugin_params
+    from resources.lib.safe_logging import redact_identifier
     from resources.lib.stream_utils import (
         canonical_episode_id, canonical_meta_id, client_user_agent, matching_episode_id,
         normalize_streams,
@@ -217,7 +218,7 @@ def make_request(url, error_message='Request failed', cache_key=None):
             cache_headers = {}
             if 'etag' in response.headers:
                 cache_headers['etag'] = response.headers['etag']
-                xbmc.log(f'[AIOStreams] Cached ETag for {cache_key}: {response.headers["etag"]}', xbmc.LOGDEBUG)
+                xbmc.log(f'[AIOStreams] Cached ETag for {cache_key}', xbmc.LOGDEBUG)
             if 'last-modified' in response.headers:
                 cache_headers['last-modified'] = response.headers['last-modified']
                 xbmc.log(f'[AIOStreams] Cached Last-Modified for {cache_key}', xbmc.LOGDEBUG)
@@ -703,7 +704,10 @@ def get_meta(content_type, meta_id):
                 # Initial check with long TTL (handled by DB expires column)
                 cached_sql = db.get_meta(content_type, meta_id)
                 if cached_sql:
-                    xbmc.log(f'[AIOStreams] SQL Metadata cache hit for {meta_id}', xbmc.LOGDEBUG)
+                    xbmc.log(
+                        f'[AIOStreams] SQL metadata cache hit: {redact_identifier(meta_id)}',
+                        xbmc.LOGDEBUG,
+                    )
                     # Ensure clearlogo is cached even on metadata hit
                     _ensure_clearlogo_cached(cached_sql, content_type, meta_id)
                     return cached_sql
@@ -720,7 +724,10 @@ def get_meta(content_type, meta_id):
             # Re-check cache with calculated TTL
             cached = cache.get_cached_meta(content_type, meta_id, ttl_seconds=ttl)
             if cached:
-                xbmc.log(f'[AIOStreams] File Metadata cache hit for {meta_id} (TTL: {ttl//86400} days)', xbmc.LOGDEBUG)
+                xbmc.log(
+                    f'[AIOStreams] File metadata cache hit: {redact_identifier(meta_id)}',
+                    xbmc.LOGDEBUG,
+                )
                 # Ensure clearlogo is cached even on metadata hit
                 _ensure_clearlogo_cached(cached, content_type, meta_id)
                 return cached
@@ -728,29 +735,19 @@ def get_meta(content_type, meta_id):
     # Cache miss, fetch from API
     base_url = get_base_url()
     url = f"{base_url}/meta/{content_type}/{meta_id}.json"
-    xbmc.log(f'[AIOStreams] Requesting metadata: type={content_type}, id={meta_id}', xbmc.LOGDEBUG)
+    xbmc.log(
+        f'[AIOStreams] Requesting metadata: type={content_type}, id={redact_identifier(meta_id)}',
+        xbmc.LOGDEBUG,
+    )
     result = make_request(url, 'Meta error')
-
-    # FALLBACK: If result is empty or missing rating, try the "master" token from the skin's fetch_cast script
-    # This token is known to return ratings when others don't.
-    if not result or not result.get('meta', {}).get('imdbRating'):
-        master_token = 'eyJpdiI6IkN3cXkreVNITW45QnhJaHU2dHVyM3c9PSIsImVuY3J5cHRlZCI6IitUeVZEUE5ZMHNxMjhOY2drSTJTMW44V0U2UUc5d0Qvd3RKL0REMGdzQzQ9IiwidHlwZSI6ImFpb0VuY3J5cHQifQ'
-        master_id = '3301cce2-06c1-4794-ad5b-e44c95f60e9c'
-        fallback_url = f"https://aiostreams.shiggsy.co.uk/stremio/{master_id}/{master_token}/meta/{content_type}/{meta_id}.json"
-        
-        fallback_res = make_request(fallback_url, 'Fallback Meta error')
-        if fallback_res and fallback_res.get('meta', {}).get('imdbRating'):
-            xbmc.log(f'[AIOStreams] Master token fallback SUCCESS for {meta_id}', xbmc.LOGINFO)
-            result = fallback_res
-        elif not result and fallback_res:
-            # Even if no rating, if primary failed completely, use fallback if it has ANYTHING
-            result = fallback_res
-            xbmc.log(f'[AIOStreams] Master token fallback used as primary failed for {meta_id}', xbmc.LOGINFO)
 
     # Store in cache
     if HAS_MODULES and result:
         meta_keys = list(result.get('meta', {}).keys())
-        xbmc.log(f'[AIOStreams] get_meta response keys for {meta_id}: {meta_keys}', xbmc.LOGDEBUG)
+        xbmc.log(
+            f'[AIOStreams] Metadata response fields for {redact_identifier(meta_id)}: {meta_keys}',
+            xbmc.LOGDEBUG,
+        )
         
         ttl = get_metadata_ttl(result)
         # 1. File cache
@@ -762,7 +759,10 @@ def get_meta(content_type, meta_id):
                 db.set_meta(content_type, meta_id, result, ttl)
         except:
             pass
-        xbmc.log(f'[AIOStreams] Cached metadata for {meta_id} (TTL: {ttl//86400} days)', xbmc.LOGDEBUG)
+        xbmc.log(
+            f'[AIOStreams] Cached metadata for {redact_identifier(meta_id)}',
+            xbmc.LOGDEBUG,
+        )
         
         # 3. Cache clearlogo if present
         if result.get('meta', {}).get('logo'):
@@ -795,7 +795,10 @@ def _ensure_clearlogo_cached(meta_item, content_type, meta_id):
             # Check if already cached (fast check)
             if not get_cached_clearlogo_path(content_type, meta_id):
                 # Download and cache (will only happen if missing)
-                xbmc.log(f'[AIOStreams] Clearlogo missing for item {meta_id}, downloading in background...', xbmc.LOGDEBUG)
+                xbmc.log(
+                    f'[AIOStreams] Clearlogo missing for {redact_identifier(meta_id)}; downloading in background',
+                    xbmc.LOGDEBUG,
+                )
                 # Run in background to avoid blocking UI too much
                 thread = threading.Thread(target=download_and_cache_clearlogo, 
                                           args=(clearlogo_url, content_type, meta_id))
@@ -1386,6 +1389,18 @@ def cancel_all_background_tasks(active=True):
         xbmc.log(f'[AIOStreams] Error managing background tasks: {e}', xbmc.LOGDEBUG)
 
 
+def _with_search_suppression(action):
+    """Ensure background-search suppression is cleared on every exit path."""
+    def wrapped(params=None):
+        cancel_all_background_tasks(True)
+        try:
+            return action(params)
+        finally:
+            cancel_all_background_tasks(False)
+    return wrapped
+
+
+@_with_search_suppression
 def action_search(params=None):
     """Unified search action for both plugin menus and external calls."""
     if params is None:
@@ -1397,24 +1412,17 @@ def action_search(params=None):
     is_widget = params.get('widget') == 'true'
     
     win = xbmcgui.Window(10000)
-    cancel_all_background_tasks(True)
-    
     # Get search query from user if not provided or empty
     if not query:
         keyboard = xbmcgui.Dialog().input('Search', type=xbmcgui.INPUT_ALPHANUM)
         if not keyboard:
             xbmcplugin.endOfDirectory(HANDLE, succeeded=False)
-            cancel_all_background_tasks(False)
             return
         query = keyboard.strip()
 
     # If content_type is 'both' and skip=0, show unified search with headers
     if content_type == 'both' and skip == 0:
-        try:
-            search_all_results(query)
-        finally:
-            cancel_all_background_tasks(False)
-        return
+        return search_all_results(query)
 
     # For specific content types or paginated results, show list with tabs
     xbmcplugin.setPluginCategory(HANDLE, f'Search {content_type.title()}: {query}')
@@ -1442,7 +1450,6 @@ def action_search(params=None):
             
         xbmc.log(f'[AIOStreams] Search returned no results for "{query}"', xbmc.LOGINFO)
         xbmcplugin.endOfDirectory(HANDLE, succeeded=True)
-        cancel_all_background_tasks(False)
         return
     
     # Update counts for skin
@@ -1514,7 +1521,6 @@ def action_search(params=None):
         url = get_url(action='search', content_type=content_type, query=query, skip=next_skip)
         xbmcplugin.addDirectoryItem(HANDLE, url, list_item, True)
 
-    cancel_all_background_tasks(False)
     xbmcplugin.endOfDirectory(HANDLE)
 
 
@@ -3535,22 +3541,6 @@ def trakt_watchlist(params=None):
     xbmcplugin.endOfDirectory(HANDLE)
 
 
-def trakt_recommendations(params=None):
-    """Display personalized Trakt recommendations - REMOVED PER USER REQUEST."""
-    xbmcgui.Dialog().notification('AIOStreams', 'Feature Removed', xbmcgui.NOTIFICATION_INFO)
-    xbmcplugin.endOfDirectory(HANDLE)
-
-
-def trakt_collection():
-    """Display Trakt collection - REMOVED PER USER REQUEST."""
-    xbmcgui.Dialog().notification('AIOStreams', 'Feature Removed', xbmcgui.NOTIFICATION_INFO)
-    xbmcplugin.endOfDirectory(HANDLE)
-
-
-
-
-
-
 def trakt_next_up():
     """Display next episodes to watch using pure SQL - ZERO API calls!
 
@@ -4170,7 +4160,7 @@ def clear_cache():
 
         # Clear in-memory caches FIRST
         xbmc.log('[AIOStreams] Clearing in-memory caches', xbmc.LOGINFO)
-        cache.get_cache().clear_memory_cache()
+        cache.get_cache().clear_memory()
 
         # Clear generic caches (manifest, metadata, catalogs, HTTP headers)
         xbmc.log('[AIOStreams] Clearing manifest, metadata, catalog, and HTTP header caches', xbmc.LOGINFO)
@@ -4569,7 +4559,7 @@ def database_reset():
     # Clear in-memory caches FIRST (critical for avoiding stale data)
     xbmc.log('[AIOStreams] Clearing in-memory caches before database reset', xbmc.LOGINFO)
     from resources.lib import cache
-    cache.get_cache().clear_memory_cache()
+    cache.get_cache().clear_memory()
 
     db = TraktSyncDatabase()
     db.clear_all_trakt_data()
@@ -4601,8 +4591,7 @@ def database_reset():
 
     # Trigger Trakt re-sync if enabled
     if ADDON.getSettingBool('trakt_sync_auto'):
-        from resources.lib import trakt
-        trakt.trigger_sync()
+        force_trakt_sync()
 
 def clear_trakt_cache():
     """Specific reset for Trakt sync data to force full re-sync."""
@@ -4747,7 +4736,7 @@ def configure_aiostreams_action():
         from resources.lib.web_config import configure_aiostreams
         result = configure_aiostreams()
         if result:
-            xbmc.log(f'[AIOStreams] Configuration completed: {result}', xbmc.LOGINFO)
+            xbmc.log('[AIOStreams] Configuration completed successfully', xbmc.LOGINFO)
     except ImportError as e:
         xbmc.log(f'[AIOStreams] Failed to import web_config: {e}', xbmc.LOGERROR)
         xbmcgui.Dialog().ok('AIOStreams', 'Web configuration module not available.\n\nPlease update the addon.')
@@ -4762,7 +4751,7 @@ def retrieve_manifest_action():
         from resources.lib.web_config import retrieve_manifest
         result = retrieve_manifest()
         if result:
-            xbmc.log(f'[AIOStreams] Manifest retrieved: {result}', xbmc.LOGINFO)
+            xbmc.log('[AIOStreams] Manifest retrieved successfully', xbmc.LOGINFO)
     except ImportError as e:
         xbmc.log(f'[AIOStreams] Failed to import web_config: {e}', xbmc.LOGERROR)
         xbmcgui.Dialog().ok('AIOStreams', 'Web configuration module not available.\n\nPlease update the addon.')
@@ -5104,7 +5093,7 @@ def configured_widget():
             widget_params = dict(parse_qsl(query_string))
             action = widget_params.get('action', '')
 
-            xbmc.log(f'[AIOStreams] configured_widget: Redirecting to action "{action}" with params {widget_params}', xbmc.LOGDEBUG)
+            xbmc.log(f'[AIOStreams] configured_widget: Redirecting to action "{action}"', xbmc.LOGDEBUG)
 
             # Route to the appropriate action
             if action == 'trakt_next_up':
@@ -5184,7 +5173,7 @@ def play_next(params):
     This just wraps the standard play logic but ensures we pass explicit params.
     """
     xbmc.log(f'[AIOStreams] ===== PLAY_NEXT INVOKED =====', xbmc.LOGINFO)
-    xbmc.log(f'[AIOStreams] play_next params: {params}', xbmc.LOGINFO)
+    xbmc.log('[AIOStreams] play_next received playback context', xbmc.LOGINFO)
     xbmc.log(f'[AIOStreams] HANDLE value: {HANDLE}', xbmc.LOGINFO)
     
     if not HAS_MODULES:
@@ -5198,6 +5187,57 @@ def play_next(params):
     except Exception as e:
         xbmc.log(f'[AIOStreams] play_next error: {e}', xbmc.LOGERROR)
     xbmc.log(f'[AIOStreams] play_next: play() completed', xbmc.LOGINFO)
+
+
+def play_next_source(params=None):
+    """Retry playback using the next saved stream after a source fails."""
+    window = xbmcgui.Window(10000)
+    try:
+        saved_streams = json.loads(window.getProperty('AIOStreams.StreamList'))
+        metadata = json.loads(window.getProperty('AIOStreams.StreamMetadata'))
+        current_index = int(window.getProperty('AIOStreams.StreamIndex') or '0')
+    except (TypeError, ValueError, json.JSONDecodeError):
+        xbmc.log('[AIOStreams] Cannot retry source: saved playback context is unavailable', xbmc.LOGWARNING)
+        xbmcgui.Dialog().notification(
+            'AIOStreams', 'No alternate streams are available', xbmcgui.NOTIFICATION_WARNING
+        )
+        return
+
+    if not isinstance(saved_streams, list) or not isinstance(metadata, dict):
+        xbmc.log('[AIOStreams] Cannot retry source: invalid saved playback context', xbmc.LOGWARNING)
+        xbmcgui.Dialog().notification(
+            'AIOStreams', 'No alternate streams are available', xbmcgui.NOTIFICATION_WARNING
+        )
+        return
+
+    content_type = metadata.get('content_type', 'movie')
+    imdb_id = metadata.get('imdb_id', '')
+    season = metadata.get('season')
+    episode = metadata.get('episode')
+    media_id = imdb_id
+    if content_type == 'series' and season is not None and episode is not None:
+        media_id = f'{imdb_id}:{season}:{episode}'
+
+    streams_to_try = [
+        {'_playback_url': stream.get('url', '')}
+        for stream in saved_streams
+        if isinstance(stream, dict) and stream.get('url')
+    ]
+    if not imdb_id or current_index >= len(streams_to_try) - 1:
+        xbmc.log('[AIOStreams] No additional saved streams are available', xbmc.LOGINFO)
+        xbmcgui.Dialog().notification(
+            'AIOStreams', 'No alternate streams are available', xbmcgui.NOTIFICATION_INFO
+        )
+        return
+
+    stream_data = {'streams': streams_to_try}
+    for next_index in range(current_index + 1, len(streams_to_try)):
+        window.setProperty('AIOStreams.StreamIndex', str(next_index))
+        xbmc.log(f'[AIOStreams] Retrying playback with saved source index {next_index}', xbmc.LOGINFO)
+        if play_stream_by_index(content_type, media_id, stream_data, next_index, use_player=True):
+            return
+
+    xbmcgui.Dialog().notification('AIOStreams', 'All alternate streams failed', xbmcgui.NOTIFICATION_ERROR)
 
 
 
@@ -5334,7 +5374,7 @@ def update_container():
         # Actually, Container.Update takes a string path.
         # We need to ensure Kodi expands the property.
         # Using $INFO in executebuiltin usually works.
-        xbmc.log(f'[AIOStreams] Setting Update Property: {url}', xbmc.LOGINFO)
+        xbmc.log('[AIOStreams] Setting episode update property', xbmc.LOGINFO)
         # Use single quotes around the property reference to satisfy the parser
         xbmc.executebuiltin(f"Container({target_id}).Update('$INFO[Window.Property(AIOStreams_EpisodeUpdate_URL)]')")
 
@@ -5367,8 +5407,6 @@ ACTION_REGISTRY = {
     # Trakt menu actions
     'trakt_menu': lambda p: trakt_menu(),
     'trakt_watchlist': lambda p: trakt_watchlist(),
-    'trakt_collection': lambda p: None, # Removed
-    'trakt_recommendations': lambda p: None, # Removed
     'trakt_next_up': lambda p: trakt_next_up(),
 
     # Trakt authentication
@@ -5400,7 +5438,6 @@ ACTION_REGISTRY = {
     'get_all_catalogs': lambda p: get_all_catalogs_action(),
     'get_folder_browser_catalogs': lambda p: get_folder_browser_catalogs_action(),
     'open_youtube_folder': lambda p: open_youtube_folder(p),
-    'info': lambda p: action_info(p),
     'youtube_menu': lambda p: youtube_menu(),
     
     # Playback actions
@@ -5417,7 +5454,7 @@ def open_youtube_folder(params):
     """Close search dialog and open YouTube folder in video window."""
     url = params.get('url', '')
     if url:
-        xbmc.log(f'[AIOStreams] Opening YouTube folder: {url}', xbmc.LOGINFO)
+        xbmc.log('[AIOStreams] Opening YouTube folder', xbmc.LOGINFO)
         
         # Robustly close the custom search window (ID 1112)
         # We try multiple methods to ensure it's gone
@@ -5476,14 +5513,13 @@ def router(params):
 
 if __name__ == '__main__':
     xbmc.log(f'[AIOStreams] ===== PLUGIN INVOKED =====', xbmc.LOGDEBUG)
-    xbmc.log(f'[AIOStreams] sys.argv: {sys.argv}', xbmc.LOGDEBUG)
     
     arg_raw = sys.argv[2]
     params = parse_plugin_params(arg_raw)
     if '/' in arg_raw and not arg_raw.startswith('?'):
-        xbmc.log(f'[AIOStreams] Clean Path parsed: {params}', xbmc.LOGDEBUG)
+        xbmc.log('[AIOStreams] Clean path parsed', xbmc.LOGDEBUG)
         
-    xbmc.log(f'[AIOStreams] Parsed params: {params}', xbmc.LOGDEBUG)
+    xbmc.log('[AIOStreams] Plugin parameters parsed', xbmc.LOGDEBUG)
     xbmc.log(f'[AIOStreams] Action: {params.get("action", "<none>")}', xbmc.LOGDEBUG)
     router(params)
     xbmc.log(f'[AIOStreams] ===== PLUGIN EXECUTION COMPLETE =====', xbmc.LOGDEBUG)
