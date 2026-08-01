@@ -7,6 +7,7 @@ import xbmc
 import xbmcvfs
 from . import constants
 from . import settings_helpers
+from .stream_utils import display_label, stream_search_text
 
 
 class StreamManager:
@@ -67,7 +68,7 @@ class StreamManager:
         Detect quality from stream name.
         Returns tuple: (quality_key, quality_rank, quality_label)
         """
-        name_lower = stream_name.lower()
+        name_lower = (stream_name or '').lower()
 
         # Check for quality indicators
         for quality_key, rank in sorted(constants.QUALITY_RANKS.items(), key=lambda x: x[1], reverse=True):
@@ -101,8 +102,7 @@ class StreamManager:
         filtered = []
 
         for stream in streams:
-            stream_name = stream.get('name', stream.get('title', ''))
-            _, quality_rank, _ = self.detect_quality(stream_name)
+            _, quality_rank, _ = self.detect_quality(stream_search_text(stream))
 
             # Filter by minimum quality
             if quality_rank < min_rank:
@@ -168,7 +168,7 @@ class StreamManager:
         self.stats[stream_url]['last_used'] = int(time.time())
         self._save_stats()
 
-        xbmc.log(f'[AIOStreams] Stream result recorded: {stream_url[:50]}... = {success}', xbmc.LOGINFO)
+        xbmc.log(f'[AIOStreams] Stream result recorded: success={success}', xbmc.LOGINFO)
 
     def get_preference_score(self, stream_name):
         """Get preference score based on user's selection history."""
@@ -228,10 +228,10 @@ class StreamManager:
 
     def format_stream_title(self, stream):
         """Format stream title with quality badge."""
-        stream_name = stream.get('name', stream.get('title', 'Unknown Stream'))
+        stream_name = display_label(stream)
 
         # Detect quality
-        _, quality_rank, quality_label = self.detect_quality(stream_name)
+        _, quality_rank, quality_label = self.detect_quality(stream_search_text(stream))
         quality_color = self.get_quality_color(quality_rank)
 
         # Format title - Remove reliability icons for a cleaner presentation
