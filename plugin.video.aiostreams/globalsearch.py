@@ -12,6 +12,9 @@ import xbmcaddon
 import xbmcgui
 import xbmcplugin
 
+from resources.lib.items import plugin_url
+from resources.lib.plugin_args import parse_search_query
+
 # Get addon handle
 try:
     HANDLE = int(sys.argv[1])
@@ -57,14 +60,11 @@ def search(query):
         # Add movie results
         if movie_results and 'metas' in movie_results:
             for meta in movie_results['metas'][:10]:  # Limit to 10 results
-                item_id = meta.get('id')
-                title = meta.get('name', 'Unknown')
-                poster = meta.get('poster', '')
-                fanart = meta.get('background', '')
-                clearlogo = meta.get('logo', '')
-                
-                url = addon.get_url(action='play', content_type='movie', imdb_id=item_id, 
-                                   title=title, poster=poster, fanart=fanart, clearlogo=clearlogo)
+                media = addon.MediaRef.from_meta(meta, 'movie')
+                url = plugin_url(
+                    'play',
+                    **addon.media_action_params('play', media, clearlogo=meta.get('logo', ''))
+                )
                 list_item = addon.create_listitem_with_context(meta, 'movie', url)
                 list_item.setProperty('IsPlayable', 'true')
                 xbmcplugin.addDirectoryItem(HANDLE, url, list_item, False)
@@ -72,17 +72,18 @@ def search(query):
         # Add TV show results
         if series_results and 'metas' in series_results:
             for meta in series_results['metas'][:10]:  # Limit to 10 results
-                item_id = meta.get('id')
-                url = addon.get_url(action='show_seasons', meta_id=item_id)
+                media = addon.MediaRef.from_meta(meta, 'series')
+                url = plugin_url(
+                    'show_seasons', **addon.media_action_params('show_seasons', media)
+                )
                 list_item = addon.create_listitem_with_context(meta, 'series', url)
                 xbmcplugin.addDirectoryItem(HANDLE, url, list_item, True)
 
         # Add YouTube results
         if youtube_available and youtube_results and 'metas' in youtube_results:
             for meta in youtube_results['metas'][:5]:  # Limit to 5 results
-                item_id = meta.get('id')
-                title = meta.get('name', 'Unknown')
-                url = addon.get_url(action='play', content_type='video', imdb_id=item_id, title=title)
+                media = addon.MediaRef.from_meta(meta, 'video')
+                url = plugin_url('play', **addon.media_action_params('play', media))
                 list_item = addon.create_listitem_with_context(meta, 'video', url)
                 list_item.setProperty('IsPlayable', 'true')
                 xbmcplugin.addDirectoryItem(HANDLE, url, list_item, False)
@@ -104,17 +105,8 @@ def search(query):
 
 
 if __name__ == '__main__':
-    # Get search query from arguments
-    # Global search passes the query as: plugin://plugin.video.aiostreams/globalsearch?query=<search_term>
-    if len(sys.argv) > 2:
-        # Parse query from URL parameters
-        from urllib.parse import parse_qsl
-        params = dict(parse_qsl(sys.argv[2][1:]))
-        query = params.get('query', '')
-        
-        if query:
-            search(query)
-        else:
-            xbmc.log('[AIOStreams GlobalSearch] No query provided', xbmc.LOGWARNING)
+    query = parse_search_query(sys.argv[2:])
+    if query:
+        search(query)
     else:
-        xbmc.log('[AIOStreams GlobalSearch] Invalid arguments', xbmc.LOGWARNING)
+        xbmc.log('[AIOStreams GlobalSearch] No query provided', xbmc.LOGWARNING)

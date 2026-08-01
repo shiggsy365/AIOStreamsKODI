@@ -111,6 +111,27 @@ class AIOStreamsClientTests(unittest.TestCase):
             session.calls[0][0],
         )
 
+    def test_catalog_without_filters_appends_extension_to_catalog_id(self):
+        session = Session()
+        client = AIOStreamsClient('https://example.invalid', session=session)
+
+        client.get_catalog('movie', 'popular')
+
+        self.assertEqual(
+            'https://example.invalid/catalog/movie/popular.json', session.calls[0][0]
+        )
+
+    def test_catalog_filters_remain_a_separate_extra_path_segment(self):
+        session = Session()
+        client = AIOStreamsClient('https://example.invalid', session=session)
+
+        client.get_catalog('movie', 'popular', genre='Sci-Fi', skip=20)
+
+        self.assertEqual(
+            'https://example.invalid/catalog/movie/popular/genre=Sci-Fi&skip=20.json',
+            session.calls[0][0],
+        )
+
     def test_catalog_and_metadata_caches_include_configuration_fingerprint(self):
         session = Session()
         cache = Cache()

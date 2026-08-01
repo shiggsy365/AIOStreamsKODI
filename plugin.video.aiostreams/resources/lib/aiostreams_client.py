@@ -146,10 +146,18 @@ class AIOStreamsClient:
             extra.append(f'genre={quote(str(genre), safe="")}')
         if skip:
             extra.append(f'skip={skip}')
-        suffix = f"{'&'.join(extra)}.json" if extra else '.json'
-        catalog = self._get(
-            'catalog', 'catalog', self._path_value(content_type), self._path_value(catalog_id), suffix,
-        )
+        catalog_path = self._path_value(catalog_id)
+        if extra:
+            catalog = self._get(
+                'catalog', 'catalog', self._path_value(content_type), catalog_path,
+                f"{'&'.join(extra)}.json",
+            )
+        else:
+            # Stremio catalog URLs put the extension directly on the catalog ID.
+            # A separate ".json" path segment becomes ``catalog-id/.json``.
+            catalog = self._get(
+                'catalog', 'catalog', self._path_value(content_type), f'{catalog_path}.json',
+            )
         self._cache_set('catalog', cache_id, catalog)
         self._sql_set_catalog(content_type, catalog_id, genre, skip, catalog, 21600)
         return catalog

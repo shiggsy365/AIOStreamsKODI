@@ -13,7 +13,7 @@ ROOT = os.path.dirname(os.path.dirname(__file__))
 ADDON_ROOT = os.path.join(ROOT, 'plugin.video.aiostreams')
 sys.path.insert(0, ADDON_ROOT)
 
-from resources.lib.plugin_args import parse_plugin_params  # noqa: E402
+from resources.lib.plugin_args import parse_plugin_params, parse_search_query  # noqa: E402
 
 
 def action_registry_keys():
@@ -72,6 +72,12 @@ class PluginParameterTests(unittest.TestCase):
     def test_empty_or_non_navigation_arguments_are_empty(self):
         self.assertEqual({}, parse_plugin_params(''))
         self.assertEqual({}, parse_plugin_params('not-a-plugin-route'))
+
+    def test_global_search_query_arguments_support_query_variants_and_positional_terms(self):
+        self.assertEqual('The Last of Us', parse_search_query(['?query=The+Last+of+Us']))
+        self.assertEqual('The Last of Us', parse_search_query(['?search=The+Last+of+Us']))
+        self.assertEqual('The Last of Us', parse_search_query(['The+Last+of+Us']))
+        self.assertEqual('', parse_search_query(['?action=search']))
 
 
 class PluginRouteTests(unittest.TestCase):
