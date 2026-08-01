@@ -14,6 +14,11 @@ USENET = 'usenet'
 UNKNOWN = 'unknown'
 
 
+def client_user_agent(version):
+    """Identify Kodi as an AIOStreams-compatible Stremio API client."""
+    return f'AIOStreams/Kodi-{version or "unknown"}'
+
+
 def canonical_meta_id(meta):
     """Prefer the Stremio-compatible IMDb ID when metadata supplies one."""
     return meta.get('imdb_id') or meta.get('imdbId') or meta.get('id') or ''

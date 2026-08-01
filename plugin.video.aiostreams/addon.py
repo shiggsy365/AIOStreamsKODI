@@ -25,7 +25,8 @@ try:
     # Essential imports only
     from resources.lib import ui_helpers, settings_helpers, constants, filters, cache, streams
     from resources.lib.stream_utils import (
-        canonical_episode_id, canonical_meta_id, matching_episode_id, normalize_streams,
+        canonical_episode_id, canonical_meta_id, client_user_agent, matching_episode_id,
+        normalize_streams,
     )
     from resources.lib.globals import g
     from resources.lib.router import get_router, action, dispatch, set_default
@@ -171,7 +172,7 @@ def make_request(url, error_message='Request failed', cache_key=None):
     Returns:
         JSON response data, or cached data on 304, or None on error
     """
-    headers = {}
+    headers = {'User-Agent': client_user_agent(ADDON.getAddonInfo('version'))}
 
     # Check for cached ETag/Last-Modified headers to enable conditional requests
     if cache_key and HAS_MODULES:

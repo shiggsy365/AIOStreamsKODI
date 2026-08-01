@@ -9,12 +9,16 @@ sys.path.insert(0, os.path.join(ROOT, 'plugin.video.aiostreams'))
 from resources.lib.stream_utils import (  # noqa: E402
     DIRECT_URL, EXTERNAL_URL, SYNTHETIC_ERROR, SYNTHETIC_STATISTIC,
     TORRENT, UNKNOWN, USENET, YOUTUBE, canonical_episode_id,
-    canonical_meta_id, classify_stream, display_label, kodi_headers, matching_episode_id,
+    canonical_meta_id, classify_stream, client_user_agent, display_label, kodi_headers,
+    matching_episode_id,
     normalize_streams, playable_url, stream_search_text,
 )
 
 
 class StreamUtilsTests(unittest.TestCase):
+    def test_client_identity_is_recognized_by_aiostreams(self):
+        self.assertEqual('AIOStreams/Kodi-1.2.3', client_user_agent('1.2.3'))
+
     def test_synthetic_entries_override_external_url(self):
         self.assertEqual(SYNTHETIC_ERROR, classify_stream({
             'externalUrl': 'https://example.invalid/project',

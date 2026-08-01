@@ -11,6 +11,7 @@ import xbmcgui
 
 from .base import BaseProvider
 from ..cache import get_cache, cached
+from ..stream_utils import client_user_agent
 
 
 class AIOStreamsProvider(BaseProvider):
@@ -97,7 +98,12 @@ class AIOStreamsProvider(BaseProvider):
         Returns:
             JSON response data, or None on error
         """
-        headers = {}
+        try:
+            import xbmcaddon
+            version = xbmcaddon.Addon().getAddonInfo('version')
+        except Exception:
+            version = 'unknown'
+        headers = {'User-Agent': client_user_agent(version)}
         cache = get_cache()
 
         # Check for cached ETag/Last-Modified for conditional requests
