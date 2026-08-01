@@ -26,20 +26,28 @@ The addon is built as a Kodi Python 3 plugin with a modular architecture designe
 
 ```
 plugin.video.aiostreams/
-├── addon.py              # Main entry point & routing logic
+├── addon.py              # Bootstrap, dependency construction, and dispatch
 ├── service.py            # Background service for Trakt sync
 ├── addon.xml             # Plugin manifest & dependencies
 ├── resources/
 │   ├── settings.xml      # User configuration schema
 │   ├── lib/
 │   │   ├── globals.py    # Singleton global state manager
-│   │   ├── router.py     # Action registry system
+│   │   ├── routing.py    # Small explicit parameter normalizer and dispatcher
+│   │   ├── actions/      # Parsed-parameter Kodi action modules
+│   │   │   ├── browse.py       # Menus, catalogs, widgets, seasons, episodes
+│   │   │   ├── search.py       # Internal search UI and results
+│   │   │   ├── playback.py     # Stream selection, retries, and playback
+│   │   │   ├── trakt.py        # Trakt menus, lists, and mutations
+│   │   │   └── maintenance.py  # Settings, cache, and database maintenance
 │   │   ├── monitor.py    # Playback monitoring & autoplay
 │   │   ├── streams.py    # Stream quality & reliability management
 │   │   ├── ui_helpers.py # UI formatting & colors
 │   │   ├── cache.py      # Caching system
 │   │   ├── network.py    # HTTP requests
 │   │   ├── aiostreams_client.py # Configured AIOStreams/Stremio API client
+│   │   ├── media.py      # Canonical MediaRef identity normalization
+│   │   ├── items.py      # Shared list-item presentation and context menus
 │   │   ├── trakt.py      # Trakt API integration
 │   │   ├── filters.py    # Content filtering
 │   │   ├── autoplay.py   # Autoplay next episode logic
@@ -65,13 +73,10 @@ The primary entry point for all plugin operations:
 # URL format:
 plugin://plugin.video.aiostreams/?action=<action>&param1=value1&...
 
-# Main routing function
-def router(params):
-    """Dispatch actions to registered handlers"""
-    action = params.get('action', 'main_menu')
-    handler = ACTION_REGISTRY.get(action)
-    if handler:
-        handler(params)
+# Parsed parameters are normalized once, then dispatched through one table.
+# Each handler accepts parsed parameters; extracted actions also receive an
+# explicit dependency bundle constructed by addon.py.
+dispatch(params, ACTION_REGISTRY, index)
 ```
 
 #### Background Service (`service.py`)
@@ -93,34 +98,21 @@ Runs continuously in the background for:
 
 ### 1. Action Routing System
 
-The addon uses an action-based routing system that maps URL parameters to handler functions:
+The addon uses an action-based routing system that maps URL parameters to handler functions. `routing.py` also recognizes `search`, `query`, and `q` aliases without allowing them to override an explicit action or query. There is no decorator/hook router and no separate `router.py` implementation.
 
 ```python
 ACTION_REGISTRY = {
-    # Playback actions
-    'play': play,                   # Respects user's default behavior setting
-    'play_first': play_first,       # Always auto-plays first stream
-    'select_stream': select_stream, # Always shows selection dialog
-    'show_streams': show_streams,   # Browse all streams with metadata
-
-    # Content browsing
-    'search': search,
-    'show_catalog': show_catalog,
-    'show_seasons': show_seasons,
-    'show_episodes': show_episodes,
-
-    # Trakt actions
-    'trakt_next_up': trakt_next_up,
-    'trakt_continue_watching': trakt_continue_watching,
-    'trakt_watchlist': trakt_watchlist,
-    'trakt_collection': trakt_collection,
-    'trakt_toggle_watchlist': trakt_toggle_watchlist,
-    'trakt_mark_watched': trakt_mark_watched,
-
-    # Utility actions
-    'show_similar': show_similar,
-    'play_trailer': play_trailer,
-    'quick_actions': quick_actions,
+    'search': search_action,
+    'browse_catalog': browse_catalog_action,
+    'show_seasons': show_seasons_action,
+    'show_episodes': show_episodes_action,
+    'play': play_action,
+    'play_first': play_first_action,
+    'select_stream': select_stream_action,
+    'show_streams': show_streams_action,
+    'trakt_watchlist': trakt_watchlist_action,
+    'trakt_next_up': trakt_next_up_action,
+    'quick_actions': quick_actions_action,
 }
 ```
 
@@ -130,6 +122,8 @@ ACTION_REGISTRY = {
 - **`play_first`** - Always direct plays first stream, ignores user setting (used by TMDBHelper)
 - **`select_stream`** - Always shows selection dialog (used by TMDBHelper fallback)
 - **`show_streams`** - Displays all streams with full metadata browsing
+
+Widget-originated Trakt and catalog requests use this same action table; they do not maintain a second manual dispatch chain.
 
 ### 2. Trakt Integration
 
