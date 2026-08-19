@@ -10,6 +10,7 @@ import xbmc
 import xbmcgui
 import xbmcaddon
 import xbmcvfs
+from ...stream_utils import display_label, stream_display_fields
 
 
 # Control IDs matching the XML skin
@@ -300,15 +301,26 @@ class MultiLineSourceSelect(xbmcgui.WindowXML):
 
             for idx, stream in enumerate(self.streams):
                 # Get stream name and description
-                name = stream.get('name', stream.get('title', ''))
+                name = display_label(stream)
                 description = stream.get('description', '')
+                filename = (stream.get('behaviorHints') or {}).get('filename', '')
 
                 # Replace emojis with text equivalents for compatibility
                 name = replace_emojis(name)
                 description = replace_emojis(description)
 
-                # Parse fields from name (custom formatter format)
-                fields = self._parse_stream_fields(name)
+                # AIOStreams formatters may distribute fields across both strings.
+                parse_text = '\n'.join(filter(None, (name, description, f'FILENAME: {filename}' if filename else '')))
+                fields = self._parse_stream_fields(parse_text)
+                structured_fields = stream_display_fields(stream)
+                for key, value in structured_fields.items():
+                    if not fields.get(key) and value:
+                        fields[key] = value
+                if not any(fields.values()):
+                    fields['resolution'] = 'STREAM'
+                    fields['filename'] = ' — '.join(filter(None, (name, description)))
+                elif not fields['filename']:
+                    fields['filename'] = filename or name
 
                 # Create list item
                 list_item = xbmcgui.ListItem(label=name)

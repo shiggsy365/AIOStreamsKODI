@@ -202,25 +202,25 @@ def make_request(url, method='GET', headers=None, data=None, json_data=None,
     except requests.Timeout:
         if notify_errors:
             xbmcgui.Dialog().notification('AIOStreams', 'Request timed out', xbmcgui.NOTIFICATION_ERROR)
-        xbmc.log(f'[AIOStreams] Request timeout: {url}', xbmc.LOGERROR)
+        xbmc.log('[AIOStreams] Request timeout', xbmc.LOGERROR)
         return None
 
     except requests.HTTPError as e:
         if notify_errors:
             xbmcgui.Dialog().notification('AIOStreams', f'{error_message}', xbmcgui.NOTIFICATION_ERROR)
-        xbmc.log(f'[AIOStreams] HTTP error: {e}', xbmc.LOGERROR)
+        xbmc.log(f'[AIOStreams] HTTP error: {type(e).__name__}', xbmc.LOGERROR)
         return None
 
     except requests.RequestException as e:
         if notify_errors:
             xbmcgui.Dialog().notification('AIOStreams', f'{error_message}', xbmcgui.NOTIFICATION_ERROR)
-        xbmc.log(f'[AIOStreams] Request error: {e}', xbmc.LOGERROR)
+        xbmc.log(f'[AIOStreams] Request error: {type(e).__name__}', xbmc.LOGERROR)
         return None
 
     except ValueError:
         if notify_errors:
             xbmcgui.Dialog().notification('AIOStreams', 'Invalid JSON response', xbmcgui.NOTIFICATION_ERROR)
-        xbmc.log(f'[AIOStreams] Invalid JSON from: {url}', xbmc.LOGERROR)
+        xbmc.log('[AIOStreams] Invalid JSON response', xbmc.LOGERROR)
         return None
 
 
