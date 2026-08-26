@@ -26,7 +26,7 @@ I suggest using **Tam-Taro's SEL (Stream Entry Lists)**. These lists are curated
 
 ## Embedding AIOStreams
 
-To serve metadata and catalogs efficiently, you should **embed the AIOStreams instance into AIOStreams**. This allows the backend to act as its own provider for catalogs, ensuring that the Kodi plugin can access all content directly from your hosted instance without relying on external metadata latency for primary navigation.
+To serve metadata and catalogs efficiently, you should **embed the AIOMetadata instance into AIOStreams**. This allows the backend to act as its own provider for catalogs, ensuring that the Kodi plugin can access all content directly from your hosted instance without relying on external metadata latency for primary navigation.
 
 ## Custom Formatter Configuration
 
