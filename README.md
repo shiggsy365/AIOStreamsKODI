@@ -1,5 +1,8 @@
 # AIOStreams Kodi Addon
 
+
+- Note project is no longer supported and has been replaced by [KodiStremioBridge](https://github.com/shiggsy365/KodiStremioBridge/tree/main)
+
 A powerful Kodi addon for streaming content from AIOStreams with comprehensive Trakt integration, intelligent stream selection, and advanced playback features.
 
 ---
